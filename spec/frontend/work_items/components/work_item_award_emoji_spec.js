@@ -34,13 +34,15 @@ describe('WorkItemAwardEmoji component', () => {
   let mockApolloProvider;
 
   const mutationErrorMessage = 'Failed to update the award';
+  const newCustomEmojiPath = '/groups/gitlab-org/-/custom_emoji/new';
 
-  const workItemQueryResponse = workItemByIidResponseFactory();
+  const workItemQueryResponse = workItemByIidResponseFactory({ newCustomEmojiPath });
   const mockWorkItem = workItemQueryResponse.data.workspace.workItem;
 
   const awardEmojiQuerySuccessHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
   const awardEmojiQueryEmptyHandler = jest.fn().mockResolvedValue(
     workItemByIidResponseFactory({
+      newCustomEmojiPath,
       awardEmoji: {
         ...mockAwardsWidget,
         nodes: [],
@@ -49,6 +51,7 @@ describe('WorkItemAwardEmoji component', () => {
   );
   const awardEmojiQueryThumbsUpHandler = jest.fn().mockResolvedValue(
     workItemByIidResponseFactory({
+      newCustomEmojiPath,
       awardEmoji: {
         ...mockAwardsWidget,
         nodes: [mockAwardEmojiThumbsUp],
@@ -135,6 +138,7 @@ describe('WorkItemAwardEmoji component', () => {
 
     expect(findAwardsList().exists()).toBe(true);
     expect(findAwardsList().props()).toEqual({
+      customEmojiPath: newCustomEmojiPath,
       canAwardEmoji: true,
       currentUserId: 5,
       defaultAwards: [EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN],
@@ -176,6 +180,7 @@ describe('WorkItemAwardEmoji component', () => {
 
   it('renders awards list given by multiple users', async () => {
     const mockWorkItemAwardEmojiDifferentUser = workItemByIidResponseFactory({
+      newCustomEmojiPath,
       awardEmoji: {
         ...mockAwardsWidget,
         nodes: [mockAwardEmojiThumbsUp, mockAwardEmojiDifferentUser],
@@ -291,6 +296,7 @@ describe('WorkItemAwardEmoji component', () => {
     describe('when there is no next page', () => {
       const awardEmojiQuerySingleItemHandler = jest.fn().mockResolvedValue(
         workItemByIidResponseFactory({
+          newCustomEmojiPath,
           awardEmoji: {
             ...mockAwardsWidget,
             nodes: [mockAwardEmojiThumbsUp],
@@ -315,6 +321,7 @@ describe('WorkItemAwardEmoji component', () => {
     describe('when there is next page', () => {
       const awardEmojisQueryMoreThanDefaultHandler = jest.fn().mockResolvedValueOnce(
         workItemByIidResponseFactory({
+          newCustomEmojiPath,
           awardEmoji: mockMoreThanDefaultAwardEmojisWidget,
         }),
       );

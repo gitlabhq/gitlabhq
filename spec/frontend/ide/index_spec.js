@@ -2,18 +2,15 @@ import { startIde } from '~/ide/index';
 import { IDE_ELEMENT_ID } from '~/ide/constants';
 import { OAuthCallbackDomainMismatchErrorApp } from '~/ide/oauth_callback_domain_mismatch_error';
 import { initGitlabWebIDE } from '~/ide/init_gitlab_web_ide';
-import { initLegacyWebIDE } from '~/ide/init_legacy_web_ide';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 
 jest.mock('~/ide/init_gitlab_web_ide');
-jest.mock('~/ide/init_legacy_web_ide');
 
 const MOCK_MISMATCH_CALLBACK_URL = 'https://example.com/ide/redirect';
 
 const MOCK_DATA_SET = {
   callbackUrls: JSON.stringify([`${TEST_HOST}/-/ide/oauth_redirect`]),
-  useNewWebIde: true,
 };
 /**
  *
@@ -43,7 +40,7 @@ describe('startIde', () => {
     document.getElementById(IDE_ELEMENT_ID)?.remove();
   });
 
-  describe('when useNewWebIde feature flag is true', () => {
+  describe('default', () => {
     let ideElement;
 
     beforeEach(async () => {
@@ -66,7 +63,6 @@ describe('startIde', () => {
     it('renders error page', async () => {
       setupMockIdeElement({
         callbackUrls: JSON.stringify([MOCK_MISMATCH_CALLBACK_URL]),
-        useNewWebIde: true,
       });
 
       await startIde();
@@ -84,7 +80,6 @@ describe('startIde', () => {
         callbackUrls: JSON.stringify([
           `${parsedUrl.protocol}//${parsedUrl.host.toUpperCase()}/-/ide/oauth_redirect`,
         ]),
-        useNewWebIde: true,
       });
 
       await startIde();
@@ -98,7 +93,6 @@ describe('startIde', () => {
     it('renders error page', async () => {
       setupMockIdeElement({
         callbackUrls: JSON.stringify(['/-/ide/oauth_redirect']),
-        useNewWebIde: true,
       });
 
       await startIde();
@@ -118,23 +112,6 @@ describe('startIde', () => {
 
       expect(renderErrorSpy).toHaveBeenCalledTimes(1);
       expect(initGitlabWebIDE).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('when useNewWebIde feature flag is false', () => {
-    beforeEach(async () => {
-      setupMockIdeElement({ useNewWebIde: false });
-
-      await startIde();
-    });
-
-    it('calls initGitlabWebIDE', () => {
-      expect(initLegacyWebIDE).toHaveBeenCalledTimes(1);
-      expect(initGitlabWebIDE).toHaveBeenCalledTimes(0);
-    });
-
-    it('does not render error page', () => {
-      expect(renderErrorSpy).not.toHaveBeenCalled();
     });
   });
 });

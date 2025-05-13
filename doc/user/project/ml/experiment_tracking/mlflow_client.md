@@ -27,6 +27,9 @@ GitLab [Model experiment tracking](_index.md) and GitLab
 
 Prerequisites:
 
+- A GitLab-compatible Python client:
+  - Recommended: The [GitLab MLOps Python client](https://gitlab.com/gitlab-org/modelops/mlops/gitlab-mlops).
+  - Another option is the MLflow client version. The MLflow client is [compatible with GitLab](https://gitlab.com/gitlab-org/modelops/mlops/mlflow-compatibility-qa).
 - A [personal](../../../profile/personal_access_tokens.md), [project](../../settings/project_access_tokens.md), or [group](../../../group/settings/group_access_tokens.md) access token with at least the Developer role and the `api` scope.
 - The project ID. To find the project ID:
   1. On the left sidebar, select **Search or go to** and find your project.
@@ -340,7 +343,7 @@ from mlflow import MlflowClient
 
 client = MlflowClient()
 model_name = '<your_model_name>'
-version = '<your_version'  # e.g. '1.0.0'
+version = '<your_version'  # for example: '1.0.0'
 
 # Alternatively search the version
 version = mlflow.search_registered_models(filter_string="name='{model_name}'")[0].latest_versions[0].version
@@ -472,6 +475,5 @@ Other MLflowClient methods:
 
 ## Known issues
 
-- The API GitLab supports is the one defined at MLflow version 2.7.1.
 - MLflow client methods not listed in [supported methods](#supported-mlflow-client-methods-and-caveats) might still work but have not been tested.
 - During creation of experiments and runs, ExperimentTags are stored, even though they are not displayed.

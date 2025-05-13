@@ -13,6 +13,13 @@ RSpec.describe 'Issue prioritization', feature_category: :team_planning do
   let(:label_4) { create(:label, title: 'label_4', project: project, priority: 4) }
   let(:label_5) { create(:label, title: 'label_5', project: project) } # no priority
 
+  before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+  end
+
   # According to https://gitlab.com/gitlab-org/gitlab-foss/issues/14189#note_4360653
   context 'when issues have one label', :js do
     it 'are sorted properly' do

@@ -12,7 +12,6 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import { TEST_HOST } from 'spec/test_constants';
-
 import App from '~/diffs/components/app.vue';
 import CommitWidget from '~/diffs/components/commit_widget.vue';
 import CompareVersions from '~/diffs/components/compare_versions.vue';
@@ -21,14 +20,11 @@ import NoChanges from '~/diffs/components/no_changes.vue';
 import FindingsDrawer from 'ee_component/diffs/components/shared/findings_drawer.vue';
 import DiffsFileTree from '~/diffs/components/diffs_file_tree.vue';
 import DiffAppControls from '~/diffs/components/diff_app_controls.vue';
-
 import CollapsedFilesWarning from '~/diffs/components/collapsed_files_warning.vue';
 import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
-
 import eventHub from '~/diffs/event_hub';
 import notesEventHub from '~/notes/event_hub';
 import { EVT_DISCUSSIONS_ASSIGNED, FILE_BROWSER_VISIBLE } from '~/diffs/constants';
-
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { Mousetrap } from '~/lib/mousetrap';
@@ -49,7 +45,9 @@ import {
   keysFor,
   MR_NEXT_FILE_IN_DIFF,
   MR_PREVIOUS_FILE_IN_DIFF,
+  MR_TOGGLE_REVIEW,
 } from '~/behaviors/shortcuts/keybindings';
+import { useNotes } from '~/notes/store/legacy_notes';
 import createDiffsStore from '../create_diffs_store';
 import diffsMockData from '../mock_data/merge_request_diffs';
 
@@ -77,17 +75,10 @@ describe('diffs/components/app', () => {
 
   const codeQualityAndSastQueryHandlerSuccess = jest.fn().mockResolvedValue({});
 
-  const createComponent = ({ props = {}, provisions = {} } = {}) => {
+  const createComponent = ({ props = {} } = {}) => {
     fakeApollo = createMockApollo([
       [getMRCodequalityAndSecurityReports, codeQualityAndSastQueryHandlerSuccess],
     ]);
-
-    const provide = {
-      ...provisions,
-      glFeatures: {
-        ...provisions.glFeatures,
-      },
-    };
 
     wrapper = shallowMount(App, {
       apolloProvider: fakeApollo,
@@ -101,7 +92,6 @@ describe('diffs/components/app', () => {
         changesEmptyStateIllustration: '',
         ...props,
       },
-      provide,
       store: createDiffsStore(),
       pinia,
     });
@@ -130,6 +120,8 @@ describe('diffs/components/app', () => {
     store.fetchDiffFilesMeta.mockResolvedValue({ real_size: '20' });
     store.fetchDiffFilesBatch.mockResolvedValue();
     store.assignDiscussionsToDiff.mockResolvedValue();
+
+    useNotes();
 
     stubPerformanceWebAPI();
     // setup globals (needed for component to mount :/)
@@ -250,6 +242,7 @@ describe('diffs/components/app', () => {
     let spies = [];
     let moveSpy;
     let jumpSpy;
+    let toggleReviewSpy;
 
     function setup(componentProps) {
       createComponent({
@@ -258,7 +251,10 @@ describe('diffs/components/app', () => {
 
       moveSpy = jest.spyOn(wrapper.vm, 'moveToNeighboringCommit').mockImplementation(() => {});
       jumpSpy = jest.spyOn(wrapper.vm, 'jumpToFile').mockImplementation(() => {});
-      spies = [jumpSpy, moveSpy];
+      toggleReviewSpy = jest
+        .spyOn(wrapper.vm, 'toggleActiveFileReview')
+        .mockImplementation(() => {});
+      spies = [jumpSpy, moveSpy, toggleReviewSpy];
     }
 
     describe('visible app', () => {
@@ -270,6 +266,7 @@ describe('diffs/components/app', () => {
         ${'j'} | ${'jumpToFile'}              | ${0} | ${[+1]}
         ${'x'} | ${'moveToNeighboringCommit'} | ${1} | ${[{ direction: 'previous' }]}
         ${'c'} | ${'moveToNeighboringCommit'} | ${1} | ${[{ direction: 'next' }]}
+        ${'v'} | ${'toggleActiveFileReview'}  | ${2} | ${[]}
       `(
         'calls `$name()` with correct parameters whenever the "$key" key is pressed',
         async ({ key, spy, args }) => {
@@ -288,6 +285,7 @@ describe('diffs/components/app', () => {
         key    | name                         | spy  | allowed
         ${'d'} | ${'jumpToFile'}              | ${0} | ${['[', ']', 'j', 'k']}
         ${'r'} | ${'moveToNeighboringCommit'} | ${1} | ${['x', 'c']}
+        ${'t'} | ${'toggleActiveFileReview'}  | ${2} | ${['v']}
       `(
         `does not call \`$name()\` when a key that is not one of \`$allowed\` is pressed`,
         async ({ key, spy }) => {
@@ -317,10 +315,70 @@ describe('diffs/components/app', () => {
         ${'j'} | ${'jumpToFile'}              | ${0}
         ${'x'} | ${'moveToNeighboringCommit'} | ${1}
         ${'c'} | ${'moveToNeighboringCommit'} | ${1}
+        ${'v'} | ${'toggleActiveFileReview'}  | ${2}
       `('stops calling `$name()` when the app is hidden', ({ key, spy }) => {
         Mousetrap.trigger(key);
 
         expect(spies[spy]).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('toggleActiveFileReview', () => {
+      const toggleReview = () => Mousetrap.trigger(keysFor(MR_TOGGLE_REVIEW));
+
+      beforeEach(() => {
+        store.diffFiles = [
+          { id: 1, file_hash: '111', file_path: '111.js' },
+          { id: 2, file_hash: '222', file_path: '222.js' },
+        ];
+        createComponent();
+      });
+
+      it('marks active file as reviewed when triggering review toggle shortcut', () => {
+        store.currentDiffFileId = '111';
+        store.fileReviews = { 1: false };
+
+        toggleReview();
+
+        expect(store.reviewFile).toHaveBeenCalledWith({
+          file: store.diffFiles[0],
+          reviewed: true,
+        });
+        expect(store.reviewFile).toHaveBeenCalledTimes(1);
+
+        expect(store.setFileCollapsedByUser).toHaveBeenCalledWith({
+          filePath: '111.js',
+          collapsed: true,
+        });
+        expect(store.setFileCollapsedByUser).toHaveBeenCalledTimes(1);
+      });
+
+      it('marks active file as unreviewed when triggering review toggle shortcut again', () => {
+        store.currentDiffFileId = '222';
+        jest.spyOn(wrapper.vm, 'fileReviews', 'get').mockReturnValue({ 2: true });
+
+        toggleReview();
+
+        expect(store.reviewFile).toHaveBeenCalledWith({
+          file: store.diffFiles[1],
+          reviewed: false,
+        });
+        expect(store.reviewFile).toHaveBeenCalledTimes(1);
+
+        expect(store.setFileCollapsedByUser).toHaveBeenCalledWith({
+          filePath: '222.js',
+          collapsed: false,
+        });
+        expect(store.setFileCollapsedByUser).toHaveBeenCalledTimes(1);
+      });
+
+      it('does nothing when no active file exists', () => {
+        store.currentDiffFileId = 'non-existent';
+
+        toggleReview();
+
+        expect(store.reviewFile).not.toHaveBeenCalled();
+        expect(store.setFileCollapsedByUser).not.toHaveBeenCalled();
       });
     });
   });
@@ -561,6 +619,14 @@ describe('diffs/components/app', () => {
         createComponent();
         wrapper.findComponent(DiffsFileTree).vm.$emit('clickFile', file);
         expect(store.goToFile).toHaveBeenCalledWith({ path: file.path });
+      });
+
+      it('should handle toggleFolder events', () => {
+        const file = { path: '111.js' };
+        store.treeEntries = { 111: { type: 'blob', fileHash: '111', path: '111.js' } };
+        createComponent();
+        wrapper.findComponent(DiffsFileTree).vm.$emit('toggleFolder', file);
+        expect(store.toggleTreeOpen).toHaveBeenCalledWith(file);
       });
     });
   });

@@ -1,22 +1,25 @@
 <script>
-import { GlForm, GlFormInput, GlFormGroup, GlModal } from '@gitlab/ui';
+import { GlForm, GlFormInput, GlFormInputGroup, GlFormGroup, GlModal } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/alert';
 import {
-  sprintfWorkItem,
+  NAME_TO_TEXT_LOWERCASE_MAP,
   WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_SOURCE,
   WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_BRANCH,
 } from '~/work_items/constants';
 import { visitUrl } from '~/lib/utils/url_utility';
+import toast from '~/vue_shared/plugins/global_toast';
 import { createBranchMRApiPathHelper } from '~/work_items/utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   findInvalidBranchNameCharacters,
   humanizeBranchValidationErrors,
 } from '~/lib/utils/text_utility';
+import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
+
 import getProjectRootRef from '~/work_items/graphql/get_project_root_ref.query.graphql';
-import { s__, __ } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
 import confidentialMergeRequestState from '~/confidential_merge_request/state';
 import ProjectFormGroup from '~/confidential_merge_request/components/project_form_group.vue';
 
@@ -24,9 +27,11 @@ export default {
   components: {
     GlForm,
     GlFormInput,
+    GlFormInputGroup,
     GlFormGroup,
     GlModal,
     ProjectFormGroup,
+    ModalCopyButton,
   },
   i18n: {
     sourceLabel: __('Source (branch or tag)'),
@@ -57,16 +62,7 @@ export default {
       required: false,
       default: true,
     },
-    showMergeRequestFlow: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     workItemIid: {
-      type: String,
-      required: true,
-    },
-    workItemId: {
       type: String,
       required: true,
     },
@@ -245,9 +241,9 @@ export default {
         this.$emit('hideModal');
       } catch {
         createAlert({
-          message: sprintfWorkItem(
+          message: sprintf(
             s__('WorkItem|Failed to create a branch for this %{workItemType}. Please try again.'),
-            this.workItemType?.toLowerCase(),
+            { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] },
           ),
         });
       } finally {
@@ -344,6 +340,9 @@ export default {
         this.invalidForm = false;
       });
     },
+    copyToClipboard() {
+      toast(__('Copied branch name.'));
+    },
   },
   WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_SOURCE,
   WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_BRANCH,
@@ -405,7 +404,7 @@ export default {
           "
           :state="branchName ? !invalidBranch : false"
         >
-          <gl-form-input
+          <gl-form-input-group
             id="branch-name-id"
             v-model.trim="branchName"
             data-testid="target-name"
@@ -415,7 +414,16 @@ export default {
             name="branch-name"
             type="text"
             @input="checkValidity($event, $options.WORK_ITEM_CREATE_ENTITY_MODAL_TARGET_BRANCH)"
-          />
+          >
+            <template #append>
+              <modal-copy-button
+                :text="branchName"
+                :title="__('Copy to clipboard')"
+                :modal-id="$options.createMRModalId"
+                @success="copyToClipboard"
+              />
+            </template>
+          </gl-form-input-group>
         </gl-form-group>
       </gl-form>
     </gl-modal>

@@ -71,6 +71,9 @@ export default {
         'super-sidebar-has-peeked': this.sidebarState.hasPeeked,
       };
     },
+    isAdmin() {
+      return this.sidebarData?.admin_mode?.user_is_admin;
+    },
   },
   watch: {
     'sidebarState.isCollapsed': {
@@ -168,7 +171,7 @@ export default {
       return this.$refs.userBar.$el.querySelector('a');
     },
     lastFocusableElement() {
-      if (this.sidebarData.is_admin) {
+      if (this.isAdmin) {
         return this.$refs.adminAreaLink.$el;
       }
       return this.$refs.helpCenter.$el.querySelector('button');
@@ -248,7 +251,7 @@ export default {
         <div class="gl-p-2">
           <help-center ref="helpCenter" :sidebar-data="sidebarData" />
           <gl-button
-            v-if="sidebarData.is_admin"
+            v-if="isAdmin"
             ref="adminAreaLink"
             class="gl-fixed gl-right-0 gl-mr-3 gl-mt-2"
             data-testid="sidebar-admin-link"

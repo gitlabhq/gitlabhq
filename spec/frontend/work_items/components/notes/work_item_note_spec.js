@@ -6,6 +6,7 @@ import mockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { updateDraft, clearDraft } from '~/lib/utils/autosave';
 import EditedAt from '~/issues/show/components/edited.vue';
+import gfmEventHub from '~/vue_shared/components/markdown/eventhub';
 import WorkItemNote from '~/work_items/components/notes/work_item_note.vue';
 import WorkItemNoteAwardsList from '~/work_items/components/notes/work_item_note_awards_list.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
@@ -104,6 +105,7 @@ describe('Work Item Note', () => {
         isFirstNote,
         workItemType: 'Task',
         markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
+        uploadsPath: '/test-project-path/uploads',
         autocompleteDataSources: {},
         assignees,
       },
@@ -508,6 +510,43 @@ end`;
 
     it('should not allow assigning to comment author', () => {
       expect(findNoteActions().props('showAssignUnassign')).toBe(false);
+    });
+  });
+
+  describe('markdown-editor event-hub edit-note event', () => {
+    const setupComponent = async ({ id = mockWorkItemCommentNote.id, adminNote = true } = {}) => {
+      createComponent({
+        note: {
+          ...mockWorkItemCommentNote,
+          id,
+          userPermissions: {
+            ...mockWorkItemCommentNote.userPermissions,
+            adminNote,
+          },
+        },
+      });
+
+      gfmEventHub.$emit('edit-note', { note: mockWorkItemCommentNote });
+
+      await nextTick();
+    };
+
+    it('enables editing on the note for a matching note when adminNote is true', async () => {
+      await setupComponent();
+
+      expect(wrapper.emitted('startEditing')).toHaveLength(1);
+      expect(findCommentForm().exists()).toBe(true);
+    });
+
+    it.each`
+      setupProps                         | description
+      ${{ adminNote: false }}            | ${'a matching note when adminNote is false'}
+      ${{ id: 'gid://gitlab/Note/100' }} | ${'non-matching note when adminNote is true'}
+    `('does not enable editing on the note for $description', async ({ setupProps }) => {
+      await setupComponent(setupProps);
+
+      expect(wrapper.emitted('startEditing')).toBeUndefined();
+      expect(findCommentForm().exists()).toBe(false);
     });
   });
 });

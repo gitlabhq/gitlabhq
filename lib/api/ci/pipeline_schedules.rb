@@ -35,7 +35,7 @@ module API
           authorize! :read_pipeline_schedule, user_project
 
           schedules = ::Ci::PipelineSchedulesFinder.new(user_project).execute(scope: params[:scope])
-            .preload([:owner, :last_pipeline])
+            .preload([:owner, :inputs])
           present paginate(schedules), with: Entities::Ci::PipelineSchedule
         end
         # rubocop: enable CodeReuse/ActiveRecord
@@ -86,12 +86,22 @@ module API
           requires :cron, type: String, desc: 'The cron', documentation: { example: '* * * * *' }
           optional :cron_timezone, type: String, default: 'UTC', desc: 'The timezone', documentation: { example: 'Asia/Tokyo' }
           optional :active, type: Boolean, default: true, desc: 'The activation of pipeline schedule', documentation: { example: true }
+          optional :inputs, type: Array, desc: 'Inputs for the pipeline schedule', documentation: { example: [{ name: 'array_input', value: [1, 2] }, { name: 'boolean_input', value: true }] } do
+            requires :name, type: String, desc: 'The name of the input', documentation: { example: 'deploy_strategy' }
+            requires :value, types: [String, Array, Numeric, TrueClass, FalseClass], desc: 'The value of the input', documentation: { example: 'blue-green' }
+          end
         end
         post ':id/pipeline_schedules' do
           authorize! :create_pipeline_schedule, user_project
 
+          schedule_params = declared_params(include_missing: false).except(:inputs)
+
+          if params[:inputs] && Feature.enabled?(:ci_inputs_for_pipelines, user_project)
+            schedule_params[:inputs_attributes] = params[:inputs]
+          end
+
           response = ::Ci::PipelineSchedules::CreateService
-            .new(user_project, current_user, declared_params(include_missing: false))
+            .new(user_project, current_user, schedule_params)
             .execute
 
           pipeline_schedule = response.payload
@@ -119,12 +129,25 @@ module API
           optional :cron, type: String, desc: 'The cron', documentation: { example: '* * * * *' }
           optional :cron_timezone, type: String, desc: 'The timezone', documentation: { example: 'Asia/Tokyo' }
           optional :active, type: Boolean, desc: 'The activation of pipeline schedule', documentation: { example: true }
+          optional :inputs, type: Array, desc: 'Inputs for the pipeline schedule', documentation: { example: [{ name: 'deploy_strategy', value: 'blue-green' }] } do
+            requires :name, type: String, desc: 'The name of the input', documentation: { example: 'deploy_strategy' }
+            optional :destroy, type: Boolean, desc: 'Whether to delete the input', documentation: { example: false, default: false }
+            given destroy: ->(value) { value != true } do
+              requires :value, types: [String, Array, Numeric, TrueClass, FalseClass], desc: 'The value of the input', documentation: { example: 'blue-green' }
+            end
+          end
         end
         put ':id/pipeline_schedules/:pipeline_schedule_id' do
           authorize! :update_pipeline_schedule, pipeline_schedule
 
+          schedule_params = declared_params(include_missing: false).except(:inputs)
+
+          if params[:inputs] && Feature.enabled?(:ci_inputs_for_pipelines, user_project)
+            schedule_params[:inputs_attributes] = params[:inputs]
+          end
+
           response = ::Ci::PipelineSchedules::UpdateService
-            .new(pipeline_schedule, current_user, declared_params(include_missing: false))
+            .new(pipeline_schedule, current_user, schedule_params)
             .execute
 
           if response.success?
@@ -294,7 +317,7 @@ module API
           @pipeline_schedule ||=
             user_project
               .pipeline_schedules
-              .preload(:owner, :last_pipeline)
+              .preload(:owner)
               .find_by(id: params.delete(:pipeline_schedule_id)).tap do |pipeline_schedule|
                 unless can?(current_user, :read_pipeline_schedule, pipeline_schedule)
                   not_found!('Pipeline Schedule')

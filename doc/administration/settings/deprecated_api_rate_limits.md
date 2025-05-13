@@ -23,7 +23,7 @@ switch to the alternatives.
 Not all deprecated API endpoints are included in this rate limit - just those
 that might have a performance impact:
 
-- [`GET /groups/:id`](../../api/groups.md#get-a-single-group) **without** the `with_projects=0` query parameter.
+- [`GET /groups/:id`](../../api/groups.md#get-a-single-group) without the `with_projects=0` query parameter.
 
 ## Define Deprecated API rate limits
 

@@ -130,7 +130,7 @@ eslint:
 secrets:
   extends: .download_images
   variables:
-    SECURE_BINARIES_ANALYZER_VERSION: "6"
+    SECURE_BINARIES_ANALYZER_VERSION: "7"
   rules:
     - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bsecrets\b/'
 
@@ -183,21 +183,21 @@ kics:
 gemnasium:
   extends: .download_images
   variables:
-    SECURE_BINARIES_ANALYZER_VERSION: "5"
+    SECURE_BINARIES_ANALYZER_VERSION: "6"
   rules:
     - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bgemnasium\b/'
 
 gemnasium-maven:
   extends: .download_images
   variables:
-    SECURE_BINARIES_ANALYZER_VERSION: "5"
+    SECURE_BINARIES_ANALYZER_VERSION: "6"
   rules:
     - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bgemnasium-maven\b/'
 
 gemnasium-python:
   extends: .download_images
   variables:
-    SECURE_BINARIES_ANALYZER_VERSION: "5"
+    SECURE_BINARIES_ANALYZER_VERSION: "6"
   rules:
     - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bgemnasium-python\b/'
 
@@ -219,7 +219,7 @@ license-finder:
 dast:
   extends: .download_images
   variables:
-    SECURE_BINARIES_ANALYZER_VERSION: "5"
+    SECURE_BINARIES_ANALYZER_VERSION: "6"
   rules:
     - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bdast\b/'
 
@@ -234,6 +234,6 @@ dast-runner-validation:
 api-security:
   extends: .download_images
   variables:
-    SECURE_BINARIES_ANALYZER_VERSION: "5"
+    SECURE_BINARIES_ANALYZER_VERSION: "6"
   rules:
     - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bapi-security\b/'

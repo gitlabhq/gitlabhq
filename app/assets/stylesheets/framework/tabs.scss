@@ -1,5 +1,5 @@
 .gitlab-tabs {
-  background: $gray-10;
+  @apply gl-bg-subtle;
   @apply gl-border;
   flex-wrap: nowrap;
 

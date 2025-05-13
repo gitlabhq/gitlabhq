@@ -88,11 +88,7 @@ export const initSearchApp = () => {
   setHighlightClass(query.search); // Code Highlighting
   initBlobRefSwitcher(); // Code Search Branch Picker
 
-  if (
-    searchType === SEARCH_TYPE_ZOEKT &&
-    store.getters.currentScope === SCOPE_BLOB &&
-    gon.features.zoektMultimatchFrontend
-  ) {
+  if (searchType === SEARCH_TYPE_ZOEKT && store.getters.currentScope === SCOPE_BLOB) {
     initZoektBlobResult(store);
   }
 };

@@ -34,14 +34,11 @@ branches.
 By default, only users with the Maintainer role can merge changes into a
 protected branch.
 
-**Advantages**
-
-- Fewer projects means less clutter.
-- Developers need to consider only one remote repository.
-
-**Disadvantages**
-
-- Manual setup of protected branch required for each new project
+- Advantages:
+  - Fewer projects means less clutter.
+  - Developers need to consider only one remote repository.
+- Disadvantages:
+  - Manual setup of protected branch required for each new project
 
 To set up a protected branch flow:
 
@@ -80,25 +77,10 @@ branches to their own forks.
 To get their changes into the default branch, they need to create a merge request across
 forks.
 
-**Advantages**
-
-- In an appropriately configured GitLab group, new projects automatically get
-  the required access restrictions for regular developers: fewer manual steps
-  to configure authorization for new projects.
-
-**Disadvantages**
-
-- The project need to keep their forks up to date, which requires more advanced
-  Git skills (managing multiple remotes).
-
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that might go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+- Advantages:
+  - In an appropriately configured GitLab group, new projects automatically get
+    the required access restrictions for regular developers: fewer manual steps
+    to configure authorization for new projects.
+- Disadvantages:
+  - The project need to keep their forks up to date, which requires more advanced
+    Git skills (managing multiple remotes).

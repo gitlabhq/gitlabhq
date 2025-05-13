@@ -6,14 +6,8 @@ import HelpPopover from '~/vue_shared/components/help_popover.vue';
 describe('DashboardHeader', () => {
   let wrapper;
 
-  const createComponent = ({ provide } = {}) => {
+  const createComponent = () => {
     wrapper = mount(ClickhouseHelpPopover, {
-      provide: {
-        glFeatures: {
-          ciImprovedProjectPipelineAnalytics: true,
-        },
-        ...provide,
-      },
       stubs: {
         HelpPopover,
       },
@@ -32,17 +26,5 @@ describe('DashboardHeader', () => {
     expect(findHelpPopover().findComponent(GlLink).props('href')).toBe(
       '/help/administration/analytics',
     );
-  });
-
-  it('when ci_improved_project_pipeline_analytics is disabled, it is not rendered', () => {
-    createComponent({
-      provide: {
-        glFeatures: {
-          ciImprovedProjectPipelineAnalytics: false,
-        },
-      },
-    });
-
-    expect(findHelpPopover().exists()).toBe(false);
   });
 });

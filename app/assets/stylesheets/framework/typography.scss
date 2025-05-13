@@ -25,6 +25,7 @@
 
     > code {
       font-weight: inherit;
+      @apply gl-break-all gl-whitespace-break-spaces;
     }
   }
 
@@ -378,7 +379,7 @@
     &.stripes-odd tr:nth-of-type(odd),
     &.stripes-even tr:nth-of-type(even),
     &.stripes-hover tr:hover {
-      background: $gray-10;
+      @apply gl-bg-subtle;
     }
   }
 
@@ -390,7 +391,7 @@
     @apply gl-mb-5;
     line-height: 1.6em;
     overflow-x: auto;
-    border-radius: $gl-border-radius-base;
+    @apply gl-rounded-base;
 
     // Multi-line code blocks should scroll horizontally
     code {
@@ -656,7 +657,7 @@
   }
 
   .sidebarblock {
-    background: $gray-50;
+    @apply gl-bg-strong;
     padding: $gl-padding-12 $gl-padding-24;
     border-radius: $gl-border-radius-large;
 
@@ -668,7 +669,7 @@
   .exampleblock > div:nth-of-type(1) {
     @apply gl-border;
     border-width: $gl-border-size-3;
-    border-radius: $gl-border-radius-base;
+    @apply gl-rounded-base;
     padding: $gl-padding-12 $gl-padding-24;
 
     p {
@@ -843,11 +844,11 @@ h4 {
 }
 
 .idiff.deletion {
-  background: $line-removed-dark;
+  background: var(--code-old-inline-diff-background-color, $line-removed-dark);
 }
 
 .idiff.addition {
-  background: $line-added-dark;
+  background: var(--code-new-inline-diff-background-color, $line-added-dark);
 }
 
 /**

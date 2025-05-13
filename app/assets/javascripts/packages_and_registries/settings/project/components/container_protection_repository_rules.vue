@@ -128,7 +128,7 @@ export default {
         this.protectionRulesQueryPageInfo.hasNextPage
       );
     },
-    showTopLevelLoadingIcon() {
+    showTopLevelLoading() {
       return this.isLoadingprotectionRules && !this.containsTableItems;
     },
     containerRepositoryMinimumAccessLevelOptions() {
@@ -292,6 +292,8 @@ export default {
     <crud-component
       ref="containerProtectionCrud"
       :title="$options.i18n.settingBlockTitle"
+      :description="$options.i18n.settingBlockDescription"
+      :is-loading="showTopLevelLoading"
       :toggle-text="s__('ContainerRegistry|Add protection rule')"
     >
       <template #form>
@@ -302,14 +304,6 @@ export default {
       </template>
 
       <template #default>
-        <p
-          class="gl-pb-0 gl-text-subtle"
-          :class="{ 'gl-px-5 gl-pt-4': containsTableItems }"
-          data-testid="description"
-        >
-          {{ $options.i18n.settingBlockDescription }}
-        </p>
-
         <gl-alert
           v-if="alertErrorMessage"
           class="gl-mb-5"
@@ -319,9 +313,8 @@ export default {
           {{ alertErrorMessage }}
         </gl-alert>
 
-        <gl-loading-icon v-if="showTopLevelLoadingIcon" size="sm" class="gl-my-5" />
         <gl-table
-          v-else-if="containsTableItems"
+          v-if="containsTableItems"
           class="gl-border-t-1 gl-border-t-gray-100 gl-border-t-solid"
           :items="tableItems"
           :fields="fields"
@@ -374,7 +367,7 @@ export default {
             />
           </template>
         </gl-table>
-        <p v-else class="gl-text-subtle">
+        <p v-else class="gl-mb-0 gl-text-subtle">
           {{ s__('ContainerRegistry|No container repositories are protected.') }}
         </p>
       </template>

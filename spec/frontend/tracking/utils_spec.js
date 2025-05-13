@@ -10,6 +10,7 @@ import {
   getCustomAdditionalProperties,
   getBaseAdditionalProperties,
   validateEvent,
+  isEventEligible,
 } from '~/tracking/utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { TRACKING_CONTEXT_SCHEMA } from '~/experimentation/constants';
@@ -289,5 +290,33 @@ describe('~/tracking/utils', () => {
         value: 123,
       });
     });
+  });
+
+  describe('isEventEligible', () => {
+    beforeEach(() => {
+      window.gl = {};
+    });
+
+    it('returns false if action is undefined or empty', () => {
+      expect(isEventEligible()).toBe(false);
+      expect(isEventEligible('')).toBe(false);
+    });
+
+    it.each`
+      description                                            | onlySendDuoEvents | duoEvents                            | action                     | expected
+      ${'onlySendDuoEvents is false'}                        | ${false}          | ${[]}                                | ${'any-action'}            | ${true}
+      ${'onlySendDuoEvents is undefined'}                    | ${undefined}      | ${[]}                                | ${'any-action'}            | ${true}
+      ${'action is included in duoEvents when enforced'}     | ${true}           | ${['duo-example-event', 'ai-event']} | ${'duo-example-event'}     | ${true}
+      ${'action is included in duoEvents when enforced (2)'} | ${true}           | ${['duo-example-event', 'ai-event']} | ${'ai-event'}              | ${true}
+      ${'action is missing in duoEvents when enforced'}      | ${true}           | ${['duo-example-event']}             | ${'non-duo-example-event'} | ${false}
+    `(
+      'returns $expected when $description',
+      ({ onlySendDuoEvents, duoEvents, action, expected }) => {
+        window.gl.onlySendDuoEvents = onlySendDuoEvents;
+        window.gl.duoEvents = duoEvents;
+
+        expect(isEventEligible(action)).toBe(expected);
+      },
+    );
   });
 });

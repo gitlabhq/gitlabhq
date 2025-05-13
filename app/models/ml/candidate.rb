@@ -6,7 +6,7 @@ module Ml
     include Presentable
     include AtomicInternalId
 
-    enum status: { running: 0, scheduled: 1, finished: 2, failed: 3, killed: 4 }
+    enum :status, { running: 0, scheduled: 1, finished: 2, failed: 3, killed: 4 }
 
     PACKAGE_PREFIX = 'candidate_'
 

@@ -53,7 +53,11 @@ describe('PlaceholderActions', () => {
     show: jest.fn(),
   };
 
-  const createComponent = ({ seachUsersQueryHandler = usersQueryHandler, props = {} } = {}) => {
+  const createComponent = ({
+    seachUsersQueryHandler = usersQueryHandler,
+    props = {},
+    provide = {},
+  } = {}) => {
     mockApollo = createMockApollo([
       [searchUsersQuery, seachUsersQueryHandler],
       [importSourceUsersQuery, sourceUsersQueryHandler],
@@ -78,6 +82,9 @@ describe('PlaceholderActions', () => {
       propsData: {
         ...defaultProps,
         ...props,
+      },
+      provide: {
+        ...provide,
       },
       mocks: { $toast },
     });
@@ -432,6 +439,33 @@ describe('PlaceholderActions', () => {
 
       expect(wrapper.findByText('This field is required.').exists()).toBe(true);
       expect(wrapper.findByText(reassignmentError).exists()).toBe(true);
+    });
+  });
+
+  describe('when placeholders are not allowed to be reassigned to inactive users', () => {
+    it('includes active: true in searchUsersQuery variables', () => {
+      createComponent({ provide: { allowInactivePlaceholderReassignment: false } });
+
+      expect(usersQueryHandler).toHaveBeenCalledWith({
+        active: true,
+        first: 20,
+        humans: true,
+        search: '',
+        after: '',
+      });
+    });
+  });
+
+  describe('when placeholders are allowed to be reassigned to inactive users', () => {
+    it('does not include active in searchUsersQuery variables', () => {
+      createComponent({ provide: { allowInactivePlaceholderReassignment: true } });
+
+      expect(usersQueryHandler).toHaveBeenCalledWith({
+        first: 20,
+        humans: true,
+        search: '',
+        after: '',
+      });
     });
   });
 });

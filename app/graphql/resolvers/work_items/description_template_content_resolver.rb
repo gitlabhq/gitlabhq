@@ -7,12 +7,13 @@ module Resolvers
 
       argument :template_content_input, ::Types::WorkItems::DescriptionTemplateContentInputType,
         required: true,
-        description: "Input for fetching a specific Descriptiontemplate."
+        description: "Input for fetching a specific description template."
 
       def resolve(args)
         project = Project.find(args[:template_content_input].project_id)
 
-        ::TemplateFinder.new(:issues, project, { name: args[:template_content_input].name }).execute
+        ::TemplateFinder.new(:issues, project,
+          { name: args[:template_content_input].name, source_template_project_id: project.id }).execute
 
       rescue Gitlab::Template::Finders::RepoTemplateFinder::FileNotFoundError, ActiveRecord::RecordNotFound
         nil

@@ -41,9 +41,6 @@ export default {
         const squashOptions = project?.branchRules?.nodes || [];
         return squashOptions.find((option) => option.name === this.name)?.squashOption;
       },
-      skip() {
-        return !this.glFeatures.branchRuleSquashSettings;
-      },
       error(error) {
         createAlert({ message: error });
       },
@@ -170,7 +167,7 @@ export default {
       if (this.pushAccessLevels.total > 0) {
         approvalDetails.push(this.pushAccessLevelsText);
       }
-      if (this.glFeatures.branchRuleSquashSettings && this.squashOption) {
+      if (this.squashOption) {
         approvalDetails.push(this.squashSettingText);
       }
       return approvalDetails;

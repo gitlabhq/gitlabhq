@@ -27,14 +27,7 @@ For an example of feature flags in action, see [Eliminating risk with feature fl
 For a click-through demo, see [Feature Flags](https://tech-marketing.gitlab.io/static-demos/feature-flags/feature-flags-html.html).
 <!-- Demo published on 2023-07-13 -->
 
-{{< alert type="note" >}}
-
-To contribute to the development of the GitLab product, view
-[this feature flag content](../development/feature_flags/_index.md) instead.
-
-{{< /alert >}}
-
-## How it works
+## Using feature flags
 
 GitLab offers an [Unleash](https://github.com/Unleash/unleash)-compatible API for feature flags.
 
@@ -418,7 +411,7 @@ This feature is similar to the [linked issues](../user/project/issues/related_is
 GitLab feature flags can be used in any application. Large applications might require advance configuration.
 This section explains the performance factors to help your organization to identify
 what's needed to be done before using the feature.
-Read [How it works](#how-it-works) section before diving into the details.
+For more information, see [using feature flags](#using-feature-flags).
 
 ### Maximum supported clients in application nodes
 

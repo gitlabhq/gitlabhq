@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :cell do
+RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database do
   describe 'verify all definitions' do
     subject(:definitions) { described_class.definitions }
 
@@ -162,6 +162,42 @@ RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :cell do
             end
           end
         end
+      end
+
+      it 'ensures that async_nullify does not conflict with not-null constraints' do
+        definitions
+          .filter { |definition| definition.on_delete == :async_nullify }
+          .each do |definition|
+            base_models_for(definition.from_table).each do |model|
+              nullable =
+                model.connection
+                  .select_value(<<~SQL, 'NULLABLE', [definition.from_table, definition.column])
+                    SELECT
+                      CASE
+                        WHEN a.attnotnull THEN false -- column is not-null
+                        WHEN c.contype = 'c' AND pg_get_constraintdef(c.oid) LIKE '%IS NOT NULL%' THEN false -- not-null constraint check
+                        WHEN c.contype = 'p' THEN false -- part of primary key constraint
+                        ELSE true
+                      END AS nullable
+                    FROM pg_attribute a
+                    LEFT JOIN pg_constraint c ON a.attrelid = c.conrelid AND a.attnum = ANY(c.conkey)
+                    JOIN pg_class t ON a.attrelid = t.oid
+                    JOIN pg_namespace s ON t.relnamespace = s.oid
+                    WHERE
+                      s.nspname = current_schema()
+                      AND t.relname = $1
+                      AND a.attname = $2
+                      AND a.attnum > 0 -- non-system column
+                      AND NOT a.attisdropped -- non-dropped column
+                    LIMIT 1;
+                  SQL
+
+              expect(nullable).to be_truthy, <<~ERROR
+                Column `#{definition.from_table}.#{definition.column}` is not-nullable,
+                and this conflicts with `on_delete: async_nullify`.
+              ERROR
+            end
+          end
       end
     end
   end

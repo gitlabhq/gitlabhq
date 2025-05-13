@@ -37,21 +37,21 @@ export default {
     text: s__('ProjectTemplates|Pages/Astro'),
     icon: '.template-option .icon-astro',
   },
-  gatsby: {
-    text: s__('ProjectTemplates|Pages/Gatsby'),
-    icon: '.template-option .icon-gatsby',
+  docusaurus: {
+    text: s__('ProjectTemplates|Pages/Docusaurus'),
+    icon: '.template-option .icon-gitlab_logo',
   },
   hugo: {
     text: s__('ProjectTemplates|Pages/Hugo'),
     icon: '.template-option .icon-hugo',
   },
-  pelican: {
-    text: s__('ProjectTemplates|Pages/Pelican'),
-    icon: '.template-option .icon-pelican',
-  },
   jekyll: {
     text: s__('ProjectTemplates|Pages/Jekyll'),
     icon: '.template-option .icon-jekyll',
+  },
+  nextjs: {
+    text: s__('ProjectTemplates|Pages/Next.js'),
+    icon: '.template-option .icon-nextjs',
   },
   nuxt: {
     text: s__('ProjectTemplates|Pages/Nuxt'),
@@ -61,37 +61,9 @@ export default {
     text: s__('ProjectTemplates|Pages/Plain HTML'),
     icon: '.template-option .icon-plainhtml',
   },
-  hexo: {
-    text: s__('ProjectTemplates|Pages/Hexo'),
-    icon: '.template-option .icon-hexo',
-  },
-  middleman: {
-    text: s__('ProjectTemplates|Pages/Middleman'),
-    icon: '.template-option .icon-middleman',
-  },
   gitpod_spring_petclinic: {
     text: s__('ProjectTemplates|Gitpod/Spring Petclinic'),
     icon: '.template-option .icon-gitpod_spring_petclinic',
-  },
-  nfhugo: {
-    text: s__('ProjectTemplates|Netlify/Hugo'),
-    icon: '.template-option .icon-nfhugo',
-  },
-  nfjekyll: {
-    text: s__('ProjectTemplates|Netlify/Jekyll'),
-    icon: '.template-option .icon-nfjekyll',
-  },
-  nfplainhtml: {
-    text: s__('ProjectTemplates|Netlify/Plain HTML'),
-    icon: '.template-option .icon-nfplainhtml',
-  },
-  nfgitbook: {
-    text: s__('ProjectTemplates|Netlify/GitBook'),
-    icon: '.template-option .icon-nfgitbook',
-  },
-  nfhexo: {
-    text: s__('ProjectTemplates|Netlify/Hexo'),
-    icon: '.template-option .icon-nfhexo',
   },
   salesforcedx: {
     text: s__('ProjectTemplates|SalesforceDX'),
@@ -117,10 +89,6 @@ export default {
     text: s__('ProjectTemplates|Jsonnet for Dynamic Child Pipelines'),
     icon: '.template-option .icon-gitlab_logo',
   },
-  bridgetown: {
-    text: s__('ProjectTemplates|Pages/Bridgetown'),
-    icon: '.template-option .icon-gitlab_logo',
-  },
   typo3_distribution: {
     text: s__('ProjectTemplates|TYPO3 Distribution'),
     icon: '.template-option .icon-typo3',
@@ -131,6 +99,10 @@ export default {
   },
   nist_80053r5: {
     text: s__('ProjectTemplates|NIST 800-53r5'),
+    icon: '.template-option .icon-gitlab_logo',
+  },
+  gitlab_components: {
+    text: s__('ProjectTemplates|GitLab CI/CD components'),
     icon: '.template-option .icon-gitlab_logo',
   },
 };

@@ -38,11 +38,13 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         concurrent_github_import_jobs_limit: 1000,
         concurrent_bitbucket_import_jobs_limit: 100,
         concurrent_bitbucket_server_import_jobs_limit: 100,
+        deletion_adjourned_period: 7,
         nuget_skip_metadata_url_validation: false,
         silent_admin_exports_enabled: false,
         autocomplete_users_limit: 300,
         autocomplete_users_unauthenticated_limit: 100,
         group_api_limit: 400,
+        group_archive_unarchive_api_limit: 60,
         group_invited_groups_api_limit: 60,
         group_projects_api_limit: 600,
         group_shared_groups_api_limit: 60,
@@ -77,6 +79,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         vscode_extension_marketplace: { 'enabled' => false },
         vscode_extension_marketplace_enabled?: false,
         global_search_block_anonymous_searches_enabled: false,
+        anonymous_searches_allowed: true,
         package_registry_allow_anyone_to_pull_option: true,
         package_registry_cleanup_policies_worker_capacity: 2,
         packages_cleanup_package_file_worker_capacity: 2,
@@ -93,7 +96,11 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           'session_expire_from_init' => false
         },
         reindexing_minimum_index_size: 1.gigabyte,
-        reindexing_minimum_relative_bloat_size: 0.2
+        reindexing_minimum_relative_bloat_size: 0.2,
+        top_level_group_creation_enabled: true,
+        allow_bypass_placeholder_confirmation: false,
+        ci_partitions_size_limit: 100.gigabytes,
+        ci_delete_pipelines_in_seconds_limit: ChronicDuration.parse('1 year')
       )
     end
   end
@@ -294,6 +301,10 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.not_to allow_value(nil).for(:pypi_package_requests_forwarding) }
     it { is_expected.not_to allow_value(nil).for(:lock_pypi_package_requests_forwarding) }
 
+    context 'for validating the group_settings jsonb_column`s atrributes' do
+      it { is_expected.to allow_values([true, false]).for(:top_level_group_creation_enabled) }
+    end
+
     context 'for non-null integer attributes starting from 0' do
       where(:attribute) do
         %i[
@@ -348,6 +359,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           users_api_limit_ssh_key
           users_api_limit_gpg_keys
           users_api_limit_gpg_key
+          git_push_pipeline_limit
         ]
       end
 
@@ -378,6 +390,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           autocomplete_users_limit
           autocomplete_users_unauthenticated_limit
           bulk_import_concurrent_pipeline_batch_limit
+          ci_partitions_size_limit
           code_suggestions_api_rate_limit
           concurrent_bitbucket_import_jobs_limit
           concurrent_bitbucket_server_import_jobs_limit
@@ -443,6 +456,22 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     end
 
     it { is_expected.not_to allow_value(nil).for(:math_rendering_limits_enabled) }
+
+    context 'with pipeline retention limits' do
+      it 'allows only integers' do
+        is_expected.to validate_numericality_of(:ci_delete_pipelines_in_seconds_limit)
+          .only_integer.is_greater_than_or_equal_to(1.day)
+      end
+
+      it { is_expected.not_to allow_value(nil).for(:ci_delete_pipelines_in_seconds_limit) }
+
+      describe '#ci_delete_pipelines_in_seconds_limit_human_readable=' do
+        it 'propagates values' do
+          expect { setting.ci_delete_pipelines_in_seconds_limit_human_readable = '1 month' }
+            .to change { setting.ci_delete_pipelines_in_seconds_limit }.to eq(ChronicDuration.parse('1 month'))
+        end
+      end
+    end
 
     context 'when deactivate_dormant_users is enabled' do
       before do
@@ -734,6 +763,11 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         expect(setting.errors.messages)
           .to have_key(:default_artifacts_expire_in)
       end
+    end
+
+    it 'validates deletion_adjourned_period' do
+      is_expected.to validate_numericality_of(:deletion_adjourned_period)
+        .is_greater_than(0).is_less_than_or_equal_to(90)
     end
 
     it 'validates local_markdown_version is an integer between 0 and 65535' do
@@ -2078,6 +2112,32 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     end
   end
 
+  describe '#session_expire_from_init_enabled?' do
+    subject(:session_expire_from_init_enabled) { setting.session_expire_from_init_enabled? }
+
+    before do
+      setting.session_expire_from_init = true
+    end
+
+    it { is_expected.to be true }
+
+    context 'when session_expire_from_init is set to false' do
+      before do
+        setting.session_expire_from_init = false
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when session_expire_from_init FF is disabled' do
+      before do
+        stub_feature_flags(session_expire_from_init: false)
+      end
+
+      it { is_expected.to be false }
+    end
+  end
+
   context 'for security txt content' do
     it { is_expected.to validate_length_of(:security_txt_content).is_at_most(2048) }
   end
@@ -2141,5 +2201,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     # invalid json
     it { is_expected.not_to allow_value({ reindexing_minimum_index_size: "3" }).for(:database_reindexing) }
     it { is_expected.not_to allow_value({ reindexing_minimum_relative_bloat_size: true }).for(:database_reindexing) }
+  end
+
+  describe '#ci_delete_pipelines_in_seconds_limit_human_readable_long' do
+    it { expect(setting.ci_delete_pipelines_in_seconds_limit_human_readable_long).to eq('1 year') }
   end
 end

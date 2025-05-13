@@ -802,6 +802,42 @@ entry.
 - [Remove feature flag allow_merge_request_pipelines_from_fork](https://gitlab.com/gitlab-org/gitlab/-/commit/b62f9187a57cc5ba66ce26889516cc55a425181a) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182862))
 - [Finalize migration BackfillNewAuditEventTables](https://gitlab.com/gitlab-org/gitlab/-/commit/1bc0f07ffd3af5b9fab8a0ea0b1af5f2759d25db) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181881))
 
+## 17.10.6 (2025-05-07)
+
+### Fixed (2 changes)
+
+- [Bump devfile gem to v0.4.3](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c4840d962f0d7c7b0358e9f88727a6bfabb1bf90)
+- [Only check records with encrypted data in gitlab:doctor:encryption_keys](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2552b470ad275177d3b2cd8673fecb6b46edde50)
+
+### Changed (1 change)
+
+- [Change to async_delete for ci_running_builds.runner_id](https://gitlab.com/gitlab-org/security/gitlab/-/commit/541c04acdcb4662d1da9752bc57e4f35b3132394)
+
+### Security (3 changes)
+
+- [Improve Octokit::ResponseValidation middleware and add rate limits](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3643c75ca34b0d50ddd0ada526d73c33f49b8222) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4936))
+- [Remove id attribute from OAuth form](https://gitlab.com/gitlab-org/security/gitlab/-/commit/09f38647c06a2e1ac3d84510a4f04729b3d6fe86) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4949))
+- [Use IssuePolicy for #issues_readable_by_user](https://gitlab.com/gitlab-org/security/gitlab/-/commit/777d7a4b6f5b4101d8d1d174365006f2f112ccff) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4956))
+
+## 17.10.5 (2025-04-22)
+
+### Fixed (3 changes)
+
+- [Fix 500 in Todo API when wiki page todo exists](https://gitlab.com/gitlab-org/security/gitlab/-/commit/71215f0615fad3167fb96b521b9628e11ea30a5d)
+- [Clear session cookie when browser is closed](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7c77ca404d9be7166d8ef991013394483b3f0371)
+- [Fix workspaces reconciliation to send inventory config map correctly](https://gitlab.com/gitlab-org/security/gitlab/-/commit/aba508e925aea81c4d47555254e6a657edc94863) **GitLab Enterprise Edition**
+
+### Security (4 changes)
+
+- [Add SecureHeaders middleware with the Nel header](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0e180be62768513438f86ea99f0a4a305cca46b6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4919))
+- [Restrict forwarded headers in Maven dependency proxy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/faa100503f89d08e51549e4f35f362c9945dbb6f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4930))
+- [Security unauthorized access to reading branch names](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dc2f917499f58ed9ccff23158b39528b62b71c2f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4895))
+- [Simplify detecting paragraphs for quick actions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/507e465f21b5be5297eda7a67f0ba75994df88d8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4926))
+
+### Other (1 change)
+
+- [No-op FinalizeBackfillCiRunnerMachinesPartitionedTable migration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/119891459658f48120bcef02b1b66e3e78c78865)
+
 ## 17.10.4 (2025-04-09)
 
 ### Fixed (2 changes)
@@ -1642,6 +1678,33 @@ No changes.
 - [Validate NOT NULL on issue_links sharding key](https://gitlab.com/gitlab-org/gitlab/-/commit/88d10656deca31b2af41b3fcb20f5c56aa88af7e) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180911))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/998d8028213da6bf0c3c1c08301797c8b3395c28) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180234))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/8ae69a3765cfb7561db95e43faa30cc60fac6444) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177662))
+
+## 17.9.8 (2025-05-07)
+
+### Fixed (2 changes)
+
+- [Bump devfile gem to v0.4.3](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4586145dda8558f5af93e24aaeeb7810dd8d4986)
+- [Only check records with encrypted data in gitlab:doctor:encryption_keys](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8ea60ee95fa9603bbfab42374ce4be932f80c571)
+
+### Security (3 changes)
+
+- [Improve Octokit::ResponseValidation middleware and add rate limits](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dbf91625730119709829caf0de36a1a0a85e1cca) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4937))
+- [Remove id attribute from OAuth form](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c62d3390b16495e22db7aca5ea2464d5b3c2df24) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4950))
+- [Use IssuePolicy for #issues_readable_by_user](https://gitlab.com/gitlab-org/security/gitlab/-/commit/03bdcca386dda566770614d21b099e2819b86b53) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4957))
+
+## 17.9.7 (2025-04-22)
+
+### Security (4 changes)
+
+- [Add SecureHeaders middleware with the Nel header](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5e9112ba2d6fac340e1dbfc4b0330bdcff2f82bc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4920))
+- [Restrict forwarded headers in Maven dependency proxy](https://gitlab.com/gitlab-org/security/gitlab/-/commit/24d73f3e778471c4e0153af174f2d8b44e106108) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4931))
+- [Security unauthorized access to reading branch names](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cb09987371857b97ec3cc5774b9f214c9db7c8a6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4923))
+- [Simplify detecting paragraphs for quick actions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/29d3f746b02137aaff4364473ce62f701d208e27) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4927))
+
+### Other (2 changes)
+
+- [Clean up BackfillCiRunnerMachinesPartitionedTable migration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/76d351431e07b3a695356c7b78ac16d23b180302)
+- [No-op FinalizeBackfillCiRunnerMachinesPartitionedTable migration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fb16e2ebcc6188b3f9bb0bc30e7e2b709484f3b1)
 
 ## 17.9.6 (2025-04-09)
 

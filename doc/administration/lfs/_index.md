@@ -186,7 +186,7 @@ You should use the
 ### Migrating to object storage
 
 You can migrate the LFS objects from local storage to object storage. The
-processing is done in the background and requires **no downtime**.
+processing is done in the background and requires no downtime.
 
 1. [Configure the object storage](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 1. Migrate the LFS objects:
@@ -524,7 +524,6 @@ You can see the total storage used for LFS objects for groups and projects in:
 
 - Blog post: [Getting started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
 - User documentation: [Git Large File Storage (LFS)](../../topics/git/lfs/_index.md)
-- [Git LFS developer information](../../development/lfs.md)
 
 ## Troubleshooting
 
@@ -572,6 +571,32 @@ To delete these references:
    lfs_object.lfs_objects_projects.destroy_all
    lfs_object.destroy
    ```
+
+#### Remove multiple missing LFS objects
+
+To remove references to multiple missing LFS objects at once:
+
+1. Open the [GitLab Rails Console](../operations/rails_console.md#starting-a-rails-console-session).
+1. Run the following script:
+
+   ```ruby
+   lfs_files_deleted = 0
+   LfsObject.find_each do |lfs_file|
+     next if lfs_file.file.file.exists?
+     lfs_files_deleted += 1
+     p "LFS file with ID #{lfs_file.id} and path #{lfs_file.file.path} is missing."
+     # lfs_file.lfs_objects_projects.destroy_all     # Uncomment to delete parent records
+     # lfs_file.destroy                              # Uncomment to destroy the LFS object reference
+   end
+   p "Count of identified/destroyed invalid references: #{lfs_files_deleted}"
+   ```
+
+This script identifies all missing LFS objects in the database. Before deleting any records:
+
+- It first prints information about missing files for verification.
+- The commented lines prevent accidental deletion. If you uncomment them, the script deletes the
+  identified records.
+- The script automatically prints a final count of deleted records for comparison.
 
 ### LFS commands fail on TLS v1.3 server
 

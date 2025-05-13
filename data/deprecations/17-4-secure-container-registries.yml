@@ -1,5 +1,5 @@
 - title: "Public use of Secure container registries is deprecated"
-  removal_milestone: "18.0"
+  removal_milestone: "Cancelled"
   announcement_milestone: "17.4"
   breaking_change: true
   window: 1

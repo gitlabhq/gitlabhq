@@ -37,6 +37,7 @@ module Gitlab
 
         scope :created_after, ->(time) { where('created_at > ?', time) }
 
+        scope :for_job_class, ->(job_class_name) { where(job_class_name: job_class_name) }
         scope :for_configuration, ->(
           gitlab_schema, job_class_name, table_name, column_name, job_arguments, include_compatible: false
         ) do

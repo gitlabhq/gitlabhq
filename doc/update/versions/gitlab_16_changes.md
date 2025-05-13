@@ -729,7 +729,7 @@ Specific information applies to installations using Geo:
   character limit.
 
   ```sql
-  ;; replace `delete_branch_regex` with a name of the field used in constraint
+  -- replace `delete_branch_regex` with a name of the field used in constraint
   SELECT id FROM push_rules WHERE LENGTH(delete_branch_regex) > 511;
   ```
 
@@ -872,7 +872,7 @@ Specific information applies to installations using Geo:
   - [Container registry](../../administration/packages/container_registry.md)
   - [Gitaly](../../administration/gitaly/tls_support.md)
   - [GitLab Pages](../../user/project/pages/custom_domains_ssl_tls_certification/_index.md#manual-addition-of-ssltls-certificates)
-  - [Workhorse](../../development/workhorse/configuration.md#tls-support)
+  - Workhorse
 
   You should check the size of your RSA keys (`openssl rsa -in <your-key-file> -text -noout | grep "Key:"`)
   for any of the applications above before

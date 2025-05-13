@@ -17,7 +17,7 @@ RSpec.describe "Admin creates an instance runner", :js, feature_category: :fleet
     end
 
     it 'displays a create button' do
-      expect(page).to have_link s_('Runner|New instance runner'), href: new_admin_runner_path
+      expect(page).to have_link s_('Runner|Create instance runner'), href: new_admin_runner_path
     end
 
     it_behaves_like "shows and resets runner registration token" do

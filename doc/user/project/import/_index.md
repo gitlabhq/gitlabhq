@@ -135,12 +135,11 @@ These placeholders are created on the destination instance even if
 users with the same email addresses exist on the source instance.
 Until you reassign contributions on the destination instance,
 all contributions display as associated with placeholders.
-For the behavior associated with subsequent imports to the same top-level group,
-see [placeholder user limits](#placeholder-user-limits).
 
 {{< alert type="note" >}}
 
-Ghost user contributions are handled differently. Contributions previously made by the ghost user (deleted user) on the source instance will automatically be mapped to the ghost user on the destination instance without creating placeholder users.
+Contributions from a deleted user on the source instance are
+mapped automatically to that user on the destination instance.
 
 {{< /alert >}}
 
@@ -152,8 +151,13 @@ After the import has completed, you can:
   on source and destination instances.
 - Create new users on the destination instance to reassign memberships and contributions to.
 
-When you reassign a contribution to a user on the destination instance, the user can
+When you reassign contributions to a user on the destination instance, the user can
 [accept](#accept-contribution-reassignment) or [reject](#reject-contribution-reassignment) the reassignment.
+When the user accepts the reassignment:
+
+- Contributions are reassigned. This process might take a few minutes.
+- In subsequent imports from the same source instance to the same top-level group or subgroup
+  on the destination instance, contributions are mapped automatically to the user.
 
 {{< alert type="note" >}}
 
@@ -192,8 +196,8 @@ Placeholder users do not count towards license limits.
 
 A placeholder user is created for each user on the source instance, except in the following scenarios:
 
-- You are importing a project from [Gitea](gitea.md) and the user has been deleted on Gitea before the import.
-  Contributions from these "ghost users" are mapped to the user who imported the project and not to a placeholder user.
+- You're importing a project from [Gitea](gitea.md), and the user was deleted on Gitea before the import.
+  Contributions from these users are mapped to the user who imported the project, not to a placeholder user.
 - You have exceeded your [placeholder user limit](#placeholder-user-limits). Contributions from any new users after exceeding your limit are
   mapped to a single non-functional user called `Import User`.
 - You are importing to a [personal namespace](../../namespace/_index.md#types-of-namespaces).
@@ -238,7 +242,32 @@ To view placeholder users created during imports to a top-level group and its su
 1. Select **Manage > Members**.
 1. Select the **Placeholders** tab.
 
-#### Placeholder user limits
+#### Filter for placeholder users
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/521974) in GitLab 17.11.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+Placeholder users are created on the destination instance while a group or project is imported.
+To filter for placeholder users created during imports for an entire instance:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Overview > Users**.
+1. In the search box, filter users by **type**.
+
+#### Creating placeholder users
 
 Placeholder users are created per [import source](#supported-import-sources) and per top-level group:
 
@@ -246,6 +275,38 @@ Placeholder users are created per [import source](#supported-import-sources) and
   the same placeholder users as the first import.
 - If you import the same project twice, but to a different top-level group on the destination instance, the second import
   creates new placeholder users under that top-level group.
+
+{{< alert type="note" >}}
+
+Placeholder users are associated only with the top-level group.
+When you delete a subgroup or project, their placeholder users
+no longer reference any contributions in the top-level group.
+For testing, you should use a designated top-level group.
+Deleting placeholder users is proposed in [issue 519391](https://gitlab.com/gitlab-org/gitlab/-/issues/519391)
+and [issue 537340](https://gitlab.com/gitlab-org/gitlab/-/issues/537340).
+
+{{< /alert >}}
+
+When a user [accepts the reassignment](#accept-contribution-reassignment),
+subsequent imports from the same source instance to the same top-level group or
+subgroup on the destination instance do not create placeholder users.
+Instead, contributions are mapped automatically to the user.
+
+#### Placeholder user deletion
+
+When you delete a top-level group that contains placeholder users, those placeholder users are
+automatically removed. However, placeholder users remain in the system if they are also associated
+with projects or groups outside the deleted top-level group.
+
+{{< alert type="note" >}}
+
+There is no other way to delete placeholder users, but support for improvements is proposed in
+[issue 519391](https://gitlab.com/gitlab-org/gitlab/-/issues/519391) and
+[issue 537340](https://gitlab.com/gitlab-org/gitlab/-/issues/537340).
+
+{{< /alert >}}
+
+#### Placeholder user limits
 
 If importing to GitLab.com, placeholder users are limited per top-level group on the destination instance. The limits differ depending on your plan and seat count. Placeholder users do not count towards license limits.
 
@@ -275,22 +336,22 @@ To view your current placeholder user usage and limits:
 1. Select **Settings > Usage Quotas**.
 1. Select the **Import** tab.
 
-For imports to GitLab.com, some contributions might not be created
-because these contributions are mapped to the same user.
-For example, if multiple merge request approvers are mapped to the same user,
-only the first approval is added and the others are ignored.
-These contributions include:
+You cannot determine the number of placeholder users you need in advance.
 
+When the placeholder user limit is reached, all contributions
+are assigned to a single non-functional user called `Import User`.
+Contributions assigned to `Import User` might be deduplicated,
+and some contributions might not be created during the import.
+For example, if multiple approvals from a merge request approver are assigned
+to `Import User`, only the first approval is created and the others are ignored.
+The contributions that might be deduplicated are:
+
+- Approval rules
+- Emoji reactions
+- Issue assignees
 - Memberships
 - Merge request approvals, assignees, and reviewers
-- Issue assignees
-- Emoji
 - Push, merge request, and deploy access levels
-- Approval rules
-
-You cannot determine the number of placeholder users you need in advance.
-When the placeholder user limit is reached, the import does not fail.
-Instead, all contributions are assigned to a single non-functional user called `Import User`.
 
 Every change creates a system note, which is not affected by the placeholder user limit.
 
@@ -308,9 +369,18 @@ On the destination instance, users with the Owner role for a top-level group can
   [accepts the reassignment request](#accept-contribution-reassignment).
 - Choose not to reassign contributions and memberships and [keep them assigned to placeholder users](#keep-as-placeholder).
 
+#### Reassigning contributions from multiple placeholder users
+
 All the contributions initially assigned to a single placeholder user can only be reassigned to a single active regular
 user on the destination instance. The contributions assigned to a single placeholder user cannot be split among multiple
 active regular users.
+
+You can reassign contributions from multiple placeholder users to the same user
+on the destination instance if the placeholder users are from:
+
+- Different source instances
+- The same source instance and are imported to different top-level groups on the destination instance
+
 If an assigned user becomes inactive before accepting the reassignment request,
 the pending reassignment remains linked to the user until they accept it.
 
@@ -390,16 +460,10 @@ Before a user accepts the reassignment, you can [cancel the request](#cancel-rea
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455901) in GitLab 17.10 [with a flag](../../../administration/feature_flags.md) named `importer_user_mapping_reassignment_csv`. [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/478022).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455901) in GitLab 17.10 [with a flag](../../../administration/feature_flags.md) named `importer_user_mapping_reassignment_csv`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/478022) in GitLab 18.0. Feature flag `importer_user_mapping_reassignment_csv` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 Prerequisites:
 
@@ -470,9 +534,8 @@ actual users later. Ensure all required reassignments are completed before keepi
 placeholders.
 
 You can keep contributions assigned to placeholder users either one at a time or in bulk.
-
-When applied in bulk, it affects the entire namespace and only users with the following
-**Reassignment status** values in the **Awaiting reassignment** tab:
+When you reassign contributions in bulk, the entire namespace and users with the following
+[reassignment statuses](#view-and-filter-by-reassignment-status) are affected:
 
 - `Not started`
 - `Rejected`
@@ -519,9 +582,9 @@ If a user is not acting on a reassignment request, you can prompt them again by 
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
 1. Select **Notify** in the correct row.
 
-#### View and filter and sort by reassignment status
+#### View and filter by reassignment status
 
-You can review statuses of all placeholder users for which the reassignment process haven't been completed yet:
+To view the reassignment status of all placeholder users:
 
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
@@ -530,12 +593,7 @@ You can review statuses of all placeholder users for which the reassignment proc
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
 1. See the status of each placeholder user in **Reassignment status** column.
 
-You can filter by reassignment status:
-
-1. In filter dropdown list, select **Status**.
-1. Choose one of available statuses.
-
-In the **Awaiting reassignment** tab possible statuses are:
+In the **Awaiting reassignment** tab, possible statuses are:
 
 - `Not started` - Reassignment has not started.
 - `Pending approval` - Reassignment is waiting on user approval.
@@ -543,16 +601,13 @@ In the **Awaiting reassignment** tab possible statuses are:
 - `Rejected` - Reassignment was rejected by user.
 - `Failed` - Reassignment failed.
 
-In the **Reassigned** tab possible statuses are:
+In the **Reassigned** tab, possible statuses are:
 
 - `Success` - Reassignment succeeded.
 - `Kept as placeholder` - Placeholder user was made permanent.
 
-By default, the table is sorted alphabetically by placeholder user name. You can also sort the table by reassignment
-status:
-
-1. Select on the sort dropdown list.
-1. Select **Reassignment status**.
+By default, the table is sorted alphabetically by placeholder user name.
+You can also sort the table by reassignment status.
 
 ### Accept contribution reassignment
 

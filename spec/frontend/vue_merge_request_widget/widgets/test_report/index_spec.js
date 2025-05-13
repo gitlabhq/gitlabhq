@@ -51,17 +51,12 @@ describe('Test report extension', () => {
   const findAllExtensionListItems = () => wrapper.findAllByTestId('extension-list-item');
   const findModal = () => wrapper.findComponent(TestCaseDetails);
 
-  const createComponent = (props, flagState = false) => {
+  const createComponent = (props) => {
     wrapper = mountExtended(testReportExtension, {
       propsData: {
         mr: {
           ...defaultProps,
           ...props,
-        },
-      },
-      provide: {
-        glFeatures: {
-          mrShowReportsImmediately: flagState,
         },
       },
     });
@@ -111,10 +106,10 @@ describe('Test report extension', () => {
         expect(wrapper.text()).toContain('Test summary results are being parsed');
       });
 
-      describe('with feature flag mrShowReportsImmediately enabled', () => {
+      describe('with in progress pipeline', () => {
         beforeEach(async () => {
           mockApi(HTTP_STATUS_OK, recentFailures);
-          createComponent({ isPipelineActive: true }, true);
+          createComponent({ isPipelineActive: true });
 
           await waitForPromises();
         });

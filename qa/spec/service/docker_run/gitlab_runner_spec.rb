@@ -202,9 +202,10 @@ module QA
 
     describe '#unregister!' do
       let(:run_unregister_command) { subject.send(:run_unregister_command!) }
+      let(:unregister_message) { 'Unregistering runner manager from GitLab succeeded' }
 
       before do
-        allow(subject).to receive(:shell)
+        allow(subject).to receive(:shell).and_return(unregister_message)
 
         subject.instance_eval do
           def runner_auth_token

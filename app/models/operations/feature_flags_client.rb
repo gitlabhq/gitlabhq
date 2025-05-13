@@ -6,6 +6,7 @@ module Operations
 
     DEFAULT_UNLEASH_API_VERSION = 1
     FEATURE_FLAGS_CLIENT_TOKEN_PREFIX = 'glffct-'
+    FEATURE_FLAGS_CLIENT_TOKEN_PREFIX_PREFIX_WITHOUT_INSTANCE_PREFIX = 'ffct-'
 
     self.table_name = 'operations_feature_flags_clients'
 
@@ -33,6 +34,16 @@ module Operations
       where(project: project).update_all(last_feature_flag_updated_at: Time.current)
     end
 
+    def self.prefix_for_feature_flags_client_token
+      if Feature.enabled?(:custom_prefix_for_all_token_types, :instance)
+        ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(
+          FEATURE_FLAGS_CLIENT_TOKEN_PREFIX_PREFIX_WITHOUT_INSTANCE_PREFIX
+        )
+      else
+        FEATURE_FLAGS_CLIENT_TOKEN_PREFIX
+      end
+    end
+
     def unleash_api_version
       DEFAULT_UNLEASH_API_VERSION
     end
@@ -50,7 +61,7 @@ module Operations
     end
 
     def prefix_for_feature_flags_client_token
-      FEATURE_FLAGS_CLIENT_TOKEN_PREFIX
+      self.class.prefix_for_feature_flags_client_token
     end
   end
 end

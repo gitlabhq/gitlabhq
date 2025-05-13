@@ -31,7 +31,7 @@ module Gitlab
           'SRV' => Net::DNS::SRV
         }.freeze
 
-        Address = Struct.new(:hostname, :port) do
+        Address = Data.define(:hostname, :port) do
           def to_s
             port ? "#{hostname}:#{port}" : hostname
           end
@@ -136,11 +136,19 @@ module Gitlab
           wait_time
         end
 
+        def replace_hosts(addresses)
+          if replace_hosts_enabled?
+            new_replace_hosts(addresses)
+          else
+            old_replace_hosts(addresses)
+          end
+        end
+
         # Replaces all the hosts in the load balancer with the new ones,
         # disconnecting the old connections.
         #
-        # addresses - An Array of Address structs to use for the new hosts.
-        def replace_hosts(addresses)
+        # addresses - An Array of Address Data types to use for the new hosts
+        def old_replace_hosts(addresses)
           old_hosts = load_balancer.host_list.hosts
 
           load_balancer.host_list.hosts = addresses.map do |addr|
@@ -153,6 +161,56 @@ module Gitlab
           # host/connection. While this connection will be checked in and out,
           # it won't be explicitly disconnected.
           disconnect_old_hosts(old_hosts)
+        end
+
+        # Replace the hosts in the load balancer with the new ones from the addresses provided.
+        # Reuse existing hosts where the hostname and port remain unchanged.
+        # Disconnect the old connections.
+        #
+        # addresses - An Array of Address Data types to use for the new hosts
+        def new_replace_hosts(addresses)
+          old_hosts = load_balancer.host_list.hosts
+
+          # Example:
+          # old_hosts_lookup = {
+          #     Address.new("10.0.1.30", 5432) => [host1, host2],
+          #     Address.new("10.0.1.31", 5432) => [host3]
+          # }
+          old_hosts_lookup = old_hosts.each_with_object({}) do |host, hash|
+            key = Address.new(host.host.to_s, host.port)
+            (hash[key] ||= []) << host
+          end
+
+          # Find addresses that exist in both the addresses
+          # and old_hosts_lookup collections
+          hosts_to_keep = addresses & old_hosts_lookup.keys
+
+          # Create new hosts with current kept hosts
+          new_hosts = addresses.map do |addr|
+            if hosts_to_keep.include?(addr)
+              old_hosts_lookup[addr]
+            else
+              Host.new(addr.hostname, load_balancer, port: addr.port)
+            end
+          end
+
+          # Update load balancer's host list
+          load_balancer.host_list.hosts = new_hosts
+
+          # return the elements that are in the old_host_lookup, but not in addresses.
+          addresses_to_disconnect = old_hosts_lookup.keys - addresses
+
+          # Convert addresses to disconnect back to Host objects before disconnecting them
+          hosts_to_disconnect = addresses_to_disconnect.flat_map do |addr|
+            old_hosts_lookup[addr] || []
+          end
+
+          # We must explicitly disconnect the old connections, otherwise we may
+          # leak database connections over time. For example, if a request
+          # started just before we added the new hosts it will use an old
+          # host/connection. While this connection will be checked in and out,
+          # it won't be explicitly disconnected.
+          disconnect_old_hosts(hosts_to_disconnect)
         end
 
         # Returns an Array containing:
@@ -224,6 +282,10 @@ module Gitlab
 
         private
 
+        def replace_hosts_enabled?
+          Feature.enabled?(:load_balancer_replace_hosts, Feature.current_pod)
+        end
+
         def record_type_for(type)
           RECORD_TYPES.fetch(type) do
             raise(ArgumentError, "Unsupported record type: #{type}")
@@ -242,7 +304,7 @@ module Gitlab
         end
 
         def addresses_from_a_record(resources)
-          resources.map { |r| Address.new(r.address.to_s) }
+          resources.map { |r| Address.new(r.address.to_s, nil) }
         end
 
         def sampler

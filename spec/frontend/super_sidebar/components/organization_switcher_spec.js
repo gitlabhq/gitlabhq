@@ -1,4 +1,4 @@
-import { GlAvatar, GlDisclosureDropdown, GlLoadingIcon, GlLink } from '@gitlab/ui';
+import { GlAvatar, GlDisclosureDropdown, GlLoadingIcon } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
 
@@ -184,7 +184,7 @@ describe('OrganizationSwitcher', () => {
         expect(wrapper.text()).toContain(
           'Switching between organizations is not currently supported.',
         );
-        expect(wrapper.findComponent(GlLink).attributes('href')).toBe(
+        expect(wrapper.findByTestId('switching-docs-link').attributes('href')).toBe(
           helpPagePath('user/organization/_index.md', {
             anchor: 'switch-organizations',
           }),

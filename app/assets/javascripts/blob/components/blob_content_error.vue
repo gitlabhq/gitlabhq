@@ -70,7 +70,6 @@ export default {
               <gl-link
                 :href="option.href"
                 :target="option.target"
-                :data-test-id="`option-${option.id}`"
                 @click="option.event && $emit(option.event)"
                 >{{ option.text }}</gl-link
               >

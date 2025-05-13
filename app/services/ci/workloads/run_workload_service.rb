@@ -11,25 +11,40 @@ module Ci
     # In the future it's likely that this class will persist additional models and the concept of a `Workload` may
     # become first class. For that reason we abstract users from the underlying `Ci::Pipeline` semantics.
     class RunWorkloadService
-      def initialize(project:, current_user:, source:, workload:, create_branch: false)
+      def initialize(project:, current_user:, source:, workload_definition:, create_branch: false)
         @project = project
         @current_user = current_user
         @source = source
-        @workload = workload
+        @workload_definition = workload_definition
         @create_branch = create_branch
       end
 
       def execute
         validate_source!
-        ref = @create_branch ? create_repository_branch : default_branch
+        @ref = @create_branch ? create_repository_branch : default_branch
 
-        service = ::Ci::CreatePipelineService.new(@project, @current_user, ref: ref)
-        service.execute(
+        @workload_definition.add_variable(:CI_WORKLOAD_REF, @ref)
+        service = ::Ci::CreatePipelineService.new(@project, @current_user, ref: @ref)
+        response = service.execute(
           @source,
           ignore_skip_ci: true,
           save_on_errors: false,
-          content: content
+          content: ci_job_yaml
         )
+
+        pipeline = response.payload
+
+        unless pipeline.created_successfully?
+          return ServiceResponse.error(message: "Error in creating workload: #{pipeline.full_error_messages}")
+        end
+
+        workload = ::Ci::Workloads::Workload.create!(
+          project_id: @project.id,
+          pipeline: pipeline,
+          branch_name: @ref
+        )
+
+        ServiceResponse.success(payload: workload)
       end
 
       private
@@ -44,8 +59,8 @@ module Ci
         branch_name
       end
 
-      def content
-        { workload: @workload.job }.deep_stringify_keys.to_yaml
+      def ci_job_yaml
+        { workload: @workload_definition.to_job_hash }.deep_stringify_keys.to_yaml
       end
 
       def default_branch

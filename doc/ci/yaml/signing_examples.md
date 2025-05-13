@@ -36,9 +36,9 @@ Prerequisites:
 
 - You must use a version of Cosign that is `>= 2.0.1`.
 
-**Limitations**
+**Known issues**
 
-- The `id_tokens` portion of the CI/CD configuration file must be located in the project that is being built and signed. AutoDevOps, CI files included from another repository, and child pipelines are not supported. Work to remove this limitation is being tracked in [issue 411317](https://gitlab.com/gitlab-org/gitlab/-/issues/411317).
+- The `id_tokens` portion of the CI/CD configuration file must be located in the project that is being built and signed. AutoDevOps, CI files included from another repository, and child pipelines are not supported. Work to remove this limitation is being tracked in [epic 11637](https://gitlab.com/groups/gitlab-org/-/epics/11637).
 
 **Best practices**:
 

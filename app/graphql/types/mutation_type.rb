@@ -87,7 +87,6 @@ module Types
     mount_mutation Mutations::Issues::Move
     mount_mutation Mutations::Issues::LinkAlerts
     mount_mutation Mutations::Issues::UnlinkAlert
-    mount_mutation Mutations::Issues::BulkUpdate, experiment: { milestone: '15.9' }
     mount_mutation Mutations::Labels::Create
     mount_mutation Mutations::Members::Groups::BulkUpdate
     mount_mutation Mutations::Members::Projects::BulkUpdate
@@ -153,6 +152,7 @@ module Types
     mount_mutation Mutations::Todos::SnoozeMany, experiment: { milestone: '17.9' }
     mount_mutation Mutations::Todos::UnsnoozeMany, experiment: { milestone: '17.9' }
     mount_mutation Mutations::Todos::DeleteMany, experiment: { milestone: '17.11' }
+    mount_mutation Mutations::Todos::DeleteAllDone, experiment: { milestone: '17.11' }
     mount_mutation Mutations::Snippets::Destroy
     mount_mutation Mutations::Snippets::Update
     mount_mutation Mutations::Snippets::Create
@@ -230,7 +230,7 @@ module Types
     mount_mutation Mutations::WorkItems::CreateFromTask, experiment: { milestone: '15.1' }
     mount_mutation Mutations::WorkItems::Delete, experiment: { milestone: '15.1' }
     mount_mutation Mutations::WorkItems::Update, experiment: { milestone: '15.1' }
-    mount_mutation Mutations::WorkItems::Export, experiment: { milestone: '15.10' }
+    mount_mutation Mutations::WorkItems::CSV::Export, experiment: { milestone: '15.10' }
     mount_mutation Mutations::WorkItems::Convert, experiment: { milestone: '15.11' }
     mount_mutation Mutations::WorkItems::LinkedItems::Add, experiment: { milestone: '16.3' }
     mount_mutation Mutations::WorkItems::LinkedItems::Remove, experiment: { milestone: '16.3' }

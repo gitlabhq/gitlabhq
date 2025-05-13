@@ -3,6 +3,7 @@ package dependencyproxy
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -185,9 +186,14 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 
 func handleFetchError(w http.ResponseWriter, r *http.Request, err error) {
 	status := http.StatusBadGateway
-	if os.IsTimeout(err) {
+	var allowedIPError *transport.AllowedIPError
+
+	if errors.As(err, &allowedIPError) {
+		status = http.StatusForbidden
+	} else if os.IsTimeout(err) {
 		status = http.StatusGatewayTimeout
 	}
+
 	fail.Request(w, r, err, fail.WithStatus(status))
 }
 

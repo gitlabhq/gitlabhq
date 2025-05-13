@@ -61,7 +61,7 @@ describe('HeaderArea', () => {
         historyLink: '/history',
         refType: 'branch',
         projectId: '123',
-        refSelectorValue: 'refs/heads/main',
+        currentRef: 'main',
         ...props,
       },
       stubs: {
@@ -202,26 +202,35 @@ describe('HeaderArea', () => {
         webIdeUrl: headerAppInjected.webIdeUrl,
         gitpodUrl: headerAppInjected.gitpodUrl,
         showWebIdeButton: headerAppInjected.showWebIdeButton,
-        showGitpodButton: headerAppInjected.isGitpodEnabledForInstance,
+        isGitpodEnabledForInstance: headerAppInjected.isGitpodEnabledForInstance,
+        isGitpodEnabledForUser: headerAppInjected.isGitpodEnabledForUser,
         currentPath: defaultMockRoute.params.path,
         directoryDownloadLinks: headerAppInjected.downloadLinks,
       });
     });
 
     describe('RepositoryOverflowMenu', () => {
-      it('does not render RepositoryOverflowMenu component on default ref', () => {
-        expect(findRepositoryOverflowMenu().exists()).toBe(false);
+      it('renders RepositoryOverflowMenu component with correct props when on default branch', () => {
+        wrapper = createComponent({
+          route: { name: 'treePathDecoded' },
+        });
+        expect(findRepositoryOverflowMenu().props()).toStrictEqual({
+          currentRef: 'main',
+          fullPath: 'test/project',
+          path: 'index.js',
+        });
       });
 
-      it('renders RepositoryOverflowMenu component with correct props when on ref different than default branch', () => {
+      it('renders RepositoryOverflowMenu component with correct props when on non-default branch', () => {
         wrapper = createComponent({
           route: { name: 'treePathDecoded' },
           provided: { comparePath: 'test/project/compare' },
         });
-        expect(findRepositoryOverflowMenu().exists()).toBe(true);
-        expect(findRepositoryOverflowMenu().props('comparePath')).toBe(
-          headerAppInjected.comparePath,
-        );
+        expect(findRepositoryOverflowMenu().props()).toStrictEqual({
+          currentRef: 'main',
+          fullPath: 'test/project',
+          path: 'index.js',
+        });
       });
     });
   });
@@ -252,30 +261,74 @@ describe('HeaderArea', () => {
   });
 
   describe('when rendered for readme project overview', () => {
-    beforeEach(() => {
-      wrapper = createComponent({
-        route: { name: 'treePathDecoded' },
-        provided: { isReadmeView: true },
+    describe('when directory_code_dropdown_updates flag is false', () => {
+      beforeEach(() => {
+        wrapper = createComponent({
+          route: { name: 'treePathDecoded' },
+          provided: { isReadmeView: true },
+        });
+      });
+
+      it('does not render directory name and icon', () => {
+        expect(findPageHeading().exists()).toBe(false);
+        expect(findFileIcon().exists()).toBe(false);
+      });
+
+      it('does not render RefSelector or Breadcrumbs', () => {
+        expect(findRefSelector().exists()).toBe(false);
+        expect(findBreadcrumbs().exists()).toBe(false);
+      });
+
+      it('does not render AddToTree component', () => {
+        expect(findAddToTreeDropdown().exists()).toBe(false);
+      });
+
+      it('does not render CodeDropdown and SourceCodeDownloadDropdown', () => {
+        expect(findCodeDropdown().exists()).toBe(false);
+        expect(findSourceCodeDownloadDropdown().exists()).toBe(false);
+      });
+
+      it('does not render CompactCodeDropdown', () => {
+        expect(findCompactCodeDropdown().exists()).toBe(false);
       });
     });
 
-    it('does not render directory name and icon', () => {
-      expect(findPageHeading().exists()).toBe(false);
-      expect(findFileIcon().exists()).toBe(false);
-    });
+    describe('when directory_code_dropdown_updates flag is true', () => {
+      beforeEach(() => {
+        wrapper = createComponent({
+          route: { name: 'treePathDecoded' },
+          provided: {
+            glFeatures: {
+              directoryCodeDropdownUpdates: true,
+            },
+            newWorkspacePath: '/workspaces/new',
+            isReadmeView: true,
+          },
+        });
+      });
 
-    it('does not render RefSelector or Breadcrumbs', () => {
-      expect(findRefSelector().exists()).toBe(false);
-      expect(findBreadcrumbs().exists()).toBe(false);
-    });
+      it('does render CompactCodeDropdown', () => {
+        expect(findCompactCodeDropdown().exists()).toBe(true);
+      });
 
-    it('does not render AddToTree component', () => {
-      expect(findAddToTreeDropdown().exists()).toBe(false);
-    });
+      it('does not render directory name and icon', () => {
+        expect(findPageHeading().exists()).toBe(false);
+        expect(findFileIcon().exists()).toBe(false);
+      });
 
-    it('does not render CodeDropdown and SourceCodeDownloadDropdown', () => {
-      expect(findCodeDropdown().exists()).toBe(false);
-      expect(findSourceCodeDownloadDropdown().exists()).toBe(false);
+      it('does not render RefSelector or Breadcrumbs', () => {
+        expect(findRefSelector().exists()).toBe(false);
+        expect(findBreadcrumbs().exists()).toBe(false);
+      });
+
+      it('does not render AddToTree component', () => {
+        expect(findAddToTreeDropdown().exists()).toBe(false);
+      });
+
+      it('does not render CodeDropdown and SourceCodeDownloadDropdown', () => {
+        expect(findCodeDropdown().exists()).toBe(false);
+        expect(findSourceCodeDownloadDropdown().exists()).toBe(false);
+      });
     });
   });
 

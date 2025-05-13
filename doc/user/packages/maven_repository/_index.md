@@ -28,7 +28,7 @@ Supported clients:
 
 ### Authenticate to the package registry
 
-You need a token to publish a package. There are different tokens available depending on what you're trying to achieve. For more information, review the [guidance on tokens](../package_registry/_index.md#authenticate-with-the-registry).
+You need a token to publish a package. There are different tokens available depending on what you're trying to achieve. For more information, review the [guidance on tokens](../package_registry/supported_functionality.md#authenticate-with-the-registry).
 
 Create a token and save it to use later in the process.
 
@@ -314,7 +314,7 @@ For the instance-level endpoint, ensure the relevant section of your `pom.xml` i
 
 | Endpoint | Endpoint URL for `pom.xml`                                               | Additional information |
 |----------|--------------------------------------------------------------------------|------------------------|
-| Project  | `https://gitlab.example.com/api/v4/projects/<project_id>/packages/maven` | Replace `gitlab.example.com` with your domain name. Replace `<project_id>` with your project ID, found on your [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id). |
+| Project  | `https://gitlab.example.com/api/v4/projects/<project_id>/packages/maven` | Replace `gitlab.example.com` with your domain name. Replace `<project_id>` with your project ID, found on your [project overview page](../../project/working_with_projects.md#find-the-project-id). |
 | Group    | `https://gitlab.example.com/api/v4/groups/<group_id>/-/packages/maven`   | Replace `gitlab.example.com` with your domain name. Replace `<group_id>` with your group ID, found on your group's homepage. |
 | Instance | `https://gitlab.example.com/api/v4/packages/maven`                       | Replace `gitlab.example.com` with your domain name. |
 

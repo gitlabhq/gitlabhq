@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Diagrams.net integration
 ---
 
-In [wikis](../../user/markdown.md#diagramsnet-editor) you can use the diagrams.net editor to
+In [wikis](../../user/project/wiki/markdown.md#diagramsnet-editor) you can use the diagrams.net editor to
 create diagrams. The diagrams.net editor runs as a separate web service outside the GitLab
 application and GitLab instance administrators can
 [configure the URL](../../administration/integration/diagrams_net.md) that points to this service.

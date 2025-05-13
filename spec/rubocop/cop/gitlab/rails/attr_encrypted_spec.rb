@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Gitlab::Rails::AttrEncrypted, feature_category: :sh
         ^^^^^^^^^^^^^^^^^^^^^^^ Use `encrypts` over deprecated `attr_encrypted` to encrypt a column. See https://docs.gitlab.com/development/migration_style_guide/#encrypted-attributes
           mode: :per_attribute_iv_and_salt,
           insecure_mode: true,
-          key: Settings.attr_encrypted_db_key_base,
+          key: :db_key_base,
           algorithm: 'aes-256-cbc'
       end
     RUBY

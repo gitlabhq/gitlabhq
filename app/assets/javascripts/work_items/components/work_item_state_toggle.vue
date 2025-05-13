@@ -19,6 +19,7 @@ import {
   TRACKING_CATEGORY_SHOW,
   LINKED_CATEGORIES_MAP,
   i18n,
+  STATE_CLOSED,
 } from '../constants';
 import { findHierarchyWidget, findLinkedItemsWidget } from '../utils';
 import { updateCountsForParent } from '../graphql/cache_utils';
@@ -125,7 +126,10 @@ export default {
         const linkedWorkItems = findLinkedItemsWidget(workspace.workItem)?.linkedItems?.nodes || [];
 
         return linkedWorkItems.filter((item) => {
-          return item.linkType === LINKED_CATEGORIES_MAP.IS_BLOCKED_BY;
+          return (
+            item.linkType === LINKED_CATEGORIES_MAP.IS_BLOCKED_BY &&
+            item.workItemState !== STATE_CLOSED
+          );
         });
       },
       error(e) {
@@ -180,6 +184,7 @@ export default {
     toggleWorkItemStateIcon() {
       return this.isWorkItemOpen ? 'issue-close' : 'issue-open-m';
     },
+    // eslint-disable-next-line vue/no-unused-properties
     tracking() {
       return {
         category: TRACKING_CATEGORY_SHOW,

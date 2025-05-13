@@ -67,9 +67,6 @@ contains only the project-specific endpoint, Go queries only that endpoint.
 For details about how to set Go environment variables, see
 [Set environment variables](#set-environment-variables).
 
-For details about configuring `GOPROXY`, see
-[Dependency Management in Go > Proxies](../../../development/go_guide/dependencies.md#proxies).
-
 ## Fetch modules from private projects
 
 `go` doesn't support transmitting credentials over insecure connections. The
@@ -119,9 +116,7 @@ of private modules, and so it cannot provide a checksum.
 
 To resolve this issue, set `GONOSUMDB` to a comma-separated list of private
 projects. For details about setting Go environment variables, see
-[Set environment variables](#set-environment-variables). For more details about
-disabling this feature of Go, see
-[Dependency Management in Go > Checksums](../../../development/go_guide/dependencies.md#checksums).
+[Set environment variables](#set-environment-variables).
 
 For example, to disable checksum queries for `gitlab.com/my/project`, set
 `GONOSUMDB`:
@@ -135,7 +130,6 @@ go env -w GONOSUMDB='gitlab.com/my/project,<previous value>'
 If you're unfamiliar with managing dependencies in Go, or Go in general, review
 the following documentation:
 
-- [Dependency Management in Go](../../../development/go_guide/dependencies.md)
 - [Go Modules Reference](https://go.dev/ref/mod)
 - [Documentation (`golang.org`)](https://go.dev/doc/)
 - [Learn (`go.dev/learn`)](https://go.dev/learn/)
@@ -162,6 +156,3 @@ files. Module versions are defined by version control system (VCS) tags.
 
 To publish a module, push `go.mod` and source files to a VCS repository. To
 publish a module version, push a VCS tag.
-
-See [Dependency Management in Go > Versioning](../../../development/go_guide/dependencies.md#versioning)
-for more details about what constitutes a valid module or module version.

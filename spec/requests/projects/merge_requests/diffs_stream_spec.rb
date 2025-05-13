@@ -44,8 +44,10 @@ RSpec.describe 'Merge Requests Diffs stream', feature_category: :code_review_wor
     context 'when accessed' do
       it 'passes hash of options to #diffs_for_streaming' do
         expect_next_instance_of(::Projects::MergeRequests::DiffsStreamController) do |controller|
+          context = controller.view_context
+          allow(controller).to receive(:view_context).and_return(context)
           expect(controller).to receive(:stream_diff_files)
-            .with(diff_options_hash)
+            .with(diff_options_hash, context)
             .and_call_original
         end
 

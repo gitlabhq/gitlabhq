@@ -6,8 +6,10 @@ import {
   updateCacheAfterRemovingAwardEmojiFromNote,
 } from '~/work_items/graphql/cache_utils';
 import workItemNotesByIidQuery from '../graphql/notes/work_item_notes_by_iid.query.graphql';
+import workItemAwardEmojiQuery from '../graphql/award_emoji.query.graphql';
 import addAwardEmojiMutation from '../graphql/notes/work_item_note_add_award_emoji.mutation.graphql';
 import removeAwardEmojiMutation from '../graphql/notes/work_item_note_remove_award_emoji.mutation.graphql';
+import { findAwardEmojiWidget } from '../utils';
 
 function awardedByCurrentUser(note) {
   return (note.awardEmoji?.nodes ?? [])
@@ -66,3 +68,18 @@ export function optimisticAwardUpdate({ note, name, fullPath, workItemIid }) {
     );
   };
 }
+
+export const getNewCustomEmojiPath = ({ cache, fullPath, workItemIid }) => {
+  const query = {
+    query: workItemAwardEmojiQuery,
+    variables: { fullPath, iid: workItemIid, pageSize: 1 },
+  };
+
+  const sourceData = cache.readQuery(query);
+
+  if (!sourceData?.workspace?.workItem) {
+    return '';
+  }
+
+  return findAwardEmojiWidget(sourceData.workspace.workItem)?.newCustomEmojiPath || '';
+};

@@ -10,6 +10,7 @@ query projectWorkItemAwardEmojis($fullPath: ID!, $iid: String!, $after: String, 
       widgets {
         ... on WorkItemWidgetAwardEmoji {
           type
+          newCustomEmojiPath
           awardEmoji(first: $pageSize, after: $after) {
             pageInfo {
               ...PageInfo

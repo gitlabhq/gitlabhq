@@ -29,7 +29,7 @@ You can follow this tutorial to familiarize yourself with the contribution proce
    members and the wider community are ready and waiting to answer your questions and offer support
    for making contributions.
 1. Once your community forks access request is approved you can start using [GitLab Duo](../../../user/gitlab_duo/_index.md),
-   our AI-powered features including Code Suggestions, Chat, Root Cause Analysis, and more.
+   our AI-native features including Code Suggestions, Chat, Root Cause Analysis, and more.
 
 ## Choose how you want to contribute
 

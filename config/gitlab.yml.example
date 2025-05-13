@@ -106,6 +106,7 @@ production: &base
     email_from: example@example.com
     email_display_name: GitLab
     email_reply_to: noreply@example.com
+    email_subject_prefix: ''
     email_subject_suffix: ''
     email_smime:
       # Uncomment and set to true if you need to enable email S/MIME signing (default: false)
@@ -173,6 +174,10 @@ production: &base
     ## Webhook settings
     # Number of seconds to wait for HTTP response after sending webhook HTTP POST request (default: 10)
     # webhook_timeout: 10
+
+    ## Session cookie settings
+    # signed_cookie_salt: 'signed cookie'
+    # authenticated_encrypted_cookie_salt: 'authenticated encrypted cookie'
 
     ## HTTP client settings
     http_client:
@@ -1147,6 +1152,7 @@ production: &base
       #     label: 'Our SAML Provider',
       #     groups_attribute: 'Groups',
       #     external_groups: ['Contractors', 'Freelancers'],
+      #     duo_add_on_groups: ['Developers', 'Freelancers'],
       #     args: {
       #             assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
       #             idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
@@ -1238,7 +1244,7 @@ production: &base
     # keep_time: 604800   # default: 0 (forever) (in seconds)
     # pg_schema: public     # default: nil, it means that all schemas will be backed up
     # upload:
-    #   # Fog storage connection settings, see https://fog.io/storage/ .
+    #   # Fog storage connection settings, see https://fog.github.io/storage/ .
     #   connection:
     #     provider: AWS
     #     region: eu-west-1

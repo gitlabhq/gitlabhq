@@ -3,6 +3,9 @@ import IndexPage from '~/repository/pages/index.vue';
 import TreePage from '~/repository/pages/tree.vue';
 import createRouter from '~/repository/router';
 import { getMatchedComponents } from '~/lib/utils/vue3compat/vue_router';
+import { setTitle } from '~/repository/utils/title';
+
+jest.mock('~/repository/utils/title');
 
 describe('Repository router spec', () => {
   it.each`
@@ -50,5 +53,25 @@ describe('Repository router spec', () => {
         expect(window.gl.webIDEPath).toBe(expectedPath);
       },
     );
+  });
+
+  describe('Setting page title', () => {
+    const projectPath = 'group/project';
+    const projectName = 'Project Name';
+    const branch = 'main';
+
+    it.each`
+      path                         | expectedPath
+      ${'/'}                       | ${'/'}
+      ${'/tree/main'}              | ${'/'}
+      ${'/-/tree/main/app/assets'} | ${'app/assets'}
+      ${'/-/blob/main/file.md'}    | ${'file.md'}
+    `('sets title with correct parameters for $path', async ({ path, expectedPath }) => {
+      const router = createRouter(projectPath, branch, projectName);
+
+      await router.push(path);
+
+      expect(setTitle).toHaveBeenCalledWith(expectedPath, branch, projectName);
+    });
   });
 });

@@ -76,7 +76,7 @@ RSpec.describe 'dev rake tasks' do
 
   describe 'terminate_all_connections' do
     before do
-      allow(ActiveRecord::Base).to receive(:clear_all_connections!)
+      allow(ActiveRecord::Base.connection_handler).to receive(:clear_all_connections!)
     end
 
     let(:connections) do
@@ -104,7 +104,7 @@ RSpec.describe 'dev rake tasks' do
     it 'terminates all connections' do
       expect_connections_to_be_terminated
 
-      expect(ActiveRecord::Base).to receive(:clear_all_connections!)
+      expect(ActiveRecord::Base.connection_handler).to receive(:clear_all_connections!)
 
       terminate_task
     end
@@ -113,7 +113,7 @@ RSpec.describe 'dev rake tasks' do
       it 'does not terminate connections' do
         expect(Rails.env).to receive(:production?).and_return(true)
         expect_connections_not_to_be_terminated
-        expect(ActiveRecord::Base).not_to receive(:clear_all_connections!)
+        expect(ActiveRecord::Base.connection_handler).not_to receive(:clear_all_connections!)
 
         terminate_task
       end

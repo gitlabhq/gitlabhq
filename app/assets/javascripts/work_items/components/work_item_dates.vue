@@ -2,12 +2,12 @@
 import { GlDatepicker, GlFormGroup } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { findStartAndDueDateWidget, newWorkItemId } from '~/work_items/utils';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import { formatDate, newDate, toISODateFormat } from '~/lib/utils/datetime_utility';
 import {
   I18N_WORK_ITEM_ERROR_UPDATING,
-  sprintfWorkItem,
+  NAME_TO_TEXT_LOWERCASE_MAP,
   TRACKING_CATEGORY_SHOW,
   WIDGET_TYPE_START_AND_DUE_DATE,
 } from '../constants';
@@ -215,7 +215,9 @@ export default {
           }
         })
         .catch((error) => {
-          const message = sprintfWorkItem(I18N_WORK_ITEM_ERROR_UPDATING, this.workItemType);
+          const message = sprintf(I18N_WORK_ITEM_ERROR_UPDATING, {
+            workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
+          });
           this.$emit('error', message);
           Sentry.captureException(error);
         })
@@ -274,7 +276,7 @@ export default {
           />
         </gl-form-group>
         <gl-form-group
-          class="gl-m-0 gl-flex gl-items-center gl-gap-3"
+          class="gl-m-0 gl-flex gl-flex-wrap gl-items-center gl-gap-3"
           :label="s__('WorkItem|Due')"
           :label-for="$options.dueDateInputId"
           label-class="!gl-font-normal !gl-pb-0 gl-min-w-7 sm:gl-min-w-fit md:gl-min-w-7 gl-break-words"

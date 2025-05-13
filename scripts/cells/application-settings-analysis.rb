@@ -149,6 +149,7 @@ class ApplicationSettingsAnalysis
       gitpod_enabled
       globally_allowed_ips
       gravatar_enabled
+      group_settings
       health_check_access_token
       help_page_documentation_base_url
       help_page_support_url

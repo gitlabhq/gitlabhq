@@ -177,6 +177,22 @@ RSpec.describe RuboCop::Cop::Gitlab::FeatureFlagKeyDynamic, feature_category: :s
     end
   end
 
+  context 'when calling ::Gitlab::AiGateway.push_feature_flag' do
+    it 'registers an offense when using a variable as the first argument' do
+      expect_offense(<<~RUBY)
+        flag_name = :some_flag
+        ::Gitlab::AiGateway.push_feature_flag(flag_name)
+                                              ^^^^^^^^^ First argument to `::Gitlab::AiGateway.push_feature_flag` must be a literal symbol.
+      RUBY
+    end
+
+    it 'does not register an offense when using a literal symbol' do
+      expect_no_offenses(<<~RUBY)
+        ::Gitlab::AiGateway.push_feature_flag(:some_flag)
+      RUBY
+    end
+  end
+
   context 'with non-Feature methods' do
     it 'does not register an offense for methods on other objects' do
       expect_no_offenses(<<~RUBY)

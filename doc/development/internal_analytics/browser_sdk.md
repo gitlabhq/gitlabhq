@@ -215,9 +215,9 @@ try {
 } catch (error) {
   glClient.trackError({
     message: error.message, // "This is a custom error"
-    filename: error.fileName || 'unknown', // The file in which the error occurred (e.g., "index.html")
-    lineno: error.lineNumber || 0, // The line number where the error occurred (e.g., 2)
-    colno: error.columnNumber || 0, // The column number where the error occurred (e.g., 6)
+    filename: error.fileName || 'unknown', // The file in which the error occurred (for example, "index.html")
+    lineno: error.lineNumber || 0, // The line number where the error occurred (for example, 2)
+    colno: error.columnNumber || 0, // The column number where the error occurred (for example, 6)
     error: error, // The Error object itself
   });
 }

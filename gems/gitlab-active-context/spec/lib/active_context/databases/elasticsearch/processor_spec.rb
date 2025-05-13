@@ -3,19 +3,31 @@
 require 'spec_helper'
 
 RSpec.describe ActiveContext::Databases::Elasticsearch::Processor do
+  let(:collection) { double('collection', current_search_embedding_version: search_embedding_version) }
+  let(:user) { double('user') }
+  let(:search_embedding_version) { { field: 'preset_field', model: model } }
+  let(:generated_embedding) { [0.5, 0.6] }
+  let(:model) { 'some-model' }
+
   it_behaves_like 'a query processor'
 
   describe '#process' do
-    subject(:processor) { described_class.new }
+    subject(:processor) { described_class.new(collection: collection, user: user) }
 
     let(:simple_filter) { ActiveContext::Query.filter(status: 'active') }
     let(:simple_prefix) { ActiveContext::Query.prefix(name: 'test') }
+    let(:simple_all) { ActiveContext::Query.all }
     let(:simple_knn) do
       ActiveContext::Query.knn(
         target: 'embedding',
         vector: [0.1, 0.2],
         limit: 5
       )
+    end
+
+    before do
+      allow(ActiveContext::Embeddings).to receive(:generate_embeddings)
+        .with(anything, model: model, user: user).and_return([generated_embedding])
     end
 
     context 'with filter queries' do
@@ -237,6 +249,24 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Processor do
         )
       end
 
+      it 'handles content-based KNN queries' do
+        content_knn = ActiveContext::Query.knn(
+          content: 'Sample text for embedding',
+          limit: 5
+        )
+
+        result = processor.process(content_knn)
+
+        expect(result).to eq(
+          knn: {
+            field: 'preset_field',
+            query_vector: generated_embedding,
+            k: 5,
+            num_candidates: 50
+          }
+        )
+      end
+
       it 'applies filters inside the KNN query' do
         query = simple_filter.knn(
           target: 'embedding',
@@ -376,6 +406,16 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Processor do
             num_candidates: 50
           },
           size: 10
+        )
+      end
+    end
+
+    context 'with all queries' do
+      it 'creates a match_all query' do
+        result = processor.process(simple_all)
+
+        expect(result).to eq(
+          query: { match_all: {} }
         )
       end
     end

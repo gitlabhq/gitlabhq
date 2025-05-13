@@ -22,6 +22,11 @@ export default {
       required: false,
       default: false,
     },
+    size: {
+      type: String,
+      default: 'medium',
+      required: false,
+    },
   },
   emits: ['deleted'],
   computed: {
@@ -33,7 +38,7 @@ export default {
     },
     icon() {
       if (this.compact) {
-        return 'close';
+        return 'remove';
       }
       return '';
     },
@@ -72,7 +77,8 @@ export default {
       <gl-button
         v-gl-tooltip="loading ? '' : tooltip"
         :aria-label="ariaLabel"
-        :icon="icon"
+        :icon="loading ? '' : icon"
+        :size="size"
         :class="buttonClass"
         :loading="loading"
         variant="danger"

@@ -94,6 +94,7 @@ module QA
           Page::Group::Members.perform do |members_page|
             members_page.click_tab("Placeholders")
             members_page.wait_until_reassignment_completed!
+            members_page.refresh
             members_page.click_tab("Reassigned")
 
             aggregate_failures do

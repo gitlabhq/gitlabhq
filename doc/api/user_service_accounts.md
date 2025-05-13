@@ -12,7 +12,8 @@ title: Service account users API
 
 {{< /details >}}
 
-Use this API to interact with service accounts. For more information, see [Service accounts](../user/profile/service_accounts.md).
+Use this API to interact with service accounts. Service accounts are a specific type of user, and many attributes of a service account can also be managed through the 
+[Users API](users.md) by administrators on GitLab Self Self-Managed instances. 
 
 ## List all service account users
 

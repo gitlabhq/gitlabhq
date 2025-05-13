@@ -27,8 +27,8 @@ class ContainerRepository < ApplicationRecord
   validates :failed_deletion_count, presence: true
   validates :failed_deletion_count, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: MAX_DELETION_FAILURES }
 
-  enum status: { delete_scheduled: 0, delete_failed: 1, delete_ongoing: 2 }
-  enum expiration_policy_cleanup_status: { cleanup_unscheduled: 0, cleanup_scheduled: 1, cleanup_unfinished: 2, cleanup_ongoing: 3 }
+  enum :status, { delete_scheduled: 0, delete_failed: 1, delete_ongoing: 2 }
+  enum :expiration_policy_cleanup_status, { cleanup_unscheduled: 0, cleanup_scheduled: 1, cleanup_unfinished: 2, cleanup_ongoing: 3 }
 
   delegate :client, :gitlab_api_client, to: :registry
 

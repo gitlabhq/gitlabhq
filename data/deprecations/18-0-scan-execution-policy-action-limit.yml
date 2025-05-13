@@ -1,0 +1,15 @@
+- title: "Limited `scan` actions in a scan execution policy"
+  removal_milestone: "18.0"
+  announcement_milestone: "17.5"
+  breaking_change: true
+  reporter: bauerdominic
+  stage: govern
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/472213
+  impact: low
+  scope: instance
+  resolution_role: Maintainer
+  manual_task: true
+  body: |
+    On GitLab.com, starting in GitLab 18.0, [scan execution policies](https://docs.gitlab.com/ee/user/application_security/policies/scan_execution_policies.html) are limited to 10 `scan` actions per policy. You can't create new policies that exceed the limit, and you can't update existing policies if they exceed the limit. For any existing policy that exceeds the limit, only the policy's first 10 `scan` actions are run.
+
+    On GitLab Self-Managed and GitLab Dedicated instances, you can configure a custom limit with the `scan_execution_policies_action_limit` application setting. Limits for these instances default to zero actions. We recommend configuring a limit of 10 actions.

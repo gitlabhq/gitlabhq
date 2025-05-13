@@ -3,6 +3,7 @@
 module MergeRequests
   class RefreshService < MergeRequests::BaseService
     include Gitlab::Utils::StrongMemoize
+
     attr_reader :push
 
     def execute(oldrev, newrev, ref)
@@ -148,6 +149,7 @@ module MergeRequests
 
         if branch_and_project_match?(merge_request) || @push.force_push?
           merge_request.reload_diff(current_user)
+          schedule_duo_code_review(merge_request)
           # Clear existing merge error if the push were directed at the
           # source branch. Clearing the error when the target branch
           # changes will hide the error from the user.
@@ -330,6 +332,10 @@ module MergeRequests
           .from_project(project)
           .from_source_branches(@push.branch_name)
           .from_fork
+    end
+
+    def schedule_duo_code_review(merge_request)
+      # Overridden in EE
     end
   end
 end

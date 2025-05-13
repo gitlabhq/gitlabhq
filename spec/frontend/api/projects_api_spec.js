@@ -125,6 +125,22 @@ describe('~/api/projects_api.js', () => {
     });
   });
 
+  describe('restoreProject', () => {
+    beforeEach(() => {
+      jest.spyOn(axios, 'post');
+    });
+
+    it('calls POST to the correct URL', () => {
+      const expectedUrl = `/api/v7/projects/${projectId}/restore`;
+
+      mock.onPost(expectedUrl).replyOnce(HTTP_STATUS_OK);
+
+      return projectsApi.restoreProject(projectId).then(() => {
+        expect(axios.post).toHaveBeenCalledWith(expectedUrl);
+      });
+    });
+  });
+
   describe('importProjectMembers', () => {
     beforeEach(() => {
       jest.spyOn(axios, 'post');

@@ -59,7 +59,7 @@ module Gitlab
 
       def commit_message
         <<~MARKDOWN.chomp
-        #{title}
+        #{truncated_title}
 
         #{mr_description}
 
@@ -78,6 +78,16 @@ module Gitlab
 
       def valid?
         @identifiers && @title && @description && @changed_files.present?
+      end
+
+      def truncated_title
+        truncate(title, 72)
+      end
+
+      def truncate(text, limit)
+        return text if text.length <= limit
+
+        text[0...limit]
       end
     end
   end

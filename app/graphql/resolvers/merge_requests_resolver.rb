@@ -126,6 +126,10 @@ module Resolvers
       required: false,
       description: 'Merge requests updated before the timestamp.'
 
+    argument :ignored_reviewer_username, GraphQL::Types::String,
+      required: false,
+      description: 'Username of the reviewer to ignore when searching by reviewer state.',
+      experiment: { milestone: '18.0' }
     argument :label_name, [GraphQL::Types::String, { null: true }],
       required: false,
       description: 'Labels applied to the merge request.'

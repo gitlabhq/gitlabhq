@@ -9,6 +9,13 @@ RSpec.describe 'Project Issues RSS', :js, feature_category: :team_planning do
   let_it_be(:path) { project_issues_path(project) }
   let_it_be(:issue) { create(:issue, project: project, assignees: [user]) }
 
+  before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+  end
+
   context 'when signed in' do
     let_it_be(:user) { create(:user) }
 

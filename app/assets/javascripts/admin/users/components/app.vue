@@ -78,7 +78,7 @@ export default {
       :group-counts-loading="groupCountsLoading"
     >
       <template #user-actions="{ user }">
-        <user-actions :user="user" :paths="paths" :show-button-labels="true" />
+        <user-actions :user="user" :paths="paths" :show-button-labels="true" show-spacer />
       </template>
     </users-table>
   </div>

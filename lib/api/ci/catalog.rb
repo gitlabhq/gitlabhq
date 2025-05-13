@@ -26,7 +26,7 @@ module API
         end
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, job_token_policies: :admin_releases
-        # Note: This endpoint should only be used by `release-cli` and should be authenticated with a job token.
+        # Note: This endpoint should only be used by CLI tools and should be authenticated with a job token.
         # For this reason, we should not document the endpoint in the API docs.
         post ':id/catalog/publish' do
           release = user_project.releases.find_by_tag!(params[:version])

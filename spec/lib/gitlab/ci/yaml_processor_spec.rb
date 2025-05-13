@@ -1322,7 +1322,7 @@ module Gitlab
           it { is_expected.to be_valid }
 
           it "returns with image" do
-            expect(processor.builds).to contain_exactly({
+            expect(processor.builds).to contain_exactly(
               stage: "test",
               stage_idx: 2,
               name: "test",
@@ -1336,7 +1336,7 @@ module Gitlab
               job_variables: [],
               root_variables_inheritance: true,
               scheduling_type: :stage
-            })
+            )
           end
         end
 
@@ -1355,7 +1355,7 @@ module Gitlab
           it { is_expected.to be_valid }
 
           it "returns with service" do
-            expect(processor.builds).to contain_exactly({
+            expect(processor.builds).to contain_exactly(
               stage: "test",
               stage_idx: 2,
               name: "test",
@@ -1369,7 +1369,7 @@ module Gitlab
               job_variables: [],
               root_variables_inheritance: true,
               scheduling_type: :stage
-            })
+            )
           end
         end
 
@@ -1394,7 +1394,7 @@ module Gitlab
           it { is_expected.to be_valid }
 
           it "returns with image" do
-            expect(processor.builds).to contain_exactly({
+            expect(processor.builds).to contain_exactly(
               stage: "test",
               stage_idx: 2,
               name: "test",
@@ -1411,7 +1411,47 @@ module Gitlab
               job_variables: [],
               root_variables_inheritance: true,
               scheduling_type: :stage
-            })
+            )
+          end
+        end
+
+        context 'when image and service have kubernetes options' do
+          let(:config) do
+            <<~YAML
+            test:
+              script: exit 0
+              image:
+                name: ruby:2.7
+                kubernetes:
+                  user: "1001"
+              services:
+                - name: postgres:11.9
+                  kubernetes:
+                    user: "1001:1001"
+            YAML
+          end
+
+          it { is_expected.to be_valid }
+
+          it "returns with image" do
+            expect(processor.builds).to contain_exactly(
+              stage: "test",
+              stage_idx: 2,
+              name: "test",
+              only: { refs: %w[branches tags] },
+              options: {
+                script: ["exit 0"],
+                image: { name: "ruby:2.7",
+                         executor_opts: { kubernetes: { user: '1001' } } },
+                services: [{ name: "postgres:11.9",
+                             executor_opts: { kubernetes: { user: '1001:1001' } } }]
+              },
+              allow_failure: false,
+              when: "on_success",
+              job_variables: [],
+              root_variables_inheritance: true,
+              scheduling_type: :stage
+            )
           end
         end
       end

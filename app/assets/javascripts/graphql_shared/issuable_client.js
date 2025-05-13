@@ -14,6 +14,7 @@ import {
   WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_LINKED_ITEMS,
   WIDGET_TYPE_ASSIGNEES,
+  WIDGET_TYPE_VULNERABILITIES,
 } from '~/work_items/constants';
 
 import isExpandedHierarchyTreeChildQuery from '~/work_items/graphql/client/is_expanded_hierarchy_tree_child.query.graphql';
@@ -133,6 +134,15 @@ export const config = {
           },
         },
       },
+      WorkItemWidgetVulnerabilities: {
+        fields: {
+          // If we add any key args, the relatedVulnerabilities field becomes relatedVulnerabilities({"first":50,"after":"xyz"}) and
+          // kills any possibility to handle it on the widget level without hardcoding a string.
+          relatedVulnerabilities: {
+            keyArgs: false,
+          },
+        },
+      },
       WorkItem: {
         fields: {
           // Prevent `reference` from being transformed into `reference({"fullPath":true})`
@@ -192,6 +202,25 @@ export const config = {
                     children: {
                       ...incomingWidget.children,
                       nodes: [...existingWidget.children.nodes, ...incomingWidget.children.nodes],
+                    },
+                  };
+                }
+
+                // we want to concat next page of vulnerabilities work items within Vulnerabilities widget to the existing ones
+                if (
+                  incomingWidget?.type === WIDGET_TYPE_VULNERABILITIES &&
+                  context.variables.after &&
+                  incomingWidget.relatedVulnerabilities?.nodes
+                ) {
+                  // concatPagination won't work because we were placing new widget here so we have to do this manually
+                  return {
+                    ...incomingWidget,
+                    relatedVulnerabilities: {
+                      ...incomingWidget.relatedVulnerabilities,
+                      nodes: [
+                        ...existingWidget.relatedVulnerabilities.nodes,
+                        ...incomingWidget.relatedVulnerabilities.nodes,
+                      ],
                     },
                   };
                 }

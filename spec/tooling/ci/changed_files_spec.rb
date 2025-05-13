@@ -6,76 +6,8 @@ require_relative '../../../tooling/ci/changed_files'
 RSpec.describe CI::ChangedFiles, feature_category: :tooling do
   let(:instance) { described_class.new }
 
-  describe '#should_run_checks_for_changed_files' do
-    # The mock values are based on allowed values from the docs
-    # https://docs.gitlab.com/ci/variables/predefined_variables/
-    let(:pipeline_source) { 'merge_request_event' }
-    let(:merge_request_event_type) { 'merged_result' }
-    let(:commit_ref_name) { 'feature-branch' }
-
-    before do
-      stub_env('CI_PIPELINE_SOURCE', pipeline_source)
-      stub_env('CI_MERGE_REQUEST_EVENT_TYPE', merge_request_event_type)
-      stub_env('CI_COMMIT_REF_NAME', commit_ref_name)
-    end
-
-    context 'when in a valid merge request environment' do
-      it 'returns true when no tier labels exist' do
-        stub_env('CI_MERGE_REQUEST_LABELS', nil)
-        expect(instance.should_run_checks_for_changed_files).to be true
-      end
-
-      it 'returns true when tier-1 label exists' do
-        stub_env('CI_MERGE_REQUEST_LABELS', 'pipeline::tier-1,other-label')
-        expect(instance.should_run_checks_for_changed_files).to be true
-      end
-
-      it 'returns false when other tier label exists' do
-        stub_env('CI_MERGE_REQUEST_LABELS', 'pipeline::tier-2,other-label')
-        expect(instance.should_run_checks_for_changed_files).to be false
-      end
-    end
-
-    context 'when not in a valid merge request environment' do
-      context 'when the merge request event type is merge_train' do
-        let(:merge_request_event_type) { 'merge_train' }
-
-        it 'returns false' do
-          expect(instance.should_run_checks_for_changed_files).to be false
-        end
-      end
-
-      context 'when the pipeline source is not merged_request_event' do
-        let(:pipeline_source) { 'push' }
-
-        it 'returns false when pipeline source is push' do
-          expect(instance.should_run_checks_for_changed_files).to be false
-        end
-      end
-
-      context 'when the current branch is CI_DEFAULT_BRANCH' do
-        let(:commit_ref_name) { 'master' }
-
-        it 'returns false' do
-          stub_env('CI_DEFAULT_BRANCH', 'master')
-          expect(instance.should_run_checks_for_changed_files).to be false
-        end
-      end
-
-      context 'when the environment variables are not set' do
-        let(:pipeline_source) { nil }
-        let(:merge_request_event_type) { nil }
-        let(:commit_ref_name) { nil }
-
-        it 'returns false' do
-          expect(instance.should_run_checks_for_changed_files).to be false
-        end
-      end
-    end
-  end
-
   describe '#get_changed_files_in_merged_results_pipeline' do
-    let(:git_diff_output) { "file1.js\nfile2.rb\nfile3.vue" }
+    let(:git_diff_output) { "file1.js\nfile2.rb\nfile3.vue\nfile4.graphql" }
 
     before do
       allow(instance).to receive(:`)
@@ -86,7 +18,7 @@ RSpec.describe CI::ChangedFiles, feature_category: :tooling do
     context 'when git diff is run in a merged results pipeline' do
       it 'returns an array when there are changed files' do
         expect(instance.get_changed_files_in_merged_results_pipeline)
-        .to match_array(['file1.js', 'file2.rb', 'file3.vue'])
+        .to match_array(['file1.js', 'file2.rb', 'file3.vue', 'file4.graphql'])
       end
 
       context "when there are no changed files" do
@@ -100,17 +32,15 @@ RSpec.describe CI::ChangedFiles, feature_category: :tooling do
   end
 
   describe '#filter_and_get_changed_files_in_mr' do
-    context 'when checks should run for changed files' do \
-      let(:changed_files_output) { ['file1.js', 'file2.rb', 'file3.vue'] }
+    let(:changed_files_output) { ['file1.js', 'file2.rb', 'file3.vue'] }
 
-      before do
-        allow(instance).to receive_messages(
-          should_run_checks_for_changed_files: true,
-          get_changed_files_in_merged_results_pipeline: changed_files_output
-        )
-      end
+    before do
+      allow(instance).to receive(
+        :get_changed_files_in_merged_results_pipeline).and_return(changed_files_output)
+    end
 
-      context 'when changed files exist' do
+    context 'when there are changed files' do
+      context 'when filter value matches' do
         it 'returns filtered files' do
           expect(instance.filter_and_get_changed_files_in_mr(filter_pattern: /\.(js|vue)$/))
           .to match_array(['file1.js', 'file3.vue'])
@@ -120,47 +50,43 @@ RSpec.describe CI::ChangedFiles, feature_category: :tooling do
           expect(instance.filter_and_get_changed_files_in_mr)
           .to match_array(changed_files_output)
         end
+      end
 
-        it 'returns empty array and prints warning when no files match filter' do
-          allow(instance).to receive(:get_changed_files_in_merged_results_pipeline).and_return(['file1.txt',
-            'file2.rb'])
-          expect(instance).to receive(:puts).with('No files were changed. Skipping...')
+      context 'when filter does not match' do
+        let(:changed_files_output) { ['file1.txt', 'file2.rb'] }
 
+        it 'returns empty array when no files match filter' do
           expect(instance.filter_and_get_changed_files_in_mr(filter_pattern: /\.(js|vue)$/)).to eq([])
         end
       end
     end
 
-    context 'when checks should not run for changed files' do
-      before do
-        allow(instance).to receive(:should_run_checks_for_changed_files).and_return(false)
-      end
+    context 'when there are no changed files' do
+      let(:changed_files_output) { [] }
 
-      it 'returns ["."] and prints warning' do
-        expect(instance).to receive(:puts).with("Changed file criteria didn't match... Command will run for all files")
-
-        expect(instance.filter_and_get_changed_files_in_mr(filter_pattern: /\.(js|vue)$/)).to eq(['.'])
+      it 'returns an empty array' do
+        expect(instance.filter_and_get_changed_files_in_mr).to eq([])
       end
     end
   end
 
   describe '#run_eslint_for_changed_files' do
-    let(:files) { ['file1.js', 'file2.vue'] }
     let(:eslint_command) do
       ['yarn', 'run', 'lint:eslint', '--no-warn-ignored', '--format', 'gitlab', 'file1.js', 'file2.vue']
     end
 
-    before do
-      allow(instance).to receive(:puts).with('Running ESLint...')
-    end
+    let(:console_message) { /Running ESLint for changed files.../i }
 
     context 'when there are changed files to lint' do
+      let(:files) { ['file1.js', 'file2.vue'] }
+
       before do
         allow(instance).to receive(:filter_and_get_changed_files_in_mr).and_return(files)
       end
 
       it 'runs eslint with the correct arguments and returns exit 0 on success' do
         expect(instance).to receive(:system).with(*eslint_command).and_return(true)
+        expect(instance).to receive(:puts).with(console_message)
 
         status = instance_double(Process::Status, exitstatus: 0)
         allow(instance).to receive(:last_command_status).and_return(status)
@@ -179,11 +105,185 @@ RSpec.describe CI::ChangedFiles, feature_category: :tooling do
     end
 
     context 'when there are no changed files to lint' do
+      let(:no_files_msg) { /No files were changed. Skipping/i }
+
       it 'does not run eslint and returns exit code 0' do
         allow(instance).to receive(:filter_and_get_changed_files_in_mr).and_return([])
-        expect(instance).not_to receive(:system)
 
+        expect(instance).to receive(:puts).with(console_message).ordered
+        expect(instance).to receive(:puts).with(no_files_msg).ordered
+
+        expect(instance).not_to receive(:system)
         expect(instance.run_eslint_for_changed_files).to eq(0)
+      end
+    end
+
+    context 'when a single todo file has been changed' do
+      let(:eslint_command) do
+        ['yarn', 'run', 'lint:eslint', '--no-warn-ignored', '--format', 'gitlab',
+          '.eslint_todo/vue-no-unused-properties.mjs',
+          'app/assets/javascripts/add_context_commits_modal/components/add_context_commits_modal_wrapper.vue',
+          'app/assets/javascripts/admin/abuse_report/components/notes/abuse_report_comment_form.vue',
+          'app/assets/javascripts/admin/abuse_report/components/notes/abuse_report_edit_note.vue',
+          'app/assets/javascripts/admin/statistics_panel/components/app.vue',
+          'app/assets/javascripts/badges/components/badge.vue',
+          'app/assets/javascripts/badges/components/badge_form.vue',
+          'app/assets/javascripts/batch_comments/components/draft_note.vue']
+      end
+
+      let(:files) { ['.eslint_todo/vue-no-unused-properties.mjs'] }
+      let(:git_diff_output) do
+        <<-DIFF
+          diff --git a/.eslint_todo/vue-no-unused-properties.mjs b/.eslint_todo/vue-no-unused-properties.mjs
+          index 81f0b2cbcf84..ef936567f2e8 100644
+          --- a/.eslint_todo/vue-no-unused-properties.mjs
+          +++ b/.eslint_todo/vue-no-unused-properties.mjs
+          @@ -3,13 +3,7 @@
+            */
+          export default {
+            files: [
+          -    'app/assets/javascripts/add_context_commits_modal/components/add_context_commits_modal_wrapper.vue',
+          -    'app/assets/javascripts/admin/abuse_report/components/notes/abuse_report_comment_form.vue',
+          -    'app/assets/javascripts/admin/abuse_report/components/notes/abuse_report_edit_note.vue',
+          -    'app/assets/javascripts/admin/statistics_panel/components/app.vue',
+          -    'app/assets/javascripts/badges/components/badge.vue',
+          -    'app/assets/javascripts/badges/components/badge_form.vue',
+          -    'app/assets/javascripts/batch_comments/components/draft_note.vue',
+          +    'app/assets/javascripts/batch_comments/components/preview_item.vue',
+              'app/assets/javascripts/behaviors/components/json_table.vue',
+              'app/assets/javascripts/behaviors/components/sandboxed_mermaid.vue',
+        DIFF
+      end
+
+      before do
+        allow(instance).to receive(:filter_and_get_changed_files_in_mr).and_return(files)
+        allow(instance).to receive(:`)
+          .with('git diff HEAD~..HEAD -- .eslint_todo/vue-no-unused-properties.mjs')
+          .and_return(git_diff_output)
+      end
+
+      it 'runs eslint with the correct arguments and returns exit 1 on failure' do
+        expect(instance).to receive(:system).with(*eslint_command).and_return(false)
+
+        status = instance_double(Process::Status, exitstatus: 1)
+        allow(instance).to receive(:last_command_status).and_return(status)
+
+        expect(instance.run_eslint_for_changed_files).to eq(1)
+      end
+    end
+
+    context 'when several todo files have been changed' do
+      let(:eslint_command) do
+        ['yarn', 'run', 'lint:eslint', '--no-warn-ignored', '--format', 'gitlab',
+          '.eslint_todo/vue-no-unused-properties.mjs',
+          'app/assets/javascripts/projects/project_new.js',
+          'app/assets/javascripts/add_context_commits_modal/components/add_context_commits_modal_wrapper.vue',
+          'app/assets/javascripts/admin/abuse_report/components/notes/abuse_report_comment_form.vue']
+      end
+
+      let(:files) { ['.eslint_todo/vue-no-unused-properties.mjs'] }
+      let(:git_diff_output) do
+        <<-DIFF
+          diff --git a/.eslint_todo/index.mjs b/.eslint_todo/index.mjs
+          index 88c73e337a50..1c27203d62cb 100644
+          --- a/.eslint_todo/index.mjs
+          +++ b/.eslint_todo/index.mjs
+          @@ -1 +1,3 @@
+          export { default as vueNoUnusedProperties } from './vue-no-unused-properties.mjs';
+          +
+          +export { default as noUnusedVars } from './no-unused-vars.mjs';
+          diff --git a/.eslint_todo/no-unused-vars.mjs b/.eslint_todo/no-unused-vars.mjs
+          index dbd4c28b65c8..f11106b14857 100644
+          --- a/.eslint_todo/no-unused-vars.mjs
+          +++ b/.eslint_todo/no-unused-vars.mjs
+          @@ -3,7 +3,6 @@
+            */
+          export default {
+            files: [
+          -    'app/assets/javascripts/projects/project_new.js',
+              'app/assets/javascripts/vue_shared/components/customizable_dashboard/dashboard_editor/available_visualizations_drawer.vue',
+              'app/assets/javascripts/vue_shared/components/customizable_dashboard/utils.js',
+            ],
+          diff --git a/.eslint_todo/vue-no-unused-properties.mjs b/.eslint_todo/vue-no-unused-properties.mjs
+          index 81f0b2cbcf84..cf56bd55554b 100644
+          --- a/.eslint_todo/vue-no-unused-properties.mjs
+          +++ b/.eslint_todo/vue-no-unused-properties.mjs
+          @@ -3,8 +3,6 @@
+            */
+          export default {
+            files: [
+          -    'app/assets/javascripts/add_context_commits_modal/components/add_context_commits_modal_wrapper.vue',
+          -    'app/assets/javascripts/admin/abuse_report/components/notes/abuse_report_comment_form.vue',
+              'app/assets/javascripts/admin/abuse_report/components/notes/abuse_report_edit_note.vue',
+              'app/assets/javascripts/admin/statistics_panel/components/app.vue',
+              'app/assets/javascripts/badges/components/badge.vue',
+
+        DIFF
+      end
+
+      before do
+        allow(instance).to receive(:filter_and_get_changed_files_in_mr).and_return(files)
+        allow(instance).to receive(:`)
+          .with('git diff HEAD~..HEAD -- .eslint_todo/vue-no-unused-properties.mjs')
+          .and_return(git_diff_output)
+      end
+
+      it 'runs eslint with the correct arguments and returns exit 1 on failure' do
+        expect(instance).to receive(:system).with(*eslint_command).and_return(false)
+
+        status = instance_double(Process::Status, exitstatus: 1)
+        allow(instance).to receive(:last_command_status).and_return(status)
+
+        expect(instance.run_eslint_for_changed_files).to eq(1)
+      end
+    end
+
+    context 'when todo files have been changed but no ignored file was removed from them' do
+      let(:eslint_command) do
+        ['yarn', 'run', 'lint:eslint', '--no-warn-ignored', '--format', 'gitlab',
+          '.eslint_todo/vue-no-unused-properties.mjs']
+      end
+
+      let(:files) { ['.eslint_todo/vue-no-unused-properties.mjs'] }
+      let(:git_diff_output) do
+        <<-DIFF
+          diff --git a/.eslint_todo/no-unused-vars.mjs b/.eslint_todo/no-unused-vars.mjs
+          new file mode 100644
+          index 000000000000..dbd4c28b65c8
+          --- /dev/null
+          +++ b/.eslint_todo/no-unused-vars.mjs
+          @@ -0,0 +1,13 @@
+          +/**
+          + * Generated by `scripts/frontend/generate_eslint_todo_list.mjs`.
+          + */
+          +export default {
+          +  files: [
+          +    'app/assets/javascripts/projects/project_new.js',
+          +    'app/assets/javascripts/vue_shared/components/customizable_dashboard/dashboard_editor/available_visualizations_drawer.vue',
+          +    'app/assets/javascripts/vue_shared/components/customizable_dashboard/utils.js',
+          +  ],
+          +  rules: {
+          +    'no-unused-vars': 'off',
+          +  },
+          +};
+
+        DIFF
+      end
+
+      before do
+        allow(instance).to receive(:filter_and_get_changed_files_in_mr).and_return(files)
+        allow(instance).to receive(:`)
+          .with('git diff HEAD~..HEAD -- .eslint_todo/vue-no-unused-properties.mjs')
+          .and_return(git_diff_output)
+      end
+
+      it 'runs eslint with the correct arguments and returns exit 1 on failure' do
+        expect(instance).to receive(:system).with(*eslint_command).and_return(false)
+
+        status = instance_double(Process::Status, exitstatus: 1)
+        allow(instance).to receive(:last_command_status).and_return(status)
+
+        expect(instance.run_eslint_for_changed_files).to eq(1)
       end
     end
   end

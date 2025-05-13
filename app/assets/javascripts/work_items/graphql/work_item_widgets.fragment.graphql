@@ -67,6 +67,10 @@ fragment WorkItemWidgets on WorkItemWidget {
       iid
       title
       confidential
+      namespace {
+        id
+        fullPath
+      }
       webUrl
       workItemType {
         id

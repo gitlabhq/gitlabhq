@@ -116,6 +116,12 @@ This page shows groups that you are a member of through:
 
 ## View a group
 
+{{< history >}}
+
+- Accessing the group with the group ID was [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165889) in GitLab 17.5.
+
+{{< /history >}}
+
 The group overview page displays information about the group and its members, subgroups, and projects, such as:
 
 - Group description
@@ -133,6 +139,20 @@ To view a group:
 You can search for the subgroups and projects of the group
 and sort them in ascending or descending order.
 
+You can access a group by using its ID instead of its name at `https://gitlab.example.com/-/g/<id>`.
+For example, if your group `example-group` has an ID `123456`, you can access the group either at
+`https://gitlab.example.com/example-group` or `https://gitlab.example.com/-/g/123456`.
+
+## Find the Group ID
+
+You might need the group ID if you want to interact with it using the [GitLab API](../../api/_index.md).
+
+To find the Group ID:
+
+1. On the left sidebar, select **Search or go to** and find your Group.
+1. On the Group overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
+1. Select **Copy Group ID**.
+
 ## View group activity
 
 To view the activity of a group:
@@ -149,26 +169,6 @@ To view the activity of a group:
    - **Wiki**: Updates to wiki pages in the group.
    - **Designs**: Designs added, updated, and removed in the group's projects.
    - **Team**: Group members who joined and left the group's projects.
-
-### Access a group by using the group ID
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165889) in GitLab 17.5.
-
-{{< /history >}}
-
-You can access a group by using its ID instead of its name at `https://gitlab.example.com/-/g/<id>`.
-For example, if your group `example-group` has an ID `123456`, you can access the group either at
-`https://gitlab.example.com/example-group` or `https://gitlab.example.com/-/g/123456`.
-
-You might need the group ID if you want to interact with it using the [GitLab API](../../api/_index.md).
-
-To copy the Group ID:
-
-1. On the left sidebar, select **Search or go to** and find your Group.
-1. On the Group overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
-1. Select **Copy Group ID**.
 
 ## Create a group
 
@@ -235,6 +235,7 @@ To leave a group:
 {{< history >}}
 
 - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
 
 {{< /history >}}
 
@@ -255,7 +256,7 @@ You can also delete a group from the groups dashboard:
 1. In the **Delete group** section, select **Delete group**.
 1. On the confirmation dialog, type the group name and select **Confirm**.
 
-On GitLab [Premium](https://about.gitlab.com/pricing/premium/) and [Ultimate](https://about.gitlab.com/pricing/ultimate/), this action adds a background job to mark a group for deletion. By default, the job schedules the deletion seven days in the future. You can modify this retention period through the [instance settings](../../administration/settings/visibility_and_access_controls.md#deletion-protection).
+This action adds a background job to mark a group for deletion. By default, the job schedules the deletion seven days in the future. You can modify this retention period through the [instance settings](../../administration/settings/visibility_and_access_controls.md#deletion-protection).
 
 If the user who scheduled the group deletion loses access to the group (for example, by leaving the group, having their role downgraded, or being banned from the group) before the deletion occurs,
 the deletion job will instead restore and unarchive the group, so the group will no longer be scheduled for deletion.
@@ -268,13 +269,6 @@ the deletion job will instead restore and unarchive the group, so the group will
 
 ### View groups pending deletion
 
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
 To view a list of the subgroups that are pending deletion in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
@@ -284,16 +278,10 @@ Groups that are marked for deletion are labeled **Pending deletion**.
 
 ## Delete a group immediately
 
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
 {{< history >}}
 
 - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
 
 {{< /history >}}
 
@@ -315,13 +303,6 @@ To immediately delete a group marked for deletion:
 This action deletes the group, its subgroups, projects, and all related resources, including issues and merge requests.
 
 ## Restore a group
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
 
 To restore a group that is marked for deletion:
 
@@ -431,8 +412,10 @@ You can give a user access to all projects in a group.
 Prerequisites:
 
 - You must have the Owner role for the group.
-- If [sign-up is disabled](../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups), an administrator must add the user by email first.
-- If [administrator for role promotions](../../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on, an administrator must approve the invite.
+- For GitLab Self-Managed instances:
+  - If [New sign-ups are disabled](../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups), an administrator must add the user.
+  - If [User invitations are disabled](../../administration/settings/visibility_and_access_controls.md#disable-user-invitations), an administrator must add the user.
+  - If [administrator approval is enabled](../../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions), an administrator must approve the invitation.
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.

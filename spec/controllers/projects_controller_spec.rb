@@ -8,7 +8,8 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project, reload: true) { create(:project, :with_export, service_desk_enabled: false) }
-  let_it_be(:public_project) { create(:project, :public) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:public_project) { create(:project, :public, namespace: group) }
   let_it_be(:user) { create(:user) }
 
   let(:jpg) { fixture_file_upload('spec/fixtures/rails_sample.jpg', 'image/jpg') }
@@ -495,6 +496,54 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
           .not_to exceed_query_limit(2).for_query(expected_query)
       end
     end
+
+    context 'when marked for deletion' do
+      render_views
+
+      subject { get :show, params: { namespace_id: public_project.namespace.path, id: public_project.path } }
+
+      let(:ancestor_notice_regex) do
+        /The parent group of this project is pending deletion, so this project will also be deleted on .*./
+      end
+
+      context 'when the parent group has not been scheduled for deletion' do
+        it 'does not show the notice' do
+          subject
+
+          expect(response.body).not_to match(ancestor_notice_regex)
+        end
+      end
+
+      context 'when the parent group has been scheduled for deletion' do
+        before do
+          create(:group_deletion_schedule,
+            group: public_project.group,
+            marked_for_deletion_on: Date.current,
+            deleting_user: user
+          )
+        end
+
+        it 'shows the notice that the parent group has been scheduled for deletion' do
+          subject
+
+          expect(response.body).to match(ancestor_notice_regex)
+        end
+
+        context 'when the project itself has also been scheduled for deletion' do
+          it 'does not show the notice that the parent group has been scheduled for deletion' do
+            public_project.update!(marked_for_deletion_at: Date.current)
+
+            subject
+
+            expect(response.body).not_to match(ancestor_notice_regex)
+            # However, shows the notice that the project has been marked for deletion.
+            expect(response.body).to match(
+              /This project is pending deletion, and will be deleted on .*. Repository and other project resources are read-only./
+            )
+          end
+        end
+      end
+    end
   end
 
   describe 'POST create' do
@@ -918,6 +967,24 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       end
     end
 
+    context 'when updating non boolean values on project setting' do
+      it 'updates project settings attributes accordingly' do
+        put :update, params: {
+          namespace_id: project.namespace,
+          id: project.path,
+          project: {
+            project_setting_attributes: {
+              merge_request_title_regex: 'aaa'
+            }
+          }
+        }
+
+        project.reload
+
+        expect(project.merge_request_title_regex).to eq('aaa')
+      end
+    end
+
     context 'when updating boolean values on project_settings' do
       using RSpec::Parameterized::TableSyntax
 
@@ -1085,47 +1152,91 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
   describe "#destroy", :enable_admin_mode do
     let_it_be(:admin) { create(:admin) }
 
-    context 'when the delayed deletion feature is not available' do
-      before do
-        stub_feature_flags(downtier_delayed_deletion: false)
-      end
+    let_it_be(:group) { create(:group, owners: user) }
+    let_it_be_with_reload(:project) { create(:project, group: group) }
 
-      it "redirects to the dashboard", :sidekiq_might_not_need_inline do
-        controller.instance_variable_set(:@project, project)
-        sign_in(admin)
+    before do
+      sign_in(user)
+    end
 
-        orig_id = project.id
+    shared_examples 'deletes project right away' do
+      specify :aggregate_failures do
         delete :destroy, params: { namespace_id: project.namespace, id: project }
 
-        expect { Project.find(orig_id) }.to raise_error(ActiveRecord::RecordNotFound)
+        expect(project.marked_for_deletion?).to be_falsey
         expect(response).to have_gitlab_http_status(:found)
-        expect(flash[:toast]).to eq(format(_("Project &#39;%{project_name}&#39; is being deleted."), project_name: project.full_name))
         expect(response).to redirect_to(dashboard_projects_path)
       end
+    end
 
-      context "when the project is forked" do
-        let(:project) { create(:project, :repository) }
-        let(:forked_project) { fork_project(project, nil, repository: true) }
-        let(:merge_request) do
-          create(:merge_request,
-            source_project: forked_project,
-            target_project: project)
+    shared_examples 'marks project for deletion' do
+      specify :aggregate_failures do
+        delete :destroy, params: { namespace_id: project.namespace, id: project }
+
+        expect(project.reload.marked_for_deletion?).to be_truthy
+        expect(project.reload.hidden?).to be_falsey
+        expect(response).to have_gitlab_http_status(:found)
+        expect(response).to redirect_to(project_path(project))
+        expect(flash[:toast]).to be_nil
+      end
+    end
+
+    it_behaves_like 'marks project for deletion'
+
+    it 'does not mark project for deletion because of error' do
+      message = 'Error'
+
+      expect(::Projects::MarkForDeletionService).to receive_message_chain(:new, :execute).and_return({ status: :error, message: message })
+
+      delete :destroy, params: { namespace_id: project.namespace, id: project }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to render_template(:edit)
+      expect(flash[:alert]).to include(message)
+    end
+
+    context 'when instance setting is set to 0 days' do
+      it 'deletes project right away' do
+        stub_application_setting(deletion_adjourned_period: 0)
+
+        delete :destroy, params: { namespace_id: project.namespace, id: project }
+
+        expect(project.marked_for_deletion?).to be_falsey
+        expect(response).to have_gitlab_http_status(:found)
+        expect(response).to redirect_to(dashboard_projects_path)
+      end
+    end
+
+    context 'when project is already marked for deletion' do
+      let_it_be(:project) { create(:project, group: group, marked_for_deletion_at: Date.current) }
+
+      context 'when permanently_delete param is set' do
+        it 'deletes project right away' do
+          expect(ProjectDestroyWorker).to receive(:perform_async)
+
+          delete :destroy, params: { namespace_id: project.namespace, id: project, permanently_delete: true }
+
+          expect(project.reload.pending_delete).to eq(true)
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to(dashboard_projects_path)
         end
+      end
 
-        it "closes all related merge requests", :sidekiq_might_not_need_inline do
-          project.merge_requests << merge_request
-          sign_in(admin)
+      context 'when permanently_delete param is not set' do
+        it 'does nothing' do
+          expect(ProjectDestroyWorker).not_to receive(:perform_async)
 
-          delete :destroy, params: { namespace_id: forked_project.namespace, id: forked_project }
+          delete :destroy, params: { namespace_id: project.namespace, id: project }
 
-          expect(merge_request.reload.state).to eq('closed')
+          expect(project.reload.pending_delete).to eq(false)
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to(project_path(project))
         end
       end
     end
 
-    context 'when the delayed deletion feature is available' do
-      let_it_be(:group) { create(:group, owners: user) }
-      let_it_be_with_reload(:project) { create(:project, group: group) }
+    context 'for projects in user namespace' do
+      let_it_be_with_reload(:project) { create(:project, namespace: user.namespace) }
 
       before do
         sign_in(user)
@@ -1210,7 +1321,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       context 'for projects in user namespace' do
         let(:project) { create(:project, namespace: user.namespace) }
 
-        it_behaves_like 'deletes project right away'
+        it_behaves_like 'marks project for deletion'
       end
     end
   end

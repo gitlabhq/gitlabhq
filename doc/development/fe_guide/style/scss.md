@@ -81,7 +81,7 @@ You can use the [important modifier](https://tailwindcss.com/docs/configuration#
 
 ##### Spacing and sizing CSS utility classes
 
-Spacing and sizing CSS utility classes (e.g. `margin`, `padding`, `width`, `height`) use our spacing scale defined in
+Spacing and sizing CSS utility classes (for example, `margin`, `padding`, `width`, `height`) use our spacing scale defined in
 [src/tokens/build/tailwind/tokens.cjs](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/7c0fb4b07a0f0d0a58dd0137831412dbf53ea498/src/tokens/build/tailwind/tokens.cjs). See [https://gitlab-org.gitlab.io/frontend/tailwind-documentation/margin](https://gitlab-org.gitlab.io/frontend/tailwind-documentation/margin) for available CSS utility classes.
 
 **Example:** `gl-mt-5` is `margin-top: 1rem;`

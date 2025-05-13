@@ -1,10 +1,9 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
-import { engineeringNotation } from '@gitlab/ui/src/utils/number_utils';
 import { GlLineChart } from '@gitlab/ui/dist/charts';
 import { s__ } from '~/locale';
-import { stringifyTime, parseSeconds } from '~/lib/utils/datetime/date_format_utility';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
+import { formatPipelineDuration, formatPipelineDurationForAxis } from '../format_utils';
 
 export default {
   components: {
@@ -45,8 +44,8 @@ export default {
       }
       return '';
     },
-    formatDuration(seconds) {
-      return stringifyTime(parseSeconds(seconds, { daysPerWeek: 7, hoursPerDay: 24 }));
+    formatPipelineDuration(seconds) {
+      return formatPipelineDuration(seconds);
     },
   },
   lineChartOptions: {
@@ -55,12 +54,7 @@ export default {
       type: 'value',
       axisLabel: {
         formatter: (seconds) => {
-          const minutes = seconds / 60;
-          // using engineering notation for small amounts is strange, as we'd render "milliminutes"
-          if (minutes < 1) {
-            return minutes.toFixed(2).replace(/\.?0*$/, '');
-          }
-          return engineeringNotation(minutes, 2);
+          return formatPipelineDurationForAxis(seconds);
         },
       },
     },
@@ -85,7 +79,7 @@ export default {
         <template v-if="params && params.value">{{ formatDate(params.value) }}</template>
       </template>
       <template #tooltip-value="{ value }">
-        {{ formatDuration(value) }}
+        {{ formatPipelineDuration(value) }}
       </template>
     </gl-line-chart>
   </div>

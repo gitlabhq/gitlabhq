@@ -632,19 +632,5 @@ RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
     it 'allows admin to read the merge_request', :enable_admin_mode do
       expect(permissions(admin, hidden_merge_request)).to be_allowed(:read_merge_request)
     end
-
-    context 'when the `hide_merge_requests_from_banned_users` feature flag is disabled' do
-      before do
-        stub_feature_flags(hide_merge_requests_from_banned_users: false)
-      end
-
-      it 'allows non-admin users to read the merge_request' do
-        expect(permissions(user, hidden_merge_request)).to be_allowed(:read_merge_request)
-      end
-
-      it 'allows admin users to read the merge_request', :enable_admin_mode do
-        expect(permissions(admin, hidden_merge_request)).to be_allowed(:read_merge_request)
-      end
-    end
   end
 end

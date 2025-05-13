@@ -16,7 +16,7 @@ export class StatusPoller {
       },
       errorCallback: () =>
         createAlert({
-          message: s__('BulkImport|Update of import statuses with realtime changes failed'),
+          message: s__('BulkImport|Unable to update import statuses with real-time changes'),
         }),
     });
 

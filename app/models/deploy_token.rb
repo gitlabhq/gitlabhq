@@ -40,7 +40,7 @@ class DeployToken < ApplicationRecord
 
   validates :expires_at, iso8601_date: true, on: :create
   validates :deploy_token_type, presence: true
-  enum deploy_token_type: {
+  enum :deploy_token_type, {
     group_type: 1,
     project_type: 2
   }
@@ -66,7 +66,7 @@ class DeployToken < ApplicationRecord
   def valid_for_dependency_proxy?
     group_type? &&
       active? &&
-      (Gitlab::Auth::REGISTRY_SCOPES & scopes).size == Gitlab::Auth::REGISTRY_SCOPES.size
+      (has_scopes?(Gitlab::Auth::REGISTRY_SCOPES) || has_scopes?(Gitlab::Auth::VIRTUAL_REGISTRY_SCOPES))
   end
 
   def revoke!
@@ -176,5 +176,9 @@ class DeployToken < ApplicationRecord
 
   def no_projects
     errors.add(:deploy_token, 'cannot have projects assigned') if project_deploy_tokens.any?
+  end
+
+  def has_scopes?(required_scopes)
+    (required_scopes & scopes).size == required_scopes.size
   end
 end

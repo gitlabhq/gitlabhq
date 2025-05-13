@@ -41,10 +41,6 @@ module TreeHelper
   # `username-branchname-patch-epoch`
   # where `epoch` is the last 5 digits of the time since epoch (in
   # milliseconds)
-  #
-  # Note: this correlates with how the WebIDE formats the branch name
-  # and if this implementation changes, so should the `placeholderBranchName`
-  # definition in app/assets/javascripts/ide/stores/modules/commit/getters.js
   def patch_branch_name(ref)
     return unless current_user
 
@@ -166,7 +162,7 @@ module TreeHelper
       ssh_url: ssh_enabled? ? ssh_clone_url_to_repo(project) : '',
       http_url: http_enabled? ? http_clone_url_to_repo(project) : '',
       xcode_url: show_xcode_link?(project) ? xcode_uri_to_repo(project) : '',
-      download_links: !project.empty_repo? ? download_links(project, ref, archive_prefix).to_json : '',
+      download_links: !project.empty_repo? ? download_links(project, ref, archive_prefix).to_json : [],
       download_artifacts: pipeline &&
         (previous_artifacts(project, ref, pipeline.latest_builds_with_artifacts).to_json || []),
       escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref)
@@ -223,6 +219,16 @@ module TreeHelper
     }
   end
 
+  def code_dropdown_ide_data
+    {
+      gitpod_enabled: current_user&.gitpod_enabled || false,
+      show_web_ide_button: show_web_ide_button?,
+      show_gitpod_button: show_gitpod_button?,
+      web_ide_url: web_ide_url,
+      gitpod_url: gitpod_url
+    }
+  end
+
   def download_links(project, ref, archive_prefix)
     Gitlab::Workhorse::ARCHIVE_FORMATS.map do |fmt|
       {
@@ -241,6 +247,17 @@ module TreeHelper
         path: project_archive_path(project, id: tree_join(ref, archive_prefix), format: fmt)
       }
     end
+  end
+
+  def compact_code_dropdown_data(project, ref)
+    archive_prefix = ref ? "#{project.path}-#{ref.tr('/', '-')}" : ''
+    {
+      ssh_url: ssh_enabled? ? ssh_clone_url_to_repo(project) : '',
+      http_url: http_enabled? ? http_clone_url_to_repo(project) : '',
+      xcode_url: show_xcode_link?(project) ? xcode_uri_to_repo(project) : '',
+      ide_data: current_user&.namespace ? code_dropdown_ide_data.to_json : '',
+      directory_download_links: !project.empty_repo? ? download_links(project, ref, archive_prefix).to_json : []
+    }
   end
 end
 

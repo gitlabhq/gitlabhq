@@ -71,6 +71,7 @@ Example response:
         ]
     },
   "default_preferred_language" : "en",
+  "deletion_adjourned_period": 7,
   "failed_login_attempts_unlock_period_in_minutes": 30,
   "restricted_visibility_levels" : [],
   "sign_in_restrictions": {},
@@ -164,7 +165,9 @@ Example response:
   "concurrent_github_import_jobs_limit": 1000,
   "concurrent_bitbucket_import_jobs_limit": 100,
   "concurrent_bitbucket_server_import_jobs_limit": 100,
-  "silent_admin_exports_enabled": false
+  "silent_admin_exports_enabled": false,
+  "top_level_group_creation_enabled": true,
+  "disable_invite_members": false
 }
 ```
 
@@ -178,7 +181,6 @@ these parameters:
 - `geo_node_allowed_ips`
 - `geo_status_timeout`
 - `default_project_deletion_protection`
-- `deletion_adjourned_period`
 - `disable_personal_access_tokens`
 - `security_policy_global_group_approvers_enabled`
 - `security_approval_policies_limit`
@@ -200,7 +202,6 @@ these parameters:
   "file_template_project_id": 1,
   "geo_node_allowed_ips": "0.0.0.0/0, ::/0",
   "default_project_deletion_protection": false,
-  "deletion_adjourned_period": 7,
   "disable_personal_access_tokens": false,
   "duo_features_enabled": true,
   "lock_duo_features_enabled": false,
@@ -353,7 +354,7 @@ Example response:
   "silent_mode_enabled": false,
   "security_policy_global_group_approvers_enabled": true,
   "security_approval_policies_limit": 5,
-  "scan_execution_policies_action_limit": 10,
+  "scan_execution_policies_action_limit": 0,
   "scan_execution_policies_schedule_limit": 0,
   "package_registry_allow_anyone_to_pull_option": true,
   "bulk_import_max_download_file_size": 5120,
@@ -379,7 +380,6 @@ these parameters:
 - `geo_node_allowed_ips`
 - `geo_status_timeout`
 - `default_project_deletion_protection`
-- `deletion_adjourned_period`
 - `disable_personal_access_tokens`
 - `security_policy_global_group_approvers_enabled`
 - `security_approval_policies_limit`
@@ -391,6 +391,7 @@ these parameters:
 - `lock_duo_features_enabled`
 - `use_clickhouse_for_analytics`
 - `virtual_registries_endpoints_api_limit`
+- `lock_memberships_to_saml`
 
 Example responses:
 
@@ -448,7 +449,7 @@ to configure other related settings. These requirements are
 | `allow_local_requests_from_web_hooks_and_services` | boolean | no                                  | Allow requests to the local network from webhooks and integrations. |
 | `allow_project_creation_for_guest_and_below` | boolean      | no                                   | Indicates whether users assigned up to the Guest role can create groups and personal projects. Defaults to `true`. |
 | `allow_runner_registration_token`        | boolean          | no                                   | Allow using a registration token to create a runner. Defaults to `true`. |
-| `archive_builds_in_human_readable`       | string           | no                                   | Set the duration for which the jobs are considered as old and expired. After that time passes, the jobs are archived and no longer able to be retried. Make it empty to never expire jobs. It has to be no less than 1 day, for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>. |
+| `archive_builds_in_human_readable`       | string           | no                                   | Set the duration for which the jobs are considered as old and expired. After that time passes, the jobs are archived and no longer able to be retried. Make it empty to never expire jobs. It has to be no less than 1 day, for example: `15 days`, `1 month`, `2 years`. |
 | `asset_proxy_enabled`                    | boolean          | no                                   | (**If enabled, requires:** `asset_proxy_url`) Enable proxying of assets. GitLab restart is required to apply changes. |
 | `asset_proxy_secret_key`                 | string           | no                                   | Shared secret with the asset proxy server. GitLab restart is required to apply changes. |
 | `asset_proxy_url`                        | string           | no                                   | URL of the asset proxy server. GitLab restart is required to apply changes. |
@@ -462,11 +463,15 @@ to configure other related settings. These requirements are
 | `automatic_purchased_storage_allocation` | boolean          | no                                   | Enabling this permits automatic allocation of purchased storage in a namespace. Relevant only to EE distributions. |
 | `bulk_import_enabled`                    | boolean          | no                                   | Enable migrating GitLab groups by direct transfer. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268) in GitLab 15.8. Setting also [available](../administration/settings/import_and_export_settings.md#enable-migration-of-groups-and-projects-by-direct-transfer) in the **Admin** area. |
 | `bulk_import_max_download_file_size`     | integer          | no                                   | Maximum download file size when importing from source GitLab instances by direct transfer. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3. |
+| `allow_bypass_placeholder_confirmation`  | boolean          | no                                   | Skip confirmation when reassigning placeholder users. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/534330) in GitLab 18.0. |
 | `can_create_group`                       | boolean          | no                                   | Indicates whether users can create top-level groups. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367754) in GitLab 15.5. Defaults to `true`. |
 | `check_namespace_plan`                   | boolean          | no                                   | Enabling this makes only licensed EE features available to projects if the project namespace's plan includes the feature or if the project is public. Premium and Ultimate only. |
-| `ci_job_live_trace_enabled`             | boolean          | no                                   | Turns on incremental logging for job logs. When turned on, archived job logs are incrementally uploaded to object storage. Object storage must be configured. You can also configure this setting in the [**Admin** area](../administration/settings/continuous_integration.md#incremental-logging). |
+| `ci_delete_pipelines_in_seconds_limit_human_readable` | string | no                                | Maximum value that is allowed for configuring pipeline retention. Defaults to `1 year`. |
+| `ci_job_live_trace_enabled`              | boolean          | no                                   | Turns on incremental logging for job logs. When turned on, archived job logs are incrementally uploaded to object storage. Object storage must be configured. You can also configure this setting in the [**Admin** area](../administration/settings/continuous_integration.md#access-job-log-settings). |
+| `git_push_pipeline_limit`                | integer          | no                                   | Set the maximum number of tag or branch pipelines that can be triggered by a single Git push. For more information about this limit, see [number of pipelines per Git push](../administration/instance_limits.md#number-of-pipelines-per-git-push). |
 | `ci_max_total_yaml_size_bytes`           | integer          | no                                   | The maximum amount of memory, in bytes, that can be allocated for the pipeline configuration, with all included YAML configuration files. |
-| `ci_max_includes`                        | integer          | no                                   | The [maximum number of includes](../administration/settings/continuous_integration.md#maximum-includes) per pipeline. Default is `150`. |
+| `ci_max_includes`                        | integer          | no                                   | The [maximum number of includes](../administration/settings/continuous_integration.md#set-maximum-includes) per pipeline. Default is `150`. |
+| `ci_partitions_size_limit`               | integer          | no                                   | The maximum amount of disk space, in bytes, that can be used by a database partition for the CI tables before creating new partitions. Default is `100 GB`. |
 | `concurrent_github_import_jobs_limit`    | integer          | no                                   | Maximum number of simultaneous import jobs for the GitHub importer. Default is 1000. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875) in GitLab 16.11. |
 | `concurrent_bitbucket_import_jobs_limit` | integer          | no                                   | Maximum number of simultaneous import jobs for the Bitbucket Cloud importer. Default is 100. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875) in GitLab 16.11. |
 | `concurrent_bitbucket_server_import_jobs_limit` | integer   | no                                   | Maximum number of simultaneous import jobs for the Bitbucket Server importer. Default is 100. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143875) in GitLab 16.11. |
@@ -497,7 +502,7 @@ to configure other related settings. These requirements are
 | `default_syntax_highlighting_theme`      | integer          | no                                   | Default syntax highlighting theme for users who are new or not signed in. See [IDs of available themes](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/themes.rb#L16). |
 | `default_project_deletion_protection`    | boolean          | no                                   | Enable default project deletion protection so only administrators can delete projects. Default is `false`. GitLab Self-Managed, Premium and Ultimate only. |
 | `delete_unconfirmed_users`               | boolean          | no                                   | Specifies whether users who have not confirmed their email should be deleted. Default is `false`. When set to `true`, unconfirmed users are deleted after `unconfirmed_users_delete_after_days` days. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352514) in GitLab 16.1. GitLab Self-Managed, Premium and Ultimate only. |
-| `deletion_adjourned_period`              | integer          | no                                   | Number of days to wait before deleting a project or group that is marked for deletion. Value must be between `1` and `90`. Defaults to `7`. GitLab Self-Managed, Premium and Ultimate only. |
+| `deletion_adjourned_period`              | integer          | no                                   | Number of days to wait before deleting a project or group that is marked for deletion. Value must be between `1` and `90`. Defaults to `7`. |
 | `diagramsnet_enabled`                    | boolean          | no                                   | (If enabled, requires `diagramsnet_url`) Enable [Diagrams.net integration](../administration/integration/diagrams_net.md). Default is `true`. |
 | `diagramsnet_url`                        | string           | required by: `diagramsnet_enabled`   | The Diagrams.net instance URL for integration. |
 | `diff_max_patch_bytes`                   | integer          | no                                   | Maximum [diff patch size](../administration/diff_limits.md), in bytes. |
@@ -511,7 +516,7 @@ to configure other related settings. These requirements are
 | `domain_denylist_enabled`                | boolean          | no                                   | (**If enabled, requires:** `domain_denylist`) Allows blocking sign-ups from emails from specific domains. |
 | `domain_denylist`                        | array of strings | no                                   | Users with email addresses that match these domains **cannot** sign up. Wildcards allowed. Enter multiple entries on separate lines. For example: `domain.com`, `*.domain.com`. |
 | `domain_allowlist`                       | array of strings | no                                   | Force people to use only corporate emails for sign-up. Default is `null`, meaning there is no restriction. |
-| `downstream_pipeline_trigger_limit_per_project_user_sha` | integer | no                            | [Maximum downstream pipeline trigger rate](../administration/settings/continuous_integration.md#maximum-downstream-pipeline-trigger-rate). Default: `0` (no restriction). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144077) in GitLab 16.10. |
+| `downstream_pipeline_trigger_limit_per_project_user_sha` | integer | no                            | [Maximum downstream pipeline trigger rate](../administration/settings/continuous_integration.md#limit-downstream-pipeline-trigger-rate). Default: `0` (no restriction). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144077) in GitLab 16.10. |
 | `dsa_key_restriction`                    | integer          | no                                   | The minimum allowed bit length of an uploaded DSA key. Default is `0` (no restriction). `-1` disables DSA keys. |
 | `ecdsa_key_restriction`                  | integer          | no                                   | The minimum allowed curve size (in bits) of an uploaded ECDSA key. Default is `0` (no restriction). `-1` disables ECDSA keys. |
 | `ecdsa_sk_key_restriction`               | integer          | no                                   | The minimum allowed curve size (in bits) of an uploaded ECDSA_SK key. Default is `0` (no restriction). `-1` disables ECDSA_SK keys. |
@@ -598,6 +603,7 @@ to configure other related settings. These requirements are
 | `jira_connect_proxy_url`                 | string           | no                                   | URL of the GitLab instance used as a proxy for the GitLab for Jira Cloud app. |
 | `keep_latest_artifact`                   | boolean          | no                                   | Prevent the deletion of the artifacts from the most recent successful jobs, regardless of the expiry time. Enabled by default. |
 | `local_markdown_version`                 | integer          | no                                   | Increase this value when any cached Markdown should be invalidated. |
+| `lock_memberships_to_saml`               | boolean          | no                                   | Enforce a [global lock on SAML group memberships](../user/group/saml_sso/group_sync.md#global-saml-group-memberships-lock). |
 | `mailgun_signing_key`                    | string           | no                                   | The Mailgun HTTP webhook signing key for receiving events from webhook. |
 | `mailgun_events_enabled`                 | boolean          | no                                   | Enable Mailgun event receiver. |
 | `maintenance_mode_message`               | string           | no                                   | Message displayed when instance is in maintenance mode. Premium and Ultimate only. |
@@ -622,7 +628,7 @@ to configure other related settings. These requirements are
 | `max_yaml_size_bytes`                    | integer          | no                                   | The maximum size in bytes of a single CI/CD configuration file. Default: `2097152`. |
 | `git_rate_limit_users_allowlist`         | array of strings  | no                                  | List of usernames excluded from Git anti-abuse rate limits. Default: `[]`, Maximum: 100 usernames. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90815) in GitLab 15.2. GitLab Self-Managed, Ultimate only. |
 | `git_rate_limit_users_alertlist`         | array of integers | no                                  | List of user IDs that are emailed when the Git abuse rate limit is exceeded. Default: `[]`, Maximum: 100 user IDs. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110201) in GitLab 15.9. GitLab Self-Managed, Ultimate only. |
-| `auto_ban_user_on_excessive_projects_download` | boolean    | no                                   | When enabled, users will get automatically banned from the application when they download more than the maximum number of unique projects in the time period specified by `max_number_of_repository_downloads` and `max_number_of_repository_downloads_within_time_period` respectively. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94153) in GitLab 15.4. GitLab Self-Managed, Ultimate only. |
+| `auto_ban_user_on_excessive_projects_download` | boolean    | no                                   | When enabled, users will get automatically banned from the application when they download more than the maximum number of unique projects in the time period specified by `max_number_of_repository_downloads` and `max_number_of_repository_downloads_within_time_period`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94153) in GitLab 15.4. GitLab Self-Managed, Ultimate only. |
 | `mirror_available`                       | boolean          | no                                   | Allow repository mirroring to configured by project Maintainers. If disabled, only Administrators can configure repository mirroring. |
 | `mirror_capacity_threshold`              | integer          | no                                   | Minimum capacity to be available before scheduling more mirrors preemptively. Premium and Ultimate only. |
 | `mirror_max_capacity`                    | integer          | no                                   | Maximum number of mirrors that can be synchronizing at the same time. Premium and Ultimate only. |
@@ -696,7 +702,7 @@ to configure other related settings. These requirements are
 | `session_expire_from_init`               | boolean          | no                                   | If `true`, sessions expire a number of minutes after the session was created rather than after the last activity. This lifetime of a session is defined by `session_expire_delay`. |
 | `security_policy_global_group_approvers_enabled` | boolean  | no                                   | Whether to look up merge request approval policy approval groups globally or within project hierarchies. |
 | `security_approval_policies_limit`       | integer          | no                                   | Maximum number of active merge request approval policies per security policy project. Default: 5. Maximum: 20 |
-| `scan_execution_policies_action_limit`   | integer          | no                                   | Maximum number of `actions` per scan execution policy. Default: 10 from GitLab 18.0. Maximum: 20 |
+| `scan_execution_policies_action_limit`   | integer          | no                                   | Maximum number of `actions` per scan execution policy. Default: 0. Maximum: 20 |
 | `scan_execution_policies_schedule_limit` | integer          | no                                   | Maximum number of `type: schedule` rules per scan execution policy. Default: 0. Maximum: 20 |
 | `security_txt_content`                    | string          | no                                   | [Public security contact information](../administration/settings/security_contact_information.md). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433210) in GitLab 16.7. |
 | `service_access_tokens_expiration_enforced` | boolean       | no                                   | Flag to indicate if token expiry date can be optional for service account users |
@@ -757,6 +763,7 @@ to configure other related settings. These requirements are
 | `throttle_unauthenticated_web_period_in_seconds`          | integer | required by:<br>`throttle_unauthenticated_web_enabled`          | Rate limit period in seconds. |
 | `throttle_unauthenticated_web_requests_per_period`        | integer | required by:<br>`throttle_unauthenticated_web_enabled`          | Max requests per period per IP. |
 | `time_tracking_limit_to_hours`           | boolean          | no                                   | Limit display of time tracking units to hours. Default is `false`. |
+| `top_level_group_creation_enabled`           | boolean          | no                                   | Allows a user to create top-level-groups. Default is `true`. |
 | `two_factor_grace_period`                | integer          | required by: `require_two_factor_authentication` | Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication. |
 | `unconfirmed_users_delete_after_days`    | integer          | no                                   | Specifies how many days after sign-up to delete users who have not confirmed their email. Only applicable if `delete_unconfirmed_users` is set to `true`. Must be `1` or greater. Default is `7`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352514) in GitLab 16.1. GitLab Self-Managed, Premium and Ultimate only. |
 | `unique_ips_limit_enabled`               | boolean          | no                                   | (**If enabled, requires:** `unique_ips_limit_per_user` and `unique_ips_limit_time_window`) Limit sign in from multiple IPs. |
@@ -786,6 +793,7 @@ to configure other related settings. These requirements are
 | `helm_max_packages_count` | integer     | no                                   | Maximum number of Helm packages that can be listed per channel. Must be at least 1. Default is 1000. |
 | `require_admin_two_factor_authentication` | boolean         | no | Allow administrators to require 2FA for all administrators on the instance. |
 | `secret_push_protection_available` | boolean         | no | Allow projects to enable secret push protection. This does not enable secret push protection. Ultimate only. |
+| `disable_invite_members` | boolean         | no | Disable invite members functionality for group. |
 
 ### Inactive project settings
 

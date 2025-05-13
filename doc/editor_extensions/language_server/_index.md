@@ -16,7 +16,7 @@ NPM module to determine proxy settings from these environment variables:
 
 - `NO_PROXY`
 - `HTTPS_PROXY`
-- `http_proxy` (in lower case)
+- `http_proxy` (in lowercase)
 
 To configure the Language Server to use a proxy:
 
@@ -42,6 +42,17 @@ To configure the Language Server to use a proxy:
 {{< /tabs >}}
 
 ## Troubleshooting
+
+### Update your editor extension
+
+The Language Server is bundled with each editor extension for GitLab. To ensure you have the latest features and bug fixes
+available, update to the latest version of your extension:
+
+- Update instructions [for Eclipse](../eclipse/_index.md#update-the-plugin)
+- Update instructions [for JetBrains IDEs](../jetbrains_ide/_index.md#update-the-extension)
+- Update instructions [for Neovim](../neovim/_index.md#update-the-extension)
+- Update instructions [for Visual Studio](../visual_studio/_index.md#update-the-extension)
+- Update instructions [for Visual Studio Code](../visual_studio_code/_index.md#update-the-extension)
 
 ### Enable proxy authentication
 

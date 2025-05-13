@@ -6,7 +6,7 @@ module Gitlab
   module Utils
     module MergeHash
       extend self
-      # Deep merges an array of hashes
+      # Deep merges an array of elements which can be hashes, arrays, or other objects.
       #
       # [{ hello: ["world"] },
       #  { hello: "Everyone" },
@@ -49,8 +49,14 @@ module Gitlab
 
       def merge_hash_into_array(array, new_hash)
         crushed_new_hash = crush_hash(new_hash)
+
         # Merge the hash into an existing element of the array if there is overlap
-        if mergeable_index = array.index { |element| crushable?(element) && (crush(element) & crushed_new_hash).any? }
+        mergeable_index = array.index do |element|
+          crushed_element = crushable?(element) ? crush(element) : Array.wrap(element)
+          (crushed_element & crushed_new_hash).any?
+        end
+
+        if mergeable_index
           array[mergeable_index] = merge_hash_tree(array[mergeable_index], new_hash)
         else
           array << new_hash

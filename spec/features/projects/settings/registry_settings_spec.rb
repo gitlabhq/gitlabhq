@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project > Settings > Packages and registries',
+RSpec.describe 'Project > Settings > Packages and registries', :aggregate_failures,
   feature_category: :container_registry do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, namespace: user.namespace) }
@@ -272,11 +272,13 @@ RSpec.describe 'Project > Settings > Packages and registries',
             click_button 'Edit'
           end
 
-          expect(page).to have_selector 'h2', text: 'Edit protection rule'
-          fill_in 'Protect container tags matching', with: 'v1.*'
-          select 'Maintainer', from: 'Minimum role allowed to push'
-          select 'Maintainer', from: 'Minimum role allowed to delete'
-          click_button 'Save changes'
+          within_testid settings_block_id do
+            expect(page).to have_selector 'h2', text: 'Edit protection rule'
+            fill_in 'Protect container tags matching', with: 'v1.*'
+            select 'Maintainer', from: 'Minimum role allowed to push'
+            select 'Maintainer', from: 'Minimum role allowed to delete'
+            click_button 'Save changes'
+          end
 
           settings_block = find_by_testid(settings_block_id)
           expect(page).not_to have_selector 'h2', text: 'Edit protection rule'
@@ -358,7 +360,7 @@ RSpec.describe 'Project > Settings > Packages and registries',
 
       visit_method
 
-      expect(page).to have_link('next-generation container registry', href: help_page_href)
+      expect(page).to have_link('Learn more', href: help_page_href)
     end
   end
 

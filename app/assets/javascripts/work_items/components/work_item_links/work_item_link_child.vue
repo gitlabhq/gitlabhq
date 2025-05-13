@@ -1,13 +1,13 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import WorkItemLinkChildContents from 'ee_else_ce/work_items/components/shared/work_item_link_child_contents.vue';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
-import { STATE_OPEN, WORK_ITEM_TYPE_NAME_TASK } from '../../constants';
+import { WORK_ITEM_TYPE_NAME_TASK } from '../../constants';
 import { findHierarchyWidget, getDefaultHierarchyChildrenCount, getItems } from '../../utils';
 import toggleHierarchyTreeChildMutation from '../../graphql/client/toggle_hierarchy_tree_child.mutation.graphql';
 import isExpandedHierarchyTreeChildQuery from '../../graphql/client/is_expanded_hierarchy_tree_child.query.graphql';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
-import WorkItemLinkChildContents from '../shared/work_item_link_child_contents.vue';
 import WorkItemChildrenLoadMore from '../shared/work_item_children_load_more.vue';
 
 export default {
@@ -179,23 +179,8 @@ export default {
     endCursor() {
       return this.pageInfo?.endCursor || '';
     },
-    isItemOpen() {
-      return this.childItem.state === STATE_OPEN;
-    },
     childItemType() {
       return this.childItem.workItemType.name;
-    },
-    iconClass() {
-      if (this.childItemType === WORK_ITEM_TYPE_NAME_TASK) {
-        return this.isItemOpen ? 'gl-fill-icon-success' : 'gl-fill-icon-info';
-      }
-      return '';
-    },
-    stateTimestamp() {
-      return this.isItemOpen ? this.childItem.createdAt : this.childItem.closedAt;
-    },
-    stateTimestampTypeText() {
-      return this.isItemOpen ? __('Created') : __('Closed');
     },
     chevronType() {
       return this.isExpanded ? 'chevron-down' : 'chevron-right';
@@ -269,7 +254,7 @@ export default {
 </script>
 
 <template>
-  <li class="tree-item !gl-px-0 !gl-py-2">
+  <li class="tree-item !gl-mx-0 !gl-px-0 !gl-py-2">
     <div class="gl-flex gl-items-start">
       <div v-if="hasIndirectChildren" class="gl-mr-4 gl-h-7 gl-w-5">
         <gl-button
@@ -298,13 +283,9 @@ export default {
           :child-item="childItem"
           :can-update="canUpdate"
           :class="childItemClass"
-          :parent-work-item-id="issuableGid"
-          :work-item-type="workItemType"
           :show-labels="showLabels"
-          :show-closed="showClosed"
           :work-item-full-path="workItemFullPath"
           :show-weight="shouldShowWeight"
-          :is-active="isActive"
           @click="$emit('click', $event)"
           @removeChild="$emit('removeChild', childItem)"
         />
@@ -315,7 +296,6 @@ export default {
         v-if="isExpanded || showChildrenDropzone"
         :can-update="canUpdate"
         :work-item-id="issuableGid"
-        :work-item-iid="childItem.iid"
         :work-item-type="workItemType"
         :children="displayableChildren"
         :parent="childItem"

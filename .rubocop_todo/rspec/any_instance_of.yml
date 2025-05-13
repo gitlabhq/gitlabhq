@@ -173,7 +173,6 @@ RSpec/AnyInstanceOf:
     - 'spec/lib/gitlab/metrics/rack_middleware_spec.rb'
     - 'spec/lib/gitlab/metrics_spec.rb'
     - 'spec/lib/gitlab/sidekiq_daemon/monitor_spec.rb'
-    - 'spec/lib/gitlab/tracking/destinations/snowplow_spec.rb'
     - 'spec/lib/gitlab/tracking_spec.rb'
     - 'spec/lib/gitlab/usage_data_spec.rb'
     - 'spec/lib/gitlab/workhorse_spec.rb'

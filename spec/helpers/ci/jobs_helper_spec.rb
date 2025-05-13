@@ -35,7 +35,7 @@ RSpec.describe Ci::JobsHelper, feature_category: :continuous_integration do
         "retry_outdated_job_docs_url" => "/help/ci/pipelines/settings.md#prevent-outdated-deployment-jobs",
         "pipeline_test_report_url" => "/#{project.full_path}/-/pipelines/#{job.pipeline.id}/test_report",
         "log_viewer_path" => "/#{project.full_path}/-/jobs/#{job.id}/viewer",
-        "user_role" => "Maintainer"
+        "can_set_pipeline_variables" => Ability.allowed?(user, :set_pipeline_variables, project).to_s
       })
     end
 

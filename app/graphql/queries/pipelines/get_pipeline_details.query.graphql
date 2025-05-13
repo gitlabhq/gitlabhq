@@ -129,6 +129,7 @@ query getPipelineDetails($projectPath: ID!, $iid: ID!) {
                     tooltip
                     hasDetails
                     detailsPath
+                    deploymentDetailsPath
                     group
                     label
                     text

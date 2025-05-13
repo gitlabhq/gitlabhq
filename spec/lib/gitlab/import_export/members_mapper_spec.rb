@@ -293,6 +293,22 @@ RSpec.describe Gitlab::ImportExport::MembersMapper do
           end
         end
 
+        context 'when not using the default member' do
+          let(:members_mapper) do
+            described_class.new(
+              exported_members: exported_members, user: user2, importable: importable, default_member: false
+            )
+          end
+
+          before do
+            importable.add_members([user, user2], GroupMember::MAINTAINER)
+          end
+
+          it 'does not destroy existing members on initialization' do
+            expect { members_mapper }.not_to change { importable.reload.members.count }
+          end
+        end
+
         context 'when importer mapping fails' do
           let(:exception_message) { 'Something went wrong' }
 

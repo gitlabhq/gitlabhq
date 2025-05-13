@@ -367,7 +367,7 @@ Elements in the `allowed_to_push` / `allowed_to_merge` / `allowed_to_unprotect` 
 form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`.
 Each user must have access to the project and each group must [have this project shared](../user/project/members/sharing_projects_groups.md).
 These access levels allow more granular control over protected branch access.
-For more information, see [Add a group to protected branches](../user/project/repository/branches/protected.md#add-a-group-to-protected-branches).
+For more information, see [configure group permissions](../user/project/repository/branches/protected.md#with-group-permissions).
 
 The following example request creates a protected branch with user push access and group merge access.
 The `user_id` is `2` and the `group_id` is `3`.
@@ -439,7 +439,7 @@ The following example response includes:
 Elements in the `allowed_to_push` array should take the form `{user_id: integer}`, `{group_id: integer}`,
 `{deploy_key_id: integer}`, or `{access_level: integer}`.
 The deploy key must be enabled for your project and it must have write access to your project repository.
-For other requirements, see [Allow deploy keys to push to a protected branch](../user/project/repository/branches/protected.md#allow-deploy-keys-to-push-to-a-protected-branch).
+For other requirements, see [Allow deploy keys to push to a protected branch](../user/project/repository/branches/protected.md#enable-deploy-key-access).
 
 ```shell
 curl --request POST \

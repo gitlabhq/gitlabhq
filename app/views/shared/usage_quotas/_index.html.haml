@@ -1,10 +1,6 @@
 - @force_desktop_expanded_sidebar = true
 - page_title s_("UsageQuota|Usage")
 
-- content_for :page_specific_javascripts do
-  = render "layouts/one_trust"
-= render_if_exists 'shared/usage_quotas/google_tag_manager'
-
 = yield :usage_quotas_alerts
 
 = render ::Layouts::PageHeadingComponent.new(s_('UsageQuota|Usage Quotas')) do |c|

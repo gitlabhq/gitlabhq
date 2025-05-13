@@ -49,7 +49,7 @@ RSpec.describe Gitlab::ImportExport::FileImporter, feature_category: :importers 
     end
 
     let(:archive_file) { nil }
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
     let(:user) { project.creator }
     let!(:import_export_upload) { create(:import_export_upload, project: project, user: user) }
     let(:tmpdir) { Dir.mktmpdir }
@@ -313,6 +313,42 @@ RSpec.describe Gitlab::ImportExport::FileImporter, feature_category: :importers 
 
       expect(result).to eq(false)
       expect(shared.errors.join).to eq('Decompressed archive size validation failed.')
+    end
+  end
+
+  context 'when destination project is missing the correct ImportExportUpload' do
+    let(:project) { create(:project) }
+
+    subject(:file_importer) do
+      described_class.new(importable: project, archive_file: nil, shared: shared, user: project.creator)
+    end
+
+    context 'and it has no uploads' do
+      it 'returns false and sets an error on shared' do
+        result = file_importer.import
+
+        expect(result).to be false
+        expect(shared.errors.join).to eq(
+          "Missing import file for Project #{project.id} and user #{project.creator.id}. " \
+            "Project has 0 other file(s)."
+        )
+      end
+    end
+
+    context 'and it has other uploads' do
+      before do
+        project.import_export_uploads.create!
+      end
+
+      it 'returns false and sets an error on shared' do
+        result = file_importer.import
+
+        expect(result).to be false
+        expect(shared.errors.join).to eq(
+          "Missing import file for Project #{project.id} and user #{project.creator.id}. " \
+            "Project has 1 other file(s)."
+        )
+      end
     end
   end
 

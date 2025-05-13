@@ -39,7 +39,7 @@ in the Helm Charts documentation.
 
 ## Enhancements
 
-The metadata database architecture supports performance improvements, bug fixes, and new features 
+The metadata database architecture supports performance improvements, bug fixes, and new features
 that are not available with the object storage metadata architecture. These enhancements include:
 
 - Automatic [online garbage collection](../../user/packages/container_registry/delete_container_registry_images.md#garbage-collection)
@@ -52,8 +52,8 @@ that are not available with the object storage metadata architecture. These enha
 - Tracking and displaying tag publish timestamps (see [issue 290949](https://gitlab.com/gitlab-org/gitlab/-/issues/290949))
 - Sorting repository tags by additional attributes beyond name
 
-Due to technical constraints of the object storage metadata architecture, new features are only 
-implemented for the metadata database version. Non-security bug fixes might be limited to the 
+Due to technical constraints of the object storage metadata architecture, new features are only
+implemented for the metadata database version. Non-security bug fixes might be limited to the
 metadata database version.
 
 ## Known limitations
@@ -118,7 +118,7 @@ To enable the database:
      'user' => '<registry_database_username_placeholder_change_me>',
      'password' => '<registry_database_placeholder_change_me>',
      'dbname' => '<registry_database_name_placeholder_change_me>',
-     'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
+     'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/16/libpq-ssl.html.
      'sslcert' => '</path/to/cert.pem>',
      'sslkey' => '</path/to/private.key>',
      'sslrootcert' => '</path/to/ca.pem>'
@@ -137,7 +137,7 @@ To enable the database:
      'user' => '<registry_database_username_placeholder_change_me>',
      'password' => '<registry_database_placeholder_change_me>',
      'dbname' => '<registry_database_name_placeholder_change_me>',
-     'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
+     'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/16/libpq-ssl.html.
      'sslcert' => '</path/to/cert.pem>',
      'sslkey' => '</path/to/private.key>',
      'sslrootcert' => '</path/to/ca.pem>'
@@ -189,7 +189,7 @@ and your registry contains a relatively small amount of data.
      'user' => '<registry_database_username_placeholder_change_me>',
      'password' => '<registry_database_placeholder_change_me>',
      'dbname' => '<registry_database_name_placeholder_change_me>',
-     'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
+     'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/16/libpq-ssl.html.
      'sslcert' => '</path/to/cert.pem>',
      'sslkey' => '</path/to/private.key>',
      'sslrootcert' => '</path/to/ca.pem>'
@@ -237,7 +237,7 @@ and your registry contains a relatively small amount of data.
      'user' => '<registry_database_username_placeholder_change_me>',
      'password' => '<registry_database_placeholder_change_me>',
      'dbname' => '<registry_database_name_placeholder_change_me>',
-     'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
+     'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/16/libpq-ssl.html.
      'sslcert' => '</path/to/cert.pem>',
      'sslkey' => '</path/to/private.key>',
      'sslrootcert' => '</path/to/ca.pem>'
@@ -298,7 +298,7 @@ If you must halt the operation, you have to restart this step.
      'user' => '<registry_database_username_placeholder_change_me>',
      'password' => '<registry_database_placeholder_change_me>',
      'dbname' => '<registry_database_name_placeholder_change_me>',
-     'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
+     'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/16/libpq-ssl.html.
      'sslcert' => '</path/to/cert.pem>',
      'sslkey' => '</path/to/private.key>',
      'sslrootcert' => '</path/to/ca.pem>'
@@ -367,7 +367,7 @@ Allow enough time for downtime while step two is being executed.
      'user' => '<registry_database_username_placeholder_change_me>',
      'password' => '<registry_database_placeholder_change_me>',
      'dbname' => '<registry_database_name_placeholder_change_me>',
-     'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
+     'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/16/libpq-ssl.html.
      'sslcert' => '</path/to/cert.pem>',
      'sslkey' => '</path/to/private.key>',
      'sslrootcert' => '</path/to/ca.pem>'
@@ -756,7 +756,7 @@ You must truncate the table manually on your PostgreSQL instance:
      'user' => '<registry_database_username_placeholder_change_me>',
      'password' => '<registry_database_placeholder_change_me>',
      'dbname' => '<registry_database_name_placeholder_change_me>',
-     'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
+     'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/16/libpq-ssl.html.
      'sslcert' => '</path/to/cert.pem>',
      'sslkey' => '</path/to/private.key>',
      'sslrootcert' => '</path/to/ca.pem>'

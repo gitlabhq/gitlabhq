@@ -193,8 +193,11 @@ class TodoService
   #
   #   * Mark all outstanding todos on this MR for the current user as done
   #
-  def new_review(review, current_user)
-    resolve_todos_for_target(review.merge_request, current_user)
+  def new_review(merge_request, current_user)
+    resolve_todos_for_target(merge_request, current_user)
+
+    # Create a new todo for assignees and author
+    create_review_submitted_todo(merge_request, current_user)
   end
 
   # When user marks a target as todo
@@ -219,19 +222,6 @@ class TodoService
     resolve_todos(pending_todos([current_user], attributes), current_user)
 
     GraphqlTriggers.issuable_todo_updated(target)
-  end
-
-  # Resolves all todos related to target for all users
-  def resolve_todos_with_attributes_for_target(target, attributes, resolution: :done, resolved_by_action: :system_done)
-    target_attributes = { target_id: target.id, target_type: target.class.polymorphic_name }
-    attributes.merge!(target_attributes)
-    attributes[:preload_user_association] = true
-
-    todos = PendingTodosFinder.new(attributes).execute
-    users = todos.map(&:user)
-    todos_ids = todos.batch_update(state: resolution, resolved_by_action: resolved_by_action)
-    users.each(&:update_todos_count_cache)
-    todos_ids
   end
 
   def resolve_todos(todos, current_user, resolution: :done, resolved_by_action: :system_done)
@@ -308,7 +298,28 @@ class TodoService
     create_todos(approvers, attributes, namespace, project)
   end
 
+  def create_review_submitted_todo(target, review_author)
+    users = (target.assignees | [target.author]).reject { |u| u.id == review_author.id }
+    project = target.project
+    attributes = attributes_for_todo(project, target, review_author, Todo::REVIEW_SUBMITTED)
+
+    create_todos(users, attributes, project.namespace, project)
+  end
+
   private
+
+  # Resolves all todos related to target for all users
+  def resolve_todos_with_attributes_for_target(target, attributes, resolution: :done, resolved_by_action: :system_done)
+    target_attributes = { target_id: target.id, target_type: target.class.polymorphic_name }
+    attributes.merge!(target_attributes)
+    attributes[:preload_user_association] = true
+
+    todos = PendingTodosFinder.new(attributes).execute
+    users = todos.map(&:user)
+    todos_ids = todos.batch_update(state: resolution, resolved_by_action: resolved_by_action)
+    users.each(&:update_todos_count_cache)
+    todos_ids
+  end
 
   def create_todos(users, attributes, namespace, project)
     users = Array(users)
@@ -338,12 +349,13 @@ class TodoService
     ).distinct_user_ids
   end
 
-  def bulk_insert_todos(users, attributes)
+  def bulk_insert_todos(users, attributes, &attribute_merger)
     todos_ids = []
+    attribute_merger ||= ->(user, attrs) { attrs.merge(user_id: user.id) }
 
     users.each_slice(BATCH_SIZE) do |users_batch|
       todos_attributes = users_batch.map do |user|
-        Todo.new(attributes.merge(user_id: user.id)).attributes.except('id', 'created_at', 'updated_at')
+        Todo.new(attribute_merger.call(user, attributes)).attributes.except('id', 'created_at', 'updated_at')
       end
 
       todos_ids += Todo.insert_all(todos_attributes, returning: :id).rows.flatten unless todos_attributes.blank?

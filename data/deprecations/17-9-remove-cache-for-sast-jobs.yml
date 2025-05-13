@@ -1,5 +1,5 @@
 - title: "SAST jobs no longer use global cache settings"
-  removal_milestone: "18.0"
+  removal_milestone: "Cancelled"
   announcement_milestone: "17.9"
   breaking_change: true
   window: 1

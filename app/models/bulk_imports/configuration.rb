@@ -3,6 +3,8 @@
 # Stores the authentication data required to access another GitLab instance on
 # behalf of a user, to import Groups and Projects directly from that instance.
 class BulkImports::Configuration < ApplicationRecord
+  include Gitlab::EncryptedAttribute
+
   self.table_name = 'bulk_import_configurations'
 
   belongs_to :bulk_import, inverse_of: :configuration, optional: true
@@ -12,11 +14,11 @@ class BulkImports::Configuration < ApplicationRecord
     allow_nil: true
 
   attr_encrypted :url,
-    key: Settings.attr_encrypted_db_key_base_32,
+    key: :db_key_base_32,
     mode: :per_attribute_iv,
     algorithm: 'aes-256-gcm'
   attr_encrypted :access_token,
-    key: Settings.attr_encrypted_db_key_base_32,
+    key: :db_key_base_32,
     mode: :per_attribute_iv,
     algorithm: 'aes-256-gcm'
 

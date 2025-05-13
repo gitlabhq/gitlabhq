@@ -198,9 +198,9 @@ Use title case for **AI Impact Dashboard**.
 On first mention on a page, use **GitLab Duo AI Impact Dashboard**.
 Thereafter, use **AI Impact Dashboard** by itself.
 
-## AI-powered DevSecOps platform
+## AI-powered, AI-native
 
-If preceded by GitLab, capitalize **Platform**. For example, the GitLab AI-powered DevSecOps Platform.
+Use **AI-native** instead of **AI-powered**. For example, **Code Suggestions is an AI-native feature**.
 
 ## air gap, air-gapped
 
@@ -681,6 +681,10 @@ Instead of:
 - Data are collected.
 - The data show a performance increase.
 
+## deadline
+
+Do not use **deadline**. Use **due date** instead.
+
 ## default role
 
 Use **default role** when referring to the following predefined roles that have
@@ -742,10 +746,6 @@ When writing about the Developer role:
 Do not use bold.
 
 Do not use **Developer permissions**. A user who is assigned the Developer role has a set of associated permissions.
-
-## DevSecOps platform
-
-If preceded by GitLab, capitalize **Platform**. For example, the GitLab DevSecOps Platform.
 
 ## dialog
 
@@ -1527,7 +1527,10 @@ Instead of:
 
 ## limitations
 
-Do not use **limitations**. Use **known issues** instead.
+Do not use **Limitations** as a topic title. For more information,
+see [reference topic titles](../topic_types/reference.md#reference-topic-titles).
+
+If you must, you can use the title **Known issues**.
 
 ## log in, log on
 
@@ -2741,6 +2744,7 @@ Instead of:
 ## you can
 
 When possible, start sentences with an active verb instead of **you can**.
+
 For example:
 
 - Use code review analytics to view merge request data.

@@ -159,6 +159,19 @@ describe('issue_note_body component', () => {
   });
 
   describe('duo code review feedback', () => {
+    const createMockStoreWithDiscussion = (discussionId, discussionNotes) => {
+      return new Vuex.Store({
+        getters: {
+          getDiscussion: () => (id) => {
+            if (id === discussionId) {
+              return { notes: discussionNotes };
+            }
+            return {};
+          },
+        },
+      });
+    };
+
     it.each`
       userType                 | type                | exists   | existsText
       ${'duo_code_review_bot'} | ${null}             | ${true}  | ${'renders'}
@@ -168,13 +181,47 @@ describe('issue_note_body component', () => {
     `(
       '$existsText code review feedback component when author type is "$userType" and note type is "$type"',
       ({ userType, type, exists }) => {
+        const duoNote = {
+          ...note,
+          id: '1',
+          type,
+          discussion_id: 'discussion1',
+          author: {
+            ...note.author,
+            user_type: userType,
+          },
+        };
+        const mockStore = createMockStoreWithDiscussion('discussion1', [duoNote]);
+
         createComponent({
-          props: { note: { ...note, type, author: { ...note.author, user_type: userType } } },
+          props: { note: duoNote },
+          store: mockStore,
         });
 
         expect(wrapper.findByTestId('code-review-feedback').exists()).toBe(exists);
       },
     );
+
+    it('does not render if not first note in discussion', () => {
+      const duoNote = {
+        ...note,
+        id: '9',
+        type: 'DiscussionNote',
+        discussion_id: 'discussion1',
+        author: {
+          ...note.author,
+          user_type: 'duo_code_review_bot',
+        },
+      };
+      const mockStore = createMockStoreWithDiscussion('discussion1', [note, duoNote]);
+
+      createComponent({
+        props: { note: duoNote },
+        store: mockStore,
+      });
+
+      expect(wrapper.findByTestId('code-review-feedback').exists()).toBe(false);
+    });
   });
 
   describe('duo code review feedback text', () => {
@@ -291,8 +338,9 @@ describe('issue_note_body component', () => {
 
         const result = wrapper.vm.duoFeedbackText;
         expect(result).toContain('Rate this response');
+        expect(result).toContain('Mention');
         expect(result).toContain('@GitLabDuo');
-        expect(result).toContain('in reply for more questions');
+        expect(result).toContain('to continue the conversation.');
       });
     });
   });

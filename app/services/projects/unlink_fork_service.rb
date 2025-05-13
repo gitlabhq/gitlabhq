@@ -17,7 +17,11 @@ module Projects
                          .from_and_to_forks(@project)
 
       merge_requests.find_each do |mr|
-        ::MergeRequests::CloseService.new(project: @project, current_user: @current_user).execute(mr)
+        ::MergeRequests::CloseService.new(
+          project: @project,
+          current_user: @current_user,
+          params: { skip_authorization: true }
+        ).execute(mr)
         log_info(message: "UnlinkForkService: Closed merge request", merge_request_id: mr.id)
       end
 

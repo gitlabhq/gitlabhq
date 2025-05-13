@@ -39,12 +39,12 @@ by the same metrics.
 A model run is a variation of the training of a machine learning model, that can be eventually promoted to a version
 of the model.
 
-![Experiment runs](img/runs_v17_9.png)
+![Experiment run list table with run ID, creation timestamps, creator name, and status.](img/runs_v17_9.png)
 
 The goal of a data scientist is to find the model run whose parameter values lead to the best model
 performance, as indicated by the given metrics.
 
-![Run Detail](img/run_v17_9.png)
+![Experiment details and metadata page showing ML flow run ID, source information, and parameters.](img/run_v17_9.png)
 
 Some example parameters:
 

@@ -54,7 +54,8 @@ $work-item-overview-gap-width: 2rem;
     // allow the main content area to shrink
     // grid items have "max-width: auto" so without the minmax the content can
     // spill outside of the overview container
-    grid-template-columns: minmax(0, 1fr) $work-item-overview-right-sidebar-width;
+    $work-item-sidebar-min-width: 13rem;
+    grid-template-columns: minmax(67%, 1fr) minmax($work-item-sidebar-min-width, $work-item-overview-right-sidebar-width);
     column-gap: $work-item-overview-gap-width;
   }
 }
@@ -123,10 +124,10 @@ $work-item-overview-gap-width: 2rem;
 $disclosure-hierarchy-chevron-dimension: 1.2rem;
 
 @mixin hierarchy-active-item-color {
-  background-color: var(--gray-50, $gray-50);
+  @apply gl-bg-strong;
 
   &::after {
-    background-color: var(--gray-50, $gray-50);
+    @apply gl-bg-strong;
   }
 }
 
@@ -364,8 +365,38 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   }
 }
 
-// Safari-specific override to avoid container stacking context problems
-@supports (-webkit-appearance:none) and (stroke-color:transparent) {
+.work-item-sidebar-container {
+  container-type: inline-size;
+  container-name: work-item-sidebar;
+
+  @container work-item-sidebar (max-width: #{calc($work-item-overview-right-sidebar-width - 3rem)}) {
+    .time-tracking-body {
+      @apply gl-flex-col gl-items-start;
+
+      .time-tracking-spent-and-progress {
+        @apply gl-flex-col-reverse gl-w-full gl-items-stretch;
+
+        .time-tracking-progress {
+          @apply gl-mx-0 gl-my-2;
+        }
+      }
+    }
+
+    .work-item-date-input {
+      @apply gl-flex-col gl-items-stretch;
+
+      .work-item-datepicker {
+        @apply gl-max-w-full;
+      }
+    }
+  }
+}
+
+// Temporary fallback for browsers that do not properly support container queries.
+// Should be removed once container queries are fully stable across all browsers.
+// This is implemnted below for specific browsers.
+// Cf. https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186598
+@mixin browser-specific-overrides {
   .work-item-design-widget-container {
     container-type: unset;
 
@@ -395,4 +426,18 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
       }
     }
   }
+
+  .work-item-sidebar-container {
+    container-type: unset;
+  }
+}
+
+// Safari
+@supports (-webkit-appearance:none) and (stroke-color:transparent) {
+  @include browser-specific-overrides;
+}
+
+// Firefox
+@-moz-document url-prefix() {
+  @include browser-specific-overrides;
 }

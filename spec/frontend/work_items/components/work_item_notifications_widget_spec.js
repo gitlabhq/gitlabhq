@@ -80,10 +80,16 @@ describe('WorkItemActions component', () => {
     expect(findNotificationsButton().exists()).toBe(true);
   });
 
+  it('does not render button if user is not logged in', () => {
+    isLoggedIn.mockReturnValue(false);
+    createComponent();
+
+    expect(findNotificationsButton().exists()).toBe(false);
+  });
+
   describe('notifications action', () => {
     beforeEach(() => {
       createComponent();
-      isLoggedIn.mockReturnValue(true);
     });
 
     it.each`

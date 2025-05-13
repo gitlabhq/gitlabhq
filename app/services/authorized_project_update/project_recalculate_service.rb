@@ -4,6 +4,7 @@ module AuthorizedProjectUpdate
   class ProjectRecalculateService
     # Service for refreshing all the authorizations to a particular project.
     include Gitlab::Utils::StrongMemoize
+
     BATCH_SIZE = 1000
 
     def initialize(project)

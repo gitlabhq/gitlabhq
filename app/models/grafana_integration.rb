@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 class GrafanaIntegration < ApplicationRecord
+  include Gitlab::EncryptedAttribute
+
   belongs_to :project
 
   attr_encrypted :token,
     mode: :per_attribute_iv,
     algorithm: 'aes-256-gcm',
-    key: Settings.attr_encrypted_db_key_base_32
+    key: :db_key_base_32
 
   before_validation :check_token_changes
 

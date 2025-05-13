@@ -13,6 +13,7 @@ PATH
       activerecord (>= 7)
       activesupport (>= 7)
       addressable (~> 2.8)
+      bigdecimal (~> 3.1)
       concurrent-ruby (~> 1.1)
       faraday (~> 2)
       google-cloud-storage_transfer (~> 1.2.0)
@@ -23,6 +24,7 @@ PATH
       jwt (~> 2.5)
       logger (~> 1.5)
       minitest (~> 5.11.0)
+      mutex_m (~> 0.3)
       parallel (~> 1.19)
       pg (~> 1.5.6)
       rack (~> 2.2.9)
@@ -47,6 +49,7 @@ GEM
       public_suffix (>= 2.0.2, < 7.0)
     ast (2.4.2)
     base64 (0.2.0)
+    bigdecimal (3.1.9)
     coderay (1.1.3)
     concurrent-ruby (1.3.4)
     diff-lcs (1.5.1)
@@ -131,6 +134,7 @@ GEM
     method_source (1.1.0)
     minitest (5.11.3)
     multi_json (1.15.0)
+    mutex_m (0.3.0)
     net-http (0.4.1)
       uri
     os (1.1.4)
@@ -232,6 +236,7 @@ CHECKSUMS
   addressable (2.8.7) sha256=462986537cf3735ab5f3c0f557f14155d778f4b43ea4f485a9deb9c8f7c58232
   ast (2.4.2) sha256=1e280232e6a33754cde542bc5ef85520b74db2aac73ec14acef453784447cc12
   base64 (0.2.0) sha256=0f25e9b21a02a0cc0cea8ef92b2041035d39350946e8789c562b2d1a3da01507
+  bigdecimal (3.1.9)
   coderay (1.1.3) sha256=dc530018a4684512f8f38143cd2a096c9f02a1fc2459edcfe534787a7fc77d4b
   concurrent-ruby (1.3.4) sha256=d4aa926339b0a86b5b5054a0a8c580163e6f5dcbdfd0f4bb916b1a2570731c32
   diff-lcs (1.5.1) sha256=273223dfb40685548436d32b4733aa67351769c7dea621da7d9dd4813e63ddfe
@@ -271,6 +276,7 @@ CHECKSUMS
   method_source (1.1.0) sha256=181301c9c45b731b4769bc81e8860e72f9161ad7d66dd99103c9ab84f560f5c5
   minitest (5.11.3) sha256=78e18aa2c49c58e9bc53c54a0b900e87ad0a96394e92fbbfa58d3ff860a68f45
   multi_json (1.15.0) sha256=1fd04138b6e4a90017e8d1b804c039031399866ff3fbabb7822aea367c78615d
+  mutex_m (0.3.0)
   net-http (0.4.1) sha256=a96efc5ea18bcb9715e24dda4159d10f67ff0345c8a980d04630028055b2c282
   os (1.1.4) sha256=57816d6a334e7bd6aed048f4b0308226c5fb027433b67d90a9ab435f35108d3f
   parallel (1.26.3) sha256=d86babb7a2b814be9f4b81587bf0b6ce2da7d45969fab24d8ae4bf2bb4d4c7ef

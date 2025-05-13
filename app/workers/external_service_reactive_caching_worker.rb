@@ -4,4 +4,5 @@ class ExternalServiceReactiveCachingWorker # rubocop:disable Scalability/Idempot
   include ReactiveCacheableWorker
 
   worker_has_external_dependencies!
+  worker_resource_boundary :cpu
 end

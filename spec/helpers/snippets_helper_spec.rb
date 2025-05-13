@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SnippetsHelper do
+RSpec.describe SnippetsHelper, feature_category: :source_code_management do
   include Gitlab::Routing
   include IconsHelper
   include BadgesHelper

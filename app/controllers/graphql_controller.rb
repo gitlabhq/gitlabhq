@@ -254,7 +254,7 @@ class GraphqlController < ApplicationController
   end
 
   def query
-    GraphQL::Language.escape_single_quoted_newlines(permitted_params.fetch(:query, ''))
+    GraphQL::Language.escape_single_quoted_newlines(permitted_params.fetch(:query, '').to_s)
   end
 
   def multiplex_param

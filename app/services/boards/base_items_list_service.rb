@@ -147,16 +147,8 @@ module Boards
     # rubocop: enable CodeReuse/ActiveRecord
 
     def labels_filter
-      Issuables::LabelFilter.new(params: {}, project: project, group: group)
+      Issuables::LabelFilter.new(params: {}, parent: parent)
     end
     strong_memoize_attr :labels_filter
-
-    def group
-      parent if parent.is_a?(Group)
-    end
-
-    def project
-      parent if parent.is_a?(Project)
-    end
   end
 end

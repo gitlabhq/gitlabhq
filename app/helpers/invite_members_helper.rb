@@ -6,7 +6,7 @@ module InviteMembersHelper
   def can_invite_members_for_project?(project)
     # do not use the can_admin_project_member? helper here due to structure of the view and how membership_locked?
     # is leveraged for inviting groups
-    can?(current_user, :admin_project_member, project)
+    can?(current_user, :invite_project_members, project)
   end
 
   def invite_accepted_notice(member)

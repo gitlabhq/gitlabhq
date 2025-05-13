@@ -386,6 +386,8 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
 
   context 'view merge request where fast-forward merge is not possible' do
     before do
+      stub_feature_flags(rebase_on_merge_automatic: ff_status)
+
       project.update!(merge_requests_ff_only_enabled: true)
 
       merge_request.update!(
@@ -396,13 +398,28 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
       visit project_merge_request_path(project, merge_request)
     end
 
-    it 'shows information about the merge error' do
+    let(:ff_status) { true }
+
+    it 'there is no error' do
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_requests
 
       click_button 'Expand merge checks'
 
-      expect(page).to have_content('Merge request must be rebased, because a fast-forward merge is not possible.')
+      expect(page).not_to have_content('Merge request must be rebased, because a fast-forward merge is not possible.')
+    end
+
+    context 'when ff is off' do
+      let(:ff_status) { false }
+
+      it 'shows information about the merge error' do
+        # Wait for the `ci_status` and `merge_check` requests
+        wait_for_requests
+
+        click_button 'Expand merge checks'
+
+        expect(page).to have_content('Merge request must be rebased, because a fast-forward merge is not possible.')
+      end
     end
   end
 

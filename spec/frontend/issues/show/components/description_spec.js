@@ -43,8 +43,8 @@ describe('Description component', () => {
 
   Vue.use(VueApollo);
 
-  const findGfmContent = () => wrapper.find('[data-testid="gfm-content"]');
-  const findTextarea = () => wrapper.find('[data-testid="textarea"]');
+  const findGfmContent = () => wrapper.findByTestId('gfm-content');
+  const findTextarea = () => wrapper.findByTestId('textarea');
   const findListItems = () => findGfmContent().findAll('ul > li');
   const findTaskActionButtons = () => wrapper.findAll('.task-list-item-actions');
 

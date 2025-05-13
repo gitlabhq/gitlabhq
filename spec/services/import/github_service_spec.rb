@@ -40,7 +40,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
         pagination_limit: pagination_limit
       )
 
-    allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(false)
+    allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:github_import, scope: user).and_return(false)
   end
 
   context 'with an input error' do
@@ -73,7 +73,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
 
   context 'when the rate limit is reached' do
     before do
-      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
+      allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:github_import, scope: user).and_return(true)
     end
 
     it 'returns an error relating to the rate limit' do

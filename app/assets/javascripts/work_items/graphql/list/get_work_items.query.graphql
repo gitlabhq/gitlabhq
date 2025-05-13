@@ -75,6 +75,7 @@ query getWorkItems(
       }
       nodes {
         id
+        iid
         author {
           id
           avatarUrl
@@ -84,10 +85,9 @@ query getWorkItems(
           webPath
         }
         closedAt
-        userDiscussionsCount
         confidential
         createdAt
-        iid
+        hidden
         namespace {
           id
           fullPath
@@ -96,6 +96,7 @@ query getWorkItems(
         state
         title
         updatedAt
+        userDiscussionsCount
         webUrl
         widgets {
           type
@@ -146,6 +147,7 @@ query getWorkItems(
       }
       nodes {
         id
+        iid
         author {
           id
           avatarUrl
@@ -155,10 +157,9 @@ query getWorkItems(
           webPath
         }
         closedAt
-        userDiscussionsCount
         confidential
         createdAt
-        iid
+        hidden
         namespace {
           id
           fullPath
@@ -167,6 +168,7 @@ query getWorkItems(
         state
         title
         updatedAt
+        userDiscussionsCount
         webUrl
         widgets {
           type

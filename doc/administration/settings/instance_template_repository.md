@@ -2,14 +2,15 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Configure a collection of file templates available for all projects on GitLab Self-Managed.
+gitlab_dedicated: yes
+description: Configure a collection of file templates available for all projects.
 title: Instance template repository
 ---
 
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -39,9 +40,18 @@ These templates cannot be used as a value of the
 
 ## Supported file types and locations
 
-Templates must be added to a specific subdirectory in the repository,
-corresponding to the kind of template. The following types of custom templates
-are supported:
+GitLab supports Markdown files for issue and merge request templates and other file type templates.
+
+The following Markdown description templates are supported:
+
+| Type               | Directory                         | Extension         |
+| :---------------:  | :-----------:                     | :-----------:     |
+| Issue              | `.gitlab/issue_templates`         | `.md`             |
+| Merge request      | `.gitlab/merge_request_templates` | `.md`             |
+
+For more information, see [description templates](../../user/project/description_templates.md).
+
+Other supported file type templates include:
 
 | Type                    | Directory            | Extension     |
 | :---------------:       | :-----------:        | :-----------: |
@@ -50,11 +60,15 @@ are supported:
 | `.gitlab-ci.yml`        | `gitlab-ci`          | `.yml`        |
 | `LICENSE`               | `LICENSE`            | `.txt`        |
 
-Each template must go in its respective subdirectory, have the correct
-extension and not be empty. So, the hierarchy should look like this:
+Each template must be in its respective subdirectory, have the correct
+extension, and not be empty. The hierarchy should look like this:
 
 ```plaintext
 |-- README.md
+    |-- issue_templates
+        |-- feature_request.md
+    |-- merge_request_templates
+        |-- default.md
 |-- Dockerfile
     |-- custom_dockerfile.dockerfile
     |-- another_dockerfile.dockerfile
@@ -69,7 +83,7 @@ extension and not be empty. So, the hierarchy should look like this:
     |-- another_license.txt
 ```
 
-Your custom templates are displayed on the dropdown list when a new file is added through the GitLab UI:
+Your custom templates are displayed in the dropdown list when a new file is added through the GitLab UI:
 
 ![The GitLab UI for creating a new file, with a dropdown list displaying the Dockerfile templates to choose from.](img/file_template_user_dropdown_v17_10.png)
 

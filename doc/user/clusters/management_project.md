@@ -103,7 +103,7 @@ project.
 
 Each scope can only be used by a single cluster for a management project.
 
-For example, let's say the following Kubernetes clusters are associated
+For example, the following Kubernetes clusters are associated
 to a management project:
 
 | Cluster     | Environment scope |

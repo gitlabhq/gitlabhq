@@ -85,6 +85,10 @@ export default {
       navigator.clipboard.writeText(this.wrappedQuery);
     },
 
+    reload() {
+      this.reloadGlqlBlock();
+    },
+
     async copyAsGFM() {
       await copyGLQLNodeAsGFM(this.$refs.presenter.$el);
     },

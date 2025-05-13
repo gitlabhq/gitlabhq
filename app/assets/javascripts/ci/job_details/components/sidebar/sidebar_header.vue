@@ -23,7 +23,7 @@ export default {
     forceCancelJobButtonLabel: s__('Job|Force cancel'),
     forceCancelJobButtonTooltip: s__('Job|Force cancel a job stuck in `canceling` state'),
     forceCancelJobConfirmText: s__(
-      'Job|Are you sure you want to force cancel this job? This will immediately mark the job as canceled, even if the runner is unresponsive.',
+      'Job|Are you sure you want to force cancel this job? This will immediately mark the job as canceled, even if the job is still running.',
     ),
   },
   forwardDeploymentFailureModalId,
@@ -175,7 +175,7 @@ export default {
             v-if="restJob.force_cancel_path"
             v-gl-tooltip.bottom
             :title="$options.i18n.forceCancelJobButtonTooltip"
-            :aria-label="$options.i18n.forceCancelJobButtonTooltip"
+            :aria-label="$options.i18n.forceCancelJobButtonLabel"
             :href="restJob.force_cancel_path"
             :data-confirm="$options.i18n.forceCancelJobConfirmText"
             data-confirm-btn-variant="danger"

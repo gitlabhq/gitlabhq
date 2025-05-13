@@ -23,7 +23,7 @@ Milestone 1:
 
 1. Add a new database index (not unique) to the table via post-migration (if not present already).
 1. Add model-level uniqueness validation to reduce the likelihood of duplicates (if not present already).
-1. Add a transaction-level [advisory lock](https://www.postgresql.org/docs/current/explicit-locking.html#ADVISORY-LOCKS) to prevent creating duplicate records.
+1. Add a transaction-level [advisory lock](https://www.postgresql.org/docs/16/explicit-locking.html#ADVISORY-LOCKS) to prevent creating duplicate records.
 
 The second step on its own will not prevent duplicate records, see the [Rails guides](https://guides.rubyonrails.org/active_record_validations.html#uniqueness) for more information.
 
@@ -69,7 +69,7 @@ Milestone 2:
 1. Implement the deduplication logic in a post deployment migration.
 1. Replace the existing index with a unique index.
 
-How to resolve duplicates (e.g., merge attributes, keep the most recent record) depends on the features built on top of the database table. In this example, we keep the most recent record.
+How to resolve duplicates (for example, merge attributes, keep the most recent record) depends on the features built on top of the database table. In this example, we keep the most recent record.
 
 ```ruby
 def up
@@ -150,7 +150,7 @@ Milestone 1:
 
 1. Add a new database index (not unique) to the table via post migration.
 1. Add model-level uniqueness validation to reduce the likelihood of duplicates (if not present already).
-1. Add a transaction-level [advisory lock](https://www.postgresql.org/docs/current/explicit-locking.html#ADVISORY-LOCKS) to prevent creating duplicate records.
+1. Add a transaction-level [advisory lock](https://www.postgresql.org/docs/16/explicit-locking.html#ADVISORY-LOCKS) to prevent creating duplicate records.
 
 Milestone 2:
 

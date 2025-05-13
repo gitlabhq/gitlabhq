@@ -53,11 +53,6 @@ export default {
     },
   },
   methods: {
-    workItemTypeCount(workItemTypeName) {
-      return this.rolledUpCountsByType.find(
-        (rollUpCount) => rollUpCount?.workItemType?.name === workItemTypeName,
-      );
-    },
     rolledUpCountExists(rolledUpCount) {
       return rolledUpCount?.countsByState?.all > 0;
     },
@@ -77,7 +72,7 @@ export default {
         v-for="rolledUpCount in filteredRollUpCountsByType"
         :key="rolledUpCount.workItemType.name"
       >
-        <work-item-type-icon :work-item-icon-name="rolledUpCount.workItemType.iconName" />
+        <work-item-type-icon :work-item-type="rolledUpCount.workItemType.name" />
         {{ rolledUpCount.countsByState.all }}
       </span>
     </span>

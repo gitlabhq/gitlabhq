@@ -31,7 +31,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   it { is_expected.to belong_to(:runner) }
-  it { is_expected.to belong_to(:trigger_request) }
   it { is_expected.to belong_to(:erased_by) }
   it { is_expected.to belong_to(:pipeline).inverse_of(:builds) }
   it { is_expected.to belong_to(:execution_config).class_name('Ci::BuildExecutionConfig').inverse_of(:builds) }
@@ -301,6 +300,10 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe '.with_live_trace' do
     subject { described_class.with_live_trace }
 
+    before do
+      stub_application_setting(ci_job_live_trace_enabled: true)
+    end
+
     context 'when build has live trace' do
       let!(:build) { create(:ci_build, :success, :trace_live, pipeline: pipeline) }
 
@@ -320,6 +323,10 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
   describe '.with_stale_live_trace' do
     subject { described_class.with_stale_live_trace }
+
+    before do
+      stub_application_setting(ci_job_live_trace_enabled: true)
+    end
 
     context 'when build has a stale live trace' do
       let!(:build) { create(:ci_build, :success, :trace_live, finished_at: 1.day.ago, pipeline: pipeline) }
@@ -5782,13 +5789,31 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  it_behaves_like 'it has loose foreign keys' do
-    let(:factory_name) { :ci_build }
-  end
+  describe 'loose foreign keys' do
+    it_behaves_like 'it has loose foreign keys' do
+      let(:factory_name) { :ci_build }
+    end
 
-  it_behaves_like 'cleanup by a loose foreign key' do
-    let!(:model) { create(:ci_build, user: create(:user), pipeline: pipeline) }
-    let!(:parent) { model.user }
+    context 'with loose foreign key on users.id' do
+      it_behaves_like 'cleanup by a loose foreign key' do
+        let!(:model) { create(:ci_build, user: create(:user), pipeline: pipeline) }
+        let!(:parent) { model.user }
+      end
+    end
+
+    context 'with loose foreign key on projects.id' do
+      it_behaves_like 'cleanup by a loose foreign key' do
+        let!(:model) { create(:ci_build, pipeline: pipeline) }
+        let!(:parent) { model.project }
+      end
+    end
+
+    context 'with loose foreign key on ci_runners.id' do
+      it_behaves_like 'cleanup by a loose foreign key' do
+        let!(:model) { create(:ci_build, runner: create(:ci_runner), pipeline: pipeline) }
+        let!(:parent) { model.runner }
+      end
+    end
   end
 
   describe '#clone' do

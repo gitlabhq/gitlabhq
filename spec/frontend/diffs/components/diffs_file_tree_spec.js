@@ -10,6 +10,7 @@ import { TREE_LIST_WIDTH_STORAGE_KEY } from '~/diffs/constants';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import * as types from '~/diffs/store/mutation_types';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import FileBrowserHeight from '~/diffs/components/file_browser_height.vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 
 Vue.use(PiniaVuePlugin);
@@ -42,11 +43,23 @@ describe('DiffsFileTree', () => {
     useLegacyDiffs();
   });
 
+  it('renders inside file browser height', () => {
+    createComponent();
+    expect(wrapper.findComponent(FileBrowserHeight).exists()).toBe(true);
+  });
+
   it('re-emits clickFile event', () => {
     const obj = {};
     createComponent();
     wrapper.findComponent(TreeList).vm.$emit('clickFile', obj);
     expect(wrapper.emitted('clickFile')).toStrictEqual([[obj]]);
+  });
+
+  it('re-emits toggleFolder event', () => {
+    const obj = {};
+    createComponent();
+    wrapper.findComponent(TreeList).vm.$emit('toggleFolder', obj);
+    expect(wrapper.emitted('toggleFolder')).toStrictEqual([[obj]]);
   });
 
   it('sets current file on click', () => {
@@ -145,9 +158,8 @@ describe('DiffsFileTree', () => {
       createComponent({ floatingResize: true });
       wrapper.findComponent(PanelResizer).vm.$emit('resize-start');
       await nextTick();
-      const rootStyle = getRootStyle();
       const style = getWrapperStyle();
-      expect(rootStyle.height).toBe('200px');
+      expect(style.height).toBe('200px');
       expect(style.width).toBe('350px');
       expect(style.top).toBe('100px');
     });
@@ -194,11 +206,21 @@ describe('DiffsFileTree', () => {
     });
   });
 
-  it('passes down props to tree list', () => {
+  it('passes down props to tree list', async () => {
+    const groupBlobsListItems = false;
     const loadedFiles = { foo: true };
     const totalFilesCount = '20';
-    createComponent({ loadedFiles, totalFilesCount });
+    const rowHeight = 30;
+    jest.spyOn(window, 'getComputedStyle').mockReturnValue({
+      getPropertyValue() {
+        return `${rowHeight}px`;
+      },
+    });
+    createComponent({ loadedFiles, totalFilesCount, groupBlobsListItems });
+    await nextTick();
     expect(wrapper.findComponent(TreeList).props('loadedFiles')).toBe(loadedFiles);
     expect(wrapper.findComponent(TreeList).props('totalFilesCount')).toBe(totalFilesCount);
+    expect(wrapper.findComponent(TreeList).props('rowHeight')).toBe(rowHeight);
+    expect(wrapper.findComponent(TreeList).props('groupBlobsListItems')).toBe(groupBlobsListItems);
   });
 });

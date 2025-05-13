@@ -275,5 +275,22 @@ RSpec.describe Integrations::Propagation::BulkUpdateService, feature_category: :
         authorized_scope_names: group_slack_integration.authorized_scope_names
       )
     end
+
+    describe 'propagation from instance integration' do
+      let_it_be(:instance_integration) { create(:jira_integration, :instance) }
+
+      let_it_be(:integration) do
+        create(:jira_integration, project: create(:project), inherit_from_id: instance_integration.id)
+      end
+
+      it 'does not propagate organization' do
+        batch = Integration.id_in([integration])
+
+        described_class.new(integration.reload, batch).execute
+
+        expect(instance_integration.organization).not_to be_nil
+        expect(integration.reload.organization).to be_nil
+      end
+    end
   end
 end

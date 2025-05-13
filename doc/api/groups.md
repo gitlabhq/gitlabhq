@@ -311,6 +311,7 @@ Parameters:
 | `top_level_only`         | boolean           | no       | Limit to top-level groups, excluding all subgroups |
 | `repository_storage`     | string            | no       | Filter by repository storage used by the group _(administrators only)_. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419643) in GitLab 16.3. Premium and Ultimate only. |
 | `marked_for_deletion_on` | date              | no       | Filter by date when group was marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429315) in GitLab 17.1. Premium and Ultimate only. |
+| `active`                 | boolean           | no       | Limit by groups that are not archived and not marked for deletion. |
 
 ```plaintext
 GET /groups
@@ -929,6 +930,7 @@ Parameters:
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
 | `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](members.md#roles) |
 | `all_available`          | boolean           | no       | When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member. Defaults to `false` for users, `true` for administrators. Unauthenticated requests always return all public groups. The `owned` and `min_access_level` attributes take precedence. |
+| `active`                 | boolean           | no       | Limit by groups that are not archived and not marked for deletion. |
 
 ```plaintext
 GET /groups/:id/subgroups
@@ -1006,6 +1008,7 @@ Parameters:
 | `with_custom_attributes` | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 | `owned`                  | boolean           | no       | Limit to groups explicitly owned by the current user |
 | `min_access_level`       | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](members.md#roles) |
+| `active`                 | boolean           | no       | Limit by groups that are not archived and not marked for deletion. |
 
 ```plaintext
 GET /groups/:id/descendant_groups
@@ -1359,6 +1362,166 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/groups/"
 ```
 
+### Archive a group
+
+Archive a group.
+
+Prerequisites:
+
+- You must be an administrator or be assigned the Owner role on the group.
+
+This endpoint returns a `422` unprocessable entity error if the group is already archived.
+
+```plaintext
+POST /groups/:id/archive
+```
+
+Parameters:
+
+| Attribute                             | Type              | Required | Description |
+| ------------------------------------- | ----------------- | -------- | ---------- |
+| `id`                                  | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) owned by the authenticated user |
+
+Example response:
+
+```json
+{
+  "id": 96,
+  "web_url": "https://gitlab.example.com/groups/test-1",
+  "name": "test-1",
+  "path": "test-1",
+  "description": "",
+  "visibility": "public",
+  "share_with_group_lock": false,
+  "require_two_factor_authentication": false,
+  "two_factor_grace_period": 48,
+  "project_creation_level": "developer",
+  "auto_devops_enabled": null,
+  "subgroup_creation_level": "maintainer",
+  "emails_disabled": false,
+  "emails_enabled": true,
+  "mentions_disabled": null,
+  "lfs_enabled": true,
+  "archived": true,
+  "math_rendering_limits_enabled": true,
+  "lock_math_rendering_limits_enabled": false,
+  "default_branch": null,
+  "default_branch_protection": 2,
+  "default_branch_protection_defaults": {
+    "allowed_to_push": [
+      {
+        "access_level": 40
+      }
+    ],
+    "allow_force_push": false,
+    "allowed_to_merge": [
+      {
+        "access_level": 40
+      }
+    ],
+    "developer_can_initial_push": false
+  },
+  "avatar_url": null,
+  "request_access_enabled": true,
+  "full_name": "test-1",
+  "full_path": "test-1",
+  "created_at": "2025-03-25T12:05:24.813Z",
+  "parent_id": null,
+  "organization_id": 1,
+  "shared_runners_setting": "enabled",
+  "max_artifacts_size": null,
+  "ldap_cn": null,
+  "ldap_access": null,
+  "wiki_access_level": "enabled",
+  "shared_with_groups": [],
+  "prevent_sharing_groups_outside_hierarchy": false,
+  "shared_runners_minutes_limit": null,
+  "extra_shared_runners_minutes_limit": null,
+  "prevent_forking_outside_group": null,
+  "membership_lock": false
+}
+```
+
+### Unarchive a group
+
+Unarchive a group.
+
+Prerequisites:
+
+- You must be an administrator or be assigned the Owner role on the group.
+
+This endpoint returns a `422` unprocessable entity error if the group is not archived.
+
+```plaintext
+POST /groups/:id/unarchive
+```
+
+Parameters:
+
+| Attribute                             | Type              | Required | Description |
+| ------------------------------------- | ----------------- | -------- | ---------- |
+| `id`                                  | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) owned by the authenticated user |
+
+Example response:
+
+```json
+{
+  "id": 96,
+  "web_url": "https://gitlab.example.com/groups/test-1",
+  "name": "test-1",
+  "path": "test-1",
+  "description": "",
+  "visibility": "public",
+  "share_with_group_lock": false,
+  "require_two_factor_authentication": false,
+  "two_factor_grace_period": 48,
+  "project_creation_level": "developer",
+  "auto_devops_enabled": null,
+  "subgroup_creation_level": "maintainer",
+  "emails_disabled": false,
+  "emails_enabled": true,
+  "mentions_disabled": null,
+  "lfs_enabled": true,
+  "archived": false,
+  "math_rendering_limits_enabled": true,
+  "lock_math_rendering_limits_enabled": false,
+  "default_branch": null,
+  "default_branch_protection": 2,
+  "default_branch_protection_defaults": {
+    "allowed_to_push": [
+      {
+        "access_level": 40
+      }
+    ],
+    "allow_force_push": false,
+    "allowed_to_merge": [
+      {
+        "access_level": 40
+      }
+    ],
+    "developer_can_initial_push": false
+  },
+  "avatar_url": null,
+  "request_access_enabled": true,
+  "full_name": "test-1",
+  "full_path": "test-1",
+  "created_at": "2025-03-25T12:05:24.813Z",
+  "parent_id": null,
+  "organization_id": 1,
+  "shared_runners_setting": "enabled",
+  "max_artifacts_size": null,
+  "ldap_cn": null,
+  "ldap_access": null,
+  "wiki_access_level": "enabled",
+  "shared_with_groups": [],
+  "prevent_sharing_groups_outside_hierarchy": false,
+  "shared_runners_minutes_limit": null,
+  "extra_shared_runners_minutes_limit": null,
+  "prevent_forking_outside_group": null,
+  "membership_lock": false
+}
+```
+
 ### Sync a group with LDAP
 
 {{< details >}}
@@ -1383,16 +1546,10 @@ Parameters:
 {{< history >}}
 
 - `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, and `unique_project_download_limit_allowlist` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92970) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `limit_unique_project_downloads_per_namespace_user`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/365724) in GitLab 15.6.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183101) in GitLab 18.0. Feature flag `limit_unique_project_downloads_per_namespace_user` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, `unique_project_download_limit_allowlist` and `auto_ban_user_on_excessive_projects_download` are not available.
-To make them available, an administrator can [enable the feature flag](../administration/feature_flags.md)
-named `limit_unique_project_downloads_per_namespace_user`.
-
-{{< /alert >}}
 
 Updates the project group. Only available to group owners and administrators.
 
@@ -1613,6 +1770,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 - Immediately deleting subgroups was [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4.
 - Immediately deleting subgroups was [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) by default in GitLab 15.4.
 - The flag `immediate_delete_subgroup_api` for immediately deleting subgroups was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/374069) in GitLab 15.9.
+- [Marking group for deletion was moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
 
 {{< /history >}}
 
@@ -1620,8 +1778,7 @@ Only available to group owners and administrators.
 
 This endpoint:
 
-- On Premium and Ultimate tiers, marks the group for deletion. The deletion happens 7 days later by default, but you can change the retention period in the [instance settings](../administration/settings/visibility_and_access_controls.md#deletion-protection).
-- On Free tier, deletes the group immediately and queues a background job to delete all projects in the group.
+- Marks the group for deletion. The deletion happens 7 days later by default, but you can change the retention period in the [instance settings](../administration/settings/visibility_and_access_controls.md#deletion-protection).
 - Deletes a subgroup immediately if the subgroup is marked for deletion (GitLab 15.4 and later). The endpoint does not immediately delete top-level groups.
 
 ```plaintext
@@ -1633,25 +1790,18 @@ Parameters:
 | Attribute            | Type           | Required | Description |
 |----------------------|----------------|----------|-------------|
 | `id`                 | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
-| `permanently_remove` | boolean/string | no       | Immediately deletes a subgroup if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4. Premium and Ultimate only. |
-| `full_path`          | string         | no       | Full path of subgroup to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4. To find the subgroup path, see the [group details](groups.md#get-a-single-group). Premium and Ultimate only. |
+| `permanently_remove` | boolean/string | no       | Immediately deletes a subgroup if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4 for Premium and Ultimate only and moved to GitLab Free in 18.0. |
+| `full_path`          | string         | no       | Full path of subgroup to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4. To find the subgroup path, see the [group details](groups.md#get-a-single-group). |
 
 The response is `202 Accepted` if the user has authorization.
 
 {{< alert type="note" >}}
 
-A GitLab.com group can't be deleted if it is linked to a subscription. To delete such a group, first [link the subscription](../subscriptions/gitlab_com/_index.md#link-subscription-to-a-group) with a different group.
+A GitLab.com group can't be deleted if it is linked to a subscription. To delete such a group, first [link the subscription](../subscriptions/manage_subscription.md#link-subscription-to-a-group) with a different group.
 
 {{< /alert >}}
 
 #### Restore a group marked for deletion
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
 
 Restores a group marked for deletion.
 

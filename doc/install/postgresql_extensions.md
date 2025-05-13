@@ -45,7 +45,7 @@ To install a PostgreSQL extension, this procedure should be followed:
    sudo gitlab-psql -d gitlabhq_production
    ```
 
-1. Install the extension (`btree_gist` in this example) using [`CREATE EXTENSION`](https://www.postgresql.org/docs/11/sql-createextension.html):
+1. Install the extension (`btree_gist` in this example) using [`CREATE EXTENSION`](https://www.postgresql.org/docs/16/sql-createextension.html):
 
    ```sql
    CREATE EXTENSION IF NOT EXISTS btree_gist

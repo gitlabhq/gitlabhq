@@ -31,6 +31,10 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
     let_it_be(:developer) { create(:user) }
     let_it_be(:owner) { create(:user) }
 
+    before do
+      stub_container_registry_config(enabled: false)
+    end
+
     context 'when changing restrict_user_defined_variables' do
       using RSpec::Parameterized::TableSyntax
 
@@ -513,6 +517,12 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
     end
 
     context 'when archiving a project' do
+      before do
+        allow(Projects::UnlinkForkService).to receive(:new).and_return(unlink_fork_service)
+      end
+
+      let(:unlink_fork_service) { instance_double(Projects::UnlinkForkService, execute: true) }
+
       it_behaves_like 'publishing Projects::ProjectAttributesChangedEvent',
         params: { archived: true },
         attributes: %w[updated_at archived]
@@ -525,6 +535,38 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
             namespace_id: project.namespace_id,
             root_namespace_id: project.root_namespace.id
           )
+      end
+
+      context 'when the destroy_fork_network_on_archive feature flag is enabled' do
+        context 'when project is being archived' do
+          it 'calls UnlinkForkService' do
+            project.update!(archived: false)
+
+            expect(Projects::UnlinkForkService).to receive(:new).with(project, user).and_return(unlink_fork_service)
+
+            update_project(project, user, archived: true)
+          end
+        end
+
+        context 'when project is not being archived' do
+          it 'does not call UnlinkForkService' do
+            expect(Projects::UnlinkForkService).not_to receive(:new)
+
+            update_project(project, user, archived: false)
+          end
+        end
+      end
+
+      context 'when the destroy_fork_network_on_archive feature flag is disabled' do
+        before do
+          stub_feature_flags(destroy_fork_network_on_archive: false)
+        end
+
+        it 'does not call UnlinkForkService' do
+          expect(Projects::UnlinkForkService).not_to receive(:new)
+
+          update_project(project, user, archived: true)
+        end
       end
     end
 
@@ -615,7 +657,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
         end
 
         def stub_rename_base_repository_in_registry(dry_run:, result: nil)
-          options = { name: new_name }
+          options = { name: new_name, project: project }
           options[:dry_run] = true if dry_run
 
           allow(ContainerRegistry::GitlabApiClient)
@@ -625,7 +667,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
         end
 
         def expect_rename_of_base_repository_in_registry(dry_run:, path: nil)
-          options = { name: new_name }
+          options = { name: new_name, project: project }
           options[:dry_run] = true if dry_run
 
           expect(ContainerRegistry::GitlabApiClient)

@@ -30,7 +30,7 @@ and thumbs-ups. React with emoji on:
 - [Objectives and key results](okrs.md).
 - Anywhere else you can have a comment thread.
 
-![Emoji reactions](img/award_emoji_select_v14_6.png)
+![Emoji reaction picker with various categories, including search box.](img/award_emoji_select_v14_6.png)
 
 Emoji reactions make it much easier to give and receive feedback without a long
 comment thread.
@@ -72,16 +72,10 @@ To add an emoji reaction to a comment or description:
 1. Select the GitLab logo ({{< icon name="tanuki" >}}) or scroll down to the **Custom** section.
 1. Select an emoji from the emoji picker.
 
-![Custom emoji in emoji picker](img/custom_emoji_reactions_v16_2.png)
+![Custom emoji section in the reaction picker.](img/custom_emoji_reactions_v16_2.png)
 
 To use them in a text box, type the filename between two colons.
 For example, `:thank-you:`.
-
-You can upload custom emoji to a GitLab instance with the GraphQL API.
-For more information, see [Use custom emoji with GraphQL](../api/graphql/custom_emoji.md).
-
-For a list of custom emoji available for GitLab.com, see
-[the `custom_emoji` project](https://gitlab.com/custom_emoji/custom_emoji/-/tree/main/img).
 
 ### Upload custom emoji to a group
 

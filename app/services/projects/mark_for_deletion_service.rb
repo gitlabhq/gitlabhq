@@ -2,10 +2,8 @@
 
 module Projects
   class MarkForDeletionService < BaseService
-    def execute(licensed: false)
+    def execute
       return success if project.marked_for_deletion_at?
-
-      return error('Cannot mark project for deletion: feature not supported') unless licensed || feature_downtiered?
 
       result = ::Projects::UpdateService.new(
         project,
@@ -29,7 +27,7 @@ module Projects
     private
 
     def send_project_deletion_notification
-      return unless project.adjourned_deletion? && project.marked_for_deletion?
+      return unless project.adjourned_deletion?
 
       ::NotificationService.new.project_scheduled_for_deletion(project)
     end
@@ -46,10 +44,6 @@ module Projects
         marked_for_deletion_at: Time.current.utc,
         deleting_user: current_user
       }
-    end
-
-    def feature_downtiered?
-      Feature.enabled?(:downtier_delayed_deletion, :instance, type: :wip)
     end
   end
 end

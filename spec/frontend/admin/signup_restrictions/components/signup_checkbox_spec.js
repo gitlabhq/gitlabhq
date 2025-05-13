@@ -60,7 +60,7 @@ describe('Signup Form', () => {
 
       it('gets passed `disabled` property', () => {
         mountComponent({ disabled: true });
-        expect(findCheckbox().attributes('disabled')).toBe('true');
+        expect(findCheckbox().attributes().disabled).toBe('true');
       });
     });
   });

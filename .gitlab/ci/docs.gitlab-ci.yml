@@ -42,6 +42,37 @@ docs-lint markdown:
     - .default-retry
     - .docs:rules:docs-lint
     - .docs-markdown-lint-image
+  stage: lint
+  needs: []
+  script:
+    - |
+      cat << EOF >> .markdownlint-cli2.yaml
+      outputFormatters:
+        - - 'markdownlint-cli2-formatter-default'
+        - - 'markdownlint-cli2-formatter-codequality'
+          - severity: 'blocker'
+      EOF
+    - source ./scripts/utils.sh
+    - |
+      function docs_lint_markdown() {
+        install_gitlab_gem
+        scripts/lint-doc.sh
+      }
+
+      run_with_custom_exit_code docs_lint_markdown
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - markdownlint-cli2-codequality.json
+    reports:
+      codequality: markdownlint-cli2-codequality.json
+
+docs-lint mermaid:
+  extends:
+    - .default-retry
+    - .docs:rules:docs-lint
+    - .docs-markdown-lint-image
     - .yarn-cache
   stage: lint
   needs: []
@@ -50,8 +81,6 @@ docs-lint markdown:
     - |
       function docs_lint_markdown() {
         yarn_install_script
-        install_gitlab_gem
-        scripts/lint-doc.sh
         scripts/lint/check_mermaid.mjs
       }
 
@@ -76,15 +105,29 @@ docs code_quality:
     when: always
 
 docs hugo_build:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/technical-writing/docs-gitlab-com/docs-gitlab-com-builder:hugo-0.142.0
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/technical-writing/docs-gitlab-com/docs-gitlab-com-builder:hugo-0.145.0
   extends:
     - .default-retry
     - .docs:rules:docs-lint
   stage: lint
   needs: []
   dependencies: []
+  variables:
+    DOCS_BRANCH: "main"
   before_script:
-    - git clone --depth 1 --filter=tree:0 https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com.git
+    # Check if this a release branch, which would be the case for a backport.
+    # If this is a backport MR, we need to checkout the appropriate version
+    # of the Docs website.
+    - |
+      if [[ $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ [0-9]+-[0-9]+-stable ]]; then
+        MAJOR=$(echo $CI_MERGE_REQUEST_TARGET_BRANCH_NAME | cut -d '-' -f 1)
+        MINOR=$(echo $CI_MERGE_REQUEST_TARGET_BRANCH_NAME | cut -d '-' -f 2)
+        # Convert GitLab style (17-9-stable-ee) to Docs style (17.9)
+        DOCS_BRANCH="$MAJOR.$MINOR"
+        echo "Using docs-gitlab-com branch $DOCS_BRANCH for release branch"
+      fi
+    # Clone the Docs website project
+    - git clone --depth 1 --filter=tree:0 --branch $DOCS_BRANCH https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com.git
     - cd docs-gitlab-com
     - make add-latest-icons
     # Copy the current project's docs to the appropriate location in the docs website
@@ -137,3 +180,22 @@ docs-lint redirects:
     - source scripts/utils.sh
   script:
     - run_with_custom_exit_code ./scripts/lint-docs-redirects.rb
+
+docs-i18n-lint markdown:
+  extends:
+    - .default-retry
+    - .docs:rules:docs-i18n-lint
+    - .docs-markdown-lint-image
+    - .yarn-cache
+  stage: lint
+  needs: []
+  script:
+    - source ./scripts/utils.sh
+    - |
+      function docs_lint_markdown() {
+        yarn_install_script
+        install_gitlab_gem
+        scripts/lint-i18n-doc.sh
+      }
+
+      run_with_custom_exit_code docs_lint_markdown

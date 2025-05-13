@@ -10,7 +10,8 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __, sprintf } from '~/locale';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import ReplyButton from '~/notes/components/note_actions/reply_button.vue';
-import { getMutation, optimisticAwardUpdate } from '../../notes/award_utils';
+import { NAME_TO_TEXT_LOWERCASE_MAP } from '../../constants';
+import { getMutation, optimisticAwardUpdate, getNewCustomEmojiPath } from '../../notes/award_utils';
 
 export default {
   name: 'WorkItemNoteActions',
@@ -135,7 +136,7 @@ export default {
     },
     displayAuthorBadgeText() {
       return sprintf(__('This user is the author of this %{workItemType}.'), {
-        workItemType: this.workItemType.toLowerCase(),
+        workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
       });
     },
     displayMemberBadgeText() {
@@ -159,6 +160,13 @@ export default {
       return this.isResolved
         ? __('Resolved by ') + this.resolvedBy.name
         : this.$options.i18n.resolveThreadTitle;
+    },
+    customEmojiPath() {
+      return getNewCustomEmojiPath({
+        cache: this.$apollo.provider.clients.defaultClient,
+        fullPath: this.fullPath,
+        workItemIid: this.workItemIid,
+      });
     },
   },
   methods: {
@@ -244,6 +252,7 @@ export default {
       v-if="showAwardEmoji"
       toggle-class="add-reaction-button btn-default-tertiary"
       data-testid="note-emoji-button"
+      :custom-emoji-path="customEmojiPath"
       @click="setAwardEmoji"
     />
     <reply-button v-if="showReply" ref="replyButton" @startReplying="$emit('startReplying')" />

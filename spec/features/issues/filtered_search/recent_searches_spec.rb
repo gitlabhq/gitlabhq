@@ -13,6 +13,11 @@ RSpec.describe 'Recent searches', :js, feature_category: :team_planning do
   let(:project_1_local_storage_key) { "#{project_1.full_path}-issue-recent-searches" }
 
   before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+
     # Visit any fast-loading page so we can clear local storage without a DOM exception
     visit '/404'
     remove_recent_searches

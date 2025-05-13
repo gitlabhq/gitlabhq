@@ -289,7 +289,7 @@ Benchmark.bm do |x|
 end
 ```
 
-For more information, review [our developer documentation about benchmarks](../../development/performance.md#benchmarks).
+For more information, review our developer documentation about benchmarks.
 
 ## Active Record objects
 
@@ -530,7 +530,7 @@ user.password_confirmation = 'hunter2'
 user.save!(validate: false)
 ```
 
-This is not recommended, as validations are usually put in place to ensure the
+This is not recommended because validations are usually put in place to ensure the
 integrity and consistency of user-provided data.
 
 A validation error prevents the entire object from being saved to

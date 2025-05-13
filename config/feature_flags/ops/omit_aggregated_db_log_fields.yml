@@ -4,6 +4,6 @@ feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/500768#note_217
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170751
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/501156
 milestone: '17.6'
-group: group::scalability
+group: group::durability
 type: ops
 default_enabled: false

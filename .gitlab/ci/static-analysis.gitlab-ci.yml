@@ -28,6 +28,7 @@ static-analysis:
   extends:
     - .static-analysis-base
     - .static-analysis-cache
+    - .failure_category_after_script
     - .static-analysis:rules:static-analysis
   parallel: 2
   script:
@@ -69,15 +70,22 @@ generate-apollo-graphql-schema:
     paths:
       - "${GRAPHQL_SCHEMA_APOLLO_FILE}"
 
-eslint:
+.eslint-base:
   extends:
     - .static-analysis-base
     - .yarn-cache
-    - .frontend:rules:default-frontend-jobs
   needs: ['generate-apollo-graphql-schema']
   variables:
     USE_BUNDLE_INSTALL: "false"
     ESLINT_CODE_QUALITY_REPORT: "gl-code-quality-report.json"
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
+
+eslint-changed-files:
+  extends:
+    - .eslint-base
+    - .frontend:rules:eslint-changed-files
   script:
     - |
       function eslint_script() {
@@ -87,9 +95,18 @@ eslint:
 
       run_with_custom_exit_code eslint_script
 
-  artifacts:
-    reports:
-      codequality: gl-code-quality-report.json
+eslint:
+  extends:
+    - .eslint-base
+    - .frontend:rules:eslint-default
+  script:
+    - |
+      function eslint_script() {
+        yarn_install_script
+        yarn run lint:eslint:all --format gitlab
+      }
+
+      run_with_custom_exit_code eslint_script
 
 eslint-docs:
   extends:
@@ -113,24 +130,18 @@ haml-lint:
     - .ruby-cache
     - .static-analysis:rules:haml-lint
   script:
-    - bundle exec haml-lint --parallel app/views
+    - bundle exec haml-lint --parallel
   artifacts:
     expire_in: 31d
     when: always
     paths:
       - tmp/feature_flags/
 
-haml-lint ee:
-  extends:
-    - "haml-lint"
-    - .static-analysis:rules:haml-lint-ee
-  script:
-    - bundle exec haml-lint --parallel ee/app/views
-
 rubocop:
   extends:
     - .static-analysis-base
     - .rubocop-job-cache
+    - .failure_category_after_script
     - .static-analysis:rules:rubocop
   needs:
     - job: detect-tests
@@ -202,6 +213,7 @@ rails-next-dependency-check:
         echo "Gemfile.next.lock contains outdated dependencies, please run the following command and push the changes:"
         echo "bundle exec rake bundler:gemfile:sync"
       fi
+    - !reference [.failure_category_after_script, after_script]
 
 feature-flags-usage:
   extends:

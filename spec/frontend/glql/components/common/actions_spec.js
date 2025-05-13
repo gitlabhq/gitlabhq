@@ -43,24 +43,22 @@ describe('GlqlActions', () => {
     expect(findDropdown().props('toggleText')).toBe('GLQL view options');
   });
 
-  it('passes two items to dropdown when showCopyContents is false', () => {
-    createComponent({ showCopyContents: false });
+  it.each`
+    actionsCount | availableActions                                             | showCopyContents
+    ${'three'}   | ${['View source', 'Copy source', 'Reload']}                  | ${false}
+    ${'four'}    | ${['View source', 'Copy source', 'Copy contents', 'Reload']} | ${true}
+  `(
+    'passes $actionsCount items to dropdown when showCopyContents is $showCopyContents',
+    ({ availableActions, showCopyContents }) => {
+      createComponent({ showCopyContents });
 
-    const items = findDropdown().props('items');
-    expect(items).toHaveLength(2);
-    expect(items[0].text).toBe('View source');
-    expect(items[1].text).toBe('Copy source');
-  });
-
-  it('passes three items to dropdown when showCopyContents is true', () => {
-    createComponent({ showCopyContents: true });
-
-    const items = findDropdown().props('items');
-    expect(items).toHaveLength(3);
-    expect(items[0].text).toBe('View source');
-    expect(items[1].text).toBe('Copy source');
-    expect(items[2].text).toBe('Copy contents');
-  });
+      const items = findDropdown().props('items');
+      expect(items).toHaveLength(availableActions.length);
+      items.forEach((item, index) => {
+        expect(item.text).toBe(availableActions[index]);
+      });
+    },
+  );
 
   describe('dropdown actions', () => {
     it('emits viewSource event with title when clicked', async () => {
@@ -88,6 +86,13 @@ describe('GlqlActions', () => {
       await nextTick();
 
       expect(mockEventHub.$emit).toHaveBeenCalledWith('dropdownAction', 'copyAsGFM');
+    });
+
+    it('emits reload event when clicked', async () => {
+      findDropdown().props('items')[2].action();
+      await nextTick();
+
+      expect(mockEventHub.$emit).toHaveBeenCalledWith('dropdownAction', 'reload');
     });
   });
 });

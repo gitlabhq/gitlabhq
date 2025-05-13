@@ -218,6 +218,16 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       it { expect(merge_requests).to match_array([merge_request2]) }
     end
 
+    describe '.with_review_states_or_no_reviewer' do
+      let(:states) { [MergeRequestReviewer.states[:reviewed], MergeRequestReviewer.states[:requested_changes]] }
+
+      let_it_be(:merge_request5) { create(:merge_request, :prepared, :unique_branches, reviewers: [user1]) }
+
+      subject(:merge_requests) { described_class.with_review_states_or_no_reviewer(states) }
+
+      it { expect(merge_requests).to match_array([merge_request1, merge_request2, merge_request3, merge_request4]) }
+    end
+
     describe '.no_review_requested_or_only_user' do
       subject(:merge_requests) { described_class.no_review_requested_or_only_user(user1) }
 
@@ -242,8 +252,9 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     describe '.review_states' do
       let(:states) { MergeRequestReviewer.states[:requested_changes] }
+      let(:ignored_reviewer) { nil }
 
-      subject(:merge_requests) { described_class.review_states(states) }
+      subject(:merge_requests) { described_class.review_states(states, ignored_reviewer) }
 
       it 'returns MRs that have a reviewer with the passed state' do
         expect(merge_requests).to eq([merge_request1])
@@ -254,14 +265,32 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
         it { expect(merge_requests).to match_array([merge_request1, merge_request2]) }
       end
+
+      context 'when ignoring a reviewer' do
+        let(:states) { [MergeRequestReviewer.states[:reviewed], MergeRequestReviewer.states[:requested_changes]] }
+        let(:ignored_reviewer) { user1 }
+
+        it { expect(merge_requests).to contain_exactly(merge_request2) }
+      end
     end
 
     describe '.no_review_states' do
       let(:states) { [MergeRequestReviewer.states[:requested_changes]] }
+      let(:ignored_reviewer) { nil }
 
-      subject(:merge_requests) { described_class.no_review_states(states) }
+      subject(:merge_requests) { described_class.no_review_states(states, ignored_reviewer) }
 
       it { expect(merge_requests).to contain_exactly(merge_request2) }
+
+      context 'when ignoring a reviewer' do
+        let(:ignored_reviewer) { user2 }
+
+        before_all do
+          merge_request2.merge_request_reviewers.find_by(user_id: user2.id).update!(state: :requested_changes)
+        end
+
+        it { expect(merge_requests).to contain_exactly(merge_request2) }
+      end
     end
 
     describe '.assignee_or_reviewer' do
@@ -348,16 +377,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       it 'only returns public issuables' do
         expect(described_class.without_hidden).not_to include(hidden_merge_request)
-      end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(hide_merge_requests_from_banned_users: false)
-        end
-
-        it 'returns public and hidden issuables' do
-          expect(described_class.without_hidden).to include(hidden_merge_request)
-        end
       end
     end
 
@@ -1329,6 +1348,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       subject.cache_merge_request_closes_issues!
 
       expect(subject.visible_closing_issues_for(guest)).to match_array([issue_1, issue_2])
+      expect(subject.visible_closing_issues_for(nil)).to be_empty
     end
 
     it 'shows only allowed issues to developer' do
@@ -1337,6 +1357,30 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       subject.cache_merge_request_closes_issues!
 
       expect(subject.visible_closing_issues_for(developer)).to match_array([issue_1, confidential_issue, issue_2])
+      expect(subject.visible_closing_issues_for(nil)).to be_empty
+    end
+
+    it 'isolates cache per user so each role sees its own issues' do
+      project.add_guest(guest)
+      project.add_developer(developer)
+      subject.cache_merge_request_closes_issues!
+
+      # Call in one order
+      developer_view_first = subject.visible_closing_issues_for(developer)
+      guest_view_first = subject.visible_closing_issues_for(guest)
+
+      expect(developer_view_first).to match_array([issue_1, issue_2, confidential_issue])
+      expect(guest_view_first).to match_array([issue_1, issue_2])
+
+      # Reset memoization
+      subject.clear_memoization(:visible_closing_issues_for) # Specific to strong_memoize
+
+      # Call in reverse order on the same instance after clearing memoization
+      guest_view_second = subject.visible_closing_issues_for(guest)
+      developer_view_second = subject.visible_closing_issues_for(developer)
+
+      expect(guest_view_second).to match_array([issue_1, issue_2])
+      expect(developer_view_second).to match_array([issue_1, issue_2, confidential_issue])
     end
 
     context 'when external issue tracker is enabled' do
@@ -1384,7 +1428,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       create(:note, :internal, noteable: merge_request, note: issue_referenced_in_internal_mr_note.to_reference)
     end
 
-    context 'feature flag: more_commits_from_gitaly' do
+    context 'feature flag: commits_from_gitaly' do
       let_it_be(:user) { create(:user, guest_of: project) }
 
       it 'loads commits from Gitaly' do
@@ -1393,9 +1437,9 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         related_issues
       end
 
-      context 'when "more_commits_from_gitaly" is disabled' do
+      context 'when "commits_from_gitaly" is disabled' do
         before do
-          stub_feature_flags(more_commits_from_gitaly: false)
+          stub_feature_flags(commits_from_gitaly: false)
         end
 
         it 'loads commits from DB' do
@@ -2831,6 +2875,27 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         end
       end
     end
+
+    context 'when the MR is merged and there is a pipeline schedule source' do
+      let(:sha)               { subject.target_project.commit.id }
+      let(:pipeline)          { create(:ci_empty_pipeline, sha: sha, ref: subject.target_branch, project: subject.target_project) }
+      let(:schedule_pipeline) { create(:ci_empty_pipeline, sha: sha, ref: subject.target_branch, project: subject.target_project, source: :schedule) }
+
+      before do
+        stub_feature_flags(source_filter_pipelines: true)
+        subject.mark_as_merged!
+      end
+
+      context 'and merged_commit_sha is present' do
+        before do
+          subject.update_attribute(:merged_commit_sha, pipeline.sha)
+        end
+
+        it 'returns the pipeline associated with that merge request' do
+          expect(subject.merge_pipeline).to eq(pipeline)
+        end
+      end
+    end
   end
 
   describe '#has_ci?' do
@@ -3068,15 +3133,30 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
 
     context 'when head pipeline is not finished and has terraform reports' do
-      before do
-        stub_feature_flags(mr_show_reports_immediately: false)
-      end
-
       it 'returns true' do
         merge_request = create(:merge_request, :with_terraform_reports)
         merge_request.diff_head_pipeline.update!(status: :running)
 
         expect(merge_request.has_terraform_reports?).to be_truthy
+      end
+    end
+
+    context 'when child pipeline has terraform reports' do
+      let_it_be(:merge_request_with_pipeline) { create(:merge_request, :with_head_pipeline) }
+      let_it_be(:child_pipeline) { create(:ci_pipeline, :with_terraform_reports, child_of: merge_request_with_pipeline.head_pipeline) }
+
+      it 'returns true even if head pipeline does not have reports' do
+        expect(merge_request_with_pipeline.has_terraform_reports?).to be_truthy
+      end
+
+      context 'when FF show_child_reports_in_mr_page is disabled' do
+        before do
+          stub_feature_flags(show_child_reports_in_mr_page: false)
+        end
+
+        it 'does not take into account child pipeline reports' do
+          expect(merge_request_with_pipeline.has_terraform_reports?).to be_falsey
+        end
       end
     end
   end
@@ -4041,18 +4121,41 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         )
       end
 
-      where(:should_be_rebased, :skip_rebase_check, :expected_mergeable) do
-        false | false | true
-        false | true  | true
-        true  | false | false
-        true  | true  | true
+      context 'when rebase_on_merge_automatic is true' do
+        where(:should_be_rebased, :skip_rebase_check) do
+          false | false
+          false | true
+          true  | false
+          true  | true
+        end
+
+        with_them do
+          it 'does not take into account the mergeability check and always returns true' do
+            allow(subject).to receive(:should_be_rebased?) { should_be_rebased }
+
+            expect(subject.mergeable?(skip_rebase_check: skip_rebase_check)).to eq(true)
+          end
+        end
       end
 
-      with_them do
-        it 'overrides should_be_rebased?' do
-          allow(subject).to receive(:should_be_rebased?) { should_be_rebased }
+      context 'when rebase_on_merge_automatic is false' do
+        before do
+          stub_feature_flags(rebase_on_merge_automatic: false)
+        end
 
-          expect(subject.mergeable?(skip_rebase_check: skip_rebase_check)).to eq(expected_mergeable)
+        where(:should_be_rebased, :skip_rebase_check, :expected_mergeable) do
+          false | false | true
+          false | true  | true
+          true  | false | false
+          true  | true  | true
+        end
+
+        with_them do
+          it 'overrides should_be_rebased?' do
+            allow(subject).to receive(:should_be_rebased?) { should_be_rebased }
+
+            expect(subject.mergeable?(skip_rebase_check: skip_rebase_check)).to eq(expected_mergeable)
+          end
         end
       end
     end
@@ -6008,7 +6111,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       it 'deletes all refs from the target project' do
         expect(merge_request.target_project.repository)
           .to receive(:delete_refs)
-          .with(merge_request.ref_path, merge_request.merge_ref_path, merge_request.train_ref_path)
+          .with(merge_request.ref_path, merge_request.merge_ref_path, merge_request.train_ref_path,
+            merge_request.rebase_on_merge_path)
 
         subject
       end
@@ -6021,6 +6125,18 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         expect(merge_request.target_project.repository)
           .to receive(:delete_refs)
           .with(merge_request.train_ref_path)
+
+        subject
+      end
+    end
+
+    context 'when removing only rebase_on_merge_path ref' do
+      let(:only) { :rebase_on_merge_path }
+
+      it 'deletes train ref from the target project' do
+        expect(merge_request.target_project.repository)
+          .to receive(:delete_refs)
+          .with(merge_request.rebase_on_merge_path)
 
         subject
       end
@@ -6532,14 +6648,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       let_it_be(:author) { create(:user, :banned) }
 
       it { is_expected.to eq(true) }
-
-      context 'when the feature flag is disabled' do
-        before do
-          stub_feature_flags(hide_merge_requests_from_banned_users: false)
-        end
-
-        it { is_expected.to eq(false) }
-      end
     end
   end
 
@@ -6956,14 +7064,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     let(:base_diff) do
       instance_double(
         MergeRequestDiff,
-        diffs: ['base diff']
+        diffs_for_streaming: ['base diff']
       )
     end
 
     let(:head_diff) do
       instance_double(
         MergeRequestDiff,
-        diffs: ['HEAD diff']
+        diffs_for_streaming: ['HEAD diff']
       )
     end
 

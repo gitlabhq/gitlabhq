@@ -1,5 +1,5 @@
-import axios from 'axios';
 import { orderBy } from 'lodash';
+import axios from '~/lib/utils/axios_utils';
 import {
   convertObjectPropsToCamelCase,
   convertObjectPropsToSnakeCase,

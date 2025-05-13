@@ -110,8 +110,8 @@ export default {
     category="tertiary"
     :items="$options.BOARD_CARD_MOVE_TO_POSITIONS_OPTIONS"
     icon="ellipsis_v"
-    :aria-label="$options.i18n.moveCardText"
-    :text-sr-only="true"
+    :toggle-text="$options.i18n.moveCardText"
+    text-sr-only
     no-caret
     data-testid="board-move-to-position"
     @action="selectMoveAction"

@@ -7,7 +7,6 @@ import { s__, __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { confirmJobConfirmationMessage } from '~/ci/pipeline_details/graph/utils';
-import PipelineVariablesPermissionsMixin from '~/ci/mixins/pipeline_variables_permissions_mixin';
 
 export default {
   name: 'JobSidebarRetryButton',
@@ -21,8 +20,7 @@ export default {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [PipelineVariablesPermissionsMixin],
-  inject: ['projectPath', 'userRole'],
+  inject: ['canSetPipelineVariables'],
   props: {
     modalId: {
       type: String,
@@ -96,7 +94,7 @@ export default {
   />
   <div v-else-if="isManualJob" class="gl-flex gl-gap-3">
     <gl-button
-      v-if="canViewPipelineVariables"
+      v-if="canSetPipelineVariables"
       v-gl-tooltip.bottom
       :title="$options.i18n.updateVariables"
       :aria-label="$options.i18n.updateVariables"

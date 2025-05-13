@@ -10,7 +10,6 @@ import { __, s__ } from '~/locale';
 import EditedAt from '~/issues/show/components/edited.vue';
 import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   findDescriptionWidget,
   newWorkItemId,
@@ -39,7 +38,7 @@ export default {
     WorkItemDescriptionRendered,
     WorkItemDescriptionTemplateListbox,
   },
-  mixins: [Tracking.mixin(), glFeatureFlagMixin()],
+  mixins: [Tracking.mixin()],
   provide: {
     editorAiActions: window.gon?.licensed_features?.generateDescription
       ? [generateDescriptionAction()]
@@ -86,7 +85,7 @@ export default {
       required: false,
       default: true,
     },
-    workItemTypeName: {
+    newWorkItemType: {
       type: String,
       required: false,
       default: '',
@@ -142,11 +141,11 @@ export default {
   },
   computed: {
     createFlow() {
-      return this.workItemId === newWorkItemId(this.workItemTypeName);
+      return this.workItemId === newWorkItemId(this.newWorkItemType);
     },
     workItemFullPath() {
       return this.createFlow
-        ? newWorkItemFullPath(this.fullPath, this.workItemTypeName)
+        ? newWorkItemFullPath(this.fullPath, this.newWorkItemType)
         : this.fullPath;
     },
     autosaveKey() {
@@ -158,6 +157,7 @@ export default {
     hasConflicts() {
       return Boolean(this.conflictedDescription);
     },
+    // eslint-disable-next-line vue/no-unused-properties
     tracking() {
       return {
         category: TRACKING_CATEGORY_SHOW,

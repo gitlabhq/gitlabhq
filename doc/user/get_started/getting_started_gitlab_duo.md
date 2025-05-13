@@ -2,49 +2,43 @@
 stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: AI-powered features and functionality.
+description: AI-native features and functionality.
 title: Get started with GitLab Duo
 ---
 
-GitLab Duo is your AI-powered assistant. It can help you write, review, and edit code,
+GitLab Duo is your AI-native assistant. It can help you write, review, and edit code,
 along with a variety of other tasks throughout your GitLab workflow.
 It can help you troubleshoot your pipeline, write tests, address vulnerabilities, and more.
 
-## Step 1: Ensure you have a subscription
+## Step 1: Ensure you have access to GitLab Duo
 
-Your organization has purchased a GitLab Duo add-on subscription: either GitLab Duo Pro or Duo Enterprise.
-Each subscription includes a set of AI-powered features to help improve your workflow.
+To get started with GitLab Duo, your organization must have a Premium or Ultimate subscription
+and a GitLab Duo add-on.
 
-After your organization purchases a subscription, an administrator must assign seats to users.
-You likely received an email that notified you of your seat.
+Your add-on determines the GitLab Duo features you have access to.
 
-The AI-powered features you have access to use language models to help streamline
-your workflow:
+- The GitLab Duo Core add-on comes with all Premium and Ultimate subscriptions.
+- The GitLab Duo Pro and GitLab Duo Enterprise add-ons are available for purchase.
 
-- If you're on GitLab.com, you use default GitLab AI vendor models.
-- If you're on GitLab Self-Managed, your administrator can either:
-  - [Use default GitLab AI vendor models](../gitlab_duo/setup.md).
-  - Self-host the AI gateway and language models with
-    [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md)
-    and choose from among supported models.
+For GitLab Duo features, your organization can use the GitLab default language models
+or host their own models by using GitLab Duo Self-Hosted.
 
-If you have issues accessing GitLab Duo features, ask your administrator.
-They can check the health of the installation.
+If you have issues accessing GitLab Duo features, your administrators
+can check the health of the installation.
 
 For more information, see:
 
-- [Assign seats to users](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
-- [Features included in Duo Pro and Duo Enterprise](https://about.gitlab.com/gitlab-duo/#pricing).
-- [List of GitLab Duo features and their language models](../gitlab_duo/_index.md).
+- [GitLab Duo features by add-on](../gitlab_duo/_index.md#summary-of-gitlab-duo-features).
+- [How to purchase an add-on](../../subscriptions/subscription-add-ons.md).
 - [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md).
-- [GitLab Duo features supported by GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md#supported-gitlab-duo-features).
 - [Health check details](../gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo).
 
 ## Step 2: Try GitLab Duo Chat in the UI
 
-Confirm that Chat is available in the GitLab UI.
+If your organization has either the GitLab Duo Pro or Enterprise add-on,
+you can try using Chat in the GitLab UI.
 
-Go to a project and in the upper-right corner, a button named **Ask Duo Chat** should be displayed.
+Go to a project and in the upper-right corner, a button named **GitLab Duo Chat** should be displayed.
 If this button is available, it means everything is configured properly.
 Try asking Chat a question or type `/` to see a list of slash commands.
 
@@ -58,11 +52,15 @@ GitLab Duo is available in all stages of your workflow. From troubleshooting
 CI/CD pipelines to writing test cases and resolving security threats, GitLab Duo can help you
 in a variety of ways.
 
-If you want to test a feature, you can go to one of your failed CI/CD jobs and at the bottom
-of the page, select **Troubleshoot**.
+The features you have access to differ depending on your subscription tier, add-on, and offering.
 
-Or, in an issue that has a lot of comments, in the **Activity** section, select **View summary**.
-GitLab Duo summarizes the contents of the issue.
+For example, if you have access to:
+
+- Root Cause Analysis, you can go to one of your failed CI/CD jobs and at the bottom
+  of the page, select **Troubleshoot**.
+
+- Discussion Summary, in the **Activity** section of an issue with a lot of comments,
+  select **View summary**. GitLab Duo summarizes the contents of the issue.
 
 For more information, see:
 
@@ -71,34 +69,35 @@ For more information, see:
 
 ## Step 4: Prepare to use GitLab Duo in your IDE
 
-To use GitLab Duo, including Code Suggestions, in your IDE:
+Now you can try GitLab Duo features, like GitLab Duo Chat and Code Suggestions, in your IDE.
 
-- Install an extension in your local IDE.
-- Authenticate with GitLab from the IDE. You can use either OAuth or a personal access token.
+To use GitLab Duo Chat in your IDE, you'll install an extension and authenticate with GitLab.
 
-Then you can confirm that GitLab Duo is available in your IDE and test some of the features.
+- In GitLab 17.11 and earlier, you'll need the GitLab Duo Pro or Enterprise add-on.
+- In 18.0 and later, you'll need to turn on GitLab Duo,
+  and have the GitLab Duo Core, Pro, or Enterprise add-on.
+  GitLab Duo Core is included with all Premium and Ultimate subscriptions.
 
-Alternately, you can use the Web IDE, which is included in the GitLab UI and already fully configured.
+Alternatively, if you have GitLab Duo Pro or Enterprise, you can use the Web IDE,
+which is included in the GitLab UI and already fully configured.
 
 For more information, see:
 
+- [Turn on GitLab Duo](../gitlab_duo/turn_on_off.md).
 - [Set up the extension for VS Code](../../editor_extensions/visual_studio_code/setup.md).
 - [Set up the extension for JetBrains](../../editor_extensions/jetbrains_ide/setup.md).
 - [Set up the extension for Visual Studio](../../editor_extensions/visual_studio/setup.md).
 - [Set up the extension for Neovim](../../editor_extensions/neovim/setup.md).
 - [Use the Web IDE](../project/web_ide/_index.md).
 
-## Step 5: Confirm that Code Suggestions is on in your IDE
+## Step 5: Start using Code Suggestions and Chat in your IDE
 
-Finally, go to the settings for the extension and confirm that Code Suggestions is enabled,
-as well as the languages you want suggestions for.
-
-You should also confirm that Chat is enabled.
-
-Then test Code Suggestions and Chat in your IDE.
+Finally, test Code Suggestions and Chat in your IDE.
 
 - Code Suggestions recommends code as you type.
 - Chat is available to ask questions about your code or anything else you need.
+
+You can choose the languages you want suggestions for.
 
 For more information, see:
 

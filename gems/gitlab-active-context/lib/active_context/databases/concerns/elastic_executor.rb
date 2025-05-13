@@ -12,7 +12,7 @@ module ActiveContext
           @raw_client ||= adapter.client.client
         end
 
-        def do_create_collection(name:, number_of_partitions:, fields:)
+        def do_create_collection(name:, number_of_partitions:, fields:, options: {})
           strategy = PartitionStrategy.new(
             name: name,
             number_of_partitions: number_of_partitions
@@ -23,18 +23,18 @@ module ActiveContext
 
           # Create missing partitions
           strategy.each_partition do |partition_name|
-            create_partition(partition_name, fields) unless index_exists?(partition_name)
+            create_partition(partition_name, fields, options) unless index_exists?(partition_name)
           end
 
           # Create alias if needed
           create_alias(strategy) unless alias_exists?(strategy.collection_name)
         end
 
-        def create_partition(name, fields)
+        def create_partition(name, fields, options = {})
           body = {
             mappings: {
               dynamic: 'strict',
-              properties: mappings(fields)
+              properties: mappings(fields, options)
             },
             settings: settings(fields)
           }
@@ -52,11 +52,17 @@ module ActiveContext
           raw_client.indices.update_aliases(body: { actions: actions })
         end
 
-        def mappings(fields)
-          build_field_mappings(fields).merge(
-            ref_id: { type: 'keyword' },
-            ref_version: { type: 'long' }
-          )
+        def mappings(fields, options = {})
+          field_mappings = build_field_mappings(fields)
+
+          if options.fetch(:include_ref_fields, true)
+            field_mappings.merge!(
+              ref_id: { type: 'keyword' },
+              ref_version: { type: 'long' }
+            )
+          end
+
+          field_mappings
         end
 
         def build_field_mappings(fields)
@@ -64,8 +70,12 @@ module ActiveContext
             mappings[field.name] = case field
                                    when Field::Bigint
                                      { type: 'long' }
-                                   when Field::Prefix
+                                   when Field::Boolean
+                                     { type: 'boolean' }
+                                   when Field::Keyword
                                      { type: 'keyword' }
+                                   when Field::Text
+                                     { type: 'text' }
                                    when Field::Vector
                                      vector_field_mapping(field)
                                    else

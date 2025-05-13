@@ -151,6 +151,8 @@ describe('Author Select', () => {
   describe('listbox list', () => {
     beforeEach(() => {
       store.state.commitsAuthors = authors;
+
+      createComponent();
     });
 
     it('has a "Any Author" as the first list item', () => {

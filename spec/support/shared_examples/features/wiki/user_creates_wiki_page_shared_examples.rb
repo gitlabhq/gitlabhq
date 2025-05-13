@@ -42,7 +42,7 @@ RSpec.shared_examples 'User creates wiki page' do
 
       click_link("link test")
 
-      expect(page).to have_content("New page")
+      expect(page).to have_content("This page doesn't exist")
     end
 
     it "shows non-escaped link in the pages list", :js do
@@ -80,6 +80,10 @@ RSpec.shared_examples 'User creates wiki page' do
 
       click_link("test")
 
+      expect(page).to have_content("This page doesn't exist")
+
+      click_link("Create this page…")
+
       expect(page).to have_current_path(wiki_page_path(wiki, "test"), ignore_query: true)
 
       page.within(:css, ".wiki-page-header") do
@@ -92,6 +96,10 @@ RSpec.shared_examples 'User creates wiki page' do
 
       click_link("GitLab API")
 
+      expect(page).to have_content("This page doesn't exist")
+
+      click_link("Create this page…")
+
       expect(page).to have_current_path(wiki_page_path(wiki, "api"), ignore_query: true)
 
       page.within(:css, ".wiki-page-header") do
@@ -103,6 +111,10 @@ RSpec.shared_examples 'User creates wiki page' do
       expect(page).to have_current_path(wiki_page_path(wiki, "home"), ignore_query: true)
 
       click_link("Rake tasks")
+
+      expect(page).to have_content("This page doesn't exist")
+
+      click_link("Create this page…")
 
       expect(page).to have_current_path(wiki_page_path(wiki, "raketasks"), ignore_query: true)
 

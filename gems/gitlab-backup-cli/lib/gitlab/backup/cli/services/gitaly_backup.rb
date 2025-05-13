@@ -46,52 +46,22 @@ module Gitlab
               "gitaly-backup exit status #{status.exitstatus}"
           end
 
-          def enqueue(container, repo_type)
+          def enqueue(container, always_create: false)
             raise Gitlab::Backup::Cli::Errors::GitalyBackupError, 'not started' unless started?
-            raise Gitlab::Backup::Cli::Errors::GitalyBackupError, 'no container for repo type' unless container
 
-            storage, relative_path, gl_project_path, always_create = repository_info_for(container, repo_type)
+            container_methods = [:disk_path, :storage, :path_with_namespace]
+            unless container_methods.all? { |method| container.respond_to?(method) }
+              raise Gitlab::Backup::Cli::Errors::GitalyBackupError, 'not a valid container'
+            end
+
+            storage = container.repository_storage
+            relative_path = container.disk_path
+            gl_project_path = container.path_with_namespace
 
             schedule_backup_job(storage, relative_path, gl_project_path, always_create)
           end
 
           private
-
-          def repository_info_for(container, repo_type)
-            case repo_type
-            when RepoType::PROJECT
-              [container.repository_storage,
-                container.disk_path || container.full_path,
-                container.full_path,
-                true]
-            when RepoType::WIKI
-              wiki_repo_info(container)
-            when RepoType::SNIPPET
-              [container.repository_storage,
-                container.disk_path || container.full_path,
-                container.full_path,
-                false]
-            when RepoType::DESIGN
-              [design_repo_storage(container),
-                container.project.disk_path,
-                container.project.full_path,
-                false]
-            end
-          end
-
-          def design_repo_storage(container)
-            return container.repository.repository_storage if container.repository.respond_to?(:repository_storage)
-
-            container.repository_storage
-          end
-
-          def wiki_repo_info(container)
-            wiki = container.respond_to?(:wiki) ? container.wiki : container
-            [wiki.repository_storage,
-              wiki.disk_path || wiki.full_path,
-              wiki.full_path,
-              false]
-          end
 
           def gitaly_backup_args(type, backup_repos_path, backup_id, remove_all_repositories)
             command = case type

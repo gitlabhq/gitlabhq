@@ -17,6 +17,7 @@ import CandidateList from '~/ml/model_registry/components/candidate_list.vue';
 import DeleteModelDisclosureDropdownItem from '../components/delete_model_disclosure_dropdown_item.vue';
 import LoadOrErrorOrShow from '../components/load_or_error_or_show.vue';
 import DeleteModel from '../components/functional/delete_model.vue';
+import SidebarItem from '../components/model_sidebar_item.vue';
 
 const ROUTE_DETAILS = 'details';
 const ROUTE_VERSIONS = 'versions';
@@ -64,6 +65,7 @@ export default {
     GlSprintf,
     GlIcon,
     GlLink,
+    SidebarItem,
   },
   mixins: [timeagoMixin],
   router: new VueRouter({
@@ -290,7 +292,7 @@ export default {
         <div class="gl-grid gl-gap-3 md:gl-grid-cols-4">
           <div class="gl-pr-8 md:gl-col-span-3">
             <load-or-error-or-show :is-loading="isLoading" :error-message="errorMessage">
-              <gl-tabs class="gl-mt-4" :value="tabIndex">
+              <gl-tabs :value="tabIndex">
                 <gl-tab
                   :title="$options.i18n.tabModelCardTitle"
                   @click="goTo($options.ROUTE_DETAILS)"
@@ -315,10 +317,9 @@ export default {
             </load-or-error-or-show>
           </div>
 
-          <div class="gl-pt-6 md:gl-col-span-1">
-            <div>
-              <div class="gl-text-lg gl-font-bold">{{ $options.i18n.authorTitle }}</div>
-              <div class="gl-pt-2 gl-text-subtle" data-testid="sidebar-author">
+          <div class="gl-flex gl-flex-col gl-gap-5 md:gl-col-span-1">
+            <sidebar-item :title="$options.i18n.authorTitle" class="gl-border-t-0">
+              <div class="gl-mt-2" data-testid="sidebar-author">
                 <gl-link
                   v-if="showModelAuthor"
                   data-testid="sidebar-author-link"
@@ -330,12 +331,14 @@ export default {
                 </gl-link>
                 <span v-else>{{ $options.i18n.noneText }}</span>
               </div>
-            </div>
-            <div v-if="showDefaultExperiment" class="gl-mt-5">
-              <div class="gl-text-lg gl-font-bold" data-testid="sidebar-experiment-title">
-                {{ $options.i18n.experimentTitle }}
-              </div>
-              <div class="gl-pt-2 gl-text-subtle" data-testid="sidebar-experiment-label">
+            </sidebar-item>
+
+            <sidebar-item
+              v-if="showDefaultExperiment"
+              :title="$options.i18n.experimentTitle"
+              data-testid="sidebar-experiment"
+            >
+              <div data-testid="sidebar-experiment-label">
                 <gl-link
                   data-testid="sidebar-latest-experiment-link"
                   :href="model.defaultExperimentPath"
@@ -343,10 +346,10 @@ export default {
                   {{ $options.i18n.defaultExperimentPath }}
                 </gl-link>
               </div>
-            </div>
-            <div class="gl-mt-5">
-              <div class="gl-text-lg gl-font-bold">{{ $options.i18n.latestVersionTitle }}</div>
-              <div class="gl-pt-2 gl-text-subtle" data-testid="sidebar-latest-version">
+            </sidebar-item>
+
+            <sidebar-item :title="$options.i18n.latestVersionTitle">
+              <div data-testid="sidebar-latest-version">
                 <gl-link
                   v-if="showModelLatestVersion"
                   data-testid="sidebar-latest-version-link"
@@ -356,16 +359,16 @@ export default {
                 </gl-link>
                 <span v-else>{{ $options.i18n.noneText }}</span>
               </div>
-            </div>
-            <div class="gl-mt-5">
-              <div class="gl-text-lg gl-font-bold">{{ $options.i18n.versionCountTitle }}</div>
-              <div class="gl-pt-2 gl-text-subtle" data-testid="sidebar-version-count">
+            </sidebar-item>
+
+            <sidebar-item :title="$options.i18n.versionCountTitle">
+              <div data-testid="sidebar-version-count">
                 <span v-if="versionCount">
                   {{ versionCount }}
                 </span>
                 <span v-else>{{ $options.i18n.noneText }}</span>
               </div>
-            </div>
+            </sidebar-item>
           </div>
         </div>
       </div>

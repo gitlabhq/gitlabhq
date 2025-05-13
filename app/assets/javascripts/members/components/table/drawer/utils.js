@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '~/lib/utils/axios_utils';
 import { roleDropdownItems, initialSelectedRole } from '~/members/utils';
 import {
   GROUP_LINK_ACCESS_LEVEL_PROPERTY_NAME,

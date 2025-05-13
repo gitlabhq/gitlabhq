@@ -3,7 +3,6 @@ RSpec/RepeatedExampleGroupBody:
   Exclude:
     - 'ee/spec/controllers/ee/groups_controller_spec.rb'
     - 'ee/spec/lib/banzai/filter/references/vulnerability_reference_filters_spec.rb'
-    - 'ee/spec/lib/gitlab/ci/templates/dast_latest_gitlab_ci_yaml_spec.rb'
     - 'ee/spec/lib/gitlab/geo_spec.rb'
     - 'ee/spec/models/ee/project_spec.rb'
     - 'ee/spec/models/geo/deleted_project_spec.rb'

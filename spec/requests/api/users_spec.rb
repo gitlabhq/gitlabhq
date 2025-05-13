@@ -5557,4 +5557,97 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       end
     end
   end
+
+  describe 'POST /users/:id/support_pin/revoke' do
+    let(:path) { "/users/#{user.id}/support_pin/revoke" }
+
+    context 'when current user is an admin' do
+      context 'when a PIN exists' do
+        it 'returns accepted status' do
+          post api(path, admin, admin_mode: true)
+
+          expect(response).to have_gitlab_http_status(:accepted)
+        end
+
+        it 'revokes the pin' do
+          post api(path, admin, admin_mode: true)
+
+          # Verify PIN is no longer accessible after revocation
+          get api("/users/#{user.id}/support_pin", admin, admin_mode: true)
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when no PIN exists' do
+        it 'returns not found' do
+          post api(path, admin, admin_mode: true)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(json_response['message']).to include('Support PIN not found or already expired')
+        end
+      end
+
+      context 'when an error occurs during revocation' do
+        before do
+          allow_next_instance_of(Users::SupportPin::RevokeService) do |instance|
+            allow(instance).to receive(:execute).and_raise(StandardError, 'Something went wrong')
+          end
+        end
+
+        it 'returns unprocessable_entity' do
+          post api(path, admin, admin_mode: true)
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['error']).to eq('Error revoking Support PIN for user.')
+        end
+      end
+
+      context 'when the service returns an error status' do
+        before do
+          allow_next_instance_of(Users::SupportPin::RevokeService) do |instance|
+            allow(instance).to receive(:execute).and_return({ status: :error, message: 'Service error' })
+          end
+        end
+
+        it 'returns bad_request' do
+          post api(path, admin, admin_mode: true)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error']).to eq('Service error')
+        end
+      end
+    end
+
+    context 'when current user is not an admin' do
+      before do
+        # First authenticate as the user to create their own PIN
+        post api("/user/support_pin", user)
+      end
+
+      it 'returns forbidden' do
+        # Attempt to revoke as non-admin
+        post api(path, user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+
+      it 'does not revoke the PIN' do
+        # Attempt to revoke as non-admin
+        post api(path, user)
+
+        # Verify PIN still exists via API
+        get api('/user/support_pin', user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when user is not authenticated' do
+      it 'returns unauthorized' do
+        post api(path)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+  end
 end

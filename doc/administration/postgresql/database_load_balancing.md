@@ -256,4 +256,4 @@ without it immediately leading to errors being presented to the users.
 ### Development guide
 
 For detailed development guide on database load balancing,
-see [the development documentation](../../development/database/load_balancing.md).
+see the development documentation.

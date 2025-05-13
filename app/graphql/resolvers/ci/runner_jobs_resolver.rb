@@ -6,7 +6,7 @@ module Resolvers
       include Gitlab::Graphql::Authorize::AuthorizeResource
       include LooksAhead
 
-      type ::Types::Ci::JobType.connection_type, null: true
+      type ::Types::Ci::JobInterface.connection_type, null: true
       authorize :read_builds
       authorizes_object!
       extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1

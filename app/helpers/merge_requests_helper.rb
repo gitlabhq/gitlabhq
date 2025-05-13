@@ -229,12 +229,10 @@ module MergeRequestsHelper
   def how_merge_modal_data(merge_request)
     {
       is_fork: merge_request.for_fork?.to_s,
-      can_merge: merge_request.can_be_merged_by?(current_user).to_s,
       source_branch: merge_request.source_branch,
       source_project_path: merge_request.source_project&.path,
       source_project_full_path: merge_request.source_project&.full_path,
       source_project_default_url: merge_request.source_project && default_url_to_repo(merge_request.source_project),
-      target_branch: merge_request.target_branch,
       reviewing_docs_path: help_page_path(
         'user/project/merge_requests/merge_request_troubleshooting.md',
         anchor: "check-out-merge-requests-locally-through-the-head-ref"
@@ -492,7 +490,7 @@ module MergeRequestsHelper
               {
                 id: 'reviews',
                 title: _('Reviewer (Active)'),
-                helpContent: _(''),
+                helpContent: _('Merge requests awaiting your review.'),
                 query: 'reviewRequestedMergeRequests',
                 variables: {
                   reviewStates: %w[UNREVIEWED REVIEW_STARTED UNAPPROVED],
@@ -503,7 +501,7 @@ module MergeRequestsHelper
                 id: 'reviews_inactive',
                 title: _('Reviewer (Inactive)'),
                 hideCount: true,
-                helpContent: _(''),
+                helpContent: _("Merge requests you've reviewed."),
                 query: 'reviewRequestedMergeRequests',
                 variables: {
                   reviewStates: %w[APPROVED REQUESTED_CHANGES REVIEWED],
@@ -512,22 +510,35 @@ module MergeRequestsHelper
               },
               {
                 id: 'assigned',
-                title: _('Assigned (Active)'),
-                helpContent: _(''),
+                title: _('Your merge requests (Active)'),
+                helpContent: _(
+                  "Your merge requests that need reviewers assigned, " \
+                    "or has feedback to address."
+                ),
                 query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
                 variables: {
-                  reviewStates: %w[REQUESTED_CHANGES REVIEWED],
+                  or: {
+                    reviewerWildcard: 'NONE',
+                    reviewStates: %w[REQUESTED_CHANGES REVIEWED]
+                  },
                   perPage: 10
                 }
               },
               {
                 id: 'assigned_inactive',
-                title: _('Assigned (Inactive)'),
+                title: _('Your merge requests (Inactive)'),
                 hideCount: true,
-                helpContent: _(''),
+                helpContent: _(
+                  "Your merge requests awaiting approvals, " \
+                    "or has been approved by all assigned reviewers."
+                ),
                 query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
                 variables: {
                   reviewStates: %w[APPROVED UNAPPROVED UNREVIEWED REVIEW_STARTED],
+                  not: {
+                    reviewStates: %w[REQUESTED_CHANGES REVIEWED]
+                  },
+                  ignoredReviewerUsername: ::Users::Internal.duo_code_review_bot.username,
                   perPage: 10
                 }
               }
@@ -542,7 +553,7 @@ module MergeRequestsHelper
               {
                 id: 'merged_recently_reviews',
                 title: _('Reviews'),
-                helpContent: _(''),
+                helpContent: _('Your review requests that have been merged.'),
                 query: 'reviewRequestedMergeRequests',
                 variables: {
                   state: 'merged',
@@ -553,7 +564,7 @@ module MergeRequestsHelper
               {
                 id: 'merged_recently_assigned',
                 title: _('Assigned'),
-                helpContent: _(''),
+                helpContent: _('Your merge requests that have been merged.'),
                 query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
                 variables: {
                   state: 'merged',
@@ -591,10 +602,7 @@ module MergeRequestsHelper
                 query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
                 variables: {
                   reviewStates: %w[REVIEWED REQUESTED_CHANGES],
-                  not: {
-                    onlyReviewer: true,
-                    reviewerUsername: 'GitlabDuo'
-                  }
+                  ignoredReviewerUsername: ::Users::Internal.duo_code_review_bot.username
                 }
               },
               {
@@ -621,7 +629,7 @@ module MergeRequestsHelper
                 variables: {
                   or: {
                     reviewerWildcard: 'NONE',
-                    onlyReviewerUsername: 'GitlabDuo'
+                    onlyReviewerUsername: ::Users::Internal.duo_code_review_bot.username
                   }
                 }
               }
@@ -647,6 +655,7 @@ module MergeRequestsHelper
                 helpContent: _('Your merge requests that are waiting for approvals.'),
                 query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
                 variables: {
+                  ignoredReviewerUsername: ::Users::Internal.duo_code_review_bot.username,
                   reviewStates: %w[UNREVIEWED UNAPPROVED REVIEW_STARTED],
                   not: {
                     reviewStates: %w[REQUESTED_CHANGES REVIEWED]
@@ -670,6 +679,7 @@ module MergeRequestsHelper
                 helpContent: _('Your merge requests with approvals by all assigned reviewers.'),
                 query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
                 variables: {
+                  ignoredReviewerUsername: ::Users::Internal.duo_code_review_bot.username,
                   reviewState: 'APPROVED',
                   not: {
                     reviewStates: %w[REQUESTED_CHANGES REVIEWED UNREVIEWED REVIEW_STARTED UNAPPROVED]

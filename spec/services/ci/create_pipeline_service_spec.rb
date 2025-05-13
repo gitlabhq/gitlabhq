@@ -23,7 +23,6 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       before: '00000000',
       after: project.commit.id,
       ref: ref_name,
-      trigger_request: nil,
       variables_attributes: nil,
       merge_request: nil,
       external_pull_request: nil,
@@ -45,7 +44,6 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
 
       described_class.new(project, user, params).execute(source,
         save_on_errors: save_on_errors,
-        trigger_request: trigger_request,
         merge_request: merge_request,
         external_pull_request: external_pull_request) do |pipeline|
         yield(pipeline) if block_given?
@@ -158,11 +156,6 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         end
 
         execute_service
-      end
-
-      it 'creates pipeline_config' do
-        expect { execute_service }
-          .to change { Ci::PipelineConfig.count }.by(1)
       end
 
       context 'when merge requests already exist for this source branch' do
@@ -992,10 +985,10 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
 
       context 'when trigger belongs to no one' do
         let(:user) {}
-        let(:trigger_request) { create(:ci_trigger_request, project_id: project.id) }
+        let(:trigger) { create(:ci_trigger, project: project) }
 
         it 'does not create a pipeline', :aggregate_failures do
-          response = execute_service(trigger_request: trigger_request)
+          response = execute_service
 
           expect(response).to be_error
           expect(response.payload).not_to be_persisted
@@ -1006,14 +999,13 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       context 'when trigger belongs to a developer' do
         let(:user) { create(:user) }
         let(:trigger) { create(:ci_trigger, owner: user, project: project) }
-        let(:trigger_request) { create(:ci_trigger_request, trigger: trigger) }
 
         before do
           project.add_developer(user)
         end
 
         it 'does not create a pipeline', :aggregate_failures do
-          response = execute_service(trigger_request: trigger_request)
+          response = execute_service
 
           expect(response).to be_error
           expect(response.payload).not_to be_persisted
@@ -1024,14 +1016,13 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       context 'when trigger belongs to a maintainer' do
         let(:user) { create(:user) }
         let(:trigger) { create(:ci_trigger, owner: user, project: project) }
-        let(:trigger_request) { create(:ci_trigger_request, trigger: trigger) }
 
         before do
           project.add_maintainer(user)
         end
 
         it 'creates a pipeline' do
-          expect(execute_service(trigger_request: trigger_request).payload)
+          expect(execute_service.payload)
             .to be_persisted
           expect(Ci::Pipeline.count).to eq(1)
         end
@@ -1731,169 +1722,6 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         it 'does create a pipeline only with deploy' do
           expect(pipeline).to be_persisted
           expect(pipeline.builds.pluck(:name)).to contain_exactly("deploy")
-        end
-      end
-    end
-
-    # TODO: Remove this test section when include:with is removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/408369
-    describe 'pipeline components using include:with instead of include:inputs' do
-      let(:components_project) do
-        create(:project, :repository, creator: user, namespace: user.namespace)
-      end
-
-      let(:component_path) do
-        "#{Gitlab.config.gitlab.host}/#{components_project.full_path}/my-component@v0.1"
-      end
-
-      let(:template) do
-        <<~YAML
-          spec:
-            inputs:
-              stage:
-              suffix:
-                default: my-job
-          ---
-          test-$[[ inputs.suffix ]]:
-            stage: $[[ inputs.stage ]]
-            script: run tests
-        YAML
-      end
-
-      let(:sha) do
-        components_project.repository.create_file(
-          user,
-          'templates/my-component/template.yml',
-          template,
-          message: 'Add my first CI component',
-          branch_name: 'master'
-        )
-      end
-
-      let(:config) do
-        <<~YAML
-          include:
-            - component: #{component_path}
-              with:
-                stage: my-stage
-
-          stages:
-            - my-stage
-
-          test-1:
-            stage: my-stage
-            script: run test-1
-        YAML
-      end
-
-      before do
-        stub_ci_pipeline_yaml_file(config)
-      end
-
-      context 'when there is no version with specified tag' do
-        before do
-          components_project.repository.add_tag(user, 'v0.01', sha)
-        end
-
-        it 'does not create a pipeline' do
-          response = execute_service(save_on_errors: true)
-
-          pipeline = response.payload
-
-          expect(pipeline).to be_persisted
-          expect(pipeline.error_messages[0].content)
-            .to include "my-component@v0.1' - content not found"
-        end
-      end
-
-      context 'when there is a proper revision available' do
-        before do
-          components_project.repository.add_tag(user, 'v0.1', sha)
-        end
-
-        context 'when component is valid' do
-          it 'creates a pipeline using a pipeline component' do
-            response = execute_service(save_on_errors: true)
-
-            pipeline = response.payload
-
-            expect(pipeline).to be_persisted
-            expect(pipeline.error_messages).to be_empty
-            expect(pipeline.statuses.count).to eq 2
-            expect(pipeline.statuses.map(&:name)).to match_array %w[test-1 test-my-job]
-          end
-
-          context 'when inputs have a description' do
-            let(:template) do
-              <<~YAML
-                spec:
-                  inputs:
-                    stage:
-                    suffix:
-                      default: my-job
-                      description: description
-                ---
-                test-$[[ inputs.suffix ]]:
-                  stage: $[[ inputs.stage ]]
-                  script: run tests
-              YAML
-            end
-
-            it 'creates a pipeline' do
-              response = execute_service(save_on_errors: true)
-
-              pipeline = response.payload
-
-              expect(pipeline).to be_persisted
-              expect(pipeline.error_messages).to be_empty
-            end
-          end
-        end
-
-        context 'when interpolation is invalid' do
-          let(:template) do
-            <<~YAML
-              spec:
-                inputs:
-                  stage:
-              ---
-              test:
-                stage: $[[ inputs.stage ]]
-                script: rspec --suite $[[ inputs.suite ]]
-            YAML
-          end
-
-          it 'does not create a pipeline' do
-            response = execute_service(save_on_errors: true)
-
-            pipeline = response.payload
-
-            expect(pipeline).to be_persisted
-            expect(pipeline.error_messages[0].content)
-              .to include 'unknown interpolation key: `suite`'
-          end
-        end
-
-        context 'when there is a syntax error in the template' do
-          let(:template) do
-            <<~YAML
-              spec:
-                inputs:
-                  stage:
-              ---
-              :test
-                stage: $[[ inputs.stage ]]
-            YAML
-          end
-
-          it 'does not create a pipeline' do
-            response = execute_service(save_on_errors: true)
-
-            pipeline = response.payload
-
-            expect(pipeline).to be_persisted
-            expect(pipeline.error_messages[0].content)
-              .to include 'mapping values are not allowed'
-          end
         end
       end
     end

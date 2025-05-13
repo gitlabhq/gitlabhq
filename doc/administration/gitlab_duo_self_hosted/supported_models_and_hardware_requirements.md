@@ -1,5 +1,5 @@
 ---
-stage: AI-Powered
+stage: AI-powered
 group: Custom Models
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Supported models and hardware requirements.
@@ -8,7 +8,7 @@ title: Supported GitLab Duo Self-Hosted models and hardware requirements
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
 - Offering: GitLab Self-Managed
 
@@ -19,8 +19,9 @@ title: Supported GitLab Duo Self-Hosted models and hardware requirements
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../feature_flags.md) named `ai_custom_model`. Disabled by default.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
-- Feature flag `ai_custom_model` removed in GitLab 17.8
-- Generally available in GitLab 17.9
+- Feature flag `ai_custom_model` removed in GitLab 17.8.
+- Generally available in GitLab 17.9.
+- Changed to include Premium in GitLab 18.0.
 
 {{< /history >}}
 
@@ -53,8 +54,8 @@ Support for the following GitLab-supported large language models (LLMs) is gener
 | Llama | [Llama 3 8B](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-dashed" >}} Largely compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="dash-circle" >}} Not compatible |
 | Llama | [Llama 3.1 8B](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-dashed" >}} Largely compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-dashed" >}} Largely compatible |
 | Llama | [Llama 3 70B](https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-dashed" >}} Largely compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="dash-circle" >}} Not compatible |
-| Llama | [Llama 3.1 70B](https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-dashed" >}} Largely compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible |
-| Llama | [Llama 3.3 70B](https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-dashed" >}} Largely compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible |
+| Llama | [Llama 3.1 70B](https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible |
+| Llama | [Llama 3.3 70B](https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible | {{< icon name="check-circle-filled" >}} Fully compatible |
 
 ### Experimental and beta models
 
@@ -91,10 +92,10 @@ The following hardware specifications are the minimum requirements for running G
 
 | Model size                                 | Minimum GPU configuration | Minimum VRAM required |
 |--------------------------------------------|---------------------------|-----------------------|
-| 7B models<br>(for example, Mistral 7B)     | 1x NVIDIA A100 (40GB)     | 35 GB                 |
-| 22B models<br>(for example, Codestral 22B) | 2x NVIDIA A100 (80GB)     | 110 GB                |
-| Mixtral 8x7B                               | 2x NVIDIA A100 (80GB)     | 220 GB                |
-| Mixtral 8x22B                              | 8x NVIDIA A100 (80GB)     | 526 GB                |
+| 7B models<br>(for example, Mistral 7B)     | 1x NVIDIA A100 (40 GB)    | 35 GB                 |
+| 22B models<br>(for example, Codestral 22B) | 2x NVIDIA A100 (80 GB)    | 110 GB                |
+| Mixtral 8x7B                               | 2x NVIDIA A100 (80 GB)    | 220 GB                |
+| Mixtral 8x22B                              | 8x NVIDIA A100 (80 GB)    | 526 GB                |
 
 Use [Hugging Face's memory utility](https://huggingface.co/spaces/hf-accelerate/model-memory-usage) to verify memory requirements.
 

@@ -3,16 +3,10 @@ import { GlAlert } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
-import { findWidget } from '~/issues/list/utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import {
   FORM_TYPES,
-  NAME_TO_ENUM_MAP,
-  WORK_ITEMS_TYPE_MAP,
-  WORK_ITEM_TYPE_ENUM_OBJECTIVE,
-  WORK_ITEM_TYPE_ENUM_KEY_RESULT,
-  WORK_ITEM_TYPE_ENUM_EPIC,
   CHILD_ITEMS_ANCHOR,
   WORKITEM_TREE_SHOWLABELS_LOCALSTORAGEKEY,
   WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY,
@@ -20,6 +14,8 @@ import {
   WIDGET_TYPE_HIERARCHY,
   INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
   DETAIL_VIEW_QUERY_PARAM_NAME,
+  NAME_TO_TEXT_LOWERCASE_MAP,
+  NAME_TO_TEXT_MAP,
 } from '../../constants';
 import {
   findHierarchyWidget,
@@ -40,9 +36,6 @@ import WorkItemRolledUpData from './work_item_rolled_up_data.vue';
 import WorkItemRolledUpCount from './work_item_rolled_up_count.vue';
 
 export default {
-  FORM_TYPES,
-  WORK_ITEM_TYPE_ENUM_OBJECTIVE,
-  WORK_ITEM_TYPE_ENUM_KEY_RESULT,
   components: {
     GlAlert,
     WorkItemActionsSplitButton,
@@ -192,7 +185,7 @@ export default {
   },
   computed: {
     workItemHierarchy() {
-      return findWidget(WIDGET_TYPE_HIERARCHY, this.workItem);
+      return findHierarchyWidget(this.workItem);
     },
     rolledUpCountsByType() {
       return this.workItemHierarchy?.rolledUpCountsByType || [];
@@ -206,25 +199,17 @@ export default {
     addItemsActions() {
       let childTypes = this.allowedChildTypes;
       // To remove EPICS actions when subepics are not available
-      if (
-        NAME_TO_ENUM_MAP[this.workItemType] === WORK_ITEM_TYPE_ENUM_EPIC &&
-        !this.hasSubepicsFeature
-      ) {
-        childTypes = childTypes.filter((type) => {
-          return NAME_TO_ENUM_MAP[type.name] !== WORK_ITEM_TYPE_ENUM_EPIC;
-        });
+      if (this.workItemType === WORK_ITEM_TYPE_NAME_EPIC && !this.hasSubepicsFeature) {
+        childTypes = childTypes.filter((type) => type.name !== WORK_ITEM_TYPE_NAME_EPIC);
       }
 
       const reorderedChildTypes = childTypes.slice().sort((a, b) => a.id.localeCompare(b.id));
       return reorderedChildTypes.map((type) => {
-        const enumType = NAME_TO_ENUM_MAP[type.name];
         const depthLimitByType =
-          this.depthLimitReachedByType?.find(
-            (item) => NAME_TO_ENUM_MAP[item.workItemType?.name] === enumType,
-          ) || {};
+          this.depthLimitReachedByType?.find((item) => item.workItemType?.name === type.name) || {};
 
         return {
-          name: WORK_ITEMS_TYPE_MAP[enumType].name,
+          name: NAME_TO_TEXT_MAP[type.name],
           atDepthLimit: depthLimitByType.depthLimitReached,
           items: this.genericActionItems(type.name).map((item) => ({
             text: item.title,
@@ -262,9 +247,6 @@ export default {
     workItemNamespaceName() {
       return this.workItem?.namespace?.fullName;
     },
-    shouldRolledUpWeightBeVisible() {
-      return this.showRolledUpWeight && this.rolledUpWeight !== null;
-    },
     showTaskWeight() {
       return this.workItemType !== WORK_ITEM_TYPE_NAME_EPIC;
     },
@@ -300,6 +282,9 @@ export default {
         '!gl-px-3 gl-pb-3 gl-pt-2': !this.hasAllChildItemsHidden,
       };
     },
+    shouldShowTreeWidget() {
+      return this.children.length > 0 || this.canUpdateChildren;
+    },
   },
   watch: {
     'workItem.id': {
@@ -322,17 +307,16 @@ export default {
     this.showClosed = getToggleFromLocalStorage(this.showClosedLocalStorageKey);
   },
   methods: {
-    genericActionItems(workItem) {
-      const enumType = NAME_TO_ENUM_MAP[workItem];
-      const workItemName = WORK_ITEMS_TYPE_MAP[enumType].name.toLowerCase();
+    genericActionItems(workItemType) {
+      const workItemName = NAME_TO_TEXT_LOWERCASE_MAP[workItemType];
       return [
         {
           title: sprintf(s__('WorkItem|New %{workItemName}'), { workItemName }),
-          action: () => this.showAddForm(FORM_TYPES.create, enumType),
+          action: () => this.showAddForm(FORM_TYPES.create, workItemType),
         },
         {
           title: sprintf(s__('WorkItem|Existing %{workItemName}'), { workItemName }),
-          action: () => this.showAddForm(FORM_TYPES.add, enumType),
+          action: () => this.showAddForm(FORM_TYPES.add, workItemType),
         },
       ];
     },
@@ -403,6 +387,7 @@ export default {
 
 <template>
   <crud-component
+    v-if="shouldShowTreeWidget"
     ref="workItemTree"
     :title="s__('WorkItem|Child items')"
     :anchor-id="widgetName"
@@ -420,7 +405,6 @@ export default {
       <work-item-rolled-up-data
         v-if="!isLoadingChildren"
         class="gl-hidden sm:gl-flex"
-        :work-item-id="workItemId"
         :work-item-iid="workItemIid"
         :work-item-type="workItemType"
         :full-path="fullPath"
@@ -431,7 +415,6 @@ export default {
       <work-item-rolled-up-data
         v-if="!isLoadingChildren"
         class="gl-mt-2 sm:gl-hidden"
-        :work-item-id="workItemId"
         :work-item-iid="workItemIid"
         :work-item-type="workItemType"
         :full-path="fullPath"
@@ -460,7 +443,6 @@ export default {
         :full-name="workItemNamespaceName"
         :is-group="isGroup"
         :issuable-gid="workItemId"
-        :work-item-iid="workItemIid"
         :form-type="formType"
         :parent-work-item-type="parentWorkItemType"
         :children-type="childType"
@@ -495,7 +477,6 @@ export default {
           :can-update="canUpdateChildren"
           :full-path="fullPath"
           :work-item-id="workItemId"
-          :work-item-iid="workItemIid"
           :work-item-type="workItemType"
           :show-labels="showLabels"
           :show-closed="showClosed"

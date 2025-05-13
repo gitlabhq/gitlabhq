@@ -47,8 +47,10 @@ module Gitlab
         match_lines, non_match_lines = diff_lines.partition { |line| line.type == 'match' }
         return if non_match_lines.empty?
 
-        first_pos = non_match_lines.first.old_pos
-        last_pos = non_match_lines.last.old_pos
+        # this is different from init_from_diff_lines which uses old_pos to determine lines in between
+        # frontend always sends closest_line_number as new_pos since that is what is used by UnfoldPresenter#diff_lines
+        first_pos = non_match_lines.first.new_pos
+        last_pos = non_match_lines.last.new_pos
 
         closest_line_number = 0 unless valid_closest_line_number?(bottom, closest_line_number, first_pos, last_pos)
 

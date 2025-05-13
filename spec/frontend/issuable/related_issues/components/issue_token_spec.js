@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import IssueToken from '~/related_issues/components/issue_token.vue';
 import { PathIdSeparator } from '~/related_issues/constants';
 
@@ -19,15 +19,15 @@ describe('IssueToken', () => {
   };
 
   const createComponent = (props = {}) => {
-    wrapper = shallowMount(IssueToken, {
+    wrapper = shallowMountExtended(IssueToken, {
       propsData: { ...defaultProps, ...props },
     });
   };
 
   const findLink = () => wrapper.findComponent({ ref: 'link' });
   const findReference = () => wrapper.findComponent({ ref: 'reference' });
-  const findReferenceIcon = () => wrapper.find('[data-testid="referenceIcon"]');
-  const findRemoveBtn = () => wrapper.find('[data-testid="removeBtn"]');
+  const findReferenceIcon = () => wrapper.findByTestId('referenceIcon');
+  const findRemoveBtn = () => wrapper.findByTestId('removeBtn');
   const findTitle = () => wrapper.findComponent({ ref: 'title' });
 
   describe('with reference supplied', () => {

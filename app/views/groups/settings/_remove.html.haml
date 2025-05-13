@@ -1,6 +1,7 @@
+- return unless can?(current_user, :remove_group, group)
 - remove_form_id = local_assigns.fetch(:remove_form_id, nil)
 
 - if group.adjourned_deletion?
-  = render_if_exists 'groups/settings/delayed_deletion', group: group, remove_form_id: remove_form_id
+  = render 'groups/settings/delayed_deletion', group: group, remove_form_id: remove_form_id
 - else
   = render 'groups/settings/permanent_deletion', group: group, remove_form_id: remove_form_id

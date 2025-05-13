@@ -16,12 +16,12 @@ When working with Git LFS, you might encounter the following issues.
 
 This error can occur for a few reasons, including:
 
-- **You don't have permissions to access certain LFS object.** Confirm you have
+- You don't have permissions to access certain LFS object. Confirm you have
   permission to push to the project, or fetch from the project.
-- **The project isn't allowed to access the LFS object.** The LFS object you want
+- The project isn't allowed to access the LFS object. The LFS object you want
   to push (or fetch) is no longer available to the project. In most cases, the object
   has been removed from the server.
-- **The local Git repository is using deprecated version of the Git LFS API.** Update
+- The local Git repository is using deprecated version of the Git LFS API. Update
   your local copy of Git LFS and try again.
 
 ## Invalid status for `<url>` : 501

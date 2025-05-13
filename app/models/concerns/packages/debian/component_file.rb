@@ -22,8 +22,8 @@ module Packages
 
         delegate container_type, to: :component
 
-        enum file_type: { packages: 1, sources: 2, di_packages: 3 }
-        enum compression_type: { gz: 1, bz2: 2, xz: 3 }
+        enum :file_type, { packages: 1, sources: 2, di_packages: 3 }
+        enum :compression_type, { gz: 1, bz2: 2, xz: 3 }
 
         validates :component, presence: true
         validates :file_type, presence: true

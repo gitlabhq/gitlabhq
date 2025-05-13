@@ -576,7 +576,7 @@ In [Microsoft 365 admin center](https://admin.microsoft.com/Adminportal/Home#/ho
       Set-TransportConfig -AllowLegacyTLSClients $true
       ```
 
-   1. If you want to forward to an external recipient, please see this guide on how to enable
+   1. If you want to forward to an external recipient, see this guide on how to enable
       [external email forwarding](https://learn.microsoft.com/en-gb/defender-office-365/outbound-spam-policies-external-email-forwarding).
       You might also want to [create an outbound anti-spam policy](https://security.microsoft.com/antispam)
       to allow forwarding to external recipients only for users who need it.

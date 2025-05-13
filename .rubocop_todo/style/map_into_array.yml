@@ -8,7 +8,6 @@ Style/MapIntoArray:
     - 'config/settings.rb'
     - 'ee/app/workers/product_analytics/move_funnels_worker.rb'
     - 'ee/lib/elastic/latest/user_class_proxy.rb'
-    - 'ee/lib/gitlab/search/zoekt/client.rb'
     - 'ee/spec/lib/search/elastic/references/embedding_spec.rb'
     - 'lib/gitlab/database/query_analyzers/prevent_set_operator_mismatch/node.rb'
     - 'lib/gitlab/git/blame.rb'

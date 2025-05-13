@@ -126,6 +126,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
       subject { command.merge_request_ref_exists? }
 
       let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+      let(:origin_ref) { merge_request.source_branch }
 
       context 'for existing merge request ref' do
         let(:origin_ref) { merge_request.ref_path }
@@ -134,9 +135,25 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command, feature_category: :pipeline
       end
 
       context 'for branch ref' do
-        let(:origin_ref) { merge_request.source_branch }
-
         it { is_expected.to eq(false) }
+      end
+
+      it 'does not memoize the result' do
+        expect(command).to receive(:check_merge_request_ref).twice
+
+        2.times { command.merge_request_ref_exists? }
+      end
+
+      context 'when pull_ref_directly_from_gitaly feature flag is disabled' do
+        before do
+          stub_feature_flags(pull_ref_directly_from_gitaly: false)
+        end
+
+        it 'memoizes the result' do
+          expect(command).to receive(:check_merge_request_ref).once
+
+          2.times { command.merge_request_ref_exists? }
+        end
       end
     end
 

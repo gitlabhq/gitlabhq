@@ -28,6 +28,12 @@ RSpec.describe Ci::ResourceGroups::AssignResourceFromResourceGroupService, featu
         expect(ci_build.resource).to be_present
       end
 
+      it_behaves_like 'internal event tracking' do
+        let(:event) { 'job_enqueued_by_resource_group' }
+        let(:category) { described_class.name }
+        let(:additional_properties) { { label: resource_group.process_mode, property: ci_build.id.to_s, resource_group_id: resource_group.id } }
+      end
+
       context 'when failed to request resource' do
         before do
           allow_next_instance_of(Ci::Build) do |job|

@@ -44,10 +44,6 @@ export default {
         !isRemovingSourceBranch
       );
     },
-    shouldShowSourceBranchRemoving() {
-      const { sourceBranchRemoved, isRemovingSourceBranch } = this.mr;
-      return !sourceBranchRemoved && (isRemovingSourceBranch || this.isMakingRequest);
-    },
     revertTitle() {
       return s__('mrWidget|Revert this merge request in a new merge request');
     },

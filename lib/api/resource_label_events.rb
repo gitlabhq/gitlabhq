@@ -3,6 +3,7 @@
 module API
   class ResourceLabelEvents < ::API::Base
     include PaginationParams
+
     helpers ::API::Helpers::NotesHelpers
 
     before { authenticate! }

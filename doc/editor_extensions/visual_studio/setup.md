@@ -52,14 +52,23 @@ Then authenticate with GitLab.
 
 ## Configure the extension
 
-This extension provides these custom commands, which you can configure:
+This extension provides custom commands that you can use with GitLab. Most commands don't have
+default keyboard shortcuts to avoid conflicts with your existing Visual Studio configuration.
 
-| Command name                   | Default keyboard shortcut | Feature |
-|--------------------------------|---------------------------|---------|
-| `GitLab.ToggleCodeSuggestions` | not applicable            | Enable or disable automated Code Suggestions. |
+| Command name                          | Default keyboard shortcut                   | Description |
+|---------------------------------------|---------------------------------------------|-------------|
+| `GitLab.ToggleCodeSuggestions`        | None                                        | Turn on or turn off Code Suggestions. |
+| `GitLab.OpenDuoChat`                  | None                                        | Open Duo Chat.  |
+| `GitLab.GitLabDuoNextSuggestions`     | <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>N</kbd> | Switch to the next code suggestion. |
+| `GitLab.GitLabDuoPreviousSuggestions` | None                                        | Switch to the previous code suggestion. |
+| `GitLab.GitLabExplainTerminalWithDuo` | <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>E</kbd> | Explain selected text in the terminal. |
+| `GitLabDuoChat.ExplainCode`           | None                                        | Explain selected code. |
+| `GitLabDuoChat.Fix`                   | None                                        | Fix issues for the selected code. |
+| `GitLabDuoChat.GenerateTests`         | None                                        | Generate tests for the selected code. |
+| `GitLabDuoChat.Refactor`              | None                                        | Refactor selected code. |
 
 You can access the extension's custom commands with keyboard shortcuts, which you can customize:
 
 1. On the top bar, go to **Tools > Options**.
-1. Go to **Environment > Keyboard**. This extension prefixes its commands with `GitLab.`.
+1. Go to **Environment > Keyboard**. Search for `GitLab.`.
 1. Select a command, and assign it a keyboard shortcut.

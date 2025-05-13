@@ -155,5 +155,9 @@ FactoryBot.define do
     trait :locked do
       locked { true }
     end
+
+    trait :hosted_runner do
+      creator { Users::Internal.admin_bot }
+    end
   end
 end

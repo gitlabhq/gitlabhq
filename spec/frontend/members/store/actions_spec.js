@@ -1,6 +1,6 @@
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { noop } from 'lodash';
+import axios from '~/lib/utils/axios_utils';
 import { useFakeDate } from 'helpers/fake_date';
 import testAction from 'helpers/vuex_action_helper';
 import { members, group, modalData } from 'jest/members/mock_data';

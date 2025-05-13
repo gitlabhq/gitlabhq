@@ -12,13 +12,13 @@ External PostgreSQL database systems have different logging options for monitori
 You should enable the following logging settings:
 
 - `log_statement=ddl`: log changes of database model definition (DDL), such as `CREATE`, `ALTER` or `DROP` of objects. This helps track recent model changes that could be causing performance issues and identify security breaches and human errors.
-- `log_lock_waits=on`: log of processes holding [locks](https://www.postgresql.org/docs/current/explicit-locking.html) for long periods, a common cause of poor query performance.
+- `log_lock_waits=on`: log of processes holding [locks](https://www.postgresql.org/docs/16/explicit-locking.html) for long periods, a common cause of poor query performance.
 - `log_temp_files=0`: log usage of intense and unusual temporary files that can indicate poor query performance.
 - `log_autovacuum_min_duration=0`: log all autovacuum executions. Autovacuum is a key component for overall PostgreSQL engine performance. Essential for troubleshooting and tuning if dead tuples are not being removed from tables.
 - `log_min_duration_statement=1000`: log slow queries (slower than 1 second).
 
 The full description of the above parameter settings can be found in
-[PostgreSQL error reporting and logging documentation](https://www.postgresql.org/docs/current/runtime-config-logging.html#RUNTIME-CONFIG-LOGGING-WHAT).
+[PostgreSQL error reporting and logging documentation](https://www.postgresql.org/docs/16/runtime-config-logging.html#RUNTIME-CONFIG-LOGGING-WHAT).
 
 ## Amazon RDS
 

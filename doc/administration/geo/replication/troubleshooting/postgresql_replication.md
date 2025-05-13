@@ -1,5 +1,5 @@
 ---
-stage: Systems
+stage: Tenant Scale
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Troubleshooting Geo PostgreSQL replication
@@ -132,7 +132,7 @@ where some queries never complete due to being canceled on every replication.
 These long-running queries are
 [planned to be removed in the future](https://gitlab.com/gitlab-org/gitlab/-/issues/34269),
 but as a workaround, we recommend enabling
-[`hot_standby_feedback`](https://www.postgresql.org/docs/10/hot-standby.html#HOT-STANDBY-CONFLICT).
+[`hot_standby_feedback`](https://www.postgresql.org/docs/16/hot-standby.html#HOT-STANDBY-CONFLICT).
 This increases the likelihood of bloat on the **primary** site as it prevents
 `VACUUM` from removing recently-dead rows. However, it has been used
 successfully in production on GitLab.com.
@@ -221,7 +221,7 @@ The workaround is to increase the memory available to the secondary site's Postg
 
 If the output of `sudo gitlab-rake geo:status` shows that `Database replication lag` remains significantly high over time, the primary node in database replication can be checked to determine the status of lag for
 different parts of the database replication process. These values are known as `write_lag`, `flush_lag`, and `replay_lag`. For more information, see
-[the official PostgreSQL documentation](https://www.postgresql.org/docs/current/monitoring-stats.html#MONITORING-PG-STAT-REPLICATION-VIEW).
+[the official PostgreSQL documentation](https://www.postgresql.org/docs/16/monitoring-stats.html#MONITORING-PG-STAT-REPLICATION-VIEW).
 
 Run the following command from the primary Geo node's database to provide relevant output:
 

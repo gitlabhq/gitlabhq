@@ -74,9 +74,9 @@ Some group items are excluded from migration because they:
   - Deploy tokens
   - Webhooks
 - Are not supported:
-  - Push rules
   - Iteration cadence settings
   - Pending member invitations
+  - Push rules
 
 ## Migrated project items
 
@@ -220,8 +220,8 @@ Setting-related project items that are migrated to the destination GitLab instan
 Some project items are excluded from migration because they:
 
 - Might contain sensitive information:
-  - CI/CD variables
   - CI/CD job logs
+  - CI/CD variables
   - Container registry images
   - Deploy keys
   - Deploy tokens
@@ -232,6 +232,11 @@ Some project items are excluded from migration because they:
   - Webhooks
 - Are not supported:
   - Agents
+  - Container registry
+  - Environments
+  - Feature flags
+  - Infrastructure registry
+  - Linked issues
   - Merge request approval rules
 
     {{< alert type="note" >}}
@@ -240,11 +245,11 @@ Some project items are excluded from migration because they:
 
     {{< /alert >}}
 
-  - Container registry
-  - Environments
-  - Feature flags
-  - Infrastructure registry
+  - Merge request dependencies
   - Package registry
   - Pages domains
-  - Remote mirrors
   - Pending member invitations
+  - Remote mirrors
+- Do not contain recoverable data:
+  - Merge requests with no diff or source information
+    (for more information, see [issue 537943](https://gitlab.com/gitlab-org/gitlab/-/issues/537943))

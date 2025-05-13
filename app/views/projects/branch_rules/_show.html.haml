@@ -8,11 +8,10 @@
   id: 'branch-rules',
   testid: 'branch-rules-content',
   expanded: expanded) do |c|
-  - c.with_callout do
-    - if Feature.enabled?(:edit_branch_rules, @project)
-      = render 'projects/settings/branch_rules_callout'
   - c.with_description do
     = _('Define rules for who can push, merge, and the required approvals for each branch.')
     = link_to(_('Leave feedback.'), 'https://gitlab.com/gitlab-org/gitlab/-/issues/388149', target: '_blank', rel: 'noopener noreferrer')
   - c.with_body do
+    - if Feature.enabled?(:edit_branch_rules, @project)
+      .gl-mb-5= render 'projects/settings/branch_rules_callout'
     #js-branch-rules{ data: { project_path: @project.full_path, branch_rules_path: project_settings_repository_branch_rules_path(@project), show_code_owners: show_code_owners.to_s, show_status_checks: show_status_checks.to_s, show_approvers: show_approvers.to_s, show_enterprise_access_levels: show_enterprise_access_levels.to_s } }

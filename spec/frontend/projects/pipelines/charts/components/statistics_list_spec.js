@@ -5,8 +5,7 @@ import Component from '~/projects/pipelines/charts/components/statistics_list.vu
 
 import { InternalEvents } from '~/tracking';
 import { mockTracking } from 'helpers/tracking_helper';
-
-import { counts } from '../mock_data';
+import { counts } from 'jest/analytics/ci_cd/mock_data';
 
 describe('StatisticsList', () => {
   let wrapper;

@@ -43,17 +43,5 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :security_policy_man
         end
       end
     end
-
-    context 'with feature flag disabled' do
-      before do
-        stub_feature_flags(populate_and_use_build_source_table: false)
-      end
-
-      it 'does not create build source records' do
-        expect do
-          execute.payload
-        end.to not_change { Ci::BuildSource.count }
-      end
-    end
   end
 end

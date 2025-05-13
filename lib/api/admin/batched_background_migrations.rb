@@ -54,10 +54,13 @@ module API
               values: Gitlab::Database.all_database_names,
               desc: 'The name of the database, the default `main`',
               default: 'main'
+            optional :job_class_name,
+              type: String,
+              desc: 'Filter migrations by job class name.'
           end
           get do
             Gitlab::Database::SharedModel.using_connection(base_model.connection) do
-              migrations = Database::BatchedBackgroundMigrationsFinder.new(connection: base_model.connection).execute
+              migrations = Database::BatchedBackgroundMigrationsFinder.new(params: params).execute
               present_entity(migrations)
             end
           end

@@ -270,7 +270,7 @@ RSpec::Matchers.define :trigger_internal_events do |*event_names|
       to_json: include(
         schema: Gitlab::Tracking::StandardContext::GITLAB_STANDARD_SCHEMA_URL,
         data: include(
-          user_id: id_for(:user),
+          user_id: user_id,
           project_id: id_for(:project),
           namespace_id: id_for(:namespace),
           feature_enabled_by_namespace_ids: @properties[:feature_enabled_by_namespace_ids],
@@ -278,6 +278,16 @@ RSpec::Matchers.define :trigger_internal_events do |*event_names|
         )
       )
     )
+  end
+
+  def user_id
+    # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- testing the existing logic in the standard context
+    if Gitlab.com?
+      id_for(:user)
+    else
+      id_for(:user) ? Gitlab::CryptoHelper.sha256(id_for(:user)) : nil
+    end
+    # rubocop:enable Gitlab/AvoidGitlabInstanceChecks
   end
 
   def service_ping_context_for(event_name)

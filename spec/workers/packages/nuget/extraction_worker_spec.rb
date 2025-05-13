@@ -31,12 +31,16 @@ RSpec.describe Packages::Nuget::ExtractionWorker, type: :worker, feature_categor
       end
     end
 
-    context 'with valid package file' do
+    shared_examples 'updates package and package file' do
       it 'updates package and package file' do
         expect { subject }
           .to not_change { Packages::Package.count }
           .and not_change { Packages::PackageFile.count }
       end
+    end
+
+    context 'with valid package file' do
+      it_behaves_like 'updates package and package file'
 
       context 'with exisiting package' do
         let!(:existing_package) { create(:nuget_package, project: package.project, name: package_name, version: package_version) }
@@ -58,6 +62,62 @@ RSpec.describe Packages::Nuget::ExtractionWorker, type: :worker, feature_categor
           .to not_change { package.reload.name }
           .and not_change { package.version }
           .and not_change { package_file.reload.file_name }
+      end
+    end
+
+    context 'with package protection rule for different roles and package_name_patterns', :enable_admin_mode do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:package_protection_rule) do
+        create(:package_protection_rule, package_type: :nuget, project: package.project)
+      end
+
+      let(:package_name_pattern) { 'DummyProject.*' }
+
+      let(:project_developer) { create(:user, developer_of: package.project) }
+      let(:project_maintainer) { create(:user, maintainer_of: package.project) }
+      let(:project_owner) { package.project.owner }
+      let(:instance_admin) { create(:admin) }
+
+      before do
+        package_protection_rule.update!(
+          package_name_pattern: package_name_pattern,
+          minimum_access_level_for_push: minimum_access_level_for_push
+        )
+        package.update!(creator: package_creator)
+      end
+
+      shared_examples 'protected package' do
+        it_behaves_like 'handling error',
+          error_class: ::Packages::Nuget::UpdatePackageFromMetadataService::ProtectedPackageError,
+          error_message: "Package 'DummyProject.DummyPackage' with version '1.0.0' is protected"
+
+        context 'when feature flag :packages_protected_packages_nuget is disabled' do
+          before do
+            stub_feature_flags(packages_protected_packages_nuget: false)
+          end
+
+          it_behaves_like 'updates package and package file'
+        end
+      end
+
+      where(:package_name_pattern, :minimum_access_level_for_push, :package_creator, :shared_examples_name) do
+        ref(:package_name)               | :maintainer | ref(:project_developer)  | 'protected package'
+        ref(:package_name)               | :maintainer | ref(:project_maintainer) | 'updates package and package file'
+        ref(:package_name)               | :maintainer | nil                      | 'protected package'
+        ref(:package_name)               | :owner      | ref(:project_maintainer) | 'protected package'
+        ref(:package_name)               | :owner      | ref(:project_owner)      | 'updates package and package file'
+        ref(:package_name)               | :admin      | ref(:project_owner)      | 'protected package'
+        ref(:package_name)               | :admin      | ref(:instance_admin)     | 'updates package and package file'
+        ref(:package_name)               | :admin      | nil                      | 'protected package'
+
+        lazy { "Other.#{package_name}" } | :maintainer | ref(:project_owner)      | 'updates package and package file'
+        lazy { "Other.#{package_name}" } | :admin      | ref(:project_owner)      | 'updates package and package file'
+        lazy { "Other.#{package_name}" } | :admin      | nil                      | 'updates package and package file'
+      end
+
+      with_them do
+        it_behaves_like params[:shared_examples_name]
       end
     end
 

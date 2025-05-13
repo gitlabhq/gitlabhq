@@ -1,10 +1,10 @@
-import { nextTick } from 'vue';
 import { GlLink, GlForm } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import BubbleMenu from '~/content_editor/components/bubble_menus/bubble_menu.vue';
 import MediaBubbleMenu from '~/content_editor/components/bubble_menus/media_bubble_menu.vue';
 import { stubComponent } from 'helpers/stub_component';
 import eventHubFactory from '~/helpers/event_hub_factory';
+import waitForPromises from 'helpers/wait_for_promises';
 import Audio from '~/content_editor/extensions/audio';
 import DrawioDiagram from '~/content_editor/extensions/drawio_diagram';
 import Image from '~/content_editor/extensions/image';
@@ -69,7 +69,7 @@ describe.each`
         tiptapEditor,
         params: { transaction: createTransactionWithMeta() },
       });
-      await nextTick();
+      await waitForPromises();
     };
 
     const buildWrapperAndDisplayMenu = () => {

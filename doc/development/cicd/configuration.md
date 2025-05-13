@@ -31,7 +31,7 @@ or [`ee/lib/ee/gitlab/ci/config/entry`](https://gitlab.com/gitlab-org/gitlab/-/t
 An entry is represented by a class that inherits from;
 
 - `Entry::Node`: for simple keywords.
-  (e.g. [`Entry::Stage`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/config/entry/stage.rb))
+  (For example, [`Entry::Stage`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/config/entry/stage.rb))
 - `Entry::Simplifiable`: for keywords that have multiple structures.
   For example, [`Entry::Retry`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/config/entry/retry.rb) can be a simple number or a hash configuration.
 - `Entry::ComposableArray`: for keywords that have a list of single-type sub-elements.

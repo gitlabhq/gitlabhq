@@ -21,6 +21,11 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
   let!(:project_label_1) { create(:label, project: project_1, title: 'Label_4') }
 
   before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+
     grandparent.add_owner(user)
 
     sign_in(user)

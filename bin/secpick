@@ -195,7 +195,7 @@ module Secpick
       [
         "-o mr.create",
         "-o mr.target='#{stable_branch}'",
-        "-o mr.description='Please apply Security Release template. /milestone %#{milestone}'"
+        "-o mr.description='Please apply Security Release template.\\n/milestone %#{milestone}'"
       ]
     end
 

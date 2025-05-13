@@ -25,8 +25,8 @@ preserving your team's preferences while standardizing how results are displayed
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/),
 as shown in the following table:
 
-| Feature                                                                                     | In Free                | In Premium             | In Ultimate            |
-|:--------------------------------------------------------------------------------------------|:-----------------------|:-----------------------|:-----------------------|
+| Feature                                                                                     | In Free                              | In Premium                           | In Ultimate |
+|:--------------------------------------------------------------------------------------------|:-------------------------------------|:-------------------------------------|:------------|
 | [Import Code Quality results from CI/CD jobs](#import-code-quality-results-from-a-cicd-job) | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
 | [Use CodeClimate-based scanning](#use-the-built-in-code-quality-cicd-template-deprecated)   | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
 | [See findings in a merge request widget](#merge-request-widget)                             | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
@@ -89,19 +89,19 @@ The CodeClimate engine uses a customizable set of [analysis plugins](code_qualit
 Some are on by default; others must be explicitly enabled.
 The following integrations are available to replace the built-in plugins:
 
-| Plugin       | On by default                                | Replacement                                                                                                                                                                          |
-|--------------|----------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Duplication  | {{< icon name="check-circle" >}} Yes                       | [Integrate PMD Copy/Paste Detector](#pmd-copypaste-detector).                                                                                                                        |
-| ESLint       | {{< icon name="check-circle" >}} Yes                       | [Integrate ESLint](#eslint).                                                                                                                                                         |
-| gofmt        | {{< icon name="dotted-circle" >}} No                       | [Integrate golangci-lint](#golangci-lint) and enable the [gofmt linter](https://golangci-lint.run/usage/linters#gofmt).                                                              |
+| Plugin       | On by default                                              | Replacement |
+|--------------|------------------------------------------------------------|-------------|
+| Duplication  | {{< icon name="check-circle" >}} Yes                       | [Integrate PMD Copy/Paste Detector](#pmd-copypaste-detector). |
+| ESLint       | {{< icon name="check-circle" >}} Yes                       | [Integrate ESLint](#eslint). |
+| gofmt        | {{< icon name="dotted-circle" >}} No                       | [Integrate golangci-lint](#golangci-lint) and enable the [gofmt linter](https://golangci-lint.run/usage/linters#gofmt). |
 | golint       | {{< icon name="dotted-circle" >}} No                       | [Integrate golangci-lint](#golangci-lint) and enable one of the included linters that replaces golint. golint is [deprecated and frozen](https://github.com/golang/go/issues/38968). |
-| govet        | {{< icon name="dotted-circle" >}} No                       | [Integrate golangci-lint](#golangci-lint). golangci-lint [includes govet by default](https://golangci-lint.run/usage/linters#enabled-by-default).                                    |
-| markdownlint | {{< icon name="dotted-circle" >}} No (community-supported) | [Integrate markdownlint-cli2](#markdownlint-cli2).                                                                                                                                   |
-| pep8         | {{< icon name="dotted-circle" >}} No                       | Integrate an alternative Python linter like [Flake8](#flake8), [Pylint](#pylint), or [Ruff](#ruff).                                                                                  |
-| RuboCop      | {{< icon name="dotted-circle" >}} Yes                      | [Integrate RuboCop](#rubocop).                                                                               |
-| SonarPython  | {{< icon name="dotted-circle" >}} No                       | Integrate an alternative Python linter like [Flake8](#flake8), [Pylint](#pylint), or [Ruff](#ruff).                                                                                  |
-| Stylelint    | {{< icon name="dotted-circle" >}} No (community-supported) | [Integrate Stylelint](#stylelint).                                                                                                                                                   |
-| SwiftLint    | {{< icon name="dotted-circle" >}} No                       | [Integrate SwiftLint](#swiftlint).                                                                                                                                                   |
+| govet        | {{< icon name="dotted-circle" >}} No                       | [Integrate golangci-lint](#golangci-lint). golangci-lint [includes govet by default](https://golangci-lint.run/usage/linters#enabled-by-default). |
+| markdownlint | {{< icon name="dotted-circle" >}} No (community-supported) | [Integrate markdownlint-cli2](#markdownlint-cli2). |
+| pep8         | {{< icon name="dotted-circle" >}} No                       | Integrate an alternative Python linter like [Flake8](#flake8), [Pylint](#pylint), or [Ruff](#ruff). |
+| RuboCop      | {{< icon name="dotted-circle" >}} Yes                      | [Integrate RuboCop](#rubocop). |
+| SonarPython  | {{< icon name="dotted-circle" >}} No                       | Integrate an alternative Python linter like [Flake8](#flake8), [Pylint](#pylint), or [Ruff](#ruff). |
+| Stylelint    | {{< icon name="dotted-circle" >}} No (community-supported) | [Integrate Stylelint](#stylelint). |
+| SwiftLint    | {{< icon name="dotted-circle" >}} No                       | [Integrate SwiftLint](#swiftlint). |
 
 ## View Code Quality results
 
@@ -179,14 +179,14 @@ This format is a version of the [CodeClimate report format](https://github.com/c
 The file you provide as [Code Quality report artifact](../yaml/artifacts_reports.md#artifactsreportscodequality) must contain a single JSON array.
 Each object in that array must have at least the following properties:
 
-| Name                                                      | Description                                                                                                              | Type                                                                         |
-|-----------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
-| `description`                                             | A human-readable description of the code quality violation.                                                              | String                                                                       |
-| `check_name`                                              | A unique name representing the check, or rule, associated with this violation.                                           | String                                                                       |
-| `fingerprint`                                             | A unique fingerprint to identify this specific code quality violation, such as a hash of its contents.                   | String                                                                       |
-| `severity`                                                | The severity of the violation.                                                                                           | String. Valid values are `info`, `minor`, `major`, `critical`, or `blocker`. |
-| `location.path`                                           | The file containing the code quality violation, expressed as a relative path in the repository. Do not prefix with `./`. | String                                                                       |
-| `location.lines.begin` or `location.positions.begin.line` | The line on which the code quality violation occurred.                                                                   | Integer                                                                      |
+| Name                                                      | Type    | Description |
+|-----------------------------------------------------------|---------|-------------|
+| `description`                                             | String  | A human-readable description of the code quality violation. |
+| `check_name`                                              | String  | A unique name representing the check, or rule, associated with this violation. |
+| `fingerprint`                                             | String  | A unique fingerprint to identify this specific code quality violation, such as a hash of its contents. |
+| `location.path`                                           | String  | The file containing the code quality violation, expressed as a relative path in the repository. Do not prefix with `./`. |
+| `location.lines.begin` or `location.positions.begin.line` | Integer | The line on which the code quality violation occurred. |
+| `severity`                                                | String  | The severity of the violation, can be one of `info`, `minor`, `major`, `critical`, or `blocker`. |
 
 The format is different from the [CodeClimate report format](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#data-types) in the following ways:
 

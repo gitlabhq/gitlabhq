@@ -71,7 +71,8 @@ RSpec.describe Sidebars::Menu, feature_category: :navigation do
               title: "Not active",
               link: "foo3",
               is_active: false,
-              pill_count: 10
+              pill_count: 10,
+              pill_count_dynamic: false
             }
           ]
         })

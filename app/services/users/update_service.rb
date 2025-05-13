@@ -182,7 +182,7 @@ module Users
       notify_success(user_exists)
       remove_followers_and_followee!
 
-      success
+      success({ user: @user })
     end
 
     def remove_followers_and_followee!

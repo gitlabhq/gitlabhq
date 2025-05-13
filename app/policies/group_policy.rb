@@ -128,9 +128,15 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     Feature.enabled?(:allow_guest_plus_roles_to_pull_packages, @subject.root_ancestor)
   end
 
+  condition(:archive_group_enabled, scope: :subject) do
+    Feature.enabled?(:archive_group, @subject.root_ancestor)
+  end
+
   rule { can?(:read_group) & design_management_enabled }.policy do
     enable :read_design_activity
   end
+
+  rule { (admin | owner) & archive_group_enabled }.enable :archive_group
 
   rule { public_group }.policy do
     enable :read_group
@@ -161,6 +167,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_confidential_issues
     enable :read_crm_organization
     enable :read_crm_contact
+    enable :read_internal_note
   end
 
   rule { admin | organization_owner }.policy do
@@ -204,11 +211,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { can?(:read_group) }.policy do
     enable :read_achievement
-  end
-
-  rule { can?(:maintainer_access) }.policy do
-    enable :admin_achievement
-    enable :award_achievement
   end
 
   rule { can?(:owner_access) }.policy do
@@ -258,62 +260,62 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_crm_contact
     enable :read_confidential_issues
     enable :read_ci_cd_analytics
+    enable :read_internal_note
   end
 
   rule { maintainer }.policy do
-    enable :destroy_package
-    enable :import_projects
-    enable :admin_pipeline
-    enable :admin_build
+    enable :maintainer_access
     enable :add_cluster
-    enable :create_cluster
-    enable :update_cluster
+    enable :admin_achievement
+    enable :admin_build
     enable :admin_cluster
+    enable :admin_pipeline
+    enable :admin_push_rules
+    enable :admin_upload
+    enable :award_achievement
+    enable :create_cluster
+    enable :create_jira_connect_subscription
+    enable :destroy_package
+    enable :destroy_upload
+    enable :import_projects
     enable :read_deploy_token
     enable :read_group_runners
-    enable :create_jira_connect_subscription
-    enable :maintainer_access
-    enable :admin_upload
-    enable :destroy_upload
-    enable :admin_push_rules
+    enable :update_cluster
   end
 
   rule { owner }.policy do
-    enable :admin_group
-    enable :admin_namespace
-    enable :admin_group_member
-    enable :admin_package
-    enable :admin_runner
-    enable :admin_integrations
-    enable :admin_protected_environments
-    enable :change_visibility_level
-
-    enable :read_usage_quotas
-    enable :read_group_runners
-    enable :register_group_runners
-    enable :create_runner
-    enable :destroy_issue
-
-    enable :set_note_created_at
-    enable :set_emails_disabled
-    enable :change_prevent_sharing_groups_outside_hierarchy
-    enable :set_show_diff_preview_in_email
-    enable :change_seat_control
-    enable :change_new_user_signups_cap
-    enable :update_default_branch_protection
-    enable :create_deploy_token
-    enable :destroy_deploy_token
-    enable :read_runners_registration_token
-    enable :update_runners_registration_token
     enable :owner_access
-    enable :update_git_access_protocol
     enable :admin_cicd_variables
-
-    enable :read_billing
+    enable :admin_group
+    enable :admin_group_member
+    enable :admin_integrations
+    enable :admin_namespace
+    enable :admin_package
+    enable :admin_protected_environments
+    enable :admin_runner
+    enable :change_new_user_signups_cap
+    enable :change_prevent_sharing_groups_outside_hierarchy
+    enable :change_seat_control
+    enable :change_visibility_level
+    enable :create_deploy_token
+    enable :create_runner
+    enable :create_subgroup
+    enable :destroy_deploy_token
+    enable :destroy_issue
     enable :edit_billing
-
-    enable :remove_group
     enable :manage_merge_request_settings
+    enable :read_billing
+    enable :read_group_runners
+    enable :read_runners_registration_token
+    enable :read_usage_quotas
+    enable :register_group_runners
+    enable :remove_group
+    enable :set_emails_disabled
+    enable :set_note_created_at
+    enable :set_show_diff_preview_in_email
+    enable :update_default_branch_protection
+    enable :update_git_access_protocol
+    enable :update_runners_registration_token
   end
 
   rule { can?(:read_nested_project_resources) }.policy do
@@ -330,7 +332,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_nested_project_resources
   end
 
-  rule { owner }.enable :create_subgroup
   rule { maintainer & maintainer_can_create_group }.enable :create_subgroup
 
   rule { public_group | logged_in_viewable }.enable :view_globally
@@ -444,15 +445,16 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { can?(:admin_group) | can?(:admin_runner) }.enable :admin_group_or_admin_runner
 
-  # Should be matched with ProjectPolicy#read_internal_note
-  rule { admin | reporter | planner }.enable :read_internal_note
-
   rule { can?(:remove_group) }.enable :view_edit_page
 
   # TODO: Remove this rule and move :read_package permission from reporter to guest
   # with the rollout of the FF allow_guest_plus_roles_to_pull_packages
   # https://gitlab.com/gitlab-org/gitlab/-/issues/512210
   rule { guest & allow_guest_plus_roles_to_pull_packages_enabled }.enable :read_package
+
+  rule { can?(:admin_group_member) }.policy do
+    enable :invite_group_members
+  end
 
   def access_level(for_any_session: false)
     return GroupMember::NO_ACCESS if @user.nil?

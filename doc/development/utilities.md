@@ -11,7 +11,7 @@ We have developed a number of utilities to help ease development:
 
 Refer to [`merge_hash.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/utils/merge_hash.rb):
 
-- Deep merges an array of hashes:
+- Deep merges an array of elements which can be hashes, arrays, or other objects:
 
   ```ruby
   Gitlab::Utils::MergeHash.merge(

@@ -437,3 +437,18 @@
 
   background: var(--ci-job-item-failed);
 }
+
+/**
+* Translucent glass background
+*
+* Sets background color to semi transparent
+* with a glass shine though apperance
+*
+* Respects user preference setting for transparency
+*/
+@mixin translucent-glass-background {
+  @media (prefers-reduced-transparency: no-preference) {
+    background-color: rgb(from var(--gl-background-color-default) r g b / 92%) !important;
+    backdrop-filter: blur(24px);
+  }
+}

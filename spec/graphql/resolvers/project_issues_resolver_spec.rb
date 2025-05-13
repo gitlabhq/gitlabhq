@@ -53,10 +53,10 @@ RSpec.describe Resolvers::ProjectIssuesResolver, feature_category: :team_plannin
       end
 
       describe 'filtering by milestone wildcard id' do
-        let_it_be(:upcoming_milestone) { create(:milestone, project: project, title: "upcoming milestone", start_date: 1.day.ago, due_date: 1.day.from_now) }
+        let_it_be(:current_milestone) { create(:milestone, project: project, title: "current milestone", start_date: 1.day.ago, due_date: 1.day.from_now) }
         let_it_be(:past_milestone) { create(:milestone, project: project, title: "past milestone", due_date: 1.day.ago) }
         let_it_be(:future_milestone) { create(:milestone, project: project, title: "future milestone", start_date: 1.day.from_now) }
-        let_it_be(:issue5) { create(:issue, project: project, state: :opened, milestone: upcoming_milestone) }
+        let_it_be(:issue5) { create(:issue, project: project, state: :opened, milestone: current_milestone) }
         let_it_be(:issue6) { create(:issue, project: project, state: :opened, milestone: past_milestone) }
         let_it_be(:issue7) { create(:issue, project: project, state: :opened, milestone: future_milestone) }
 
@@ -70,7 +70,7 @@ RSpec.describe Resolvers::ProjectIssuesResolver, feature_category: :team_plannin
         end
 
         it 'returns issues with upcoming milestone' do
-          expect(resolve_issues(milestone_wildcard_id: wildcard_upcoming)).to contain_exactly(issue5)
+          expect(resolve_issues(milestone_wildcard_id: wildcard_upcoming)).to contain_exactly(issue7)
         end
 
         it 'returns issues with any milestone' do
@@ -89,7 +89,7 @@ RSpec.describe Resolvers::ProjectIssuesResolver, feature_category: :team_plannin
 
         context 'when using negated filters' do
           it 'returns issues matching the searched title after applying a negated filter' do
-            expect(resolve_issues(milestone_title: ['past milestone'], not: { milestone_wildcard_id: wildcard_upcoming })).to contain_exactly(issue6)
+            expect(resolve_issues(milestone_title: ['current milestone'], not: { milestone_wildcard_id: wildcard_upcoming })).to contain_exactly(issue5)
           end
 
           it 'returns issues excluding the ones with started milestone' do
@@ -97,7 +97,7 @@ RSpec.describe Resolvers::ProjectIssuesResolver, feature_category: :team_plannin
           end
 
           it 'returns issues excluding the ones with upcoming milestone' do
-            expect(resolve_issues(not: { milestone_wildcard_id: wildcard_upcoming })).to contain_exactly(issue6)
+            expect(resolve_issues(not: { milestone_wildcard_id: wildcard_upcoming })).to contain_exactly(issue1, issue5)
           end
         end
       end

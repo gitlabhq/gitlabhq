@@ -43,6 +43,7 @@ Any dependencies are noted in the `Description` column for each permission.
 | Permission | Description | API Attribute | Scope | Introduced |
 |:-----------|:------------|:--------------|:------|:-----------|
 | Manage deploy tokens | Manage deploy tokens at the group or project level. | [`manage_deploy_tokens`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151677) | Group,<br> Project | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/448843) |
+| Manage Protected Environments | Create, read, update, and delete protected environments | [`admin_protected_environments`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178283) | Group,<br> Project | GitLab [17.9](https://gitlab.com/gitlab-org/gitlab/-/issues/471385) |
 
 ## Groups and projects
 

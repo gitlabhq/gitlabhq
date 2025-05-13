@@ -86,7 +86,7 @@ describe('View branch rules', () => {
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   const createComponent = async ({
-    glFeatures = { editBranchRules: true, branchRuleSquashSettings: true },
+    glFeatures = { editBranchRules: true },
     canAdminProtectedBranches = true,
     allowEditSquashSetting = true,
     branchRulesQueryHandler = branchRulesMockRequestHandler,
@@ -171,12 +171,6 @@ describe('View branch rules', () => {
     );
 
   describe('Squash settings', () => {
-    it('does not render squash settings section when feature flag is disabled', async () => {
-      await createComponent({ glFeatures: { branchRuleSquashSettings: false } });
-
-      expect(findSquashSettingSection().exists()).toBe(false);
-    });
-
     it.each`
       scenario                           | canAdminProtectedBranches | expectedIsEditAvailable | description
       ${'user has permission'}           | ${true}                   | ${true}                 | ${'shows edit button'}
@@ -185,7 +179,6 @@ describe('View branch rules', () => {
       '$description when $scenario',
       async ({ canAdminProtectedBranches, expectedIsEditAvailable }) => {
         await createComponent({
-          glFeatures: { branchRuleSquashSettings: true },
           canAdminProtectedBranches,
         });
 
@@ -204,7 +197,6 @@ describe('View branch rules', () => {
         jest.spyOn(util, 'getParameterByName').mockReturnValueOnce(branch);
 
         await createComponent({
-          glFeatures: { branchRuleSquashSettings: true },
           canAdminProtectedBranches: true,
           allowEditSquashSetting,
         });
@@ -329,9 +321,7 @@ describe('View branch rules', () => {
     `('$description', async ({ branch, expectedExists }) => {
       jest.spyOn(util, 'getParameterByName').mockReturnValueOnce(branch);
 
-      await createComponent({
-        glFeatures: { branchRuleSquashSettings: true },
-      });
+      await createComponent();
 
       expect(findSquashSettingSection().exists()).toBe(expectedExists);
     });
@@ -521,6 +511,13 @@ describe('View branch rules', () => {
       });
     });
 
+    it('does not render delete rule button when target is All branches', () => {
+      jest.spyOn(util, 'getParameterByName').mockReturnValueOnce('All branches');
+      createComponent();
+
+      expect(findDeleteRuleButton().exists()).toBe(false);
+    });
+
     it('renders delete rule button', () => {
       expect(findDeleteRuleButton().text()).toBe('Delete rule');
     });
@@ -603,7 +600,9 @@ describe('View branch rules', () => {
     });
 
     it('does not render Protect Branch section', () => {
-      expect(findSettingsSection().exists()).toBe(false);
+      const sections = wrapper.findAllComponents(SettingsSection);
+      expect(sections).toHaveLength(1);
+      expect(sections.at(0).attributes('heading')).toBe('Merge requests');
     });
   });
 

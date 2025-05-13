@@ -104,41 +104,16 @@ RSpec.describe Types::Ci::JobType, feature_category: :continuous_integration do
         expect(build.pipeline).to receive(:trigger_id).and_call_original
         is_expected.to be(false)
       end
-
-      context 'when ff ci_read_trigger_from_ci_pipeline is disabled' do
-        before do
-          stub_feature_flags(ci_read_trigger_from_ci_pipeline: false)
-        end
-
-        it 'returns false' do
-          expect(build).to receive(:trigger_request).and_call_original
-          is_expected.to be(false)
-        end
-      end
     end
 
     context 'when triggered' do
       let_it_be(:trigger) { create(:ci_trigger, project: project) }
-      let_it_be(:trigger_request) { create(:ci_trigger_request, trigger: trigger) }
       let_it_be(:pipeline) { create(:ci_empty_pipeline, trigger: trigger, project: project) }
-      let_it_be(:build) do
-        create(:ci_build, trigger_request: trigger_request, pipeline: pipeline, project: project, user: user)
-      end
+      let_it_be(:build) { create(:ci_build, pipeline: pipeline, project: project, user: user) }
 
       it 'returns true' do
         expect(build.pipeline).to receive(:trigger_id).and_call_original
         is_expected.to be(true)
-      end
-
-      context 'when ff ci_read_trigger_from_ci_pipeline is disabled' do
-        before do
-          stub_feature_flags(ci_read_trigger_from_ci_pipeline: false)
-        end
-
-        it 'returns true' do
-          expect(build).to receive(:trigger_request).and_call_original
-          is_expected.to be(true)
-        end
       end
     end
   end

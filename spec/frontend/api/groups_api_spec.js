@@ -12,11 +12,14 @@ import {
   getGroupMembers,
   createGroup,
   getSharedGroups,
+  deleteGroupMember,
+  restoreGroup,
 } from '~/api/groups_api';
 
 const mockApiVersion = 'v4';
 const mockUrlRoot = '/gitlab';
 const mockGroupId = '99';
+const mockUserId = '47';
 
 describe('GroupsApi', () => {
   let mock;
@@ -66,6 +69,18 @@ describe('GroupsApi', () => {
     });
   });
 
+  describe('restoreGroup', () => {
+    it('posts to the correct URL and returns the data', async () => {
+      const expectedUrl = `${mockUrlRoot}/api/${mockApiVersion}/groups/${mockGroupId}/restore`;
+
+      mock.onPost(expectedUrl).replyOnce(HTTP_STATUS_OK, group);
+
+      await expect(restoreGroup(mockGroupId)).resolves.toMatchObject({
+        data: group,
+      });
+    });
+  });
+
   describe('getGroupTransferLocations', () => {
     beforeEach(() => {
       jest.spyOn(axios, 'get');
@@ -111,6 +126,22 @@ describe('GroupsApi', () => {
 
       await expect(getGroupMembers(mockGroupId, true)).resolves.toMatchObject({
         data: response,
+      });
+    });
+  });
+
+  describe('deleteGroupMember', () => {
+    beforeEach(() => {
+      jest.spyOn(axios, 'delete');
+    });
+
+    it('deletes to the correct URL', () => {
+      const expectedUrl = `${mockUrlRoot}/api/${mockApiVersion}/groups/${mockGroupId}/members/${mockUserId}`;
+
+      mock.onDelete(expectedUrl).replyOnce(HTTP_STATUS_OK);
+
+      return deleteGroupMember(mockGroupId, mockUserId).then(() => {
+        expect(axios.delete).toHaveBeenCalledWith(expectedUrl);
       });
     });
   });

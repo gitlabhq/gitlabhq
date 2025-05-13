@@ -4,6 +4,7 @@ import SettingsDropdown from '~/diffs/components/settings_dropdown.vue';
 
 const defaultProps = {
   diffViewType: 'inline',
+  showWhitespace: false,
 };
 
 describe('Diff settings dropdown component', () => {
@@ -86,5 +87,10 @@ describe('Diff settings dropdown component', () => {
         expect(wrapper.emitted('toggleFileByFile')).toEqual([[eventValue]]);
       },
     );
+
+    it('can be hidden', () => {
+      createComponent({ fileByFileSupported: false });
+      expect(findFileByFileCheckbox().exists()).toBe(false);
+    });
   });
 });

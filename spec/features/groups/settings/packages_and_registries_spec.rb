@@ -135,6 +135,17 @@ RSpec.describe 'Group Package and registry settings', feature_category: :package
 
       expect(find('.gl-toast')).to have_content('Settings saved successfully.')
     end
+
+    it 'allows clearing Docker Hub authentication settings' do
+      visit_settings_page
+
+      within_testid 'dependency-proxy-settings-content' do
+        fill_in 'Identity', with: ''
+        click_button 'Save changes'
+      end
+
+      expect(find('.gl-toast')).to have_content('Settings saved successfully.')
+    end
   end
 
   def visit_settings_page

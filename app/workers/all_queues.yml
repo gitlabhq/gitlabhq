@@ -173,6 +173,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cluster_agent
+- :name: cluster_agent:clusters_agents_managed_resources_delete
+  :worker_name: Clusters::Agents::ManagedResources::DeleteWorker
+  :feature_category: :deployment_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cluster_agent
 - :name: cluster_agent:clusters_agents_notify_git_push
   :worker_name: Clusters::Agents::NotifyGitPushWorker
   :feature_category: :deployment_management
@@ -199,7 +209,7 @@
   :feature_category: :container_registry
   :has_external_dependencies: false
   :urgency: :low
-  :resource_boundary: :unknown
+  :resource_boundary: :cpu
   :weight: 1
   :idempotent: true
   :tags: []
@@ -220,7 +230,7 @@
   :feature_category: :container_registry
   :has_external_dependencies: false
   :urgency: :low
-  :resource_boundary: :unknown
+  :resource_boundary: :cpu
   :weight: 1
   :idempotent: true
   :tags:
@@ -666,6 +676,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:import_placeholder_user_cleanup
+  :worker_name: Import::PlaceholderUserCleanupWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:import_stuck_project_import_jobs
   :worker_name: Gitlab::Import::StuckProjectImportJobsWorker
   :feature_category: :importers
@@ -708,7 +728,7 @@
   :queue_namespace: :cronjob
 - :name: cronjob:loose_foreign_keys_cleanup
   :worker_name: LooseForeignKeys::CleanupWorker
-  :feature_category: :cell
+  :feature_category: :database
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -1064,6 +1084,16 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
+  :tags: []
+  :queue_namespace: :cronjob
+- :name: cronjob:scheduling_schedule_within
+  :worker_name: Gitlab::Scheduling::ScheduleWithinWorker
+  :feature_category: :scalability
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
 - :name: cronjob:service_desk_custom_email_verification_cleanup
@@ -2297,7 +2327,7 @@
   :worker_name: Ci::BuildTraceChunkFlushWorker
   :feature_category: :continuous_integration
   :has_external_dependencies: false
-  :urgency: :low
+  :urgency: :high
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true
@@ -2684,6 +2714,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :terraform
+- :name: todos_destroyer:todos_delete_all_done
+  :worker_name: Todos::DeleteAllDoneWorker
+  :feature_category: :notifications
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :todos_destroyer
 - :name: todos_destroyer:todos_destroyer_confidential_issue
   :worker_name: TodosDestroyer::ConfidentialIssueWorker
   :feature_category: :notifications
@@ -3703,7 +3743,7 @@
   :feature_category: :not_owned
   :has_external_dependencies: true
   :urgency: :low
-  :resource_boundary: :unknown
+  :resource_boundary: :cpu
   :weight: 1
   :idempotent: false
   :tags: []
@@ -4186,7 +4226,7 @@
   :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :low
-  :resource_boundary: :unknown
+  :resource_boundary: :cpu
   :weight: 1
   :idempotent: true
   :tags: []

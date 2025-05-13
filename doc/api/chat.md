@@ -1,12 +1,16 @@
 ---
-stage: AI-Powered
+stage: AI-powered
 group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Documentation for the REST API for Duo Chat.
-title: GitLab Duo Chat Completions API
+title: GitLab Duo Chat completions API
 ---
 
-The GitLab Duo Chat Completions API generates Chat responses. This API is for internal use only.
+This API is used to generate responses for [GitLab Duo Chat](../user/gitlab_duo_chat/_index.md). This API is for internal use only.
+
+Prerequisites:
+
+- You must be a [GitLab team member](https://gitlab.com/groups/gitlab-com/-/group_members).
 
 ## Generate Chat responses
 
@@ -14,6 +18,8 @@ The GitLab Duo Chat Completions API generates Chat responses. This API is for in
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133015) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `access_rest_chat`. Disabled by default. This feature is internal-only.
 - [Added additional_context parameter](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162650) in GitLab 17.4 [with a flag](../administration/feature_flags.md) named `duo_additional_context`. Disabled by default. This feature is internal-only.
+- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181305) in GitLab 17.9 [with a flag](../administration/feature_flags.md) named `duo_additional_context`.
+  - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/514559) in GitLab 18.0. Feature flag `duo_additional_context` removed in GitLab 18.0.
 
 {{< /history >}}
 

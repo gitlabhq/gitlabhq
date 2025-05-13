@@ -327,6 +327,9 @@ That's all of the required database changes.
   ```
 
 - [ ] Create `ee/app/replicators/geo/cool_widget_replicator.rb`. Implement the `#carrierwave_uploader` method which should return a `CarrierWave::Uploader`, and implement the class method `.model` to return the `CoolWidget` class:
+  - Implement the `replicable_title` and `replicable_title_plural` methods to
+    return the human-readable singular and pluralized title of the replicable,
+    which will be displayed in the UI and Rails console
 
   ```ruby
   # frozen_string_literal: true
@@ -338,6 +341,16 @@ That's all of the required database changes.
 
       def self.model
         ::CoolWidget
+      end
+
+      # @return [String] human-readable title.
+      def self.replicable_title
+        s_('Geo|Cool Widget')
+      end
+
+      # @return [String] pluralized human-readable title.
+      def self.replicable_title_plural
+        s_('Geo|Cool Widgets')
       end
 
       def carrierwave_uploader

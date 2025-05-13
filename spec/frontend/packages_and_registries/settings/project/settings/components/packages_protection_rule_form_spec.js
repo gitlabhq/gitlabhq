@@ -24,7 +24,7 @@ describe('Packages Protection Rule Form', () => {
   const defaultProvidedValues = {
     projectPath: 'path',
     glFeatures: {
-      packagesProtectedPackagesConan: true,
+      packagesProtectedPackagesNuget: true,
       packagesProtectedPackagesDelete: true,
     },
   };
@@ -94,23 +94,23 @@ describe('Packages Protection Rule Form', () => {
         mountComponent();
 
         expect(findPackageTypeSelect().exists()).toBe(true);
-        expect(packageTypeSelectOptions()).toEqual(['CONAN', 'MAVEN', 'NPM', 'PYPI']);
+        expect(packageTypeSelectOptions()).toEqual(['CONAN', 'MAVEN', 'NPM', 'NUGET', 'PYPI']);
       });
 
-      describe('when feature flag packagesProtectedPackagesConan is disabled', () => {
-        it('contains available options without option "CONAN"', () => {
+      describe('when feature flag packagesProtectedPackagesNuget is disabled', () => {
+        it('contains available options without option "NUGET"', () => {
           mountComponent({
             provide: {
               ...defaultProvidedValues,
               glFeatures: {
                 ...defaultProvidedValues.glFeatures,
-                packagesProtectedPackagesConan: false,
+                packagesProtectedPackagesNuget: false,
               },
             },
           });
 
           expect(findPackageTypeSelect().exists()).toBe(true);
-          expect(packageTypeSelectOptions()).toEqual(['MAVEN', 'NPM', 'PYPI']);
+          expect(packageTypeSelectOptions()).toEqual(['CONAN', 'MAVEN', 'NPM', 'PYPI']);
         });
       });
     });

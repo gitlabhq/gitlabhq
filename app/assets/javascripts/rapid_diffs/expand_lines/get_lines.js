@@ -40,7 +40,7 @@ const getRequestParams = (expandDirection, [lineBefore, lineAfter]) => {
     case 'up':
       return {
         unfold: true,
-        since: Math.max(lineAfter.newLineNumber - UNFOLD_COUNT - 1, 1),
+        since: Math.max(lineAfter.newLineNumber - UNFOLD_COUNT, 1),
         to: lineAfter.newLineNumber - 1,
         closest_line_number: lineBefore ? lineBefore.newLineNumber : 0,
         offset: lineAfter.newLineNumber - lineAfter.oldLineNumber,
@@ -50,7 +50,7 @@ const getRequestParams = (expandDirection, [lineBefore, lineAfter]) => {
       return {
         unfold: true,
         since: lineBefore.newLineNumber + 1,
-        to: lineBefore.newLineNumber + UNFOLD_COUNT + 1,
+        to: lineBefore.newLineNumber + UNFOLD_COUNT,
         closest_line_number: lineAfter ? lineAfter.newLineNumber : 0,
         offset: lineBefore.newLineNumber - lineBefore.oldLineNumber,
         bottom: true,

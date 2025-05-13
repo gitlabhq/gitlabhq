@@ -2,36 +2,7 @@
   = html_escape(_("Contributions for %{calendar_date}")) % { calendar_date: tag.strong(@calendar_date.to_fs(:medium)) }
 
 - if @events.any?
-  %ul.bordered-list
-    - @events.sort_by(&:created_at).each do |event|
-      %li
-        %span.light.js-localtime{ :data => { :datetime => event.created_at.utc.strftime('%Y-%m-%dT%H:%M:%SZ'), :toggle => 'tooltip', :placement => 'top' } }
-          = sprite_icon('clock', css_class: 'gl-align-text-bottom')
-          = event.created_at.to_time.in_time_zone(local_timezone_instance(@user.timezone)).strftime('%-I:%M%P')
-        - if event.visible_to_user?(current_user)
-          - if event.push_action?
-            #{event.action_name} #{event.ref_type}
-            %strong
-              - commits_path = project_commits_path(event.project, event.ref_name)
-              = link_to_if event.project.repository.branch_exists?(event.ref_name), event.ref_name, commits_path
-          - else
-            = event_action_name(event)
-            %strong
-              - if event.note?
-                = link_to event.note_target.to_reference, event_note_target_url(event), class: 'has-tooltip', title: event.target_title
-              - elsif event.target
-                = link_to event.target.to_reference, Gitlab::UrlBuilder.build(event.target, only_path: true), class: 'has-tooltip', title: event.target_title
-
-          = s_('UserProfile|at')
-          %strong
-            - if event.project
-              = link_to_project(event.project)
-            - elsif event.group
-              = link_to_group(event.group)
-            - else
-              = event.resource_parent_name
-        - else
-          = s_('UserProfile|made a private contribution')
+  = render partial: 'events/event', collection: @events.sort_by(&:created_at), locals: { timezone: local_timezone_instance(@user.timezone) }
 - else
   %p
     = _('No contributions were found')

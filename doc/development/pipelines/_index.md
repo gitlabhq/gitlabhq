@@ -124,7 +124,7 @@ In addition, there are a few circumstances where we would always run the full RS
 
 #### Have you encountered a problem with backend predictive tests?
 
-If so, have a look at [the Engineering Productivity RUNBOOK on predictive tests](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/main/runbooks/predictive-tests.md) for instructions on how to act upon predictive tests issues. Additionally, if you identified any test selection gaps, let `@gl-dx/eng-prod` know so that we can take the necessary steps to optimize test selections.
+If so, have a look at [the Development Analytics RUNBOOK on predictive tests](https://gitlab.com/gitlab-org/quality/analytics/team/-/blob/main/runbooks/predictive-test-selection.md) for instructions on how to act upon predictive tests issues. Additionally, if you identified any test selection gaps, let `@gl-dx/development-analytics` know so that we can take the necessary steps to optimize test selections.
 
 ### Jest predictive jobs
 
@@ -149,7 +149,7 @@ The `rules` definitions for full Jest tests are defined at `.frontend:rules:jest
 
 #### Have you encountered a problem with frontend predictive tests?
 
-If so, have a look at [the Engineering Productivity RUNBOOK on predictive tests](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/blob/main/runbooks/predictive-tests.md) for instructions on how to act upon predictive tests issues.
+If so, have a look at [the Development analytics RUNBOOK on predictive tests](https://gitlab.com/gitlab-org/quality/analytics/team/-/blob/main/runbooks/predictive-test-selection.md) for instructions on how to act upon predictive tests issues.
 
 ### Fork pipelines
 
@@ -210,7 +210,7 @@ and `rspec rspec-ee-pg16-rerun-previous-failed-tests` jobs run the failed tests 
 
 This was introduced on August 25th 2021, with <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69053>.
 
-### How it works?
+### How the failed test is re-run
 
 1. The `detect-previous-failed-tests` job (`prepare` stage) detects the test files associated with failed RSpec
    jobs from the previous MR pipeline.
@@ -574,7 +574,7 @@ before we resolve [Developer-level users no longer able to run pipelines on prot
 It's used to run `sync-as-if-jh-branch` to synchronize the dependencies
 when the merge requests changed the dependencies. See
 [How we generate the as-if-JH branch](#how-we-generate-the-as-if-jh-branch)
-for how it works.
+for its implementation.
 
 ###### Temporary GitLab JH validation project variables
 
@@ -755,6 +755,7 @@ NOTE: With the addition of PG17, we are close to the limit of nightly jobs, with
 | `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour at XX:05)   | 16 (default version)                | 3.2 (default version) |
 | `maintenance` scheduled pipelines for the `ruby-next` branch (every odd-numbered hour at XX:10) | 16 (default version)                | 3.3                   |
 | `nightly` scheduled pipelines for the `master` branch                                           | 16 (default version), 14, 15 and 17 | 3.2 (default version) |
+| `weekly` scheduled pipelines for the `master` branch                                            | 16 (default version)                | 3.2 (default version) |
 
 For the next Ruby versions we're testing against with, we run
 maintenance scheduled pipelines every 2 hours on the `ruby-next` branch.
@@ -811,6 +812,7 @@ test suites use PostgreSQL 16 because there is no dependency between the databas
 |-------------------------------------------------------------------------------------------------|-----------------------|----------------------|----------------------|
 | Merge requests with label `~group::global search` or `~pipeline:run-search-tests`               | 8.X (production)      |                      | 16 (default version) |
 | `nightly` scheduled pipelines for the `master` branch                                           | 7.X, 8.X (production) | 1.X, 2.X             | 16 (default version) |
+| `weekly` scheduled pipelines for the `master` branch                                            |                       | latest               | 16 (default version) |
 
 ## Monitoring
 
@@ -823,131 +825,6 @@ that includes `rspec-profile` in their name.
   [for performance reasons](https://jtway.co/speed-up-your-rails-test-suite-by-6-in-1-line-13fedb869ec4).
   To override this setting, provide the
   `RAILS_ENABLE_TEST_LOG` environment variable.
-
-## Pipelines types for merge requests
-
-In general, pipelines for an MR fall into one of the following types (from shorter to longer), depending on the changes made in the MR:
-
-- [Documentation pipeline](#documentation-pipeline): For MRs that touch documentation.
-- [Backend pipeline](#backend-pipeline): For MRs that touch backend code.
-- [Review app pipeline](#review-app-pipeline): For MRs that touch frontend code.
-- [End-to-end pipeline](#end-to-end-pipeline): For MRs that touch code in the `qa/` folder.
-
-A "pipeline type" is an abstract term that mostly describes the "critical path" (for example, the chain of jobs for which the sum
-of individual duration equals the pipeline's duration).
-We use these "pipeline types" in [metrics dashboards](https://10az.online.tableau.com/#/site/gitlab/views/GitlabPipelineDurations/SuccessfulMergeRequestPipelineDurationHistogramsbyTypes?:iid=1)
-to detect what types and jobs need to be optimized first.
-
-An MR that touches multiple areas would be associated with the longest type applicable. For instance, an MR that touches backend
-and frontend would fall into the "Frontend" pipeline type since this type takes longer to finish than the "Backend" pipeline type.
-
-We use the [`rules:`](../../ci/yaml/_index.md#rules) and [`needs:`](../../ci/yaml/_index.md#needs) keywords extensively
-to determine the jobs that need to be run in a pipeline. Note that an MR that includes multiple types of changes would
-have a pipelines that include jobs from multiple types (for example, a combination of docs-only and code-only pipelines).
-
-Following are graphs of the critical paths for each pipeline type. Jobs that aren't part of the critical path are omitted.
-
-### Documentation pipeline
-
-[Reference pipeline](https://gitlab.com/gitlab-org/gitlab/-/pipelines/432049110).
-
-```mermaid
-graph LR
-  classDef criticalPath fill:#f66;
-
-  1-3["docs-lint links (5 minutes)"];
-  class 1-3 criticalPath;
-  click 1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356757&udv=0"
-```
-
-### Backend pipeline
-
-[Reference pipeline](https://gitlab.com/gitlab-org/gitlab/-/pipelines/1118782302).
-
-```mermaid
-graph RL;
-  classDef criticalPath fill:#f66;
-
-  1-1["clone-gitlab-repo (1 minute)"];
-  1-3["compile-test-assets (3 minutes)"];
-  click 1-3 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914317&udv=0"
-  1-6["setup-test-env (4 minutes)"];
-  class 1-6 criticalPath;
-  click 1-6 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914315&udv=0"
-  1-14["retrieve-tests-metadata (50 seconds)"];
-  click 1-14 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=8356697&udv=0"
-  1-15["detect-tests (1 minute)"];
-  click 1-15 "https://app.periscopedata.com/app/gitlab/652085/EP---Jobs-Durations?widget=10113603&udv=1005715"
-
-  2_5-1["rspec & db jobs (30~50 minutes)"];
-  class 2_5-1 criticalPath;
-  click 2_5-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations"
-  2_5-1 --> 1-1 & 1-3 & 1-6 & 1-14 & 1-15;
-
-  ac-1["rspec:artifact-collector (30 seconds)<br/>(workaround for 'needs' limitation)"];
-  class ac-1 criticalPath;
-  ac-1 --> 2_5-1;
-
-  3_2-1["rspec:coverage (3 minutes)"];
-  class 3_2-1 criticalPath;
-  click 3_2-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=7248745&udv=0"
-  3_2-1 --> ac-1;
-
-  4_3-1["rspec:undercoverage (1.3 minutes)"];
-  class 4_3-1 criticalPath;
-  click 4_3-1 "https://app.periscopedata.com/app/gitlab/652085/EP---Jobs-Durations?widget=13446492&udv=1005715"
-  4_3-1 --> 3_2-1;
-```
-
-### Review app pipeline
-
-[Reference pipeline](https://gitlab.com/gitlab-org/gitlab/-/pipelines/431913287).
-
-```mermaid
-graph RL;
-  classDef criticalPath fill:#f66;
-
-  1-2["build-qa-image (2 minutes)"];
-  click 1-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914325&udv=0"
-  1-5["compile-production-assets (12 minutes)"];
-  class 1-5 criticalPath;
-  click 1-5 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914312&udv=0"
-
-  2_3-1["build-assets-image (1.1 minutes)"];
-  class 2_3-1 criticalPath;
-  2_3-1 --> 1-5
-
-  2_6-1["start-review-app-pipeline (52 minutes)"];
-  class 2_6-1 criticalPath;
-  click 2_6-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations"
-  2_6-1 --> 2_3-1 & 1-2;
-```
-
-### End-to-end pipeline
-
-[Reference pipeline](https://gitlab.com/gitlab-org/gitlab/-/pipelines/431918463).
-
-```mermaid
-graph RL;
-  classDef criticalPath fill:#f66;
-
-  1-2["build-qa-image (2 minutes)"];
-  click 1-2 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914325&udv=0"
-  1-5["compile-production-assets (12 minutes)"];
-  class 1-5 criticalPath;
-  click 1-5 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914312&udv=0"
-  1-15["detect-tests"];
-  click 1-15 "https://app.periscopedata.com/app/gitlab/652085/EP---Jobs-Durations?widget=10113603&udv=1005715"
-
-  2_3-1["build-assets-image (1.1 minutes)"];
-  class 2_3-1 criticalPath;
-  2_3-1 --> 1-5
-
-  2_4-1["e2e:test-on-omnibus-ee (103 minutes)"];
-  class 2_4-1 criticalPath;
-  click 2_4-1 "https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations?widget=6914305&udv=0"
-  2_4-1 --> 1-2 & 2_3-1 & 1-15;
-```
 
 ## CI configuration internals
 

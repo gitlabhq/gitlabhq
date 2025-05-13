@@ -261,6 +261,7 @@ export default {
             :work-item-iid="childItemIid"
             :work-item-web-url="childItemWebUrl"
           />
+          <slot name="child-contents"></slot>
           <span
             :id="`statusIcon-${childItem.id}`"
             class="gl-cursor-help"
@@ -277,7 +278,6 @@ export default {
       </div>
       <work-item-link-child-metadata
         :reference="displayReference"
-        :iid="childItem.iid"
         :is-child-item-open="isChildItemOpen"
         :metadata-widgets="metadataWidgets"
         :show-weight="showWeight"

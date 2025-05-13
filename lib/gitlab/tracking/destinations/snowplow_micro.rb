@@ -11,13 +11,13 @@ module Gitlab
 
         DEFAULT_URI = 'http://localhost:9090'
 
-        override :options
-        def options(group)
-          super.update(
+        override :snowplow_options
+        def snowplow_options(group)
+          super.merge(
             protocol: uri.scheme,
             port: uri.port,
-            force_secure_tracker: false
-          ).transform_keys! { |key| key.to_s.camelize(:lower).to_sym }
+            forceSecureTracker: false # Using camel case as this key will be used only in JavaScript
+          )
         end
 
         override :enabled?

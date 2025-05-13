@@ -1,7 +1,8 @@
 <script>
 import { GlFilteredSearch, GlSorting } from '@gitlab/ui';
 import { SORT_OPTIONS, FILTER_OPTIONS_CREDENTIALS_INVENTORY } from '~/access_tokens/constants';
-import { initializeValuesFromQuery, goTo } from '../utils';
+import { initializeValuesFromQuery } from '~/access_tokens/utils';
+import { goTo } from '../utils';
 
 export default {
   components: {
@@ -9,7 +10,7 @@ export default {
     GlSorting,
   },
   data() {
-    const { sorting, tokens } = initializeValuesFromQuery();
+    const { sorting, tokens } = initializeValuesFromQuery(true);
     return {
       sorting,
       tokens,

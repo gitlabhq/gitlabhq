@@ -100,12 +100,24 @@ Elastic::ProcessBookkeepingService.track!(*MergeRequest.all)
 Elastic::ProcessBookkeepingService.new.execute
 ```
 
+## Dependent association index updates
+
+You can use elastic_index_dependant_association to automatically update associated records in the index
+when specific fields change. For example, to reindex all work items when a project's `visibility_level` changes
+
+```ruby
+  elastic_index_dependant_association :work_items, on_change: :visibility_level, depends_on_finished_migration: :add_mapping_migration
+```
+
+The `depends_on_finished_migration` parameter is optional and ensures the update only occurs after the specified advanced
+search migration has completed (such as a migration that added the necessary field to the mapping).
+
 ## Testing
 
 {{< alert type="warning" >}}
 
 Elasticsearch tests do not run on every merge request. Add `~pipeline:run-search-tests` or `~group::global search` labels to the merge
-request to run tests with the production versions of Elasticsearch and PostgreSQL. 
+request to run tests with the production versions of Elasticsearch and PostgreSQL.
 
 {{< /alert >}}
 
@@ -114,13 +126,24 @@ request to run tests with the production versions of Elasticsearch and PostgreSQ
 #### Testing a migration that changes a mapping of an index
 
 1. Make sure the index doesn't already have the changes applied. Remember the migration cron worker runs in the background so it's possible the migration was already applied.
-   - You can consider disabling the migration worker to have more control: `Feature.disable(:elastic_migration_worker)`.
+   - Optional. [In GitLab 18.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/352424),
+     to disable the migration worker, run the following commands:
+
+     ```ruby
+       settings = ApplicationSetting.last # Ensure this setting does not return `nil`
+       settings.elastic_migration_worker_enabled = false
+       settings.save!
+     ```
+
    - See if the migration is pending: `::Elastic::DataMigrationService.pending_migrations`.
    - Check that the migration is not completed: `Elastic::DataMigrationService.pending_migrations.first.completed?`.
-   - Make sure the mappings aren't already applied by checking in Kibana: `GET gitlab-development-some-index/_mapping`.
+   - Make sure the mappings aren't already applied
+      - either by checking in Kibana `GET gitlab-development-some-index/_mapping`
+      - or sending a curl request `curl "http://localhost:9200/gitlab-development-some-index/_mappings" | jq`
 1. Tail the logs to see logged messages: `tail -f log/elasticsearch.log`.
 1. Execute the migration in one of the following ways:
-   - Run the migration worker: `Elastic::MigrationWorker.new.perform` (remember the flag should be enabled).
+   - Run the `Elastic::MigrationWorker.new.perform` migration worker.
+     [In GitLab 18.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/352424), the `elastic_migration_worker_enabled` application setting must be enabled.
    - Use pending migrations: `::Elastic::DataMigrationService.pending_migrations.first.migrate`.
    - Use the version: `Elastic::DataMigrationService[20250220214819].migrate`, replacing the version with the migration version.
 1. View the status of the migration.

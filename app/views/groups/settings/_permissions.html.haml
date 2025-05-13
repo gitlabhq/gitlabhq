@@ -22,8 +22,6 @@
           s_('GroupSettings|Group mentions are disabled'),
           checkbox_options: { checked: @group.mentions_disabled? },
           help_text: s_('GroupSettings|Group members are not notified if the group is mentioned.')
-
-    = render 'groups/settings/resource_access_token_creation', f: f, group: @group
     = render 'groups/settings/email_settings', f: f, group: @group
     = render 'groups/settings/ip_restriction_registration_features_cta', f: f
     = render_if_exists 'groups/settings/ip_restriction', f: f, group: @group
@@ -37,15 +35,15 @@
     = render 'groups/settings/project_creation_level', f: f, group: @group
     = render 'groups/settings/subgroup_creation_level', f: f, group: @group
     = render_if_exists 'groups/settings/prevent_forking', f: f, group: @group
-    = render_if_exists 'groups/settings/service_access_tokens_expiration_enforced', f: f, group: @group
-    = render_if_exists 'groups/settings/enforce_ssh_certificates', f: f, group: @group
-    = render_if_exists 'groups/settings/extended_grat_expiry_webhook_execute', f: f, group: @group
-    = render_if_exists 'groups/settings/require_dpop_for_manage_api_endpoints', f: f, group: @group
-    = render 'groups/settings/two_factor_auth', f: f, group: @group
+    = render_if_exists 'groups/settings/personal_access_tokens', f: f, group: @group
+    = render 'groups/settings/resource_access_token_creation', f: f, group: @group
     = render_if_exists 'groups/personal_access_token_expiration_policy', f: f, group: @group
+    = render_if_exists 'groups/settings/extended_grat_expiry_webhook_execute', f: f, group: @group
+    = render_if_exists 'groups/settings/enforce_ssh_certificates', f: f, group: @group
+    = render 'groups/settings/two_factor_auth', f: f, group: @group
     = render 'groups/settings/membership', f: f, group: @group
     = render_if_exists 'groups/settings/remove_dormant_members', f: f, group: @group
-    = render_if_exists 'groups/settings/personal_access_tokens', f: f, group: @group
+    = render_if_exists 'groups/settings/disable_invite_members', f: f, group: @group
     = render_if_exists 'groups/settings/extensions_marketplace', f: f, group: @group
     = render_if_exists 'groups/settings/pages_access_control', f: f, group: @group
 
@@ -64,13 +62,5 @@
         clearable: 'true',
         description: s_("GroupSettings|The group from which to source contacts for issues in this group and its subgroups.")
       } }
-
-    - if Feature.enabled?(:group_hierarchy_optimization, @group, type: :beta)
-      %h5= _('Performance')
-      .form-group.gl-mb-3
-        = f.gitlab_ui_checkbox_component :enable_namespace_descendants_cache,
-            s_('GroupSettings|Enable caching of hierarchical objects (subgroups and projects) to improve the performance of group-level features within a large group.'),
-            checkbox_options: { checked: @group.namespace_descendants.present? },
-            help_text: s_('GroupSettings|Building the cache is asynchronous, happens in a background job. The cache invalidation is synchronous with strong consistency guarantees.')
 
   = f.submit _('Save changes'), pajamas_button: true, class: 'gl-mt-3', data: { testid: 'save-permissions-changes-button' }

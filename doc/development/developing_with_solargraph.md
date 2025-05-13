@@ -11,17 +11,17 @@ Example configuration for Solargraph can be found in [`.solargraph.yml.example`]
 
 Refer to particular IDE plugin documentation on how to integrate it with Solargraph language server:
 
-- **Visual Studio Code**
+- Visual Studio Code
   - GitHub: [`vscode-solargraph`](https://github.com/castwide/vscode-solargraph)
 
-- **Atom**
+- Atom
   - GitHub: [`atom-solargraph`](https://github.com/castwide/atom-solargraph)
 
-- **Vim**
+- Vim
   - GitHub: [`LanguageClient-neovim`](https://github.com/autozimu/LanguageClient-neovim)
 
-- **Emacs**
+- Emacs
   - GitHub: [`emacs-solargraph`](https://github.com/guskovd/emacs-solargraph)
 
-- **Eclipse**
+- Eclipse
   - GitHub: [`eclipse-solargraph`](https://github.com/PyvesB/eclipse-solargraph)

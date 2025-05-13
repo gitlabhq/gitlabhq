@@ -36,8 +36,8 @@ The package registry is also used to store [model registry data](../../user/proj
 
 ## Accepting contributions
 
-The below table lists formats that are not supported, but are accepting Community contributions for. Consider contributing to GitLab. This [development documentation](../../development/packages/_index.md)
-guides you through the process.
+The following table lists package formats that are not supported.
+Consider contributing to GitLab to add support for these formats.
 
 <!-- vale gitlab_base.Spelling = NO -->
 

@@ -118,7 +118,7 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
           ref(:unscoped_project1)                    | false | true
           ref(:unscoped_project2)                    | false | true
           ref(:outbound_allowlist_project)           | false | true
-          ref(:inbound_accessible_project)           | false | true
+          ref(:inbound_accessible_project)           | true | true
           ref(:fully_accessible_project)             | true  | true
           ref(:unscoped_public_project)              | false | true
           ref(:project_with_different_root_ancestor) | false | false
@@ -131,10 +131,11 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
 
           it 'increments the job_token_authorization_failures_counter metric ONLY for failed authorizations' do
             if result
-              expect(Gitlab::Ci::Pipeline::Metrics.job_token_authorization_failures_counter).not_to receive(:increment)
+              expect(Gitlab::Ci::Pipeline::Metrics.job_token_authorization_failures_counter)
+              .not_to receive(:increment)
             else
-              expect(Gitlab::Ci::Pipeline::Metrics.job_token_authorization_failures_counter).to receive(:increment)
-              .with(same_root_ancestor: same_root_ancestor)
+              expect(Gitlab::Ci::Pipeline::Metrics.job_token_authorization_failures_counter)
+              .to receive(:increment).with(same_root_ancestor: same_root_ancestor)
             end
 
             subject
@@ -167,21 +168,22 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
       end
     end
 
-    context 'with inbound scope disabled and outbound scope enabled' do
+    context 'with inbound scope disabled and outbound scope enabled and instance-level scope is false' do
       before do
         accessed_project.update!(ci_inbound_job_token_scope_enabled: false)
         current_project.update!(ci_outbound_job_token_scope_enabled: true)
+        allow(::Gitlab::CurrentSettings).to receive(:enforce_ci_inbound_job_token_scope_enabled?).and_return(false)
       end
 
       include_context 'with accessible and inaccessible projects'
 
       where(:accessed_project, :result) do
         ref(:current_project)            | true
-        ref(:inbound_allowlist_project)  | false
-        ref(:unscoped_project1)          | false
-        ref(:unscoped_project2)          | false
+        ref(:inbound_allowlist_project)  | true
+        ref(:unscoped_project1)          | true
+        ref(:unscoped_project2)          | true
         ref(:outbound_allowlist_project) | true
-        ref(:inbound_accessible_project) | false
+        ref(:inbound_accessible_project) | true
         ref(:fully_accessible_project)   | true
         ref(:unscoped_public_project)    | true
       end
@@ -214,9 +216,10 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
         end
       end
 
-      context 'when the accessed project has ci_inbound_job_token_scope_enabled false' do
+      context 'when accessed project has ci_inbound_job_token_scope_enabled and instance-level scope set to false' do
         before do
           fully_accessible_project.update!(ci_inbound_job_token_scope_enabled: false)
+          allow(::Gitlab::CurrentSettings).to receive(:enforce_ci_inbound_job_token_scope_enabled?).and_return(false)
         end
 
         it 'increments the counter metric with legacy: false' do
@@ -320,9 +323,10 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
         it_behaves_like 'not capturing job token policies'
       end
 
-      context 'when the accessed project does not have ci_inbound_job_token_scope_enabled set to true' do
+      context 'when accessed project has ci_inbound_job_token_scope_enabled and instance-level scope set to false' do
         before do
           accessed_project.ci_inbound_job_token_scope_enabled = false
+          allow(::Gitlab::CurrentSettings).to receive(:enforce_ci_inbound_job_token_scope_enabled?).and_return(false)
         end
 
         it { is_expected.to be(true) }

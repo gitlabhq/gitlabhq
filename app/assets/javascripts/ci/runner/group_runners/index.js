@@ -7,12 +7,15 @@ import { runnersAppProvide } from 'ee_else_ce/ci/runner/provide';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { createLocalState } from '../graphql/list/local_state';
+import { showAlertFromLocalStorage } from '../local_storage_alert/show_alert_from_local_storage';
 import GroupRunnersApp from './group_runners_app.vue';
 
 Vue.use(GlToast);
 Vue.use(VueApollo);
 
 export const initGroupRunners = (selector = '#js-group-runners') => {
+  showAlertFromLocalStorage();
+
   const el = document.querySelector(selector);
 
   if (!el) {

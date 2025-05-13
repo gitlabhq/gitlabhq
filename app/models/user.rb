@@ -112,7 +112,7 @@ class User < ApplicationRecord
 
   devise :two_factor_backupable, otp_number_of_backup_codes: 10
   devise :two_factor_backupable_pbkdf2
-  serialize :otp_backup_codes, JSON # rubocop:disable Cop/ActiveRecordSerialize
+  serialize :otp_backup_codes, coder: JSON # rubocop:disable Cop/ActiveRecordSerialize
 
   devise :lockable, :recoverable, :rememberable, :trackable,
     :validatable, :omniauthable, :confirmable, :registerable
@@ -212,7 +212,6 @@ class User < ApplicationRecord
     -> { where(members: { access_level: [Gitlab::Access::MAINTAINER, Gitlab::Access::OWNER] }) },
     through: :group_members,
     source: :group
-  alias_attribute :masters_groups, :maintainers_groups
   has_many :developer_maintainer_owned_groups,
     -> { where(members: { access_level: [Gitlab::Access::DEVELOPER, Gitlab::Access::MAINTAINER, Gitlab::Access::OWNER] }) },
     through: :group_members,
@@ -228,8 +227,9 @@ class User < ApplicationRecord
   has_many :groups_projects,          through: :groups, source: :projects
   has_many :personal_projects,        through: :namespace, source: :projects
   has_many :project_members, -> { where(requested_at: nil) }
-  has_many :projects,                 through: :project_members
-  has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project', dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
+  has_many :projects, through: :project_members
+  has_many :project_deletion_schedules, class_name: '::Projects::DeletionSchedule', inverse_of: :deleting_user
+  has_many :created_projects, foreign_key: :creator_id, class_name: 'Project', dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
   has_many :created_namespace_details, foreign_key: :creator_id, class_name: 'Namespace::Detail'
   has_many :projects_with_active_memberships, -> { where(members: { state: ::Member::STATE_ACTIVE }) }, through: :project_members, source: :project
   has_many :users_star_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -279,6 +279,7 @@ class User < ApplicationRecord
 
   has_many :bulk_imports
   has_one :namespace_import_user, class_name: 'Import::NamespaceImportUser', inverse_of: :import_user
+  has_one :placeholder_user_detail, class_name: 'Import::PlaceholderUserDetail', foreign_key: :placeholder_user_id, inverse_of: :placeholder_user
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
   has_one  :trusted_with_spam_attribute, -> { UserCustomAttribute.trusted_with_spam }, class_name: 'UserCustomAttribute'
@@ -290,6 +291,7 @@ class User < ApplicationRecord
   belongs_to :created_by, class_name: 'User', optional: true
 
   has_many :organization_users, class_name: 'Organizations::OrganizationUser', inverse_of: :user
+  has_many :organization_user_aliases, class_name: 'Organizations::OrganizationUserAlias', inverse_of: :user
 
   has_many :organizations, through: :organization_users, class_name: 'Organizations::Organization', inverse_of: :users,
     disable_joins: true
@@ -447,7 +449,6 @@ class User < ApplicationRecord
     :extensions_marketplace_opt_in_url, :extensions_marketplace_opt_in_url=,
     :organization_groups_projects_sort, :organization_groups_projects_sort=,
     :organization_groups_projects_display, :organization_groups_projects_display=,
-    :setup_for_company, :setup_for_company=,
     :project_shortcut_buttons, :project_shortcut_buttons=,
     :keyboard_shortcuts_enabled, :keyboard_shortcuts_enabled=,
     :render_whitespace_in_code, :render_whitespace_in_code=,
@@ -473,7 +474,6 @@ class User < ApplicationRecord
   delegate :webauthn_xid, :webauthn_xid=, to: :user_detail, allow_nil: true
   delegate :pronouns, :pronouns=, to: :user_detail, allow_nil: true
   delegate :pronunciation, :pronunciation=, to: :user_detail, allow_nil: true
-  delegate :registration_objective, :registration_objective=, to: :user_detail, allow_nil: true
   delegate :bluesky, :bluesky=, to: :user_detail, allow_nil: true
   delegate :mastodon, :mastodon=, to: :user_detail, allow_nil: true
   delegate :linkedin, :linkedin=, to: :user_detail, allow_nil: true
@@ -684,6 +684,7 @@ class User < ApplicationRecord
   scope :dormant, -> { with_state(:active).human_or_service_user.where('last_activity_on <= ?', Gitlab::CurrentSettings.deactivate_dormant_users_period.day.ago.to_date) }
   scope :with_no_activity, -> { with_state(:active).human_or_service_user.where(last_activity_on: nil).where('created_at <= ?', MINIMUM_DAYS_CREATED.day.ago.to_date) }
   scope :by_provider_and_extern_uid, ->(provider, extern_uid) { joins(:identities).merge(Identity.with_extern_uid(provider, extern_uid)) }
+  scope :ldap, -> { joins(:identities).where('identities.provider LIKE ?', 'ldap%') }
   scope :by_ids, ->(ids) { where(id: ids) }
   scope :by_ids_or_usernames, ->(ids, usernames) { where(username: usernames).or(where(id: ids)) }
   scope :without_forbidden_states, -> { where.not(state: FORBIDDEN_SEARCH_STATES) }
@@ -888,12 +889,18 @@ class User < ApplicationRecord
         without_projects
       when 'external'
         external
-      when "trusted"
+      when 'trusted'
         trusted
-      when "placeholder"
+      when 'placeholder'
         placeholder
-      when "without_placeholders"
+      when 'without_placeholders'
         without_placeholders
+      when 'ldap_sync'
+        ldap
+      when "without_bots"
+        without_bots
+      when "bots"
+        bots
       else
         all_without_ghosts
       end
@@ -1222,7 +1229,7 @@ class User < ApplicationRecord
   # to the session cookie. When remember me is disabled this method ensures these
   # values aren't set.
   def remember_me!
-    super if ::Gitlab::Database.read_write? && ::Gitlab::CurrentSettings.remember_me_enabled?
+    super if ::Gitlab::Database.read_write? && ::Gitlab::CurrentSettings.allow_user_remember_me?
   end
 
   def forget_me!
@@ -1248,7 +1255,7 @@ class User < ApplicationRecord
   # and compares to the stored value. When remember me is disabled this method ensures
   # the upstream comparison does not happen.
   def remember_me?(token, generated_at)
-    return false unless ::Gitlab::CurrentSettings.remember_me_enabled?
+    return false unless ::Gitlab::CurrentSettings.allow_user_remember_me?
 
     super
   end
@@ -1567,6 +1574,10 @@ class User < ApplicationRecord
 
   def can_create_group?
     can?(:create_group)
+  end
+
+  def can_leave_group?(group)
+    can?(:destroy_group_member, group.member(self))
   end
 
   def can_select_namespace?

@@ -3,6 +3,7 @@
 module JiraConnectSubscriptions
   class CreateService < ::JiraConnectSubscriptions::BaseService
     include Gitlab::Utils::StrongMemoize
+
     MERGE_REQUEST_SYNC_BATCH_SIZE = 20
     MERGE_REQUEST_SYNC_BATCH_DELAY = 1.minute.freeze
     BATCH_SIZE = 1_000

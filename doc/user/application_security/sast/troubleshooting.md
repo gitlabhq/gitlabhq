@@ -144,7 +144,7 @@ When a `spotbugs-sast` job is running you might get an error that states `java.l
 To try to resolve this issue you can:
 
 - Choose a lower [level of effort](_index.md#security-scanner-configuration).
-- Set the CI/CD variable `JAVA_OPTS` to replace the default `-XX:MaxRAMPercentage=80`, e.g. `-XX:MaxRAMPercentage=90`.
+- Set the CI/CD variable `JAVA_OPTS` to replace the default `-XX:MaxRAMPercentage=80` (for example: `-XX:MaxRAMPercentage=90`).
 - [Tag a larger runner](../../../ci/runners/hosted_runners/linux.md#machine-types-available-for-linux---x86-64) in your `spotbugs-sast` job.
 
 #### Related topics
@@ -205,7 +205,12 @@ Because [Advanced SAST](gitlab_advanced_sast.md) scans your program in detail, s
 
 ### Reduce scan time by excluding files
 
-Because each file is analyzed against all applicable rules, you can reduce the number of files scanned to decrease scan time. To do this, use the [SAST_EXCLUDED_PATHS](_index.md#vulnerability-filters) variable to exclude folders that do not need to be scanned.
+Because each file is analyzed against all applicable rules, you can reduce the number of files scanned to decrease scan time. To do this, use the [SAST_EXCLUDED_PATHS](_index.md#vulnerability-filters) variable to exclude folders that do not need to be scanned. Effective exclusions vary, but might include:
+
+- Database migrations
+- Unit tests
+- Dependency directories, such as `node_modules/`
+- Build directories
 
 ### Optimize scans with multi-core scanning
 

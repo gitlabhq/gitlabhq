@@ -180,6 +180,8 @@ module API
         optional :updated_before, type: DateTime, desc: 'Return projects updated before the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
         optional :updated_after, type: DateTime, desc: 'Return projects updated after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
         optional :include_pending_delete, type: Boolean, desc: 'Include projects in pending delete state. Can only be set by admins'
+        optional :marked_for_deletion_on, type: Date, desc: 'Date when the project was marked for deletion'
+        optional :active, type: Boolean, desc: 'Limit by projects that are not archived and not marked for deletion'
 
         use :optional_filter_params_ee
       end
@@ -1055,6 +1057,7 @@ module API
         authorize! :change_namespace, user_project
         args = declared_params(include_missing: false)
         args[:permission_scope] = :transfer_projects
+        args[:exact_matches_first] = true
 
         groups = ::Groups::UserGroupsFinder.new(current_user, current_user, args).execute
         groups = groups.excluding_groups(user_project.group).with_route

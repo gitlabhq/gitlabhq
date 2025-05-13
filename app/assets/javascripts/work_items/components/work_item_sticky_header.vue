@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlIntersectionObserver, GlButton, GlLink } from '@gitlab/ui';
+import { GlIntersectionObserver, GlButton, GlLink } from '@gitlab/ui';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
@@ -13,7 +13,6 @@ export default {
   components: {
     LockedBadge,
     GlIntersectionObserver,
-    GlLoadingIcon,
     TodosToggle,
     ConfidentialityBadge,
     WorkItemStateBadge,
@@ -27,10 +26,6 @@ export default {
       type: Object,
       required: true,
     },
-    fullPath: {
-      type: String,
-      required: true,
-    },
     isStickyHeaderShowing: {
       type: Boolean,
       required: true,
@@ -39,27 +34,7 @@ export default {
       type: Boolean,
       required: true,
     },
-    updateInProgress: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    parentWorkItemConfidentiality: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    parentId: {
-      type: String,
-      required: false,
-      default: null,
-    },
     showWorkItemCurrentUserTodos: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    isModal: {
       type: Boolean,
       required: false,
       default: false,
@@ -68,38 +43,6 @@ export default {
       type: Array,
       required: false,
       default: () => [],
-    },
-    workItemAuthorId: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
-    isGroup: {
-      type: Boolean,
-      required: true,
-    },
-    allowedChildTypes: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    namespaceFullName: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    hasChildren: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    showSidebar: {
-      type: Boolean,
-      required: true,
-    },
-    truncationEnabled: {
-      type: Boolean,
-      required: true,
     },
   },
   computed: {
@@ -144,7 +87,6 @@ export default {
             :duplicated-to-work-item-url="workItem.duplicatedToWorkItemUrl"
             :moved-to-work-item-url="workItem.movedToWorkItemUrl"
           />
-          <gl-loading-icon v-if="updateInProgress" />
           <confidentiality-badge
             v-if="workItem.confidential"
             :issuable-type="workItemType"
@@ -178,10 +120,8 @@ export default {
           />
           <work-item-notifications-widget
             v-if="newTodoAndNotificationsEnabled"
-            :full-path="fullPath"
             :work-item-id="workItem.id"
             :subscribed-to-notifications="workItemNotificationsSubscribed"
-            :can-update="canUpdate"
             @error="$emit('error')"
           />
           <slot name="actions"></slot>

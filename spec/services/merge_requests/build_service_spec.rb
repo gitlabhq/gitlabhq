@@ -14,6 +14,7 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
   let(:issue) { create(:issue, project: project, title: 'A bug', confidential: issue_confidential) }
   let(:description) { nil }
   let(:source_branch) { 'feature' }
+  let(:ref_path) { "refs/heads/#{source_branch}" }
   let(:target_branch) { 'master' }
   let(:milestone_id) { nil }
   let(:label_ids) { [] }
@@ -133,6 +134,8 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
 
       before do
         project.add_reporter(user)
+
+        allow(source_project).to receive(:ref_exists?).with(ref_path).and_return(false)
       end
 
       it 'assigns force_remove_source_branch' do
@@ -543,10 +546,66 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
       before do
         allow(project).to receive(:branch_exists?).with(target_branch).and_return(true)
         allow(project).to receive(:branch_exists?).with(source_branch).and_return(false)
+        allow(project).to receive(:ref_exists?).with(ref_path).and_return(false)
       end
 
       it_behaves_like 'forbids the merge request from being created' do
         let(:error_message) { 'Source branch "feature" does not exist' }
+      end
+    end
+
+    context 'when a source branch ref exists in Gitaly but not in the ref cache' do
+      let(:log_arguments) do
+        {
+          class: 'MergeRequests::BuildService',
+          method: :ref_exists_in_gitaly?,
+          project_id: project.id,
+          source_branch: source_branch
+        }
+      end
+
+      before do
+        allow(service).to receive(:source_project).and_return(project)
+        allow(project).to receive(:branch_exists?).with(target_branch).and_return(true)
+        allow(project).to receive(:branch_exists?).with(source_branch).and_return(false)
+      end
+
+      context 'when the ref exists in Gitaly' do
+        before do
+          allow(project).to receive(:ref_exists?).with(ref_path).and_return(true)
+        end
+
+        it 'logs info' do
+          expect(project).to receive(:ref_exists?).with(ref_path)
+          expect(Gitlab::AppJsonLogger).to receive(:info).with(hash_including(**log_arguments))
+
+          service.execute
+        end
+      end
+
+      context 'when the ref does not exist in Gitaly' do
+        before do
+          allow(project).to receive(:ref_exists?).with(ref_path).and_return(false)
+        end
+
+        it 'does not log info' do
+          expect(project).to receive(:ref_exists?).with(ref_path)
+          expect(Gitlab::AppJsonLogger).not_to receive(:info).with(hash_including(**log_arguments))
+
+          service.execute
+        end
+      end
+
+      context 'and the pull_ref_directly_from_gitaly FF is disabled' do
+        before do
+          stub_feature_flags(pull_ref_directly_from_gitaly: false)
+        end
+
+        it 'does not check for refs in Gitaly' do
+          expect(project).not_to receive(:ref_exists?).with(ref_path)
+
+          service.execute
+        end
       end
     end
 
@@ -563,6 +622,7 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
 
     context 'both source and target branches do not exist' do
       before do
+        allow(project).to receive(:ref_exists?).with(ref_path).and_return(false)
         allow(project).to receive(:branch_exists?).and_return(false)
       end
 

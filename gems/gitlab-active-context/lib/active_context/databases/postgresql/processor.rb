@@ -7,21 +7,24 @@ module ActiveContext
         include ActiveContext::Databases::Concerns::Processor
 
         # Transforms a query node into a PostgreSQL query using ActiveRecord
-        def self.transform(collection, node)
-          ActiveContext.adapter.client.with_model_for(collection) do |model|
-            relation = new(model).process(node)
+        def self.transform(collection:, node:, user:)
+          ActiveContext.adapter.client.with_model_for(collection.collection_name) do |model|
+            relation = new(collection: collection, model: model, user: user).process(node)
             relation.to_sql
           end
         end
 
-        def initialize(model)
+        def initialize(collection:, model:, user:)
+          @collection = collection
           @model = model
+          @user = user
           @base_relation = model.all
         end
 
         # Processes a query node and returns the corresponding ActiveRecord relation
         def process(node)
           case node.type
+          when :all    then process_all
           when :filter then process_filter(node.value)
           when :prefix then process_prefix(node.value)
           when :and    then process_and(node.children)
@@ -35,7 +38,11 @@ module ActiveContext
 
         private
 
-        attr_reader :model, :base_relation
+        attr_reader :collection, :model, :user, :base_relation
+
+        def process_all
+          base_relation
+        end
 
         def process_filter(conditions)
           relation = base_relation
@@ -95,8 +102,10 @@ module ActiveContext
           # Start with base relation or filtered relation if there are children
           relation = node.children.any? ? process(node.children.first) : relation
 
-          column = node.value[:target]
-          vector = node.value[:vector]
+          preset_values = collection.current_search_embedding_version
+
+          column = node.value[:target] || preset_values[:field]
+          vector = node.value[:vector] || get_embeddings(node.value[:content], preset_values[:model])
           limit = node.value[:limit]
           vector_str = "[#{vector.join(',')}]"
 

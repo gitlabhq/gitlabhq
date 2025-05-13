@@ -2,7 +2,7 @@
 
 exports[`MavenInstallation groovy renders all the messages 1`] = `
 <div>
-  <installation-title-stub
+  <installation-method-stub
     options="[object Object],[object Object],[object Object]"
     packagetype="maven"
   />
@@ -29,7 +29,7 @@ exports[`MavenInstallation groovy renders all the messages 1`] = `
 
 exports[`MavenInstallation kotlin renders all the messages 1`] = `
 <div>
-  <installation-title-stub
+  <installation-method-stub
     options="[object Object],[object Object],[object Object]"
     packagetype="maven"
   />
@@ -54,7 +54,7 @@ exports[`MavenInstallation kotlin renders all the messages 1`] = `
 
 exports[`MavenInstallation maven renders all the messages 1`] = `
 <div>
-  <installation-title-stub
+  <installation-method-stub
     options="[object Object],[object Object],[object Object]"
     packagetype="maven"
   />
@@ -95,12 +95,12 @@ exports[`MavenInstallation maven renders all the messages 1`] = `
     trackinglabel="code_instruction"
   />
   <h3
-    class="gl-text-lg"
+    class="gl-heading-3 gl-mt-5"
   >
     Registry setup
   </h3>
   <p>
-    If you haven't already done so, you will need to add the below to your
+    If you haven't already, add the configuration below to your
     <code>
       pom.xml
     </code>

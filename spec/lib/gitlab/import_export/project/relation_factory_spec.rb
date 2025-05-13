@@ -542,6 +542,23 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
     end
   end
 
+  describe 'DesignManagement::Version object' do
+    let(:relation_sym) { :design_versions }
+    let(:relation_hash) do
+      {
+        'sha' => SecureRandom.hex(20),
+        'created_at' => Time.now,
+        'author_id' => 1,
+        'actions' => [],
+        'project_id' => project.id
+      }
+    end
+
+    it 'sets the namespace_id based on the project' do
+      expect(created_object.namespace_id).to eq(project.project_namespace.id)
+    end
+  end
+
   describe 'protected refs access levels' do
     shared_examples 'access levels' do
       let(:relation_hash) { { 'access_level' => access_level, 'created_at' => '2022-03-29T09:53:13.457Z', 'updated_at' => '2022-03-29T09:54:13.457Z' } }

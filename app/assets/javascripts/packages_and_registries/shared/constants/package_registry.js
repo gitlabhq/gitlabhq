@@ -6,6 +6,7 @@ export const DELETE_PACKAGE_TRACKING_ACTION = 'delete_package';
 export const REQUEST_DELETE_PACKAGE_TRACKING_ACTION = 'request_delete_package';
 export const CANCEL_DELETE_PACKAGE_TRACKING_ACTION = 'cancel_delete_package';
 export const PULL_PACKAGE_TRACKING_ACTION = 'pull_package';
+export const INSTALL_PACKAGE_TRACKING_ACTION = 'install_package';
 export const DELETE_PACKAGE_FILE_TRACKING_ACTION = 'delete_package_file';
 export const DELETE_PACKAGE_FILES_TRACKING_ACTION = 'delete_package_files';
 export const SELECT_PACKAGE_FILE_TRACKING_ACTION = 'select_package_file';

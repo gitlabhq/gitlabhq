@@ -11,6 +11,12 @@ module PackagesHelper
     expose_url("api/#{::API::API.version}/packages/#{registry_type}")
   end
 
+  def package_registry_group_url(group_id, registry_type = :maven)
+    group_api_path = expose_path(api_v4_groups_path(id: group_id))
+    package_registry_group_path = "#{group_api_path}/-/packages/#{registry_type}"
+    expose_url(package_registry_group_path)
+  end
+
   def package_registry_project_url(project_id, registry_type = :maven)
     project_api_path = api_v4_projects_path(id: project_id)
     package_registry_project_path = "#{project_api_path}/packages/#{registry_type}"
@@ -91,6 +97,7 @@ module PackagesHelper
       full_path: group.full_path,
       group_list_url: group_packages_path(group),
       page_type: 'groups',
+      npm_group_url: package_registry_group_url(group.id, :npm),
 
       settings_path: if show_group_package_registry_settings(group)
                        group_settings_packages_and_registries_path(group)
@@ -107,6 +114,8 @@ module PackagesHelper
       full_path: project.full_path,
       page_type: 'projects',
       project_list_url: project_packages_path(project),
+      group_list_url: project.group ? group_packages_path(project.group) : '',
+      npm_group_url: package_registry_group_url(project.group&.id, :npm),
 
       settings_path: if show_package_registry_settings(project)
                        project_settings_packages_and_registries_path(project, anchor: 'package-registry-settings')

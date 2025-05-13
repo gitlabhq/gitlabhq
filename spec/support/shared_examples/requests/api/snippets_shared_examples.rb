@@ -66,18 +66,10 @@ RSpec.shared_examples 'raw snippet files' do
 
       'doesnotexist.rb'       | 'master'      | :not_found   | 'message' | '404 File Not Found'
       '/does/not/exist.rb'    | 'master'      | :not_found   | 'error'   | '404 Not Found'
-      '%2E%2E%2Fetc%2Fpasswd' | 'master'      | :bad_request | 'error'   | 'file_path should be a valid file path'
       '%2Fetc%2Fpasswd'       | 'master'      | :bad_request | 'error'   | 'file_path should be a valid file path'
-      '../../etc/passwd'      | 'master'      | :not_found   | 'error'   | '404 Not Found'
     end
 
     with_them do
-      before do
-        # TODO: remove path traversal specs once the feature flag is removed
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/415460
-        stub_feature_flags(check_path_traversal_middleware_reject_requests: false)
-      end
-
       it 'returns the proper response code and message' do
         subject
 

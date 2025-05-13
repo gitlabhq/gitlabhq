@@ -123,7 +123,7 @@ When you change this field, it can affect all open merge requests depending on t
 
 - If users could edit approval rules previously, and you disable this behavior,
   GitLab updates all open merge requests to enforce the approval rules.
-- If users could **not** edit approval rules previously, and you enable approval rule
+- If users could not edit approval rules previously, and you enable approval rule
   editing, open merge requests remain unchanged. This preserves any changes already
   made to approval rules in those merge requests.
 
@@ -175,14 +175,7 @@ Prerequisites:
 {{< /details >}}
 
 By default, an approval on a merge request is removed when you add more changes
-after the approval. In GitLab Premium and Ultimate tiers, to keep existing approvals
-after more changes are added to the merge request:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
-1. In the **Merge request approvals** section, scroll to **Approval settings** and
-   clear the **Remove all approvals** checkbox.
-1. Select **Save changes**.
+after the approval.
 
 GitLab uses [`git patch-id`](https://git-scm.com/docs/git-patch-id) to identify diffs
 in merge requests. This value is a reasonably stable and unique identifier, and it enables
@@ -190,6 +183,19 @@ smarter decisions about resetting approvals inside a merge request. When you pus
 to a merge request, the `patch-id` is evaluated against the previous `patch-id` to determine
 if the approvals should be reset. This enables GitLab to make better reset decisions when
 you perform commands like `git rebase` or `git merge <target>` on a feature branch.
+
+To keep existing approvals after more changes are added to a merge request:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Merge requests**.
+1. In the **Merge request approvals** section, scroll to **Approval settings** and
+   clear the **Remove all approvals** checkbox.
+1. Select **Save changes**.
+
+If you automate the creation and approval of merge requests, build in logic to ensure commits are
+processed fully before approving the merge request. This prevents an unintentional approval reset.
+See [Approvals for automated merge requests](../../../../api/merge_request_approvals.md#approvals-for-automated-merge-requests)
+for more details.
 
 ## Remove approvals by Code Owners if their files changed
 

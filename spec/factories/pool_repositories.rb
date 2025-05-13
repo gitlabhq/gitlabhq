@@ -5,9 +5,15 @@ FactoryBot.define do
     shard { Shard.by_name("default") }
     state { :none }
 
-    before(:create) do |pool|
-      pool.source_project ||= create(:project, :repository)
-      pool.source_project.update!(pool_repository: pool)
+    transient do
+      with_project { true }
+    end
+
+    before(:create) do |pool, context|
+      if context.with_project
+        pool.source_project ||= create(:project, :repository)
+        pool.source_project.update!(pool_repository: pool)
+      end
     end
 
     trait :scheduled do
@@ -27,6 +33,12 @@ FactoryBot.define do
 
       after(:create) do |pool|
         pool.create_object_pool
+      end
+    end
+
+    trait :without_project do
+      transient do
+        with_project { false }
       end
     end
   end

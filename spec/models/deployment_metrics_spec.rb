@@ -34,7 +34,7 @@ RSpec.describe DeploymentMetrics do
           allow(deployment.project).to receive(:find_or_initialize_integration).with('prometheus').and_return prometheus_integration
         end
 
-        it { is_expected.to be_truthy }
+        it { is_expected.to be_falsy }
       end
 
       context 'with a Prometheus integration that cannot query' do

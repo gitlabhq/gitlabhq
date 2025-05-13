@@ -38,7 +38,7 @@ module Ci
 
     update_project_statistics project_statistics_name: :pipeline_artifacts_size
 
-    enum file_type: {
+    enum :file_type, {
       code_coverage: 1,
       code_quality_mr_diff: 2
     }

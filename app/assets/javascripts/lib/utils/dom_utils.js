@@ -176,3 +176,20 @@ export const waitForElement = (selector, timeoutDelay = 5000) =>
       }, timeoutDelay); // disconnect if no element was found
     }
   });
+
+/**
+ * Observes element once and destroys the observer
+ * Use this to replace synchronous .getBoundingClientRect() calls because it doesn't force a reflow
+ * https://toruskit.com/blog/how-to-get-element-bounds-without-reflow
+ * https://gist.github.com/paulirish/5d52fb081b3570c81e3a
+ *
+ * @param {Element} element - the target element
+ * @param {Function} callback - function to be executed asynchronously
+ */
+export const observeElementOnce = (element, callback) => {
+  const observer = new IntersectionObserver((entries) => {
+    callback(entries);
+    observer.disconnect();
+  });
+  observer.observe(element);
+};

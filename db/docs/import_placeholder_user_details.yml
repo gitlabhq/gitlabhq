@@ -1,0 +1,13 @@
+---
+table_name: import_placeholder_user_details
+classes:
+- Import::PlaceholderUserDetail
+feature_categories:
+- importers
+description: Used to store additional information related to placeholder users.  
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188764
+milestone: '18.0'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  organization_id: organizations
+table_size: small

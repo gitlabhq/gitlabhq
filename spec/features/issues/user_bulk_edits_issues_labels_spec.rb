@@ -15,6 +15,13 @@ RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planni
   let(:issue_1_selector) { "#issuable_#{issue1.id}" }
   let(:issue_2_selector) { "#issuable_#{issue2.id}" }
 
+  before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+  end
+
   context 'as an allowed user', :js do
     before do
       project.add_maintainer(user)

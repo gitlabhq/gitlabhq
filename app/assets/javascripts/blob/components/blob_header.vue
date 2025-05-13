@@ -108,6 +108,11 @@ export default {
       required: false,
       default: 'confirm',
     },
+    isUsingLfs: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -171,9 +176,10 @@ export default {
       />
 
       <table-of-contents v-if="glFeatures.blobOverflowMenu" class="gl-pr-2" />
-
+      <slot name="ee-duo-workflow-action" data-test-id="ee-duo-workflow-action"></slot>
       <web-ide-link
         v-if="!glFeatures.blobOverflowMenu && showWebIdeLink"
+        :disabled="isUsingLfs"
         :show-edit-button="!isBinary"
         :button-variant="editButtonVariant"
         class="sm:!gl-ml-0"

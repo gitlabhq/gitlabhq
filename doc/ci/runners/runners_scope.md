@@ -98,7 +98,7 @@ For more information, see
 
 Prerequisites:
 
-- Runner registration tokens must be [enabled](../../administration/settings/continuous_integration.md#allow-runner-registration-tokens) in the **Admin** area.
+- Runner registration tokens must be [enabled](../../administration/settings/continuous_integration.md#control-runner-registration) in the **Admin** area.
 - You must be an administrator.
 
 To create an instance runner:
@@ -645,7 +645,7 @@ You can edit a project runner from any of the projects it's enabled for.
 The modifications, which include unlocking and editing tags and the description,
 affect all projects that use the runner.
 
-An administrator can [enable the runner for multiple projects](../../administration/settings/continuous_integration.md#enable-a-project-runner-for-multiple-projects).
+An administrator can [enable the runner for multiple projects](../../administration/settings/continuous_integration.md#share-project-runners-with-multiple-projects).
 
 ### Prevent a project runner from being enabled for other projects
 
@@ -805,7 +805,7 @@ In GitLab 17.0, the use of runner registration tokens is disabled in all GitLab 
 
 Prerequisites:
 
-- Runner registration tokens must be [enabled](../../administration/settings/continuous_integration.md#allow-runner-registration-tokens) in the **Admin** area.
+- Runner registration tokens must be [enabled](../../administration/settings/continuous_integration.md#control-runner-registration) in the **Admin** area.
 
 To enable the use of runner registration token in project and groups:
 

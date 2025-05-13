@@ -4,7 +4,7 @@ module AntiAbuse
   class TrustScore < ApplicationRecord
     self.table_name = 'abuse_trust_scores'
 
-    enum source: Enums::Abuse::Source.sources
+    enum :source, Enums::Abuse::Source.sources
 
     belongs_to :user
 

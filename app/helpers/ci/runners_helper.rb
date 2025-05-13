@@ -131,7 +131,7 @@ module Ci
         can_create_runner: can?(current_user, :create_runner, project).to_s,
         allow_registration_token: project.namespace.allow_runner_registration_token?.to_s,
         registration_token: can?(current_user, :read_runners_registration_token, project) ? project.runners_token : nil,
-        group_full_path: project.group&.full_path,
+        project_full_path: project.full_path,
         new_project_runner_path: new_project_runner_path(project)
       }
     end

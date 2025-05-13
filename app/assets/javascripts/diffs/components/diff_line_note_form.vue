@@ -1,7 +1,5 @@
 <script>
 import { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import { mapState as mapVuexState, mapGetters as mapVuexGetters } from 'vuex';
 import { mapState, mapActions } from 'pinia';
 import { s__, __, sprintf } from '~/locale';
 import { createAlert } from '~/alert';
@@ -9,13 +7,13 @@ import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import { clearDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MultilineCommentForm from '~/notes/components/multiline_comment_form.vue';
 import { commentLineOptions, formatLineRange } from '~/notes/components/multiline_comment_utils';
 import NoteForm from '~/notes/components/note_form.vue';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
+import { useNotes } from '~/notes/store/legacy_notes';
 import {
   DIFF_NOTE_TYPE,
   INLINE_DIFF_LINES_KEY,
@@ -29,7 +27,7 @@ export default {
     NoteForm,
     MultilineCommentForm,
   },
-  mixins: [diffLineNoteFormMixin, glFeatureFlagsMixin()],
+  mixins: [diffLineNoteFormMixin],
   props: {
     diffFileHash: {
       type: String,
@@ -78,11 +76,14 @@ export default {
       'diffLines',
     ]),
     ...mapState(useMrNotes, ['isLoggedIn']),
-    ...mapVuexState({
-      noteableData: ({ notes }) => notes.noteableData,
-      selectedCommentPosition: ({ notes }) => notes.selectedCommentPosition,
-    }),
-    ...mapVuexGetters(['noteableType', 'getNoteableData', 'getNotesDataByProp', 'getUserData']),
+    ...mapState(useNotes, [
+      'noteableData',
+      'noteableType',
+      'getNoteableData',
+      'getNotesDataByProp',
+      'getUserData',
+      'selectedCommentPosition',
+    ]),
     author() {
       return this.getUserData;
     },

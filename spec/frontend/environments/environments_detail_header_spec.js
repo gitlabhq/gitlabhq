@@ -38,14 +38,11 @@ describe('Environments detail header component', () => {
     ['Destroy', findDestroyButton],
   ];
 
-  const createWrapper = ({ props, glFeatures = {} }) => {
+  const createWrapper = ({ props }) => {
     wrapper = shallowMountExtended(EnvironmentsDetailHeader, {
       stubs: {
         GlSprintf,
         TimeAgo,
-      },
-      provide: {
-        glFeatures,
       },
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),

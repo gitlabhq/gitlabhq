@@ -115,7 +115,6 @@ describe('WorkItemCreatedUpdated component', () => {
 
     expect(findWorkItemTypeIcon().props()).toMatchObject({
       showText: true,
-      workItemIconName: workItem.workItemType.iconName,
       workItemType: workItem.workItemType.name,
     });
   });
@@ -144,12 +143,6 @@ describe('WorkItemCreatedUpdated component', () => {
       await createComponent({ confidential: false });
 
       expect(findConfidentialityBadge().exists()).toBe(false);
-    });
-
-    it('shows loading icon badge when the work item is confidential', async () => {
-      await createComponent({ updateInProgress: true });
-
-      expect(findLoadingIcon().exists()).toBe(true);
     });
   });
 

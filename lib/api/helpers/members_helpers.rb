@@ -26,6 +26,10 @@ module API
         authorize! :"admin_#{source_type}_member", source
       end
 
+      def authorize_invite_source_member!(source_type, source)
+        authorize! :"invite_#{source_type}_members", source
+      end
+
       def authorize_update_source_member!(source_type, member)
         authorize! :"update_#{source_type}_member", member
       end

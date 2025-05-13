@@ -67,8 +67,8 @@ By default, when you run a pipeline:
   - On a **new, non-default branch**, the content of all commits from the most recent commit on the parent branch to the latest commit is scanned.
   - On an **existing, non-default branch**, the content of all commits from the last pushed commit to the latest commit is scanned.
 - On a **merge request**, the content of all commits on the branch is scanned. If the analyzer can't access every commit,
-  the content of all commits from the parent to the latest commit is scanned. To use merge request pipelines, you must use the
-  [`latest` pipeline secret detection template](../../detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines).
+  the content of all commits from the parent to the latest commit is scanned. To scan all commits, you must enable
+  [merge request pipelines](../../detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines).
 
 To override the default behavior, use the [available CI/CD variables](configure.md#available-cicd-variables).
 
@@ -82,6 +82,9 @@ You should run a historic scan only once, after enabling pipeline secret detecti
 can take a long time, especially for larger repositories with lengthy Git histories. After
 completing an initial historic scan, use only standard pipeline secret detection as part of your
 pipeline.
+
+If you enable pipeline secret detection with a [scan execution policy](../../policies/scan_execution_policies.md#scanner-behavior),
+by default the first scheduled scan is a historic scan.
 
 To run a historic scan:
 
@@ -184,6 +187,7 @@ your GitLab CI/CD configuration file is complex.
 1. Select **Commit changes**.
 
 Pipelines now include a pipeline secret detection job.
+Consider [running a historic scan](#run-a-historic-scan) after you enable the analyzer.
 
 ### Use an automatically configured merge request
 

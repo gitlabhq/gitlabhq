@@ -1,4 +1,5 @@
 <script>
+import { isEqual } from 'lodash';
 import { GlButton } from '@gitlab/ui';
 import { createAlert, VARIANT_DANGER } from '~/alert';
 import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
@@ -103,8 +104,8 @@ export default {
       // Reload the page if the theme has changed from light to dark mode or vice versa
       // or if color scheme has changed to correctly load all required styles.
       if (
-        this.colorModeOnCreate !== this.getSelectedColorMode() ||
-        this.schemeOnCreate !== this.getSelectedScheme()
+        !isEqual(this.colorModeOnCreate, this.getSelectedColorMode()) ||
+        !isEqual(this.schemeOnCreate, this.getSelectedScheme())
       ) {
         window.location.reload();
         return;

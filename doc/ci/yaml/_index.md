@@ -25,7 +25,10 @@ This file is where you define the CI/CD jobs that make up your pipeline.
 When you are editing your `.gitlab-ci.yml` file, you can validate it with the
 [CI Lint](lint.md) tool.
 
-If you are editing content on this page, follow the [instructions for documenting keywords](../../development/cicd/cicd_reference_documentation_guide.md).
+<!--
+If you are editing content on this page, follow the instructions for documenting keywords:
+https://docs.gitlab.com/development/cicd/cicd_reference_documentation_guide/
+-->
 
 ## Keywords
 
@@ -202,7 +205,7 @@ And optionally:
     pipeline run, the new pipeline uses the changed configuration.
 - You can have up to 150 includes per pipeline by default, including [nested](includes.md#use-nested-includes). Additionally:
   - In [GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/207270) users on GitLab Self-Managed can
-    change the [maximum includes](../../administration/settings/continuous_integration.md#maximum-includes) value.
+    change the [maximum includes](../../administration/settings/continuous_integration.md#set-maximum-includes) value.
   - In [GitLab 15.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367150) you can have up to 150 includes.
     In nested includes, the same file can be included multiple times, but duplicated includes
     count towards the limit.
@@ -1093,7 +1096,7 @@ in a header section.
 spec:
   inputs:
     version:
-      regex: ^v\d\.\d+(\.\d+)$
+      regex: ^v\d\.\d+(\.\d+)?$
 title: The pipeline configuration would follow...
 ---
 ```
@@ -1423,7 +1426,7 @@ they expire and are deleted. The `expire_in` setting does not affect:
 
 - Artifacts from the latest job, unless keeping the latest job artifacts is disabled
   [at the project level](../jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)
-  or [instance-wide](../../administration/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
+  or [instance-wide](../../administration/settings/continuous_integration.md#keep-artifacts-from-latest-successful-pipelines).
 
 After their expiry, artifacts are deleted hourly by default (using a cron job), and are not
 accessible anymore.
@@ -1455,7 +1458,7 @@ job:
 **Additional details**:
 
 - The expiration time period begins when the artifact is uploaded and stored on GitLab.
-  If the expiry time is not defined, it defaults to the [instance wide setting](../../administration/settings/continuous_integration.md#default-artifacts-expiration).
+  If the expiry time is not defined, it defaults to the [instance wide setting](../../administration/settings/continuous_integration.md#set-default-artifacts-expiration).
 - To override the expiration date and protect artifacts from being automatically deleted:
   - Select **Keep** on the job page.
   - Set the value of `expire_in` to `never`.
@@ -1869,7 +1872,7 @@ cache-job:
 
 ##### `cache:key:files`
 
-Use the `cache:key:files` keyword to generate a new key when one or two specific files
+Use the `cache:key:files` keyword to generate a new key when files matching either of the defined paths or patterns
 change. `cache:key:files` lets you reuse some caches, and rebuild them less often,
 which speeds up subsequent pipeline runs.
 
@@ -1878,7 +1881,7 @@ which speeds up subsequent pipeline runs.
 
 **Supported values**:
 
-- An array of one or two file paths.
+- An array of up to two file paths or patterns.
 
 CI/CD variables are not supported.
 
@@ -1909,6 +1912,8 @@ use the new cache, instead of rebuilding the dependencies.
 - The cache `key` is a SHA computed from the most recent commits
   that changed each listed file.
   If neither file is changed in any commits, the fallback key is `default`.
+- Wildcard patterns like `**/package.json` can be used. An [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/301161)
+  exists to increase the number of paths or patterns allowed for a cache key.
 
 ##### `cache:key:prefix`
 
@@ -2485,9 +2490,9 @@ for an environment.
 
 **Supported values**:
 
-- `agent`: A string specifying the [GitLab agent for Kubernetes](../../user/clusters/agent/_index.md). The format is `path/to/agent/project:agent-name`.
-- `namespace`: A string representing the Kubernetes namespace. It needs to be set together with the `agent` keyword.
-- `flux_resource_path`: A string representing the path to the Flux resource. This must be the full resource path. It needs to be set together with the
+- `agent`: A string specifying the [GitLab agent for Kubernetes](../../user/clusters/agent/_index.md). The format is `path/to/agent/project:agent-name`. If the agent is connected to the project running the pipeline, use `$CI_PROJECT_PATH:agent-name`.
+- `namespace`: A string representing the Kubernetes namespace where the environment is deployed. The namespace must be set together with the `agent` keyword.
+- `flux_resource_path`: A string representing the full path to the Flux resource, such as a HelmRelease. The Flux resource must be set together with the
   `agent` and `namespace` keywords.
 
 **Example of `environment:kubernetes`**:
@@ -2501,14 +2506,17 @@ deploy:
     kubernetes:
       agent: path/to/agent/project:agent-name
       namespace: my-namespace
-      flux_resource_path: helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent
+      flux_resource_path: helm.toolkit.fluxcd.io/v2/namespaces/flux-system/helmreleases/helm-release-resource
 ```
 
-This configuration sets up the `deploy` job to deploy to the `production`
-environment, associates the [agent](../../user/clusters/agent/_index.md) named `agent-name` with the environment,
-and configures the [dashboard for Kubernetes](../environments/kubernetes_dashboard.md) for an environment with
+This configuration:
+
+- Sets up the `deploy` job to deploy to the `production`
+environment
+- Associates the [agent](../../user/clusters/agent/_index.md) named `agent-name` with the environment
+- Configures the [dashboard for Kubernetes](../environments/kubernetes_dashboard.md) for an environment with
 the namespace `my-namespace` and the `flux_resource_path` set to
-`helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent`.
+`helm.toolkit.fluxcd.io/v2/namespaces/flux-system/helmreleases/helm-release-resource`.
 
 **Additional details**:
 
@@ -2517,7 +2525,8 @@ the namespace `my-namespace` and the `flux_resource_path` set to
   [configure `user_access`](../../user/clusters/agent/user_access.md)
   for the environment's project or its parent group.
 - The user running the job must be authorized to access the cluster agent.
-  Otherwise, it will ignore `agent`, `namespace` and `flux_resource_path` attributes.
+  Otherwise, the dashboard ignores the `agent`, `namespace`, and `flux_resource_path` attributes.
+- If you only want to set the `agent`, you do not have to set the `namespace`, and cannot set `flux_resource_path`. However, this configuration lists all namespaces in a cluster in the dashboard for Kubernetes.
 
 #### `environment:deployment_tier`
 
@@ -2884,7 +2893,7 @@ test-job:
 
 {{< /history >}}
 
-Use `image:docker` to pass options to the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html)
+Use `image:docker` to pass options to the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html) and the [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/).
 runner. This keyword does not work with other executor types.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
@@ -2914,6 +2923,50 @@ arm-sql-job:
 
 - `image:docker:platform` maps to the [`docker pull --platform` option](https://docs.docker.com/reference/cli/docker/image/pull/#options).
 - `image:docker:user` maps to the [`docker run --user` option](https://docs.docker.com/reference/cli/docker/container/run/#options).
+
+#### `image:kubernetes`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/38451) in GitLab 18.0. Requires GitLab Runner 17.11 or later.
+- `user` input option [introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/5469) in GitLab Runner 17.11.
+- `user` input option [extended to support `uid:gid` format](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/5540) in GitLab 18.0.
+
+{{< /history >}}
+
+Use `image:kubernetes` to pass options to the GitLab Runner [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/).
+This keyword does not work with other executor types.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default` section](#default).
+
+**Supported values**:
+
+A hash of options for the Kubernetes executor, which can include:
+
+- `user`: Specify the username or UID to use when the container runs. You can also use it to set GID by using the `UID:GID` format.
+
+**Example of `image:kubernetes` with only UID**:
+
+```yaml
+arm-sql-job:
+  script: echo "Run sql tests"
+  image:
+    name: super/sql:experimental
+    kubernetes:
+      user: "1001"
+```
+
+**Example of `image:kubernetes` with both UID and GID**:
+
+```yaml
+arm-sql-job:
+  script: echo "Run sql tests"
+  image:
+    name: super/sql:experimental
+    kubernetes:
+      user: "1001:1001"
+```
 
 #### `image:pull_policy`
 
@@ -3364,8 +3417,8 @@ build_job:
 
 #### `needs:pipeline:job`
 
-A [child pipeline](../pipelines/downstream_pipelines.md#parent-child-pipelines) can download artifacts from a job in
-its parent pipeline or another child pipeline in the same parent-child pipeline hierarchy.
+A [child pipeline](../pipelines/downstream_pipelines.md#parent-child-pipelines) can download artifacts from a
+successfully finished job in its parent pipeline or another child pipeline in the same parent-child pipeline hierarchy.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -3379,6 +3432,10 @@ its parent pipeline or another child pipeline in the same parent-child pipeline 
 - Parent pipeline (`.gitlab-ci.yml`):
 
   ```yaml
+  stages:
+    - build
+    - test
+
   create-artifact:
     stage: build
     script: echo "sample artifact" > artifact.txt
@@ -3408,6 +3465,8 @@ In this example, the `create-artifact` job in the parent pipeline creates some a
 The `child-pipeline` job triggers a child pipeline, and passes the `CI_PIPELINE_ID`
 variable to the child pipeline as a new `PARENT_PIPELINE_ID` variable. The child pipeline
 can use that variable in `needs:pipeline` to download artifacts from the parent pipeline.
+Having the `create-artifact` and `child-pipeline` jobs in subsequent stages ensures that
+the `use-artifact` job only executes when `create-artifact` has successfully finished.
 
 **Additional details**:
 
@@ -3416,6 +3475,9 @@ can use that variable in `needs:pipeline` to download artifacts from the parent 
 - You cannot use `needs:pipeline:job` in a [trigger job](#trigger), or to fetch artifacts
   from a [multi-project pipeline](../pipelines/downstream_pipelines.md#multi-project-pipelines).
   To fetch artifacts from a multi-project pipeline use [`needs:project`](#needsproject).
+- The job listed in `needs:pipeline:job` must complete with a status of `success`
+  or the artifacts can't be fetched. [Issue 367229](https://gitlab.com/gitlab-org/gitlab/-/issues/367229)
+  proposes to allow fetching artifacts from any job with artifacts.
 
 #### `needs:optional`
 
@@ -4142,7 +4204,7 @@ job:
   You can use CI/CD variables to define the description, but some shells
   [use different syntax](../variables/_index.md#use-cicd-variables-in-job-scripts)
   to reference variables. Similarly, some shells might require special characters
-  to be escaped. For example, backticks (`` ` ``) might need to be escaped with a backslash (<code>&#92;</code>).
+  to be escaped. For example, backticks (`` ` ``) might need to be escaped with a backslash (` \ `).
 
 #### `release:ref`
 
@@ -5047,7 +5109,7 @@ In this example, the job has two steps:
 **Additional details**:
 
 - A step can have either a `script` or a `step` key, but not both.
-- A `run` configuration cannot be used together with existing [`script`](#script) keyword.
+- A `run` configuration cannot be used together with existing [`script`](#script), [`after_script`](#after_script) or [`before_script`](#before_script) keywords.
 - Multi-line scripts can be defined using [YAML block scalar syntax](script.md#split-long-commands).
 
 ### `script`
@@ -5335,7 +5397,7 @@ In this example, GitLab launches two containers for the job:
 
 - A Ruby container that runs the `script` commands.
 - A PostgreSQL container. The `script` commands in the Ruby container can connect to
-  the PostgreSQL database at the `db-postgrest` hostname.
+  the PostgreSQL database at the `db-postgres` hostname.
 
 **Related topics**:
 
@@ -5383,6 +5445,51 @@ arm-sql-job:
 
 - `services:docker:platform` maps to the [`docker pull --platform` option](https://docs.docker.com/reference/cli/docker/image/pull/#options).
 - `services:docker:user` maps to the [`docker run --user` option](https://docs.docker.com/reference/cli/docker/container/run/#options).
+
+#### `services:kubernetes`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/38451) in GitLab 18.0. Requires GitLab Runner 17.11 or later.
+- `user` input option [introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/5469) in GitLab Runner 17.11.
+- `user` input option [extended to support `uid:gid` format](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/5540) in GitLab 18.0.
+
+{{< /history >}}
+
+Use `services:kubernetes` to pass options to the GitLab Runner [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/).
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default` section](#default).
+
+**Supported values**:
+
+A hash of options for the Kubernetes executor, which can include:
+
+- `user`: Specify the username or UID to use when the container runs. You can also use it to set GID by using the `UID:GID` format.
+
+**Example of `services:kubernetes` with only UID**:
+
+```yaml
+arm-sql-job:
+  script: echo "Run sql tests"
+  image: ruby:2.6
+  services:
+    - name: super/sql:experimental
+      kubernetes:
+        user: "1001"
+```
+
+**Example of `services:kubernetes` with both UID and GID**:
+
+```yaml
+arm-sql-job:
+  script: echo "Run sql tests"
+  image: ruby:2.6
+  services:
+    - name: super/sql:experimental
+      kubernetes:
+        user: "1001:1001"
+```
 
 #### `services:pull_policy`
 

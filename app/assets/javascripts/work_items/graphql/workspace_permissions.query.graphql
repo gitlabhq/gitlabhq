@@ -3,6 +3,7 @@ query workspacePermissions($fullPath: ID!) {
     id
     userPermissions {
       createDesign
+      updateDesign
       moveDesign
     }
   }

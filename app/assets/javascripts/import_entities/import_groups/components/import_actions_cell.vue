@@ -116,7 +116,7 @@ export default {
 
     <help-popover v-if="isFinished" icon="information-o" data-testid="reimport-info-icon">
       {{
-        s__('BulkImport|Re-import creates a new group. It does not sync with the existing group.')
+        s__('BulkImport|Re-import creates a new group and does not sync with the existing group.')
       }}
     </help-popover>
 
@@ -129,7 +129,7 @@ export default {
       <gl-sprintf
         :message="
           s__(
-            `BulkImport|Because of settings on the source GitLab instance or group, you can't import projects with this group. To permit importing projects with this group, reconfigure the source GitLab instance or group. %{linkStart}Learn more.%{linkEnd}`,
+            `BulkImport|You cannot import projects with this group. To import projects, reconfigure the source GitLab instance or group. %{linkStart}Learn more.%{linkEnd}`,
           )
         "
       >

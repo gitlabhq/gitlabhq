@@ -19,10 +19,13 @@ title: GitLab Dependency Proxy administration
 
 {{< /history >}}
 
-GitLab can be used as a dependency proxy for your frequently-accessed upstream images.
+You can use GitLab as a dependency proxy for frequently-accessed upstream artifacts, including container images and packages.
 
-This is the administration documentation. If you want to learn how to use the
-dependency proxies, see the [user guide](../../user/packages/dependency_proxy/_index.md).
+This is the administration documentation. To learn how to use the
+dependency proxies, see:
+
+- The [dependency proxy for container images](../../user/packages/dependency_proxy/_index.md) user guide
+- The [virtual registry](../../user/packages/virtual_registry/_index.md) user guide
 
 The GitLab Dependency Proxy:
 

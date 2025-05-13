@@ -53,6 +53,7 @@ RSpec.shared_examples 'Wiki redirection' do
       'parent/child/grandchild'         | 'new-parent/new-child/new-grandchild'
       'parent/child/new-grandchild'     | 'new-parent/new-child/new-grandchild'
       'parent/new-child/new-grandchild' | 'new-parent/new-child/new-grandchild'
+      'parent/new-child/grandchild'     | 'new-parent/new-child/grandchild'
     end
 
     with_them do
@@ -60,19 +61,6 @@ RSpec.shared_examples 'Wiki redirection' do
         visit wiki_page_path(wiki, old_path)
 
         expect(page).to have_content("The page at #{old_path} has been moved to #{new_path}.")
-      end
-    end
-
-    where(:old_path, :new_path) do
-      'parent/new-child/grandchild' | 'new-parent/new-child/grandchild'
-    end
-
-    with_them do
-      it 'redirects old path to a create page at new path' do
-        visit wiki_page_path(wiki, old_path)
-
-        expect(page).to have_content("The page at #{old_path} tried to redirect to #{new_path}, but it does not exist.")
-        expect(page).to have_content("You are now editing the page at #{new_path}. Edit page at #{old_path} instead.")
       end
     end
 

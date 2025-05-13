@@ -15,6 +15,7 @@
 
   .top-bar {
     @include job-log-top-bar;
+    @include translucent-glass-background;
 
     &.has-archived-block {
       top: calc(#{$calc-application-header-height} + 28px);
@@ -113,11 +114,11 @@
 
     .build-job {
       &.retried {
-        background-color: var(--gray-10, $gray-10);
+        @apply gl-bg-subtle;
       }
 
       &:hover {
-        background-color: var(--gray-50, $gray-50);
+        @apply gl-bg-strong;
       }
     }
   }

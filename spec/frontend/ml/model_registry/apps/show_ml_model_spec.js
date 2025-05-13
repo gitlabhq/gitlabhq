@@ -359,8 +359,8 @@ describe('ml/model_registry/apps/show_ml_model', () => {
     const findAvatar = () => wrapper.findComponent(GlAvatar);
     const findLatestVersionLink = () => wrapper.findByTestId('sidebar-latest-version-link');
     const findVersionCount = () => wrapper.findByTestId('sidebar-version-count');
-    const findExperimentTitle = () => wrapper.findByTestId('sidebar-experiment-title');
-    const findExperiment = () => wrapper.findByTestId('sidebar-experiment-label');
+    const findExperiment = () => wrapper.findByTestId('sidebar-experiment');
+    const findExperimentLabel = () => wrapper.findByTestId('sidebar-experiment-label');
 
     it('displays sidebar author link', () => {
       expect(findSidebarAuthorLink().attributes('href')).toBe('path/to/user');
@@ -391,16 +391,16 @@ describe('ml/model_registry/apps/show_ml_model', () => {
     });
 
     describe('displays experiment information', () => {
-      it('displays experiment title', () => {
-        expect(findExperimentTitle().text()).toBe('Experiment');
+      it('displays experiment', () => {
+        expect(findExperiment().exists()).toBe(true);
       });
 
       it('displays experiment label', () => {
-        expect(findExperiment().text()).toBe('Default experiment');
+        expect(findExperimentLabel().text()).toBe('Default experiment');
       });
 
       it('shows a link to the default experiment', () => {
-        expect(findExperiment().findComponent(GlLink).attributes('href')).toBe(
+        expect(findExperimentLabel().findComponent(GlLink).attributes('href')).toBe(
           'path/to/experiment',
         );
       });
@@ -423,7 +423,6 @@ describe('ml/model_registry/apps/show_ml_model', () => {
       });
 
       it('does not display sidebar experiment information', () => {
-        expect(findExperimentTitle().exists()).toBe(false);
         expect(findExperiment().exists()).toBe(false);
       });
     });

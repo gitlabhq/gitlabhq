@@ -4,7 +4,10 @@ module API
   class ProjectSnippets < ::API::Base
     include PaginationParams
 
-    before { check_snippets_enabled }
+    before do
+      check_snippets_enabled
+      set_current_organization
+    end
 
     feature_category :source_code_management
 
@@ -174,9 +177,10 @@ module API
         destroy_conditionally!(snippet) do |snippet|
           service = ::Snippets::DestroyService.new(current_user, snippet)
           response = service.execute
+          http_status = Helpers::Snippets::HttpResponseMap.status_for(response.reason)
 
           if response.error?
-            render_api_error!({ error: response.message }, response.reason)
+            render_api_error!({ error: response.message }, http_status)
           end
         end
       end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Graphql::Loaders::BatchModelLoader do
+RSpec.describe Gitlab::Graphql::Loaders::BatchModelLoader, feature_category: :api do
   describe '#find' do
     let_it_be(:issue) { create(:issue) }
     let_it_be(:other_user) { create(:user) }
@@ -36,6 +36,14 @@ RSpec.describe Gitlab::Graphql::Loaders::BatchModelLoader do
         a.sync
         c.sync
       end.not_to exceed_query_limit(2)
+    end
+
+    it 'returns default_value when record not found' do
+      ghost_user = Users::Internal.ghost
+
+      user_result = described_class.new(User, non_existing_record_id, default_value: ghost_user).find
+
+      expect(user_result.sync).to eq(ghost_user)
     end
   end
 end

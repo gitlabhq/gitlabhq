@@ -2,8 +2,6 @@ import { isEmpty } from 'lodash';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 import { checkJobHasLog } from './utils';
 
-export const headerTime = (state) => state.job.started_at || state.job.created_at;
-
 export const hasForwardDeploymentFailure = (state) =>
   state?.job?.failure_reason === 'forward_deployment_failure';
 
@@ -12,12 +10,6 @@ export const hasUnmetPrerequisitesFailure = (state) =>
 
 export const shouldRenderCalloutMessage = (state) =>
   !isEmpty(state.job.status) && !isEmpty(state.job.callout_message);
-
-/**
- * When the job has not started the value of job.started_at will be null
- * When job has started the value of job.started_at will be a string with a date.
- */
-export const shouldRenderTriggeredLabel = (state) => Boolean(state.job.started_at);
 
 export const hasEnvironment = (state) => !isEmpty(state.job.deployment_status);
 

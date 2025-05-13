@@ -13,15 +13,16 @@ import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_ite
 import convertWorkItemMutation from '~/work_items/graphql/work_item_convert.mutation.graphql';
 import getWorkItemDesignListQuery from '~/work_items/components/design_management/graphql/design_collection.query.graphql';
 import {
-  WORK_ITEM_TYPE_NAME_TASK,
+  WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_ISSUE,
-  WORK_ITEM_TYPE_ENUM_EPIC,
+  WORK_ITEM_TYPE_NAME_TASK,
 } from '~/work_items/constants';
 
 import {
   convertWorkItemMutationResponse,
   workItemChangeTypeWidgets,
   workItemQueryResponse,
+  workItemWithEpicParentQueryResponse,
 } from '../mock_data';
 import { designCollectionResponse, mockDesign } from './design_management/mock_data';
 
@@ -37,6 +38,10 @@ describe('WorkItemChangeTypeModal component', () => {
   const taskTypeId = namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
     (type) => type.name === WORK_ITEM_TYPE_NAME_TASK,
   ).id;
+  const epicTypeId = namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
+    (item) => item.name === WORK_ITEM_TYPE_NAME_EPIC,
+  ).id;
+
   namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes
     .find((item) => item.name === WORK_ITEM_TYPE_NAME_TASK)
     .widgetDefinitions.splice(
@@ -73,7 +78,8 @@ describe('WorkItemChangeTypeModal component', () => {
     workItemType = WORK_ITEM_TYPE_NAME_TASK,
     convertWorkItemMutationHandler = convertWorkItemMutationSuccessHandler,
     designQueryHandler = noDesignQueryHandler,
-    allowedWorkItemTypesEE = [],
+    allowedConversionTypesEE = [],
+    hasSubepicsFeature = true,
   } = {}) => {
     wrapper = mountExtended(WorkItemChangeTypeModal, {
       apolloProvider: createMockApollo([
@@ -90,12 +96,13 @@ describe('WorkItemChangeTypeModal component', () => {
         widgets,
         workItemType,
         allowedChildTypes: [{ name: WORK_ITEM_TYPE_NAME_TASK }],
-        allowedWorkItemTypesEE,
+        allowedConversionTypesEE,
       },
       provide: {
         glFeatures: {
           workItemsAlpha,
         },
+        hasSubepicsFeature,
       },
       stubs: {
         GlModal: stubComponent(GlModal, {
@@ -137,20 +144,34 @@ describe('WorkItemChangeTypeModal component', () => {
     expect(findGlFormSelect().findAll('option')).toHaveLength(2);
   });
 
-  it('does not allow to change type and disables `Change type` button when the work item has a parent', async () => {
-    createComponent({ hasParent: true, widgets: workItemQueryResponse.data.workItem.widgets });
+  describe('work item type change tests', () => {
+    it.each`
+      scenario                                    | widgets                                                      | hasSubepicsFeature | btnDisabled | parentType
+      ${'epic parent with subepics enabled'}      | ${workItemWithEpicParentQueryResponse.data.workItem.widgets} | ${true}            | ${false}    | ${''}
+      ${'epic parent with subepics disabled'}     | ${workItemWithEpicParentQueryResponse.data.workItem.widgets} | ${false}           | ${true}     | ${'epic'}
+      ${'non-epic parent with subepics enabled'}  | ${workItemQueryResponse.data.workItem.widgets}               | ${true}            | ${true}     | ${'issue'}
+      ${'non-epic parent with subepics disabled'} | ${workItemQueryResponse.data.workItem.widgets}               | ${false}           | ${true}     | ${'issue'}
+    `('$scenario', async ({ widgets, hasSubepicsFeature, btnDisabled, parentType }) => {
+      createComponent({
+        hasParent: true,
+        widgets,
+        hasSubepicsFeature,
+      });
 
-    await waitForPromises();
+      await waitForPromises();
 
-    findGlFormSelect().vm.$emit('change', issueTypeId);
+      findGlFormSelect().vm.$emit('change', issueTypeId);
 
-    await nextTick();
+      await nextTick();
 
-    expect(findWarningAlert().text()).toBe(
-      'Parent item type issue is not supported on issue. Remove the parent item to change type.',
-    );
-
-    expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(true);
+      const hasWarning = parentType !== '';
+      expect(findWarningAlert().exists()).toBe(hasWarning);
+      if (hasWarning) {
+        const warningText = `Parent item type ${parentType} is not supported on issue. Remove the parent item to change type.`;
+        expect(findWarningAlert().text()).toBe(warningText);
+      }
+      expect(findChangeTypeModal().props('actionPrimary').attributes.disabled).toBe(btnDisabled);
+    });
   });
 
   it('does not allow to change type and disables `Change type` button when the work item has child items', async () => {
@@ -202,22 +223,22 @@ describe('WorkItemChangeTypeModal component', () => {
     });
 
     it('shows no value present message if value of the widget is not present on conversion', async () => {
-      const allowedWorkItemTypesEE = [
+      const allowedConversionTypesEE = [
         {
-          text: 'Epic (Promote to group)',
-          value: WORK_ITEM_TYPE_ENUM_EPIC,
+          id: epicTypeId,
+          name: WORK_ITEM_TYPE_NAME_EPIC,
         },
       ];
       createComponent({
         workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
         widgets: [workItemChangeTypeWidgets.MILESTONE],
         workItemsAlpha: true,
-        allowedWorkItemTypesEE,
+        allowedConversionTypesEE,
       });
 
       await waitForPromises();
 
-      findGlFormSelect().vm.$emit('change', WORK_ITEM_TYPE_ENUM_EPIC);
+      findGlFormSelect().vm.$emit('change', epicTypeId);
 
       await nextTick();
 

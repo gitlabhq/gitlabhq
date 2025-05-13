@@ -29,6 +29,11 @@ export default {
       default: () => [],
       required: false,
     },
+    inlineActions: {
+      type: Boolean,
+      default: true,
+      required: false,
+    },
     metadataLoading: {
       type: Boolean,
       required: false,
@@ -64,10 +69,12 @@ export default {
 
 <template>
   <div class="gl-flex gl-flex-col">
-    <page-heading>
+    <page-heading :inline-actions="inlineActions">
       <template #heading>
-        <slot name="title">{{ title }}</slot>
-        <gl-avatar v-if="avatar" :src="avatar" :shape="$options.AVATAR_SHAPE_OPTION_RECT" />
+        <slot name="title">
+          <span class="gl-wrap-anywhere">{{ title }}</span>
+          <gl-avatar v-if="avatar" :src="avatar" :shape="$options.AVATAR_SHAPE_OPTION_RECT" />
+        </slot>
       </template>
 
       <template #description>
@@ -77,7 +84,7 @@ export default {
             <div
               v-for="(row, metadataIndex) in metadataSlots"
               :key="metadataIndex"
-              class="gl-mr-5 gl-flex gl-items-center"
+              class="gl-mr-5 gl-flex gl-flex-wrap gl-items-center"
             >
               <slot :name="row"></slot>
             </div>

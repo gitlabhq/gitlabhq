@@ -1,8 +1,8 @@
 import { GlButton, GlFormInput, GlFormTextarea } from '@gitlab/ui';
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
+import axios from '~/lib/utils/axios_utils';
 import TagCreate from '~/releases/components/tag_create.vue';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import createStore from '~/releases/stores';

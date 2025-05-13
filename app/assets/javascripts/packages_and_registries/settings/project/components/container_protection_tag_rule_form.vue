@@ -5,6 +5,7 @@ import {
   GlFormGroup,
   GlForm,
   GlFormInput,
+  GlFormRadio,
   GlFormSelect,
   GlLink,
   GlSprintf,
@@ -16,8 +17,12 @@ import {
   GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
 } from '~/packages_and_registries/settings/project/constants';
 import { __, s__ } from '~/locale';
-import { InternalEvents } from '~/tracking';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
+
+const PROTECTED_RULE_TYPE = 'protected';
+const IMMUTABLE_RULE_TYPE = 'immutable';
 
 export default {
   components: {
@@ -29,8 +34,9 @@ export default {
     GlFormSelect,
     GlLink,
     GlSprintf,
+    GlFormRadio,
   },
-  mixins: [InternalEvents.mixin()],
+  mixins: [glFeatureFlagsMixin(), glAbilitiesMixin()],
   inject: ['projectPath'],
   props: {
     rule: {
@@ -49,16 +55,38 @@ export default {
         minimumAccessLevelForDelete:
           this.rule?.minimumAccessLevelForDelete ?? GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
       },
+      tagRuleType: PROTECTED_RULE_TYPE,
       showValidation: false,
       updateInProgress: false,
     };
   },
   computed: {
     createProtectionRuleMutationInput() {
+      if (this.isProtectedTagRuleType) {
+        return {
+          projectPath: this.projectPath,
+          ...this.protectionRuleFormData,
+        };
+      }
       return {
         projectPath: this.projectPath,
-        ...this.protectionRuleFormData,
+        tagNamePattern: this.protectionRuleFormData.tagNamePattern,
       };
+    },
+    isFeatureFlagEnabled() {
+      return this.glFeatures.containerRegistryImmutableTags;
+    },
+    isProtectedTagRuleType() {
+      return this.tagRuleType === PROTECTED_RULE_TYPE;
+    },
+    canCreateImmutableTagRule() {
+      return (
+        this.isFeatureFlagEnabled &&
+        this.glAbilities.createContainerRegistryProtectionImmutableTagRule
+      );
+    },
+    showProtectionType() {
+      return this.canCreateImmutableTagRule && !this.rule;
     },
     isTagNamePatternValid() {
       if (this.showValidation) {
@@ -80,6 +108,20 @@ export default {
     },
     tagNamePattern() {
       return this.protectionRuleFormData.tagNamePattern;
+    },
+    tagNamePatternLabel() {
+      return this.isProtectedTagRuleType
+        ? s__('ContainerRegistry|Protect container tags matching')
+        : s__('ContainerRegistry|Apply immutability rule to tags matching');
+    },
+    tagNamePatternDescription() {
+      return this.isProtectedTagRuleType
+        ? s__(
+            'ContainerRegistry|Tags with names that match this regex pattern are protected. Must be less than 100 characters. %{linkStart}What regex patterns are supported?%{linkEnd}',
+          )
+        : s__(
+            'ContainerRegistry|Tags with names that match this regex pattern are immutable. Must be less than 100 characters. %{linkStart}What regex patterns are supported?%{linkEnd}',
+          );
     },
     submitButtonText() {
       return this.rule ? __('Save changes') : s__('ContainerRegistry|Add rule');
@@ -120,11 +162,6 @@ export default {
           }
 
           this.$emit('submit', data[this.mutationKey].containerProtectionTagRule);
-          if (this.rule) {
-            this.trackEvent('container_protection_tag_rule_created');
-          } else {
-            this.trackEvent('container_protection_tag_rule_updated');
-          }
         })
         .catch((error) => {
           this.handleError(error);
@@ -153,6 +190,8 @@ export default {
       }
     },
   },
+  PROTECTED_RULE_TYPE,
+  IMMUTABLE_RULE_TYPE,
   minimumAccessLevelOptions: MinimumAccessLevelOptions,
 };
 </script>
@@ -168,8 +207,38 @@ export default {
       <div v-for="error in alertErrorMessages" :key="error">{{ error }}</div>
     </gl-alert>
 
+    <template v-if="showProtectionType">
+      <gl-form-group :label="s__('ContainerRegistry|Protection type')">
+        <gl-form-radio
+          v-model="tagRuleType"
+          name="protection-type"
+          :value="$options.PROTECTED_RULE_TYPE"
+          autofocus
+        >
+          {{ s__('ContainerRegistry|Protected') }}
+          <template #help>
+            {{
+              s__(
+                'ContainerRegistry|Container image tags can be created, overwritten, or deleted by specific user roles.',
+              )
+            }}
+          </template>
+        </gl-form-radio>
+        <gl-form-radio
+          v-model="tagRuleType"
+          name="protection-type"
+          :value="$options.IMMUTABLE_RULE_TYPE"
+        >
+          {{ s__('ContainerRegistry|Immutable') }}
+          <template #help>
+            {{ s__('ContainerRegistry|Container image tags can never be overwritten or deleted.') }}
+          </template>
+        </gl-form-radio>
+      </gl-form-group>
+    </template>
+
     <gl-form-group
-      :label="s__('ContainerRegistry|Protect container tags matching')"
+      :label="tagNamePatternLabel"
       label-for="input-tag-name-pattern"
       :invalid-feedback="invalidFeedback"
       :state="isTagNamePatternValid"
@@ -178,19 +247,14 @@ export default {
         id="input-tag-name-pattern"
         v-model.trim="protectionRuleFormData.tagNamePattern"
         type="text"
+        :autofocus="!showProtectionType"
         required
         trim
         :state="isTagNamePatternValid"
         @change="showValidation = true"
       />
       <template #description>
-        <gl-sprintf
-          :message="
-            s__(
-              'ContainerRegistry|Tags with names that match this regex pattern are protected. Must be less than 100 characters. %{linkStart}What regex patterns are supported?%{linkEnd}',
-            )
-          "
-        >
+        <gl-sprintf :message="tagNamePatternDescription">
           <template #link="{ content }">
             <gl-link
               href="https://docs.gitlab.com/ee/user/packages/container_registry/protected_container_tags.html#regex-pattern-examples"
@@ -202,42 +266,44 @@ export default {
       </template>
     </gl-form-group>
 
-    <gl-form-group
-      :label="s__('ContainerRegistry|Minimum role allowed to push')"
-      label-for="select-minimum-access-level-for-push"
-    >
-      <gl-form-select
-        id="select-minimum-access-level-for-push"
-        v-model="protectionRuleFormData.minimumAccessLevelForPush"
-        :options="$options.minimumAccessLevelOptions"
-      />
-      <template #description>
-        {{
-          s__(
-            'ContainerRegistry|Only users with at least this role can push tags with a name that matches the protection rule.',
-          )
-        }}
-      </template>
-    </gl-form-group>
+    <template v-if="isProtectedTagRuleType">
+      <gl-form-group
+        :label="s__('ContainerRegistry|Minimum role allowed to push')"
+        label-for="select-minimum-access-level-for-push"
+      >
+        <gl-form-select
+          id="select-minimum-access-level-for-push"
+          v-model="protectionRuleFormData.minimumAccessLevelForPush"
+          :options="$options.minimumAccessLevelOptions"
+        />
+        <template #description>
+          {{
+            s__(
+              'ContainerRegistry|Only users with at least this role can push tags with a name that matches the protection rule.',
+            )
+          }}
+        </template>
+      </gl-form-group>
 
-    <gl-form-group
-      :label="s__('ContainerRegistry|Minimum role allowed to delete')"
-      label-for="select-minimum-access-level-for-delete"
-    >
-      <gl-form-select
-        id="select-minimum-access-level-for-delete"
-        v-model="protectionRuleFormData.minimumAccessLevelForDelete"
-        :options="$options.minimumAccessLevelOptions"
-        data-testid="select-minimum-access-level-for-delete"
-      />
-      <template #description>
-        {{
-          s__(
-            'ContainerRegistry|Only users with at least this role can delete tags with a name that matches the protection rule.',
-          )
-        }}
-      </template>
-    </gl-form-group>
+      <gl-form-group
+        :label="s__('ContainerRegistry|Minimum role allowed to delete')"
+        label-for="select-minimum-access-level-for-delete"
+      >
+        <gl-form-select
+          id="select-minimum-access-level-for-delete"
+          v-model="protectionRuleFormData.minimumAccessLevelForDelete"
+          :options="$options.minimumAccessLevelOptions"
+          data-testid="select-minimum-access-level-for-delete"
+        />
+        <template #description>
+          {{
+            s__(
+              'ContainerRegistry|Only users with at least this role can delete tags with a name that matches the protection rule.',
+            )
+          }}
+        </template>
+      </gl-form-group>
+    </template>
 
     <div class="gl-flex gl-justify-start gl-gap-3">
       <gl-button

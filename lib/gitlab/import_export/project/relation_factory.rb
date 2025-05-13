@@ -123,6 +123,7 @@ module Gitlab
           when :merge_requests, :MergeRequest, :merge_request then setup_merge_request
           when :approvals then setup_approval
           when :events then setup_event
+          when :'DesignManagement::Version' then setup_design_management_version
           end
 
           update_project_references
@@ -261,6 +262,10 @@ module Gitlab
           @relation_hash['protected_branch'] = target_branch
         end
 
+        def setup_design_management_version
+          @relation_hash['namespace_id'] = @importable.project_namespace_id
+        end
+
         def compute_relative_position
           return unless max_relative_position
 
@@ -269,7 +274,23 @@ module Gitlab
 
         def max_relative_position
           Rails.cache.fetch("import:#{@importable.model_name.plural}:#{@importable.id}:hierarchy_max_issues_relative_position", expires_in: 24.hours) do
-            ::RelativePositioning.mover.context(Issue.in_projects(@importable.root_ancestor.all_projects).first)&.max_relative_position || ::Gitlab::RelativePositioning::START_POSITION
+            inner_sql = Issue
+                          .select(:id)
+                          .where(::Project.arel_table[:id].eq(Issue.arel_table[:project_id]))
+                          .order(iid: :asc)
+                          .limit(1)
+                          .to_sql
+
+            anchor_issue_id = @importable
+              .root_ancestor
+              .all_project_ids
+              .joins("INNER JOIN LATERAL (#{inner_sql}) issues ON TRUE")
+              .order(Issue.arel_table[:id].asc)
+              .pick(Issue.arel_table[:id])
+
+            ::RelativePositioning
+              .mover
+              .context(Issue.find_by(id: anchor_issue_id))&.max_relative_position || 0
           end
         end
 

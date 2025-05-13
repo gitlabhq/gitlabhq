@@ -7,6 +7,7 @@ module API
 
       expose :id, documentation: { type: 'integer', example: 1 }
       expose :username, documentation: { type: 'string', example: 'admin' }
+      expose :public_email, documentation: { type: 'string', example: 'john@example.com' }
       expose :name, documentation: { type: 'string', example: 'Administrator' } do |user|
         current_user = request.respond_to?(:current_user) ? request.current_user : options.fetch(:current_user, nil)
 

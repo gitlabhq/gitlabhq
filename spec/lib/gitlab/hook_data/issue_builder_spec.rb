@@ -72,7 +72,7 @@ RSpec.describe Gitlab::HookData::IssueBuilder, feature_category: :webhooks do
         let(:builder) { described_class.new(issue_with_description) }
 
         it 'sets the image to use an absolute URL' do
-          expected_path = "#{issue_with_description.project.path_with_namespace}/uploads/abc/Issue_Image.png"
+          expected_path = "-/project/#{issue_with_description.project.id}/uploads/abc/Issue_Image.png"
 
           expect(data[:description])
             .to eq("test![Issue_Image](#{Settings.gitlab.url}/#{expected_path})")

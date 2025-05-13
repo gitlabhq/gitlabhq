@@ -1,5 +1,5 @@
 ---
-stage: Systems
+stage: Tenant Scale
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Geo security review (Q&A)
@@ -51,14 +51,14 @@ from [owasp.org](https://owasp.org/).
 
 ## End-Users
 
-### Who are the application's end‐users?
+### Who are the application's end-users?
 
 - **Secondary** sites are created in regions that are distant (in terms of
   Internet latency) from the main GitLab installation (the **primary** site). They are
   intended to be used by anyone who would ordinarily use the **primary** site, who finds
   that the **secondary** site is closer to them (in terms of Internet latency).
 
-### How do the end‐users interact with the application?
+### How do the end-users interact with the application?
 
 - **Secondary** sites provide all the interfaces a **primary** site does
   (notably a HTTP/HTTPS web application, and HTTP/HTTPS or SSH Git repository
@@ -67,7 +67,7 @@ from [owasp.org](https://owasp.org/).
   **primary** site, but end-users may use the GitLab web interface to view information like projects,
   issues, merge requests, and snippets.
 
-### What security expectations do the end‐users have?
+### What security expectations do the end-users have?
 
 - The replication process must be secure. It would typically be unacceptable to
   transmit the entire database contents or all files and repositories across the
@@ -98,7 +98,7 @@ from [owasp.org](https://owasp.org/).
 
 ## Network
 
-### What details regarding routing, switching, firewalling, and load‐balancing have been defined?
+### What details regarding routing, switching, firewalling, and load-balancing have been defined?
 
 - Geo requires the **primary** site and **secondary** site to be able to communicate with each
   other across a TCP/IP network. In particular, the **secondary** sites must be able to
@@ -130,7 +130,7 @@ from [owasp.org](https://owasp.org/).
   [GitLab installation](https://about.gitlab.com/install/) page for more
   details), however we recommend using the operating systems listed in the [Geo documentation](../_index.md#requirements-for-running-geo).
 
-### What details regarding required OS components and lock‐down needs have been defined?
+### What details regarding required OS components and lock-down needs have been defined?
 
 - The supported Linux package installation method packages most components itself.
 - There are significant dependencies on the system-installed OpenSSH daemon (Geo

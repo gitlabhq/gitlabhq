@@ -101,4 +101,8 @@ RSpec.describe Integrations::JiraCloudApp, feature_category: :integrations do
       expect(integration).not_to be_editable
     end
   end
+
+  describe '#testable?' do
+    it { is_expected.not_to be_testable }
+  end
 end

@@ -31,11 +31,6 @@ export default {
       required: false,
       default: null,
     },
-    updateInProgress: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   computed: {
     createdAt() {
@@ -52,9 +47,6 @@ export default {
     },
     workItemType() {
       return this.workItem?.workItemType?.name;
-    },
-    workItemIconName() {
-      return this.workItem?.workItemType?.iconName;
     },
     workItemMovedToWorkItemUrl() {
       return this.workItem?.movedToWorkItemUrl;
@@ -101,7 +93,7 @@ export default {
   <div v-if="isLoading">
     <gl-loading-icon inline />
   </div>
-  <div v-else class="gl-mb-3 gl-mt-3 gl-text-subtle">
+  <div v-else class="gl-my-2 gl-text-subtle">
     <work-item-state-badge
       v-if="workItemState"
       :work-item-state="workItemState"
@@ -109,7 +101,6 @@ export default {
       :moved-to-work-item-url="workItemMovedToWorkItemUrl"
       :promoted-to-epic-url="workItemPromotedToEpicUrl"
     />
-    <gl-loading-icon v-if="updateInProgress" inline />
     <confidentiality-badge
       v-if="isWorkItemConfidential"
       class="gl-align-middle"
@@ -119,8 +110,8 @@ export default {
     />
     <locked-badge v-if="isDiscussionLocked" class="gl-align-middle" :issuable-type="workItemType" />
     <work-item-type-icon
+      v-if="workItemType"
       class="gl-align-middle"
-      :work-item-icon-name="workItemIconName"
       :work-item-type="workItemType"
       show-text
       icon-class="gl-fill-icon-subtle"

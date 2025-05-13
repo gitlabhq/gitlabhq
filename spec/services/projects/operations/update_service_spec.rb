@@ -318,6 +318,18 @@ RSpec.describe Projects::Operations::UpdateService, feature_category: :groups_an
           }
         end
 
+        context 'when find_or_initialize_integration returns nil' do
+          before do
+            allow_next_instance_of(Project) do |instance|
+              allow(instance).to receive(:find_or_initialize_integration).and_return(nil)
+            end
+          end
+
+          it 'does not include prometheus_integration_attributes' do
+            expect(subject.execute[:prometheus_integration_attributes]).to be_nil
+          end
+        end
+
         it 'uses Project#find_or_initialize_integration to include instance defined defaults and pass them to Projects::UpdateService', :aggregate_failures do
           expect(Projects::UpdateService).to receive(:new) do |project_arg, user_arg, update_params_hash|
             prometheus_attrs = update_params_hash[:prometheus_integration_attributes]

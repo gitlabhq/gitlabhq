@@ -215,11 +215,7 @@
 
 .diff-tr {
   .timeline-discussion-body {
-    clear: left;
-
-    .note-body {
-      padding: 0 $gl-padding-8 $gl-padding-8 $gl-padding-32;
-    }
+    padding: 0 0 $gl-padding-4 $gl-padding-32;
   }
 
   .timeline-entry img.avatar {
@@ -248,13 +244,25 @@
 // to the top at different heights, which is a bad-looking defect
 $diff-file-header-top: 11px;
 
-.diff-tree-list {
+.diffs.tab-pane .files {
+  @include media-breakpoint-up(md) {
+    // ensure consistent page height when selected file is loading
+    // https://gitlab.com/gitlab-org/gitlab/-/issues/426250
+    // also required for file browser to consume all available height
+    min-height: calc(100vh - (#{$calc-application-header-height} + #{$mr-sticky-header-height} + #{$diff-file-header-top} + #{$content-wrapper-padding}));
+  }
+}
 
+.diff-tree-list {
+  --file-row-height: 32px;
+  --file-tree-min-height: 300px;
+  // can't use rems here because they won't compute to pixels when using `getComputedStyle(el).getPropertyValue()`
+  --file-tree-bottom-padding: 16px;
   position: sticky;
   top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} + #{$diff-file-header-top});
-  // height calc is fully delegated to the tree_list_height.vue component
+  // height calc is fully delegated to the file_browser_height.vue component
   height: 100%;
-  min-height: 300px;
+  min-height: var(--file-tree-min-height);
 
   .drag-handle {
     bottom: 16px;
@@ -273,7 +281,7 @@ $diff-file-header-top: 11px;
 .diff-tree-list-floating .diff-tree-list-floating-wrapper {
   position: fixed;
   background-color: var(--gl-background-color-default);
-  box-shadow: $gl-spacing-scale-4 ($diff-file-header-top * -1) var(--gl-background-color-default);
+  box-shadow: $gl-spacing-scale-4 0 var(--gl-background-color-default);
 }
 
 .diff-tree-list-resizer {
@@ -291,7 +299,6 @@ $diff-file-header-top: 11px;
 }
 
 .tree-list-holder {
-  --file-row-height: 32px;
   height: 100%;
 
   .file-row {
@@ -313,6 +320,7 @@ $diff-file-header-top: 11px;
 @media (max-width: map-get($grid-breakpoints, lg)-1) {
   .diffs .files {
     .diff-tree-list {
+      --tree-list-max-height: calc(var(--file-row-height) * 8);
       position: relative;
       // height is fully handled on the javascript side in narrow view
       min-height: 0;
@@ -484,7 +492,7 @@ $diff-file-header-top: 11px;
   color: var(--gl-text-color-default);
 
   .commit-message-edit {
-    border-radius: $gl-border-radius-base;
+    @apply gl-rounded-base;
   }
 
   .commits-list {
@@ -646,7 +654,7 @@ $diff-file-header-top: 11px;
     }
 
     &.mr-pipeline-suggest {
-      border-radius: $gl-border-radius-base;
+      @apply gl-rounded-base;
       line-height: 20px;
       border: 1px solid var(--gl-border-color-default);
 
@@ -872,6 +880,7 @@ $diff-file-header-top: 11px;
 .merge-request-sticky-header {
   z-index: calc($top-bar-z-index - 1);
   height: $mr-sticky-header-height;
+  @include translucent-glass-background;
 }
 
 .merge-request-notification-toggle {

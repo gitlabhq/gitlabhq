@@ -1,10 +1,10 @@
 import { GlDisclosureDropdown } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 import RunnerHeaderActions from '~/ci/runner/components/runner_header_actions.vue';
 
 import RunnerPauseButton from '~/ci/runner/components/runner_pause_button.vue';
-import RunnerDeleteButton from '~/ci/runner/components/runner_delete_button.vue';
 import RunnerEditButton from '~/ci/runner/components/runner_edit_button.vue';
 
 import RunnerEditDisclosureDropdownItem from '~/ci/runner/components/runner_edit_disclosure_dropdown_item.vue';
@@ -21,9 +21,9 @@ describe('RunnerHeaderActions', () => {
 
   const findRunnerEditButton = () => wrapper.findComponent(RunnerEditButton);
   const findRunnerPauseButton = () => wrapper.findComponent(RunnerPauseButton);
-  const findRunnerDeleteButton = () => wrapper.findComponent(RunnerDeleteButton);
 
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findDropdownTooltip = () => getBinding(findDropdown().element, 'gl-tooltip');
   const findEditItem = () => findDropdown().findComponent(RunnerEditDisclosureDropdownItem);
   const findPauseItem = () => findDropdown().findComponent(RunnerPauseDisclosureDropdownItem);
   const findDeleteItem = () => findDropdown().findComponent(RunnerDeleteDisclosureDropdownItem);
@@ -52,7 +52,6 @@ describe('RunnerHeaderActions', () => {
     // visible on md and up screens
     expect(findRunnerEditButton().exists()).toBe(true);
     expect(findRunnerPauseButton().exists()).toBe(true);
-    expect(findRunnerDeleteButton().exists()).toBe(true);
 
     // visible on small screens
     expect(findDropdown().exists()).toBe(true);
@@ -61,13 +60,36 @@ describe('RunnerHeaderActions', () => {
     expect(findDeleteItem().exists()).toBe(true);
   });
 
-  it('renders disclosure dropdown with no caret and accesible text', () => {
-    expect(findDropdown().props()).toMatchObject({
-      icon: 'ellipsis_v',
-      toggleText: 'Runner actions',
-      textSrOnly: true,
-      category: 'tertiary',
-      noCaret: true,
+  describe('More actions menu', () => {
+    beforeEach(() => {
+      createComponent({
+        options: {
+          directives: {
+            GlTooltip: createMockDirective('gl-tooltip'),
+          },
+          stubs: { GlDisclosureDropdown },
+        },
+      });
+    });
+
+    it('renders disclosure dropdown with correct props', () => {
+      expect(findDropdown().props()).toMatchObject({
+        icon: 'ellipsis_v',
+        toggleText: 'Runner actions',
+        textSrOnly: true,
+        category: 'tertiary',
+        noCaret: true,
+      });
+    });
+
+    it('renders the tooltip text', () => {
+      expect(findDropdownTooltip().value).toBe('More actions');
+    });
+
+    it('hides tooltip text when @shown is emitted', async () => {
+      await findDropdown().vm.$emit('shown');
+
+      expect(findDropdownTooltip().value).toBe('');
     });
   });
 
@@ -75,10 +97,10 @@ describe('RunnerHeaderActions', () => {
     expect(find().props('href')).toEqual(mockRunnerEditPath);
   });
 
-  it.each([findRunnerDeleteButton, findDeleteItem])('delete is emitted (%p)', (find) => {
+  it('delete is emitted', () => {
     const deleteEvent = { message: 'Deleted!' };
 
-    find().vm.$emit('deleted', deleteEvent);
+    findDeleteItem().vm.$emit('deleted', deleteEvent);
 
     expect(wrapper.emitted('deleted')).toEqual([[deleteEvent]]);
   });
@@ -98,7 +120,6 @@ describe('RunnerHeaderActions', () => {
     });
 
     it('does not render delete actions', () => {
-      expect(findRunnerDeleteButton().exists()).toBe(false);
       expect(findDeleteItem().exists()).toBe(false);
     });
   });

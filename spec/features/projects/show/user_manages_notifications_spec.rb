@@ -6,7 +6,6 @@ RSpec.describe 'Projects > Show > User manages notifications', :js, feature_cate
   let(:project) { create(:project, :public, :repository) }
 
   before do
-    stub_feature_flags(vscode_web_ide: false)
     sign_in(project.first_owner)
   end
 

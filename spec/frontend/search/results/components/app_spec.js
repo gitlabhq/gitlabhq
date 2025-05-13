@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
@@ -12,6 +12,7 @@ import StatusBar from '~/search/results/components/status_bar.vue';
 import EmptyResult from '~/search/results/components/result_empty.vue';
 import ErrorResult from '~/search/results/components/result_error.vue';
 import mutations from '~/search/store/mutations';
+import { logError } from '~/lib/logger';
 import {
   MOCK_QUERY,
   mockGetBlobSearchQuery,
@@ -22,7 +23,7 @@ import {
 Vue.use(Vuex);
 Vue.use(VueApollo);
 
-jest.mock('~/alert');
+jest.mock('~/lib/logger');
 
 describe('GlobalSearchResultsApp', () => {
   let wrapper;
@@ -66,7 +67,7 @@ describe('GlobalSearchResultsApp', () => {
   describe('when loading results', () => {
     beforeEach(async () => {
       createComponent({
-        initialState: { query: { scope: 'blobs' }, searchType: 'zoekt' },
+        initialState: { query: { scope: 'blobs', search: 'test' }, searchType: 'zoekt' },
         queryHandler: mockQueryLoading,
       });
       jest.advanceTimersByTime(500);
@@ -81,14 +82,16 @@ describe('GlobalSearchResultsApp', () => {
   describe('when component has load error', () => {
     beforeEach(async () => {
       createComponent({
-        initialState: { query: { scope: 'blobs' }, searchType: 'zoekt' },
+        initialState: { query: { scope: 'blobs', search: 'test' }, searchType: 'zoekt' },
         queryHandler: mockQueryError,
       });
-      jest.runOnlyPendingTimers();
+      jest.advanceTimersByTime(500);
       await waitForPromises();
+      await nextTick();
     });
 
-    it('renders alert', () => {
+    it('renders error state', () => {
+      expect(logError).toHaveBeenCalledWith(new Error('Network error'));
       expect(findError().exists()).toBe(true);
       expect(findZoektBlobResults().exists()).toBe(false);
     });
@@ -126,7 +129,7 @@ describe('GlobalSearchResultsApp', () => {
       getterSpies.currentScope = jest.fn(() => 'blobs');
       createComponent({
         initialState: {
-          query: { scope: 'blobs' },
+          query: { scope: 'blobs', search: 'test' },
           searchType: 'zoekt',
           navigation: MOCK_NAVIGATION_DATA,
         },

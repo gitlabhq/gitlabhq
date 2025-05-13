@@ -103,4 +103,4 @@ Moved to [Geo replication troubleshooting](../geo/replication/troubleshooting/sy
 
 ## Generate Service Ping
 
-This content has been moved to [Service Ping Troubleshooting](../../development/internal_analytics/service_ping/troubleshooting.md).
+This content has been moved to Troubleshooting Service Ping in the GitLab development documentation.

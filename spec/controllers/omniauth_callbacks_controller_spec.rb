@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe OmniauthCallbacksController, type: :controller, feature_category: :system_access do
+RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :controller, feature_category: :system_access do
   include LoginHelpers
 
   shared_examples 'stores value for provider_2FA to session according to saml response' do

@@ -9,6 +9,7 @@ import {
   validateAdditionalProperties,
   getBaseAdditionalProperties,
   getCustomAdditionalProperties,
+  isEventEligible,
 } from './utils';
 
 const elementsWithBinding = new WeakMap();
@@ -25,6 +26,10 @@ const InternalEvents = {
    *
    */
   trackEvent(event, additionalProperties = {}, category = undefined) {
+    if (!isEventEligible(event)) {
+      return;
+    }
+
     validateAdditionalProperties(additionalProperties);
 
     const baseProperties = getBaseAdditionalProperties(additionalProperties);

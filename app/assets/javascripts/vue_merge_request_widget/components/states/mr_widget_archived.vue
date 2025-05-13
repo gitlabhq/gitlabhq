@@ -14,12 +14,6 @@ export default {
     BoldText,
     StateContainer,
   },
-  props: {
-    mr: {
-      type: Object,
-      required: true,
-    },
-  },
 };
 </script>
 

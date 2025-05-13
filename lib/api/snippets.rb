@@ -140,7 +140,7 @@ module API
 
         authorize! :create_snippet
 
-        attrs = process_create_params(declared_params(include_missing: false)).merge(organization_id: Current.organization&.id)
+        attrs = process_create_params(declared_params(include_missing: false))
         service_response = ::Snippets::CreateService.new(project: nil, current_user: current_user, params: attrs).execute
         snippet = service_response.payload[:snippet]
 
@@ -225,9 +225,10 @@ module API
         destroy_conditionally!(snippet) do |snippet|
           service = ::Snippets::DestroyService.new(current_user, snippet)
           response = service.execute
+          http_status = Helpers::Snippets::HttpResponseMap.status_for(response.reason)
 
           if response.error?
-            render_api_error!({ error: response.message }, response.reason)
+            render_api_error!({ error: response.message }, http_status)
           end
         end
       end

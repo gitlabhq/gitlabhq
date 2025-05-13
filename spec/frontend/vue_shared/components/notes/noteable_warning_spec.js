@@ -3,7 +3,7 @@ import { shallowMount, mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import NoteableWarning from '~/vue_shared/components/notes/noteable_warning.vue';
 
-describe('Issue Warning Component', () => {
+describe('Noteable Warning Component', () => {
   let wrapper;
 
   const findIcon = (w = wrapper) => w.findComponent(GlIcon);
@@ -22,16 +22,15 @@ describe('Issue Warning Component', () => {
       },
     });
 
-  describe('when issue is locked but not confidential', () => {
+  describe('when item is locked but not confidential', () => {
     beforeEach(() => {
       wrapper = createComponent({
         isLocked: true,
-        lockedNoteableDocsPath: 'locked-path',
         isConfidential: false,
       });
     });
 
-    it('renders information about locked issue', () => {
+    it('renders information about locked item', () => {
       expect(findLockedBlock().exists()).toBe(true);
       expect(findLockedBlock().element).toMatchSnapshot();
     });
@@ -40,11 +39,11 @@ describe('Issue Warning Component', () => {
       expect(findIcon().exists()).toBe(true);
     });
 
-    it('does not render information about locked and confidential issue', () => {
+    it('does not render information about locked and confidential item', () => {
       expect(findLockedAndConfidentialBlock().exists()).toBe(false);
     });
 
-    it('does not render information about confidential issue', () => {
+    it('does not render information about confidential item', () => {
       expect(findConfidentialBlock().exists()).toBe(false);
     });
   });
@@ -54,16 +53,15 @@ describe('Issue Warning Component', () => {
       wrapper = createComponent({
         isLocked: false,
         isConfidential: true,
-        confidentialNoteableDocsPath: 'confidential-path',
       });
     });
 
-    it('renders information about confidential issue', async () => {
+    it('renders information about confidential item', async () => {
       expect(findConfidentialBlock().exists()).toBe(true);
       expect(findConfidentialBlock().element).toMatchSnapshot();
 
       await nextTick();
-      expect(findConfidentialBlock(wrapper).text()).toContain('This is a confidential issue.');
+      expect(findConfidentialBlock(wrapper).text()).toContain('Marked as confidential.');
     });
 
     it('renders warning icon', () => {
@@ -134,70 +132,13 @@ describe('Issue Warning Component', () => {
       );
     });
 
-    it('renders confidential & locked messages with noteable "issue"', () => {
-      expect(findLockedBlock(wrapperLocked).text()).toContain(
-        'The discussion in this issue is locked.',
-      );
+    it('renders confidential & locked messages with noteable', () => {
+      expect(findLockedBlock(wrapperLocked).text()).toContain('Discussion is locked.');
       expect(findConfidentialBlock(wrapperConfidential).text()).toContain(
-        'This is a confidential issue.',
+        'Marked as confidential.',
       );
       expect(findLockedAndConfidentialBlock(wrapperLockedAndConfidential).text()).toContain(
-        'This issue is confidential and its discussion is locked.',
-      );
-    });
-
-    it('renders confidential & locked messages with noteable "epic"', async () => {
-      wrapperLocked.setProps({
-        noteableType: 'Epic',
-      });
-      wrapperConfidential.setProps({
-        noteableType: 'Epic',
-      });
-      wrapperLockedAndConfidential.setProps({
-        noteableType: 'Epic',
-      });
-
-      await nextTick();
-
-      expect(findLockedBlock(wrapperLocked).text()).toContain(
-        'The discussion in this epic is locked.',
-      );
-
-      await nextTick();
-      expect(findConfidentialBlock(wrapperConfidential).text()).toContain(
-        'This is a confidential epic.',
-      );
-
-      await nextTick();
-      expect(findLockedAndConfidentialBlock(wrapperLockedAndConfidential).text()).toContain(
-        'This epic is confidential and its discussion is locked.',
-      );
-    });
-
-    it('renders confidential & locked messages with noteable "merge request"', async () => {
-      wrapperLocked.setProps({
-        noteableType: 'MergeRequest',
-      });
-      wrapperConfidential.setProps({
-        noteableType: 'MergeRequest',
-      });
-      wrapperLockedAndConfidential.setProps({
-        noteableType: 'MergeRequest',
-      });
-
-      await nextTick();
-      expect(findLockedBlock(wrapperLocked).text()).toContain(
-        'The discussion in this merge request is locked.',
-      );
-
-      await nextTick();
-      expect(findConfidentialBlock(wrapperConfidential).text()).toContain(
-        'This is a confidential merge request.',
-      );
-
-      await nextTick();
-      expect(findLockedAndConfidentialBlock(wrapperLockedAndConfidential).text()).toContain(
-        'This merge request is confidential and its discussion is locked.',
+        'Marked as confidential and discussion is locked.',
       );
     });
   });

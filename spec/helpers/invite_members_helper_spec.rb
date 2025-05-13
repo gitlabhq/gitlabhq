@@ -74,20 +74,20 @@ RSpec.describe InviteMembersHelper do
     end
 
     describe "#can_invite_members_for_project?" do
-      context 'when the user can_admin_project_member' do
+      context 'when the user can_invite_project_members' do
         before do
-          allow(helper).to receive(:can?).with(owner, :admin_project_member, project).and_return(true)
+          allow(helper).to receive(:can?).with(owner, :invite_project_members, project).and_return(true)
         end
 
         it 'returns true', :aggregate_failures do
           expect(helper.can_invite_members_for_project?(project)).to eq true
-          expect(helper).to have_received(:can?).with(owner, :admin_project_member, project)
+          expect(helper).to have_received(:can?).with(owner, :invite_project_members, project)
         end
       end
 
       context 'when the user can not manage project members' do
         it 'returns false' do
-          expect(helper).to receive(:can?).with(owner, :admin_project_member, project).and_return(false)
+          expect(helper).to receive(:can?).with(owner, :invite_project_members, project).and_return(false)
 
           expect(helper.can_invite_members_for_project?(project)).to eq false
         end

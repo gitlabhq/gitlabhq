@@ -168,6 +168,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Ci::UpdateBuildNamesWorker' => 3,
         'Ci::MergeRequests::AddTodoWhenBuildFailsWorker' => 3,
         'Ci::Minutes::UpdateProjectAndNamespaceUsageWorker' => 3,
+        'Ci::Minutes::UpdateGitlabHostedRunnerMonthlyUsageWorker' => 3,
         'Ci::PipelineArtifacts::CoverageReportWorker' => 3,
         'Ci::PipelineArtifacts::CreateQualityReportWorker' => 3,
         'Ci::PipelineCleanupRefWorker' => 3,
@@ -225,7 +226,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'DisallowTwoFactorForSubgroupsWorker' => 3,
         'Dora::DailyMetrics::RefreshWorker' => 3,
         'ElasticAssociationIndexerWorker' => 3,
-        'ElasticCommitIndexerWorker' => 2,
         'ElasticDeleteProjectWorker' => 2,
         'ElasticFullIndexWorker' => 2,
         'ElasticNamespaceIndexerWorker' => 2,
@@ -251,7 +251,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Geo::VerificationBatchWorker' => 0,
         'Geo::VerificationStateBackfillWorker' => false,
         'Geo::VerificationTimeoutWorker' => false,
-        'Geo::VerificationWorker' => 3,
         'Gitlab::BitbucketImport::AdvanceStageWorker' => 6,
         'Gitlab::BitbucketImport::Stage::FinishImportWorker' => 6,
         'Gitlab::BitbucketImport::Stage::ImportIssuesWorker' => 6,
@@ -510,7 +509,8 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'BulkImports::RelationExportWorker' => 6,
         'Ci::Runners::ExportUsageCsvWorker' => 3,
         'AppSec::ContainerScanning::ScanImageWorker' => 3,
-        'Ci::DestroyOldPipelinesWorker' => 0
+        'Ci::DestroyOldPipelinesWorker' => 0,
+        'AuditEvents::AuditEventStreamingWorker' => 3
       }.merge(extra_retry_exceptions)
     end
 

@@ -84,7 +84,7 @@ module Types
       description: 'Find issues visible to the current user. ' \
         'At least one filter must be provided.'
     field :jobs,
-      ::Types::Ci::JobType.connection_type,
+      ::Types::Ci::JobInterface.connection_type,
       null: true,
       description: 'All jobs on this GitLab instance. ' \
         'Returns an empty result for users without administrator access.',

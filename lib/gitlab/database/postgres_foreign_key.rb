@@ -16,9 +16,9 @@ module Gitlab
         no_action: 'a'
       }.freeze
 
-      enum on_delete_action: ACTION_TYPES, _prefix: :on_delete
+      enum :on_delete_action, ACTION_TYPES, prefix: :on_delete
 
-      enum on_update_action: ACTION_TYPES, _prefix: :on_update
+      enum :on_update_action, ACTION_TYPES, prefix: :on_update
 
       scope :by_referenced_table_identifier, ->(identifier) do
         unless Database::FULLY_QUALIFIED_IDENTIFIER.match?(identifier)

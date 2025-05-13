@@ -38,7 +38,7 @@ config/db/database-setup.md @docs-team
 
 ## Regular entries and sections
 
-If you set a default Code Owner for a path **outside a section**, their approval is always required.
+If you set a default Code Owner for a path outside a section, their approval is always required.
 Such entries aren't overridden by sections.
 Entries without sections are treated as if they were another, unnamed section:
 
@@ -86,9 +86,9 @@ model/db/   @database
 README.md  @docs
 ```
 
-This code results in three entries under the **Documentation** section header, and two
-entries under **Database**. The entries defined under the sections **Documentation** and
-**DOCUMENTATION** are combined, using the case of the first section.
+This code results in three entries under the `Documentation` section header, and two
+entries under `Database`. The entries defined under the sections `Documentation` and
+`DOCUMENTATION` are combined, using the case of the first section.
 
 ## Define Code Owners for specific files or directories
 
@@ -167,19 +167,19 @@ graph TD
 
 In this example:
 
-- **Parent group X** (`group-x`) owns **Project A**.
-- **Parent group X** also contains a subgroup, **Subgroup Y**. (`group-x/subgroup-y`)
-- **Subgroup Y** owns **Project B**.
+- Parent group X (`group-x`) owns Project A.
+- Parent group X also contains a subgroup, Subgroup Y. (`group-x/subgroup-y`)
+- Subgroup Y owns Project B.
 
 The eligible Code Owners are:
 
-- **Project A**: the members of **Group X** only, because **Project A** doesn't belong to **Subgroup Y**.
-- **Project B**: the members of both **Group X** and **Subgroup Y**.
+- Project A: the members of Group X only, because Project A doesn't belong to Subgroup Y.
+- Project B: the members of both Group X and Subgroup Y.
 
 ### Invite subgroups to parent groups
 
-Inviting **Subgroup Y** to a parent group of **Project A**
-[is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/288851). To set **Subgroup Y** as
+Inviting Subgroup Y to a parent group of Project A
+[is not supported](https://gitlab.com/gitlab-org/gitlab/-/issues/288851). To set Subgroup Y as
 Code Owners, [invite this group directly to the project](#invite-subgroups-to-projects-in-parent-groups) itself.
 
 {{< alert type="note" >}}
@@ -193,7 +193,7 @@ and not inherit membership from any parent groups.
 
 ### Invite subgroups to projects in parent groups
 
-You can [invite](../members/sharing_projects_groups.md) **Subgroup Y** to **Project A**
+You can [invite](../members/sharing_projects_groups.md) Subgroup Y to Project A
 so that their members also become eligible Code Owners.
 
 ```mermaid
@@ -209,7 +209,7 @@ graph LR
     F -.-> |Add Subgroup Y<br/> as Code Owners to Project A| J[Approvals can only<br/>be optional] -.-> B
 ```
 
-If you do not invite **Subgroup Y** to **Project A**, but make them Code Owners, their approval
+If you do not invite Subgroup Y to Project A, but make them Code Owners, their approval
 of the merge request becomes optional.
 
 ## Error handling

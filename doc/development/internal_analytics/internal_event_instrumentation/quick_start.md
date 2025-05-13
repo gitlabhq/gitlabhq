@@ -222,17 +222,6 @@ Optionally, the context can contain:
 - `namespace`. If not provided, `project.namespace` will be used (if `project` is available).
 - `category`
 - `additional_properties`
-- `event_attribute_overrides` - is used when its necessary to override the attributes available in parent context. For example:
-
-```ruby
-let(:event) { 'create_new_issue' }
-
-it_behaves_like 'internal event tracking' do
-  let(:event_attribute_overrides) { { event: 'create_new_milestone'} }
-
-  subject(:service_action) { described_class.new(issue).save }
-end
-```
 
 If present in the context, the following legacy options will be respected by the shared example but are discouraged:
 
@@ -287,6 +276,10 @@ expect { subject }
     .at_least(:once)
   .and change { mr.notes.count }.by(1)
 ```
+
+> [!tip] Debugging tip
+> If your new tests are failing due to metrics not being incremented when you expect them to be, 
+> you may need to apply the `:clean_gitlab_redis_shared_state` trait to clear the Redis cache between examples.
 
 To test that an event was not triggered, you can use the `not_trigger_internal_events` matcher. It does not accept message chains.
 

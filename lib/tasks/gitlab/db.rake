@@ -103,6 +103,47 @@ namespace :gitlab do
       configure_clickhouse_databases
     end
 
+    desc 'Bumps up the sequence range for the given sequence_names'
+    task :increase_sequences_range, [:sequence_names] => :environment do |_, args|
+      sequence_names = args[:sequence_names].split(' ')
+      next unless sequence_names.present? && Gitlab.config.cell.enabled
+
+      sequence_ranges = Gitlab::TopologyServiceClient::CellService.new.cell_sequence_ranges
+
+      next unless sequence_ranges.present?
+
+      Gitlab::Database::EachDatabase.each_connection do |connection, _database_name|
+        sequences_last_value = fetch_sequences_last_value(connection, sequence_names)
+
+        sequences_last_value.each do |sequence_name, last_value|
+          next unless last_value.present? # last_value will be null for sequences not being used yet
+
+          # 10_000 is added as a delta
+          sequence_range = sequence_ranges.find { |sequence_range| sequence_range.minval > (last_value + 10_000) }
+
+          unless sequence_range.present?
+            Gitlab::AppLogger.info("No additional sequence range could be found for sequence: #{sequence_name}")
+            next
+          end
+
+          Gitlab::Database::AlterCellSequencesRange.new(
+            sequence_range.minval.to_i,
+            sequence_range.maxval.to_i,
+            connection,
+            sequence_names: sequence_name
+          ).execute
+        end
+      end
+    end
+
+    def fetch_sequences_last_value(connection, sequence_names)
+      quoted_names = sequence_names.map { |name| connection.quote(name) }.join(', ')
+
+      connection.exec_query(
+        "SELECT sequencename, last_value FROM pg_sequences WHERE sequencename IN (#{quoted_names})"
+      ).rows.to_h
+    end
+
     def configure_pg_databases
       databases_with_tasks = ActiveRecord::Base.configurations.configs_for(env_name: Rails.env)
 
@@ -137,7 +178,7 @@ namespace :gitlab do
       database_name = ":#{database_name}" if database_name
       load_database = connection.tables.count <= 1
 
-      ActiveRecord::Base.connection_handler.clear_all_connections!(:all)
+      ActiveRecord::Base.connection_handler.clear_all_connections!
 
       if load_database
         puts "Running db:schema:load#{database_name} rake task"
@@ -156,17 +197,20 @@ namespace :gitlab do
 
       return puts "Skipping altering cell sequences range" if Gitlab.config.cell.database.skip_sequence_alteration
 
-      sequence_range = Gitlab::TopologyServiceClient::CellService.new.cell_sequence_range
+      sequence_ranges = Gitlab::TopologyServiceClient::CellService.new.cell_sequence_ranges
 
-      return unless sequence_range.present?
+      return unless sequence_ranges.present?
 
+      # The first range is chosen because others are additionally provided ranges,
+      # which will be used to bump the range for saturating sequences.
+      sequence_range = [sequence_ranges.first.minval, sequence_ranges.first.maxval]
       puts "Running gitlab:db:alter_cell_sequences_range rake task with (#{sequence_range.join(', ')})"
       Rake::Task["gitlab:db:alter_cell_sequences_range"].invoke(*sequence_range)
     end
 
     desc "Clear all connections"
     task :clear_all_connections do
-      ActiveRecord::Base.connection_handler.clear_all_connections!(:all)
+      ActiveRecord::Base.connection_handler.clear_all_connections!
     end
 
     ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|
@@ -309,9 +353,9 @@ namespace :gitlab do
       return unless Feature.enabled?(:disallow_database_ddl_feature_flags, type: :ops)
 
       puts Rainbow(<<~NOTE).yellow
-          Note: disallow_database_ddl_feature_flags feature is currently enabled. Disable it to proceed.
+        Note: disallow_database_ddl_feature_flags feature is currently enabled. Disable it to proceed.
 
-          Disable with: Feature.disable(:disallow_database_ddl_feature_flags)
+        Disable with: Feature.disable(:disallow_database_ddl_feature_flags)
       NOTE
 
       yield if block_given?

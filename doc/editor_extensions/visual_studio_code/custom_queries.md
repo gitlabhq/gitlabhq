@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Custom queries in the VS Code extension
 ---
 
-The **GitLab Workflow** extension adds a [sidebar](_index.md#view-issues-and-merge-requests)
+The GitLab Workflow extension adds a [sidebar](_index.md#view-issues-and-merge-requests)
 to VS Code. This sidebar displays default search queries for each of your projects:
 
 - Issues assigned to me
@@ -32,7 +32,7 @@ To see search results from your project:
 1. Below the query title, select the search result you want to see.
 1. If your search result is a merge request, select what you want to view in VS Code:
    - **Overview**: the description, status, and any comments on this merge request.
-   - The **filenames** of all files changed in this merge request. Select a file to view a diff
+   - The filenames of all files changed in this merge request. Select a file to view a diff
      of its changes.
 1. If your search result is an issue, select it to view its description, history, and comments in VS Code.
 

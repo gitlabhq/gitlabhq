@@ -21,7 +21,7 @@ module EnforcesAdminAuthentication
   end
 
   def authenticate_admin!
-    return render_404 unless current_user.admin?
+    return render_404 unless user_is_admin?
     return unless Gitlab::CurrentSettings.admin_mode
 
     unless current_user_mode.admin_mode?
@@ -36,6 +36,10 @@ module EnforcesAdminAuthentication
   end
 
   private
+
+  def user_is_admin?
+    current_user.admin?
+  end
 
   def authorize_ability!(ability)
     return authenticate_admin! if current_user.admin?

@@ -11,6 +11,7 @@ module Issues
     end
 
     def execute
+      return error_service_desk_disabled unless ::ServiceDesk.enabled?(project)
       return error_underprivileged unless current_user.can?(:"admin_#{target.to_ability_name}", target)
       return error_already_ticket if ticket?
       return error_invalid_email unless valid_email?
@@ -74,6 +75,10 @@ module Issues
 
     def error(message)
       ServiceResponse.error(message: message)
+    end
+
+    def error_service_desk_disabled
+      error(s_("ServiceDesk|Cannot convert to ticket because Service Desk is disabled."))
     end
 
     def error_underprivileged

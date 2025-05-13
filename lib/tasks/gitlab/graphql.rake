@@ -10,6 +10,29 @@ namespace :gitlab do
   TEMP_SCHEMA_DIR = Rails.root.join('tmp/tests/graphql')
   TEMPLATES_DIR = 'tooling/graphql/docs/templates/'
 
+  # Some schema items are SaaS-only, and as we want to document them,
+  # simulate SaaS when generating the GraphQL documentation.
+  #
+  # We would normally set ENV['GITLAB_SIMULATE_SAAS'] but `GitLab.com?`
+  # is hard-coded to be `false` unless in development:
+  # https://gitlab.com/gitlab-org/gitlab/-/blob/bc4cbb5d5a4b5e5a7e817f995e8d377978f246d3/lib/gitlab.rb#L58.
+  #
+  # `gitlab:graphql:check_docs` is run in our test pipelines so we need to
+  # override `Gitlab.com?` to simulate SaaS
+  task simulate_saas: :environment do
+    next if Gitlab.com? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- Necessary here.
+
+    def Gitlab.com?
+      true
+    end
+
+    at_exit do
+      def Gitlab.com?
+        false
+      end
+    end
+  end
+
   # Make all feature flags enabled so that all feature flag
   # controlled fields are considered visible and are output.
   # Also avoids pipeline failures in case developer
@@ -115,7 +138,7 @@ namespace :gitlab do
     end
 
     desc 'GitLab | GraphQL | Generate GraphQL docs'
-    task compile_docs: [:environment, :enable_feature_flags] do
+    task compile_docs: [:simulate_saas, :environment, :enable_feature_flags] do
       renderer = Tooling::Graphql::Docs::Renderer.new(GitlabSchema, **render_options)
 
       renderer.write
@@ -124,7 +147,7 @@ namespace :gitlab do
     end
 
     desc 'GitLab | GraphQL | Check if GraphQL docs are up to date'
-    task check_docs: [:environment, :enable_feature_flags] do
+    task check_docs: [:simulate_saas, :environment, :enable_feature_flags] do
       renderer = Tooling::Graphql::Docs::Renderer.new(GitlabSchema, **render_options)
 
       doc = File.read(Rails.root.join(OUTPUT_DIR, '_index.md'))

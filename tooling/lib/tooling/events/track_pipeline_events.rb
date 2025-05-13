@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+require 'json'
+require 'net/http'
+require 'uri'
+
 module Tooling
   module Events
     class TrackPipelineEvents
@@ -24,7 +28,7 @@ module Tooling
 
       def send_event
         unless api_token
-          puts "ERROR: Cannot send event '#{event_name}'. Missing project access token."
+          warn "Error: Cannot send event '#{event_name}'. Missing project access token."
           return
         end
 

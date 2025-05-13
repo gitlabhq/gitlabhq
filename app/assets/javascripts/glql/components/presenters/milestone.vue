@@ -16,6 +16,8 @@ export default {
   },
   data() {
     return {
+      project: undefined,
+      group: undefined,
       ...extractGroupOrProject(this.data.webPath),
     };
   },
@@ -32,6 +34,7 @@ export default {
     :data-original="`%\&quot;${data.title}\&quot;`"
     :title="data.title"
     :data-project="project"
+    :data-group="group"
     :data-milestone="data.id"
     :href="data.webPath"
     >%{{ data.title }}</gl-link

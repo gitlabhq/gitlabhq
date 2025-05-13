@@ -20,6 +20,13 @@ class MergeRequestsFinder
       end
     end
 
+    def ignored_reviewer
+      return unless params[:ignored_reviewer_username].present?
+
+      User.find_by_username(params[:ignored_reviewer_username])
+    end
+    strong_memoize_attr :ignored_reviewer
+
     def assigned_user
       strong_memoize(:assigned_user) do
         next unless params[:assigned_user_id].present?

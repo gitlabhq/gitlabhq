@@ -1,5 +1,5 @@
 - title: "Deprecate License Scanning CI/CD artifact report type"
-  removal_milestone: "18.0"
+  removal_milestone: "Cancelled"
   announcement_milestone: "16.9"
   breaking_change: true
   window: 1

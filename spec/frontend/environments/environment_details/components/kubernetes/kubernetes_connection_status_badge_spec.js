@@ -25,11 +25,11 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_co
   const findReconnectTooltip = () => wrapper.findComponent(GlPopover);
 
   describe.each([
-    [connectionStatus.connected, 'success', 'connected', undefined, 'Synced'],
-    [connectionStatus.disconnected, 'warning', 'retry', '#', 'Refresh'],
-    [connectionStatus.connecting, 'muted', 'spinner', undefined, 'Updating'],
+    [connectionStatus.connected, 'success', 'connected', undefined, 'Synced', false],
+    [connectionStatus.disconnected, 'warning', 'retry', '#', 'Refresh', true],
+    [connectionStatus.connecting, 'muted', 'spinner', undefined, 'Updating', false],
     // eslint-disable-next-line max-params
-  ])('when connection status is %s', (status, variant, icon, href, text) => {
+  ])('when connection status is %s', (status, variant, icon, href, text, shouldReconnect) => {
     beforeEach(() => {
       createComponent({ connectionStatus: status });
     });
@@ -45,6 +45,22 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_co
     it('renders the correct tooltip', () => {
       const tooltip = findReconnectTooltip();
       expect(tooltip.props().target).toBe('status-badge-popover-id');
+    });
+
+    describe('when badge is clicked', () => {
+      beforeEach(() => {
+        findReconnectBadge().vm.$emit('click');
+      });
+
+      if (shouldReconnect) {
+        it('emits reconnect event', () => {
+          expect(wrapper.emitted('reconnect')).toEqual([[]]);
+        });
+      } else {
+        it('does not emit reconnect event', () => {
+          expect(wrapper.emitted('reconnect')).toBeUndefined();
+        });
+      }
     });
   });
 });

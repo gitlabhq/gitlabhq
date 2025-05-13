@@ -22,6 +22,14 @@ Some features in the plugin are in experiment or beta status. To use them, you m
 1. Select **Enable Experiment or BETA features**.
 1. To apply the changes, restart your IDE.
 
+## Update the extension
+
+To update your extension to the latest version:
+
+1. In your JetBrains IDE, go to **Settings > Plugins**.
+1. From **Marketplace**, select **GitLab Duo** published by **GitLab, Inc.**.
+1. Select **Update** to update to the latest plugin version.
+
 ## Integrate with 1Password CLI
 
 {{< details >}}

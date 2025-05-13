@@ -1,4 +1,5 @@
 #import "~/ci/job_details/graphql/fragments/ci_job.fragment.graphql"
+#import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
 
 query getJob($fullPath: ID!, $id: JobID!) {
   project(fullPath: $fullPath) {
@@ -7,6 +8,11 @@ query getJob($fullPath: ID!, $id: JobID!) {
       ...BaseCiJob
       manualJob
       name
+      detailedStatus {
+        ...CiIcon
+      }
+      startedAt
+      createdAt
     }
   }
 }

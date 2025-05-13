@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::Pipelines::AddJobService, feature_category: :continuous_integration do
   include ExclusiveLeaseHelpers
 
-  let_it_be_with_reload(:pipeline) { create(:ci_pipeline) }
+  let_it_be_with_refind(:pipeline) { create(:ci_pipeline) }
 
   let(:job) { build(:ci_build) }
 

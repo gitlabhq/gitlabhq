@@ -76,29 +76,29 @@ module ApplicationSettingsHelper
     [
       form.gitlab_ui_checkbox_component(
         :global_search_block_anonymous_searches_enabled,
-        _("Enable blocking of anonymous global search requests"),
+        _("Restrict global search to authenticated users only"),
         checkbox_options: {
           checked: @application_setting.global_search_block_anonymous_searches_enabled, multiple: false
         }
       ),
       form.gitlab_ui_checkbox_component(
         :global_search_issues_enabled,
-        _("Enable issues tab in global search results"),
+        _("Show issues in global search results"),
         checkbox_options: { checked: @application_setting.global_search_issues_enabled, multiple: false }
       ),
       form.gitlab_ui_checkbox_component(
         :global_search_merge_requests_enabled,
-        _("Enable merge requests tab in global search results"),
+        _("Show merge requests in global search results"),
         checkbox_options: { checked: @application_setting.global_search_merge_requests_enabled, multiple: false }
       ),
       form.gitlab_ui_checkbox_component(
         :global_search_snippet_titles_enabled,
-        _("Enable snippet tab in global search results"),
+        _("Show snippets in global search results"),
         checkbox_options: { checked: @application_setting.global_search_snippet_titles_enabled, multiple: false }
       ),
       form.gitlab_ui_checkbox_component(
         :global_search_users_enabled,
-        _("Enable users tab in global search results"),
+        _("Show users in global search results"),
         checkbox_options: { checked: @application_setting.global_search_users_enabled, multiple: false }
       )
     ]
@@ -267,7 +267,10 @@ module ApplicationSettingsHelper
       :auto_devops_domain,
       :autocomplete_users_limit,
       :autocomplete_users_unauthenticated_limit,
+      :allow_bypass_placeholder_confirmation,
+      :ci_delete_pipelines_in_seconds_limit_human_readable,
       :ci_job_live_trace_enabled,
+      :ci_partitions_size_limit,
       :concurrent_github_import_jobs_limit,
       :concurrent_bitbucket_import_jobs_limit,
       :concurrent_bitbucket_server_import_jobs_limit,
@@ -288,6 +291,7 @@ module ApplicationSettingsHelper
       :default_snippet_visibility,
       :default_syntax_highlighting_theme,
       :delete_inactive_projects,
+      :deletion_adjourned_period,
       :deny_all_requests_except_allowed,
       :disable_admin_oauth_scopes,
       :disable_feed_token,
@@ -468,6 +472,7 @@ module ApplicationSettingsHelper
       :throttle_protected_paths_enabled,
       :throttle_protected_paths_period_in_seconds,
       :throttle_protected_paths_requests_per_period,
+      :top_level_group_creation_enabled,
       :protected_paths_raw,
       :protected_paths_for_get_request_raw,
       :time_tracking_limit_to_hours,
@@ -561,6 +566,7 @@ module ApplicationSettingsHelper
       :deactivation_email_additional_text,
       :projects_api_rate_limit_unauthenticated,
       :group_api_limit,
+      :group_archive_unarchive_api_limit,
       :group_invited_groups_api_limit,
       :group_shared_groups_api_limit,
       :group_projects_api_limit,
@@ -605,7 +611,9 @@ module ApplicationSettingsHelper
       :vscode_extension_marketplace,
       :vscode_extension_marketplace_enabled,
       :reindexing_minimum_index_size,
-      :reindexing_minimum_relative_bloat_size
+      :reindexing_minimum_relative_bloat_size,
+      :anonymous_searches_allowed,
+      :git_push_pipeline_limit
     ].tap do |settings|
       unless Gitlab.com?
         settings << :resource_usage_limits

@@ -6,6 +6,13 @@ RSpec.describe 'Issues > User sees empty state', :js, feature_category: :team_pl
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:user) { project.creator }
 
+  before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+  end
+
   shared_examples_for 'empty state with filters' do
     it 'user sees empty state with filters' do
       create(:issue, author: user, project: project)

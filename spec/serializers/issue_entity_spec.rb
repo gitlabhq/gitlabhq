@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IssueEntity do
+RSpec.describe IssueEntity, feature_category: :team_planning do
   include Gitlab::Routing.url_helpers
 
   let(:project)  { create(:project) }
@@ -58,7 +58,9 @@ RSpec.describe IssueEntity do
     before do
       project.add_developer(member)
       public_project.add_developer(member)
-      Issues::MoveService.new(container: public_project, current_user: member).execute(issue, project)
+      ::WorkItems::DataSync::MoveService.new(
+        work_item: issue, current_user: member, target_namespace: project.project_namespace
+      ).execute
     end
 
     context 'when user cannot read target project' do

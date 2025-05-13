@@ -2,9 +2,8 @@ import organizationGroupsGraphQlResponse from 'test_fixtures/graphql/organizatio
 import organizationProjectsGraphQlResponse from 'test_fixtures/graphql/organizations/projects.query.graphql.json';
 import { formatGroups, formatProjects, timestampType } from '~/organizations/shared/utils';
 import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
+import { formatGraphQLGroups } from '~/vue_shared/components/groups_list/formatter';
 import { SORT_CREATED_AT, SORT_UPDATED_AT, SORT_NAME } from '~/organizations/shared/constants';
-import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_UPDATED_AT,
@@ -29,46 +28,13 @@ const {
 } = organizationProjectsGraphQlResponse;
 
 describe('formatGroups', () => {
-  it('correctly formats the groups with edit and delete permissions', () => {
-    const [firstMockGroup] = organizationGroups;
-    const formattedGroups = formatGroups(organizationGroups);
-    const [firstFormattedGroup] = formattedGroups;
-
-    expect(firstFormattedGroup).toMatchObject({
-      id: getIdFromGraphQLId(firstMockGroup.id),
-      avatarLabel: firstMockGroup.fullName,
-      fullName: firstMockGroup.fullName,
-      parent: null,
-      editPath: firstMockGroup.organizationEditPath,
-      accessLevel: {
-        integerValue: 50,
-      },
-      availableActions: [ACTION_EDIT, ACTION_DELETE],
-      children: [],
-      childrenLoading: false,
-      hasChildren: false,
-    });
-    expect(formattedGroups.length).toBe(organizationGroups.length);
-  });
-
-  it('correctly formats the groups without edit or delete permissions', () => {
-    const nonDeletableGroup = organizationGroups[1];
-    const formattedGroups = formatGroups(organizationGroups);
-    const nonDeletableFormattedGroup = formattedGroups[1];
-
-    expect(nonDeletableFormattedGroup).toMatchObject({
-      id: getIdFromGraphQLId(nonDeletableGroup.id),
-      avatarLabel: nonDeletableGroup.fullName,
-      fullName: nonDeletableGroup.fullName,
-      parent: null,
-      editPath: nonDeletableGroup.organizationEditPath,
-      accessLevel: {
-        integerValue: 0,
-      },
-      availableActions: [],
-    });
-
-    expect(formattedGroups.length).toBe(organizationGroups.length);
+  it('returns result from formatGraphQLGroups and adds editPath', () => {
+    expect(formatGroups(organizationGroups)).toEqual(
+      formatGraphQLGroups(organizationGroups).map((group) => ({
+        ...group,
+        editPath: group.organizationEditPath,
+      })),
+    );
   });
 });
 

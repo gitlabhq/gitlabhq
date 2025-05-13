@@ -2,13 +2,14 @@
 stage: Container
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+gitlab_dedicated: yes
 title: Protected container repositories
 ---
 
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -26,11 +27,12 @@ which users can make changes to container images in your container repository.
 
 When a container repository is protected, the default behavior enforces these restrictions on the container repository and its images:
 
-| Action                                                     | Minimum role         |
-|------------------------------------------------------------|----------------------|
-| Protect a container repository and its container images.    | The Maintainer role. |
-| Push or create a new image in a container repository.       | The role set in the [**Minimum access level for push**](#create-a-container-repository-protection-rule) setting.   |
-| Push or update an existing image in a container repository. | The role set in the [**Minimum access level for push**](#create-a-container-repository-protection-rule) setting.    |
+| Action                                                                                   | Minimum role         |
+|------------------------------------------------------------------------------------------|----------------------|
+| Protect a container repository and its container images.                                 | The Maintainer role. |
+| Push or create a new image in a container repository.                                    | The role set in the [**Minimum access level for push**](#create-a-container-repository-protection-rule) setting. |
+| Push or update an existing image in a container repository.                              | The role set in the [**Minimum access level for push**](#create-a-container-repository-protection-rule) setting. |
+| Push, create, or update an existing image in a container repository with a deploy token. | Not applicable. Deploy tokens can be used with non-protected repositories, but cannot be used to push images to protected container repositories, regardless of their scopes. |
 
 You can use a wildcard (`*`) to protect multiple container repositories with the same container protection rule.
 For example, you can protect different container repositories containing temporary container images built during a CI/CD pipeline.

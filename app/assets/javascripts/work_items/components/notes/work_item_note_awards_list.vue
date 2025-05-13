@@ -2,7 +2,7 @@
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import AwardsList from '~/vue_shared/components/awards_list.vue';
-import { getMutation, optimisticAwardUpdate } from '../../notes/award_utils';
+import { getMutation, optimisticAwardUpdate, getNewCustomEmojiPath } from '../../notes/award_utils';
 
 export default {
   components: {
@@ -36,6 +36,13 @@ export default {
     },
     hasAwardEmojiPermission() {
       return this.note.userPermissions.awardEmoji;
+    },
+    customEmojiPath() {
+      return getNewCustomEmojiPath({
+        cache: this.$apollo.provider.clients.defaultClient,
+        fullPath: this.fullPath,
+        workItemIid: this.workItemIid,
+      });
     },
     currentUserId() {
       return window.gon.current_user_id;
@@ -83,6 +90,7 @@ export default {
     :awards="awards"
     :can-award-emoji="hasAwardEmojiPermission"
     :current-user-id="currentUserId"
+    :custom-emoji-path="customEmojiPath"
     @award="handleAward($event)"
   />
 </template>

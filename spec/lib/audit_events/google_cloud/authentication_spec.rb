@@ -18,7 +18,7 @@ RSpec.describe AuditEvents::GoogleCloud::Authentication, feature_category: :audi
         let_it_be(:private_key) { '' }
 
         it 'handles the exception' do
-          expect(Gitlab::ErrorTracking).to receive(:track_exception)
+          expect(Gitlab::ErrorTracking).to receive(:log_exception)
 
           generate_access_token
         end
@@ -28,7 +28,7 @@ RSpec.describe AuditEvents::GoogleCloud::Authentication, feature_category: :audi
         let_it_be(:client_email) { '' }
 
         it 'handles the exception' do
-          expect(Gitlab::ErrorTracking).to receive(:track_exception)
+          expect(Gitlab::ErrorTracking).to receive(:log_exception)
 
           generate_access_token
         end

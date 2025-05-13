@@ -21,7 +21,7 @@ class InternalId < ApplicationRecord
   belongs_to :project
   belongs_to :namespace
 
-  enum usage: Enums::InternalId.usage_resources
+  enum :usage, Enums::InternalId.usage_resources
 
   validates :usage, presence: true
 

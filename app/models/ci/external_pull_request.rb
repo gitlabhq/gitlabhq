@@ -30,7 +30,7 @@ module Ci
     validates :target_repository, presence: true
     validates :status, presence: true
 
-    enum status: {
+    enum :status, {
       open: 1,
       closed: 2
     }

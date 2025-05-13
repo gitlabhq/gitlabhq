@@ -26,9 +26,12 @@
 #   Unlabeled MR Changing GITALY_SERVER_VERSION
 #   Unlabeled MR Changing Dangerfile, .gitlab/ci/frontend.gitlab-ci.yml
 #   Unlabeled MR targeting stable branch Changing app/model/user.rb
+#   Unlabeled MR Changing package.json
 #
 #   MR Labeled with pipeline:run-all-rspec Changing app/models/user.rb
 #   MR Labeled with pipeline:expedite pipeline::expedited Changing app/models/user.rb
+#   MR Labeled with pipeline::tier-1 Changing package.json
+#   MR Labeled with pipeline::tier-2 Changiong package.json
 #   MR Labeled with pipeline::tier-1 Changing app/models/user.rb
 #   MR Labeled with pipeline::tier-2 and pipeline:mr-approved Changing app/models/user.rb
 #   MR Labeled with pipeline::tier-3 and pipeline:mr-approved Changing app/models/user.rb

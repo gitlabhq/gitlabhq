@@ -34,6 +34,10 @@ RSpec.describe 'Registration enabled callout', feature_category: :system_access 
       end
 
       it 'does not display callout on pages other than root, admin, or dashboard' do
+        # TODO: When removing the feature flag,
+        # we won't need the tests for the issues listing page, since we'll be using
+        # the work items listing page.
+        stub_feature_flags(work_item_planning_view: false)
         visit project_issues_path(project)
 
         expect(page).not_to have_content callout_title

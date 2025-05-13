@@ -3,10 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe ServicePing::QueriesServicePing, feature_category: :service_ping do
-  before_all do
-    create(:organization, :default)
-  end
-
   describe 'scopes' do
     describe '.for_current_reporting_cycle' do
       subject(:recent_service_ping_reports) { described_class.for_current_reporting_cycle }

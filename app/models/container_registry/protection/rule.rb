@@ -3,12 +3,10 @@
 module ContainerRegistry
   module Protection
     class Rule < ApplicationRecord
-      enum minimum_access_level_for_delete:
-             Gitlab::Access.sym_options_with_admin.slice(:maintainer, :owner, :admin),
-        _prefix: :minimum_access_level_for_delete
-      enum minimum_access_level_for_push:
-             Gitlab::Access.sym_options_with_admin.slice(:maintainer, :owner, :admin),
-        _prefix: :minimum_access_level_for_push
+      enum :minimum_access_level_for_delete, Gitlab::Access.sym_options_with_admin.slice(:maintainer, :owner, :admin),
+        prefix: :minimum_access_level_for_delete
+      enum :minimum_access_level_for_push, Gitlab::Access.sym_options_with_admin.slice(:maintainer, :owner, :admin),
+        prefix: :minimum_access_level_for_push
 
       belongs_to :project, inverse_of: :container_registry_protection_rules
 
@@ -32,14 +30,6 @@ module ContainerRegistry
           ":repository_path ILIKE #{::Gitlab::SQL::Glob.to_like('repository_path_pattern')}",
           repository_path: repository_path
         )
-      end
-
-      def self.for_push_exists?(access_level:, repository_path:)
-        return false if access_level.blank? || repository_path.blank?
-
-        where(':access_level < minimum_access_level_for_push', access_level: access_level)
-          .for_repository_path(repository_path)
-          .exists?
       end
 
       def self.for_action_exists?(action:, access_level:, repository_path:)

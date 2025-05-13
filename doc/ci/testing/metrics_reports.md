@@ -27,7 +27,7 @@ Consider the following examples of data that can use Metrics Reports:
 1. Code complexity
 1. Code coverage stats
 
-## How it works
+## Metrics processing workflow
 
 Metrics for a branch are read from the latest metrics report artifact (default filename: `metrics.txt`) as string values.
 

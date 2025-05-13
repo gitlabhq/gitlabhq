@@ -13,7 +13,7 @@ RSpec.describe 'Query.synthetic_note(noteable_id, sha)', feature_category: :team
     create(:resource_label_event, user: current_user, issue: issue, label: label, action: 'add', created_at: 2.days.ago)
   end
 
-  let(:label_note) { LabelNote.from_events([label_event]) }
+  let(:label_note) { LabelNote.from_events([label_event], resource: issue, resource_parent: project) }
   let(:global_id) { ::Gitlab::GlobalId.build(label_note, model_name: LabelNote.to_s, id: label_note.discussion_id) }
   let(:note_params) { { sha: label_note.discussion_id, noteable_id: global_id_of(issue) } }
   let(:note_data) { graphql_data['syntheticNote'] }

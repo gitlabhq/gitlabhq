@@ -380,9 +380,14 @@ export default {
               {{ $options.i18n.reportAbuse }}
             </template>
           </gl-disclosure-dropdown-item>
-          <gl-disclosure-dropdown-item v-if="canEdit" class="js-note-delete" @action="onDelete">
+          <gl-disclosure-dropdown-item
+            v-if="canEdit"
+            class="js-note-delete"
+            variant="danger"
+            @action="onDelete"
+          >
             <template #list-item>
-              <span class="gl-text-danger">{{ __('Delete comment') }}</span>
+              {{ __('Delete comment') }}
             </template>
           </gl-disclosure-dropdown-item>
         </gl-disclosure-dropdown-group>

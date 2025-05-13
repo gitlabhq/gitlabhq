@@ -1,5 +1,12 @@
 <script>
-import { GlTable, GlBadge, GlPagination, GlDisclosureDropdown, GlButton } from '@gitlab/ui';
+import {
+  GlTable,
+  GlBadge,
+  GlPagination,
+  GlDisclosureDropdown,
+  GlButton,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { __ } from '~/locale';
 import PodLogsButton from '~/environments/environment_details/components/kubernetes/pod_logs_button.vue';
 import {
@@ -16,6 +23,9 @@ export default {
     PodLogsButton,
     GlDisclosureDropdown,
     GlButton,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     items: {
@@ -88,6 +98,7 @@ export default {
       :per-page="pageSize"
       :current-page="currentPage"
       :empty-text="$options.i18n.emptyText"
+      primary-key="name"
       show-empty
       stacked="md"
     >
@@ -95,10 +106,16 @@ export default {
         <gl-button variant="link" @click="selectItem(item)">{{ item.name }}</gl-button>
       </template>
 
-      <template #cell(status)="{ item: { status } }">
-        <gl-badge :variant="$options.WORKLOAD_STATUS_BADGE_VARIANTS[status]" class="gl-ml-2">{{
-          status
-        }}</gl-badge>
+      <template #cell(status)="{ item: { status, statusText, statusTooltip } }">
+        <gl-badge
+          v-gl-tooltip
+          :variant="$options.WORKLOAD_STATUS_BADGE_VARIANTS[status]"
+          class="gl-ml-2"
+          :title="statusTooltip"
+          :tabindex="statusTooltip ? '0' : undefined"
+        >
+          {{ statusText || status }}
+        </gl-badge>
       </template>
 
       <template #cell(logs)="{ item: { name, namespace, containers } }">

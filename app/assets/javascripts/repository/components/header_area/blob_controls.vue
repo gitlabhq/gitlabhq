@@ -36,7 +36,7 @@ import userGitpodInfo from '~/repository/queries/user_gitpod_info.query.graphql'
 import applicationInfoQuery from '~/blob/queries/application_info.query.graphql';
 import { getRefType } from '~/repository/utils/ref_type';
 import OpenMrBadge from '~/repository/components/header_area/open_mr_badge.vue';
-import OverflowMenu from 'ee_else_ce/repository/components/header_area/blob_overflow_menu.vue';
+import BlobOverflowMenu from 'ee_else_ce/repository/components/header_area/blob_overflow_menu.vue';
 import ForkSuggestionModal from '~/repository/components/header_area/fork_suggestion_modal.vue';
 import { TEXT_FILE_TYPE, EMPTY_FILE, DEFAULT_BLOB_INFO } from '../../constants';
 
@@ -52,7 +52,7 @@ export default {
   components: {
     OpenMrBadge,
     GlButton,
-    OverflowMenu,
+    BlobOverflowMenu,
     ForkSuggestionModal,
     WebIdeLink: () => import('ee_else_ce/vue_shared/components/web_ide_link.vue'),
   },
@@ -273,20 +273,22 @@ export default {
         visitUrl(isIdeTarget(target) ? ideEditPath : editBlobPath);
       }
     },
+    onLockedFile(event) {
+      this.$emit('lockedFile', event);
+    },
   },
 };
 </script>
 <template>
   <div
     v-if="showBlobControls"
-    class="gl-flex gl-flex-wrap gl-items-center gl-gap-3"
+    class="gl-flex gl-flex-wrap gl-items-center gl-gap-3 gl-self-end"
     data-testid="blob-controls"
   >
     <open-mr-badge
       v-if="glFeatures.filterBlobPath"
       :project-path="projectPath"
       :blob-path="filePath"
-      class="!gl-ml-auto"
     />
     <gl-button
       v-gl-tooltip.html="findFileTooltip"
@@ -345,6 +347,7 @@ export default {
       :user-profile-enable-gitpod-path="currentUser && currentUser.profileEnableGitpodPath"
       is-blob
       disable-fork-modal
+      :disabled="isUsingLfs"
       @edit="onEdit"
     />
     <fork-suggestion-modal
@@ -354,7 +357,7 @@ export default {
       @hide="isForkSuggestionModalVisible = false"
     />
 
-    <overflow-menu
+    <blob-overflow-menu
       v-if="!isLoadingRepositoryBlob && glFeatures.blobOverflowMenu"
       :project-path="projectPath"
       :is-binary-file-type="isBinaryFileType"
@@ -363,6 +366,7 @@ export default {
       :is-using-lfs="isUsingLfs"
       @copy="onCopy"
       @showForkSuggestion="onShowForkSuggestion"
+      @lockedFile="onLockedFile"
     />
   </div>
 </template>

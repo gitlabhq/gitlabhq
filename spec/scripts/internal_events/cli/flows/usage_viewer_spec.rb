@@ -49,7 +49,19 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
     let(:expected_rspec_example) do
       <<~TEXT.chomp
       --------------------------------------------------
-      # RSPEC
+      # RSPEC -- COMPOSABLE MATCHERS (recommended)
+
+      it "triggers an internal event" do
+        expect { subject }.to trigger_internal_events('internal_events_cli_used').with(
+          project: project,
+          user: user
+        ).and increment_usage_metrics(
+          'redis_hll_counters.count_distinct_user_id_from_internal_events_cli_used_weekly'
+        )
+      end
+
+      --------------------------------------------------
+      # RSPEC -- SHARED EXAMPLE GROUP
 
       it_behaves_like 'internal event tracking' do
         let(:event) { 'internal_events_cli_used' }
@@ -153,7 +165,20 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
     let(:expected_rspec_example) do
       <<~TEXT.chomp
       --------------------------------------------------
-      # RSPEC
+      # RSPEC -- COMPOSABLE MATCHERS (recommended)
+
+      it "triggers an internal event" do
+        expect { subject }.to trigger_internal_events('internal_events_cli_used').with(
+          project: project,
+          user: user
+        ).and increment_usage_metrics(
+          'redis_hll_counters.count_distinct_user_id_from_internal_events_cli_used_monthly',
+          'redis_hll_counters.count_distinct_user_id_from_internal_events_cli_used_weekly'
+        )
+      end
+
+      --------------------------------------------------
+      # RSPEC -- SHARED EXAMPLE GROUP
 
       it_behaves_like 'internal event tracking' do
         let(:event) { 'internal_events_cli_used' }
@@ -255,7 +280,14 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
     let(:expected_rspec_example) do
       <<~TEXT.chomp
       --------------------------------------------------
-      # RSPEC
+      # RSPEC -- COMPOSABLE MATCHERS (recommended)
+
+      it "triggers an internal event" do
+        expect { subject }.to trigger_internal_events('internal_events_cli_opened')
+      end
+
+      --------------------------------------------------
+      # RSPEC -- SHARED EXAMPLE GROUP
 
       it_behaves_like 'internal event tracking' do
         let(:event) { 'internal_events_cli_opened' }
@@ -556,7 +588,22 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
     let(:expected_rspec_example) do
       <<~TEXT.chomp
       --------------------------------------------------
-      # RSPEC
+      # RSPEC -- COMPOSABLE MATCHERS (recommended)
+
+      it "triggers an internal event" do
+        expect { subject }.to trigger_internal_events('internal_events_cli_used').with(
+          project: project,
+          user: user,
+          additional_properties: {
+            label: 'string',
+            value: 72,
+            custom_key: custom_value
+          }
+        )
+      end
+
+      --------------------------------------------------
+      # RSPEC -- SHARED EXAMPLE GROUP
 
       it_behaves_like 'internal event tracking' do
         let(:event) { 'internal_events_cli_used' }

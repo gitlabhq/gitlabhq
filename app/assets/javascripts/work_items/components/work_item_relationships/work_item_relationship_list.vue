@@ -8,7 +8,7 @@ import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
 
-import WorkItemLinkChildContents from '../shared/work_item_link_child_contents.vue';
+import WorkItemLinkChildContents from 'ee_else_ce/work_items/components/shared/work_item_link_child_contents.vue';
 
 import removeLinkedItemsMutation from '../../graphql/remove_linked_items.mutation.graphql';
 import addLinkedItemsMutation from '../../graphql/add_linked_items.mutation.graphql';
@@ -22,10 +22,6 @@ export default {
   },
   props: {
     parentWorkItemId: {
-      type: String,
-      required: true,
-    },
-    parentWorkItemIid: {
       type: String,
       required: true,
     },
@@ -224,7 +220,7 @@ export default {
         v-for="linkedItem in linkedItems"
         :key="linkedItem.workItem.id"
         data-testid="link-child-contents-container"
-        class="linked-item !gl-border-x-0 !gl-border-b-1 !gl-border-t-0 !gl-border-solid !gl-px-0 !gl-py-2 last:!gl-border-b-0"
+        class="linked-item !gl-mx-0 !gl-border-x-0 !gl-border-b-1 !gl-border-t-0 !gl-border-solid !gl-px-0 !gl-py-2 last:!gl-border-b-0"
         :data-work-item-id="linkedItem.workItem.id"
       >
         <work-item-link-child-contents

@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import axios from 'axios';
+import axios from '~/lib/utils/axios_utils';
 import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
 import { initFileBrowser } from '~/rapid_diffs/app/init_file_browser';
 import createEventHub from '~/helpers/event_hub_factory';
@@ -15,6 +15,7 @@ jest.mock('~/rapid_diffs/app/file_browser.vue', () => ({
     return h('div', {
       attrs: {
         'data-file-browser-component': true,
+        'data-group-blobs-list-items': JSON.stringify(this.groupBlobsListItems),
       },
       on: {
         click: () => {
@@ -36,7 +37,12 @@ jest.mock('~/diffs/components/file_browser_toggle.vue', () => ({
 }));
 
 describe('Init file browser', () => {
-  const diffFilesEndpoint = '/diff-files-metadata';
+  let mockAxios;
+  let commit;
+  let appData;
+
+  const getFileBrowserTarget = () => document.querySelector('[data-file-browser]');
+  const getFileBrowserToggleTarget = () => document.querySelector('[data-file-browser-toggle]');
   const getFileBrowser = () => document.querySelector('[data-file-browser-component]');
   const createDiffFiles = () => [
     {
@@ -64,21 +70,41 @@ describe('Init file browser', () => {
       file_hash: '12dc3d87e90313d83a236a944f8a4869f1dc97e2',
     },
   ];
-  let mockAxios;
-  let commit;
+
+  const initAppData = ({
+    diffFilesEndpoint = '/diff-files-metadata',
+    shouldSortMetadataFiles = true,
+  } = {}) => {
+    appData = {
+      diffFilesEndpoint,
+      shouldSortMetadataFiles,
+    };
+  };
+
+  const init = () => {
+    return initFileBrowser({
+      toggleTarget: getFileBrowserToggleTarget(),
+      browserTarget: getFileBrowserTarget(),
+      appData,
+    });
+  };
 
   beforeEach(() => {
+    initAppData();
     window.mrTabs = { eventHub: createEventHub() };
     mockAxios = new MockAdapter(axios);
-    mockAxios.onGet(diffFilesEndpoint).reply(HTTP_STATUS_OK, { diff_files: createDiffFiles() });
+    mockAxios
+      .onGet(appData.diffFilesEndpoint)
+      .reply(HTTP_STATUS_OK, { diff_files: createDiffFiles() });
     commit = jest.spyOn(store, 'commit');
     setHTMLFixture(
       `
         <div data-file-browser-toggle></div>
         <div data-file-browser data-metadata-endpoint="/metadata"></div>
-        <diff-file id="first"></diff-file>
+        <diff-file data-file-data="{}" id="first"><div></div></diff-file>
       `,
     );
+    DiffFile.getAll().forEach((file) => file.mount({ adapterConfig: {}, appData: {} }));
   });
 
   beforeAll(() => {
@@ -90,12 +116,12 @@ describe('Init file browser', () => {
   });
 
   it('mounts the component', async () => {
-    await initFileBrowser(diffFilesEndpoint);
+    await init();
     expect(getFileBrowser()).not.toBe(null);
   });
 
   it('loads diff files data', async () => {
-    await initFileBrowser(diffFilesEndpoint);
+    await init();
     expect(commit).toHaveBeenCalledWith(
       `diffs/${SET_TREE_DATA}`,
       expect.objectContaining({
@@ -108,7 +134,7 @@ describe('Init file browser', () => {
   it('handles file clicks', async () => {
     const selectFile = jest.fn();
     const spy = jest.spyOn(DiffFile, 'findByFileHash').mockReturnValue({ selectFile });
-    initFileBrowser(diffFilesEndpoint);
+    init();
     await waitForPromises();
     getFileBrowser().click();
     expect(spy).toHaveBeenCalledWith('first');
@@ -116,8 +142,15 @@ describe('Init file browser', () => {
   });
 
   it('shows file browser toggle', async () => {
-    initFileBrowser(diffFilesEndpoint);
+    init();
     await waitForPromises();
     expect(document.querySelector('[data-file-browser-toggle-component]')).not.toBe(null);
+  });
+
+  it('disables sorting', async () => {
+    initAppData({ shouldSortMetadataFiles: false });
+    init();
+    await waitForPromises();
+    expect(document.querySelector('[data-group-blobs-list-items="false"]')).not.toBe(null);
   });
 });

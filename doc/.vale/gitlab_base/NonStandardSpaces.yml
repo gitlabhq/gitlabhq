@@ -2,9 +2,9 @@
 name: gitlab_base.NonStandardSpaces
 description: |
   Use only standard spaces. Do not use:
-  U+202F : NARROW NO-BREAK SPACE [NNBSP]
-  U+00A0 : NO-BREAK SPACE [NBSP]
-  U+200B : ZERO WIDTH SPACE [ZWSP]
+  - U+202F: NARROW NO-BREAK SPACE [NNBSP]
+  - U+00A0: NO-BREAK SPACE [NBSP]
+  - U+200B: ZERO WIDTH SPACE [ZWSP]
 extends: existence
 message: "Use standard spaces only. Do not use no-break or zero width spaces."
 vocab: false

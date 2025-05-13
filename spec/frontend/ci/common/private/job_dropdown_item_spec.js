@@ -1,3 +1,4 @@
+import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import JobActionButton from '~/ci/common/private/job_action_button.vue';
@@ -32,6 +33,7 @@ describe('JobDropdownItem', () => {
 
   const findJobNameComponent = () => wrapper.findComponent(JobNameComponent);
   const findJobActionButton = () => wrapper.findComponent(JobActionButton);
+  const findDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
 
   describe.each([
     ['has detailedStatus', mockJobDetailedStatus],
@@ -103,5 +105,41 @@ describe('JobDropdownItem', () => {
         expect(wrapper.classes().includes('ci-job-item-failed')).toBe(shouldHaveFailedClass);
       },
     );
+  });
+
+  describe('details path', () => {
+    it('should use detailed status details path by default', () => {
+      createComponent({ props: { job: mockJobDetailedStatus } });
+
+      expect(findDropdownItem().props('item').href).toBe(detailedStatus.detailsPath);
+    });
+
+    it('should use deployment details path for manual bridge jobs', () => {
+      const bridgeJob = {
+        ...mockJobInfo,
+        detailedStatus: {
+          ...detailedStatus,
+          detailsPath: '',
+          deploymentDetailsPath: 'path/to/deployment',
+        },
+      };
+      createComponent({ props: { job: bridgeJob } });
+
+      expect(findDropdownItem().props('item').href).toBe('path/to/deployment');
+    });
+
+    it('should not render a link if the details path and deployment details path are missing', () => {
+      const noLinkJob = {
+        ...mockJobInfo,
+        detailedStatus: {
+          ...detailedStatus,
+          detailsPath: '',
+          deploymentDetailsPath: '',
+        },
+      };
+      createComponent({ props: { job: noLinkJob } });
+
+      expect(findDropdownItem().props('item').href).toBe('');
+    });
   });
 });

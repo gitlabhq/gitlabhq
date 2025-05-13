@@ -2,7 +2,6 @@
 import { GlTokenSelector, GlAlert } from '@gitlab/ui';
 import { debounce, escape } from 'lodash';
 
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isNumeric } from '~/lib/utils/number_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { s__ } from '~/locale';
@@ -14,7 +13,12 @@ import workItemAncestorsQuery from '../../graphql/work_item_ancestors.query.grap
 import groupWorkItemsQuery from '../../graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '../../graphql/project_work_items.query.graphql';
 import workItemsByReferencesQuery from '../../graphql/work_items_by_references.query.graphql';
-import { WORK_ITEMS_TYPE_MAP, I18N_WORK_ITEM_SEARCH_ERROR, sprintfWorkItem } from '../../constants';
+import {
+  I18N_WORK_ITEM_SEARCH_ERROR,
+  sprintfWorkItem,
+  NAME_TO_TEXT_MAP,
+  NAME_TO_ENUM_MAP,
+} from '../../constants';
 import { formatAncestors, isReference } from '../../utils';
 
 export default {
@@ -76,7 +80,7 @@ export default {
         ];
       },
       error() {
-        this.error = sprintfWorkItem(I18N_WORK_ITEM_SEARCH_ERROR, this.childrenTypeName);
+        this.error = sprintfWorkItem(I18N_WORK_ITEM_SEARCH_ERROR, this.childrenTypeText);
       },
     },
     workItemsByReference: {
@@ -94,7 +98,7 @@ export default {
         return this.filterItems(data.workItemsByReference.nodes);
       },
       error() {
-        this.error = sprintfWorkItem(I18N_WORK_ITEM_SEARCH_ERROR, this.childrenTypeName);
+        this.error = sprintfWorkItem(I18N_WORK_ITEM_SEARCH_ERROR, this.childrenTypeText);
       },
     },
     ancestorIds: {
@@ -147,8 +151,8 @@ export default {
         this.$apollo.queries.workItemsByReference.loading
       );
     },
-    childrenTypeName() {
-      return WORK_ITEMS_TYPE_MAP[this.childrenType]?.name;
+    childrenTypeText() {
+      return NAME_TO_TEXT_MAP[this.childrenType];
     },
     tokenSelectorContainerClass() {
       return !this.areWorkItemsToAddValid ? '!gl-shadow-inner-1-red-500' : '';
@@ -157,7 +161,7 @@ export default {
       const variables = {
         fullPath: this.fullPath,
         searchTerm: this.searchTerm,
-        types: this.childrenType ? [this.childrenType] : [],
+        types: this.childrenType ? [NAME_TO_ENUM_MAP[this.childrenType]] : [],
         in: this.searchTerm ? 'TITLE' : undefined,
         iid: isNumeric(this.searchTerm) ? this.searchTerm : null,
         searchByIid: isNumeric(this.searchTerm),
@@ -176,7 +180,6 @@ export default {
     this.debouncedSearchKeyUpdate = debounce(this.setSearchKey, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
   },
   methods: {
-    getIdFromGraphQLId,
     async setSearchKey(value) {
       this.searchTerm = value;
     },

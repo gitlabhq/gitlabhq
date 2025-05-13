@@ -101,7 +101,7 @@ For more information about how caching works, see [Architecture diagram of hoste
 Jobs that run on hosted runners for GitLab.com consume [compute minutes](../../pipelines/compute_minutes.md) allocated to your namespace.
 The number of minutes you can use on these runners depends on the included compute minutes in your [subscription plan](https://about.gitlab.com/pricing/) or [additionally purchased compute minutes](../../../subscriptions/gitlab_com/compute_minutes.md).
 
-For more information about the cost factor applied to the machine type based on size, see [cost factor](../../pipelines/compute_minutes.md#gitlab-hosted-runner-cost-factors).
+For more information about the cost factor applied to the machine type based on size, see [cost factor](../../pipelines/compute_minutes.md#cost-factors-for-gitlab-hosted-runners).
 
 ### SLO & Release cycle for hosted runners for GitLab.com
 
@@ -161,5 +161,9 @@ Jobs that run on generally available images are covered by the defined service-l
 ### Deprecated
 
 A maximum of two generally available images are supported at a time. After a new generally available image is released,
-the oldest generally available image becomes deprecated. A deprecated image is no longer updated and is deleted after 3 months
-in accordance with the [deprecation guidelines](../../../development/deprecation_guidelines/_index.md).
+the oldest generally available image becomes deprecated. A deprecated image is no longer updated and is deleted after 3 months.
+
+## Usage data
+
+You can [view an estimate](../../pipelines/dedicated_hosted_runner_compute_minutes.md) of
+GitLab-hosted Runner usage of Compute minutes on GitLab Dedicated.

@@ -1,13 +1,6 @@
 - project = project || @project
 - ref = local_assigns.fetch(:ref, '')
-- archive_prefix = ref ? "#{project.path}-#{ref.tr('/', '-')}" : ''
-- directory_download_links = !project.empty_repo? ? directory_download_links(project, ref, archive_prefix).to_json : ''
 
 - if can?(current_user, :download_code, @project)
   .git-clone-holder.js-git-clone-holder
-    #js-code-dropdown{ data: {
-      ssh_url: ssh_enabled? ? ssh_clone_url_to_repo(@project) : '',
-      http_url: http_enabled? ? http_clone_url_to_repo(@project) : '',
-      xcode_url: show_xcode_link?(@project) ? xcode_uri_to_repo(@project) : '',
-      directory_download_links: directory_download_links,
-    } }
+    #js-code-dropdown{ data: compact_code_dropdown_data(project, ref) }

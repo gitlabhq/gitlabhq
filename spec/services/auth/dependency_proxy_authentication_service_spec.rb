@@ -42,22 +42,6 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
       end
     end
 
-    shared_examples 'logs missing authentication abilities' do
-      specify do
-        expect(::Gitlab::AuthLogger).to receive(:warn).with(expected_log)
-
-        subject
-      end
-    end
-
-    shared_examples 'does not log missing authentication abilities' do
-      specify do
-        expect(::Gitlab::AuthLogger).not_to receive(:warn).with(expected_log)
-
-        subject
-      end
-    end
-
     context 'dependency proxy is not enabled' do
       before do
         stub_config(dependency_proxy: { enabled: false })
@@ -118,8 +102,6 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
       it_behaves_like 'returning a token with an encoded field', 'personal_access_token'
 
       context 'with insufficient authentication abilities' do
-        it_behaves_like 'logs missing authentication abilities'
-
         # TODO: Cleanup code related to packages_dependency_proxy_containers_scope_check
         # https://gitlab.com/gitlab-org/gitlab/-/issues/520321
         context 'with packages_dependency_proxy_containers_scope_check disabled' do
@@ -128,14 +110,6 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
           end
 
           it_behaves_like 'returning', status: 403, message: 'access forbidden'
-
-          context 'with enforce_abilities_check_for_dependency_proxy disabled' do
-            before do
-              stub_feature_flags(enforce_abilities_check_for_dependency_proxy: false)
-            end
-
-            it_behaves_like 'returning a token with an encoded field', 'personal_access_token'
-          end
         end
       end
 
@@ -145,15 +119,7 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
           context "with #{abilities}" do
             let(:authentication_abilities) { abilities }
 
-            it_behaves_like 'does not log missing authentication abilities'
-
-            context 'with enforce_abilities_check_for_dependency_proxy disabled' do
-              before do
-                stub_feature_flags(enforce_abilities_check_for_dependency_proxy: false)
-              end
-
-              it_behaves_like 'returning a token with an encoded field', 'personal_access_token'
-            end
+            it_behaves_like 'returning a token with an encoded field', 'personal_access_token'
           end
         end
       end
@@ -181,14 +147,6 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
           end
 
           it_behaves_like 'returning', status: 403, message: 'access forbidden'
-
-          context 'with enforce_abilities_check_for_dependency_proxy disabled' do
-            before do
-              stub_feature_flags(enforce_abilities_check_for_dependency_proxy: false)
-            end
-
-            it_behaves_like 'returning a token with an encoded field', 'group_access_token'
-          end
         end
       end
 
@@ -202,15 +160,6 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
             subject { service.execute(authentication_abilities: authentication_abilities) }
 
             it_behaves_like 'returning a token with an encoded field', 'group_access_token'
-            it_behaves_like 'does not log missing authentication abilities'
-
-            context 'with enforce_abilities_check_for_dependency_proxy disabled' do
-              before do
-                stub_feature_flags(enforce_abilities_check_for_dependency_proxy: false)
-              end
-
-              it_behaves_like 'returning a token with an encoded field', 'group_access_token'
-            end
 
             context 'revoked' do
               before do
@@ -240,20 +189,6 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
           end
 
           it_behaves_like 'returning a token with an encoded field', 'user_id'
-
-          context 'packages_dependency_proxy_containers_scope_check disabled' do
-            before do
-              stub_feature_flags(packages_dependency_proxy_containers_scope_check: false)
-            end
-
-            context 'with enforce_abilities_check_for_dependency_proxy disabled' do
-              before do
-                stub_feature_flags(enforce_abilities_check_for_dependency_proxy: false)
-              end
-
-              it_behaves_like 'returning a token with an encoded field', 'user_id'
-            end
-          end
         end
       end
     end

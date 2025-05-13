@@ -123,7 +123,7 @@ If neither approach fixes the error, you may need a different internet service p
 
 ### Check your SSH configuration
 
-**If pushing over SSH**, first check your SSH configuration as 'Broken pipe'
+If pushing over SSH, first check your SSH configuration as 'Broken pipe'
 errors can sometimes be caused by underlying issues with SSH (such as
 authentication). Make sure that SSH is correctly configured by following the
 instructions in the [SSH troubleshooting](../../user/ssh_troubleshooting.md#password-prompt-with-git-clone) documentation.
@@ -137,7 +137,7 @@ Configuring both the client and the server is unnecessary.
 
 {{< /alert >}}
 
-**To configure SSH on the client side**:
+To configure SSH on the client side:
 
 - On UNIX, edit `~/.ssh/config` (create the file if it doesn't exist) and
   add or edit:
@@ -152,7 +152,7 @@ Configuring both the client and the server is unnecessary.
   go to "Connection" and under "Sending of null packets to keep
   session active", set `Seconds between keepalives (0 to turn off)` to `60`.
 
-**To configure SSH on the server side**, edit `/etc/ssh/sshd_config` and add:
+To configure SSH on the server side, edit `/etc/ssh/sshd_config` and add:
 
 ```plaintext
 ClientAliveInterval 60
@@ -161,7 +161,7 @@ ClientAliveCountMax 5
 
 ### Running a `git repack`
 
-**If 'pack-objects' type errors are also being displayed**, you can try to
+If 'pack-objects' type errors are also being displayed, you can try to
 run a `git repack` before attempting to push to the remote repository again:
 
 ```shell

@@ -24,9 +24,14 @@ describe('NestedGroupsProjectsList', () => {
     });
   };
 
-  it('renders list with `NestedGroupsProjectsListItem` component', () => {
-    createComponent();
+  const findNestedGroupsProjectsListItem = () =>
+    wrapper.findComponent(NestedGroupsProjectsListItem);
 
+  beforeEach(() => {
+    createComponent();
+  });
+
+  it('renders list with `NestedGroupsProjectsListItem` component', () => {
     const listItemWrappers = wrapper.findAllComponents(NestedGroupsProjectsListItem).wrappers;
     const expectedProps = listItemWrappers.map((listItemWrapper) => listItemWrapper.props());
 
@@ -34,17 +39,24 @@ describe('NestedGroupsProjectsList', () => {
       defaultPropsData.items.map((item) => ({
         item,
         timestampType: defaultPropsData.timestampType,
+        initialExpanded: false,
       })),
     );
   });
 
   describe('when `NestedGroupsProjectsListItem emits load-children event', () => {
     it('emits load-children event', () => {
-      createComponent();
-
-      wrapper.findComponent(NestedGroupsProjectsListItem).vm.$emit('load-children', 1);
+      findNestedGroupsProjectsListItem().vm.$emit('load-children', 1);
 
       expect(wrapper.emitted('load-children')).toEqual([[1]]);
+    });
+  });
+
+  describe('when NestedGroupsProjectsListItem emits refetch event', () => {
+    it('emits refetch event', () => {
+      findNestedGroupsProjectsListItem().vm.$emit('refetch');
+
+      expect(wrapper.emitted('refetch')).toEqual([[]]);
     });
   });
 });

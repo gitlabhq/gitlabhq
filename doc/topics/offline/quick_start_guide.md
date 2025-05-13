@@ -220,7 +220,7 @@ For more information, see [Enable or disable service ping](../../administration/
 
 Runner version management retrieves the latest runner versions from GitLab to
 [determine which runners in your environment are out of date](../../ci/runners/runners_scope.md#determine-which-runners-need-to-be-upgraded).
-You must [disable runner version management](../../administration/settings/continuous_integration.md#disable-runner-version-management)
+You must [disable runner version management](../../administration/settings/continuous_integration.md#control-runner-version-management)
 for offline environments.
 
 ### Configure NTP

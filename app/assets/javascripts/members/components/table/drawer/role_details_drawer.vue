@@ -96,6 +96,7 @@ export default {
       header-sticky
       :z-index="$options.DRAWER_Z_INDEX"
       open
+      class="gl-overscroll-contain"
       @close="closeDrawer"
     >
       <template #title>

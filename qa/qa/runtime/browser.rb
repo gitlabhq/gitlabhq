@@ -59,6 +59,14 @@ module QA
 
             chrome_options[:args] << 'disable-search-engine-choice-screen'
 
+            # Add preferences to auto-allow clipboard access
+            chrome_options[:prefs] = {} if chrome_options[:prefs].nil?
+
+            # Set clipboard permissions to allowed (1)
+            chrome_options[:prefs]['profile.content_settings.exceptions.clipboard'] = {
+              '*': { setting: 1 }
+            }
+
             # Allows chrome to consider all actions as secure when no ssl is used
             Runtime::Scenario.attributes[:gitlab_address].tap do |address|
               next unless address.start_with?('http://')
@@ -70,10 +78,12 @@ module QA
             # TODO: Set for remote grid as well once Sauce Labs tests are deprecated and Options.chrome is added
             # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112258
             unless QA::Runtime::Env.remote_grid
-              chrome_options[:prefs] = {
+              chrome_options[:prefs] = {} unless chrome_options[:prefs]
+
+              chrome_options[:prefs].merge!({
                 'download.default_directory' => File.expand_path(QA::Runtime::Env.chrome_default_download_path),
                 'download.prompt_for_download' => false
-              }
+              })
             end
 
             # Specify the user-agent to allow challenges to be bypassed

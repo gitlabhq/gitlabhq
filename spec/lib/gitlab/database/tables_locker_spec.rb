@@ -240,6 +240,32 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
       gitlab_main_detached_partition = "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}._test_gitlab_main_part_20220101"
       it_behaves_like 'unlock partitions', gitlab_main_detached_partition, 'main'
       it_behaves_like 'lock partitions', gitlab_main_detached_partition, 'ci'
+
+      context 'when scope_to_database is set' do
+        subject { described_class.new(options: { scope_to_database: :main }).lock_writes }
+
+        it_behaves_like 'lock tables', :gitlab_ci, 'main'
+
+        it_behaves_like 'unlock tables', :gitlab_main_clusterwide, 'main'
+        it_behaves_like 'unlock tables', :gitlab_main, 'main'
+        it_behaves_like 'unlock tables', :gitlab_shared, 'main'
+        it_behaves_like 'unlock tables', :gitlab_internal, 'main'
+
+        gitlab_main_partition = "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.zoekt_tasks_test_partition"
+        it_behaves_like 'unlock partitions', gitlab_main_partition, 'main'
+
+        gitlab_main_detached_partition =
+          "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}._test_gitlab_main_part_20220101"
+        it_behaves_like 'unlock partitions', gitlab_main_detached_partition, 'main'
+      end
+
+      context 'when an invalid database scope has been passed' do
+        subject { described_class.new(options: { scope_to_database: :unknown }).lock_writes }
+
+        it 'raises an error' do
+          expect { subject }.to raise_error(RuntimeError, 'unknown is not a valid database to scope to.')
+        end
+      end
     end
 
     describe '#unlock_writes' do
@@ -261,6 +287,22 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
       gitlab_main_detached_partition = "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}._test_gitlab_main_part_20220101"
       it_behaves_like 'unlock partitions', gitlab_main_detached_partition, 'main'
       it_behaves_like 'unlock partitions', gitlab_main_detached_partition, 'ci'
+
+      context 'when scope_to_database is set' do
+        subject { described_class.new(options: { scope_to_database: :main }).unlock_writes }
+
+        it_behaves_like "unlock tables", :gitlab_ci, 'main'
+        it_behaves_like "unlock tables", :gitlab_main, 'main'
+        it_behaves_like "unlock tables", :gitlab_shared, 'main'
+        it_behaves_like "unlock tables", :gitlab_internal, 'main'
+
+        gitlab_main_partition = "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.zoekt_tasks_test_partition"
+        it_behaves_like 'unlock partitions', gitlab_main_partition, 'main'
+
+        gitlab_main_detached_partition =
+          "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}._test_gitlab_main_part_20220101"
+        it_behaves_like 'unlock partitions', gitlab_main_detached_partition, 'main'
+      end
     end
 
     context 'when not including partitions' do

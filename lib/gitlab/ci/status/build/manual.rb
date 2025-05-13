@@ -31,8 +31,10 @@ module Gitlab
           def manual_job_action_message
             if subject.retryable?
               _("You can modify this job's CI/CD variables before running it again.")
+            elsif can?(user, :set_pipeline_variables, subject.project)
+              _('This job does not start automatically and must be started manually. You can add CI/CD variables below for last-minute configuration changes before starting the job.')
             else
-              _('This job does not start automatically and must be started manually.')
+              _("This job does not start automatically and must be started manually.")
             end
           end
 

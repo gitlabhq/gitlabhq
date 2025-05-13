@@ -1,9 +1,8 @@
 import Vue from 'vue';
-import { GlBreadcrumb, GlToast } from '@gitlab/ui';
+import { GlToast } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
-import { staticBreadcrumbs } from '~/lib/utils/breadcrumbs';
 import { JS_TOGGLE_EXPAND_CLASS, CONTEXT_NAMESPACE_GROUPS } from './constants';
 import createStore from './components/global_search/store';
 import {
@@ -13,6 +12,8 @@ import {
 import SuperSidebar from './components/super_sidebar.vue';
 import SuperSidebarToggle from './components/super_sidebar_toggle.vue';
 import AdvancedSearchModal from './components/global_search/components/global_search_header_app.vue';
+
+export { initPageBreadcrumbs } from './super_sidebar_breadcrumbs';
 
 Vue.use(GlToast);
 Vue.use(VueApollo);
@@ -196,24 +197,6 @@ export const initSuperSidebarToggle = () => {
     },
   });
 };
-
-export function initPageBreadcrumbs() {
-  const el = document.querySelector('#js-vue-page-breadcrumbs');
-  if (!el) return false;
-  const { breadcrumbsJson } = el.dataset;
-
-  staticBreadcrumbs.items = JSON.parse(breadcrumbsJson);
-
-  return new Vue({
-    el,
-    name: 'SuperSidebarBreadcrumbs',
-    render(h) {
-      return h(GlBreadcrumb, {
-        props: staticBreadcrumbs,
-      });
-    },
-  });
-}
 
 export function initAdvancedSearchModal({
   rootPath,

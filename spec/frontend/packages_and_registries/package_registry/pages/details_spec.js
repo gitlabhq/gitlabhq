@@ -28,6 +28,11 @@ import {
   PACKAGE_TYPE_CONAN,
   PACKAGE_TYPE_PYPI,
   PACKAGE_TYPE_NPM,
+  PACKAGE_TYPE_RUBYGEMS,
+  PACKAGE_TYPE_GENERIC,
+  PACKAGE_TYPE_DEBIAN,
+  PACKAGE_TYPE_HELM,
+  PACKAGE_TYPE_ML_MODEL,
 } from '~/packages_and_registries/package_registry/constants';
 
 import getPackageDetails from '~/packages_and_registries/package_registry/graphql/queries/get_package_details.query.graphql';
@@ -73,6 +78,7 @@ describe('PackagesApp', () => {
     groupSettingsResolver = jest.fn().mockResolvedValue(groupPackageSettingsQuery()),
     routeId = '1',
     stubs = {},
+    provide: customProvide,
   } = {}) {
     const requestHandlers = [
       [getPackageDetails, resolver],
@@ -82,7 +88,7 @@ describe('PackagesApp', () => {
 
     wrapper = shallowMountExtended(PackagesApp, {
       apolloProvider,
-      provide,
+      provide: customProvide || provide,
       stubs: {
         PackageTitle,
         PackageFiles,
@@ -126,6 +132,8 @@ describe('PackagesApp', () => {
   const findDeletePackageModal = () => wrapper.findAllComponents(DeletePackages).at(1);
   const findDeletePackages = () => wrapper.findComponent(DeletePackages);
   const findLink = () => wrapper.findComponent(GlLink);
+  const findInstallButton = () => wrapper.findByTestId('install-button');
+  const findInstallationModal = () => wrapper.findByTestId('installation-instructions-modal');
 
   it('renders an empty state component', async () => {
     createComponent({ resolver: jest.fn().mockResolvedValue(emptyPackageDetailsQuery) });
@@ -274,6 +282,7 @@ describe('PackagesApp', () => {
         });
 
         await waitForPromises();
+        await nextTick();
 
         expect(findAdditionalMetadata().exists()).toBe(visible);
 
@@ -325,25 +334,65 @@ describe('PackagesApp', () => {
     });
   });
 
-  it('renders installation commands and has the right props', async () => {
-    createComponent();
+  it.each`
+    packageType              | groupListUrl | shouldShowInstallationElements | shouldShowText
+    ${PACKAGE_TYPE_COMPOSER} | ${'url'}     | ${true}                        | ${'show'}
+    ${PACKAGE_TYPE_COMPOSER} | ${null}      | ${false}                       | ${'not show'}
+    ${PACKAGE_TYPE_CONAN}    | ${'url'}     | ${true}                        | ${'show'}
+    ${PACKAGE_TYPE_CONAN}    | ${null}      | ${true}                        | ${'show'}
+    ${PACKAGE_TYPE_DEBIAN}   | ${'url'}     | ${false}                       | ${'not show'}
+    ${PACKAGE_TYPE_DEBIAN}   | ${null}      | ${false}                       | ${'not show'}
+    ${PACKAGE_TYPE_GENERIC}  | ${'url'}     | ${false}                       | ${'not show'}
+    ${PACKAGE_TYPE_GENERIC}  | ${null}      | ${false}                       | ${'not show'}
+    ${PACKAGE_TYPE_HELM}     | ${'url'}     | ${false}                       | ${'not show'}
+    ${PACKAGE_TYPE_HELM}     | ${null}      | ${false}                       | ${'not show'}
+    ${PACKAGE_TYPE_MAVEN}    | ${'url'}     | ${true}                        | ${'show'}
+    ${PACKAGE_TYPE_MAVEN}    | ${null}      | ${true}                        | ${'show'}
+    ${PACKAGE_TYPE_ML_MODEL} | ${'url'}     | ${false}                       | ${'not show'}
+    ${PACKAGE_TYPE_ML_MODEL} | ${null}      | ${false}                       | ${'not show'}
+    ${PACKAGE_TYPE_NPM}      | ${'url'}     | ${true}                        | ${'show'}
+    ${PACKAGE_TYPE_NPM}      | ${null}      | ${true}                        | ${'show'}
+    ${PACKAGE_TYPE_NUGET}    | ${'url'}     | ${true}                        | ${'show'}
+    ${PACKAGE_TYPE_NUGET}    | ${null}      | ${true}                        | ${'show'}
+    ${PACKAGE_TYPE_PYPI}     | ${'url'}     | ${true}                        | ${'show'}
+    ${PACKAGE_TYPE_PYPI}     | ${null}      | ${true}                        | ${'show'}
+    ${PACKAGE_TYPE_RUBYGEMS} | ${'url'}     | ${false}                       | ${'not show'}
+    ${PACKAGE_TYPE_RUBYGEMS} | ${null}      | ${false}                       | ${'not show'}
+  `(
+    'when package type is $packageType and groupListUrl is $groupListUrl, installation elements should $shouldShowText',
+    async ({ packageType, groupListUrl, shouldShowInstallationElements }) => {
+      const testProvide = {
+        ...provide,
+        groupListUrl,
+      };
 
-    await waitForPromises();
+      createComponent({
+        resolver: jest.fn().mockResolvedValue(
+          packageDetailsQuery({
+            extendPackage: {
+              packageType,
+            },
+          }),
+        ),
+        provide: testProvide,
+      });
 
-    expect(findInstallationCommands().exists()).toBe(true);
-    expect(findInstallationCommands().props()).toMatchObject({
-      packageEntity: expect.objectContaining(packageWithoutTypename),
-    });
-  });
+      await waitForPromises();
+      await nextTick();
 
-  it('calls the appropriate function to set the breadcrumbState', async () => {
-    const { name, version } = packageData();
-    createComponent();
+      expect(findInstallButton().exists()).toBe(shouldShowInstallationElements);
+      expect(findInstallationModal().exists()).toBe(shouldShowInstallationElements);
+      expect(findInstallationCommands().exists()).toBe(shouldShowInstallationElements);
 
-    await waitForPromises();
-
-    expect(breadCrumbState.updateName).toHaveBeenCalledWith(`${name} v${version}`);
-  });
+      if (shouldShowInstallationElements) {
+        expect(findInstallationCommands().props('packageEntity')).toMatchObject({
+          id: packageWithoutTypename.id,
+          name: packageWithoutTypename.name,
+          packageType,
+        });
+      }
+    },
+  );
 
   describe('delete package', () => {
     const originalReferrer = document.referrer;

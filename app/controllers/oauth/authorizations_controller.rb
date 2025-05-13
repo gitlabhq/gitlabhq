@@ -5,6 +5,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   include InitializesCurrentUserMode
   include Gitlab::Utils::StrongMemoize
   include RequestPayloadLogger
+  include ViteCSP
 
   alias_method :auth_user, :current_user
 
@@ -78,7 +79,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     # Cannot be achieved with a before_action hook, due to the execution order.
     downgrade_scopes! if action_name == 'new'
 
-    params[:organization_id] = ::Current.organization&.id
+    params[:organization_id] = ::Current.organization.id
 
     super
   end

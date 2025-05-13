@@ -3,28 +3,6 @@ import { ToggleFileAdapter } from '~/rapid_diffs/toggle_file/adapter';
 import { COLLAPSE_FILE, EXPAND_FILE } from '~/rapid_diffs/events';
 
 describe('Diff File Toggle Behavior', () => {
-  // In our version of Jest/JSDOM we cannot use
-  //
-  // - CSS "&" nesting (baseline 2023)
-  // - Element.checkVisibility (baseline 2024)
-  // - :has (baseline 2023)
-  //
-  // so this cannot test CSS (which is a majority of our behavior), and must assume that
-  // browser CSS is working as documented when we tweak HTML attributes
-  const html = `
-    <diff-file data-viewer="any">
-      <div class="rd-diff-file">
-        <div class="rd-diff-file-header" data-testid="rd-diff-file-header">
-        <div class="rd-diff-file-toggle gl-mr-2"><
-          <button data-opened="" data-click="toggleFile" aria-label="Hide file contents" type="button"></button>
-          <button data-closed="" data-click="toggleFile" aria-label="Show file contents" type="button"></button>
-        </div>
-      </div>
-      <div data-file-body=""><!-- body content --></div>
-      <diff-file-mounted></diff-file-mounted>
-    </diff-file>
-  `;
-
   function get(element) {
     const elements = {
       file: () => document.querySelector('diff-file'),
@@ -36,18 +14,29 @@ describe('Diff File Toggle Behavior', () => {
     return elements[element]?.();
   }
 
-  function assignAdapter(customAdapter) {
-    get('file').adapterConfig = { any: [customAdapter] };
-  }
+  const mount = () => {
+    const viewer = 'any';
+    document.body.innerHTML = `
+      <diff-file data-file-data='${JSON.stringify({ viewer })}'>
+        <div class="rd-diff-file">
+          <div class="rd-diff-file-header" data-testid="rd-diff-file-header">
+          <div class="rd-diff-file-toggle gl-mr-2"><
+            <button data-opened="" data-click="toggleFile" aria-label="Hide file contents" type="button"></button>
+            <button data-closed="" data-click="toggleFile" aria-label="Show file contents" type="button"></button>
+          </div>
+          <div data-file-body=""><!-- body content --></div>
+        </div>
+      </diff-file>
+    `;
+    get('file').mount({ adapterConfig: { [viewer]: [ToggleFileAdapter] }, appData: {} });
+  };
 
   beforeAll(() => {
     customElements.define('diff-file', DiffFile);
   });
 
   beforeEach(() => {
-    document.body.innerHTML = html;
-    assignAdapter(ToggleFileAdapter);
-    get('file').mount();
+    mount();
   });
 
   it('starts with the file body visible', () => {
@@ -75,5 +64,22 @@ describe('Diff File Toggle Behavior', () => {
     get('file').trigger(EXPAND_FILE);
     expect(get('body').hidden).toEqual(false);
     expect(get('file').diffElement.dataset.collapsed).not.toEqual('true');
+  });
+
+  it('stops transition', () => {
+    let tick;
+    jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      tick = () => cb();
+    });
+
+    get('hide').click();
+    expect(get('show').style.transition).toBe('none');
+    tick();
+    expect(get('show').style.transition).toBe('');
+
+    get('show').click();
+    expect(get('hide').style.transition).toBe('none');
+    tick();
+    expect(get('hide').style.transition).toBe('');
   });
 });

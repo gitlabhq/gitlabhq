@@ -193,3 +193,11 @@ This allows you to reveal existing RuboCop exceptions during your daily work cyc
 Define `Include`s and permanent `Exclude`s in `.rubocop.yml` instead of `.rubocop_todo/**/*.yml`.
 
 {{< /alert >}}
+
+## RuboCop documentation
+
+When creating internal RuboCop rules, these should include RDoc style docs.
+
+These docs are used to generate a static site using Hugo, and are published to <https://gitlab-org.gitlab.io/gitlab/rubocop-docs/>.
+
+The site includes all the internal cops from the `gitlab` and `gitlab-styles` projects, along with "good" and "bad" examples.

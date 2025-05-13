@@ -29,6 +29,28 @@ RSpec.describe Operations::FeatureFlagsClient do
     it "ensures that token is always set" do
       expect(subject.token).to match(/glffct-[A-Za-z0-9_-]{20}/)
     end
+
+    context 'with custom instance prefix' do
+      let_it_be(:instance_prefix) { 'instance-prefix-' }
+
+      before do
+        stub_application_setting(instance_token_prefix: instance_prefix)
+      end
+
+      it 'starts with instance prefix' do
+        expect(subject.token).to match(/instance-prefix-ffct-[A-Za-z0-9_-]{20}/)
+      end
+
+      context 'with feature flag custom_prefix_for_all_token_types disabled' do
+        before do
+          stub_feature_flags(custom_prefix_for_all_token_types: false)
+        end
+
+        it 'starts with gl' do
+          expect(subject.token).to match(/glffct-[A-Za-z0-9_-]{20}/)
+        end
+      end
+    end
   end
 
   describe '.update_last_feature_flag_updated_at!' do

@@ -368,6 +368,10 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :job_artifacts do
             end
 
             it_behaves_like 'logs inbound authorizations via job token', :ok, :forbidden do
+              before do
+                allow(::Gitlab::CurrentSettings).to receive(:enforce_ci_inbound_job_token_scope_enabled?).and_return(false)
+              end
+
               let(:accessed_project) { project }
               let(:origin_project) { other_job.project }
 

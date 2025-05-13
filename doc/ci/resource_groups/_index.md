@@ -62,33 +62,21 @@ can still run `build` jobs concurrently for maximizing the pipeline efficiency.
 
 ## Prerequisites
 
-- The basic knowledge of the [GitLab CI/CD pipelines](../pipelines/_index.md)
-- The basic knowledge of the [GitLab Environments and Deployments](../environments/_index.md)
+- Familiarity with [GitLab CI/CD pipelines](../pipelines/_index.md)
+- Familiarity with [GitLab environments and deployments](../environments/_index.md)
 - At least the Developer role for the project to configure CI/CD pipelines.
 
 ## Process modes
 
-You can choose a process mode to strategically control the job concurrency for your deployment preferences.
+You can select a process mode to control the job concurrency for your deployment preferences.
 The following modes are supported:
 
-- **Unordered:** This is the default process mode that limits the concurrency on running jobs.
-  It's the easiest option to use when you don't care about the execution order
-  of the jobs. It starts processing the jobs whenever a job is ready to run.
-- **Oldest first:** This process mode limits the concurrency of the jobs. When a resource is free,
-  it picks the first job from the list of upcoming jobs (`created`, `scheduled`, or `waiting_for_resource` state)
-  that are sorted by pipeline ID in ascending order.
-
-  This mode is efficient when you want to ensure that the jobs are executed from the oldest pipeline.
-  It is less efficient compared to the `unordered` mode in terms of the pipeline efficiency,
-  but safer for continuous deployments.
-
-- **Newest first:** This process mode limits the concurrency of the jobs. When a resource is free,
-  it picks the first job from the list of upcoming jobs (`created`, `scheduled` or `waiting_for_resource` state)
-  that are sorted by pipeline ID in descending order.
-
-  This mode is efficient when you want to ensure that the jobs are executed from the newest pipeline and
-  prevent all of the old deploy jobs with the [prevent outdated deployment jobs](../environments/deployment_safety.md#prevent-outdated-deployment-jobs) feature.
-  This is the most efficient option in terms of the pipeline efficiency, but you must ensure that each deployment job is idempotent.
+| Process mode | Description | When to use  |
+|---------------|-------------|-------------|
+| `unordered` | The default process mode. Processes jobs whenever a job is ready to run. | The execution order of jobs is not important. The easiest option to use. |
+| `oldest_first` | When a resource is free, picks the first job from the list of upcoming jobs sorted by pipeline ID in ascending order. | You want to execute jobs from the oldest pipeline first. Less efficient than `unordered` mode, but safer for continuous deployments. |
+| `newest_first` | When a resource is free, picks the first job from the list of upcoming jobs that are sorted by pipeline ID in descending order. | You want to execute jobs from the newest pipeline and [prevent outdated deployment jobs](../environments/deployment_safety.md#prevent-outdated-deployment-jobs). Each job must be idempotent. |
+| `newest_ready_first` | When a resource is free, picks the first job from the list of upcoming jobs waiting on this resource. Jobs are sorted by pipeline ID in descending order. | You want to prevent `newest_first` from prioritizing new pipelines before deploying the current pipeline. Faster than `newest_first`. Each job must be idempotent. |
 
 ### Change the process mode
 
@@ -99,6 +87,7 @@ by specifying the `process_mode`:
 - `unordered`
 - `oldest_first`
 - `newest_first`
+- `newest_ready_first`
 
 ### An example of difference between the process modes
 

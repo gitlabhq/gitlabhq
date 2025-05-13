@@ -136,7 +136,7 @@ export default {
     <gl-empty-state
       v-else-if="!hasHistoryItems"
       :title="s__('BulkImport|No history is available')"
-      :description="s__('BulkImport|Your imported projects will appear here.')"
+      :description="s__('BulkImport|Your imported projects appear here.')"
     />
     <template v-else>
       <gl-table :fields="$options.fields" :items="historyItems" class="gl-w-full">
@@ -152,7 +152,9 @@ export default {
             </gl-link>
             <span v-else>{{ item.import_url }}</span>
           </template>
-          <span v-else>{{ s__('BulkImport|Template / File-based import / Direct transfer') }}</span>
+          <span v-else>{{
+            s__('BulkImport|Template, file-based import, or direct transfer')
+          }}</span>
         </template>
         <template #cell(destination)="{ item }">
           <gl-link :href="item.http_url_to_repo">

@@ -5,9 +5,7 @@ module Gitlab
     class BackfillGoogleInstanceAuditEventDestinations < BatchedMigrationJob
       feature_category :audit_events
 
-      def perform
-        # no-op, EE only migration
-      end
+      def perform; end
     end
   end
 end

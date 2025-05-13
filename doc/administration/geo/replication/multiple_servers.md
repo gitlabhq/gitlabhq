@@ -1,5 +1,5 @@
 ---
-stage: Systems
+stage: Tenant Scale
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Geo for multiple nodes
@@ -16,11 +16,15 @@ This document describes a minimal reference architecture for running Geo
 in a multi-node configuration. If your multi-node setup differs from the one
 described, it is possible to adapt these instructions to your needs.
 
+This guide applies to installations with multiple application nodes (Sidekiq or GitLab Rails). 
+For single-node installations with external PostgreSQL, follow [Set up Geo for two single-node sites (with external PostgreSQL services)](../setup/two_single_node_external_services.md),
+and adapt your configuration if you use other external services.
+
 ## Architecture overview
 
 ![Architecture for running Geo in a multi-node configuration with primary and secondary backend services](img/geo-ha-diagram_v11_11.png)
 
-_[diagram source - GitLab employees only](https://docs.google.com/drawings/d/1z0VlizKiLNXVVVaERFwgsIOuEgjcUqDTWPdQYsE7Z4c/edit)_
+_[diagram source - GitLab team members only](https://docs.google.com/drawings/d/1z0VlizKiLNXVVVaERFwgsIOuEgjcUqDTWPdQYsE7Z4c/edit)_
 
 The topology above assumes the **primary** and **secondary** Geo sites
 are located in two separate locations, on their own virtual network
@@ -193,6 +197,8 @@ You can run the Geo tracking database on a single node as follows:
    # Prevent reconfigure from attempting to run migrations on the replica database
    gitlab_rails['auto_migrate'] = false
    ```
+
+1. [Opt out of automatic PostgreSQL upgrades](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades) to avoid unintended downtime when upgrading GitLab. Be aware of the known [caveats when upgrading PostgreSQL with Geo](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo). Especially for larger environments, PostgreSQL upgrades must be planned and executed consciously. As a result and going forward, ensure PostgreSQL upgrades are part of the regular maintenance activities.
 
 After making these changes, [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) so the changes take effect.
 

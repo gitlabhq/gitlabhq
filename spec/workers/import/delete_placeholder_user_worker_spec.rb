@@ -6,7 +6,7 @@ RSpec.describe Import::DeletePlaceholderUserWorker, feature_category: :importers
   let_it_be(:placeholder_user) { create(:user, :placeholder) }
   let_it_be(:source_user) { create(:import_source_user, placeholder_user: placeholder_user) }
 
-  let(:job_args) { source_user.id }
+  let(:job_args) { [placeholder_user.id, { type: 'placeholder_user' }] }
 
   subject(:perform) { described_class.new.perform(*job_args) }
 
@@ -26,7 +26,7 @@ RSpec.describe Import::DeletePlaceholderUserWorker, feature_category: :importers
     it 'does not delete the placeholder_user and logs the issue' do
       expect(::Import::Framework::Logger).to receive(:warn).with(
         message: 'Unable to delete placeholder user because it is still referenced in other tables',
-        source_user_id: source_user.id
+        placeholder_user_id: placeholder_user.id
       )
 
       expect(DeleteUserWorker).not_to receive(:perform_async)
@@ -68,7 +68,7 @@ RSpec.describe Import::DeletePlaceholderUserWorker, feature_category: :importers
   end
 
   context 'when there is no placeholder user' do
-    let_it_be(:source_user) { create(:import_source_user, :completed, placeholder_user: nil) }
+    let(:job_args) { [-1, { type: 'placeholder_user' }] }
 
     it 'does not delete the placeholder_user and does not log an issue' do
       expect(::Import::Framework::Logger).not_to receive(:warn)
@@ -80,12 +80,25 @@ RSpec.describe Import::DeletePlaceholderUserWorker, feature_category: :importers
 
   context 'when attempting to delete a user who is not a placeholder' do
     let_it_be(:user) { create(:user, :import_user) }
-    let_it_be(:source_user) { create(:import_source_user, placeholder_user: user) }
+    let(:job_args) { [user.id, { type: 'placeholder_user' }] }
 
     it 'does not delete the user' do
       expect(DeleteUserWorker).not_to receive(:perform_async)
 
       perform
+    end
+  end
+
+  context 'when called with legacy parameters (source_user_id only)' do
+    let(:job_args) { [source_user.id] }
+
+    it_behaves_like 'deletes the placeholder user'
+
+    context 'when another table references the user from an author_id column' do
+      let!(:note) { create(:note, author: placeholder_user) }
+      let(:job_args) { [source_user.id] }
+
+      it_behaves_like 'does not delete the placeholder_user and logs the issue'
     end
   end
 end

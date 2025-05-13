@@ -19,8 +19,7 @@ import {
   TODO_ACTION_TYPE_UNMERGEABLE,
   TODO_ACTION_TYPE_SSH_KEY_EXPIRED,
   TODO_ACTION_TYPE_SSH_KEY_EXPIRING_SOON,
-  TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED,
-  TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED,
+  DUO_ACCESS_GRANTED_ACTIONS,
 } from '../constants';
 
 export default {
@@ -61,15 +60,11 @@ export default {
         this.todo.action !== TODO_ACTION_TYPE_UNMERGEABLE &&
         this.todo.action !== TODO_ACTION_TYPE_SSH_KEY_EXPIRED &&
         this.todo.action !== TODO_ACTION_TYPE_SSH_KEY_EXPIRING_SOON &&
-        this.todo.action !== TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED &&
-        this.todo.action !== TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED
+        !DUO_ACCESS_GRANTED_ACTIONS.includes(this.todo.action)
       );
     },
     showAvatarOnNote() {
-      return (
-        this.todo.action !== TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED &&
-        this.todo.action !== TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED
-      );
+      return !DUO_ACCESS_GRANTED_ACTIONS.includes(this.todo.action);
     },
     author() {
       if (this.isHiddenBySaml) {
@@ -126,7 +121,7 @@ export default {
         this.todo.action === TODO_ACTION_TYPE_APPROVAL_REQUIRED ||
         this.todo.action === TODO_ACTION_TYPE_ADDED_APPROVER
       ) {
-        name = sprintf(s__('Todos|set %{who} as an approver'), { who: this.actionSubject });
+        name = s__('Todos|created a merge request you can approve');
       }
 
       if (this.todo.action === TODO_ACTION_TYPE_UNMERGEABLE) {
@@ -162,13 +157,7 @@ export default {
         name = s__('Todos|Your SSH key is expiring soon');
       }
 
-      if (this.todo.action === TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED) {
-        name = s__(
-          'Todos|You now have access to AI-powered features. Learn how to set up Code Suggestions and Chat in your IDE',
-        );
-      }
-
-      if (this.todo.action === TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED) {
+      if (DUO_ACCESS_GRANTED_ACTIONS.includes(this.todo.action)) {
         name = s__(
           'Todos|You now have access to AI-powered features. Learn how to set up Code Suggestions and Chat in your IDE',
         );

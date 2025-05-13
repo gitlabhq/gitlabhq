@@ -348,13 +348,13 @@ module Types
 
     def commits
       object.commits(
-        load_from_gitaly: Feature.enabled?(:more_commits_from_gitaly, object.target_project)
+        load_from_gitaly: Feature.enabled?(:commits_from_gitaly, object.target_project)
       ).commits
     end
 
     def commits_without_merge_commits
       object.commits(
-        load_from_gitaly: Feature.enabled?(:more_commits_from_gitaly, object.target_project)
+        load_from_gitaly: Feature.enabled?(:commits_from_gitaly, object.target_project)
       ).without_merge_commits
     end
 

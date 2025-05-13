@@ -8,7 +8,7 @@ title: GitLab Duo Chat
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q
+- Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - LLMs: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet), Anthropic [Claude 3.5 Sonnet V2](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet-v2), Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet), Anthropic [Claude 3.5 Haiku](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-haiku), and [Vertex AI Search](https://cloud.google.com/enterprise-search). The LLM depends on the question asked.
 - LLM for Amazon Q: Amazon Q Developer
@@ -26,7 +26,7 @@ title: GitLab Duo Chat
 
 {{< /history >}}
 
-GitLab Duo Chat is an AI-powered assistant that accelerates development with
+GitLab Duo Chat is an AI-native assistant that accelerates development with
 contextual, conversational AI. Chat:
 
 - Explains code and suggests improvements directly in your development environment.
@@ -34,19 +34,6 @@ contextual, conversational AI. Chat:
 - Generates code, tests, and documentation based on your requirements and codebase.
 - Integrates directly in the GitLab UI, Web IDE, VS Code, JetBrains IDEs, and Visual Studio.
 - Can include information from your repositories and projects to deliver targeted improvements.
-
-Before you start using Chat, decide which of the following methods you want to use to manage Chat:
-
-- On GitLab.com or GitLab Self-Managed, the default GitLab AI vendor models and
-  cloud-based AI gateway that is hosted by GitLab.
-- On GitLab Self-Managed, in GitLab 17.9 and later, [GitLab Duo Self-Hosted with a supported self-hosted model](../../administration/gitlab_duo_self_hosted/_index.md). Self-hosted models maximize
-  security and privacy by making sure nothing is sent to an external model.
-
-  {{< alert type="note" >}}
-
-  You cannot use all Chat features with GitLab Duo Self-Hosted. For more information, see [supported Chat features](../../administration/gitlab_duo_self_hosted/_index.md#supported-duo-chat-features).
-
-  {{< /alert >}}
 
 ## Supported editor extensions
 
@@ -78,23 +65,23 @@ In addition, Chat is aware of different information, depending on where you use 
 
 ### In the GitLab UI
 
-| Area | Available context | GitLab Duo Pro | GitLab Duo Enterprise | Instructions |
-|------|----------------|----------------|----------------------|-----------------|
-| Code files | File content | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | From the single file, ask about `this code` or `this file`. |
-| Epics | Epic details | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the epic, ask about `this epic`, `this`, or the URL. From any UI area, ask about the URL. |
-| Issues | Issue details | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the issue, ask about `this issue`, `this`, or the URL. From any UI area, ask about the URL. |
-| Merge requests | MR details | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the merge request, ask about `this merge request`, `this`, or the URL. For more information, see [Ask about a specific merge request](examples.md#ask-about-a-specific-merge-request). |
-| Commits | Commit details | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the commit, ask about `this commit` or `this`. From any UI area, ask about the URL. |
-| Pipeline jobs | Job details | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the pipeline job, ask about `this pipeline job` or `this`. From any UI area, ask about the URL. |
+| Area and available context | GitLab Duo Core | GitLab Duo Pro | GitLab Duo Enterprise | Instructions |
+|------|----------------|----------------|----------------------|-----------------|-----------------|
+| Code files and file content | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | From the single file, ask about `this code` or `this file`. |
+| Epics and epic details | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the epic, ask about `this epic`, `this`, or the URL. From any UI area, ask about the URL. |
+| Issues and issue details | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the issue, ask about `this issue`, `this`, or the URL. From any UI area, ask about the URL. |
+| Merge requests (MRs) and MR details | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the merge request, ask about `this merge request`, `this`, or the URL. For more information, see [Ask about a specific merge request](examples.md#ask-about-a-specific-merge-request). |
+| Commits and commit details | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the commit, ask about `this commit` or `this`. From any UI area, ask about the URL. |
+| Pipeline jobs and job details | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | From the pipeline job, ask about `this pipeline job` or `this`. From any UI area, ask about the URL. |
 
 ### In IDEs
 
-| Area | Available context | GitLab Duo Pro | GitLab Duo Enterprise | Instructions |
-|------|----------------|----------------|----------------------|-----------------|
-| Selected lines in editor | Selected code | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | With the lines selected, ask about `this code` or `this file`. Chat is not aware of the file; you must select the lines you want to ask about. |
-| Epics | Epic details | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | Ask about the URL. |
-| Issues | Issue details | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | Ask about the URL. |
-| Files | File content | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | Use the `/include` command to search for project files to add to Duo Chat's context. After you've added the files, you can ask Duo Chat questions about the file contents. Available for VS Code and JetBrains IDEs. For more information, see [Ask about specific files](examples.md#ask-about-specific-files-in-the-ide). |
+| Area and available context | GitLab Duo Core | GitLab Duo Pro | GitLab Duo Enterprise | Instructions |
+|------|----------------|----------------|----------------------|-----------------|-----------------|
+| Selected lines in editor and selected code | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | With the lines selected, ask about `this code` or `this file`. Chat is not aware of the file; you must select the lines you want to ask about. |
+| Files and file content | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | Use the `/include` command to search for project files to add to Duo Chat's context. After you've added the files, you can ask Duo Chat questions about the file contents. Available for VS Code and JetBrains IDEs. For more information, see [Ask about specific files](examples.md#ask-about-specific-files-in-the-ide). |
+| Epics and epic details | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | Ask about the URL. |
+| Issues and issue details | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | Ask about the URL. |
 
 In addition, in the IDEs, when you use any of the slash commands,
 like `/explain`, `/refactor`, `/fix`, or `/tests,` Duo Chat has access to the
@@ -383,7 +370,7 @@ After Quick Chat opens:
 </figure>
 <!-- Video published on 2023-11-10 -->
 
-For tips and tricks about integrating GitLab Duo Chat into your AI-powered DevSecOps workflows,
+For tips and tricks about integrating GitLab Duo Chat into your AI-native DevSecOps workflows,
 read the blog post:
 [10 best practices for using AI-powered GitLab Duo Chat](https://about.gitlab.com/blog/2024/04/02/10-best-practices-for-using-ai-powered-gitlab-duo-chat/).
 
@@ -411,6 +398,21 @@ Prerequisites:
    - **Expire conversation based on time conversation was last updated.**
    - **Expire conversation based on time conversation was created.**
 1. Select **Save changes**.
+
+## Available language models
+
+Different language models can be the source for GitLab Duo Chat.
+
+- On GitLab.com or GitLab Self-Managed, the default GitLab AI vendor models and
+  cloud-based AI gateway that is hosted by GitLab.
+- On GitLab Self-Managed, in GitLab 17.9 and later, [GitLab Duo Self-Hosted with a supported self-hosted model](../../administration/gitlab_duo_self_hosted/_index.md). Self-hosted models maximize
+  security and privacy by making sure nothing is sent to an external model.
+
+  {{< alert type="note" >}}
+
+  You cannot use all Chat features with GitLab Duo Self-Hosted. For more information, see [supported Chat features](../../administration/gitlab_duo_self_hosted/_index.md#supported-duo-chat-features).
+
+  {{< /alert >}}
 
 ## Give feedback
 

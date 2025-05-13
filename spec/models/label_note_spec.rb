@@ -21,7 +21,7 @@ RSpec.describe LabelNote, feature_category: :team_planning do
       note = described_class.from_events(
         [
           create(:resource_label_event, label: label, issue: resource)
-        ])
+        ], resource: resource, resource_parent: resource.resource_parent)
 
       expect(note.note_html).to include(project_issues_path(project, label_name: label.title))
     end
@@ -36,7 +36,7 @@ RSpec.describe LabelNote, feature_category: :team_planning do
       note = described_class.from_events(
         [
           create(:resource_label_event, label: label, merge_request: resource)
-        ])
+        ], resource: resource, resource_parent: resource.resource_parent)
 
       expect(note.note_html).to include(project_merge_requests_path(project, label_name: label.title))
     end

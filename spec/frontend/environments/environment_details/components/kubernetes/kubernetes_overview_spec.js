@@ -154,7 +154,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
       wrapper = createWrapper();
 
       expect(findKubernetesStatusBar().props()).toEqual({
-        clusterHealthStatus: 'success',
+        clusterHealthStatus: '',
         configuration,
         environmentName: defaultProps.environmentName,
         fluxResourcePath: kustomizationResourcePath,
@@ -199,31 +199,15 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
         wrapper = createWrapper();
       });
 
-      it("doesn't set `clusterHealthStatus` when pods are still loading", async () => {
-        findKubernetesTabs().vm.$emit('loading', true);
+      it('sets cluster `clusterHealthStatus` status when receives cluster state update event from tabs', async () => {
+        findKubernetesTabs().vm.$emit('update-cluster-state', '');
         await nextTick();
 
         expect(findKubernetesStatusBar().props('clusterHealthStatus')).toBe('');
-      });
 
-      it('sets `clusterHealthStatus` as error when pods emitted a failure', async () => {
-        findKubernetesTabs().vm.$emit('update-failed-state', { pods: true });
+        findKubernetesTabs().vm.$emit('update-cluster-state', 'success');
         await nextTick();
 
-        expect(findKubernetesStatusBar().props('clusterHealthStatus')).toBe('error');
-      });
-
-      it('sets `clusterHealthStatus` as success when data is loaded and no failures where emitted', () => {
-        expect(findKubernetesStatusBar().props('clusterHealthStatus')).toBe('success');
-      });
-
-      it('sets `clusterHealthStatus` as success after state update if there are no failures', async () => {
-        findKubernetesTabs().vm.$emit('update-failed-state', { pods: true });
-        await nextTick();
-        expect(findKubernetesStatusBar().props('clusterHealthStatus')).toBe('error');
-
-        findKubernetesTabs().vm.$emit('update-failed-state', { pods: false });
-        await nextTick();
         expect(findKubernetesStatusBar().props('clusterHealthStatus')).toBe('success');
       });
     });

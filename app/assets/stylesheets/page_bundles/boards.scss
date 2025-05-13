@@ -81,7 +81,7 @@
   right: -1px;
   pointer-events: none;
   opacity: 0;
-  border-radius: $gl-border-radius-base;
+  @apply gl-rounded-base;
   animation-name: board-column-flash-border;
   animation-duration: 1.2s;
   animation-fill-mode: forwards;
@@ -180,7 +180,7 @@
   cursor: help;
 }
 
-.issue-boards-content:not(.breadcrumbs) {
+.issue-boards-content {
   isolation: isolate;
 }
 

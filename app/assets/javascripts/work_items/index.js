@@ -8,7 +8,7 @@ import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { injectVueAppBreadcrumbs } from '~/lib/utils/breadcrumbs';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
-import { ISSUE_WIT_FEEDBACK_BADGE } from '~/work_items/constants';
+import { ISSUE_WIT_FEEDBACK_BADGE, WORK_ITEM_TYPE_NAME_ISSUE } from '~/work_items/constants';
 import App from './components/app.vue';
 import WorkItemBreadcrumb from './components/work_item_breadcrumb.vue';
 import activeDiscussionQuery from './components/design_management/graphql/client/active_design_discussion.query.graphql';
@@ -27,6 +27,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
 
   const {
     canAdminLabel,
+    canBulkUpdate,
     fullPath,
     groupPath,
     groupId,
@@ -36,6 +37,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     labelsManagePath,
     registerPath,
     signInPath,
+    hasGroupBulkEditFeature,
     hasIterationsFeature,
     hasOkrsFeature,
     hasSubepicsFeature,
@@ -47,7 +49,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     isSignedIn,
     workItemType: listWorkItemType,
     hasEpicsFeature,
-    showNewIssueLink,
+    showNewWorkItem,
     canCreateEpic,
     autocompleteAwardEmojisPath,
     hasScopedLabelsFeature,
@@ -63,7 +65,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
   } = el.dataset;
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
-  const router = createRouter({ fullPath, workItemType, workspaceType, defaultBranch, isGroup });
+  const router = createRouter({ fullPath, workspaceType, defaultBranch, isGroup });
   let listPath = issuesListPath;
 
   const breadcrumbParams = { workItemType: listWorkItemType, isGroup };
@@ -75,7 +77,10 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     breadcrumbParams.listPath = issuesListPath;
   }
 
-  injectVueAppBreadcrumbs(router, WorkItemBreadcrumb, apolloProvider, breadcrumbParams);
+  injectVueAppBreadcrumbs(router, WorkItemBreadcrumb, apolloProvider, breadcrumbParams, {
+    // Cf. https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186906
+    singleNavOptIn: true,
+  });
 
   apolloProvider.clients.defaultClient.cache.writeQuery({
     query: activeDiscussionQuery,
@@ -97,7 +102,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
   }
 
   if (
-    workItemType === 'issue' &&
+    workItemType === WORK_ITEM_TYPE_NAME_ISSUE &&
     gon.features.workItemsViewPreference &&
     !isGroup &&
     !gon.features.useWiViewForIssues
@@ -115,10 +120,12 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     router,
     apolloProvider,
     provide: {
-      canAdminLabel,
+      canAdminLabel: parseBoolean(canAdminLabel),
+      canBulkUpdate: parseBoolean(canBulkUpdate),
       fullPath,
       isGroup,
       isProject: !isGroup,
+      hasGroupBulkEditFeature: parseBoolean(hasGroupBulkEditFeature),
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
       hasOkrsFeature: parseBoolean(hasOkrsFeature),
       hasSubepicsFeature: parseBoolean(hasSubepicsFeature),
@@ -136,7 +143,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       isSignedIn: parseBoolean(isSignedIn),
       workItemType: listWorkItemType,
       hasEpicsFeature: parseBoolean(hasEpicsFeature),
-      showNewIssueLink: parseBoolean(showNewIssueLink),
+      showNewWorkItem: parseBoolean(showNewWorkItem),
       canCreateEpic: parseBoolean(canCreateEpic),
       autocompleteAwardEmojisPath,
       hasQualityManagementFeature: parseBoolean(hasQualityManagementFeature),

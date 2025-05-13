@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlAlert, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert } from '@gitlab/ui';
 
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -83,7 +83,7 @@ describe('WorkItemRelationships', () => {
     await waitForPromises();
   };
 
-  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findCrudComponent = () => wrapper.findComponent(CrudComponent);
   const findErrorMessage = () => wrapper.findComponent(GlAlert);
   const findEmptyRelatedMessageContainer = () => wrapper.findByTestId('crud-empty');
   const findLinkedItemsCountBadge = () => wrapper.findByTestId('linked-items-count-bage');
@@ -103,10 +103,10 @@ describe('WorkItemRelationships', () => {
     expect(workItemLinkedItemsSuccessHandler).toHaveBeenCalled();
   });
 
-  it('shows loading icon when query is not processed', () => {
+  it('shows loader when query is not processed', () => {
     createComponent();
 
-    expect(findLoadingIcon().exists()).toBe(true);
+    expect(findCrudComponent().props('isLoading')).toBe(true);
   });
 
   it('renders the component with defaults if no linked items exist', async () => {
@@ -118,6 +118,15 @@ describe('WorkItemRelationships', () => {
     expect(findEmptyRelatedMessageContainer().exists()).toBe(true);
     expect(findAddButton().exists()).toBe(true);
     expect(findWorkItemRelationshipForm().exists()).toBe(false);
+  });
+
+  it('does not render the component if there are no linked items and user does not have permission to admin work item link', async () => {
+    await createComponent({
+      workItemLinkedItemsHandler: jest.fn().mockResolvedValue(workItemEmptyLinkedItemsResponse),
+      canAdminWorkItemLink: false,
+    });
+
+    expect(wrapper.findByTestId('work-item-relationships').exists()).toBe(false);
   });
 
   it.each`

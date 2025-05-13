@@ -1,6 +1,5 @@
 <script>
 import { GlLoadingIcon, GlModal } from '@gitlab/ui';
-import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import { createAlert } from '~/alert';
 import { HTTP_STATUS_FORBIDDEN } from '~/lib/utils/http_status';
 import { mergeUrlParams, getParameterByName } from '~/lib/utils/url_utility';
@@ -15,7 +14,6 @@ export default {
     GroupsComponent,
     GlModal,
     GlLoadingIcon,
-    EmptyResult,
   },
   props: {
     action: {
@@ -53,11 +51,12 @@ export default {
         text: __('Cancel'),
       };
     },
-    groupLeaveConfirmationMessage() {
+    groupLeaveConfirmationTitle() {
       if (!this.targetGroup) {
         return '';
       }
-      return sprintf(s__('GroupsTree|Are you sure you want to leave the "%{fullName}" group?'), {
+
+      return sprintf(s__('GroupsTree|Are you sure you want to leave "%{fullName}"?'), {
         fullName: this.targetGroup.fullName,
       });
     },
@@ -234,19 +233,29 @@ export default {
     />
     <template v-else>
       <groups-component v-if="hasGroups" :groups="groups" :page-info="pageInfo" :action="action" />
-      <empty-result v-else-if="fromSearch" data-testid="search-empty-state" />
       <slot v-else name="empty-state"></slot>
     </template>
     <gl-modal
       modal-id="leave-group-modal"
       :visible="isModalVisible"
-      :title="__('Are you sure?')"
+      :title="groupLeaveConfirmationTitle"
       :action-primary="primaryProps"
       :action-cancel="cancelProps"
       @primary="leaveGroup"
       @hide="hideModal"
     >
-      {{ groupLeaveConfirmationMessage }}
+      <p>{{ s__('GroupsTree|When you leave this group:') }}</p>
+      <ul>
+        <li>{{ s__('GroupsTree|You lose access to all projects within this group') }}</li>
+        <li>
+          {{
+            s__(
+              'GroupsTree|Your assigned issues and merge requests remain, but you cannot view or modify them',
+            )
+          }}
+        </li>
+        <li>{{ s__('GroupsTree|You need an invitation to rejoin') }}</li>
+      </ul>
     </gl-modal>
   </div>
 </template>

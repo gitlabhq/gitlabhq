@@ -257,6 +257,17 @@ RSpec.describe GraphqlController, feature_category: :integrations do
         post :execute
       end
 
+      context 'when query is not a string type' do
+        it 'returns an unsupported type error' do
+          post :execute, as: :json, params: { query: true }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to include(
+            'errors' => include(a_hash_including('message' => /Expected one of/))
+          )
+        end
+      end
+
       context 'if using the GitLab CLI' do
         it 'call trackable for the old UserAgent' do
           agent = 'GLab - GitLab CLI'

@@ -45,7 +45,7 @@ are valid:
   - This syntax is from the [fugit modulo extension](https://github.com/floraison/fugit#the-modulo-extension)
 
 For complete cron documentation, refer to the
-[crontab(5) — Linux manual page](https://man7.org/linux/man-pages/man5/crontab.5.html).
+[crontab(5) Linux manual page](https://man7.org/linux/man-pages/man5/crontab.5.html).
 This documentation is accessible offline by entering `man 5 crontab` in a Linux or MacOS
 terminal.
 

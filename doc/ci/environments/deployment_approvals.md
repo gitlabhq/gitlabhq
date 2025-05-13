@@ -70,6 +70,9 @@ You can [also use the API](../../api/group_protected_environments.md#protect-a-s
 All jobs deploying to the environment are blocked and wait for approvals before running.
 Make sure the number of required approvals is less than the number of users allowed to deploy.
 
+A user can give only one approval per deployment, 
+even if the user is a member of multiple approver groups. [Issue 457541](https://gitlab.com/gitlab-org/gitlab/-/issues/457541) proposes to change this behavior so that the same user can give multiple approvals per deployment from different approver groups.
+
 After a deployment job is approved, you must [run the job manually](../jobs/job_control.md#run-a-manual-job).
 
 ### Allow self-approval
@@ -114,6 +117,11 @@ To approve or reject a deployment:
 
 You can also [use the API](../../api/deployments.md#approve-or-reject-a-blocked-deployment).
 
+You can give only one approval per deployment, even if you are a member of multiple 
+approver groups. [Issue 457541](https://gitlab.com/gitlab-org/gitlab/-/issues/457541) 
+proposes to change this behavior so that the same user can give multiple 
+approvals per deployment from different approver groups.
+
 The corresponding deployment job does not run automatically after a deployment is approved.
 
 ### View the approval details of a deployment
@@ -157,15 +165,3 @@ The `status` field indicates whether a deployment is blocked.
 ## Related topics
 
 - [Deployment approvals feature epic](https://gitlab.com/groups/gitlab-org/-/epics/6832)
-
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->

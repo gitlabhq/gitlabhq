@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'OAuth Login', :allow_forgery_protection, feature_category: :system_access do
+RSpec.describe 'OAuth Login', :with_current_organization, :allow_forgery_protection, feature_category: :system_access do
   include DeviseHelpers
 
   def enter_code(code)
@@ -151,7 +151,7 @@ RSpec.describe 'OAuth Login', :allow_forgery_protection, feature_category: :syst
     before do
       sign_in(user)
 
-      create(:organization, :default)
+      create(:organization)
       create(:oauth_access_token, application: application, resource_owner_id: user.id, scopes: 'api')
     end
 

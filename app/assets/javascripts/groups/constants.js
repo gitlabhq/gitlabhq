@@ -7,6 +7,7 @@ import {
 } from '~/groups_projects/constants';
 
 export const MAX_CHILDREN_COUNT = 20;
+export const SEARCH_MINIMUM_LENGTH = 3;
 
 export const ACTIVE_TAB_SUBGROUPS_AND_PROJECTS = 'subgroups_and_projects';
 export const ACTIVE_TAB_SHARED = 'shared';

@@ -11,7 +11,6 @@ To get started with Vue, read through [their documentation](https://v2.vuejs.org
 
 What is described in the following sections can be found in these examples:
 
-- [Web IDE](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/app/assets/javascripts/ide/stores)
 - [Security products](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/app/assets/javascripts/vue_shared/security_reports)
 - [Registry](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/app/assets/javascripts/registry/stores)
 
@@ -148,6 +147,56 @@ export default {
 
 ```html
 <div id="js-my-element" data-view-model='{"prop1": "my object", "prop2": 42 }'></div>
+```
+
+```javascript
+//index.js
+import MyComponent from './my_component.vue'
+import { initSimpleApp } from '~/helpers/init_simple_app_helper'
+
+initSimpleApp('#js-my-element', MyComponent, { name: 'MyAppRoot' })
+```
+
+###### Passing values as `provide`/`inject` instead of props
+
+To use `initSimpleApp` to pass values as `provide`/`inject` instead of props:
+
+1. Include an HTML element in the page with an ID or unique class.
+1. Add a `data-provide` attribute containing a JSON object.
+1. Import the desired Vue component, and pass it along with a valid CSS selector string
+   that selects the HTML element to `initSimpleApp`. This string mounts the component
+   at the specified location.
+
+`initSimpleApp` automatically retrieves the content of the data-provide attribute as a JSON object and passes it as inject to the mounted Vue component. This can be used to pre-populate the component with data.
+
+Example:
+
+```vue
+//my_component.vue
+<template>
+  <div>
+    <p>Inject1: {{ inject1 }}</p>
+    <p>Inject2: {{ inject2 }}</p>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'MyComponent',
+  inject: {
+    inject1: {
+      default: '',
+    },
+    inject2: {
+      default: 0
+    }
+  },
+}
+</script>
+```
+
+```html
+<div id="js-my-element" data-provide='{"inject1": "my object", "inject2": 42 }'></div>
 ```
 
 ```javascript

@@ -60,9 +60,11 @@ export default {
     },
     errorMessageBodyAlert() {
       if (this.singleErrorPackage) {
-        return sprintf(this.$options.i18n.errorMessageBodyAlert, {
-          message: this.singleErrorPackage.statusMessage || ERRORED_PACKAGE_TEXT,
-        });
+        return sprintf(
+          this.$options.i18n.errorMessageBodyAlert,
+          { message: this.singleErrorPackage.statusMessage || ERRORED_PACKAGE_TEXT },
+          false,
+        );
       }
 
       return sprintf(

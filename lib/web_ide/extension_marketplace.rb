@@ -8,8 +8,7 @@ module WebIde
     def self.feature_enabled_for_any_user?
       # note: Intentionally pass `nil` here since we don't have a user in scope
       feature_enabled_from_application_settings?(user: nil) &&
-        feature_flag_enabled_for_any_actor?(:web_ide_extensions_marketplace) &&
-        feature_flag_enabled_for_any_actor?(:vscode_web_ide)
+        feature_flag_enabled_for_any_actor?(:web_ide_extensions_marketplace)
     end
 
     # Returns true if the extensions marketplace feature is enabled for the given user
@@ -93,8 +92,7 @@ module WebIde
     # @param user [User]
     # @return [Boolean]
     def self.feature_enabled_from_flags?(user:)
-      Feature.enabled?(:web_ide_extensions_marketplace, user) &&
-        Feature.enabled?(:vscode_web_ide, user)
+      Feature.enabled?(:web_ide_extensions_marketplace, user)
     end
 
     private_class_method :feature_flag_enabled_for_any_actor?, :should_use_application_settings?,

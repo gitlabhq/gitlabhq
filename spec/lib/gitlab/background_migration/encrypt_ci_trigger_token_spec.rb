@@ -8,7 +8,7 @@ RSpec.describe Gitlab::BackgroundMigration::EncryptCiTriggerToken, feature_categ
       ci_trigger.send :attr_encrypted, :encrypted_token_tmp,
         attribute: :encrypted_token,
         mode: :per_attribute_iv,
-        key: ::Settings.attr_encrypted_db_key_base_32,
+        key: Settings.db_key_base_keys_32_bytes.first,
         algorithm: 'aes-256-gcm',
         encode: false
     end

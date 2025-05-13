@@ -177,6 +177,20 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
           expect(updated_group.crm_enabled?).to be_truthy
           expect(updated_group.crm_group).to eq(internal_group)
         end
+
+        context 'when crm_source_group_id blank and issues have contacts' do
+          let(:params) { { crm_source_group_id: '' } }
+
+          before do
+            allow(public_group).to receive(:has_issues_with_contacts?).and_return(true)
+          end
+
+          it 'does not return an error' do
+            described_class.new(public_group, user, params).execute
+
+            expect(public_group.errors).to be_empty
+          end
+        end
       end
 
       context 'with existing crm_settings' do
@@ -595,62 +609,6 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
       it 'does not update the attribute' do
         expect { service.execute }.not_to change { internal_group.default_branch_protection_defaults }
         expect { service.execute }.not_to change { internal_group.namespace_settings.default_branch_protection_defaults }
-      end
-    end
-  end
-
-  context 'when setting enable_namespace_descendants_cache' do
-    let(:params) { { enable_namespace_descendants_cache: true } }
-
-    subject(:result) { described_class.new(public_group, user, params).execute }
-
-    context 'when the group_hierarchy_optimization feature flag is enabled' do
-      before do
-        stub_feature_flags(group_hierarchy_optimization: true)
-      end
-
-      context 'when enabling the setting' do
-        it 'creates the initial Namespaces::Descendants record' do
-          expect { result }.to change { public_group.reload.namespace_descendants.present? }.from(false).to(true)
-
-          expect(public_group.namespace_descendants.outdated_at).to be_present
-        end
-      end
-
-      context 'when accidentally enabling the setting again' do
-        it 'does nothing' do
-          namespace_descendants = create(:namespace_descendants, namespace: public_group)
-
-          expect { result }.not_to change { namespace_descendants.reload }
-        end
-      end
-
-      context 'when disabling the setting' do
-        before do
-          params[:enable_namespace_descendants_cache] = false
-        end
-
-        it 'removes the Namespaces::Descendants record' do
-          create(:namespace_descendants, namespace: public_group)
-
-          expect { result }.to change { public_group.reload.namespace_descendants }.to(nil)
-        end
-
-        context 'when the Namespaces::Descendants record is missing' do
-          it 'does not raise error' do
-            expect { result }.not_to raise_error
-          end
-        end
-      end
-    end
-
-    context 'when the group_hierarchy_optimization feature flag is disabled' do
-      before do
-        stub_feature_flags(group_hierarchy_optimization: false)
-      end
-
-      it 'does nothing' do
-        expect { result }.not_to change { public_group.reload.namespace_descendants.present? }.from(false)
       end
     end
   end

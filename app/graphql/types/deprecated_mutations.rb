@@ -5,7 +5,8 @@ module Types
     extend ActiveSupport::Concern
 
     prepended do
-      # placeholder for any FOSS mutations to be deprecated
+      mount_aliased_mutation 'WorkItemExport', Mutations::WorkItems::CSV::Export,
+        deprecated: { reason: 'Use WorkItemsCsvExport', milestone: '18.0' }
     end
   end
 end

@@ -1,0 +1,9 @@
+---
+name: ui_for_organizations
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/17432
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122866
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/414592
+milestone: '16.1'
+type: wip
+group: group::organizations
+default_enabled: false

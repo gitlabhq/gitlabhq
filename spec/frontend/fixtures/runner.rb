@@ -261,4 +261,28 @@ RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :fleet_visibili
       end
     end
   end
+
+  describe 'as project maintainer', GraphQL::Query do
+    let_it_be(:project_maintainer) { create(:user) }
+
+    before_all do
+      project.add_maintainer(project_maintainer)
+    end
+
+    describe 'project_runners.query.graphql', type: :request do
+      project_runners_query = 'list/project_runners.query.graphql'
+
+      let_it_be(:query) do
+        get_graphql_query_as_string("#{query_path}#{project_runners_query}")
+      end
+
+      it "#{fixtures_path}#{project_runners_query}.json" do
+        post_graphql(query, current_user: project_maintainer, variables: {
+          fullPath: project.full_path
+        })
+
+        expect_graphql_errors_to_be_empty
+      end
+    end
+  end
 end

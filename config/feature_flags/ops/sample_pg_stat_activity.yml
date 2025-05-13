@@ -4,6 +4,6 @@ feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/3
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168335
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/503486
 milestone: '17.6'
-group: group::scalability
+group: group::durability
 type: ops
 default_enabled: false

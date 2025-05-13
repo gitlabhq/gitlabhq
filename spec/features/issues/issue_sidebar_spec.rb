@@ -164,7 +164,7 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
         end
       end
 
-      context 'for editing issue labels', :js do
+      context 'for editing issue labels', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448822' do
         it_behaves_like 'labels sidebar widget'
       end
 

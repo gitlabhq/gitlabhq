@@ -448,7 +448,7 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
       lazy { package.name } | :pypi    | ref(:project_owner)        | 'success response because package not protected'
       lazy { package.name } | :maven   | ref(:project_deploy_token) | 'forbidden response because package protected'
       lazy { package.name } | :pypi    | ref(:project_deploy_token) | 'success response because package not protected'
-      lazy { package.name } | :maven   | nil                        | 'bad_request response'
+      lazy { package.name } | :maven   | nil                        | 'forbidden response because package protected'
       ''                    | :maven   | ref(:project_developer)    | 'success response because package not protected'
       nil                   | :maven   | ref(:project_developer)    | 'success response because package not protected'
       nil                   | :no_type | ref(:project_developer)    | 'bad_request response'

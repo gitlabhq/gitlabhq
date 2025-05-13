@@ -23,6 +23,7 @@ import {
   WORK_ITEM_TYPE_NAME_EPIC,
   NAME_TO_ENUM_MAP,
   WIDGET_TYPE_CUSTOM_FIELDS,
+  WIDGET_TYPE_STATUS,
 } from '../constants';
 import { findHierarchyWidgetDefinition } from '../utils';
 import workItemParticipantsQuery from '../graphql/work_item_participants.query.graphql';
@@ -54,6 +55,7 @@ export default {
     WorkItemColor: () => import('ee_component/work_items/components/work_item_color.vue'),
     WorkItemCustomFields: () =>
       import('ee_component/work_items/components/work_item_custom_fields.vue'),
+    WorkItemStatus: () => import('ee_component/work_items/components/work_item_status.vue'),
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['hasSubepicsFeature'],
@@ -132,14 +134,14 @@ export default {
     canUpdateMetadata() {
       return this.workItem?.userPermissions?.setWorkItemMetadata;
     },
-    canDelete() {
-      return this.workItem?.userPermissions?.deleteWorkItem;
-    },
     workItemAssignees() {
       return this.isWidgetPresent(WIDGET_TYPE_ASSIGNEES);
     },
     workItemLabels() {
       return this.isWidgetPresent(WIDGET_TYPE_LABELS);
+    },
+    workItemStatus() {
+      return this.isWidgetPresent(WIDGET_TYPE_STATUS);
     },
     workItemStartAndDueDate() {
       return this.isWidgetPresent(WIDGET_TYPE_START_AND_DUE_DATE);
@@ -165,9 +167,6 @@ export default {
     workItemMilestone() {
       return this.isWidgetPresent(WIDGET_TYPE_MILESTONE);
     },
-    showRolledupDates() {
-      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
-    },
     isParentEnabled() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC ? this.hasSubepicsFeature : true;
     },
@@ -183,9 +182,6 @@ export default {
     workItemColor() {
       return this.isWidgetPresent(WIDGET_TYPE_COLOR);
     },
-    workItemAuthor() {
-      return this.workItem?.author;
-    },
     hasParent() {
       return this.workItemHierarchy?.hasParent;
     },
@@ -195,8 +191,8 @@ export default {
     customFields() {
       return this.isWidgetPresent(WIDGET_TYPE_CUSTOM_FIELDS)?.customFieldValues;
     },
-    showWorkItemCustomFields() {
-      return this.glFeatures.customFieldsFeature && this.customFields;
+    showWorkItemStatus() {
+      return this.glFeatures.workItemStatusFeatureFlag && this.workItemStatus;
     },
   },
   methods: {
@@ -208,7 +204,17 @@ export default {
 </script>
 
 <template>
-  <div class="work-item-attributes-wrapper">
+  <div class="work-item-attributes-wrapper work-item-sidebar-container">
+    <work-item-status
+      v-if="showWorkItemStatus"
+      class="work-item-attributes-item"
+      :can-update="canUpdateMetadata"
+      :work-item-id="workItem.id"
+      :work-item-iid="workItem.iid"
+      :work-item-type="workItemType"
+      :full-path="fullPath"
+      @error="$emit('error', $event)"
+    />
     <work-item-assignees
       v-if="workItemAssignees"
       class="js-assignee work-item-attributes-item"
@@ -218,7 +224,6 @@ export default {
       :work-item-id="workItem.id"
       :assignees="workItemAssignees.assignees.nodes"
       :participants="workItemParticipants"
-      :work-item-author="workItemAuthor"
       :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
       :work-item-type="workItemType"
       :can-invite-members="workItemAssignees.canInviteMembers"
@@ -319,13 +324,12 @@ export default {
       @error="$emit('error', $event)"
     />
     <work-item-custom-fields
-      v-if="showWorkItemCustomFields"
+      v-if="customFields"
       :work-item-id="workItem.id"
       :work-item-type="workItemType"
       :custom-fields="customFields"
       :full-path="fullPath"
       :can-update="canUpdateMetadata"
-      :is-group="isGroup"
       @error="$emit('error', $event)"
     />
     <work-item-parent

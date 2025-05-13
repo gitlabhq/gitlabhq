@@ -2,7 +2,7 @@
 
 - project = local_assigns.fetch(:project)
 
-= render Pajamas::CardComponent.new(card_options: { data: { testid: 'export-project-content' } }) do |c|
+= render Pajamas::CardComponent.new(card_options: { id: 'export-project', data: { testid: 'export-project-content' } }) do |c|
   - c.with_header do
     .gl-flex.gl-grow
       %h4.gl-text-base.gl-leading-24.gl-m-0= _('Export project')

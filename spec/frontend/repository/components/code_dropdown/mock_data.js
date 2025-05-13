@@ -5,6 +5,7 @@ export const mockIdeItems = [
     },
     href: 'webIdeUrl://foo.bar',
     shortcut: '.',
+    testId: 'webide-menu-item',
     text: 'Web IDE',
     tracking: {
       action: 'click_consolidated_edit',

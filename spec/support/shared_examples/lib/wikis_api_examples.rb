@@ -53,7 +53,7 @@ RSpec.shared_examples_for 'wikis API returns wiki page' do
 
     specify do
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response.size).to eq(6)
+      expect(json_response.size).to eq(7)
       expect(json_response.keys).to match_array(expected_keys_with_content)
       expect(json_response['content']).to eq(expected_content)
       expect(json_response['slug']).to eq(page.slug)
@@ -118,7 +118,7 @@ RSpec.shared_examples_for 'wikis API creates wiki page' do
     post(api(url, user), params: payload)
 
     expect(response).to have_gitlab_http_status(:created)
-    expect(json_response.size).to eq(6)
+    expect(json_response.size).to eq(7)
     expect(json_response.keys).to match_array(expected_keys_with_content)
     expect(json_response['content']).to eq(payload[:content])
     expect(json_response['slug']).to eq(payload[:title].tr(' ', '-'))
@@ -145,7 +145,7 @@ RSpec.shared_examples_for 'wikis API updates wiki page' do
     put(api(url, user), params: payload)
 
     expect(response).to have_gitlab_http_status(:ok)
-    expect(json_response.size).to eq(6)
+    expect(json_response.size).to eq(7)
     expect(json_response.keys).to match_array(expected_keys_with_content)
     expect(json_response['content']).to eq(payload[:content])
     expect(json_response['slug']).to eq(payload[:title].tr(' ', '-'))

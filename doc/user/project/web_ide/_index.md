@@ -18,15 +18,9 @@ title: Web IDE
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95169) in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/371084) in GitLab 15.7.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115741) in GitLab 15.11.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188427) in GitLab 18.0. Feature flag `vscode_web_ide` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 The Web IDE is an advanced editor where you can edit multiple files, stage changes, and create
 commits directly in the GitLab UI. Unlike the [Web Editor](../repository/web_editor.md), the Web
@@ -393,13 +387,14 @@ see [access token expiration](../../../integration/oauth_provider.md#access-toke
 
 {{< /details >}}
 
-On GitLab Self-Managed, [Workhorse](../../../development/workhorse/_index.md) must be installed
-and running in front of the GitLab Rails server.
-Otherwise, you might encounter issues when you open the Web IDE or
-use certain features like Markdown preview.
+On GitLab Self-Managed, Workhorse must be installed and running in front of the GitLab Rails
+server. If it is not, you might encounter issues when you open the Web IDE or use certain
+features like Markdown preview.
 
-For more information about this dependency,
-see [features that rely on Workhorse](../../../development/workhorse/gitlab_features.md#5-web-ide).
+For security, some parts of the Web IDE must run in a separate origin. To support this
+approach, the Web IDE uses Workhorse to route requests appropriately to and from Web IDE
+assets. The Web IDE assets are static frontend assets, so it’s unnecessary overhead to rely 
+on Rails for this effort.
 
 ### Report a problem
 

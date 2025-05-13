@@ -90,7 +90,7 @@ new features and services must be written to consider Kubernetes compatibility *
 
 The simplest way to ensure this, is to add support for your feature or service to
 [the official GitLab Helm chart](https://docs.gitlab.com/charts/) or reach out to
-[the Distribution team](https://handbook.gitlab.com/handbook/engineering/infrastructure/core-platform/systems/distribution/#how-to-work-with-distribution).
+[the Distribution team](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/gitlab-delivery/distribution/#how-to-work-with-distribution).
 
 Refer to the [process for adding new service components](adding_service_component.md) for more details.
 
@@ -578,7 +578,7 @@ You can use it either for personal or business websites, such as portfolios, doc
 
 GitLab Runner runs jobs and sends the results to GitLab.
 
-GitLab CI/CD is the open-source continuous integration service included with GitLab that coordinates the testing. The old name of this project was `GitLab CI Multi Runner` but please use `GitLab Runner` (without CI) from now on.
+GitLab CI/CD is the open-source continuous integration service included with GitLab that coordinates the testing. The old name of this project was `GitLab CI Multi Runner`, but you should use `GitLab Runner` (without CI) from now on.
 
 #### GitLab Shell
 
@@ -1182,4 +1182,4 @@ millions of users.
 
 ### AI architecture
 
-A [SaaS model gateway](ai_architecture.md) is available to enable AI-powered features.
+A [SaaS model gateway](ai_architecture.md) is available to enable AI-native features.

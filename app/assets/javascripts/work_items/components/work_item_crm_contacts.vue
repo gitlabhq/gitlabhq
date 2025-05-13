@@ -1,7 +1,6 @@
 <script>
 import { GlLink, GlPopover, GlTooltipDirective, GlTruncateText } from '@gitlab/ui';
 import { difference, groupBy, xor } from 'lodash';
-import { findWidget } from '~/issues/list/utils';
 import { __, n__, s__ } from '~/locale';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import Tracking from '~/tracking';
@@ -9,8 +8,8 @@ import getGroupContactsQuery from '~/crm/contacts/components/graphql/get_group_c
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
-import { i18n, TRACKING_CATEGORY_SHOW, WIDGET_TYPE_CRM_CONTACTS } from '../constants';
-import { newWorkItemFullPath, newWorkItemId } from '../utils';
+import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
+import { findCrmContactsWidget, newWorkItemFullPath, newWorkItemId } from '../utils';
 
 export default {
   directives: {
@@ -74,6 +73,7 @@ export default {
         };
       });
     },
+    // eslint-disable-next-line vue/no-unused-properties
     tracking() {
       return {
         category: TRACKING_CATEGORY_SHOW,
@@ -85,7 +85,7 @@ export default {
       return this.groupByOrganization(this.selectedItems, false);
     },
     workItemCrmContacts() {
-      return findWidget(WIDGET_TYPE_CRM_CONTACTS, this.workItem);
+      return findCrmContactsWidget(this.workItem);
     },
     workItemFullPath() {
       return this.createFlow

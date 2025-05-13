@@ -46,7 +46,7 @@ To set up Pages with a custom domain name, read the requirements and steps below
   (`*.gitlab.io`, for GitLab.com).
 - A custom domain name `example.com` or subdomain `subdomain.example.com`.
 - Access to your domain's server control panel to set up DNS records:
-  - A DNS record (`A`, `ALIAS`, or `CNAME`) pointing your domain to the GitLab Pages server. If
+  - A DNS record (`A`, `AAAA`, `ALIAS`, or `CNAME`) pointing your domain to the GitLab Pages server. If
     there are multiple DNS records on that name, you must use an `ALIAS` record.
   - A DNS `TXT` record to verify your domain's ownership.
 
@@ -83,23 +83,22 @@ according to the type of domain you want to use with your Pages site:
 - [For subdomains](#for-subdomains), `subdomain.example.com`.
 - [For both](#for-both-root-and-subdomains).
 
-You can [configure IPv6 on GitLab Self-Managed instances](../../../../administration/pages/_index.md#advanced-configuration),
-but IPv6 is not currently configured for Pages on GitLab.com.
-Follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/214718) for details.
-
 ##### For root domains
 
 Root domains (`example.com`) require:
 
-- A [DNS `A` record](dns_concepts.md#a-record) pointing your domain to the Pages server.
+- At least one of:
+  - A [DNS `A` record](dns_concepts.md#a-record) pointing your domain to the Pages server.
+  - A [DNS `AAAA` record](dns_concepts.md#aaaa-record) pointing your domain to the Pages server.
 - A [`TXT` record](dns_concepts.md#txt-record) to verify your domain's ownership.
 
 | From                                          | DNS Record | To              |
 | --------------------------------------------- | ---------- | --------------- |
 | `example.com`                                 | `A`        | `35.185.44.232` |
+| `example.com`                                 | `AAAA`     | `2600:1901:0:7b8a::` |
 | `_gitlab-pages-verification-code.example.com` | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
 
-For projects on GitLab.com, this IP is `35.185.44.232`.
+For projects on GitLab.com, the IPv4 address is `35.185.44.232` and the IPv6 address is `2600:1901:0:7b8a::`.
 For projects living in other GitLab instances (CE or EE), contact
 your sysadmin asking for this information (which IP address is Pages
 server running on your instance).
@@ -110,9 +109,9 @@ server running on your instance).
 
 If you use your root domain for your GitLab Pages website
 **only**, and if your domain registrar supports this feature, you can
-add a DNS apex `CNAME` record instead of an `A` record. The main
+add a DNS apex `CNAME` record instead of an `A` or `AAAA` record. The main
 advantage of doing so is that when GitLab Pages IP on GitLab.com
-changes for whatever reason, you don't need to update your `A` record.
+changes for whatever reason, you don't need to update your `A` or `AAAA` record.
 There may be a few exceptions, but **this method is not recommended**
 as it most likely doesn't work if you set an [`MX` record](dns_concepts.md#mx-record) for your root domain.
 
@@ -142,12 +141,14 @@ domain to the same website, for instance, `example.com` and `www.example.com`.
 They require:
 
 - A DNS `A` record for the domain.
+- A DNS `AAAA` record for the domain.
 - A DNS `ALIAS`/`CNAME` record for the subdomain.
 - A DNS `TXT` record for each.
 
 | From                                              | DNS Record | To |
 |---------------------------------------------------|------------|----|
 | `example.com`                                     | `A`        | `35.185.44.232` |
+| `example.com`                                     | `AAAA`     | `2600:1901:0:7b8a::` |
 | `_gitlab-pages-verification-code.example.com`     | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
 | `www.example.com`                                 | `CNAME`    | `namespace.gitlab.io` |
 | `_gitlab-pages-verification-code.www.example.com` | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
@@ -165,6 +166,8 @@ Additionally:
 - GitLab Pages IP on GitLab.com [was changed](https://about.gitlab.com/releases/2017/03/06/we-are-changing-the-ip-of-gitlab-pages-on-gitlab-com/) in 2017.
 - GitLab Pages IP on GitLab.com [has changed](https://about.gitlab.com/blog/2018/07/19/gcp-move-update/#gitlab-pages-and-custom-domains)
   from `52.167.214.135` to `35.185.44.232` in 2018.
+- IPv6 support [was added](https://gitlab.com/gitlab-org/gitlab/-/issues/214718)
+  to GitLab.com in 2023.
 
 #### 4. Verify the domain's ownership
 
@@ -216,7 +219,9 @@ To do so, you can use Cloudflare's page rules associated to a
 `CNAME` record to redirect `www.domain.com` to `domain.com`. You
 can use the following setup:
 
-1. In Cloudflare, create a DNS `A` record pointing `domain.com` to `35.185.44.232`.
+1. In Cloudflare, create at least one of:
+   - A DNS `A` record pointing `domain.com` to `35.185.44.232`.
+   - A DNS `AAAA` record pointing `domain.com` to `2600:1901:0:7b8a::`.
 1. In GitLab, add the domain to GitLab Pages and get the verification code.
 1. In Cloudflare, create a DNS `TXT` record to verify your domain.
 1. In GitLab, verify your domain.

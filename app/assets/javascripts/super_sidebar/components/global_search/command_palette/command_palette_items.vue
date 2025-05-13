@@ -300,7 +300,7 @@ export default {
       </gl-disclosure-dropdown-group>
     </ul>
 
-    <div v-else-if="hasSearchQuery && !hasResults" class="gl-py-3 gl-pl-5 gl-text-default">
+    <div v-else-if="hasSearchQuery && !hasResults" class="gl-pl-5 gl-pt-3 gl-text-default">
       {{ __('No results found') }}
     </div>
   </div>

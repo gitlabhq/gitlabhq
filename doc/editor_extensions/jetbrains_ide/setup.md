@@ -11,7 +11,7 @@ and install it.
 
 Prerequisites:
 
-- JetBrains IDEs: **2023.2.X** and later.
+- JetBrains IDEs: 2023.2.X and later.
 - GitLab version 16.8 or later.
 
 If you use an older version of a JetBrains IDE, download a version of the plugin compatible with your IDE:

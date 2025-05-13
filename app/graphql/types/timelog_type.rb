@@ -54,7 +54,7 @@ module Types
       description: 'Target project of the timelog merge request or issue.'
 
     def user
-      Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.user_id).find
+      Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.user_id, default_value: ::Users::Internal.ghost).find
     end
 
     def issue

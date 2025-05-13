@@ -37,7 +37,6 @@ module Projects
         full_path: project.full_path,
         graphql_resource_etag: graphql_etag_pipeline_path(pipeline),
         pipeline_iid: pipeline.iid,
-        pipeline_id: pipeline.id,
         pipelines_path: project_pipelines_path(project)
       }
     end

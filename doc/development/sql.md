@@ -79,7 +79,7 @@ USING GIN(column_name gin_trgm_ops);
 ```
 
 The key here is the `GIN(column_name gin_trgm_ops)` part. This creates a
-[GIN index](https://www.postgresql.org/docs/current/gin.html)
+[GIN index](https://www.postgresql.org/docs/16/gin.html)
 with the operator class set to `gin_trgm_ops`. These indexes
 _can_ be used by `ILIKE` / `LIKE` and can lead to greatly improved performance.
 One downside of these indexes is that they can easily get quite large (depending
@@ -451,7 +451,7 @@ requirements). Adding indexes comes with
 Furthermore, since `created_at` usually isn't a unique column then sorting
 and paginating over it would be unstable and we'd still need to add a
 [tie-breaker column to the sort](database/pagination_performance_guidelines.md#tie-breaker-column)
-(e.g. `ORDER BY created_at, id`) with an appropriate index for that.
+(for example, `ORDER BY created_at, id`) with an appropriate index for that.
 
 But, for the majority of features our users find that `ORDER BY id` is a good
 enough proxy for what they need. It's not technically always

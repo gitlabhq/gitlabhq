@@ -13,7 +13,7 @@ lock_gitlab_schemas:
   - gitlab_ci
   - gitlab_ci_cell_local
   - gitlab_pm
-klass: Gitlab::Database::SecApplicationRecord
+klass: SecApplicationRecord
 # if Sec database is not configured, use this database
 fallback_database: main
 uses_load_balancing: true

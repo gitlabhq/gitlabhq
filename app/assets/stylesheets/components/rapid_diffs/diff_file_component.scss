@@ -1,34 +1,50 @@
-@import 'framework/variables';
+@use 'constants';
 
 .rd-diff-file-component {
+  display: block;
   scroll-margin-top: var(--rd-app-sticky-top-with-padding);
+  margin-bottom: $gl-padding;
 }
 
 .rd-diff-file {
-  padding-bottom: $gl-padding;
-
   --rd-diff-file-border-radius: #{calc($gl-border-radius-base - 1px)};
 }
 
+.rd-diff-file[data-virtual]:not([data-collapsed]) {
+  $header-padding: constants.$diff-file-header-padding-y * 2;
+  // top/bottom padding + toggle button size, excluding borders
+  $file-header-height: calc($header-padding + $gl-button-small-size);
+  // header top/bottom borders + body border
+  $total-borders: constants.$diff-file-border-width * 3;
+  content-visibility: var(--rd-content-visibility-auto, auto);
+  contain-intrinsic-size:
+    auto 0 auto
+    calc(#{$file-header-height} + #{$total-borders} + (#{constants.$code-row-height-target} * var(--total-rows)));
+}
+
 .rd-diff-file-header {
+  @apply gl-text-default;
   position: sticky;
   // 1px offset to hide top border
   top: calc(var(--rd-app-sticky-top, 1px) - 1px);
   display: flex;
   background-color: var(--gl-background-color-subtle);
   border: 1px solid var(--gl-border-color-default);
-  padding: $gl-padding-8 $gl-padding;
-  min-height: px-to-rem($file-header-height);
+  padding: constants.$diff-file-header-padding-y $gl-spacing-scale-4;
   border-radius: var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius) 0 0;
   word-break: break-word;
-  z-index: 1;
+  z-index: 3;
+}
+
+.rd-diff-file-header:has([data-options-toggle] button[aria-expanded='true']) {
+  z-index: 10;
 }
 
 .rd-diff-file[data-collapsed] .rd-diff-file-header {
   border-radius: var(--rd-diff-file-border-radius);
 }
 
-.rd-diff-file-title {
+.rd-diff-file-header-main {
   position: relative;
   display: flex;
   flex-wrap: wrap;
@@ -40,8 +56,19 @@
   z-index: 1;
 }
 
+.rd-diff-file-title {
+  @apply gl-text-default;
+  font: inherit;
+  font-weight: $gl-font-weight-heading;
+  margin: 0;
+}
+
+.rd-diff-file-moved {
+  font-weight: $gl-font-weight-normal;
+}
+
 .rd-diff-file-toggle {
-  margin-right: $gl-spacing-scale-2;
+  margin-right: $gl-spacing-scale-3;
 }
 
 .rd-diff-file[data-collapsed] .rd-diff-file-toggle-button[data-opened],
@@ -71,21 +98,22 @@
 .rd-diff-file-stats {
   display: flex;
   align-items: center;
-  margin-left: auto;
+  margin: 0 0 0 auto;
   white-space: nowrap;
 }
 
 .rd-lines-added {
   @apply gl-text-success;
+  margin: 0;
 }
 
 .rd-lines-removed {
   @apply gl-text-danger;
-  margin-left: $gl-padding-8;
+  margin: 0 0 0 $gl-padding-8;
 }
 
 .rd-diff-file-body {
-  border: 1px solid var(--gl-border-color-default);
+  border: constants.$diff-file-border-width solid var(--gl-border-color-default);
   border-top: 0;
   border-radius: 0 0 var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius);
 

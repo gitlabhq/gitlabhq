@@ -4,7 +4,11 @@ import { STATUS_CLOSED } from '~/issues/constants';
 import { humanTimeframe, isInPast, localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
 import { STATE_CLOSED } from '~/work_items/constants';
-import { findMilestoneWidget, findStartAndDueDateWidget } from '~/work_items/utils';
+import {
+  findMilestoneWidget,
+  findStartAndDueDateWidget,
+  findTimeTrackingWidget,
+} from '~/work_items/utils';
 import IssuableMilestone from '~/vue_shared/issuable/list/components/issuable_milestone.vue';
 import WorkItemAttribute from '~/vue_shared/components/work_item_attribute.vue';
 
@@ -55,7 +59,11 @@ export default {
       return findStartAndDueDateWidget(this.issue)?.startDate;
     },
     timeEstimate() {
-      return this.issue.humanTimeEstimate || this.issue.timeStats?.humanTimeEstimate;
+      return (
+        this.issue.humanTimeEstimate ||
+        this.issue.timeStats?.humanTimeEstimate ||
+        findTimeTrackingWidget(this.issue)?.humanReadableAttributes.timeEstimate
+      );
     },
   },
 };
@@ -63,12 +71,15 @@ export default {
 
 <template>
   <span>
+    <slot name="weight"></slot>
     <issuable-milestone v-if="milestone" :milestone="milestone" />
+    <slot name="iteration"></slot>
     <work-item-attribute
       v-if="dueDateText"
       anchor-id="issuable-due-date"
+      wrapper-component-class="issuable-due-date"
       :title="dueDateText"
-      title-component-class="issuable-due-date gl-mr-3"
+      title-component-class="gl-mr-3"
       :tooltip-text="dueDateTitle"
       tooltip-placement="top"
     >

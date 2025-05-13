@@ -40,8 +40,10 @@ RSpec.shared_context 'with integration' do
   let(:custom_attributes) do
     {
       jira: %i[
-        comment_on_event_enabled jira_issue_transition_automatic jira_issue_transition_id project_key
-        issues_enabled vulnerabilities_enabled vulnerabilities_issuetype
+        comment_on_event_enabled
+        jira_issue_transition_automatic
+        jira_issue_transition_id
+        issues_enabled
       ]
     }
   end

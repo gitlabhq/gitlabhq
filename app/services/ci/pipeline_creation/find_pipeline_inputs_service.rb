@@ -17,11 +17,11 @@ module Ci
 
       def execute
         unless current_user.can?(:download_code, project)
-          return error_response('insufficient permissions to read inputs')
+          return error_response(s_('Pipelines|Insufficient permissions to read inputs'))
         end
 
         if !project.repository.branch_or_tag?(ref) || sha.blank?
-          return error_response('ref can only be an existing branch or tag')
+          return error_response(s_('Pipelines|Can only run new pipelines for an existing branch or tag'))
         end
 
         # The project config may not exist if the project is using a policy.
@@ -36,14 +36,14 @@ module Ci
           # We need to read the uninterpolated YAML of the included file.
           yaml_content = ::Gitlab::Ci::Config::Yaml.load!(project_config.content)
           yaml_result = yaml_result_of_internal_include(yaml_content)
-          return error_response('invalid YAML config') unless yaml_result&.valid?
+          return error_response(s_('Pipelines|Invalid YAML syntax')) unless yaml_result&.valid?
 
           spec_inputs = Ci::PipelineCreation::Inputs::SpecInputs.new(yaml_result.spec[:inputs])
           return error_response(spec_inputs.errors.join(', ')) if spec_inputs.errors.any?
 
           success_response(spec_inputs)
         else
-          error_response('inputs not supported for this CI config source')
+          error_response(s_('Pipelines|Inputs not supported for this CI config source'))
         end
       rescue ::Gitlab::Ci::Config::Yaml::LoadError => e
         error_response("YAML load error: #{e.message}")

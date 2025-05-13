@@ -13,7 +13,7 @@ RSpec.describe SetPipelineName, feature_category: :tooling do
   let(:project_id)             { '123' }
   let(:merge_request_iid)      { '1234' }
   let(:pipeline_id)            { '5678' }
-  let(:merge_request_labels)   { ['Engineering Productivity', 'type::feature', 'pipeline::tier-3'] }
+  let(:merge_request_labels)   { ['Engineering Productivity', 'type::feature'] }
 
   let(:put_url) { "https://gitlab.test/api/v4/projects/#{project_id}/pipelines/#{pipeline_id}/metadata" }
 
@@ -81,11 +81,19 @@ RSpec.describe SetPipelineName, feature_category: :tooling do
     end
 
     context 'when the pipeline is from a merge request' do
-      it 'adds a pipeline tier' do
-        instance.execute
+      shared_examples 'tiered pipeline' do |tier|
+        let(:jobs) { ['docs-lint markdown', "pipeline-tier-#{tier}"] }
 
-        expect(WebMock).to have_requested(:put, put_url).with { |req| req.body.include?('tier:3') }
+        it "adds tier:#{tier}" do
+          instance.execute
+
+          expect(WebMock).to have_requested(:put, put_url).with { |req| req.body.include?("tier:#{tier}") }
+        end
       end
+
+      it_behaves_like 'tiered pipeline', 1
+      it_behaves_like 'tiered pipeline', 2
+      it_behaves_like 'tiered pipeline', 3
 
       it 'adds the pipeline types' do
         instance.execute
@@ -96,7 +104,7 @@ RSpec.describe SetPipelineName, feature_category: :tooling do
         }
       end
 
-      context 'when the merge request does not have a pipeline tier label' do
+      context 'when the merge request does not have a pipeline tier' do
         let(:merge_request_labels) { ['Engineering Productivity', 'type::feature'] }
 
         it 'adds the N/A pipeline tier' do

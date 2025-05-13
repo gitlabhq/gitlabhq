@@ -5,7 +5,7 @@ exports[`Upload dropzone component correctly overrides description and drop mess
   class="gl-relative gl-w-full"
 >
   <button
-    class="gl-bg-default gl-h-full gl-items-center gl-justify-center gl-mb-0 gl-px-5 gl-py-4 gl-w-full upload-dropzone-border upload-dropzone-card"
+    class="gl-bg-default gl-border-0 gl-h-full gl-items-center gl-justify-center gl-mb-0 gl-px-5 gl-py-4 gl-rounded-base gl-w-full upload-dropzone-border upload-dropzone-card"
     type="button"
   >
     <div
@@ -60,7 +60,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
   class="gl-relative gl-w-full"
 >
   <button
-    class="gl-bg-default gl-h-full gl-items-center gl-justify-center gl-mb-0 gl-px-5 gl-py-4 gl-w-full upload-dropzone-border upload-dropzone-card"
+    class="gl-bg-default gl-border-0 gl-h-full gl-items-center gl-justify-center gl-mb-0 gl-px-5 gl-py-4 gl-rounded-base gl-w-full upload-dropzone-border upload-dropzone-card"
     type="button"
   >
     <div
@@ -117,7 +117,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
   class="gl-relative gl-w-full"
 >
   <button
-    class="gl-bg-default gl-h-full gl-items-center gl-justify-center gl-mb-0 gl-px-5 gl-py-4 gl-w-full upload-dropzone-border upload-dropzone-card"
+    class="gl-bg-default gl-border-0 gl-h-full gl-items-center gl-justify-center gl-mb-0 gl-px-5 gl-py-4 gl-rounded-base gl-w-full upload-dropzone-border upload-dropzone-card"
     type="button"
   >
     <div
@@ -174,7 +174,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
   class="gl-relative gl-w-full"
 >
   <button
-    class="gl-bg-default gl-h-full gl-items-center gl-justify-center gl-mb-0 gl-px-5 gl-py-4 gl-w-full upload-dropzone-border upload-dropzone-card"
+    class="gl-bg-default gl-border-0 gl-h-full gl-items-center gl-justify-center gl-mb-0 gl-px-5 gl-py-4 gl-rounded-base gl-w-full upload-dropzone-border upload-dropzone-card"
     type="button"
   >
     <div
@@ -231,7 +231,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
   class="gl-relative gl-w-full"
 >
   <button
-    class="gl-bg-default gl-h-full gl-items-center gl-justify-center gl-mb-0 gl-px-5 gl-py-4 gl-w-full upload-dropzone-border upload-dropzone-card"
+    class="gl-bg-default gl-border-0 gl-h-full gl-items-center gl-justify-center gl-mb-0 gl-px-5 gl-py-4 gl-rounded-base gl-w-full upload-dropzone-border upload-dropzone-card"
     type="button"
   >
     <div
@@ -288,7 +288,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
   class="gl-relative gl-w-full"
 >
   <button
-    class="gl-bg-default gl-h-full gl-items-center gl-justify-center gl-mb-0 gl-px-5 gl-py-4 gl-w-full upload-dropzone-border upload-dropzone-card"
+    class="gl-bg-default gl-border-0 gl-h-full gl-items-center gl-justify-center gl-mb-0 gl-px-5 gl-py-4 gl-rounded-base gl-w-full upload-dropzone-border upload-dropzone-card"
     type="button"
   >
     <div
@@ -345,7 +345,7 @@ exports[`Upload dropzone component when dragging with design upload overlay enab
   class="gl-w-full"
 >
   <button
-    class="gl-bg-default gl-h-full gl-items-center gl-justify-center gl-mb-0 gl-px-5 gl-py-4 gl-w-full upload-dropzone-border upload-dropzone-card"
+    class="gl-bg-default gl-border-0 gl-h-full gl-items-center gl-justify-center gl-mb-0 gl-px-5 gl-py-4 gl-rounded-base gl-w-full upload-dropzone-border upload-dropzone-card"
     type="button"
   >
     <div
@@ -407,7 +407,7 @@ exports[`Upload dropzone component when no slot provided renders default dropzon
   class="gl-relative gl-w-full"
 >
   <button
-    class="gl-bg-default gl-h-full gl-items-center gl-justify-center gl-mb-0 gl-px-5 gl-py-4 gl-w-full upload-dropzone-border upload-dropzone-card"
+    class="gl-bg-default gl-border-0 gl-h-full gl-items-center gl-justify-center gl-mb-0 gl-px-5 gl-py-4 gl-rounded-base gl-w-full upload-dropzone-border upload-dropzone-card"
     type="button"
   >
     <div

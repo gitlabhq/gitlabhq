@@ -21,28 +21,32 @@ title: '`gitlab-sshd`'
 {{< /history >}}
 
 `gitlab-sshd` is [a standalone SSH server](https://gitlab.com/gitlab-org/gitlab-shell/-/tree/main/internal/sshd)
-written in Go. It is provided as a part of the `gitlab-shell` package. It has a lower memory
-use as a OpenSSH alternative, and supports
-[group access restriction by IP address](../../user/group/access_and_permissions.md#restrict-group-access-by-ip-address) for applications
-running behind the proxy.
+written in Go. It is as a lightweight alternative to OpenSSH. It is provided as part of the
+`gitlab-shell` package and handles [SSH operations](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/71a7f34a476f778e62f8fe7a453d632d395eaf8f/doc/features.md).
 
-`gitlab-sshd` is a lightweight alternative to OpenSSH for providing
-[SSH operations](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/71a7f34a476f778e62f8fe7a453d632d395eaf8f/doc/features.md).
-While OpenSSH uses a restricted shell approach, `gitlab-sshd` behaves more like a
-modern multi-threaded server application, responding to incoming requests. The major
-difference is that OpenSSH uses SSH as a transport protocol while `gitlab-sshd` uses Remote Procedure Calls (RPCs). See [the blog post](https://about.gitlab.com/blog/2022/08/17/why-we-have-implemented-our-own-sshd-solution-on-gitlab-sass/) for more details.
+While OpenSSH uses a restricted shell approach, `gitlab-sshd`:
 
-The capabilities of GitLab Shell are not limited to Git operations.
+- Functions as a modern multi-threaded server application.
+- Uses Remote Procedure Calls (RPCs) instead of the SSH transport protocol.
+- Uses less memory than OpenSSH.
+- Supports [group access restriction by IP address](../../user/group/access_and_permissions.md#restrict-group-access-by-ip-address)
+  for applications running behind a proxy.
 
-If you are considering switching from OpenSSH to `gitlab-sshd`, consider these concerns:
+For more details about the implementation, see [the blog post](https://about.gitlab.com/blog/2022/08/17/why-we-have-implemented-our-own-sshd-solution-on-gitlab-sass/).
 
-- `gitlab-sshd` supports the PROXY protocol. It can run behind proxy servers that rely
-  on it, such as HAProxy. The PROXY protocol is not enabled by default, but [it can be enabled](#proxy-protocol-support).
-- `gitlab-sshd` does not support SSH certificates. For discussion about adding them,
-  see [issue 655](https://gitlab.com/gitlab-org/gitlab-shell/-/issues/655).
-- `gitlab-sshd` does not support 2FA recovery code regeneration. Attempting to run `2fa_recovery_codes`
-  results in the following error: `remote: ERROR: Unknown command: 2fa_recovery_codes`.
-  See [the discussion](https://gitlab.com/gitlab-org/gitlab-shell/-/issues/766#note_1906707753) for more information.
+If you are considering switching from OpenSSH to `gitlab-sshd`, consider the following:
+
+- PROXY protocol: `gitlab-sshd` supports the PROXY protocol, allowing it to run behind proxy
+  servers like HAProxy. This feature is not enabled by default but [can be enabled](#proxy-protocol-support).
+- SSH certificates: `gitlab-sshd` does not support SSH certificates. For more information, see
+  [issue 655](https://gitlab.com/gitlab-org/gitlab-shell/-/issues/655).
+- 2FA recovery codes: `gitlab-sshd` does not support 2FA recovery code regeneration.
+  Attempting to run `2fa_recovery_codes` results in the error:
+  `remote: ERROR: Unknown command: 2fa_recovery_codes`. See
+  [the discussion](https://gitlab.com/gitlab-org/gitlab-shell/-/issues/766#note_1906707753) for details.
+
+The capabilities of GitLab Shell extend beyond Git operations and can be used for various
+SSH-based interactions with GitLab.
 
 ## Enable `gitlab-sshd`
 

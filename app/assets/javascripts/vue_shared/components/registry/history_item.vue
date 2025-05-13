@@ -26,7 +26,7 @@ export default {
     </div>
     <div class="timeline-content">
       <div class="note-header">
-        <div class="note-header-info">
+        <div class="note-header-info gl-mt-1">
           <slot></slot>
         </div>
       </div>

@@ -24,10 +24,6 @@ module RuboCop
 
     TABLE_METHODS = %i[create_table create_table_if_not_exists change_table].freeze
 
-    def high_traffic_tables
-      @high_traffic_tables ||= rubocop_migrations_config.dig('Migration/UpdateLargeTable', 'HighTrafficTables')
-    end
-
     def over_limit_tables
       @over_limit_table ||= rubocop_migrations_config.dig('Migration/UpdateLargeTable', 'OverLimitTables')
     end

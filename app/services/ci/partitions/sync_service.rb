@@ -24,10 +24,7 @@ module Ci
       attr_reader :partition
 
       def above_threshold?
-        threshold = Ci::Partition::MAX_PARTITION_SIZE
-        threshold = Ci::Partition::GSTG_PARTITION_SIZE if Gitlab.staging?
-
-        partition.above_threshold?(threshold)
+        partition.above_threshold?
       end
 
       def sync_available_partitions_statuses!

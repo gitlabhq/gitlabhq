@@ -2,139 +2,22 @@
 
 exports[`PypiInstallation renders all the messages 1`] = `
 <div>
-  <div
-    class="gl-flex gl-items-center gl-justify-between"
-  >
-    <h3
-      class="gl-text-lg"
-    >
-      Installation
-    </h3>
-    <div>
-      <div
-        class="gl-new-dropdown"
-      >
-        <button
-          aria-controls="reference-1"
-          aria-expanded="false"
-          aria-haspopup="listbox"
-          aria-labelledby="reference-0"
-          class="btn btn-default btn-md gl-button gl-new-dropdown-toggle"
-          data-testid="base-dropdown-toggle"
-          id="reference-0"
-          type="button"
-        >
-          <span
-            class="gl-button-text"
-          >
-            <span
-              class="gl-new-dropdown-button-text"
-            >
-              Show PyPi commands
-            </span>
-            <svg
-              aria-hidden="true"
-              class="gl-button-icon gl-fill-current gl-icon gl-new-dropdown-chevron s16"
-              data-testid="chevron-down-icon"
-              role="img"
-            >
-              <use
-                href="file-mock#chevron-down"
-              />
-            </svg>
-          </span>
-        </button>
-        <div
-          class="!gl-w-31 gl-new-dropdown-panel"
-          data-testid="base-dropdown-menu"
-          id="reference-1"
-        >
-          <div
-            class="gl-new-dropdown-arrow"
-          />
-          <div
-            class="gl-new-dropdown-inner"
-          >
-            <ul
-              aria-labelledby="reference-0"
-              class="gl-new-dropdown-contents gl-new-dropdown-contents-with-scrim-overlay"
-              id="reference-2"
-              role="listbox"
-              tabindex="0"
-            >
-              <li
-                aria-hidden="true"
-                class="top-scrim-wrapper"
-                data-testid="top-scrim"
-              >
-                <div
-                  class="top-scrim top-scrim-light"
-                />
-              </li>
-              <li
-                aria-hidden="true"
-              />
-              <li
-                aria-selected="true"
-                class="gl-new-dropdown-item"
-                data-testid="listbox-item-pypi"
-                role="option"
-                tabindex="-1"
-              >
-                <span
-                  class="gl-new-dropdown-item-content"
-                >
-                  <svg
-                    aria-hidden="true"
-                    class="gl-fill-current gl-icon gl-mt-3 gl-new-dropdown-item-check-icon gl-self-start s16"
-                    data-testid="dropdown-item-checkbox"
-                    role="img"
-                  >
-                    <use
-                      href="file-mock#mobile-issue-close"
-                    />
-                  </svg>
-                  <span
-                    class="gl-new-dropdown-item-text-wrapper"
-                  >
-                    Show PyPi commands
-                  </span>
-                </span>
-              </li>
-              <li
-                aria-hidden="true"
-              />
-              <li
-                aria-hidden="true"
-                class="bottom-scrim-wrapper"
-                data-testid="bottom-scrim"
-              >
-                <div
-                  class="bottom-scrim"
-                />
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
   <fieldset
     class="form-group gl-form-group"
-    id="reference-3"
+    id="reference-0"
   >
     <legend
       class="!gl-pt-0 bv-no-focus-ring col-form-label"
-      id="reference-4"
+      id="reference-1"
       tabindex="-1"
     />
     <div>
       <div
         data-testid="pip-command"
-        id="reference-5"
+        id="reference-2"
       >
         <label
-          for="reference-6"
+          for="reference-3"
         >
           Pip Command
         </label>
@@ -147,7 +30,7 @@ exports[`PypiInstallation renders all the messages 1`] = `
             <input
               class="form-control gl-font-monospace"
               data-testid="instruction-input"
-              id="reference-6"
+              id="reference-3"
               readonly=""
               type="text"
             />
@@ -157,11 +40,10 @@ exports[`PypiInstallation renders all the messages 1`] = `
             >
               <button
                 aria-label="Copy Pip command"
-                aria-live="polite"
-                class="btn btn-default btn-default-secondary btn-icon btn-md gl-button input-group-text"
-                data-clipboard-handle-tooltip="false"
+                class="btn btn-default btn-icon btn-md gl-button input-group-text"
+                data-clipboard-target=""
                 data-clipboard-text="pip install @gitlab-org/package-15 --index-url http://__token__:<your_personal_token>@gdk.test:3000/api/v4/projects/1/packages/pypi/simple"
-                id="reference-7"
+                id="reference-4"
                 title="Copy Pip command"
                 type="button"
               >
@@ -182,7 +64,7 @@ exports[`PypiInstallation renders all the messages 1`] = `
       </div>
       <small
         class="form-text text-muted"
-        id="reference-8"
+        id="reference-5"
         tabindex="-1"
       >
         You will need a
@@ -198,12 +80,12 @@ exports[`PypiInstallation renders all the messages 1`] = `
     </div>
   </fieldset>
   <h3
-    class="gl-text-lg"
+    class="gl-heading-3 gl-mt-5"
   >
     Registry setup
   </h3>
   <p>
-    If you haven't already done so, you will need to add the below to your
+    If you haven't already done so, add the configuration below to your
     <code>
       .pypirc
     </code>
@@ -212,13 +94,38 @@ exports[`PypiInstallation renders all the messages 1`] = `
   <div
     data-testid="pypi-setup-content"
   >
-    <div>
+    <div
+      class="gl-relative"
+    >
       <pre
         class="gl-font-monospace"
         data-testid="multiline-instruction"
       >
         [gitlab]repository = http://gdk.test:3000/api/v4/projects/1/packages/pypiusername = __token__password = &lt;your personal access token&gt;
       </pre>
+      <button
+        aria-label="Copy .pypirc content"
+        class="btn btn-default btn-icon btn-md gl-absolute gl-button gl-right-3 gl-top-3"
+        data-clipboard-target=""
+        data-clipboard-text="[gitlab]
+repository = http://gdk.test:3000/api/v4/projects/1/packages/pypi
+username = __token__
+password = <your personal access token>"
+        id="reference-6"
+        title="Copy .pypirc content"
+        type="button"
+      >
+        <svg
+          aria-hidden="true"
+          class="gl-button-icon gl-fill-current gl-icon s16"
+          data-testid="copy-to-clipboard-icon"
+          role="img"
+        >
+          <use
+            href="file-mock#copy-to-clipboard"
+          />
+        </svg>
+      </button>
     </div>
   </div>
   For more information on the PyPi registry,

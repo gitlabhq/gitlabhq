@@ -14,15 +14,9 @@ RSpec.describe 'admin/application_settings/_deletion_protection_settings', featu
     assign(:application_setting, application_setting)
   end
 
-  context 'when feature flag is enabled' do
-    before do
-      stub_feature_flags(downtier_delayed_deletion: true)
-    end
+  it 'renders the deletion protection settings app root' do
+    render
 
-    it 'renders the deletion protection settings app root' do
-      render
-
-      expect(rendered).to have_selector('#js-admin-deletion-protection-settings')
-    end
+    expect(rendered).to have_selector('#js-admin-deletion-protection-settings')
   end
 end

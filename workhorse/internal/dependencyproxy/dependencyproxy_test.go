@@ -399,8 +399,8 @@ func TestSSRFFilter(t *testing.T) {
 	response := makeRequest(NewInjector(), string(sendDataJSONString))
 
 	// Test uses loopback IP like 127.0.0.x and thus fails
-	require.Equal(t, http.StatusBadGateway, response.Code)
-	require.Equal(t, "Bad Gateway\n", response.Body.String())
+	require.Equal(t, http.StatusForbidden, response.Code)
+	require.Equal(t, "Forbidden\n", response.Body.String())
 }
 
 func TestSSRFFilterWithAllowLocalhost(t *testing.T) {

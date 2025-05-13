@@ -12,6 +12,13 @@ RSpec.describe 'Breadcrumbs schema markup', :aggregate_failures, feature_categor
   let_it_be(:wiki_home_page) { create(:wiki_page, project: project, title: 'home') }
   let_it_be(:wiki_sub_page) { create(:wiki_page, project: project, title: 'home/subpage') }
 
+  before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+  end
+
   it 'generates the breadcrumb schema for user projects' do
     visit project_url(project)
 

@@ -92,7 +92,7 @@ $highlighted-gc-bg: #eaf2f5;
   padding: 0 5px;
   text-align: right;
   width: 35px;
-  background-color: $gray-10;
+  background-color: $gl-background-color-subtle;
   color: $gl-color-alpha-dark-24;
   border-right: 1px solid $gray-50;
 
@@ -131,7 +131,7 @@ $highlighted-gc-bg: #eaf2f5;
 
   &.match {
     color: $gl-color-alpha-dark-24;
-    background-color: $gray-10;
+    background-color: $gl-background-color-subtle;
   }
 }
 

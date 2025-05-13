@@ -67,7 +67,7 @@ pdf:
     expire_in: 1 week
 ```
 
-If `expire_in` is not defined, the [instance-wide setting](../../administration/settings/continuous_integration.md#default-artifacts-expiration)
+If `expire_in` is not defined, the [instance-wide setting](../../administration/settings/continuous_integration.md#set-default-artifacts-expiration)
 is used.
 
 To prevent artifacts from expiring, you can select **Keep** from the job details page.
@@ -254,7 +254,7 @@ For example:
   Files returned by this endpoint always have the `plain/text` content type.
 
 In both examples, replace `<project-id>` with a valid project ID. You can find the project ID on the
-[project overview page](../../user/project/working_with_projects.md#access-a-project-by-using-the-project-id).
+[project overview page](../../user/project/working_with_projects.md#find-the-project-id).
 
 Artifacts for [parent and child pipelines](../pipelines/downstream_pipelines.md#parent-child-pipelines)
 are searched in hierarchical order from parent to child. For example, if both parent and
@@ -299,13 +299,13 @@ you must enable [GitLab Pages access control](../../administration/pages/_index.
 
 The following extensions are supported:
 
-| File extension | GitLab.com             | Linux package with built-in NGINX |
-|----------------|------------------------|-----------------------------------|
-| `.html`        | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes            |
-| `.json`        | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes            |
-| `.xml`         | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes            |
-| `.txt`         | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes            |
-| `.log`         | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes            |
+| File extension | GitLab.com                           | Linux package with built-in NGINX |
+|----------------|--------------------------------------|-----------------------------------|
+| `.html`        | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| `.json`        | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| `.xml`         | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
+| `.txt`         | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| `.log`         | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 
 ### From a URL
 
@@ -408,4 +408,4 @@ Artifacts in old pipelines continue to be kept until a new pipeline runs for the
 Then the artifacts in the earlier pipeline for that ref are allowed to expire too.
 
 You can disable this behavior for all projects on GitLab Self-Managed in the
-[instance's CI/CD settings](../../administration/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
+[instance's CI/CD settings](../../administration/settings/continuous_integration.md#keep-artifacts-from-latest-successful-pipelines).

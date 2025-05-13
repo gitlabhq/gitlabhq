@@ -20,7 +20,6 @@ Gitlab::Database::Partitioning.register_models(
     Ci::BuildTag,
     Ci::BuildTraceMetadata,
     Ci::BuildSource,
-    Ci::Catalog::Resources::Components::Usage,
     Ci::Catalog::Resources::SyncEvent,
     Ci::FinishedPipelineChSyncEvent,
     Ci::JobAnnotation,
@@ -31,13 +30,14 @@ Gitlab::Database::Partitioning.register_models(
     Ci::PipelineVariable,
     Ci::RunnerManagerBuild,
     Ci::Stage,
+    Ci::Workloads::Workload,
     CommitStatus,
     Gitlab::Database::BackgroundMigration::BatchedJobTransitionLog,
     LooseForeignKeys::DeletedRecord,
     Users::GroupVisit,
-    Users::ProjectVisit
-    # WebHookLog is temporarily removed from this list and managed without a model
-    # during the switch from web_hook_logs to web_hook_logs_daily
+    Users::ProjectVisit,
+    MergeRequest::CommitsMetadata,
+    WebHookLog
   ])
 
 if Gitlab.ee?
@@ -85,25 +85,5 @@ unless Gitlab.jh?
       }
     ])
 end
-
-# Enable partition management for the backfill table during web_hook_logs partitioning.
-# This way new partitions will be created as the trigger syncs new rows across to this table.
-# We're controlling the table backing WebHookLog with the feature flag web_hook_logs_daily_enabled.
-# So that the feature flag does not interact with the partition manager, register both web_hook_logs tables here,
-# disconnected from the feature flag.
-Gitlab::Database::Partitioning.register_tables(
-  [
-    {
-      limit_connection_names: %i[main],
-      table_name: 'web_hook_logs_daily',
-      partitioned_column: :created_at, strategy: :daily, retain_for: 14.days
-    },
-    {
-      limit_connection_names: %i[main],
-      table_name: 'web_hook_logs',
-      partitioned_column: :created_at, strategy: :monthly, retain_for: 1.month
-    }
-  ]
-)
 
 Gitlab::Database::Partitioning.sync_partitions_ignore_db_error

@@ -6,6 +6,7 @@ import { handleLocationHash } from '~/lib/utils/common_utils';
 import eventHub from '~/issues/show/event_hub';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemDescriptionRendered from '~/work_items/components/work_item_description_rendered.vue';
+import { WORK_ITEM_TYPE_NAME_ISSUE, WORK_ITEM_TYPE_NAME_TASK } from '~/work_items/constants';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { descriptionHtmlWithCheckboxes, descriptionTextWithCheckboxes } from '../mock_data';
 
@@ -83,7 +84,11 @@ describe('WorkItemDescriptionRendered', () => {
 
       await findReadMore().vm.$emit('click');
 
-      expect(trackEventSpy).toHaveBeenCalledWith('expand_description_on_workitem', {}, undefined);
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'expand_description_on_workitem',
+        { label: 'ISSUE' },
+        undefined,
+      );
     });
   });
 
@@ -107,12 +112,7 @@ describe('WorkItemDescriptionRendered', () => {
   describe('with anchor to description item', () => {
     const anchorHash = '#description-anchor';
 
-    afterAll(() => {
-      window.location.hash = '';
-    });
-
-    it('scrolls matching link into view', async () => {
-      window.location.hash = anchorHash;
+    const setupComponent = async () => {
       createComponent({
         workItemDescription: {
           description: 'This is a long description',
@@ -127,9 +127,38 @@ describe('WorkItemDescriptionRendered', () => {
       jest.spyOn(wrapper.vm, 'truncateLongDescription');
 
       await nextTick();
+    };
 
+    afterAll(() => {
+      window.location.hash = '';
+    });
+
+    it('scrolls matching link into view when opened with hash present', async () => {
+      window.location.hash = anchorHash;
+      await setupComponent();
+
+      // Check if page loaded with hash present scrolls hash into view.
+      // In order to scroll, description must not have been truncated.
       expect(handleLocationHash).toHaveBeenCalled();
       expect(wrapper.vm.truncateLongDescription).not.toHaveBeenCalled();
+    });
+
+    it('expands description and then scrolls to matching link into view on user navigation', async () => {
+      window.location.hash = '';
+      await setupComponent();
+
+      // Check if page loaded with no hash present shows truncated description.
+      expect(handleLocationHash).not.toHaveBeenCalled();
+
+      // Simulate user clicking on an anchor hash within the description.
+      window.location.hash = anchorHash;
+      window.dispatchEvent(new Event('hashchange'));
+
+      await nextTick();
+
+      // Check if description is expanded and hash is scrolled into view.
+      expect(handleLocationHash).toHaveBeenCalled();
+      expect(findReadMore().exists()).toBe(false);
     });
   });
 
@@ -258,7 +287,7 @@ and even more`,
           title:
             'item 2 with a really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really really rea',
           visible: true,
-          preselectedWorkItemType: 'TASK',
+          preselectedWorkItemType: WORK_ITEM_TYPE_NAME_TASK,
         });
 
         findCreateWorkItemModal().vm.$emit('workItemCreated');
@@ -296,7 +325,7 @@ and even more`,
             showProjectSelector: true,
             title: 'item 1',
             visible: true,
-            preselectedWorkItemType: 'ISSUE',
+            preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE,
           });
         });
       });
@@ -322,7 +351,7 @@ and even more`,
             showProjectSelector: false,
             title: 'item 1',
             visible: true,
-            preselectedWorkItemType: 'TASK',
+            preselectedWorkItemType: WORK_ITEM_TYPE_NAME_TASK,
           });
         });
       });

@@ -49,7 +49,6 @@ Search/NamespacedClass:
     - 'ee/app/workers/elastic/project_transfer_worker.rb'
     - 'ee/app/workers/elastic_association_indexer_worker.rb'
     - 'ee/app/workers/elastic_cluster_reindexing_cron_worker.rb'
-    - 'ee/app/workers/elastic_commit_indexer_worker.rb'
     - 'ee/app/workers/elastic_delete_project_worker.rb'
     - 'ee/app/workers/elastic_full_index_worker.rb'
     - 'ee/app/workers/elastic_index_bulk_cron_worker.rb'

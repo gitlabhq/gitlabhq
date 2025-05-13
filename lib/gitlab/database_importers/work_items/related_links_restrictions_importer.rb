@@ -14,44 +14,66 @@ module Gitlab
           task = find_or_create_type(::WorkItems::Type::TYPE_NAMES[:task])
           objective = find_or_create_type(::WorkItems::Type::TYPE_NAMES[:objective])
           key_result = find_or_create_type(::WorkItems::Type::TYPE_NAMES[:key_result])
+          incident = find_or_create_type(::WorkItems::Type::TYPE_NAMES[:incident])
 
           restrictions = [
-            # Source can relate to target and target can relate to source
             { source_type_id: epic.id, target_type_id: epic.id, link_type: 0 },
             { source_type_id: epic.id, target_type_id: issue.id, link_type: 0 },
             { source_type_id: epic.id, target_type_id: task.id, link_type: 0 },
             { source_type_id: epic.id, target_type_id: objective.id, link_type: 0 },
             { source_type_id: epic.id, target_type_id: key_result.id, link_type: 0 },
+            { source_type_id: epic.id, target_type_id: incident.id, link_type: 0 },
             { source_type_id: issue.id, target_type_id: issue.id, link_type: 0 },
             { source_type_id: issue.id, target_type_id: task.id, link_type: 0 },
             { source_type_id: issue.id, target_type_id: objective.id, link_type: 0 },
             { source_type_id: issue.id, target_type_id: key_result.id, link_type: 0 },
+            { source_type_id: issue.id, target_type_id: incident.id, link_type: 0 },
             { source_type_id: task.id, target_type_id: task.id, link_type: 0 },
             { source_type_id: task.id, target_type_id: objective.id, link_type: 0 },
             { source_type_id: task.id, target_type_id: key_result.id, link_type: 0 },
+            { source_type_id: task.id, target_type_id: incident.id, link_type: 0 },
             { source_type_id: objective.id, target_type_id: objective.id, link_type: 0 },
             { source_type_id: objective.id, target_type_id: key_result.id, link_type: 0 },
+            { source_type_id: objective.id, target_type_id: incident.id, link_type: 0 },
             { source_type_id: key_result.id, target_type_id: key_result.id, link_type: 0 },
+            { source_type_id: key_result.id, target_type_id: incident.id, link_type: 0 },
+            { source_type_id: incident.id, target_type_id: incident.id, link_type: 0 },
+            { source_type_id: incident.id, target_type_id: issue.id, link_type: 0 },
+            { source_type_id: incident.id, target_type_id: task.id, link_type: 0 },
+            { source_type_id: incident.id, target_type_id: objective.id, link_type: 0 },
+            { source_type_id: incident.id, target_type_id: key_result.id, link_type: 0 },
+            { source_type_id: incident.id, target_type_id: epic.id, link_type: 0 },
             # Source can block target and target can be blocked by source
             { source_type_id: epic.id, target_type_id: epic.id, link_type: 1 },
             { source_type_id: epic.id, target_type_id: issue.id, link_type: 1 },
             { source_type_id: epic.id, target_type_id: task.id, link_type: 1 },
             { source_type_id: epic.id, target_type_id: objective.id, link_type: 1 },
             { source_type_id: epic.id, target_type_id: key_result.id, link_type: 1 },
+            { source_type_id: epic.id, target_type_id: incident.id, link_type: 1 },
             { source_type_id: issue.id, target_type_id: issue.id, link_type: 1 },
             { source_type_id: issue.id, target_type_id: epic.id, link_type: 1 },
             { source_type_id: issue.id, target_type_id: task.id, link_type: 1 },
             { source_type_id: issue.id, target_type_id: objective.id, link_type: 1 },
             { source_type_id: issue.id, target_type_id: key_result.id, link_type: 1 },
+            { source_type_id: issue.id, target_type_id: incident.id, link_type: 1 },
             { source_type_id: task.id, target_type_id: task.id, link_type: 1 },
             { source_type_id: task.id, target_type_id: epic.id, link_type: 1 },
             { source_type_id: task.id, target_type_id: issue.id, link_type: 1 },
             { source_type_id: task.id, target_type_id: objective.id, link_type: 1 },
             { source_type_id: task.id, target_type_id: key_result.id, link_type: 1 },
+            { source_type_id: task.id, target_type_id: incident.id, link_type: 1 },
             { source_type_id: objective.id, target_type_id: objective.id, link_type: 1 },
             { source_type_id: objective.id, target_type_id: key_result.id, link_type: 1 },
+            { source_type_id: objective.id, target_type_id: incident.id, link_type: 1 },
             { source_type_id: key_result.id, target_type_id: key_result.id, link_type: 1 },
-            { source_type_id: key_result.id, target_type_id: objective.id, link_type: 1 }
+            { source_type_id: key_result.id, target_type_id: objective.id, link_type: 1 },
+            { source_type_id: key_result.id, target_type_id: incident.id, link_type: 1 },
+            { source_type_id: incident.id, target_type_id: incident.id, link_type: 1 },
+            { source_type_id: incident.id, target_type_id: epic.id, link_type: 1 },
+            { source_type_id: incident.id, target_type_id: issue.id, link_type: 1 },
+            { source_type_id: incident.id, target_type_id: task.id, link_type: 1 },
+            { source_type_id: incident.id, target_type_id: objective.id, link_type: 1 },
+            { source_type_id: incident.id, target_type_id: key_result.id, link_type: 1 }
           ]
 
           ::WorkItems::RelatedLinkRestriction.upsert_all(

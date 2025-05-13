@@ -2,6 +2,7 @@
 
 require 'os'
 require 'yaml'
+require 'etc'
 require 'rspec/core/formatters/base_formatter'
 require_relative '../../tooling/lib/tooling/helpers/duration_formatter'
 
@@ -46,14 +47,18 @@ module Support
           actual_duration = time_now - @current_group_start_time
 
           output.puts "\n# [RSpecRunTime] Finishing example group #{file_path}. " \
-                      "It took #{readable_duration(actual_duration)}. " \
-                      "#{expected_run_time(file_path)}"
+            "It took #{readable_duration(actual_duration)}. " \
+            "#{expected_run_time(file_path)}"
         end
 
         output_elapsed_time
       end
 
       private
+
+      def nprocessors
+        @nprocessors ||= Etc.nprocessors
+      end
 
       def expected_duration_report
         report_path = ENV['KNAPSACK_RSPEC_SUITE_REPORT_PATH']
@@ -87,9 +92,9 @@ module Support
         unless @last_elapsed_seconds.nil? || elapsed_seconds - @last_elapsed_seconds < 1
           output.puts \
             "# [RSpecRunTime] RSpec elapsed time: #{readable_duration(elapsed_seconds)}. " \
-            "#{current_rss_in_megabytes}. " \
-            "Threads: #{threads_count}. " \
-            "#{load_average}.\n\n" \
+              "#{current_rss_in_megabytes}. " \
+              "Threads: #{threads_count}. " \
+              "#{load_average}.\n\n" \
         end
 
         @last_elapsed_seconds = elapsed_seconds
@@ -102,11 +107,13 @@ module Support
       end
 
       def load_average
-        if File.exist?('/proc/loadavg')
-          "load average: #{File.read('/proc/loadavg')}"
-        else
-          `uptime`[/(load average:[^\n]+)/, 1] || '(uptime failed)'
-        end
+        load_avg = if File.exist?('/proc/loadavg')
+                     "load average: #{File.read('/proc/loadavg')}"
+                   else
+                     `uptime`[/(load average:[^\n]+)/, 1] || '(uptime failed)'
+                   end
+
+        "#{load_avg}, available cpu cores: #{nprocessors}"
       end
 
       def threads_count

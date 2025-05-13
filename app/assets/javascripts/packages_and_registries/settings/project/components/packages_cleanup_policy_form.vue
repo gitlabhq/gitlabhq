@@ -147,7 +147,7 @@ export default {
     <p v-if="value.nextRunAt" data-testid="next-run-at">
       {{ nextCleanupMessage }}
     </p>
-    <div class="gl-mt-6 gl-flex gl-items-center">
+    <div class="gl-mt-5 gl-flex gl-items-center">
       <gl-button
         data-testid="save-button"
         type="submit"

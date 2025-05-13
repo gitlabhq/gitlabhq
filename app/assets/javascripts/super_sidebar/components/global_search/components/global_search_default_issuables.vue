@@ -1,5 +1,5 @@
 <script>
-import { GlDisclosureDropdownGroup } from '@gitlab/ui';
+import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters } from 'vuex';
 import { s__ } from '~/locale';
@@ -13,7 +13,7 @@ import {
   EVENT_CLICK_MERGE_REQUESTS_I_CREATED_IN_COMMAND_PALETTE,
 } from '~/super_sidebar/components/global_search/tracking_constants';
 import { OVERLAY_GOTO } from '~/super_sidebar/components/global_search/command_palette/constants';
-import SearchResultHoverLayover from './global_search_hover_overlay.vue';
+import SearchResultFocusLayover from './global_search_focus_overlay.vue';
 
 const trackingMixin = InternalEvents.mixin();
 
@@ -30,7 +30,8 @@ export default {
   },
   components: {
     GlDisclosureDropdownGroup,
-    SearchResultHoverLayover,
+    GlDisclosureDropdownItem,
+    SearchResultFocusLayover,
   },
   mixins: [trackingMixin],
   computed: {
@@ -52,7 +53,7 @@ export default {
         items: this.defaultSearchOptions?.map((item) => ({
           ...item,
           extraAttrs: {
-            class: 'show-hover-layover',
+            class: 'show-focus-layover',
           },
         })),
       };
@@ -97,16 +98,19 @@ export default {
 </script>
 
 <template>
-  <gl-disclosure-dropdown-group
-    v-if="shouldRender"
-    v-bind="$attrs"
-    :group="group"
-    @action="trackingTypes"
-  >
-    <template #list-item="{ item }">
-      <search-result-hover-layover :text-message="$options.i18n.OVERLAY_GOTO">
-        <span>{{ item.text }}</span>
-      </search-result-hover-layover>
-    </template>
+  <gl-disclosure-dropdown-group v-if="shouldRender" v-bind="$attrs" :group="group">
+    <gl-disclosure-dropdown-item
+      v-for="item in defaultSearchOptions"
+      :key="item.text"
+      :item="item"
+      class="show-on-focus-or-hover--context show-focus-layover"
+      @action="trackingTypes"
+    >
+      <template #list-item>
+        <search-result-focus-layover :text-message="$options.i18n.OVERLAY_GOTO">
+          <span>{{ item.text }}</span>
+        </search-result-focus-layover>
+      </template>
+    </gl-disclosure-dropdown-item>
   </gl-disclosure-dropdown-group>
 </template>

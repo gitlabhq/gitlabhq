@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Sidebars::Projects::Panel, feature_category: :navigation do
   let_it_be(:project) { create(:project) }
 
-  let(:context) { Sidebars::Projects::Context.new(current_user: nil, container: project) }
+  let(:context) { Sidebars::Projects::Context.new(current_user: nil, container: project, show_get_started_menu: false) }
 
   subject { described_class.new(context) }
 

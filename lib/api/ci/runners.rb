@@ -132,7 +132,7 @@ module API
         desc 'Get all runners - shared and project' do
           summary 'List all runners'
           detail 'Get a list of all runners in the GitLab instance (shared and project). ' \
-                 'Access is restricted to users with administrator access.'
+                 'Access is restricted to users with either administrator access or auditor access.'
           success Entities::Ci::Runner
           failure [[400, 'Scope contains invalid value'], [401, 'Unauthorized']]
           tags %w[runners]
@@ -142,7 +142,7 @@ module API
           use :filter_params
         end
         get 'all' do
-          authenticated_as_admin!
+          authenticated_with_can_read_all_resources!
 
           runners = ::Ci::Runner.all
           runners = filter_runners(runners, params[:scope])

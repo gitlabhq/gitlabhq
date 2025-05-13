@@ -25,6 +25,8 @@ title: Exact code search
 
 This feature is in [beta](../../policy/development_stages_support.md#beta) and subject to change without notice.
 For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epics/9404).
+To provide feedback on this feature, leave a comment on
+[issue 420920](https://gitlab.com/gitlab-org/gitlab/-/issues/420920).
 
 {{< /alert >}}
 
@@ -44,6 +46,17 @@ and is used by default in groups where the feature is enabled.
 
 In user preferences, you can [disable exact code search](../profile/preferences.md#disable-exact-code-search)
 to use [advanced search](advanced_search.md) instead.
+
+## Available scopes
+
+Scopes describe the type of data you're searching.
+The following scopes are available for exact code search:
+
+| Search level | Code | Notes                                                                                                                                                                    |
+|--------------|:----:|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Global       |      | An administrator can [disable global search scopes](_index.md#disable-global-search-scopes). On GitLab Self-Managed, an administrator can enable global search with the [`zoekt_cross_namespace_search`](exact_code_search.md#global-code-search) feature flag. |
+| Group        |  ✓   |                                                                                                                                                                          |
+| Project      |  ✓   |                                                                                                                                                                          |
 
 ## Zoekt search API
 
@@ -132,9 +145,9 @@ This table shows some example queries for exact match and regular expression mod
 
 ## Known issues
 
-- You can only search files smaller than 1 MB with less than `20_000` trigrams.
+- You can search only files smaller than 1 MB with less than `20_000` trigrams.
   For more information, see [issue 455073](https://gitlab.com/gitlab-org/gitlab/-/issues/455073).
-- You can use exact code search on the default branch of a project only.
+- You can use exact code search only on the default branch of a project.
   For more information, see [issue 403307](https://gitlab.com/gitlab-org/gitlab/-/issues/403307).
 - Multiple matches on a single line are counted as one result.
   For more information, see [issue 514526](https://gitlab.com/gitlab-org/gitlab/-/issues/514526).

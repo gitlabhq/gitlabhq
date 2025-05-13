@@ -5,7 +5,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Build packages
 ---
 
-Learn how to install and build packages different package formats.
+Use the GitLab package registry to install and build packages for different package formats.
+
+The following package managers are supported:
 
 - [Composer](#composer)
 - [Conan](#conan)

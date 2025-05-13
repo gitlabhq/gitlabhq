@@ -19,6 +19,12 @@ GitLab can display two types of broadcast messages to users of a GitLab instance
 
 Broadcast messages can be managed using the [broadcast messages API](../api/broadcast_messages.md).
 
+{{< alert type="warning" >}}
+
+Broadcast messages are publicly accessible through the API regardless of targeting settings. Do not include sensitive or confidential information, and do not use broadcast messages to communicate private information to specific groups or projects.
+
+{{< /alert >}}
+
 ## Banners
 
 Banners are shown on the top of a page, and optionally in the command line as a Git remote response.
@@ -65,10 +71,16 @@ If the user is not signed in, user-related values are empty.
 
 To display messages to users on your GitLab instance, add a broadcast message.
 
+{{< alert type="warning" >}}
+
+Broadcast messages are publicly accessible through the API regardless of targeting settings. Do not include sensitive or confidential information, and do not use broadcast messages to communicate private information to specific groups or projects.
+
+{{< /alert >}}
+
 To add a broadcast message:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. On the left sidebar, select **Messages**.
+1. Select **Messages**.
 1. On the right, select **Add new message**.
 1. Add your **Message** text:
    - Message contents can include Markdown, emoji, and the `a` and `br` HTML tags.

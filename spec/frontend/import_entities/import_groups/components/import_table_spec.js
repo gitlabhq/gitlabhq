@@ -54,8 +54,7 @@ describe('import table', () => {
     },
   };
 
-  const findImportSelectedDropdown = () =>
-    wrapper.find('[data-testid="import-selected-groups-dropdown"]');
+  const findImportSelectedDropdown = () => wrapper.findByTestId('import-selected-groups-dropdown');
   const findRowImportDropdownAtIndex = (idx) =>
     wrapper.findAll('tbody td button').wrappers.filter((w) => w.text() === 'Import with projects')[
       idx
@@ -64,8 +63,8 @@ describe('import table', () => {
   const findTargetNamespaceInput = (rowWrapper) =>
     extendedWrapper(rowWrapper).findByTestId('target-namespace-input');
   const findPaginationDropdownText = () => findPaginationDropdown().find('button').text();
-  const findSelectionCount = () => wrapper.find('[data-test-id="selection-count"]');
-  const findNewPathCol = () => wrapper.find('[data-test-id="new-path-col"]');
+  const findSelectionCount = () => wrapper.findByTestId('selection-count');
+  const findNewPathCol = () => wrapper.findByTestId('new-path-col');
   const findHistoryLink = () => wrapper.findByTestId('history-link');
   const findUnavailableFeaturesWarning = () => wrapper.findByTestId('unavailable-features-alert');
   const findImportProjectsWarning = () => wrapper.findByTestId('import-projects-warning');
@@ -241,13 +240,13 @@ describe('import table', () => {
       });
 
       it('does not validate by default', () => {
-        expect(wrapper.find('tbody tr').text()).not.toContain('Please select a parent group.');
+        expect(wrapper.find('tbody tr').text()).not.toContain('Select a parent group.');
       });
 
       it('triggers validations when import button is clicked', async () => {
         await findRowImportDropdownAtIndex(0).trigger('click');
 
-        expect(wrapper.find('tbody tr').text()).toContain('Please select a parent group.');
+        expect(wrapper.find('tbody tr').text()).toContain('Select a parent group.');
       });
 
       it('is valid when root namespace is selected', async () => {
@@ -256,7 +255,7 @@ describe('import table', () => {
         });
         await findRowImportDropdownAtIndex(0).trigger('click');
 
-        expect(wrapper.find('tbody tr').text()).not.toContain('Please select a parent group.');
+        expect(wrapper.find('tbody tr').text()).not.toContain('Select a parent group.');
         expect(findFirstImportTargetNamespaceText()).toBe('No parent');
       });
 
@@ -266,7 +265,7 @@ describe('import table', () => {
         });
         await findRowImportDropdownAtIndex(0).trigger('click');
 
-        expect(wrapper.find('tbody tr').text()).not.toContain('Please select a parent group.');
+        expect(wrapper.find('tbody tr').text()).not.toContain('Select a parent group.');
         expect(findFirstImportTargetNamespaceText()).toBe('gitlab-org');
       });
     });
@@ -454,7 +453,7 @@ describe('import table', () => {
 
     expect(createAlert).not.toHaveBeenCalled();
     expect(wrapper.find('tbody tr').text()).toContain(
-      'Over six imports in one minute were attempted. Wait at least one minute and try again.',
+      'More than six imports were attempted in one minute. Try again after a minute.',
     );
   });
 
@@ -746,7 +745,7 @@ describe('import table', () => {
 
       expect(findImportProjectsWarning().props('name')).toBe('warning');
       expect(findImportProjectsWarning().attributes('title')).toBe(
-        'Some groups will be imported without projects.',
+        'Some groups are imported without projects.',
       );
     });
 
@@ -868,7 +867,7 @@ describe('import table', () => {
     const tooltip = getBinding(icon.element, 'gl-tooltip');
 
     expect(tooltip).toBeDefined();
-    expect(tooltip.value).toBe('Path of the new group.');
+    expect(tooltip.value).toBe('Path of the new group');
   });
 
   describe('re-import', () => {

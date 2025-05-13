@@ -24,6 +24,11 @@ module Gitlab
       def ==(other)
         self.class == other.class && content == other.content
       end
+
+      # @return [String]
+      def to_s
+        inspect
+      end
     end
   end
 end

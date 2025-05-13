@@ -11,9 +11,10 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import getOpenMrCountForBlobPath from '~/repository/queries/open_mr_count.query.graphql';
 import getOpenMrsForBlobPath from '~/repository/queries/open_mrs.query.graphql';
 import { nDaysBefore } from '~/lib/utils/datetime/date_calculation_utility';
-import { toYmd } from '~/analytics/shared/utils';
+import { formatDate } from '~/lib/utils/datetime/date_format_utility';
 import { logError } from '~/lib/logger';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { InternalEvents } from '~/tracking';
 import MergeRequestListItem from './merge_request_list_item.vue';
 
 const OPEN_MR_AGE_LIMIT_DAYS = 30;
@@ -27,6 +28,7 @@ export default {
     MergeRequestListItem,
   },
   directives: { GlTooltip: GlTooltipDirective },
+  mixins: [InternalEvents.mixin()],
   inject: ['currentRef'],
   props: {
     projectPath: {
@@ -56,7 +58,7 @@ export default {
     },
     createdAfter() {
       const lookbackDate = nDaysBefore(new Date(), OPEN_MR_AGE_LIMIT_DAYS - 1, { utc: true });
-      return toYmd(lookbackDate);
+      return formatDate(lookbackDate, 'yyyy-mm-dd HH:MM:ss Z', true);
     },
     isLoading() {
       return this.$apollo.queries.loading;
@@ -108,6 +110,9 @@ export default {
       },
     },
   },
+  mounted() {
+    this.trackEvent('render_recent_mrs_for_file_on_branch_badge', { value: this.openMrsCount });
+  },
   methods: {
     handleMergeRequestClick(webUrl) {
       visitUrl(webUrl);
@@ -140,6 +145,7 @@ export default {
           class="gl-h-full"
           :title="badgeTitle"
           :aria-label="badgeTitle"
+          tag="a"
         >
           {{ openMRsCountText }}
         </gl-badge>

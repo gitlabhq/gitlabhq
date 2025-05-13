@@ -16,7 +16,6 @@ describe('WorkItemCreateBranchMergeRequestSplitButton', () => {
       propsData: {
         workItemFullPath: 'group/project',
         workItemType: 'issue',
-        workItemId: '1',
         workItemIid: '100',
         projectId: 'gid://gitlab/Project/7',
         isConfidentialWorkItem: false,

@@ -67,7 +67,7 @@ module Milestoneish
 
     container = project || group
     work_items_finder_params[:issue_types] =
-      container.work_items_alpha_feature_flag_enabled? ? %w[issue epic] : %w[issue]
+      container.work_items_alpha_feature_flag_enabled? ? %w[issue epic task] : %w[issue task]
 
     work_item_ids = ::WorkItems::WorkItemsFinder.new(user, work_items_finder_params)
     .execute.preload_associated_models

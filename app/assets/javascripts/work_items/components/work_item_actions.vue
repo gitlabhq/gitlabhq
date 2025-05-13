@@ -12,6 +12,7 @@ import {
   GlToggle,
 } from '@gitlab/ui';
 
+import { nextTick } from 'vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 import { __, s__ } from '~/locale';
@@ -28,9 +29,7 @@ import {
   BASE_ALLOWED_CREATE_TYPES,
   WORK_ITEM_TYPE_NAME_KEY_RESULT,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
-  WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_NAME_EPIC,
-  NAME_TO_ENUM_MAP,
   WORK_ITEM_TYPE_NAME_ISSUE,
 } from '../constants';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
@@ -60,7 +59,6 @@ export default {
     reportAbuse: __('Report abuse'),
     changeWorkItemType: s__('WorkItem|Change type'),
   },
-  WORK_ITEM_TYPE_ENUM_EPIC,
   components: {
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
@@ -234,6 +232,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    updateInProgress: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -242,6 +245,7 @@ export default {
       isCreateWorkItemModalVisible: false,
       isMoveWorkItemModalVisible: false,
       workItemTypes: [],
+      updateInProgressPromise: null,
     };
   },
   apollo: {
@@ -378,9 +382,6 @@ export default {
 
       return BASE_ALLOWED_CREATE_TYPES;
     },
-    workItemTypeNameEnum() {
-      return NAME_TO_ENUM_MAP[this.workItemType];
-    },
     showMoveButton() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_ISSUE && this.canMove;
     },
@@ -392,6 +393,14 @@ export default {
       return shouldDisableShortcuts() ? null : `${modifierKey}/`;
     },
   },
+  watch: {
+    updateInProgress(newValue, oldValue) {
+      if (oldValue && !newValue && this.updateInProgressPromise) {
+        this.updateInProgressPromise.resolve();
+        this.updateInProgressPromise = null;
+      }
+    },
+  },
   methods: {
     copyToClipboard(text, message) {
       if (this.isModal) {
@@ -400,11 +409,21 @@ export default {
       toast(message);
       this.closeDropdown();
     },
-    handleToggleWorkItemConfidentiality() {
+    async handleToggleWorkItemConfidentiality() {
       this.track('click_toggle_work_item_confidentiality');
+      const message = this.confidentialityToggledText;
       this.$emit('toggleWorkItemConfidentiality', !this.isConfidential);
-      toast(this.confidentialityToggledText);
+
+      await nextTick();
+
+      if (this.updateInProgress) {
+        await new Promise((resolve) => {
+          this.updateInProgressPromise = { resolve };
+        });
+      }
+
       this.closeDropdown();
+      toast(message);
     },
     handleDelete() {
       this.$refs.modal.show();
@@ -652,7 +671,9 @@ export default {
         @action="handleToggleWorkItemConfidentiality"
       >
         <template #list-item>
+          <gl-loading-icon v-if="updateInProgress" class="gl-mr-2" inline />
           <gl-icon
+            v-else
             :name="confidentialItemIcon"
             class="gl-mr-2"
             :variant="confidentialItemIconVariant"
@@ -791,7 +812,7 @@ export default {
       :always-show-work-item-type-select="!isGroup"
       :visible="isCreateWorkItemModalVisible"
       :related-item="relatedItemData"
-      :preselected-work-item-type="workItemTypeNameEnum"
+      :preselected-work-item-type="workItemType"
       :show-project-selector="!isEpic"
       :namespace-full-name="namespaceFullName"
       :is-group="isGroup"

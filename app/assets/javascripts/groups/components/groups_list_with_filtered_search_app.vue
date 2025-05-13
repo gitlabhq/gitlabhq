@@ -142,13 +142,14 @@ export default {
       :is-ascending="isAscending"
       :sort-options="sortOptions"
       :active-sort-option="activeSortOption"
+      :search-input-placeholder="__('Search')"
       @filter="onFilter"
       @sort-direction-change="onSortDirectionChange"
       @sort-by-change="onSortByChange"
     />
     <groups-app :service="service" :store="store">
       <template #empty-state>
-        <slot name="empty-state"></slot>
+        <slot name="empty-state" :search="search"></slot>
       </template>
     </groups-app>
   </div>

@@ -1,7 +1,7 @@
 import { nextTick } from 'vue';
 import { GlAvatarLabeled, GlCollapsibleListbox } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import axios from 'axios';
+import axios from '~/lib/utils/axios_utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import { getGroups } from '~/api/groups_api';
 import { getProjectShareLocations } from '~/api/projects_api';

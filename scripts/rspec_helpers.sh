@@ -240,7 +240,8 @@ function change_exit_code_if_known_flaky_tests() {
   echo "${found_known_flaky_tests_output}"
   if [[ $found_known_flaky_tests_status -eq 0 ]]; then
     echo
-    echo "Changing the CI/CD job exit code to 112."
+    echo "Changing the CI/CD job exit code to 112, and creating the ${RSPEC_TEST_ALREADY_FAILED_ON_DEFAULT_BRANCH_MARKER_PATH} file"
+    touch "${RSPEC_TEST_ALREADY_FAILED_ON_DEFAULT_BRANCH_MARKER_PATH}"
 
     new_exit_code=112
   else
@@ -272,7 +273,7 @@ function rspec_parallelized_job() {
   local test_level="${job_name[1]}"
   # e.g. 'rspec unit pg14 1/24 278964' would become 'rspec_unit_pg14_1_24_278964'
   local report_name=$(echo "${CI_JOB_NAME} ${CI_PROJECT_ID}" | sed -E 's|[/ ]|_|g')
-  local rspec_opts="${1:-}"
+  local rspec_opts="--force-color ${1:-}"
   local rspec_tests_mapping_enabled="${RSPEC_TESTS_MAPPING_ENABLED:-}"
   local spec_folder_prefixes=""
   local rspec_flaky_folder_path="$(dirname "${FLAKY_RSPEC_SUITE_REPORT_PATH}")/"

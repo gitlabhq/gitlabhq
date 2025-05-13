@@ -695,6 +695,7 @@ Project:
 - merge_commit_template
 - squash_commit_template
 - issue_branch_template
+- merge_request_title_regex
 Author:
 - name
 ProjectFeature:
@@ -932,6 +933,7 @@ DesignManagement::Version:
 - created_at
 - sha
 - author_id
+- namespace_id
 ZoomMeeting:
 - id
 - project_id
@@ -1108,7 +1110,6 @@ Vulnerabilities::Finding:
   - severity
   - report_type
   - project_id
-  - project_fingerprint
   - location_fingerprint
   - name
   - metadata_version

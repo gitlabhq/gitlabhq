@@ -87,7 +87,7 @@ export default {
 <template>
   <gl-tabs
     v-model="selectedTabIndex"
-    content-class="gl-py-0"
+    content-class="gl-py-0 gl-isolation-auto"
     sync-active-tab-with-query-params
     :query-param-name="$options.ACTIVE_TAB_QUERY_PARAM_NAME"
   >

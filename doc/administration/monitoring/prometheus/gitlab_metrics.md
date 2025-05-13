@@ -173,9 +173,9 @@ The following metrics are available:
 | `gitlab_diffs_render_real_duration_seconds` | Histogram | 15.8 | Duration in seconds spent on serializing and rendering diffs on diffs batch request | `controller`, `action`, `endpoint_id` |
 | `gitlab_memwd_violations_total`                      | Counter | 15.9  | Total number of times a Ruby process violated a memory threshold | |
 | `gitlab_memwd_violations_handled_total`              | Counter | 15.9  | Total number of times Ruby process memory violations were handled | |
-| `gitlab_sli_rails_request_apdex_total` | Counter | 14.4 | Total number of request Apdex measurements. For more information, see [Rails request SLIs](../../../development/application_slis/rails_request.md) | `endpoint_id`, `feature_category`, `request_urgency` |
+| `gitlab_sli_rails_request_apdex_total` | Counter | 14.4 | Total number of request Apdex measurements. | `endpoint_id`, `feature_category`, `request_urgency` |
 | `gitlab_sli_rails_request_apdex_success_total` | Counter | 14.4 | Total number of successful requests that met the target duration for their urgency. Divide by `gitlab_sli_rails_requests_apdex_total` to get a success ratio | `endpoint_id`, `feature_category`, `request_urgency` |
-| `gitlab_sli_rails_request_error_total` | Counter | 15.7 | Total number of request error measurements. For more information, see [Rails request SLIs](../../../development/application_slis/rails_request.md) | `endpoint_id`, `feature_category`, `request_urgency`, `error` |
+| `gitlab_sli_rails_request_error_total` | Counter | 15.7 | Total number of request error measurements. | `endpoint_id`, `feature_category`, `request_urgency`, `error` |
 | `job_register_attempts_failed_total` | Counter | 9.5 | Counts the times a runner fails to register a job | |
 | `job_register_attempts_total` | Counter | 9.5 | Counts the times a runner tries to register a job | |
 | `job_queue_duration_seconds` | Histogram | 9.5 | Request handling execution time | |
@@ -260,7 +260,7 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `sidekiq_concurrency_limit_queue_jobs_total`    | Counter | 17.6 | Proxy to calculate the number of jobs in the waiting queue due to concurrency limit. It must be interpreted as `max(idelta(sidekiq_concurrency_limit_queue_jobs_total[1m))` in order to see the total queue size. Unlike other counters, the overall `rate` for this counter is meaningless.  |  `worker`                                                             |
 | `sidekiq_concurrency_limit_current_concurrent_jobs_total`    | Counter | 17.6 | Proxy to calculate the number of concurrently running jobs. It must be interpreted as `max(idelta(sidekiq_concurrency_limit_current_concurrent_jobs_total[1m))` in order to see the number of concurrent jobs. Unlike other counters, the overall `rate` for this counter is meaningless. |  `worker`                                                             |
 | `geo_db_replication_lag_seconds`               | Gauge   | 10.2  | Database replication lag (seconds) | `url` |
-| `geo_repositories`                             | Gauge   | 10.2  | Deprecated for removal in 18.0. Replaced by `geo_project_repositories`. Total number of repositories available on primary | `url` |
+| `geo_repositories`                             | Gauge   | 10.2  | Deprecated in 17.9. The future GitLab release for removal is yet to be confirmed. Use `geo_project_repositories` instead. Total number of repositories available on primary | `url` |
 | `geo_lfs_objects`                              | Gauge   | 10.2  | Number of LFS objects on primary | `url` |
 | `geo_lfs_objects_checksummed`                  | Gauge   | 14.6  | Number of LFS objects checksummed successfully on primary | `url` |
 | `geo_lfs_objects_checksum_failed`              | Gauge   | 14.6  | Number of LFS objects failed to calculate the checksum on primary | `url` |

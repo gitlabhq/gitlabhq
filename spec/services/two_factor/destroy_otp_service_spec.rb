@@ -44,7 +44,7 @@ RSpec.describe TwoFactor::DestroyOtpService, feature_category: :system_access do
       context 'when the executor is authorized to disable the OTP authenticator' do
         shared_examples_for 'disables OTP authenticator' do
           it 'returns success' do
-            expect(execute).to eq({ status: :success })
+            expect(execute).to include({ status: :success })
           end
 
           it 'disables the OTP authenticator of the user' do

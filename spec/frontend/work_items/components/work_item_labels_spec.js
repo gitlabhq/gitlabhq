@@ -214,6 +214,22 @@ describe('WorkItemLabels component', () => {
     expect(findWorkItemSidebarDropdownWidget().props('loading')).toBe(false);
   });
 
+  it('filters search results by title in frontend', async () => {
+    createComponent({
+      searchQueryHandler: jest.fn().mockResolvedValue(getProjectLabelsResponse(mockLabels)),
+    });
+
+    showDropdown();
+    await findWorkItemSidebarDropdownWidget().vm.$emit('searchStarted', mockLabels[0].title);
+
+    expect(findWorkItemSidebarDropdownWidget().props('loading')).toBe(true);
+
+    await waitForPromises();
+
+    expect(findWorkItemSidebarDropdownWidget().props('listItems')).toHaveLength(1);
+    expect(findWorkItemSidebarDropdownWidget().props('loading')).toBe(false);
+  });
+
   it('emits error event if search query fails', async () => {
     createComponent({ searchQueryHandler: errorHandler });
     showDropdown();

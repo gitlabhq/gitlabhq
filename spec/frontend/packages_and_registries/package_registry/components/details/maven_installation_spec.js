@@ -6,7 +6,7 @@ import {
   packageData,
   mavenMetadata,
 } from 'jest/packages_and_registries/package_registry/mock_data';
-import InstallationTitle from '~/packages_and_registries/package_registry/components/details/installation_title.vue';
+import InstallationMethod from '~/packages_and_registries/package_registry/components/details/installation_method.vue';
 import MavenInstallation from '~/packages_and_registries/package_registry/components/details/maven_installation.vue';
 import {
   TRACKING_ACTION_COPY_MAVEN_XML,
@@ -62,7 +62,7 @@ describe('MavenInstallation', () => {
   const gradleKotlinAddSourceCommandText = `maven("${packageEntity.mavenUrl}")`;
 
   const findCodeInstructions = () => wrapper.findAllComponents(CodeInstructions);
-  const findInstallationTitle = () => wrapper.findComponent(InstallationTitle);
+  const findInstallationMethod = () => wrapper.findComponent(InstallationMethod);
   const findSetupDocsLink = () => wrapper.findComponent(GlLink);
 
   function createComponent({ data = {} } = {}) {
@@ -83,8 +83,8 @@ describe('MavenInstallation', () => {
     it('has the installation title component', () => {
       createComponent();
 
-      expect(findInstallationTitle().exists()).toBe(true);
-      expect(findInstallationTitle().props()).toMatchObject({
+      expect(findInstallationMethod().exists()).toBe(true);
+      expect(findInstallationMethod().props()).toMatchObject({
         packageType: 'maven',
         options: [
           { value: 'maven', label: 'Maven XML' },
@@ -98,7 +98,7 @@ describe('MavenInstallation', () => {
       createComponent();
 
       expect(findCodeInstructions().at(0).props('instruction')).toBe(xmlCodeBlock);
-      findInstallationTitle().vm.$emit('change', 'groovy');
+      findInstallationMethod().vm.$emit('change', 'groovy');
 
       await nextTick();
 

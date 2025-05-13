@@ -48,11 +48,6 @@ describe('Repository last commit component', () => {
     wrapper = shallowMountExtended(LastCommit, {
       apolloProvider,
       propsData: { currentPath, historyUrl: '/history' },
-      provide: {
-        glFeatures: {
-          ciPipelineStatusRealtime: true,
-        },
-      },
     });
   };
 

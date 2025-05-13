@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Geo
+stage: Data Access
+group: Durability
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Backup archive process
 ---
@@ -23,7 +23,7 @@ To create the archive file, the backup script:
 
 To back up the database, the `db` sub-task:
 
-1. Uses `pg_dump` to create an [SQL dump](https://www.postgresql.org/docs/14/backup-dump.html).
+1. Uses `pg_dump` to create an [SQL dump](https://www.postgresql.org/docs/16/backup-dump.html).
 1. Pipes the output of `pg_dump` through `gzip` and creates a compressed SQL file.
 1. Saves the file to the [backup staging directory](#backup-staging-directory).
 

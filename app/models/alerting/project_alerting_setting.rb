@@ -4,13 +4,15 @@ require 'securerandom'
 
 module Alerting
   class ProjectAlertingSetting < ApplicationRecord
+    include Gitlab::EncryptedAttribute
+
     belongs_to :project
 
     validates :token, presence: true
 
     attr_encrypted :token,
       mode: :per_attribute_iv,
-      key: Settings.attr_encrypted_db_key_base_32,
+      key: :db_key_base_32,
       algorithm: 'aes-256-gcm'
 
     before_validation :ensure_token

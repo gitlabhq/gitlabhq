@@ -1,5 +1,5 @@
 ---
-stage: Systems
+stage: Tenant Scale
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Set up Geo for two single-node sites
@@ -29,7 +29,7 @@ Prerequisites:
 Prerequisites:
 
 - You use PostgreSQL 12 or later,
-  which includes the [`pg_basebackup` tool](https://www.postgresql.org/docs/12/app-pgbasebackup.html).
+  which includes the [`pg_basebackup` tool](https://www.postgresql.org/docs/16/app-pgbasebackup.html).
 
 ### Configure the primary site
 
@@ -38,6 +38,8 @@ Prerequisites:
    ```shell
    sudo -i
    ```
+
+1. [Opt out of automatic PostgreSQL upgrades](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades) to avoid unintended downtime when upgrading GitLab. Be aware of the known [caveats when upgrading PostgreSQL with Geo](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo). Especially for larger environments, PostgreSQL upgrades must be planned and executed consciously. As a result and going forward, ensure PostgreSQL upgrades are part of the regular maintenance activities.
 
 1. Add a unique Geo site name to `/etc/gitlab/gitlab.rb`:
 
@@ -94,7 +96,7 @@ Prerequisites:
       gitlab_rails['db_password'] = '<your_db_password_here>'
       ```
 
-1. Define a password for the database [replication user](https://wiki.postgresql.org/wiki/Streaming_Replication).
+1. Define a password for the database [replication user](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION).
    Use the username defined in `/etc/gitlab/gitlab.rb` under the `postgresql['sql_replication_user']`
    setting. The default value is `gitlab_replicator`.
 
@@ -251,6 +253,8 @@ Prerequisites:
    sudo -i
    ```
 
+1. [Opt out of automatic PostgreSQL upgrades](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades) to avoid unintended downtime when upgrading GitLab. Be aware of the known [caveats when upgrading PostgreSQL with Geo](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo). Especially for larger environments, PostgreSQL upgrades must be planned and executed consciously. As a result and going forward, ensure PostgreSQL upgrades are part of the regular maintenance activities.
+
 1. To prevent any commands from running before the site is configured, stop the application server and Sidekiq:
 
    ```shell
@@ -379,7 +383,7 @@ To replicate the database:
    sudo -i
    ```
 
-1. Choose a database-friendly name for your secondary site to
+1. Choose a [database-friendly name](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION-SLOTS-MANIPULATION)  for your secondary site to
    use as the replication slot name. For example, if your domain is
    `secondary.geo.example.com`, use `secondary_example` as the slot
    name. Replication slot names must only contain lowercase letters,

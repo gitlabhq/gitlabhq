@@ -11,7 +11,11 @@ module QA
 
       it(
         'filters comments and activities in an issue', :aggregate_failures,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347948'
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347948',
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/534698',
+          type: :flaky
+        }
       ) do
         work_item_enabled = Page::Project::Issue::Show.perform(&:work_item_enabled?)
         page_type = work_item_enabled ? Page::Project::WorkItem::Show : Page::Project::Issue::Show

@@ -277,7 +277,7 @@ export default {
     <gl-empty-state
       v-else-if="!hasHistoryItems"
       :title="s__('BulkImport|No history is available')"
-      :description="s__('BulkImport|Your imported groups and projects will appear here.')"
+      :description="s__('BulkImport|Your imported groups and projects appear here.')"
     />
     <template v-else>
       <gl-table-lite :fields="$options.fields" :items="historyItems" class="gl-w-full">

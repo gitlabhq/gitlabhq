@@ -10,7 +10,7 @@ import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.grap
 import isExpandedHierarchyTreeChildQuery from '~/work_items/graphql/client/is_expanded_hierarchy_tree_child.query.graphql';
 import WorkItemLinkChild from '~/work_items/components/work_item_links/work_item_link_child.vue';
 import WorkItemChildrenWrapper from '~/work_items/components/work_item_links/work_item_children_wrapper.vue';
-import WorkItemLinkChildContents from '~/work_items/components/shared/work_item_link_child_contents.vue';
+import WorkItemLinkChildContents from 'ee_else_ce/work_items/components/shared/work_item_link_child_contents.vue';
 import {
   WIDGET_TYPE_HIERARCHY,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,

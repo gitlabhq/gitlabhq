@@ -6,6 +6,9 @@
 @import '@gitlab/at.js/dist/css/jquery.atwho';
 @import 'dropzone/dist/basic';
 
+// GitLab project specific custom property definitions
+@import 'root';
+
 // GitLab UI framework
 @import 'framework';
 

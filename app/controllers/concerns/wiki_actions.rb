@@ -70,7 +70,7 @@ module WikiActions
   end
 
   def new
-    redirect_to wiki_page_path(wiki, SecureRandom.uuid, random_title: true)
+    redirect_to wiki_page_path(wiki, SecureRandom.uuid, random_title: true, view: 'create')
   end
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
@@ -324,10 +324,9 @@ module WikiActions
   def show_create_form?
     can?(current_user, :create_wiki, container) &&
       page.nil? &&
-      # Always show the create form when the wiki has had at least one page created.
-      # Otherwise, we only show the form when the user has navigated from
-      # the 'empty wiki' page
-      (wiki.exists? || params[:view] == 'create')
+      # Only show the form when the user has navigated from
+      # the 'empty wiki' or '404' page
+      params[:view] == 'create'
   end
 
   def wiki

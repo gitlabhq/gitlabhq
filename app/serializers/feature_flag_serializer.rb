@@ -2,6 +2,7 @@
 
 class FeatureFlagSerializer < BaseSerializer
   include WithPagination
+
   entity FeatureFlagEntity
 
   def represent(resource, opts = {})

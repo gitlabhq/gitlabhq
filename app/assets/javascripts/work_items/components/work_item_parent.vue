@@ -1,13 +1,19 @@
 <script>
-import { GlLink, GlIcon, GlPopover } from '@gitlab/ui';
-
+import { GlIcon, GlLink, GlPopover } from '@gitlab/ui';
+import { uniqueId } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import updateParentMutation from '~/work_items/graphql/update_parent.mutation.graphql';
 import { isValidURL } from '~/lib/utils/url_utility';
 
 import updateNewWorkItemMutation from '~/work_items/graphql/update_new_work_item.mutation.graphql';
+import {
+  findMilestoneWidget,
+  findHierarchyWidgetDefinition,
+  isReference,
+  newWorkItemId,
+} from '~/work_items/utils';
 import { updateParent } from '../graphql/cache_utils';
 import groupWorkItemsQuery from '../graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '../graphql/project_work_items.query.graphql';
@@ -15,31 +21,22 @@ import workItemsByReferencesQuery from '../graphql/work_items_by_references.quer
 import workItemAllowedParentTypesQuery from '../graphql/work_item_allowed_parent_types.query.graphql';
 import {
   I18N_WORK_ITEM_ERROR_UPDATING,
-  sprintfWorkItem,
-  WORK_ITEM_TYPE_ENUM_EPIC,
-  WORK_ITEM_TYPE_NAME_ISSUE,
   NAME_TO_ENUM_MAP,
+  NAME_TO_TEXT_LOWERCASE_MAP,
+  NO_WORK_ITEM_IID,
+  WORK_ITEM_TYPE_ENUM_EPIC,
+  WORK_ITEM_TYPE_NAME_EPIC,
+  WORK_ITEM_TYPE_NAME_ISSUE,
 } from '../constants';
-import { isReference, findHierarchyWidgetDefinition, newWorkItemId } from '../utils';
 
 export default {
+  linkId: uniqueId('work-item-parent-link-'),
   name: 'WorkItemParent',
-  inputId: 'work-item-parent-listbox-value',
-  noWorkItemId: 'no-work-item-id',
-  i18n: {
-    assignParentLabel: s__('WorkItem|Select parent'),
-    parentLabel: s__('WorkItem|Parent'),
-    none: s__('WorkItem|None'),
-    unAssign: s__('WorkItem|Clear'),
-    workItemsFetchError: s__(
-      'WorkItem|Something went wrong while fetching items. Please try again.',
-    ),
-    searchPlaceholder: s__('WorkItem|Search or paste URL'),
-  },
   components: {
     GlLink,
     GlIcon,
     GlPopover,
+    IssuePopover: () => import('~/issuable/popover/components/issue_popover.vue'),
     WorkItemSidebarDropdownWidget,
   },
   inject: ['fullPath'],
@@ -95,6 +92,9 @@ export default {
     isIssue() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_ISSUE;
     },
+    isEpic() {
+      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
+    },
     isLoading() {
       return (
         this.$apollo.queries.workspaceWorkItems.loading ||
@@ -108,7 +108,7 @@ export default {
       return (
         this.workItems.find(({ value }) => this.localSelectedItem === value)?.text ||
         this.parent?.title ||
-        this.$options.i18n.none
+        s__('WorkItem|None')
       );
     },
     workItems() {
@@ -116,6 +116,16 @@ export default {
     },
     parentWebUrl() {
       return this.parent?.webUrl;
+    },
+    visibleWorkItems() {
+      return this.workItemsByReference.concat(this.workspaceWorkItems);
+    },
+    isSelectedParentAvailable() {
+      return this.localSelectedItem && this.visibleWorkItems.length;
+    },
+    selectedParentMilestone() {
+      const selectedParent = this.visibleWorkItems?.find(({ id }) => id === this.localSelectedItem);
+      return findMilestoneWidget(selectedParent)?.milestone || null;
     },
     showCustomNoneValue() {
       return this.hasParent && this.parent === null;
@@ -132,6 +142,9 @@ export default {
       handler(newVal) {
         this.localSelectedItem = newVal?.id;
       },
+    },
+    localSelectedItem() {
+      if (this.isEpic) this.handleSelectedParentMilestone();
     },
   },
   apollo: {
@@ -159,7 +172,10 @@ export default {
         return data.workspace.workItems.nodes.filter((wi) => this.workItemId !== wi.id) || [];
       },
       error() {
-        this.$emit('error', this.$options.i18n.workItemsFetchError);
+        this.$emit(
+          'error',
+          s__('WorkItem|Something went wrong while fetching items. Please try again.'),
+        );
       },
     },
     workItemsByReference: {
@@ -177,7 +193,10 @@ export default {
         return data?.workItemsByReference?.nodes || [];
       },
       error() {
-        this.$emit('error', this.$options.i18n.workItemsFetchError);
+        this.$emit(
+          'error',
+          s__('WorkItem|Something went wrong while fetching items. Please try again.'),
+        );
       },
     },
     allowedParentTypes: {
@@ -211,21 +230,18 @@ export default {
         this.updateInProgress = true;
 
         if (this.workItemId === newWorkItemId(this.workItemType)) {
-          const visibleWorkItems = this.workItemsByReference.concat(this.workspaceWorkItems);
-
           this.$apollo
             .mutate({
               mutation: updateNewWorkItemMutation,
               variables: {
                 input: {
                   fullPath: this.fullPath,
-                  parent:
-                    this.localSelectedItem && visibleWorkItems.length
-                      ? {
-                          ...visibleWorkItems?.find(({ id }) => id === this.localSelectedItem),
-                          webUrl: this.parentWebUrl ?? null,
-                        }
-                      : null,
+                  parent: this.isSelectedParentAvailable
+                    ? {
+                        ...this.visibleWorkItems.find(({ id }) => id === this.localSelectedItem),
+                        webUrl: this.parentWebUrl ?? null,
+                      }
+                    : null,
                   workItemType: this.workItemType,
                 },
               },
@@ -233,7 +249,9 @@ export default {
             .catch((error) => {
               this.$emit(
                 'error',
-                sprintfWorkItem(I18N_WORK_ITEM_ERROR_UPDATING, this.workItemType),
+                sprintf(I18N_WORK_ITEM_ERROR_UPDATING, {
+                  workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
+                }),
               );
               Sentry.captureException(error);
             })
@@ -255,9 +273,7 @@ export default {
               id: this.workItemId,
               hierarchyWidget: {
                 parentId:
-                  this.localSelectedItem === this.$options.noWorkItemId
-                    ? null
-                    : this.localSelectedItem,
+                  this.localSelectedItem === NO_WORK_ITEM_IID ? null : this.localSelectedItem,
               },
             },
           },
@@ -272,10 +288,15 @@ export default {
 
         if (errors.length) {
           this.$emit('error', errors.join('\n'));
-          this.localSelectedItem = this.parent?.id || this.$options.noWorkItemId;
+          this.localSelectedItem = this.parent?.id || NO_WORK_ITEM_IID;
         }
       } catch (error) {
-        this.$emit('error', sprintfWorkItem(I18N_WORK_ITEM_ERROR_UPDATING, this.workItemType));
+        this.$emit(
+          'error',
+          sprintf(I18N_WORK_ITEM_ERROR_UPDATING, {
+            workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
+          }),
+        );
         Sentry.captureException(error);
       } finally {
         this.searchStarted = false;
@@ -289,7 +310,7 @@ export default {
       this.updateParent();
     },
     unassignParent() {
-      this.localSelectedItem = this.$options.noWorkItemId;
+      this.localSelectedItem = NO_WORK_ITEM_IID;
       this.updateParent();
     },
     onListboxShown() {
@@ -298,6 +319,9 @@ export default {
     onListboxHide() {
       this.searchStarted = false;
       this.searchTerm = '';
+    },
+    handleSelectedParentMilestone() {
+      this.$emit('parentMilestone', this.selectedParentMilestone);
     },
   },
 };
@@ -311,11 +335,11 @@ export default {
     :list-items="workItems"
     :loading="isLoading"
     :item-value="localSelectedItem"
-    :header-text="$options.i18n.assignParentLabel"
+    :header-text="s__('WorkItem|Select parent')"
     :update-in-progress="updateInProgress"
-    :reset-button-label="$options.i18n.unAssign"
+    :reset-button-label="s__('WorkItem|Clear')"
     :toggle-dropdown-text="listboxText"
-    :search-placeholder="$options.i18n.searchPlaceholder"
+    :search-placeholder="s__('WorkItem|Search or paste URL')"
     data-testid="work-item-parent"
     @dropdownShown="onListboxShown"
     @dropdownHidden="onListboxHide"
@@ -324,13 +348,22 @@ export default {
     @reset="unassignParent"
   >
     <template #readonly>
-      <gl-link
-        v-if="localSelectedItem"
-        data-testid="work-item-parent-link"
-        class="gl-inline-block gl-max-w-full gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap gl-align-top gl-text-default"
-        :href="parentWebUrl"
-        >{{ listboxText }}</gl-link
-      >
+      <template v-if="localSelectedItem">
+        <gl-link
+          :id="$options.linkId"
+          data-testid="work-item-parent-link"
+          class="gl-inline-block gl-max-w-full gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap gl-align-top gl-text-default"
+          :href="parentWebUrl"
+          >{{ listboxText }}</gl-link
+        >
+        <issue-popover
+          v-if="parent"
+          :cached-title="parent.title"
+          :iid="parent.iid"
+          :namespace-path="parent.namespace.fullPath"
+          :target="$options.linkId"
+        />
+      </template>
     </template>
     <template v-if="showCustomNoneValue" #none>
       <span id="parent-not-available" class="gl-cursor-help">

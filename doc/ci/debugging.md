@@ -332,6 +332,8 @@ a branch pipeline instead.
 It's also possible that your [`workflow: rules`](yaml/_index.md#workflow) configuration
 blocked the pipeline, or allowed the wrong pipeline type.
 
+If you are using pull mirroring, you can check the [troubleshooting entry for pull mirroring pipelines](../user/project/repository/mirror/troubleshooting.md#pull-mirroring-is-not-triggering-pipelines).
+
 ### Pipeline with many jobs fails to start
 
 A Pipeline that has more jobs than the instance's defined [CI/CD limits](../administration/settings/continuous_integration.md#set-cicd-limits)

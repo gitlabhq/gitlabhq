@@ -4,9 +4,9 @@ import { shallowMount, mount } from '@vue/test-utils';
 import { PiniaVuePlugin } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
 import NoChanges from '~/diffs/components/no_changes.vue';
-import store from '~/mr_notes/stores';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useNotes } from '~/notes/store/legacy_notes';
 import { createMrVersionsMock } from '../mock_data/merge_request_diffs';
 
 jest.mock('~/mr_notes/stores', () => jest.requireActual('helpers/mocks/mr_notes/stores'));
@@ -21,9 +21,6 @@ describe('Diff no changes empty state', () => {
 
   const createComponent = (mountFn = shallowMount) =>
     mountFn(NoChanges, {
-      mocks: {
-        $store: store,
-      },
       propsData: {
         changesEmptyStateIllustration: '',
       },
@@ -33,22 +30,16 @@ describe('Diff no changes empty state', () => {
   beforeEach(() => {
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
     useLegacyDiffs().mergeRequestDiffs = createMrVersionsMock();
-    store.reset();
-
-    store.getters.getNoteableData = {
-      target_branch: TEST_TARGET_BRANCH,
-      source_branch: TEST_SOURCE_BRANCH,
-    };
+    useNotes().noteableData.target_branch = TEST_TARGET_BRANCH;
+    useNotes().noteableData.source_branch = TEST_SOURCE_BRANCH;
   });
 
   const findEmptyState = (wrapper) => wrapper.findComponent(GlEmptyState);
   const findMessage = (wrapper) => wrapper.find('[data-testid="no-changes-message"]');
 
   it('prevents XSS', () => {
-    store.getters.getNoteableData = {
-      source_branch: '<script>alert("test");</script>',
-      target_branch: '<script>alert("test");</script>',
-    };
+    useNotes().noteableData.source_branch = '<script>alert("test");</script>';
+    useNotes().noteableData.target_branch = '<script>alert("test");</script>';
 
     const wrapper = createComponent();
 

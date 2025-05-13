@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Types::GroupMemberType do
-  specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Group) }
+  specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Members::GroupMember) }
 
   specify { expect(described_class.graphql_name).to eq('GroupMember') }
 

@@ -93,6 +93,7 @@ module Tooling
           \.gitlab/ci/frontend\.gitlab-ci\.yml
         )\z}x => %i[frontend tooling],
 
+        %r{\Aee/db/seeds/data_seeder/} => [:backend],
         %r{\A((ee|jh)/)?db/(geo/)?(?!click_house|fixtures)[^/]+} => [:database],
         %r{\A((ee|jh)/)?db/[^/]+\z} => [:database], # db/ root files
         %r{\Adb/docs/.+\.yml\z} => [:database],
@@ -116,9 +117,8 @@ module Tooling
         %r{\A((ee|jh)/)?config/(events|metrics)/((.*\.yml)|(schema\.json))\z} => [:analytics_instrumentation],
         %r{\A((ee|jh)/)?lib/gitlab/usage_data(_counters)?(/|\.rb)} => [:backend, :analytics_instrumentation],
         %r{\A((ee|jh)/)?(spec/)?lib/gitlab/usage(/|\.rb)} => [:backend, :analytics_instrumentation],
-        %r{\A(
-          lib/gitlab/tracking\.rb |
-          spec/lib/gitlab/tracking_spec\.rb |
+        %r{\A(((ee|jh)/)?(
+          (spec/)?lib/((ee|jh)/)?gitlab/tracking.*\.rb |
           app/helpers/tracking_helper\.rb |
           spec/helpers/tracking_helper_spec\.rb |
           (spec/)?lib/generators/gitlab/usage_metric_\S+ |
@@ -128,7 +128,7 @@ module Tooling
           spec/support/matchers/internal_events_matchers\.rb |
           spec/support_specs/matchers/internal_events_matchers_spec\.rb |
           (spec/)?scripts/internal_events/\S+\.rb |
-          generator_templates/usage_metric_definition/metric_definition\.yml)\z}x => [:backend, :analytics_instrumentation],
+          generator_templates/usage_metric_definition/metric_definition\.yml))\z}x => [:backend, :analytics_instrumentation],
         %r{gitlab/usage_data(_spec)?\.rb} => [:analytics_instrumentation],
         [%r{\.haml\z}, %r{data: \{ track}] => [:analytics_instrumentation],
         [%r{\.(rb|haml)\z}, %r{Gitlab::Tracking\.(event|enabled\?|options)}] => [:analytics_instrumentation],

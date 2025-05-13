@@ -14,8 +14,8 @@ export default {
     },
   },
   methods: {
-    getItemsClosedLabel(workItemTypeName) {
-      return sprintfWorkItem(s__('WorkItem| %{workItemType}s closed'), workItemTypeName);
+    getItemsClosedLabel(workItemType) {
+      return sprintfWorkItem(s__('WorkItem| %{workItemType}s closed'), workItemType);
     },
   },
 };
@@ -32,7 +32,7 @@ export default {
       :key="rolledUpCount.workItemType.name"
       data-testid="rolled-up-type-info"
     >
-      <work-item-type-icon :work-item-icon-name="rolledUpCount.workItemType.iconName" />
+      <work-item-type-icon :work-item-type="rolledUpCount.workItemType.name" />
       <span class="gl-font-bold"
         >{{ rolledUpCount.countsByState.closed }}/{{ rolledUpCount.countsByState.all }}</span
       >

@@ -85,9 +85,11 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
           users_api_limit_followers users_api_limit_following users_api_limit_status users_api_limit_ssh_keys
           users_api_limit_ssh_key users_api_limit_gpg_keys users_api_limit_gpg_key
           group_shared_groups_api_limit
+          group_archive_unarchive_api_limit
           group_invited_groups_api_limit
           project_invited_groups_api_limit
           create_organization_api_limit
+          top_level_group_creation_enabled
         ])
     end
 
@@ -98,6 +100,7 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
         global_search_issues_enabled
         global_search_merge_requests_enabled
         global_search_block_anonymous_searches_enabled
+        anonymous_searches_allowed
       ]
       expect(helper.visible_attributes).to include(*expected_fields)
     end
@@ -399,11 +402,11 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
     it 'returns correctly checked checkboxes' do
       helper.gitlab_ui_form_for(application_setting, url: search_admin_application_settings_path) do |form|
         result = helper.global_search_settings_checkboxes(form)
-        expect(result[0]).to have_checked_field('Enable blocking of anonymous global search requests', with: 1)
-        expect(result[1]).to have_checked_field('Enable issues tab in global search results', with: 1)
-        expect(result[2]).not_to have_checked_field('Enable merge requests tab in global search results', with: 1)
-        expect(result[3]).to have_checked_field('Enable snippet tab in global search results', with: 1)
-        expect(result[4]).not_to have_checked_field('Enable users tab in global search results', with: 1)
+        expect(result[0]).to have_checked_field('Restrict global search to authenticated users only', with: 1)
+        expect(result[1]).to have_checked_field('Show issues in global search results', with: 1)
+        expect(result[2]).not_to have_checked_field('Show merge requests in global search results', with: 1)
+        expect(result[3]).to have_checked_field('Show snippets in global search results', with: 1)
+        expect(result[4]).not_to have_checked_field('Show users in global search results', with: 1)
       end
     end
   end

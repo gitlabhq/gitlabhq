@@ -23,8 +23,6 @@
   - c.with_body do
     = render 'account_and_limit'
 
-= render_if_exists 'admin/application_settings/ai_powered'
-
 = render ::Layouts::SettingsBlockComponent.new(_('Import and export settings'),
   id: 'js-import-export-settings',
   testid: 'admin-import-export-settings',

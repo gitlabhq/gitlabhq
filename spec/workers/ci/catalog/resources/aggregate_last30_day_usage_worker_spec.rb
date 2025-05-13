@@ -11,7 +11,8 @@ RSpec.describe Ci::Catalog::Resources::AggregateLast30DayUsageWorker, feature_ca
 
   it 'has the option to reschedule once if deduplicated and a TTL' do
     expect(described_class.get_deduplication_options).to include(
-      { if_deduplicated: :reschedule_once, ttl: Gitlab::Ci::Components::Usages::Aggregator::WORKER_DEDUP_TTL })
+      { if_deduplicated: :reschedule_once,
+        ttl: Ci::Catalog::Resources::AggregateLast30DayUsageWorker::WORKER_DEDUP_TTL })
   end
 
   describe '#perform' do

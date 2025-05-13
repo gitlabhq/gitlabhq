@@ -1,7 +1,7 @@
 import { GlSprintf, GlModal, GlFormGroup, GlFormCheckbox, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -21,6 +21,14 @@ const mockNotificationSettingsResponses = {
     events: {
       new_release: true,
       new_note: true,
+    },
+  },
+  defaultWithUknownEvent: {
+    level: 'custom',
+    events: {
+      new_release: true,
+      new_note: false,
+      event_without_frontend_translation: true,
     },
   },
 };
@@ -88,7 +96,7 @@ describe('CustomNotificationsModal', () => {
 
         mockAxios
           .onGet(endpointUrl)
-          .reply(HTTP_STATUS_OK, mockNotificationSettingsResponses.default);
+          .reply(HTTP_STATUS_OK, mockNotificationSettingsResponses.defaultWithUknownEvent);
 
         wrapper = createComponent();
 
@@ -110,6 +118,12 @@ describe('CustomNotificationsModal', () => {
           expect(checkbox.findComponent(GlLoadingIcon).exists()).toBe(loading);
         },
       );
+
+      it('does not render a checkbox without a known translation (i.e., blank)', () => {
+        findAllCheckboxes().wrappers.forEach((checkbox) => {
+          expect(checkbox.text()).not.toMatch(/^\s*$/);
+        });
+      });
     });
   });
 

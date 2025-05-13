@@ -3,14 +3,15 @@
 module Gitlab
   module ImportExport
     class MembersMapper
-      def initialize(exported_members:, user:, importable:)
+      def initialize(exported_members:, user:, importable:, default_member: true)
         @exported_members = user.admin? ? exported_members : []
         @user = user
         @importable = importable
 
         # This needs to run first, as second call would be from #map
         # which means Project/Group members already exist.
-        ensure_default_member!
+        # Skip this when importing single relations to avoid destroying project members
+        ensure_default_member! if default_member
       end
 
       def map

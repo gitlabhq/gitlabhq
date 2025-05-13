@@ -402,39 +402,43 @@ RSpec.describe Milestone, feature_category: :team_planning do
     let_it_be(:group_3) { create(:group) }
     let_it_be(:groups) { [group_1, group_2, group_3] }
 
-    let!(:past_milestone_group_1) { create(:milestone, group: group_1, due_date: Time.current - 1.day) }
-    let!(:current_milestone_group_1) { create(:milestone, group: group_1, due_date: Time.current + 1.day) }
-    let!(:future_milestone_group_1) { create(:milestone, group: group_1, due_date: Time.current + 2.days) }
-
-    let!(:past_milestone_group_2) { create(:milestone, group: group_2, due_date: Time.current - 1.day) }
-    let!(:closed_milestone_group_2) { create(:milestone, :closed, group: group_2, due_date: Time.current + 1.day) }
-    let!(:current_milestone_group_2) { create(:milestone, group: group_2, due_date: Time.current + 2.days) }
-
-    let!(:past_milestone_group_3) { create(:milestone, group: group_3, due_date: Time.current - 1.day) }
-
     let_it_be(:project_1) { create(:project) }
     let_it_be(:project_2) { create(:project) }
     let_it_be(:project_3) { create(:project) }
     let_it_be(:projects) { [project_1, project_2, project_3] }
 
-    let!(:past_milestone_project_1) { create(:milestone, project: project_1, due_date: Time.current - 1.day) }
-    let!(:current_milestone_project_1) { create(:milestone, project: project_1, due_date: Time.current + 1.day) }
-    let!(:future_milestone_project_1) { create(:milestone, project: project_1, due_date: Time.current + 2.days) }
+    let!(:current_milestone_group_1) { create(:milestone, group: group_1, start_date: Time.current - 1.day) }
+    let!(:future_milestone_group_1) { create(:milestone, group: group_1, start_date: Time.current + 1.day) }
+    let!(:other_future_milestone_group_1) { create(:milestone, group: group_1, start_date: Time.current + 2.days) }
 
-    let!(:past_milestone_project_2) { create(:milestone, project: project_2, due_date: Time.current - 1.day) }
-    let!(:closed_milestone_project_2) { create(:milestone, :closed, project: project_2, due_date: Time.current + 1.day) }
-    let!(:current_milestone_project_2) { create(:milestone, project: project_2, due_date: Time.current + 2.days) }
+    let!(:current_milestone_group_2) { create(:milestone, group: group_2, start_date: Time.current - 1.day) }
+    let!(:closed_milestone_group_2) { create(:milestone, :closed, group: group_2, start_date: Time.current + 1.day) }
+    let!(:future_milestone_group_2) { create(:milestone, group: group_2, start_date: Time.current + 2.days) }
 
-    let!(:past_milestone_project_3) { create(:milestone, project: project_3, due_date: Time.current - 1.day) }
+    let!(:current_milestone_group_3) { create(:milestone, group: group_3, start_date: Time.current - 1.day) }
 
-    let(:milestone_ids) { described_class.upcoming_ids(projects, groups).map(&:id) }
+    let!(:current_milestone_project_1) { create(:milestone, project: project_1, start_date: Time.current - 1.day) }
+    let!(:future_milestone_project_1) { create(:milestone, project: project_1, start_date: Time.current + 1.day) }
+    let!(:other_future_milestone_project_1) { create(:milestone, project: project_1, start_date: Time.current + 2.days) }
 
-    it 'returns the next upcoming open milestone ID for each project and group' do
+    let!(:current_milestone_project_2) { create(:milestone, project: project_2, start_date: Time.current - 1.day) }
+    let!(:closed_milestone_project_2) { create(:milestone, :closed, project: project_2, start_date: Time.current + 1.day) }
+    let!(:future_milestone_project_2) { create(:milestone, project: project_2, start_date: Time.current + 2.days) }
+
+    let!(:current_milestone_project_3) { create(:milestone, project: project_3, start_date: Time.current - 1.day) }
+
+    def milestone_ids(legacy_filtering_logic: false)
+      described_class.upcoming_ids(projects, groups, legacy_filtering_logic: legacy_filtering_logic).map(&:id)
+    end
+
+    it 'returns upcoming open milestone IDs for projects and groups' do
       expect(milestone_ids).to contain_exactly(
-        current_milestone_project_1.id,
-        current_milestone_project_2.id,
-        current_milestone_group_1.id,
-        current_milestone_group_2.id
+        future_milestone_project_1.id,
+        future_milestone_project_2.id,
+        future_milestone_group_1.id,
+        future_milestone_group_2.id,
+        other_future_milestone_group_1.id,
+        other_future_milestone_project_1.id
       )
     end
 
@@ -445,6 +449,85 @@ RSpec.describe Milestone, feature_category: :team_planning do
       it 'returns no results' do
         expect(milestone_ids).to be_empty
       end
+    end
+
+    context 'when legacy_filtering_logic is true' do
+      let!(:past_milestone_group_1) { create(:milestone, group: group_1, due_date: Time.current - 1.day) }
+      let!(:current_milestone_group_1) { create(:milestone, group: group_1, due_date: Time.current + 1.day) }
+      let!(:future_milestone_group_1) { create(:milestone, group: group_1, due_date: Time.current + 2.days) }
+
+      let!(:past_milestone_group_2) { create(:milestone, group: group_2, due_date: Time.current - 1.day) }
+      let!(:closed_milestone_group_2) { create(:milestone, :closed, group: group_2, due_date: Time.current + 1.day) }
+      let!(:current_milestone_group_2) { create(:milestone, group: group_2, due_date: Time.current + 2.days) }
+
+      let!(:past_milestone_group_3) { create(:milestone, group: group_3, due_date: Time.current - 1.day) }
+
+      let!(:past_milestone_project_1) { create(:milestone, project: project_1, due_date: Time.current - 1.day) }
+      let!(:current_milestone_project_1) { create(:milestone, project: project_1, due_date: Time.current + 1.day) }
+      let!(:future_milestone_project_1) { create(:milestone, project: project_1, due_date: Time.current + 2.days) }
+
+      let!(:past_milestone_project_2) { create(:milestone, project: project_2, due_date: Time.current - 1.day) }
+      let!(:closed_milestone_project_2) { create(:milestone, :closed, project: project_2, due_date: Time.current + 1.day) }
+      let!(:current_milestone_project_2) { create(:milestone, project: project_2, due_date: Time.current + 2.days) }
+
+      let!(:past_milestone_project_3) { create(:milestone, project: project_3, due_date: Time.current - 1.day) }
+
+      it 'returns the next upcoming open milestone ID for each project and group' do
+        expect(milestone_ids(legacy_filtering_logic: true)).to contain_exactly(
+          current_milestone_project_1.id,
+          current_milestone_project_2.id,
+          current_milestone_group_1.id,
+          current_milestone_group_2.id
+        )
+      end
+    end
+  end
+
+  shared_context "with milestones" do
+    let_it_be(:milestone_no_start_date) { create(:milestone, due_date: Time.current + 2.days) }
+    let_it_be(:milestone_no_due_date) { create(:milestone, start_date: Time.current - 2.days) }
+    let_it_be(:milestone_no_start_or_due_date) { create(:milestone) }
+    let_it_be(:current_milestone) { create(:milestone, start_date: Time.current - 2.days, due_date: Time.current + 2.days) }
+    let_it_be(:previous_milestone) { create(:milestone, start_date: Time.current - 4.days, due_date: Time.current - 2.days) }
+    let_it_be(:milestone_start_after_current_date) { create(:milestone, start_date: Time.current + 2.days) }
+    let_it_be(:milestone_due_before_current_date) { create(:milestone, due_date: Time.current - 2.days) }
+    let_it_be(:milestone_ending_today) { create(:milestone, due_date: Time.current) }
+  end
+
+  describe '#started' do
+    include_context "with milestones"
+
+    def milestone_ids(legacy_filtering_logic: false)
+      described_class.started(legacy_filtering_logic: legacy_filtering_logic).map(&:id)
+    end
+
+    it 'returns only milestones that overlap the current date (open ended)' do
+      expect(milestone_ids).to contain_exactly(
+        milestone_no_start_date.id,
+        milestone_no_due_date.id,
+        current_milestone.id,
+        milestone_ending_today.id
+      )
+    end
+
+    context 'when new_filter_logic is false' do
+      it 'returns only milestones starting in the past' do
+        expect(milestone_ids(legacy_filtering_logic: true)).to contain_exactly(
+          milestone_no_due_date.id,
+          current_milestone.id,
+          previous_milestone.id
+        )
+      end
+    end
+  end
+
+  describe '#not_started' do
+    include_context "with milestones"
+
+    let(:milestone_ids) { described_class.not_started.map(&:id) }
+
+    it 'returns only milestones that have a defined start date in the future' do
+      expect(milestone_ids).to contain_exactly(milestone_start_after_current_date.id)
     end
   end
 

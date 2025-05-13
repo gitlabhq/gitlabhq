@@ -61,7 +61,7 @@ newDate('2020-02-02') // Sun Feb 02 2020 00:00:00 GMT-0800 (Pacific Standard Tim
 // add a time component
 new Date('2020-02-02T00:00') // Sun Feb 02 2020 00:00:00 GMT-0800 (Pacific Standard Time)
 
-// use the (year, month, day) constructor - note that month is 0-indexed (another source of possible bugs, yay!)
+// use the (year, month, day) constructor - month is 0-indexed (another source of possible bugs, yay!)
 new Date(2020, 1, 2) // Sun Feb 02 2020 00:00:00 GMT-0800 (Pacific Standard Time)
 
 // bad

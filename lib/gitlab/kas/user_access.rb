@@ -22,12 +22,12 @@ module Gitlab
           ::Gitlab::Json.parse(decrypted)
         end
 
-        def valid_authenticity_token?(request, session, masked_authenticity_token)
+        def valid_authenticity_token?(session, masked_authenticity_token)
           # rubocop:disable GitlabSecurity/PublicSend
           if ::Gitlab.next_rails?
             controller = ActionController::Base.new
-            controller.set_request!(ActionDispatch::Request.new(request.env).dup)
-            controller.send(:valid_authenticity_token?, session, masked_authenticity_token)
+            controller.set_request!(ActionDispatch::Request.new('rack.session' => session))
+            controller.send(:valid_authenticity_token?, nil, masked_authenticity_token)
           else
             ActionController::Base.new.send(
               :valid_authenticity_token?, session, masked_authenticity_token

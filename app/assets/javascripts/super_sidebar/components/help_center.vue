@@ -1,8 +1,8 @@
 <script>
 import { GlBadge, GlButton, GlDisclosureDropdown, GlDisclosureDropdownGroup } from '@gitlab/ui';
-import GitlabVersionCheckBadge from '~/gitlab_version_check/components/gitlab_version_check_badge.vue';
+import GitlabVersionCheckBadge from 'jh_else_ce/gitlab_version_check/components/gitlab_version_check_badge.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { FORUM_URL, PROMO_URL } from '~/constants';
+import { FORUM_URL, PROMO_URL, CONTRIBUTE_URL } from '~/constants';
 import { __ } from '~/locale';
 import { STORAGE_KEY } from '~/whats_new/utils/notification';
 import Tracking from '~/tracking';
@@ -12,7 +12,6 @@ export default {
   components: {
     GlBadge,
     GlButton,
-
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
     GitlabVersionCheckBadge,
@@ -87,7 +86,7 @@ export default {
             },
             {
               text: this.$options.i18n.contribute,
-              href: helpPagePath('_index.md', { anchor: 'contribute-to-gitlab' }),
+              href: CONTRIBUTE_URL,
               extraAttrs: {
                 ...this.trackingAttrs('contribute_to_gitlab'),
               },

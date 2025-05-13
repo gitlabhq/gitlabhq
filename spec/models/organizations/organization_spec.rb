@@ -11,6 +11,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
     it { is_expected.to have_many :namespaces }
     it { is_expected.to have_many :groups }
     it { is_expected.to have_many :root_groups }
+    it { is_expected.to have_many :integrations }
 
     describe '.root_groups' do
       let_it_be(:group) { create(:group, organization: organization) }

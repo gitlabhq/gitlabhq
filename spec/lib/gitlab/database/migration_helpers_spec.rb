@@ -2588,6 +2588,44 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     end
   end
 
+  describe '#feature_flag_enabled?' do
+    let(:feature_flag_name) { 'test_feature_flag' }
+
+    context 'when feature flag is enabled' do
+      let(:result) { instance_double(PG::Result, ntuples: 1) }
+
+      it 'returns true' do
+        expected_sql = <<~SQL.squish
+          SELECT 1
+          FROM feature_gates
+          WHERE feature_key = '#{feature_flag_name}'
+          AND value = 'true'
+          LIMIT 1;
+        SQL
+
+        expect(model).to receive(:execute).with(expected_sql.strip).and_return(result)
+        expect(model.feature_flag_enabled?(feature_flag_name)).to be true
+      end
+    end
+
+    context 'when feature flag is disabled' do
+      let(:result) { instance_double(PG::Result, ntuples: 0) }
+
+      it 'returns false' do
+        expected_sql = <<~SQL.squish
+          SELECT 1
+          FROM feature_gates
+          WHERE feature_key = '#{feature_flag_name}'
+          AND value = 'true'
+          LIMIT 1;
+        SQL
+
+        expect(model).to receive(:execute).with(expected_sql.strip).and_return(result)
+        expect(model.feature_flag_enabled?(feature_flag_name)).to be false
+      end
+    end
+  end
+
   describe 'bigint conversion helpers' do
     include MigrationsHelpers
     include Database::TriggerHelpers

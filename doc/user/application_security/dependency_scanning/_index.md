@@ -51,10 +51,10 @@ table.no-vertical-table-lines tr {
 
 {{< alert type="warning" >}}
 
-The Dependency Scanning feature based on the Gemnasium analyzer is deprecated in GitLab 17.9 and reaches
-end of support in GitLab 18.0. It is replaced with [Dependency Scanning using SBOM](dependency_scanning_sbom/_index.md)
+The Dependency Scanning feature based on the Gemnasium analyzer is deprecated in GitLab 17.9 and is planned for removal in
+GitLab 19.0. It is being replaced with [Dependency Scanning using SBOM](dependency_scanning_sbom/_index.md)
 and the [new Dependency Scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning).
-For more information, see [issue 501038](https://gitlab.com/gitlab-org/gitlab/-/issues/501308).
+For more information, see [epic 15961](https://gitlab.com/groups/gitlab-org/-/epics/15961).
 
 {{< /alert >}}
 
@@ -367,10 +367,9 @@ Dependency Scanning supports the following official
 
 The analyzers are published as Docker images, which Dependency Scanning uses to launch dedicated
 containers for each analysis. You can also integrate a custom
-[security scanner](../../../development/integrations/secure.md).
+security scanner.
 
-Each analyzer is updated as new versions of Gemnasium are released. For more information, see the
-analyzer [Release Process documentation](../../../development/sec/analyzer_development_guide.md#versioning-and-release-process).
+Each analyzer is updated as new versions of Gemnasium are released.
 
 ### How analyzers obtain dependency information
 
@@ -894,6 +893,7 @@ The following variables configure the behavior of specific dependency scanning a
 | `GEMNASIUM_DB_UPDATE_DISABLED`       | `gemnasium`        | `"false"`                    | Disable automatic updates for the `gemnasium-db` advisory database. For usage see [Access to the GitLab Advisory Database](#access-to-the-gitlab-advisory-database). |
 | `GEMNASIUM_DB_REMOTE_URL`            | `gemnasium`        | `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git` | Repository URL for fetching the GitLab Advisory Database. |
 | `GEMNASIUM_DB_REF_NAME`              | `gemnasium`        | `master`                     | Branch name for remote repository database. `GEMNASIUM_DB_REMOTE_URL` is required. |
+| `GEMNASIUM_IGNORED_SCOPES`           | `gemnasium`        |                              | Comma-separated list of Maven dependency scopes to ignore. For more details, see the [Maven dependency scope documentation](https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Scope) |
 | `DS_REMEDIATE`                       | `gemnasium`        | `"true"`, `"false"` in FIPS mode | Enable automatic remediation of vulnerable dependencies. Not supported in FIPS mode. |
 | `DS_REMEDIATE_TIMEOUT`               | `gemnasium`        | `5m`                         | Timeout for auto-remediation. |
 | `GEMNASIUM_LIBRARY_SCAN_ENABLED`     | `gemnasium`        | `"true"`                     | Enable detecting vulnerabilities in vendored JavaScript libraries (libraries which are not managed by a package manager). This functionality requires a JavaScript lockfile to be present in a commit, otherwise Dependency Scanning is not executed and vendored files are not scanned.<br>Dependency scanning uses the [Retire.js](https://github.com/RetireJS/retire.js) scanner to detect a limited set of vulnerabilities. For details of which vulnerabilities are detected, see the [Retire.js repository](https://github.com/RetireJS/retire.js/blob/master/repository/jsrepository.json). |
@@ -945,7 +945,7 @@ dependency_scanning:
 As we have not tested all variables you may find some do work and others do not.
 If one does not work and you need it we suggest
 [submitting a feature request](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal%20-%20detailed&issue[title]=Docs%20feedback%20-%20feature%20proposal:%20Write%20your%20title)
-or [contributing to the code](../../../development/_index.md) to enable it to be used.
+or contributing to the code to enable it to be used.
 
 ### Custom TLS certificate authority
 
@@ -1048,10 +1048,8 @@ Dependency scanning outputs a report containing details of all vulnerabilities. 
 processed internally and the results are shown in the UI. The report is also output as an artifact
 of the dependency scanning job, named `gl-dependency-scanning-report.json`.
 
-For more details of the dependency scanning report, see:
-
-- [Security scanner integration](../../../development/integrations/secure.md).
-- [Dependency scanning report schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json).
+For more details of the dependency scanning report, see the
+[Dependency scanning report schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json).
 
 ### CycloneDX Software Bill of Materials
 
@@ -1160,6 +1158,7 @@ To run dependency scanning in an offline environment you must have:
 - A GitLab Runner with the `docker` or `kubernetes` executor
 - Local copies of the dependency scanning analyzer images
 - Access to the [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db)
+- Access to the [Package Metadata Database](../../../topics/offline/quick_start_guide.md#enabling-the-package-metadata-database)
 
 ### Local copies of analyzer images
 
@@ -1169,12 +1168,12 @@ To use dependency scanning with all [supported languages and frameworks](#suppor
    your [local Docker container registry](../../packages/container_registry/_index.md):
 
    ```plaintext
-   registry.gitlab.com/security-products/gemnasium:5
-   registry.gitlab.com/security-products/gemnasium:5-fips
-   registry.gitlab.com/security-products/gemnasium-maven:5
-   registry.gitlab.com/security-products/gemnasium-maven:5-fips
-   registry.gitlab.com/security-products/gemnasium-python:5
-   registry.gitlab.com/security-products/gemnasium-python:5-fips
+   registry.gitlab.com/security-products/gemnasium:6
+   registry.gitlab.com/security-products/gemnasium:6-fips
+   registry.gitlab.com/security-products/gemnasium-maven:6
+   registry.gitlab.com/security-products/gemnasium-maven:6-fips
+   registry.gitlab.com/security-products/gemnasium-python:6
+   registry.gitlab.com/security-products/gemnasium-python:6-fips
    ```
 
    The process for importing Docker images into a local offline Docker registry depends on

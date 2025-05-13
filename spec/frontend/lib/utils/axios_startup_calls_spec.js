@@ -1,3 +1,8 @@
+/*
+ We need to import axios directly here, the shared lib already applies
+ the interceptor we are trying to test.
+ */
+// eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import setupAxiosStartupCalls from '~/lib/utils/axios_startup_calls';

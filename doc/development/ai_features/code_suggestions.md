@@ -10,8 +10,8 @@ title: Code Suggestions development guidelines
 
 The recommended setup for locally developing and debugging Code Suggestions is to have all 3 different components running:
 
-- IDE Extension (e.g. GitLab Workflow extension for VS Code).
-- Main application configured correctly (e.g. GDK).
+- IDE Extension (for example, GitLab Workflow extension for VS Code).
+- Main application configured correctly (for example, GDK).
 - [AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist).
 
 This should enable everyone to locally see how any change made in an IDE is sent to the main application to be transformed into a prompt before being sent to the respective model.
@@ -64,12 +64,12 @@ with the deployed staging AI gateway. To do this:
 
 ### Setup instructions to use GDK with the Code Suggestions Add-on
 
-**Option 1 - Recommended**
+#### Option 1 - Recommended
 
 1. Ensure that you have a [GitLab Team Member License](https://handbook.gitlab.com/handbook/engineering/developer-onboarding/#working-on-gitlab-ee-developer-licenses) and that it is [activated](../../administration/license_file.md).
 1. Follow the [Setup and Run GDK](_index.md#set-up-and-run-gdk) guide under the AI Features doc.
 
-**Option 2**
+#### Option 2
 
 You can set up Duo on your GDK by going through CustomersDot. This is a more complex process, but it more accurately reflects the GitLab Self-Managed setup of our customers.
 
@@ -128,7 +128,7 @@ After purchasing the Duo add-on, existing eligible users can be assigned/un-assi
 
 1. [Duo users management UI](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats)
 1. [GraphQL endpoint](../../api/graphql/assign_gitlab_duo_seats.md)
-1. [Rake task](../../administration/raketasks/user_management.md#bulk-assign-users-to-gitlab-duo-pro)
+1. [Rake task](../../administration/raketasks/user_management.md#bulk-assign-users-to-gitlab-duo)
 
 The above methods make use of the [BulkAssignService](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/services/gitlab_subscriptions/duo/bulk_assign_service.rb)/[BulkUnassignService](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/services/gitlab_subscriptions/duo/bulk_unassign_service.rb), which evaluates eligibility criteria preliminarily before assigning/un-assigning the passed users in a single SQL operation.
 

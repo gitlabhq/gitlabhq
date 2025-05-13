@@ -1,6 +1,6 @@
 import { sprintf, __ } from '~/locale';
 import { truncate } from '~/lib/utils/text_utility';
-import { alt, many, optional, regex, seq, str, token } from './combinators';
+import { alt, many, optional, regex, seq, tag, tagNoCase, token } from './combinators';
 import * as ast from './ast';
 
 const fieldName = token(regex(/^[a-z_][a-z0-9_]*/i, __('field name'))).map((name) =>
@@ -16,9 +16,10 @@ const sepBy = (parser, separator) =>
     ast.collection(first, ...rest.map(([, item]) => item)),
   );
 
-const leftParen = token(str('('));
-const rightParen = token(str(')'));
-const comma = token(str(','));
+const leftParen = token(tag('('));
+const rightParen = token(tag(')'));
+const comma = token(tag(','));
+const as = token(tagNoCase('as'));
 
 const functionName = token(regex(/^[a-z_][a-z0-9_]*/i, __('function name')));
 const functionArgs = optional(sepBy(string, comma));
@@ -27,7 +28,8 @@ const functionCall = seq(functionName, leftParen, functionArgs, rightParen).map(
 );
 
 const value = alt(functionCall, fieldName);
-const parser = sepBy(value, comma);
+const valueWithAlias = seq(value, as, string).map(([v, , alias]) => v.withAlias(alias));
+const parser = sepBy(alt(valueWithAlias, value), comma);
 
 // Parser function
 export const parseFields = (input) => {

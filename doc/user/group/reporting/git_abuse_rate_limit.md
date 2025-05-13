@@ -15,15 +15,10 @@ title: Git abuse rate limit
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8066) in GitLab 15.2 [with a flag](../../../administration/feature_flags.md) named `limit_unique_project_downloads_per_namespace_user`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/365724) in GitLab 15.6.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183101) in GitLab 18.0. Feature flag `limit_unique_project_downloads_per_namespace_user` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 This is the group-level documentation. For GitLab Self-Managed instances, see the [administration documentation](../../../administration/reporting/git_abuse_rate_limit.md).
 
@@ -37,7 +32,7 @@ GitLab team members can view more information in this confidential epic:
 
 ## Automatic ban notifications
 
-If the `limit_unique_project_downloads_per_namespace_user` feature flag is enabled, selected users receive an email when a user is about to be banned.
+Selected users receive an email notification when a user is banned.
 
 If automatic banning is disabled, a user is not banned automatically when they exceed the limit. However, notifications are still sent. You can use this setup to determine the correct values of the rate limit settings before enabling automatic banning.
 

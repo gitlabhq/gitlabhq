@@ -70,8 +70,7 @@ module Gitlab
             LabelFilter.new(
               stage: stage,
               params: params,
-              project: nil,
-              group: root_ancestor
+              parent: root_ancestor
             ).filter(query)
           end
 

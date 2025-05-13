@@ -38,7 +38,7 @@ environment, use that cluster. Each scope can be used only by a single cluster
 in a project, and a validation error occurs if otherwise. Also, jobs that don't
 have an environment keyword set can't access any cluster.
 
-For example, let's say the following Kubernetes clusters exist in a project:
+For example, a project might have the following Kubernetes clusters:
 
 | Cluster     | Environment scope |
 | ----------- | ----------------- |

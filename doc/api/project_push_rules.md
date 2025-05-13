@@ -69,7 +69,7 @@ Supported attributes:
 | `commit_message_negative_regex` | string            | No       | No commit message is allowed to match this regular expression. |
 | `commit_message_regex`          | string            | No       | All commit messages must match this regular expression. |
 | `deny_delete_tag`               | boolean           | No       | Deny deleting a tag. |
-| `file_name_regex`               | string            | No       | All committed filenames must **not** match this regular expression. |
+| `file_name_regex`               | string            | No       | All committed filenames must not match this regular expression. |
 | `max_file_size`                 | integer           | No       | Maximum file size (MB). |
 | `member_check`                  | boolean           | No       | Restrict commits by author (email) to existing GitLab users. |
 | `prevent_secrets`               | boolean           | No       | GitLab rejects any files that are likely to contain secrets. |
@@ -96,7 +96,7 @@ Supported attributes:
 | `commit_message_negative_regex` | string            | No       | No commit message is allowed to match this regular expression. |
 | `commit_message_regex`          | string            | No       | All commit messages must match this regular expression. |
 | `deny_delete_tag`               | boolean           | No       | Deny deleting a tag. |
-| `file_name_regex`               | string            | No       | All committed filenames must **not** match this regular expression. |
+| `file_name_regex`               | string            | No       | All committed filenames must not match this regular expression. |
 | `max_file_size`                 | integer           | No       | Maximum file size (MB). |
 | `member_check`                  | boolean           | No       | Restrict commits by author (email) to existing GitLab users. |
 | `prevent_secrets`               | boolean           | No       | GitLab rejects any files that are likely to contain secrets. |

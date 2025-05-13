@@ -188,7 +188,7 @@ module SystemNotes
       marked_old_title = Gitlab::Diff::InlineDiffMarker.new(old_title).mark(old_diffs)
       marked_new_title = Gitlab::Diff::InlineDiffMarker.new(new_title).mark(new_diffs)
 
-      body = "<div>changed title from <code class=\"idiff\">#{marked_old_title}</code> to <code class=\"idiff\">#{marked_new_title}</code></div>"
+      body = "<p>changed title from <code class=\"idiff\">#{marked_old_title}</code> to <code class=\"idiff\">#{marked_new_title}</code></p>"
 
       track_issue_event(:track_issue_title_changed_action)
       work_item_activity_counter.track_work_item_title_changed_action(author: author) if noteable.is_a?(WorkItem)

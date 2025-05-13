@@ -84,6 +84,7 @@ issues:
 - observability_logs
 - observability_traces
 - dates_source
+- current_status
 work_item_type:
 - issues
 - namespace
@@ -381,6 +382,7 @@ ci_pipelines: &pipeline_definition
 - pipeline_metadata
 - build_execution_configs
 - project_mirror
+- workload
 pipeline_metadata:
 - project
 - pipeline
@@ -581,7 +583,6 @@ project:
 - catalog_resource_sync_events
 - catalog_resource_versions
 - ci_components
-- ci_component_usages
 - ci_component_last_usages
 - external_status_checks
 - base_tags
@@ -930,6 +931,7 @@ project:
 - project_control_compliance_statuses
 - approval_policies
 - project_requirement_compliance_statuses
+- analyzer_statuses
 award_emoji:
 - awardable
 - user
@@ -1056,6 +1058,7 @@ versions: &version
 - issue
 - designs
 - actions
+- namespace
 zoom_meetings:
 - issue
 sentry_issue:
@@ -1158,6 +1161,7 @@ resource_iteration_events:
   - merge_request
   - iteration
   - triggered_by_work_item
+  - namespace
 iterations_cadence:
   - group
   - iterations

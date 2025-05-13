@@ -2,11 +2,11 @@
 
 module Banzai
   module Pipeline
-    class SingleLinePipeline < GfmPipeline
+    class SingleLinePipeline < BasePipeline
       def self.filters
         @filters ||= FilterArray[
           Filter::HtmlEntityFilter,
-          Filter::SanitizationFilter,
+          Filter::MinimumMarkdownSanitizationFilter,
           Filter::SanitizeLinkFilter,
           Filter::AssetProxyFilter,
           Filter::EmojiFilter,
@@ -34,10 +34,9 @@ module Banzai
 
       def self.transform_context(context)
         context = Filter::AssetProxyFilter.transform_context(context)
+        context[:only_path] = true unless context.key?(:only_path)
 
-        super(context).merge(
-          no_sourcepos: true
-        )
+        context
       end
     end
   end

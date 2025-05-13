@@ -1,0 +1,10 @@
+---
+name: source_filter_pipelines
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/418120
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189704
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/540892
+milestone: '18.0'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

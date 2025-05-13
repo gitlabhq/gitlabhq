@@ -78,6 +78,7 @@ Prerequisites:
 - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/276777) the feature flag `dependency_proxy_for_private_groups` in GitLab 15.0.
 - Support for group access tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362991) in GitLab 16.3.
 - Deploy token scopes `read_virtual_registry` and `write_virtual_registry` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336800) in GitLab 17.11 with a flag named `dependency_proxy_read_write_scopes`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/517249) in GitLab 18.0. Feature flag `dependency_proxy_read_write_scopes` removed.
 
 {{< /history >}}
 

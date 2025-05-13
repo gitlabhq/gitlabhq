@@ -27,7 +27,7 @@ import component from '~/packages_and_registries/container_registry/explorer/pag
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import PersistedPagination from '~/packages_and_registries/shared/components/persisted_pagination.vue';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
-import MetadataDatabaseAlert from '~/packages_and_registries/shared/components/container_registry_metadata_database_alert.vue';
+import MetadataDatabaseBanner from '~/packages_and_registries/shared/components/container_registry_metadata_database_banner.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -66,7 +66,7 @@ describe('List Page', () => {
   const findRegistryHeader = () => wrapper.findComponent(RegistryHeader);
 
   const findDeleteAlert = () => wrapper.findComponent(GlAlert);
-  const findMetadataDatabaseAlert = () => wrapper.findComponent(MetadataDatabaseAlert);
+  const findMetadataDatabaseBanner = () => wrapper.findComponent(MetadataDatabaseBanner);
   const findImageList = () => wrapper.findComponent(ImageList);
   const findPersistedSearch = () => wrapper.findComponent(PersistedSearch);
   const findEmptySearchMessage = () => wrapper.find('[data-testid="emptySearch"]');
@@ -160,7 +160,7 @@ describe('List Page', () => {
     it('is rendered when metadata database is not enabled', () => {
       mountComponent();
 
-      expect(findMetadataDatabaseAlert().exists()).toBe(true);
+      expect(findMetadataDatabaseBanner().exists()).toBe(true);
     });
 
     it('is not rendered when metadata database is enabled', () => {
@@ -170,7 +170,7 @@ describe('List Page', () => {
         },
       });
 
-      expect(findMetadataDatabaseAlert().exists()).toBe(false);
+      expect(findMetadataDatabaseBanner().exists()).toBe(false);
     });
   });
 

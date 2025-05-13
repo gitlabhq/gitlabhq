@@ -58,90 +58,7 @@ stages: [validate, build, deploy]
 
 For more information about templates, inputs, and how to use the OpenTofu CI/CD component, see the [OpenTofu CI/CD component README](https://gitlab.com/components/opentofu).
 
-## Quickstart a Terraform project in pipelines
-
-{{< alert type="warning" >}}
-
-The Terraform CI/CD templates are deprecated and will be removed in GitLab 18.0.
-See [the deprecation announcement](../../../update/deprecations.md#deprecate-terraform-cicd-templates) for more information.
-
-{{< /alert >}}
-
-The integration with GitLab and Terraform happens through GitLab CI/CD.
-Use an `include` attribute to add the Terraform template to your project and
-customize from there.
-
-To get started, choose the template that best suits your needs:
-
-- [Latest template](#latest-terraform-template-deprecated)
-- [Stable template and advanced template](#stable-and-advanced-terraform-templates-deprecated)
-
-All templates:
-
-- Use the [GitLab-managed Terraform state](terraform_state.md) as the Terraform state storage backend.
-- Trigger four pipeline stages: `test`, `validate`, `build`, and `deploy`.
-- Run Terraform commands: `test`, `validate`, `plan`, and `plan-json`. It also runs the `apply` only on the default branch.
-- Check for security problems using [IaC Scanning](../../application_security/iac_scanning/_index.md).
-
-### Latest Terraform template (deprecated)
-
-The [latest template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.latest.gitlab-ci.yml)
-is compatible with the most recent GitLab version. It provides the most recent
-GitLab features, but can potentially include breaking changes.
-
-You can safely use the latest Terraform template:
-
-- If you use GitLab.com.
-- If you use a GitLab Self-Managed instance updated with every new GitLab release.
-
-### Stable and advanced Terraform templates (deprecated)
-
-If you use earlier versions of GitLab, you might face incompatibility errors
-between the GitLab version and the template version. In this case, you can opt
-to use one of these templates:
-
-- [The stable template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform.gitlab-ci.yml) with a skeleton that you can built on top of.
-- [The advanced template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform/Base.gitlab-ci.yml) to fully customize your setup.
-
-{{< alert type="note" >}}
-
-In each GitLab major release (for example, 15.0), the latest templates replace the older ones. This process can introduce breaking changes. You can [use an older version of the template](troubleshooting.md#use-an-older-version-of-the-template) if you need to.
-
-{{< /alert >}}
-
-### Use a Terraform template (deprecated)
-
-To use a Terraform template:
-
-1. On the left sidebar, select **Search or go to** and find your project you want to integrate with Terraform.
-1. Select **Code > Repository**.
-1. Edit your `.gitlab-ci.yml` file, use the `include` attribute to fetch the Terraform template:
-
-   ```yaml
-   include:
-    # To fetch the latest template, use:
-     - template: Terraform.latest.gitlab-ci.yml
-    # To fetch the advanced latest template, use:
-     - template: Terraform/Base.latest.gitlab-ci.yml
-    # To fetch the stable template, use:
-     - template: Terraform.gitlab-ci.yml
-    # To fetch the advanced stable template, use:
-     - template: Terraform/Base.gitlab-ci.yml
-   ```
-
-1. Add the variables as described below:
-
-   ```yaml
-   variables:
-     TF_STATE_NAME: default
-     # If your terraform files are in a subdirectory, set TF_ROOT accordingly. For example:
-     # TF_ROOT: terraform/production
-   ```
-
-1. Optional. Override in your `.gitlab-ci.yml` file the attributes present
-   in the template you fetched to customize your configuration.
-
-### Build and host your own Terraform CI/CD templates
+## Build and host your own Terraform CI/CD templates
 
 Although GitLab no longer distributes the Terraform CI/CD templates
 and `terraform-images` (the underlying job images, including `terraform`),
@@ -149,10 +66,6 @@ you can still use Terraform in GitLab pipelines.
 
 To learn how to build and host your own templates and images, see the [Terraform Images](https://gitlab.com/gitlab-org/terraform-images)
 project.
-
-### Terraform template recipes
-
-For GitLab-curated template recipes, see [Terraform template recipes](terraform_template_recipes.md).
 
 ## Related topics
 

@@ -10,6 +10,7 @@ import RefSelector from '~/ref/components/ref_selector.vue';
 import HighlightWorker from '~/vue_shared/components/source_viewer/workers/highlight_worker?worker';
 import CodeDropdown from '~/vue_shared/components/code_dropdown/code_dropdown.vue';
 import CompactCodeDropdown from 'ee_else_ce/repository/components/code_dropdown/compact_code_dropdown.vue';
+import initFileTreeBrowser from '~/repository/file_tree_browser';
 import App from './components/app.vue';
 import Breadcrumbs from './components/header_area/breadcrumbs.vue';
 import ForkInfo from './components/fork_info.vue';
@@ -22,7 +23,6 @@ import projectShortPathQuery from './queries/project_short_path.query.graphql';
 import refsQuery from './queries/ref.query.graphql';
 import createRouter from './router';
 import { updateFormAction } from './utils/dom';
-import { setTitle } from './utils/title';
 import { generateHistoryUrl } from './utils/url_utility';
 import { generateRefDestinationPath } from './utils/ref_switcher_utils';
 import initHeaderApp from './init_header_app';
@@ -46,7 +46,8 @@ export default function setupVueRepositoryList() {
     explainCodeAvailable,
     targetBranch,
   } = dataset;
-  const router = createRouter(projectPath, escapedRef);
+  const router = createRouter(projectPath, escapedRef, fullName);
+  initFileTreeBrowser(router);
 
   apolloProvider.clients.defaultClient.cache.writeQuery({
     query: commitsQuery,
@@ -228,10 +229,6 @@ export default function setupVueRepositoryList() {
   initBlobControlsApp();
   initRefSwitcher();
   initForkInfo();
-
-  router.afterEach(({ params: { path } }) => {
-    setTitle(path, ref, fullName);
-  });
 
   const breadcrumbEl = document.getElementById('js-repo-breadcrumb');
 

@@ -8,8 +8,8 @@ import {
   GlFormCheckbox,
 } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import { mockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import WikiForm from '~/pages/shared/wikis/components/wiki_form.vue';

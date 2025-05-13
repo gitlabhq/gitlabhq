@@ -1,6 +1,6 @@
 import { shallowMount, mount } from '@vue/test-utils';
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import AlertSidebar from '~/vue_shared/alert_details/components/alert_sidebar.vue';
 import SidebarAssignees from '~/vue_shared/alert_details/components/sidebar/sidebar_assignees.vue';
 import SidebarStatus from '~/vue_shared/alert_details/components/sidebar/sidebar_status.vue';

@@ -39,6 +39,11 @@
       "minimum": 0,
       "description": "Number of requests allowed to the POST /api/v4/organizations endpoint."
     },
+    "group_archive_unarchive_api_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the POST /groups/:id/archive & POST /groups/:id/unarchive API."
+    },
     "group_api_limit": {
       "type": "integer",
       "minimum": 0,

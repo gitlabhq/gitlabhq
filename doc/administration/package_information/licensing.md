@@ -59,7 +59,7 @@ Linux package.
   and thus should be checked for how it is used as a part of the Linux package
   to ensure compliance.
 
-This list is sourced from the [GitLab development documentation on licensing](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/doc/development/licensing.md).
+This list is sourced from the GitLab development documentation on licensing.
 However, due to the nature of the Linux package, the licenses may not apply
 in the same way. Such as with `git` and `rsync`. See the [GNU License FAQ](https://www.gnu.org/licenses/gpl-faq.en.html#MereAggregation)
 
@@ -76,7 +76,7 @@ All trademarks, materials, documentation, and other intellectual property remain
 
 ### Trademark Requirements
 
-Use of GitLab Trademarks must be in compliance with the standards set forth in [our guidelines](https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/brand/brand-activation/trademark-guidelines/) (as updated from time to time).
+Use of GitLab Trademarks must be in compliance with the standards set forth in our guidelines (as updated from time to time).
 CHEF® and all Chef marks are owned by Progress Software Corporation and must be used in accordance with the [Progress Software Trademark Usage Policy](https://www.progress.com/legal/trademarks).
 
 When using a GitLab or third-party trademark in documentation, include the (R) symbol in the first instance, for example, "Chef(R) is used for configuring…" You may omit the symbol in subsequent instances.

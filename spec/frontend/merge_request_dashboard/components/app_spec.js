@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import VueRouter from 'vue-router';
 import VueApollo from 'vue-apollo';
 import { createMockSubscription } from 'mock-apollo-client';
 import { GlLink } from '@gitlab/ui';
@@ -17,7 +16,6 @@ import assigneeCountQuery from '~/merge_request_dashboard/queries/assignee_count
 import { createMockMergeRequest } from '../mock_data';
 
 Vue.use(VueApollo);
-Vue.use(VueRouter);
 
 describe('Merge requests app component', () => {
   let wrapper;
@@ -28,6 +26,10 @@ describe('Merge requests app component', () => {
   const findLoadMoreButton = () => wrapper.findByTestId('load-more');
   const findCountExplanation = () => wrapper.findByTestId('merge-request-count-explanation');
   const findFeedbackLink = () => wrapper.findAllComponents(GlLink).at(0);
+
+  const $router = {
+    push: jest.fn(),
+  };
 
   function createComponent(lists = null, listTypeToggleEnabled = false) {
     subscriptionHandler = createMockSubscription();
@@ -79,11 +81,11 @@ describe('Merge requests app component', () => {
 
     wrapper = shallowMountExtended(App, {
       apolloProvider,
-      router: new VueRouter({}),
       propsData: {
         tabs: [
           {
             title: 'Needs attention',
+            key: '',
             lists: lists || [
               [
                 {
@@ -95,6 +97,11 @@ describe('Merge requests app component', () => {
               ],
             ],
           },
+          {
+            title: 'merged',
+            key: 'merged',
+            lists: [],
+          },
         ],
       },
       provide: {
@@ -105,6 +112,10 @@ describe('Merge requests app component', () => {
         MergeRequestsQuery,
         CollapsibleSection,
         GlLink,
+      },
+      mocks: {
+        $router,
+        $route: { params: { filter: '' } },
       },
     });
   }
@@ -173,6 +184,22 @@ describe('Merge requests app component', () => {
 
     expect(findMergeRequests()).toHaveLength(2);
     expect(findCountExplanation().exists()).toBe(true);
+  });
+
+  it('does not call $router.push if clicking the current tab', async () => {
+    createComponent();
+
+    await wrapper.findByTestId('merge-request-dashboard-tab').vm.$emit('click');
+
+    expect($router.push).not.toHaveBeenCalled();
+  });
+
+  it('calls $router.push when clicking different tab to current tab', async () => {
+    createComponent();
+
+    await wrapper.findAllByTestId('merge-request-dashboard-tab').at(1).vm.$emit('click');
+
+    expect($router.push).toHaveBeenCalledWith({ path: 'merged' });
   });
 
   describe('subscription updates', () => {

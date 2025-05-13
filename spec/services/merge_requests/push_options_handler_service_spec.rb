@@ -358,6 +358,23 @@ RSpec.describe MergeRequests::PushOptionsHandlerService, feature_category: :sour
     it_behaves_like 'with the project default branch'
   end
 
+  describe 'pushing from default branch' do
+    let(:changes) { default_branch_changes }
+
+    context 'with target branch specified' do
+      let(:push_options) { { create: true, target: target_branch } }
+
+      it_behaves_like 'a service that can create a merge request'
+      it_behaves_like 'a service that can set the target of a merge request'
+    end
+
+    context 'without target branch specified' do
+      let(:push_options) { { create: true } }
+
+      it_behaves_like 'a service that does nothing'
+    end
+  end
+
   describe '`target` push option' do
     let(:push_options) { { target: target_branch } }
 

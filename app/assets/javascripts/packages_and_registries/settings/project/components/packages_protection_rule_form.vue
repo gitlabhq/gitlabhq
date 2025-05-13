@@ -118,10 +118,11 @@ export default {
         { value: 'NPM', text: s__('PackageRegistry|Npm') },
         { value: 'PYPI', text: s__('PackageRegistry|PyPI') },
         { value: 'MAVEN', text: s__('PackageRegistry|Maven') },
+        { value: 'CONAN', text: s__('PackageRegistry|Conan') },
       ];
 
-      if (this.glFeatures.packagesProtectedPackagesConan) {
-        packageTypeOptions.push({ value: 'CONAN', text: s__('PackageRegistry|Conan') });
+      if (this.glFeatures.packagesProtectedPackagesNuget) {
+        packageTypeOptions.push({ value: 'NUGET', text: s__('PackageRegistry|NuGet') });
       }
 
       return packageTypeOptions.sort((a, b) => a.text.localeCompare(b.text));
@@ -214,6 +215,7 @@ export default {
         v-model.trim="packageProtectionRuleFormData.packageNamePattern"
         type="text"
         required
+        autofocus
         :disabled="isFieldDisabled"
       />
       <template #description>

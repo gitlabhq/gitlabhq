@@ -244,6 +244,26 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
       end
     end
 
+    context 'when user is a bot' do
+      let(:user) { create(:user, :service_account) }
+
+      it "triggers an internal event" do
+        expect { get api('/todos', user) }
+         .to trigger_internal_events('request_todos_by_bot_user')
+         .with(
+           category: 'InternalEventTracking',
+           user: user,
+           additional_properties: {
+             label: 'user_type',
+             property: user.user_type
+           }
+         ).and increment_usage_metrics(
+           'redis_hll_counters.count_distinct_user_id_from_request_todos_by_bot_user_weekly',
+           'redis_hll_counters.count_distinct_user_id_from_request_todos_by_bot_user_monthly'
+         )
+      end
+    end
+
     it 'avoids N+1 queries', :request_store do
       create_issue_todo_for(john_doe)
       create(:todo, project: project_1, author: author_2, user: john_doe, target: merge_request)

@@ -3,7 +3,7 @@
 # See https://docs.gitlab.com/ee/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class CreateModelGeneratorTestFoos < Gitlab::Database::Migration[2.2]
+class CreateModelGeneratorTestFoos < Gitlab::Database::Migration[2.3]
   # When using the methods "add_concurrent_index" or "remove_concurrent_index"
   # you must disable the use of transactions
   # as these methods can not run in an existing transaction.

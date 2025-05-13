@@ -172,7 +172,7 @@ export default {
       </a>
       <span
         v-if="!isSystemNote && !emailParticipant"
-        class="text-nowrap author-username -gl-m-2 gl-mr-0 gl-truncate gl-p-2"
+        class="text-nowrap author-username -gl-m-2 gl-mr-0 gl-hidden gl-truncate gl-p-2 md:gl-inline"
       >
         <a
           ref="authorUsernameLink"
@@ -180,7 +180,7 @@ export default {
           :href="authorHref"
           @mouseenter="handleUsernameMouseEnter"
           @mouseleave="handleUsernameMouseLeave"
-          ><span class="note-headline-light gl-hidden md:gl-inline">@{{ author.username }}</span>
+          ><span class="note-headline-light">@{{ author.username }}</span>
         </a>
         <slot name="note-header-info"></slot>
       </span>
@@ -190,7 +190,12 @@ export default {
     </template>
     <span v-else>{{ __('A deleted user') }}</span>
     <span class="note-headline-light note-headline-meta">
-      <span class="system-note-message" data-testid="system-note-content">
+      <span
+        v-if="$scopedSlots.default"
+        class="system-note-message"
+        :class="!isSystemNote && !emailParticipant && 'md:-gl-ml-2'"
+        data-testid="system-note-content"
+      >
         <slot></slot>
       </span>
       <template v-if="createdAt">

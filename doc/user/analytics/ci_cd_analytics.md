@@ -12,73 +12,64 @@ title: CI/CD analytics
 
 {{< /details >}}
 
-Use the CI/CD analytics page to view pipeline success rates and duration, and the history of [DevOps Research and Assessment (DORA) metrics](dora_metrics.md) over time.
+Use CI/CD analytics to gain insights into your pipeline performance and success rates.
 
-## Pipeline success and duration charts
+The CI/CD analytics page provides visualizations for critical CI/CD pipeline metrics directly in the GitLab UI.
+These visualizations can help development teams quickly understand the health and efficiency of their software development process.
 
-CI/CD analytics shows the history of your pipeline successes and failures, as well as how long each pipeline
-ran.
+## View CI/CD analytics
 
+{{< history >}}
+
+- [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/353607) in GitLab 18.0 to improve analytics by using ClickHouse as the data source when available.
+
+{{< /history >}}
+
+To view CI/CD analytics:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **CI/CD > Analytics**.
+
+## Pipeline metrics
+
+You can view the history of your pipeline successes and failures, and how long each pipeline ran.
 Pipeline statistics are gathered by collecting all available pipelines for the
 project, regardless of status. The data available for each individual day is based
 on when the pipeline was created.
 
-The total pipeline calculation includes child
-pipelines and pipelines that failed with an invalid YAML. To filter pipelines based on other attributes, use the [Pipelines API](../../api/pipelines.md#list-project-pipelines).
+CI/CD analytics displays key metrics about your pipelines:
 
-## DevOps Research and Assessment (DORA) metrics charts
+- **Total pipeline runs**: The total number of pipelines that have run in the selected time period. The total pipeline calculation includes child pipelines and pipelines that failed with an invalid YAML.
+  To filter pipelines based on other attributes, use the [Pipelines API](../../api/pipelines.md#list-project-pipelines).
+- **Median duration**: The median time it takes for pipelines to complete.
+- **Failure rate**: The percentage of pipelines that failed.
+- **Success rate**: The percentage of pipelines that completed successfully.
 
-{{< details >}}
+## Filter your results
 
-- Tier: Ultimate
+You can filter the analytics data to focus on specific areas:
 
-{{< /details >}}
+- **Source**: Filter by pipeline trigger source.
+- **Branch**: Filter by the branch where the pipeline ran.
+- **Date range**: Select the time period to analyze (for example, last week).
 
-{{< history >}}
+Filtering allows you to analyze the performance of specific workflow components or compare different branches.
 
-- Time to restore service chart [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356959) in GitLab 15.1.
+## Pipeline duration chart
 
-{{< /history >}}
+The duration chart shows how your pipeline execution times changed over time. The chart displays:
 
-CI/CD analytics also display metrics and charts for DORA metrics.
-The charts display the evolution of each DORA metric over time, for the last week, month, 90 days, or 180 days.
-This information provides insights into the health of your organization.
+- **Median (50th percentile)**: The typical pipeline duration.
+- **95th percentile**: 95% of pipelines complete in this time or less, while only 5% take longer.
 
-## View CI/CD analytics
+This visualization helps you identify trends in pipeline duration, which can help you determine your CI/CD process efficiency over time.
 
-You can view CI/CD analytics for a group or project.
+## Pipeline status chart
 
-Prerequisites:
+The status chart shows the distribution of pipeline statuses over time:
 
-- To view DORA metrics, the group or project must have an environment in the [production deployment tier](../../ci/environments/_index.md#deployment-tier-of-environments).
+- **Successful**: Pipelines that completed without errors.
+- **Failed**: Pipelines that did not complete successfully due to errors.
+- **Other**: Pipelines with other statuses (canceled, skipped).
 
-### For a group
-
-{{< details >}}
-
-- Tier: Ultimate
-
-{{< /details >}}
-
-To view CI/CD analytics for a group:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Analyze > CI/CD analytics**.
-
-The page displays metrics and charts for:
-
-- Release statistics
-- DORA metrics
-
-### For a project
-
-To view CI/CD analytics for a project:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Analyze > CI/CD analytics**.
-
-The page displays metrics and charts for:
-
-- Pipelines
-- DORA metrics
-- Project quality
+This visualization helps you track the stability of your pipelines and identify periods with higher failure rates.

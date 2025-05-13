@@ -10,13 +10,14 @@ import updateWorkItemHierarchyMutation from '../../graphql/update_work_item_hier
 import createWorkItemMutation from '../../graphql/create_work_item.mutation.graphql';
 import {
   FORM_TYPES,
-  WORK_ITEMS_TYPE_MAP,
-  WORK_ITEM_TYPE_ENUM_TASK,
   WORK_ITEM_TYPE_NAME_EPIC,
   MAX_WORK_ITEMS,
   sprintfWorkItem,
   WIDGET_TYPE_MILESTONE,
   WIDGET_TYPE_ITERATION,
+  WORK_ITEM_TYPE_NAME_TASK,
+  NAME_TO_TEXT_LOWERCASE_MAP,
+  NAME_TO_TEXT_MAP,
 } from '../../constants';
 import WorkItemProjectsListbox from './work_item_projects_listbox.vue';
 import WorkItemGroupsListbox from './work_item_groups_listbox.vue';
@@ -46,11 +47,6 @@ export default {
       default: false,
     },
     issuableGid: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    workItemIid: {
       type: String,
       required: false,
       default: null,
@@ -87,7 +83,7 @@ export default {
     childrenType: {
       type: String,
       required: false,
-      default: WORK_ITEM_TYPE_ENUM_TASK,
+      default: WORK_ITEM_TYPE_NAME_TASK,
     },
     fullName: {
       type: String,
@@ -126,12 +122,12 @@ export default {
   },
   computed: {
     workItemChildIsEpic() {
-      return this.childrenTypeValue === WORK_ITEM_TYPE_NAME_EPIC;
+      return this.childrenType === WORK_ITEM_TYPE_NAME_EPIC;
     },
     workItemInput() {
       let workItemInput = {
         title: this.search?.title || this.search,
-        workItemTypeId: this.childWorkItemType,
+        workItemTypeId: this.childWorkItemTypeId,
         hierarchyWidget: {
           parentId: this.issuableGid,
         },
@@ -178,27 +174,24 @@ export default {
     isCreateForm() {
       return this.formType === FORM_TYPES.create;
     },
-    childrenTypeName() {
-      return WORK_ITEMS_TYPE_MAP[this.childrenType]?.name;
-    },
-    childrenTypeValue() {
-      return WORK_ITEMS_TYPE_MAP[this.childrenType]?.value;
+    childrenTypeText() {
+      return NAME_TO_TEXT_MAP[this.childrenType];
     },
     addOrCreateButtonLabel() {
       if (this.isCreateForm) {
-        return sprintfWorkItem(s__('WorkItem|Create %{workItemType}'), this.childrenTypeName);
+        return sprintfWorkItem(s__('WorkItem|Create %{workItemType}'), this.childrenTypeText);
       }
       if (this.workItemsToAdd.length > 1) {
-        return sprintfWorkItem(s__('WorkItem|Add %{workItemType}s'), this.childrenTypeName);
+        return sprintfWorkItem(s__('WorkItem|Add %{workItemType}s'), this.childrenTypeText);
       }
-      return sprintfWorkItem(s__('WorkItem|Add %{workItemType}'), this.childrenTypeName);
+      return sprintfWorkItem(s__('WorkItem|Add %{workItemType}'), this.childrenTypeText);
     },
     confidentialityCheckboxLabel() {
       return sprintfWorkItem(
         s__(
           'WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least the Planner role',
         ),
-        this.childrenTypeName,
+        this.childrenTypeText,
       );
     },
     confidentialityCheckboxTooltip() {
@@ -206,7 +199,7 @@ export default {
         s__(
           'WorkItem|A non-confidential %{workItemType} cannot be assigned to a confidential parent %{parentWorkItemType}.',
         ),
-        this.childrenTypeName,
+        this.childrenTypeText,
         this.parentWorkItemType,
       );
     },
@@ -216,8 +209,8 @@ export default {
     addOrCreateMethod() {
       return this.isCreateForm ? this.createChild : this.addChild;
     },
-    childWorkItemType() {
-      return this.workItemTypes.find((type) => type.name === this.childrenTypeValue)?.id;
+    childWorkItemTypeId() {
+      return this.workItemTypes.find((type) => type.name === this.childrenType)?.id;
     },
     parentIterationId() {
       return this.parentIteration?.id;
@@ -271,8 +264,8 @@ export default {
         ),
         {
           invalidWorkItemsList: this.invalidWorkItemsToAdd.map(({ title }) => title).join(', '),
-          childWorkItemType: this.childrenTypeName,
-          parentWorkItemType: this.parentWorkItemType,
+          childWorkItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.childrenTypeText],
+          parentWorkItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.parentWorkItemType],
         },
       );
     },
@@ -398,7 +391,7 @@ export default {
       this.$emit('cancel');
     },
     isWidgetSupported(widgetType) {
-      const childrenType = this.workItemTypes.find((type) => type.name === this.childrenTypeName);
+      const childrenType = this.workItemTypes.find((type) => type.name === this.childrenType);
       const widgetDefinitions = childrenType?.widgetDefinitions?.flatMap((i) => i.type) || [];
       return widgetDefinitions.indexOf(widgetType) !== -1;
     },
@@ -468,7 +461,6 @@ export default {
             class="gl-w-full"
             :full-path="fullPath"
             :current-group-name="fullName"
-            :is-group="isGroup"
             @error="$emit('error', $event)"
           />
         </gl-form-group>

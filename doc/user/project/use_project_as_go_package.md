@@ -78,8 +78,8 @@ Configure Git to either:
 
 ## Disable Go module fetching for private projects
 
-To [fetch modules or packages](../../development/go_guide/dependencies.md#fetching), Go uses
-the [environment variables](../../development/go_guide/dependencies.md#proxies):
+To fetch modules or packages, Go uses
+the environment variables:
 
 - `GOPRIVATE`
 - `GONOPROXY`

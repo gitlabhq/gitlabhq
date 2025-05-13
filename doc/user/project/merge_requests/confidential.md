@@ -49,7 +49,7 @@ Prerequisites:
 - You have the Owner or Maintainer role for the public repository, as you need one
   of these roles to [create a subgroup](../../group/subgroups/_index.md).
 - You have [forked](../repository/forking_workflow.md) the public repository.
-- Your fork has a **Visibility level** of _Private_.
+- Your fork has a **Visibility level** of **Private**.
 
 To create a confidential merge request:
 
@@ -57,11 +57,11 @@ To create a confidential merge request:
 1. Select **Plan > Issues** and find the issue you want to create a merge request for.
 1. Scroll below the issue description, and select **Create confidential merge request**.
 1. Select the item that meets your needs:
-   - *To create both a branch and a merge request,* select
+   - To create both a branch and a merge request, select
      **Create confidential merge request and branch**. Your merge request will
      target the default branch of your fork, *not* the default branch of the
      public upstream project.
-   - *To create only a branch,* select **Create branch**.
+   - To create only a branch, select **Create branch**.
 1. Select a **Project** to use. These projects have merge requests enabled, and
    you have the Developer role (or greater) in them.
 1. Provide a **Branch name**, and select a **Source (branch or tag)**. GitLab

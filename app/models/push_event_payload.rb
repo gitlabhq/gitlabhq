@@ -13,13 +13,13 @@ class PushEventPayload < ApplicationRecord
   sha_attribute :commit_from
   sha_attribute :commit_to
 
-  enum action: {
+  enum :action, {
     created: 0,
     removed: 1,
     pushed: 2
   }
 
-  enum ref_type: {
+  enum :ref_type, {
     branch: 0,
     tag: 1
   }

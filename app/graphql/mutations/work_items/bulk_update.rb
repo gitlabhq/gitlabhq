@@ -9,8 +9,7 @@ module Mutations
 
       MAX_WORK_ITEMS = 100
 
-      description 'Allows updating several properties for a set of issues. ' \
-        'Does nothing if the `bulk_update_issues_mutation` feature flag is disabled.'
+      description 'Allows updating several properties for a set of work items. '
 
       argument :ids, [::Types::GlobalIDType[::WorkItem]],
         required: true,

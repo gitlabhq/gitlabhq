@@ -42,6 +42,10 @@ module Projects
         return ServiceResponse.error(message: _('Target project cannot be equal to source project'), reason: :self_fork)
       end
 
+      if fork_to_project.organization_id != fork_network.organization_id
+        return ServiceResponse.error(message: _('Target project must belong to source project organization'), reason: :fork_organization_mismatch)
+      end
+
       build_fork_network_member(fork_to_project)
 
       if link_fork_network(fork_to_project)

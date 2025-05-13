@@ -549,11 +549,11 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
 
       page.find("li", text: "Arizona").click
 
-      expect(page).to have_field(:user_timezone, with: 'America/Phoenix', type: :hidden)
+      expect(page).to have_field(:user_timezone, with: 'America/Phoenix')
     end
 
     it 'timezone defaults to empty' do
-      expect(page).to have_field(:user_timezone, with: '', type: :hidden)
+      expect(page).to have_field(:user_timezone, with: '')
     end
   end
 

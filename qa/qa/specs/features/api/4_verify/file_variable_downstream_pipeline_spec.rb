@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner, product_group: :pipeline_authoring,
-    only: { subdomain: 'staging-canary' } do
-    # Runs this test only in staging-canary to debug flakiness https://gitlab.com/gitlab-org/gitlab/-/issues/424903
-    # We need to collect failure data, please don't quarantine for the time being
+  RSpec.describe 'Verify', product_group: :pipeline_authoring,
+    quarantine: {
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424903',
+      type: :bug
+    } do
     describe 'Pipeline with file variables and downstream pipelines' do
       let(:random_string) { Faker::Alphanumeric.alphanumeric(number: 8) }
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }

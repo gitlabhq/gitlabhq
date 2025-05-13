@@ -302,37 +302,16 @@ From [group issue boards](../issue_board.md#group-issue-boards), you can filter 
 
 ### Special milestone filters
 
+{{< history >}}
+
+- Logic for **Started** and **Upcoming** filters [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/429728) in GitLab 18.0.
+
+{{< /history >}}
+
 When filtering by milestone, in addition to choosing a specific project milestone or group milestone, you can choose a special milestone filter.
 
 - **None**: Show issues or merge requests with no assigned milestone.
-- **Any**: Show issues or merge requests that have an assigned milestone.
-- **Upcoming**: Show issues or merge requests that have been assigned the open milestone and has the nearest due date in the future.
-- **Started**: Show issues or merge requests that have an open assigned milestone with a start date that is before today.
-
-<!--- When Upcoming and Started milestones change in GitLab 18.0, integrate the contents
-of the below topic into "Special milestone filters" -->
-
-#### "Upcoming" and "Started" filters (deprecated)
-
-{{< alert type="warning" >}}
-
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/501294) in GitLab 17.7
-and is [planned for change](https://gitlab.com/gitlab-org/gitlab/-/issues/429728) in 18.0.
-
-{{< /alert >}}
-
-The behavior of "Upcoming" and "Started" special filters is planned to change in upcoming GitLab major release 18.0.
-The new behavior of both the filters is outlined in
-[issue 429728](https://gitlab.com/gitlab-org/gitlab/-/issues/429728#proposed-issue-filter-logic-for-upcoming-and-started-milestones).
-
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+- **Any**: Show issues or merge requests with an assigned milestone.
+- **Upcoming**: Show issues or merge requests with an open assigned milestone starting in the future.
+- **Started**: Show issues or merge requests with an open assigned milestone that overlaps with the current date. The
+  list excludes milestones without a defined start and due date.

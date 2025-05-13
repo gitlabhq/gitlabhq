@@ -14,8 +14,12 @@
 }
 
 .system-note {
+  .note-body:has(.note-text p:first-child:last-child) {
+    display: none;
+  }
+
   .note-text {
-    // System notes render the text twice; this hides the secon done. Do not remove!
+    // System notes render the text twice; this hides the second one. Do not remove!
     p:first-child {
       display: none;
     }

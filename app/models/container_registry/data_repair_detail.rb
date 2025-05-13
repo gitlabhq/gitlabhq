@@ -9,7 +9,7 @@ module ContainerRegistry
 
     belongs_to :project, optional: false
 
-    enum status: { ongoing: 0, completed: 1, failed: 2 }
+    enum :status, { ongoing: 0, completed: 1, failed: 2 }
 
     scope :ongoing_since, ->(threshold) { where(status: :ongoing).where('updated_at < ?', threshold) }
   end

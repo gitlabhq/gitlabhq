@@ -67,16 +67,23 @@ module Gitlab
 
         def track_execution_start
           return if Feature.disabled?(:sidekiq_concurrency_limit_middleware, Feature.current_request, type: :ops)
-          return unless worker_limit > 0
+          return unless track_execution?
 
           concurrency_service.track_execution_start(worker_class)
         end
 
         def track_execution_end
           return if Feature.disabled?(:sidekiq_concurrency_limit_middleware, Feature.current_request, type: :ops)
-          return unless worker_limit > 0
+          return unless track_execution?
 
           concurrency_service.track_execution_end(worker_class)
+        end
+
+        def track_execution?
+          return true if Feature.enabled?(:track_sidekiq_concurrency_limit_execution, Feature.current_request)
+          return false unless worker_limit > 0
+
+          true
         end
 
         def worker_limit

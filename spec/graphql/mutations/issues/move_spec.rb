@@ -26,7 +26,7 @@ RSpec.describe Mutations::Issues::Move, feature_category: :api do
 
         it 'returns error message' do
           expect(resolve[:issue]).to eq(nil)
-          expect(resolve[:errors].first).to eq(permissions_error_message)
+          expect(resolve[:errors].first).to eq("Unable to move. You have insufficient permissions.")
         end
       end
 
@@ -43,23 +43,5 @@ RSpec.describe Mutations::Issues::Move, feature_category: :api do
     end
   end
 
-  context 'with work_item_move_and_clone disabled' do
-    it_behaves_like 'moving work item mutation' do
-      let(:permissions_error_message) { "Cannot move issue due to insufficient permissions." }
-
-      before do
-        stub_feature_flags(work_item_move_and_clone: false)
-      end
-    end
-  end
-
-  context 'with work_item_move_and_clone enabled' do
-    it_behaves_like 'moving work item mutation' do
-      let(:permissions_error_message) { "Unable to move. You have insufficient permissions." }
-
-      before do
-        stub_feature_flags(work_item_move_and_clone: true)
-      end
-    end
-  end
+  it_behaves_like 'moving work item mutation'
 end

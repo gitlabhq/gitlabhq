@@ -14,7 +14,7 @@ module Gitlab
         started_time = get_time
         base_payload = parse_job(job)
 
-        ActiveRecord::LogSubscriber.reset_runtime
+        ActiveRecord::RuntimeRegistry.reset
 
         @logger.info log_job_start(job, base_payload)
 
@@ -104,7 +104,7 @@ module Gitlab
 
         Gitlab::ExceptionLogFormatter.format!(job_exception, payload) if job_exception
 
-        db_duration = ActiveRecord::LogSubscriber.runtime
+        db_duration = ActiveRecord::RuntimeRegistry.sql_runtime
         payload['db_duration_s'] = Gitlab::Utils.ms_to_round_sec(db_duration)
 
         job_urgency = payload['class'].safe_constantize&.get_urgency.to_s

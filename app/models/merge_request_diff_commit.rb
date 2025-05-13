@@ -134,21 +134,13 @@ class MergeRequestDiffCommit < ApplicationRecord
   end
 
   def message
-    if ::Feature.enabled?(:commit_message_logger, type: :ops) # rubocop:disable Gitlab/FeatureFlagWithoutActor  -- TODO: No actor needed
-      Gitlab::AppLogger.info(
-        event: 'mrdc_message_method',
-        message: "mrdc#message called via #{caller_locations.reject { |line| line.path.include?('/gems/') }.first(4)}"
-      )
-    end
-
     fetch_message
   end
 
   def to_hash
     super(exclude_keys: [:message]).merge({
       'id' => sha,
-      message: fetch_message,
-      log_message: ::Feature.enabled?(:commit_message_logger, type: :ops) # rubocop:disable Gitlab/FeatureFlagWithoutActor  -- TODO: No actor needed
+      message: fetch_message
     })
   end
 

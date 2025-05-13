@@ -54,3 +54,24 @@ Only trigger multi-project pipelines with tag names that do not match branch nam
 In GitLab 15.9 and later, CI/CD job tokens are scoped to the project that the pipeline executes under. Therefore, the job token in a downstream pipeline cannot be used to access an upstream project by default.
 
 To resolve this, [add the downstream project to the job token scope allowlist](../jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist).
+
+## Error: `needs:need pipeline should be a string`
+
+When using [`needs:pipeline:job`](../yaml/_index.md#needspipelinejob) with dynamic child pipelines,
+you might receive this error:
+
+```plaintext
+Unable to create pipeline
+- jobs:<job_name>:needs:need pipeline should be a string
+```
+
+This error occurs when a pipeline ID is parsed as an integer instead of a string.
+To fix this, enclose the pipeline ID in quotes:
+
+```yaml
+rspec:
+  needs:
+    - pipeline: "$UPSTREAM_PIPELINE_ID"
+      job: dependency-job
+      artifacts: true
+```

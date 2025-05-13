@@ -7,7 +7,6 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
 
   before do
     sign_in(user)
-    stub_feature_flags(downtier_delayed_deletion: false)
   end
 
   matcher :have_namespace_error_message do
@@ -333,10 +332,11 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
       expect(page).to have_selector '#confirm_name_input:focus'
     end
 
-    it 'removes group', :sidekiq_might_not_need_inline do
-      expect { remove_with_confirm('Delete group', group.path) }.to change { Group.count }.by(-1)
-      expect(group.members.all.count).to be_zero
-      expect(page).to have_content "is being deleted"
+    it 'marks the group for deletion' do
+      expect { remove_with_confirm('Delete group', group.path) }.to change {
+        group.reload.marked_for_deletion?
+      }.from(false).to(true)
+      expect(page).to have_content "pending deletion"
     end
   end
 

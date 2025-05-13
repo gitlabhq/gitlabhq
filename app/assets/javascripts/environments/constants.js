@@ -87,22 +87,31 @@ export const ENVIRONMENT_EDIT_HELP_TEXT = ENVIRONMENT_NEW_HELP_TEXT;
 
 export const SERVICES_LIMIT_PER_PAGE = 10;
 
-export const CLUSTER_STATUS_HEALTHY_TEXT = s__('Environment|Healthy');
-export const CLUSTER_STATUS_UNHEALTHY_TEXT = s__('Environment|Unhealthy');
-
 export const CLUSTER_HEALTH_SUCCESS = 'success';
 export const CLUSTER_HEALTH_ERROR = 'error';
+export const CLUSTER_HEALTH_NEEDS_ATTENTION = 'needs-attention';
+export const CLUSTER_HEALTH_UNKNOWN = 'unknown';
 
 export const HEALTH_BADGES = {
   [CLUSTER_HEALTH_SUCCESS]: {
     variant: 'success',
-    text: CLUSTER_STATUS_HEALTHY_TEXT,
+    text: s__('Environment|Healthy'),
     icon: 'status-success',
   },
   [CLUSTER_HEALTH_ERROR]: {
     variant: 'danger',
-    text: CLUSTER_STATUS_UNHEALTHY_TEXT,
+    text: s__('Environment|Unhealthy'),
     icon: 'status-alert',
+  },
+  [CLUSTER_HEALTH_NEEDS_ATTENTION]: {
+    variant: 'warning',
+    text: s__('Environment|Needs attention'),
+    icon: 'status-alert',
+  },
+  [CLUSTER_HEALTH_UNKNOWN]: {
+    variant: 'muted',
+    text: s__('Environment|Unknown'),
+    icon: 'status-waiting',
   },
 };
 

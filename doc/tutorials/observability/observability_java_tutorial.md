@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: 'Tutorial: Use GitLab Observability with a Java Spring application'
 ---
 
-For more information, see the history of the [**Distributed tracing** feature](../../development/tracing.md).
+For more information, see the history of the **Distributed tracing** feature.
 <!-- Update this note when observability_features flag is removed -->
 
 In this tutorial, you'll learn how to create, configure, instrument, and monitor a Java Spring application using GitLab Observability features.

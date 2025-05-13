@@ -45,7 +45,20 @@ module Gitlab
         end
 
         def user_filter(login)
-          filter = Net::LDAP::Filter.equals(config.uid, login)
+          # Allow LDAP users to authenticate by using their GitLab username in case
+          # their LDAP username does not match GitLab username or
+          # their LDAP username collide with another user's GitLab username.
+          # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186848
+          uid = if ldap_user_is_allowed_to_authenticate_with_gitlab_username?
+                  ::Gitlab::Auth::Ldap::Person.find_by_dn(
+                    user.ldap_identity.extern_uid,
+                    Gitlab::Auth::Ldap::Adapter.new(provider)
+                  )&.uid
+                end
+
+          uid ||= login
+
+          filter = Net::LDAP::Filter.equals(config.uid, uid)
 
           # Apply LDAP user filter if present
           if config.user_filter.present?
@@ -53,6 +66,12 @@ module Gitlab
           end
 
           filter
+        end
+
+        private
+
+        def ldap_user_is_allowed_to_authenticate_with_gitlab_username?
+          user && user.ldap_user? && Feature.enabled?(:allow_ldap_users_to_authenticate_with_gitlab_username, user)
         end
       end
     end

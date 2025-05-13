@@ -373,8 +373,8 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :source_code
         let(:expected_stats) do
           {
             visible_count: 20,
-            email_path: "/#{project.full_path}/-/merge_requests/1.diff",
-            diff_path: "/#{project.full_path}/-/merge_requests/1.patch"
+            email_path: "/#{project.full_path}/-/merge_requests/1.patch",
+            diff_path: "/#{project.full_path}/-/merge_requests/1.diff"
           }
         end
       end

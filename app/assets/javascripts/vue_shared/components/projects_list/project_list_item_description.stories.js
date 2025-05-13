@@ -1,4 +1,4 @@
-import ProjectListItemDescription from './project_list_item_description.vue';
+import ProjectListItemDescription from '~/vue_shared/components/projects_list/project_list_item_description.vue';
 
 export default {
   component: ProjectListItemDescription,
@@ -26,5 +26,15 @@ Default.args = {
     Features include personalized sustainability tips, a carbon emission calculator, and community challenges.
     Users can track their daily habits, set eco-friendly goals, and earn rewards for sustainable choices.
     The app integrates with smart home devices and local transportation data to provide real-time suggestions for energy savings and greener commutes.</p>`,
+  },
+};
+
+export const PendingDeletionProject = Template.bind({});
+PendingDeletionProject.args = {
+  ...Default.args,
+  project: {
+    ...Default.args.project,
+    markedForDeletionOn: '2024-12-01',
+    permanentDeletionDate: '2024-12-07',
   },
 };

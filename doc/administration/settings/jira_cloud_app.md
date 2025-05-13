@@ -133,16 +133,16 @@ Alternatively, you might want to [install the GitLab for Jira Cloud app manually
     1. Ensure your GitLab Self-Managed instance can still make the outbound connections described above.
 - The Jira user that installs and configures the app must meet certain [requirements](#jira-user-requirements).
 
-### Set up your instance
+### Set up your instance for Atlassian Marketplace installation
 
 [Prerequisites](#prerequisites)
 
-To set up your GitLab Self-Managed instance for the GitLab for Jira Cloud app in GitLab 15.7 and later:
+To set up your GitLab Self-Managed instance for Atlassian Marketplace installation in GitLab 15.7 and later:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **GitLab for Jira App**.
-1. In **Jira Connect Proxy URL**, enter `https://gitlab.com`.
+1. In **Jira Connect Proxy URL**, enter `https://gitlab.com` to install the app from the Atlassian Marketplace.
 1. Select **Save changes**.
 
 ### Link your instance
@@ -213,16 +213,16 @@ To support your GitLab Self-Managed instance with Jira Cloud, do one of the foll
     1. Ensure your GitLab Self-Managed instance can still make the outbound connections described above.
 - The Jira user that installs and configures the app must meet certain [requirements](#jira-user-requirements).
 
-### Set up your instance
+### Set up your instance for manual installation
 
 [Prerequisites](#prerequisites-1)
 
-To set up your GitLab Self-Managed instance for the GitLab for Jira Cloud app in GitLab 15.7 and later:
+To set up your GitLab Self-Managed instance for manual installation in GitLab 15.7 and later:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **GitLab for Jira App**.
-1. In **Jira Connect Proxy URL**, ensure this is blank.
+1. Leave **Jira Connect Proxy URL** blank to install the app manually.
 1. Select **Save changes**.
 
 ### Install the app in development mode
@@ -293,7 +293,7 @@ To configure your GitLab instance to serve as a proxy:
 
 Other GitLab instances that use the proxy must configure the following settings to point to the proxy instance:
 
-- [**Jira Connect Proxy URL**](#set-up-your-instance)
+- [**Jira Connect Proxy URL**](#set-up-your-instance-for-atlassian-marketplace-installation)
 - [**Redirect URI**](#set-up-oauth-authentication)
 
 ## Security considerations

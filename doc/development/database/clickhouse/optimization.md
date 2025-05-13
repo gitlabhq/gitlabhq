@@ -15,7 +15,7 @@ ClickHouse blog also has a very good post, [Super charging your ClickHouse queri
 
 It is possible to use [`EXPLAIN`](https://clickhouse.com/docs/en/sql-reference/statements/explain) statements with queries to get visible steps of the query pipeline. Note the different [types](https://clickhouse.com/docs/en/sql-reference/statements/explain#explain-types) of `EXPLAIN`.
 
-Also, to get detailed query execution pipeline, you can toggle the logs level to `trace` via `clickhouse-client` and then execute the query.
+Also, to get detailed query execution pipeline, you can set the logs level to `trace` with `clickhouse-client` and then execute the query.
 
 For example:
 

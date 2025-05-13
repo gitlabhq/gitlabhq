@@ -3,10 +3,13 @@ import { GlLoadingIcon, GlPagination, GlSprintf, GlAlert } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { debounce, throttle } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
-import { mapState, mapGetters, mapActions } from 'vuex';
-import { mapState as mapPiniaState, mapActions as mapPiniaActions } from 'pinia';
+import {
+  mapState as mapVuexState,
+  mapGetters as mapVuexGetters,
+  mapActions as mapVuexActions,
+} from 'vuex';
+import { mapState, mapActions } from 'pinia';
 import FindingsDrawer from 'ee_component/diffs/components/shared/findings_drawer.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import {
   keysFor,
@@ -14,6 +17,7 @@ import {
   MR_NEXT_FILE_IN_DIFF,
   MR_COMMITS_NEXT_COMMIT,
   MR_COMMITS_PREVIOUS_COMMIT,
+  MR_TOGGLE_REVIEW,
 } from '~/behaviors/shortcuts/keybindings';
 import { createAlert } from '~/alert';
 import { InternalEvents } from '~/tracking';
@@ -23,12 +27,12 @@ import { BV_HIDE_TOOLTIP, DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/c
 import { Mousetrap } from '~/lib/mousetrap';
 import { updateHistory, getLocationHash } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
-
 import notesEventHub from '~/notes/event_hub';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import getMRCodequalityAndSecurityReports from 'ee_else_ce/diffs/components/graphql/get_mr_codequality_and_security_reports.query.graphql';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
 import { sortFindingsByFile } from '../utils/sort_findings_by_file';
 import {
   ALERT_OVERFLOW_HIDDEN,
@@ -47,7 +51,6 @@ import {
   EVT_DISCUSSIONS_ASSIGNED,
   FILE_BROWSER_VISIBLE,
 } from '../constants';
-
 import { isCollapsed } from '../utils/diff_file';
 import diffsEventHub from '../event_hub';
 import { reviewStatuses } from '../utils/file_reviews';
@@ -90,7 +93,7 @@ export default {
     GlSprintf,
     GlAlert,
   },
-  mixins: [glFeatureFlagsMixin(), InternalEvents.mixin()],
+  mixins: [InternalEvents.mixin()],
   alerts: {
     ALERT_OVERFLOW_HIDDEN,
     ALERT_MERGE_CONFLICT,
@@ -219,12 +222,11 @@ export default {
     },
   },
   computed: {
-    ...mapPiniaState(useLegacyDiffs, {
+    ...mapState(useLegacyDiffs, {
       numTotalFiles: 'realSize',
       numVisibleFiles: 'size',
     }),
-    ...mapState('findingsDrawer', ['activeDrawer']),
-    ...mapPiniaState(useLegacyDiffs, [
+    ...mapState(useLegacyDiffs, [
       'isLoading',
       'diffViewType',
       'commit',
@@ -256,9 +258,10 @@ export default {
       'flatBlobsList',
       'diffFiles',
     ]),
-    ...mapGetters(['isNotesFetched', 'getNoteableData']),
-    ...mapGetters('findingsDrawer', ['activeDrawer']),
-    ...mapPiniaState(useFileBrowser, ['fileBrowserVisible']),
+    ...mapState(useNotes, ['isNotesFetched', 'getNoteableData']),
+    ...mapState(useFileBrowser, ['fileBrowserVisible']),
+    ...mapVuexState('findingsDrawer', ['activeDrawer']),
+    ...mapVuexGetters('findingsDrawer', ['activeDrawer']),
     diffs() {
       if (!this.viewDiffsFileByFile) {
         return this.diffFiles;
@@ -440,8 +443,8 @@ export default {
     diffsEventHub.$off('scrollToIndex', this.scrollVirtualScrollerToIndex);
   },
   methods: {
-    ...mapActions(['startTaskList']),
-    ...mapPiniaActions(useLegacyDiffs, [
+    ...mapActions(useNotes, ['startTaskList']),
+    ...mapActions(useLegacyDiffs, [
       'moveToNeighboringCommit',
       'fetchDiffFilesMeta',
       'fetchDiffFilesBatch',
@@ -464,9 +467,12 @@ export default {
       'setDiffViewType',
       'setShowWhitespace',
       'goToFile',
+      'reviewFile',
+      'setFileCollapsedByUser',
+      'toggleTreeOpen',
     ]),
-    ...mapActions('findingsDrawer', ['setDrawer']),
-    ...mapPiniaActions(useFileBrowser, ['setFileBrowserVisibility']),
+    ...mapActions(useFileBrowser, ['setFileBrowserVisibility']),
+    ...mapVuexActions('findingsDrawer', ['setDrawer']),
     closeDrawer() {
       this.setDrawer({});
     },
@@ -475,6 +481,16 @@ export default {
       createAlert({
         message: __('Something went wrong fetching the scanner findings. Please try again.'),
       });
+    },
+    toggleActiveFileReview() {
+      const activeFile = this.diffFiles.find((file) => file.file_hash === this.currentDiffFileId);
+
+      if (activeFile) {
+        const reviewed = !this.fileReviews[activeFile.id];
+        this.reviewFile({ file: activeFile, reviewed });
+
+        this.setFileCollapsedByUser({ filePath: activeFile.file_path, collapsed: reviewed });
+      }
     },
     subscribeToEvents() {
       notesEventHub.$once('fetchDiffData', this.fetchData);
@@ -644,7 +660,7 @@ export default {
       Mousetrap.bind(keysFor(MR_COMMITS_PREVIOUS_COMMIT), () =>
         this.moveToNeighboringCommit({ direction: 'previous' }),
       );
-
+      Mousetrap.bind(keysFor(MR_TOGGLE_REVIEW), () => this.toggleActiveFileReview());
       Mousetrap.bind(['mod+f', 'mod+g'], () => {
         this.keydownTime = new Date().getTime();
       });
@@ -658,6 +674,7 @@ export default {
       Mousetrap.unbind(keysFor(MR_NEXT_FILE_IN_DIFF));
       Mousetrap.unbind(keysFor(MR_COMMITS_NEXT_COMMIT));
       Mousetrap.unbind(keysFor(MR_COMMITS_PREVIOUS_COMMIT));
+      Mousetrap.unbind(keysFor(MR_TOGGLE_REVIEW));
       Mousetrap.unbind(['ctrl+f', 'command+f', 'mod+f', 'mod+g']);
       window.removeEventListener('blur', this.handleBrowserFindActivation);
       this.listenersAttached = false;
@@ -789,6 +806,7 @@ export default {
           class="gl-px-5"
           :total-files-count="numTotalFiles"
           @clickFile="goToFile({ path: $event.path })"
+          @toggleFolder="toggleTreeOpen"
         />
         <div class="col-12 col-md-auto diff-files-holder">
           <commit-widget v-if="commit" :commit="commit" :collapsible="false" />

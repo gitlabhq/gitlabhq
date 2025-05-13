@@ -1,0 +1,15 @@
+---
+table_name: ci_pipeline_variables
+classes:
+- Ci::PipelineVariable
+feature_categories:
+- ci_variables
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/56418e85ac6b667d19495665860092ce4d74f55d
+milestone: '9.5'
+gitlab_schema: gitlab_ci
+table_size: over_limit
+sharding_key:
+  project_id: projects
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187555
+removed_in_milestone: '18.0'

@@ -9,6 +9,8 @@ module Gitlab
       operation_name :update
       # Class that is imitating Ci::Trigger
       class CiTrigger < ::Ci::ApplicationRecord
+        include Gitlab::EncryptedAttribute
+
         ALGORITHM = 'aes-256-gcm'
 
         self.table_name = 'ci_triggers'
@@ -17,7 +19,7 @@ module Gitlab
           attribute: :encrypted_token,
           mode: :per_attribute_iv,
           algorithm: 'aes-256-gcm',
-          key: Settings.attr_encrypted_db_key_base_32,
+          key: :db_key_base_32,
           encode: false
 
         before_save :copy_token_to_encrypted_token

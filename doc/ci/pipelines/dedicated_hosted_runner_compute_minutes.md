@@ -1,0 +1,58 @@
+---
+stage: Verify
+group: Hosted Runners
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Compute minutes, usage tracking, quota management for GitLab-hosted runners on GitLab Dedicated.
+title: Compute usage for GitLab-hosted runners on GitLab Dedicated
+---
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab Dedicated
+
+{{< /details >}}
+
+A GitLab Dedicated instance can have both self-managed instance runners and GitLab-hosted instance runners.
+
+As an administrator of a GitLab Dedicated instance, you can track and monitor compute minutes used by
+namespaces running jobs on either type of instance runners.
+
+For GitLab-hosted runners:
+
+- You can view your estimated usage in the [GitLab-hosted runner usage dashboard](#view-compute-usage).
+- Usage billing is based on build duration logs collected from GitLab-hosted runners.
+- Quota enforcement and notifications are not available.
+
+For self-managed instance runners registered to your GitLab Dedicated instance, see [view instance runner usage](instance_runner_compute_minutes.md#view-usage).
+
+## View compute usage
+
+{{< history >}}
+
+- Compute usage data for GitLab-hosted runners [introduced](https://gitlab.com/groups/gitlab-com/gl-infra/gitlab-dedicated/-/epics/524) in GitLab 18.0.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must be an administrator for a GitLab Dedicated instance.
+
+You can see compute usage:
+
+- Total compute usage for the current month.
+- By month, which you can filter by year and runner.
+- By namespace, which you can filter by month and runner.
+
+{{< alert type="note" >}}
+
+Compute usage data provides only an estimate of total usage.
+Bills are generated directly from the raw runner logs,
+which may show discrepancies compared to the usage data in GitLab.
+
+{{< /alert >}}
+
+To view GitLab-hosted runner compute usage for all namespaces across your entire GitLab instance:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Usage Quotas**.

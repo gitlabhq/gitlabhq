@@ -122,7 +122,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
 
           expect(result).to be_a(ServiceResponse)
           expect(result).to be_error
-          expect(result.message).to eq("Import failed. You don't have permission to export 'full/path/to/group1'.")
+          expect(result.message).to eq("Import failed. You do not have permission to export 'full/path/to/group1'.")
         end
       end
 
@@ -150,8 +150,8 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
           expect(result).to be_error
           expect(result.message)
             .to eq(
-              "Migration by direct transfer disabled on source or destination instance. " \
-              "Ask an administrator to enable it on both instances and try again."
+              "Migration by direct transfer is disabled on the source or destination instance. " \
+              "Ask an administrator to enable this feature on both instances and try again."
             )
         end
       end
@@ -584,10 +584,10 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
         expect(result).to be_a(ServiceResponse)
         expect(result).to be_error
         expect(result.message).to eq("Validation failed: Source full path can't be blank, " \
-                                     "Source full path must have a relative path structure with " \
-                                     "no HTTP protocol characters, or leading or trailing forward slashes. " \
-                                     "Path segments must not start or end with a special character, and " \
-                                     "must not contain consecutive special characters")
+                                     "Source full path must have a relative path with " \
+                                     "no HTTP protocol characters or leading or trailing forward slashes. " \
+                                     "Path segments must not start or end with a special character or " \
+                                     "contain consecutive special characters.")
       end
 
       describe '#user-role' do
@@ -799,8 +799,8 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
             expect(result).to be_a(ServiceResponse)
             expect(result).to be_error
             expect(result.message)
-              .to eq("Import failed. Destination 'destination-namespace' is invalid, " \
-                     "or you don't have permission.")
+              .to eq("Import failed. 'destination-namespace' is invalid, " \
+                     "or you do not have permission.")
           end
         end
 
@@ -826,8 +826,8 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
             expect(result).to be_a(ServiceResponse)
             expect(result).to be_error
             expect(result.message)
-            .to eq("Import failed. Destination '#{parent_group.path}' is invalid, " \
-                   "or you don't have permission.")
+            .to eq("Import failed. '#{parent_group.path}' is invalid, " \
+                   "or you do not have permission.")
           end
         end
 
@@ -853,8 +853,8 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
             expect(result).to be_a(ServiceResponse)
             expect(result).to be_error
             expect(result.message)
-              .to eq("Import failed. Destination '#{parent_group.path}' is invalid, " \
-                     "or you don't have permission.")
+              .to eq("Import failed. '#{parent_group.path}' is invalid, " \
+                     "or you do not have permission.")
           end
         end
       end
@@ -881,7 +881,7 @@ RSpec.describe BulkImports::CreateService, :clean_gitlab_redis_shared_state, fea
             expect(result).to be_error
             expect(result.message)
               .to eq(
-                "Import failed. Destination URL " \
+                "Import failed. The destination URL " \
                 "can only include non-accented letters, digits, '_', '-' and '.'. " \
                 "It must not start with '-', '_', or '.', nor end with '-', '_', '.', '.git', or '.atom'."
               )

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '~/lib/utils/axios_utils';
 import { initToggle } from '~/toggles';
 import toast from '~/vue_shared/plugins/global_toast';
 import {

@@ -4,6 +4,7 @@ exports[`WorkItemRelationshipList renders linked item list 1`] = `
 <div
   class="gl-p-3"
   data-testid="work-item-linked-items-list"
+  parentworkitemiid="2"
 >
   <h3
     class="gl-bg-strong gl-block gl-font-semibold gl-mb-0 gl-mt-0 gl-px-3 gl-py-2 gl-rounded-base gl-text-sm gl-text-subtle"
@@ -29,7 +30,7 @@ exports[`WorkItemRelationshipList renders linked item list 1`] = `
     value="[object Object]"
   >
     <li
-      class="!gl-border-b-1 !gl-border-solid !gl-border-t-0 !gl-border-x-0 !gl-px-0 !gl-py-2 last:!gl-border-b-0 linked-item"
+      class="!gl-border-b-1 !gl-border-solid !gl-border-t-0 !gl-border-x-0 !gl-mx-0 !gl-px-0 !gl-py-2 last:!gl-border-b-0 linked-item"
       data-testid="link-child-contents-container"
       data-work-item-id="gid://gitlab/WorkItem/675"
     >

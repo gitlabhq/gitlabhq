@@ -68,7 +68,7 @@ module Namespaces
 
     def persist(ids_to_cache)
       ids_to_cache.each_slice(PERSIST_SLICE_SIZE) do |slice|
-        Namespaces::Descendants.upsert_all(slice.map { |id| { namespace_id: id } })
+        Namespaces::Descendants.upsert_all(slice.map { |id| { namespace_id: id, outdated_at: Time.current } })
       end
     end
 

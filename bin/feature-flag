@@ -54,6 +54,7 @@ class FeatureFlagOptionParser
 
   Options = Struct.new(
     :name,
+    :description,
     :type,
     :group,
     :milestone,
@@ -79,6 +80,10 @@ class FeatureFlagOptionParser
         # commit` interface
         opts.on('--amend', 'Amend the previous commit') do |value|
           options.amend = value
+        end
+
+        opts.on('-d', '--description [string]', String, 'Short description for the feature flag') do |value|
+          options.description = value
         end
 
         opts.on('-f', '--force', 'Overwrite an existing entry') do |value|
@@ -279,7 +284,7 @@ class FeatureFlagOptionParser
       return unless TYPES.dig(options.type, :rollout_issue)
 
       issue_new_url = "https://gitlab.com/gitlab-org/gitlab/-/issues/new"
-      issue_title = "[Feature flag] Rollout of `#{options.name}`"
+      issue_title = "[FF] `#{options.name}` -- #{options.description}"
       issue_new_url = issue_new_url + "?" + URI.encode_www_form('issue[title]' => issue_title)
       group_name = find_group_by_label(options.group)
 
@@ -443,6 +448,7 @@ class FeatureFlagCreator
   def config_hash
     {
       'name'              => options.name,
+      'description'       => options.description,
       'feature_issue_url' => options.feature_issue_url,
       'introduced_by_url' => options.introduced_by_url,
       'rollout_issue_url' => options.rollout_issue_url,

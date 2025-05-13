@@ -22,6 +22,7 @@ RSpec.describe 'Project milestone', :js, feature_category: :team_planning do
 
   before do
     sign_in(user)
+    stub_feature_flags(work_items_alpha: false)
   end
 
   context 'when project has enabled issues' do

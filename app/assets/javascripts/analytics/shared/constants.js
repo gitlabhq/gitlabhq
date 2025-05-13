@@ -251,7 +251,7 @@ export const VALUE_STREAM_METRIC_TILE_METADATA = {
   [FLOW_METRICS.CYCLE_TIME]: {
     label: s__('DORA4Metrics|Cycle time'),
     description: s__(
-      "ValueStreamAnalytics|Median time from the earliest commit of a linked issue's merge request to when that issue is closed.",
+      'ValueStreamAnalytics|Median time between when an issue is first referenced in the commit message of a merge request and when that referenced issue is closed.',
     ),
     groupLink: '-/analytics/value_stream_analytics',
     projectLink: '-/value_stream_analytics',
@@ -292,10 +292,9 @@ export const VALUE_STREAM_METRIC_METADATA = {
     docsLink: helpPagePath('user/group/issues_analytics/_index'),
   },
   [CONTRIBUTOR_METRICS.COUNT]: {
-    description: s__(
-      'ValueStreamAnalytics|Number of monthly unique users with contributions in the group.',
-    ),
+    description: s__('ValueStreamAnalytics|Number of monthly unique users with contributions.'),
     groupLink: '-/contribution_analytics',
+    projectLink: '-/graphs/master?ref_type=heads',
     docsLink: helpPagePath('user/profile/contributions_calendar.html', {
       anchor: 'user-contribution-events',
     }),

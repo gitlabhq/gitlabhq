@@ -124,6 +124,6 @@ GitLab Advanced SAST finds the following types of weaknesses in each programming
 
 {{< alert type="note" >}}
 
-Did this page answer the question you had? If not, please comment on [epic 15343](https://gitlab.com/groups/gitlab-org/-/epics/15343) to share your use case.
+Did this page answer the question you had? If not, comment on [epic 15343](https://gitlab.com/groups/gitlab-org/-/epics/15343) to share your use case.
 
 {{< /alert >}}

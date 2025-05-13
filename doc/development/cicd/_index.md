@@ -65,6 +65,21 @@ Development guides that are specific to CI/CD are listed here:
 See the [CI/CD YAML reference documentation guide](cicd_reference_documentation_guide.md)
 to learn how to update the [CI/CD YAML syntax reference page](../../ci/yaml/_index.md).
 
+## Metrics
+
+This section describes the dashboards and metrics that can be used by engineers during development, change validation and incident investigation.
+
+- Dashboards for all GitLab teams are available [here](https://dashboards.gitlab.net/dashboards/f/stage-groups/stage-groups).
+  You can search for the team that owns the feature catagory you are interested in.
+- The [Pipeline Execution error budget dashboard](https://dashboards.gitlab.net/d/stage-groups-pipeline_execution) contains other useful metrics about pipeline
+  creation and job execution.
+- [Production logs](https://log.gprd.gitlab.net/app/discover) also offer many useful information that can be searched and aggregated in Kibana.
+- The [Pipeline creation dashboard](https://log.gprd.gitlab.net/app/r/s/r5Owf) provides useful breakdowns
+  of the steps involved in the pipeline creation.
+  Note that this dashboard only contains data of "slow pipelines", those that take longer to be crated or have many jobs in it.
+  It's similar to a SQL "slow query log".
+- The [CI partitioning dashboard](https://dashboards.gitlab.net/d/ci-partitioning-main/ci-partitioning3a-ci-data-partitions-tracking) contains information about the current partition number, partition sizes, vacuuming, and other database metrics.
+
 ## Examples of CI/CD usage
 
 We maintain a [`ci-sample-projects`](https://gitlab.com/gitlab-org/ci-sample-projects) group, with projects that showcase

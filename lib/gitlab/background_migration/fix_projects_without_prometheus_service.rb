@@ -47,7 +47,7 @@ module Gitlab
         class Cluster < ActiveRecord::Base
           self.table_name = 'clusters'
 
-          enum cluster_type: {
+          enum :cluster_type, {
             instance_type: 1,
             group_type: 2
           }

@@ -246,24 +246,6 @@ RSpec.describe API::ProjectTemplates, feature_category: :source_code_management 
       subject { get api("/projects/#{url_encoded_path}/templates/gitlab_ci_ymls/Android") }
     end
 
-    shared_examples 'path traversal attempt' do |template_type|
-      before do
-        # TODO: remove spec once the feature flag is removed
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/415460
-        stub_feature_flags(check_path_traversal_middleware_reject_requests: false)
-      end
-
-      it 'rejects invalid filenames' do
-        get api("/projects/#{public_project.id}/templates/#{template_type}/%2e%2e%2fPython%2ea")
-
-        expect(response).to have_gitlab_http_status(:internal_server_error)
-      end
-    end
-
-    TemplateFinder::VENDORED_TEMPLATES.each do |template_type, _|
-      it_behaves_like 'path traversal attempt', template_type
-    end
-
     context 'when a guest has no permission to a template' do
       it 'denies access to the dockerfile' do
         get api("/projects/#{private_project.id}/templates/dockerfiles/Binary", guest)

@@ -12,6 +12,7 @@ import {
 import { localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { n__ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
@@ -54,6 +55,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     tag: {
       type: Object,
@@ -166,6 +168,9 @@ export default {
         this.tag.protection?.minimumAccessLevelForPush != null
       );
     },
+    isImmutable() {
+      return this.glFeatures.containerRegistryImmutableTags && this.tag.protection?.immutable;
+    },
     tagRowId() {
       return `${this.tag.name}_badge`;
     },
@@ -227,6 +232,22 @@ export default {
           </gl-popover>
         </template>
 
+        <template v-if="isImmutable">
+          <gl-badge
+            :id="tagRowId"
+            boundary="viewport"
+            class="gl-ml-4"
+            data-testid="immutable-badge"
+          >
+            {{ s__('ContainerRegistry|immutable') }}
+          </gl-badge>
+          <gl-popover :target="tagRowId" data-testid="immutable-popover">
+            {{
+              s__('ContainerRegistry|This container image tag cannot be overwritten or deleted.')
+            }}
+          </gl-popover>
+        </template>
+
         <clipboard-button
           v-if="tag.location"
           :title="$options.i18n.COPY_IMAGE_PATH_TITLE"
@@ -245,12 +266,11 @@ export default {
           variant="warning"
         />
       </div>
-    </template>
 
-    <template v-if="signatures.length" #left-after-toggle>
       <gl-badge
+        v-if="signatures.length"
         v-gl-tooltip.d0="$options.i18n.SIGNATURE_BADGE_TOOLTIP"
-        class="gl-ml-4"
+        class="sm:gl-ml-3"
         data-testid="signed-badge"
       >
         {{ s__('ContainerRegistry|Signed') }}

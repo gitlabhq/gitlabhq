@@ -28,6 +28,10 @@
         - allow_contribution_mapping_to_admins_label_text = safe_format(s_('AdminSettings|Allow contribution mapping to administrators %{allow_contribution_mapping_to_admins_link_start}%{icon}%{allow_contribution_mapping_to_admins_link_end}'), tag_pair_allow_contribution_mapping_to_admins, icon: sprite_icon('question-o'))
         = f.label :allow_contribution_mapping_to_admins, allow_contribution_mapping_to_admins_label_text, class: 'gl-font-bold'
         = f.gitlab_ui_checkbox_component :allow_contribution_mapping_to_admins, s_('AdminSettings|Enabled')
+      - if Feature.enabled?(:importer_user_mapping_allow_bypass_of_confirmation, current_user)
+        .form-group
+          = f.label :allow_bypass_placeholder_confirmation, s_('AdminSettings|Skip confirmation when reassigning placeholder users'), class: 'gl-font-bold'
+          = f.gitlab_ui_checkbox_component :allow_bypass_placeholder_confirmation, s_('AdminSettings|Enabled')
     .form-group
       = f.label :max_export_size, _('Maximum export size (MiB)'), class: 'label-light'
       = f.number_field :max_export_size, class: 'form-control gl-form-input', title: _('Maximum size of export files.'), data: { toggle: 'tooltip', container: 'body' }
@@ -41,7 +45,7 @@
       = f.number_field :max_import_remote_file_size, class: 'form-control gl-form-input', title: s_('Import|Maximum remote file size for imports from external object storages. For example, AWS S3.'), data: { toggle: 'tooltip', container: 'body' }
       %span.form-text.gl-text-subtle= _('Set to 0 for no size limit.')
     .form-group
-      = f.label :bulk_import_max_download_file_size, s_('BulkImport|Direct transfer maximum download file size (MiB)'), class: 'label-light'
+      = f.label :bulk_import_max_download_file_size, s_('BulkImport|Maximum download file size (MiB)'), class: 'label-light'
       = f.number_field :bulk_import_max_download_file_size, class: 'form-control gl-form-input', title: s_('BulkImport|Maximum download file size when importing from source GitLab instances by direct transfer.'), data: { toggle: 'tooltip', container: 'body' }
     .form-group
       = f.label :max_decompressed_archive_size, s_('Import|Maximum decompressed file size for archives from imports (MiB)'), class: 'label-light'

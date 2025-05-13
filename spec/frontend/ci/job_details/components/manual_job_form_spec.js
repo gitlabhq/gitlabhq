@@ -34,11 +34,11 @@ const defaultProps = {
   jobId: mockId,
   jobName: 'job-name',
   isRetryable: false,
-  canViewPipelineVariables: true,
 };
 
 const defaultProvide = {
   projectPath: mockFullPath,
+  canSetPipelineVariables: true,
 };
 
 describe('Manual Variables Form', () => {
@@ -54,7 +54,7 @@ describe('Manual Variables Form', () => {
     retryJobMutationHandler,
   };
 
-  const createComponent = ({ props = {}, handlers = defaultHandlers } = {}) => {
+  const createComponent = ({ props = {}, provide = {}, handlers = defaultHandlers } = {}) => {
     requestHandlers = handlers;
 
     mockApollo = createMockApollo([
@@ -73,6 +73,7 @@ describe('Manual Variables Form', () => {
       },
       provide: {
         ...defaultProvide,
+        ...provide,
       },
       ...options,
     });
@@ -262,7 +263,7 @@ describe('Manual Variables Form', () => {
   describe('when the user is not allowed to see the pipeline variables', () => {
     beforeEach(() => {
       createComponent({
-        props: { canViewPipelineVariables: false },
+        provide: { canSetPipelineVariables: false },
       });
     });
 

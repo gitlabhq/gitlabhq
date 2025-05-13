@@ -1,5 +1,5 @@
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';

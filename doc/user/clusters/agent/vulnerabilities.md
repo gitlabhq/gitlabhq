@@ -1,5 +1,5 @@
 ---
-stage: Secure
+stage: Application Security Testing
 group: Composition analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Operational container scanning
@@ -239,7 +239,7 @@ For example:
 
 ```yaml
 container_scanning:
-  report_max_size: "300000000" # 300MB
+  report_max_size: "300000000" # 300 MB
 ```
 
 ## Configure Trivy Kubernetes resource detection
@@ -331,7 +331,7 @@ To scan private images, the scanner relies on the image pull secrets (direct ref
 In GitLab agent 16.9 and later, operational container scanning:
 
 - Handles Trivy reports of up to 100 MB. For previous releases, this limit is 10 MB.
-- Is [disabled](../../../development/fips_gitlab.md#unsupported-features-in-fips-mode) when the GitLab agent runs in `fips` mode.
+- Is disabled when the GitLab agent runs in `fips` mode.
 
 ## Troubleshooting
 
@@ -343,7 +343,7 @@ To resolve this, [configure the resource requirement](#configure-scanner-resourc
 
 ### `Pod ephemeral local storage usage exceeds the total limit of containers`
 
-OCS scans could fail for Kubernetes clusters that have low default ephemeral storage. For example, [GKE autopilot](https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#defaults) sets the default ephemeral storage to 1GB. This is an issue for OCS when scanning namespaces with large images, as there may not be enough space to store all data necessary for OCS.
+OCS scans could fail for Kubernetes clusters that have low default ephemeral storage. For example, [GKE autopilot](https://cloud.google.com/kubernetes-engine/docs/concepts/autopilot-resource-requests#defaults) sets the default ephemeral storage to 1 GB. This is an issue for OCS when scanning namespaces with large images, as there may not be enough space to store all data necessary for OCS.
 
 To resolve this, [configure the resource requirement](#configure-scanner-resource-requirements) to increase the amount of ephemeral storage available.
 

@@ -1,0 +1,26 @@
+- title: "cert-manager Helm chart update"
+  announcement_milestone: "18.0"  # (required) The milestone when this feature was first announced as deprecated.
+  removal_milestone: "18.3"  # (required) The milestone when this feature is planned to be removed
+  breaking_change: true  # (required) Change to false if this is not a breaking change.
+  reporter: clemensbeck  # (required) GitLab username of the person reporting the change
+  issue_url: https://gitlab.com/gitlab-org/charts/gitlab/-/issues/5928
+  impact: low # Can be one of: [critical, high, medium, low]
+  scope: instance # Can be one or a combination of: [instance, group, project]
+  resolution_role: Admin # Can be one of: [Admin, Owner, Maintainer, Developer]
+  manual_task: true # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
+  body: | # (required) Don't change this line.
+    To enable schema validation of newer cert-manager charts, the GitLab Helm chart `certmanager.install` value is
+    deprecated in favor of `installCertmanager`. The schema definition does not accept the extra property that we
+    added within the `certmanager` section of the GitLab chart.
+
+    In GitLab 18.3 (GitLab chart 9.3), we will remove the deprecated value and update the bundled cert-manager.
+
+    If you've previously used the `certmanager.install` setting:
+
+    1. Transfer the value of `certmanager.install` to `installCertmanager`.
+    1. Remove the `certmanager.install` setting completely.
+
+    Also review the cert-manager release notes:
+
+    - [Release Notes 1.12 - 1.16](https://cert-manager.io/docs/releases/upgrading/upgrading-1.12)
+    - [Release Notes 1.17](https://cert-manager.io/docs/releases/upgrading/upgrading-1.16-1.17)

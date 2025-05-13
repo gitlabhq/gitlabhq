@@ -2,13 +2,14 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+gitlab_dedicated: yes
 title: System hooks
 ---
 
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -40,6 +41,16 @@ requests and are triggered on the following events:
 - `user_rename`
 - `user_update_for_group`
 - `user_update_for_team`
+
+{{< alert type="note" >}}
+
+Some events follow a newer schema-based format. Instead of `event_name`, these events use `object_kind`, `action`,
+and `object_attributes`:
+
+- `gitlab_subscription_member_approval` (`action`: `enqueue`)
+- `gitlab_subscription_member_approvals` (`action`: `approve`, `deny`)
+
+{{< /alert >}}
 
 The triggers for most of these are self-explanatory, but `project_update` and `project_rename` require clarification:
 
@@ -860,19 +871,67 @@ X-Gitlab-Event: System Hook
 }
 ```
 
+## Events for member approval in subscription
+
+These events are triggered if [administrator approval for role promotions](settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions) is turned on.
+
+**Request header**:
+
+```plaintext
+X-Gitlab-Event: System Hook
+```
+
+**Member queued for promotion management:**
+
+```json
+{
+  "object_kind": "gitlab_subscription_member_approval",
+  "action": "enqueue",
+  "object_attributes": {
+    "new_access_level": 30,
+    "old_access_level": 10,
+    "existing_member_id": 123
+  },
+  "user_id": 42,
+  "requested_by_user_id": 99,
+  "promotion_namespace_id": 789,
+  "created_at": "2025-04-10T14:00:00Z",
+  "updated_at": "2025-04-10T14:05:00Z"
+}
+```
+
+**User approved on a billable role by instance admin:**
+
+```json
+{
+  "object_kind": "gitlab_subscription_member_approvals",
+  "action": "approve",
+  "object_attributes": {
+    "promotion_request_ids_that_failed_to_apply": [],
+    "status": "success"
+  },
+  "reviewed_by_user_id": 101,
+  "user_id": 42,
+  "updated_at": "2025-04-10T14:10:00Z"
+}
+```
+
+**User denied on a billable role by instance admin:**
+
+```json
+{
+"object_kind": "gitlab_subscription_member_approvals",
+"action": "deny",
+"object_attributes": {
+"status": "success"
+},
+"reviewed_by_user_id": 101,
+"user_id": 42,
+"updated_at": "2025-04-10T14:12:00Z"
+}
+```
+
 ## Local requests in system hooks
 
 [Requests to local network by system hooks](../security/webhooks.md) can be allowed
 or blocked by an administrator.
-
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->

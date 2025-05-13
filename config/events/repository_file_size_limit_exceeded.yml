@@ -1,0 +1,22 @@
+---
+description: Repository file viewer limit exceeded
+internal_events: true
+action: repository_file_size_limit_exceeded
+identifiers:
+  - project
+  - namespace
+  - user
+additional_properties:
+  label:
+    description: File type (e.g. js, json, sql, py, csv)
+  property:
+    description: File size (bytes)
+product_group: source_code
+product_categories:
+  - source_code_management
+milestone: '18.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189149
+tiers:
+  - free
+  - premium
+  - ultimate

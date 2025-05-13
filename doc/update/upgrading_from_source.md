@@ -167,11 +167,11 @@ extensions. For more information, see the
 
 {{< alert type="warning" >}}
 
-GitLab 17.0 requires PostgreSQL 14. GitLab 17.5 is compatible with up to PostgreSQL 16.
+GitLab 18.0 requires PostgreSQL 16.
 
 {{< /alert >}}
 
-To upgrade PostgreSQL, refer to its [documentation](https://www.postgresql.org/docs/11/upgrading.html).
+To upgrade PostgreSQL, refer to its [documentation](https://www.postgresql.org/docs/16/upgrading.html).
 
 ### Update the GitLab codebase
 

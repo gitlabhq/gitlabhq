@@ -13,17 +13,65 @@ title: GitLab Duo add-ons
 
 {{< /details >}}
 
-GitLab Duo add-ons extend your Premium or Ultimate subscription with AI-powered features.
+{{< history >}}
+
+- Changed to include GitLab Duo Core add-on in GitLab 18.0.
+
+{{< /history >}}
+
+GitLab Duo add-ons extend your Premium or Ultimate subscription with AI-native features.
 Use GitLab Duo to help accelerate development workflows, reduce repetitive coding tasks,
 and gain deeper insights across your projects.
 
-Purchase GitLab Duo seats and assign them to team members.
+Three add-ons are available: GitLab Duo Core, Pro, and Enterprise.
+
+Each add-on provides access to
+[a set of GitLab Duo features](../user/gitlab_duo/_index.md#summary-of-gitlab-duo-features).
+
+## GitLab Duo Core
+
+GitLab Duo Core is included automatically if you have:
+
+- GitLab 18.0 or later.
+- A Premium or Ultimate subscription.
+
+You only need to [turn on IDE features](../user/gitlab_duo/turn_on_off.md#change-gitlab-duo-core-availability)
+to start using GitLab Duo in your IDEs. No further action is needed.
+
+Users assigned the [Guest role](../administration/guest_users.md) do not have
+access to GitLab Duo Core.
+
+### GitLab Duo Core limits
+
+Usage limits, along with [the GitLab Terms of Service](https://about.gitlab.com/terms/),
+apply to Premium and Ultimate customers' use of the included Code Suggestions and GitLab Duo Chat features.
+
+GitLab will provide 30 days prior notice before enforcement of these limits take effect.
+At that time, organization administrators will have tools to monitor and manage consumption and will be able
+to purchase additional capacity.
+
+| Feature          | Requests per user per month |
+|------------------|-----------------------------|
+| Code Suggestions | 2,000                       |
+| GitLab Duo Chat  | 100                         |
+
+Limits do not apply to GitLab Duo Pro or Enterprise.
+
+## GitLab Duo Pro and Enterprise
+
+GitLab Duo Pro and Enterprise require you to purchase seats and assign them to team members.
 The seat-based model gives you control over feature access and cost management
 based on your specific team needs.
 
 ## Purchase GitLab Duo
 
-To purchase GitLab Duo Pro seats, you can use the Customers Portal, or you can contact the [GitLab Sales team](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/). To purchase GitLab Duo Enterprise, contact the [GitLab Sales team](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/).
+To purchase GitLab Duo Enterprise, contact the
+[GitLab Sales team](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/).
+
+To purchase seats for GitLab Duo Pro, use the Customers Portal or
+contact the [GitLab Sales team](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/).
+
+To use the portal:
 
 1. Sign in to the [GitLab Customers Portal](https://customers.gitlab.com/).
 1. On the subscription card, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
@@ -75,12 +123,12 @@ Prerequisites:
 
 Prerequisites:
 
-- You must purchase a GitLab Duo add-on, or have an active GitLab Duo trial.
+- You must purchase a GitLab Duo Pro or Enterprise add-on, or have an active GitLab Duo trial.
 - For GitLab Self-Managed and GitLab Dedicated:
   - The GitLab Duo Pro add-on is available in GitLab 16.8 and later.
   - The GitLab Duo Enterprise add-on is only available in GitLab 17.3 and later.
 
-After you purchase GitLab Duo, you can assign seats to users to grant access to the add-on.
+After you purchase GitLab Duo Pro or Enterprise, you can assign seats to users to grant access to the add-on.
 
 ### For GitLab.com
 
@@ -158,7 +206,7 @@ Prerequisites:
    - To remove users from seats, select **Remove seat**, then **Remove seats** to confirm.
 1. To the right of the user, turn on the toggle to assign a GitLab Duo seat.
 
-Administrators of GitLab Self-Managed instances can also use a [Rake task](../administration/raketasks/user_management.md#bulk-assign-users-to-gitlab-duo-pro) to assign or remove seats in bulk.
+Administrators of GitLab Self-Managed instances can also use a [Rake task](../administration/raketasks/user_management.md#bulk-assign-users-to-gitlab-duo) to assign or remove seats in bulk.
 
 #### Managing GitLab Duo seats with LDAP configuration
 
@@ -174,14 +222,28 @@ For more information, see [GitLab Duo add-on seat management with LDAP](../admin
 
 ## View assigned GitLab Duo users
 
+{{< history >}}
+
+- Last GitLab Duo activity field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455761) in GitLab 18.0.
+
+{{< /history >}}
+
 Prerequisites:
 
-- You must purchase a GitLab Duo add-on, or have an active GitLab Duo trial.
+- You must purchase a GitLab Duo Pro or Enterprise add-on, or have an active GitLab Duo trial.
 
-After you purchase GitLab Duo, you can assign seats to users to grant access to the add-on.
+After you purchase GitLab Duo Pro or Enterprise, you can assign seats to users to
+grant access to the add-on. Then you can view details of assigned GitLab Duo users.
 
-To retrieve the **Last Duo activity** date for assigned GitLab Duo users,
-you can also use the [GraphQL API](../api/graphql/reference/_index.md#addonuser) with the `AddOnUser` type.
+The GitLab Duo seat utilization page shows the following information for each user:
+
+- User's full name and username
+- Seat assignment status
+- Public email address: The user's email displayed on their public profile.
+- Last GitLab activity: The date the user last performed any action in GitLab.
+- Last GitLab Duo activity: The date the user last used GitLab Duo features. Refreshes on any GitLab Duo activity.
+
+These fields use data from the `AddOnUser` type in the [GraphQL API](../api/graphql/reference/_index.md#addonuser).
 
 ### For GitLab.com
 
@@ -242,7 +304,7 @@ Prerequisites:
 Prerequisites:
 
 - You must have an active paid Premium subscription.
-- You must have GitLab 16.8 or later and your instance must be able to [synchronize your subscription data](self_managed/_index.md#subscription-data-synchronization) with GitLab.
+- You must have GitLab 16.8 or later and your instance must be able to [synchronize your subscription data](manage_subscription.md#subscription-data-synchronization) with GitLab.
 - GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions might continue to work, however the experience may be degraded.
 
 1. Go to the [GitLab Duo Pro trial page](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?toggle=gitlab-duo-pro).
@@ -287,7 +349,7 @@ Prerequisites:
 Prerequisites:
 
 - You must have an active paid Ultimate subscription.
-- You must have GitLab 17.3 or later and your instance must be able to [synchronize your subscription data](self_managed/_index.md#subscription-data-synchronization) with GitLab.
+- You must have GitLab 17.3 or later and your instance must be able to [synchronize your subscription data](manage_subscription.md#subscription-data-synchronization) with GitLab.
 
 1. Go to the [GitLab Duo Enterprise trial page](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?toggle=gitlab-duo-enterprise).
 1. Complete the fields.

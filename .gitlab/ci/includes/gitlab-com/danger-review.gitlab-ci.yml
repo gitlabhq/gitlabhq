@@ -13,6 +13,7 @@ danger-review:
   extends:
     - .default-retry
     - .ruby-node-cache
+    - .failure_category_after_script
   # extending from .review:rules:danger doesn't work
   rules: !reference [.review:rules:danger, rules]
   variables:

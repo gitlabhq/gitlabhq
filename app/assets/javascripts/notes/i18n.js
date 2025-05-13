@@ -10,6 +10,7 @@ export const COMMENT_FORM = {
   wiki: __('Wiki'),
   internalComment: __('Add internal note'),
   issue: __('issue'),
+  incident: __('incident'),
   startThread: __('Start thread'),
   startInternalThread: __('Start internal thread'),
   mergeRequest: __('merge request'),

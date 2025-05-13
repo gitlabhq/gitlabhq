@@ -2,14 +2,18 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SlashCommands::Presenters::IssueMove do
+RSpec.describe Gitlab::SlashCommands::Presenters::IssueMove, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, developers: user) }
   let_it_be(:other_project) { create(:project, developers: user) }
   let_it_be(:old_issue, reload: true) { create(:issue, project: project) }
 
-  let(:new_issue) { Issues::MoveService.new(container: project, current_user: user).execute(old_issue, other_project) }
   let(:attachment) { subject[:attachments].first }
+  let(:new_issue) do
+    ::WorkItems::DataSync::MoveService.new(
+      work_item: old_issue, current_user: user, target_namespace: other_project.project_namespace
+    ).execute[:work_item]
+  end
 
   subject { described_class.new(new_issue).present(old_issue) }
 

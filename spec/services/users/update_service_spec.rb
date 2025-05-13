@@ -12,7 +12,7 @@ RSpec.describe Users::UpdateService, feature_category: :user_profile do
     it 'updates time preferences' do
       result = update_user(user, timezone: 'Europe/Warsaw', time_display_relative: true)
 
-      expect(result).to eq(status: :success)
+      expect(result).to include(status: :success)
       expect(user.reload.timezone).to eq('Europe/Warsaw')
       expect(user.time_display_relative).to eq(true)
     end
@@ -57,10 +57,15 @@ RSpec.describe Users::UpdateService, feature_category: :user_profile do
       expect(result[:message]).to eq("Emoji is not a valid emoji name")
     end
 
+    it 'returns the updated user' do
+      result = update_user(user, name: 'New name')
+      expect(result[:user]).to eq user.reload
+    end
+
     it 'updates user detail with provided attributes' do
       result = update_user(user, job_title: 'Backend Engineer')
 
-      expect(result).to eq(status: :success)
+      expect(result).to include(status: :success)
       expect(user.job_title).to eq('Backend Engineer')
     end
 

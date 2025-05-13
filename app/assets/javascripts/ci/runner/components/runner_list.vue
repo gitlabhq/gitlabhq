@@ -43,12 +43,21 @@ export default {
       },
     },
   },
-  inject: ['localMutations'],
+  inject: {
+    localMutations: {
+      default: null,
+    },
+  },
   props: {
     checkable: {
       type: Boolean,
       required: false,
       default: false,
+    },
+    fixed: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
     loading: {
       type: Boolean,
@@ -124,10 +133,10 @@ export default {
       :items="runners"
       :fields="fields"
       :tbody-tr-attr="runnerTrAttr"
+      :fixed="fixed"
       data-testid="runner-list"
       stacked="md"
       primary-key="id"
-      fixed
     >
       <template #head(checkbox)>
         <runner-bulk-delete-checkbox :runners="runners" />

@@ -5,13 +5,13 @@ import {
   GlTruncate,
   GlSearchBoxByType,
 } from '@gitlab/ui';
-import { mount, shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { stubComponent } from 'helpers/stub_component';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import eventHub from '~/projects/new/event_hub';
 import NewProjectUrlSelect from '~/projects/new/components/new_project_url_select.vue';
@@ -76,7 +76,7 @@ describe('NewProjectUrlSelect component', () => {
     search = '',
     queryResponse = data,
     provide = defaultProvide,
-    mountFn = shallowMount,
+    mountFn = shallowMountExtended,
   } = {}) => {
     mockQueryResponse = jest.fn().mockResolvedValue({ data: queryResponse });
     const requestHandlers = [[searchQuery, mockQueryResponse]];
@@ -102,7 +102,7 @@ describe('NewProjectUrlSelect component', () => {
   const findButtonLabel = () => wrapper.findComponent(GlButton);
   const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
   const findSelectedPath = () => wrapper.findComponent(GlTruncate);
-  const findHiddenNamespaceInput = () => wrapper.find(`[name="${defaultProvide.inputName}`);
+  const findHiddenNamespaceInput = () => wrapper.findByTestId(defaultProvide.inputName);
   const findAllListboxItems = () => wrapper.findAllComponents(GlListboxItem);
   const findToggleButton = () => findDropdown().findComponent(GlButton);
 
@@ -129,7 +129,7 @@ describe('NewProjectUrlSelect component', () => {
 
   describe('when namespaceId is provided', () => {
     beforeEach(() => {
-      wrapper = mountComponent({ mountFn: mount });
+      wrapper = mountComponent({ mountFn: mountExtended });
     });
 
     it('renders a dropdown with the given namespace full path as the text', () => {
@@ -159,7 +159,7 @@ describe('NewProjectUrlSelect component', () => {
     };
 
     beforeEach(() => {
-      wrapper = mountComponent({ provide, mountFn: mount });
+      wrapper = mountComponent({ provide, mountFn: mountExtended });
     });
 
     it("renders a dropdown with the user's namespace full path as the text", () => {
@@ -177,12 +177,12 @@ describe('NewProjectUrlSelect component', () => {
     });
 
     it('renders a hidden input with the selected namespace id', () => {
-      expect(findHiddenSelectedNamespaceInput().attributes('value')).toBe(undefined);
+      expect(Boolean(findHiddenSelectedNamespaceInput().attributes('value'))).toBe(false);
     });
   });
 
   it('renders expected dropdown items', async () => {
-    wrapper = mountComponent({ mountFn: mount });
+    wrapper = mountComponent({ mountFn: mountExtended });
 
     await showDropdown();
 
@@ -201,7 +201,7 @@ describe('NewProjectUrlSelect component', () => {
 
   it('does not render users section when user namespace id is not provided', async () => {
     wrapper = mountComponent({
-      mountFn: mount,
+      mountFn: mountExtended,
       provide: { ...defaultProvide, userNamespaceId: null },
     });
 
@@ -218,7 +218,7 @@ describe('NewProjectUrlSelect component', () => {
   describe('query fetching', () => {
     describe('on component mount', () => {
       it('does not fetch query', () => {
-        wrapper = mountComponent({ mountFn: mount });
+        wrapper = mountComponent({ mountFn: mountExtended });
 
         expect(mockQueryResponse).not.toHaveBeenCalled();
       });
@@ -226,7 +226,7 @@ describe('NewProjectUrlSelect component', () => {
 
     describe('on dropdown shown', () => {
       it('fetches query', async () => {
-        wrapper = mountComponent({ mountFn: mount });
+        wrapper = mountComponent({ mountFn: mountExtended });
 
         await showDropdown();
 
@@ -239,7 +239,7 @@ describe('NewProjectUrlSelect component', () => {
     const { fullPath, id } = data.currentUser.groups.nodes[1];
 
     beforeEach(async () => {
-      wrapper = mountComponent({ mountFn: mount });
+      wrapper = mountComponent({ mountFn: mountExtended });
 
       // Show dropdown to fetch projects
       await showDropdown();
@@ -278,14 +278,14 @@ describe('NewProjectUrlSelect component', () => {
       },
     };
 
-    wrapper = mountComponent({ search: 'no matches', queryResponse, mountFn: mount });
+    wrapper = mountComponent({ search: 'no matches', queryResponse, mountFn: mountExtended });
     await waitForPromises();
 
     expect(wrapper.find('[data-testid="listbox-no-results-text"]').text()).toBe('No matches found');
   });
 
   it('emits `update-visibility` event to update the visibility radio options', async () => {
-    wrapper = mountComponent({ mountFn: mount });
+    wrapper = mountComponent({ mountFn: mountExtended });
 
     const spy = jest.spyOn(eventHub, '$emit');
 
@@ -305,7 +305,7 @@ describe('NewProjectUrlSelect component', () => {
   });
 
   it('updates hidden input with selected namespace', async () => {
-    wrapper = mountComponent({ mountFn: mount });
+    wrapper = mountComponent({ mountFn: mountExtended });
 
     // Show dropdown to fetch projects
     await showDropdown();

@@ -10,7 +10,6 @@ export const DISCUSSION_SINGLE_DIFF_FAILED = s__(
 export const DIFF_FILE_HEADER = {
   optionsDropdownTitle: __('Options'),
   fileReviewLabel: __('Viewed'),
-  fileReviewTooltip: __('Collapses this file (only for you) until it’s changed again.'),
 };
 
 export const DIFF_FILE = {

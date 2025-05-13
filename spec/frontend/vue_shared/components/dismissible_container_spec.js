@@ -1,23 +1,31 @@
-import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
-import dismissibleContainer from '~/vue_shared/components/dismissible_container.vue';
+import DismissibleContainer from '~/vue_shared/components/dismissible_container.vue';
 
 describe('DismissibleContainer', () => {
   let wrapper;
-  const propsData = {
+
+  const defaultProps = {
     path: 'some/path',
     featureId: 'some-feature-id',
   };
 
+  const createComponent = ({ slots = {} } = {}) => {
+    wrapper = shallowMountExtended(DismissibleContainer, {
+      propsData: { ...defaultProps },
+      slots,
+    });
+  };
+
   describe('template', () => {
-    const findBtn = () => wrapper.find('[data-testid="close"]');
+    const findBtn = () => wrapper.findByTestId('close');
     let mockAxios;
 
     beforeEach(() => {
       mockAxios = new MockAdapter(axios);
-      wrapper = shallowMount(dismissibleContainer, { propsData });
+      createComponent();
     });
 
     afterEach(() => {
@@ -25,7 +33,7 @@ describe('DismissibleContainer', () => {
     });
 
     it('successfully dismisses', () => {
-      mockAxios.onPost(propsData.path).replyOnce(HTTP_STATUS_OK);
+      mockAxios.onPost(defaultProps.path).replyOnce(HTTP_STATUS_OK);
       const button = findBtn();
 
       button.trigger('click');
@@ -42,8 +50,7 @@ describe('DismissibleContainer', () => {
 
     it.each(Object.keys(slots))('renders the %s slot', (slot) => {
       const slotContent = slots[slot];
-      wrapper = shallowMount(dismissibleContainer, {
-        propsData,
+      createComponent({
         slots: {
           [slot]: `<span>${slotContent}</span>`,
         },

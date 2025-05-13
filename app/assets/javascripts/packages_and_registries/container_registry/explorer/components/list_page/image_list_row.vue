@@ -198,7 +198,6 @@ export default {
         </gl-skeleton-loader>
       </div>
     </template>
-    <template #right-primary> &nbsp; </template>
     <template #right-secondary>
       <publish-message
         :project-name="projectName"

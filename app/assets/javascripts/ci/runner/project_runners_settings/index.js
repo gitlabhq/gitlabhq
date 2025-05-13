@@ -2,11 +2,14 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { showAlertFromLocalStorage } from '../local_storage_alert/show_alert_from_local_storage';
 import ProjectRunnersSettingsApp from './project_runners_settings_app.vue';
 
 Vue.use(VueApollo);
 
 export const initProjectRunnersSettings = (selector = '#js-project-runners-settings') => {
+  showAlertFromLocalStorage();
+
   const el = document.querySelector(selector);
 
   if (!el) {
@@ -22,7 +25,7 @@ export const initProjectRunnersSettings = (selector = '#js-project-runners-setti
     allowRegistrationToken,
     registrationToken,
     newProjectRunnerPath,
-    groupFullPath,
+    projectFullPath,
   } = el.dataset;
 
   return new Vue({
@@ -35,7 +38,7 @@ export const initProjectRunnersSettings = (selector = '#js-project-runners-setti
           allowRegistrationToken: parseBoolean(allowRegistrationToken),
           registrationToken,
           newProjectRunnerPath,
-          groupFullPath,
+          projectFullPath,
         },
       });
     },

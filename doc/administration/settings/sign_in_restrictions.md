@@ -2,13 +2,14 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+gitlab_dedicated: yes
 title: Sign-in restrictions
 ---
 
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -76,6 +77,12 @@ Replace `<gitlab.example.com>` with your instance URL.
 For more information, see the [list of settings that can be accessed through API calls](../../api/settings.md).
 
 #### Use the Rails console to enable Admin Mode
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Open the [Rails console](../operations/rails_console.md) and run the following:
 
@@ -207,6 +214,12 @@ To add a help message to the sign-in page, [customize your sign-in and register 
 ## Troubleshooting
 
 ### Re-enable standard web sign-in form in rails console
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 Re-enable the standard username and password-based sign-in form if it was disabled as a [Sign-in restriction](#password-authentication-enabled).
 

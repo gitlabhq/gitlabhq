@@ -46,7 +46,7 @@ module Operations
 
     scope :new_version_only, -> { where(version: :new_version_flag) }
 
-    enum version: {
+    enum :version, {
       new_version_flag: 2
     }
 

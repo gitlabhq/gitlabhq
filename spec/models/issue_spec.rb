@@ -1976,22 +1976,4 @@ RSpec.describe Issue, feature_category: :team_planning do
       let(:field) { :description }
     end
   end
-
-  describe '#work_item_type_id=', :aggregate_failures do
-    let_it_be(:type1) do
-      create(:work_item_type, :non_default).tap do |type|
-        type.update!(old_id: type.id, id: type.id * 1000)
-      end
-    end
-
-    it 'fallbacks to work_item_types.old_id if passed' do
-      issue = build(:issue, project: reusable_project, work_item_type: nil)
-
-      expect(issue.work_item_type_id).to be_nil
-
-      issue.work_item_type_id = type1.old_id
-
-      expect(issue.work_item_type_id).to eq(type1.id)
-    end
-  end
 end

@@ -279,17 +279,22 @@ When the number exceeds the limit the page displays an alert and links to a pagi
 ## Number of pipelines per Git push
 
 When pushing multiple changes with a single Git push, like multiple tags or branches,
-only four tag or branch pipelines can be triggered. This limit prevents the accidental
+only four tag or branch pipelines can be triggered by default. This limit prevents the accidental
 creation of a large number of pipelines when using `git push --all` or `git push --mirror`.
 
-[Merge request pipelines](../ci/pipelines/merge_request_pipelines.md) are not limited.
+[Merge request pipelines](../ci/pipelines/merge_request_pipelines.md) are limited.
 If the Git push updates multiple merge requests at the same time, a merge request pipeline
-can trigger for every updated merge request.
+can trigger for every updated merge request before reaching the limit.
 
-To remove the limit so that any number of pipelines can trigger for a single Git push event,
-administrators can enable the `git_push_create_all_pipelines` [feature flag](feature_flags.md).
-Enabling this feature flag is not recommended, as it can cause excessive load on the GitLab
-instance if too many changes are pushed at once and a flood of pipelines are created accidentally.
+The default value is `4` for GitLab Self-Managed and GitLab.com.
+
+To change this limit on your GitLab Self-Managed instance, use the [Admin Area](settings/continuous_integration.md#pipeline-limit-per-git-push).
+
+{{< alert type="warning" >}}
+
+Increasing this limit is not recommended. It can cause excessive load on your GitLab instance if many changes are pushed simultaneously, potentially creating a flood of pipelines.
+
+{{< /alert >}}
 
 ## Retention of activity history
 
@@ -518,17 +523,21 @@ Set the limit to `0` to disable it.
 
 ### Limit pipeline hierarchy size
 
-A [pipeline hierarchy](../ci/pipelines/downstream_pipelines.md) can
-contain up to 1000 downstream pipelines by default. This limit is checked when creating new
-downstream pipelines. If a new downstream pipeline would cause the hierarchy to exceed this
-limit, the pipeline creation fails.
+By default, a [pipeline hierarchy](../ci/pipelines/downstream_pipelines.md) can contain up to 1000 downstream pipelines.
+When this limit is exceeded, pipeline creation fails with the error `downstream pipeline tree is too large`.
 
-Set the limit to `0` to disable it. Defaults to `1000` on GitLab Self-Managed.
+{{< alert type="warning" >}}
 
-To set this limit to `2000` on your instance, run the following command in the GitLab Rails console:
+Increasing this limit is not recommended. The default limit protects your GitLab instance from excessive resource consumption, potential pipeline recursion, and database overload.
+
+Instead of increasing the limit, restructure your CI/CD configuration by splitting large pipeline hierarchies into smaller pipelines or using parallel jobs.
+
+{{< /alert >}}
+
+To modify this limit on your instance, run the following command in the GitLab Rails console:
 
 ```ruby
-Plan.default.actual_limits.update!(pipeline_hierarchy_size: 2000)
+Plan.default.actual_limits.update!(pipeline_hierarchy_size: 500)
 ```
 
 You can also set this limit by using the GitLab UI in the [Admin area](settings/continuous_integration.md#set-cicd-limits).
@@ -694,7 +703,7 @@ To update the `default` plan of one of these limits on a GitLab Self-Managed ins
 Job artifacts defined with [`artifacts:reports`](../ci/yaml/_index.md#artifactsreports)
 that are uploaded by the runner are rejected if the file size exceeds the maximum
 file size limit. The limit is determined by comparing the project's
-[maximum artifact size setting](settings/continuous_integration.md#maximum-artifacts-size)
+[maximum artifact size setting](settings/continuous_integration.md#set-maximum-artifacts-size)
 with the instance limit for the given artifact type, and choosing the smaller value.
 
 Limits are set in megabytes, so the smallest possible value that can be defined is `1 MB`.
@@ -969,6 +978,43 @@ To set this limit to 100 KB on a GitLab Self-Managed instance, run the following
 Plan.default.actual_limits.update!(ci_job_annotations_size: 100.kilobytes)
 ```
 
+### Maximum database partition size for CI/CD tables
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189131) in GitLab 18.0.
+
+{{< /history >}}
+
+The maximum amount of disk space, in bytes, that can be used by a partition of a partitioned table,
+before new partitions are automatically created. Defaults to 100 GB.
+
+You can change this limit by using the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
+To change the limit, update `ci_partitions_size_limit` with the new value. For example, to set it to 20 GB:
+
+```ruby
+ApplicationSetting.update(ci_partitions_size_limit: 20.gigabytes)
+```
+
+### Maximum config value for automatic pipeline cleanup
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189191) in GitLab 18.0.
+
+{{< /history >}}
+
+Configures the upper limit for [CI/CD pipeline expiry time](../ci/pipelines/settings.md#automatic-pipeline-cleanup).
+Defaults to 1 year.
+
+You can change this limit by using the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session).
+To change the limit, update `ci_delete_pipelines_in_seconds_limit_human_readable` with the new value.
+For example, to set it to 3 years:
+
+```ruby
+ApplicationSetting.update(ci_delete_pipelines_in_seconds_limit_human_readable: '3 years')
+```
+
 ## Instance monitoring and metrics
 
 ### Limit inbound incident management alerts
@@ -1049,7 +1095,7 @@ An upper and lower limit applies to each of these:
 
 The lower limits result in additional diffs being collapsed. The higher limits
 prevent any more changes from rendering. For more information about these limits,
-[read the development documentation](../development/merge_request_concepts/diffs/_index.md#diff-limits).
+read the GitLab development documentation about working with diffs.
 
 ### Diff version limit
 
@@ -1092,9 +1138,9 @@ Setting a limit helps reduce the memory usage of the indexing processes and
 the overall index size. This value defaults to `1024 KiB` (1 MiB) as any
 text files larger than this likely aren't meant to be read by humans.
 
-You must set a limit, as unlimited file sizes aren't supported. Setting this
+You must set a limit because unlimited file sizes aren't supported. Setting this
 value to be greater than the amount of memory on GitLab Sidekiq nodes causes
-the GitLab Sidekiq nodes to run out of memory, as this amount of memory
+the GitLab Sidekiq nodes to run out of memory because this amount of memory
 is pre-allocated during indexing.
 
 ### Maximum field length
@@ -1204,7 +1250,7 @@ The default maximum file size for a package that's uploaded to the [GitLab packa
 The [maximum file sizes on GitLab.com](../user/gitlab_com/_index.md#package-registry-limits)
 might be different.
 
-To set these limits for a GitLab Self-Managed instance, you can do it [through the **Admin** area](settings/continuous_integration.md#package-file-size-limits)
+To set these limits for a GitLab Self-Managed instance, you can do it [through the **Admin** area](settings/continuous_integration.md#set-package-file-size-limits)
 or run the following in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
 
@@ -1271,7 +1317,7 @@ In addition to application-based limits, GitLab.com is configured to use Cloudfl
 
 ## Container Repository tag deletion limit
 
-Container repository tags are in the container registry and, as such, each tag deletion triggers network requests to the container registry. Because of this, we limit the number of tags that a single API call can delete to 20.
+Container repository tags are in the container registry, so each tag deletion triggers network requests to the container registry. Because of this, we limit the number of tags that a single API call can delete to 20.
 
 ## Project-level Secure Files API limits
 

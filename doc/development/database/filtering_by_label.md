@@ -37,10 +37,10 @@ ORDER BY
 LIMIT 20 OFFSET 0
 ```
 
-In particular, note that:
+Specifically:
 
-1. We `GROUP BY issues.id` so that we can ...
-1. Use the `HAVING (COUNT(DISTINCT labels.title) = 2)` condition to ensure that
+1. `GROUP BY issues.id` groups the results by issues.
+1. `HAVING (COUNT(DISTINCT labels.title) = 2)` ensures that
    all matched issues have both labels.
 
 This is more complicated than is ideal. It makes the query construction more
@@ -107,7 +107,7 @@ and `epics`: `issues.label_ids` would be an array column of label IDs, and
 `issues.label_titles` would be an array of label titles.
 
 These array columns can be complemented with
-[GIN indexes](https://www.postgresql.org/docs/11/gin-intro.html) to improve
+[GIN indexes](https://www.postgresql.org/docs/16/gin-intro.html) to improve
 matching.
 
 ### Attempt B1: store label IDs for each object

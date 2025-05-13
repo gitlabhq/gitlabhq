@@ -81,7 +81,7 @@ With GitLab-managed Kubernetes resources, you can:
 
 - Set up environments securely without manual intervention.
 - Control resource creation and access without giving developers administrative cluster permissions.
-- Provide self-service capabilities for [developers](https://handbook.gitlab.com/handbook/product/personas/#sasha-software-developer) when they create a new project or environment.
+- Provide self-service capabilities for developers when they create a new project or environment.
 - Allow developers to deploy testing and development versions in dedicated or shared namespaces.
 
 Prerequisites:

@@ -89,40 +89,7 @@
             = s_("Profiles|Enter how your name is pronounced to help people address you correctly.")
         = render_if_exists 'profiles/extra_settings', form: f
         = render_if_exists 'user_settings/profiles/email_settings', form: f
-        .form-group.gl-form-group
-          = f.label :skype
-          = f.text_field :skype, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|username")
-        .form-group.gl-form-group
-          = f.label :linkedin
-          = f.text_field :linkedin,
-            class: 'gl-form-input form-control gl-md-form-input-lg',
-            placeholder: "profilename"
-          .form-text.gl-text-subtle
-            = s_("Profiles|Your LinkedIn profile name from linkedin.com/in/profilename")
-        .form-group.gl-form-group
-          = f.label :twitter, _('X (formerly Twitter)')
-          = f.text_field :twitter, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|@username")
-        .form-group.gl-form-group
-          - external_accounts_docs_link = safe_format(s_('Profiles|Your Discord user ID.'))
-          - min_discord_length = 17
-          - max_discord_length = 20
-          = f.label :discord
-          = f.text_field :discord,
-            class: 'gl-form-input form-control gl-md-form-input-lg js-validate-length',
-            placeholder: s_("Profiles|User ID"),
-            data: { min_length: min_discord_length,
-            min_length_message: s_('Profiles|Discord ID is too short (minimum is %{min_length} characters).') % { min_length: min_discord_length },
-            max_length: max_discord_length,
-            max_length_message: s_('Profiles|Discord ID is too long (maximum is %{max_length} characters).') % { max_length: max_discord_length },
-            allow_empty: true}
-          .form-text.gl-text-subtle
-            = external_accounts_docs_link
-        .form-group.gl-form-group
-          = f.label :bluesky
-          = f.text_field :bluesky, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: "did:plc:ewvi7nxzyoun6zhxrhs64oiz"
-        .form-group.gl-form-group
-          = f.label :mastodon
-          = f.text_field :mastodon, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: "@username@server_name"
+
         .form-group.gl-form-group
           = f.label :website_url, s_('Profiles|Website URL')
           = f.text_field :website_url, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|https://website.com")
@@ -153,7 +120,44 @@
           = f.text_area :bio, class: 'gl-form-input gl-form-textarea form-control', rows: 4, maxlength: 250
           .form-text.gl-text-subtle
             = s_("Profiles|Tell us about yourself in fewer than 250 characters.")
-        .gl-border-t.gl-pt-6
+        = render ::Layouts::CrudComponent.new(s_('Profiles|Social accounts')) do |c|
+          - c.with_body do
+            %ul.content-list
+              %li.form-group.gl-form-group
+                = f.label :skype
+                = f.text_field :skype, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|username")
+              %li.form-group.gl-form-group
+                = f.label :linkedin
+                = f.text_field :linkedin,
+                  class: 'gl-form-input form-control gl-md-form-input-lg',
+                  placeholder: "profilename"
+                .form-text.gl-text-subtle
+                  = s_("Profiles|Your LinkedIn profile name from linkedin.com/in/profilename")
+              %li.form-group.gl-form-group
+                = f.label :twitter, _('X (formerly Twitter)')
+                = f.text_field :twitter, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|@username")
+              %li.form-group.gl-form-group
+                - external_accounts_docs_link = safe_format(s_('Profiles|Your Discord user ID.'))
+                - min_discord_length = 17
+                - max_discord_length = 20
+                = f.label :discord
+                = f.text_field :discord,
+                  class: 'gl-form-input form-control gl-md-form-input-lg js-validate-length',
+                  placeholder: s_("Profiles|User ID"),
+                  data: { min_length: min_discord_length,
+                  min_length_message: s_('Profiles|Discord ID is too short (minimum is %{min_length} characters).') % { min_length: min_discord_length },
+                  max_length: max_discord_length,
+                  max_length_message: s_('Profiles|Discord ID is too long (maximum is %{max_length} characters).') % { max_length: max_discord_length },
+                  allow_empty: true}
+                .form-text.gl-text-subtle
+                  = external_accounts_docs_link
+              %li.form-group.gl-form-group
+                = f.label :bluesky
+                = f.text_field :bluesky, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: "did:plc:ewvi7nxzyoun6zhxrhs64oiz"
+              %li.form-group.gl-form-group
+                = f.label :mastodon
+                = f.text_field :mastodon, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: "@username@server_name"
+        .gl-pt-6
           %fieldset.form-group.gl-form-group
             %legend.col-form-label
               = _('Private profile')

@@ -12,6 +12,8 @@ RSpec.describe Packages::Generic::CreatePackageFileService, feature_category: :p
 
   let(:build) { double('build', pipeline: pipeline) }
 
+  let(:service) { described_class.new(project, user, params) }
+
   describe '#execute' do
     let_it_be(:package) { create(:generic_package, project: project) }
 
@@ -39,7 +41,7 @@ RSpec.describe Packages::Generic::CreatePackageFileService, feature_category: :p
       }
     end
 
-    subject(:execute_service) { described_class.new(project, user, params).execute }
+    subject(:response) { service.execute }
 
     before do
       FileUtils.touch(temp_file)
@@ -52,18 +54,26 @@ RSpec.describe Packages::Generic::CreatePackageFileService, feature_category: :p
     end
 
     shared_examples 'allows creating the file' do
-      it { expect { execute_service }.to change { project.package_files.count }.by(1) }
+      it_behaves_like 'returning a success service response'
+
+      it { expect { response }.to change { project.package_files.count }.by(1) }
     end
 
     shared_examples 'does not allow duplicates' do
-      it 'raises a duplicate package error' do
-        expect { execute_service }.to raise_error(::Packages::DuplicatePackageError)
-          .and change { project.package_files.count }.by(0)
+      it_behaves_like 'returning an error service response', message: 'Packages::DuplicatePackageError'
+
+      it { is_expected.to have_attributes reason: :package_file_already_exists }
+
+      it 'does not add new package file' do
+        expect { response }.to not_change { project.package_files.count }
+                           .and not_change { project.packages.count }
       end
     end
 
+    it_behaves_like 'returning a success service response'
+
     it 'creates package file', :aggregate_failures do
-      expect { execute_service }.to change { package.package_files.count }.by(1)
+      expect { response }.to change { package.package_files.count }.by(1)
         .and change { Packages::PackageFileBuildInfo.count }.by(1)
 
       package_file = package.package_files.last
@@ -81,7 +91,7 @@ RSpec.describe Packages::Generic::CreatePackageFileService, feature_category: :p
       let(:package_params) { super().merge(status: 'hidden') }
 
       it 'updates an existing packages status' do
-        expect { execute_service }.to change { package.package_files.count }.by(1)
+        expect { response }.to change { package.package_files.count }.by(1)
           .and change { Packages::PackageFileBuildInfo.count }.by(1)
 
         package_file = package.package_files.last
@@ -91,12 +101,14 @@ RSpec.describe Packages::Generic::CreatePackageFileService, feature_category: :p
       end
     end
 
-    it_behaves_like 'assigns build to package file'
+    it_behaves_like 'assigns build to package file' do
+      subject { super().payload.fetch(:package_file) }
+    end
 
     context 'with existing package' do
       let_it_be(:duplicate_file) { create(:package_file, package: package, file_name: file_name) }
 
-      it { expect { execute_service }.to change { project.package_files.count }.by(1) }
+      it { expect { response }.to change { project.package_files.count }.by(1) }
 
       context 'when duplicates are not allowed' do
         before do
@@ -167,6 +179,16 @@ RSpec.describe Packages::Generic::CreatePackageFileService, feature_category: :p
             end.to change { package.build_infos.count }.by(1)
           end
         end
+      end
+    end
+
+    context 'when unexpected error is raised' do
+      before do
+        allow(service).to receive(:create_package_file).and_raise(StandardError, 'Custom error')
+      end
+
+      it 'returns error instead of service response' do
+        expect { response }.to raise_error(StandardError, 'Custom error')
       end
     end
   end

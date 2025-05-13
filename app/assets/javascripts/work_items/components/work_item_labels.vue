@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlDisclosureDropdown, GlLabel } from '@gitlab/ui';
 import { difference, unionBy } from 'lodash';
+import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import { __, n__, s__ } from '~/locale';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
@@ -14,15 +15,12 @@ import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
 import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
-import { findLabelsWidget, newWorkItemId, newWorkItemFullPath } from '../utils';
-
-function formatLabelForListbox(label) {
-  return {
-    text: label.title || label.text,
-    value: label.id || label.value,
-    color: label.color,
-  };
-}
+import {
+  findLabelsWidget,
+  formatLabelForListbox,
+  newWorkItemId,
+  newWorkItemFullPath,
+} from '../utils';
 
 export default {
   components: {
@@ -104,18 +102,23 @@ export default {
     isLoadingLabels() {
       return this.$apollo.queries.searchLabels.loading;
     },
+    fuzzyFilteredLabels() {
+      return this.searchTerm
+        ? fuzzaldrinPlus.filter(this.searchLabels, this.searchTerm, { key: ['title'] })
+        : this.searchLabels;
+    },
     listboxItems() {
-      const formattedSearchLabels = this.searchLabels.map(formatLabelForListbox);
+      const listboxLabels = this.fuzzyFilteredLabels.map(formatLabelForListbox);
 
       if (this.searchTerm || this.widgetLabelsIds.length === 0) {
-        return formattedSearchLabels;
+        return listboxLabels;
       }
 
       const selectedLabels = this.labelsToShowAtTopOfListbox.map(formatLabelForListbox);
 
       return [
         { text: __('Selected'), options: selectedLabels },
-        { text: __('All'), textSrOnly: true, options: formattedSearchLabels },
+        { text: __('All'), textSrOnly: true, options: listboxLabels },
       ];
     },
     labelsWidget() {

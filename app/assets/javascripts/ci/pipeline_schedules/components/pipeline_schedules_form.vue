@@ -16,7 +16,6 @@ import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone_dropdown.vue';
 import IntervalPatternInput from '~/pages/projects/pipeline_schedules/shared/components/interval_pattern_input.vue';
 import PipelineInputsForm from '~/ci/common/pipeline_inputs/pipeline_inputs_form.vue';
-import PipelineVariablesPermissionsMixin from '~/ci/mixins/pipeline_variables_permissions_mixin';
 import createPipelineScheduleMutation from '../graphql/mutations/create_pipeline_schedule.mutation.graphql';
 import updatePipelineScheduleMutation from '../graphql/mutations/update_pipeline_schedule.mutation.graphql';
 import getPipelineSchedulesQuery from '../graphql/queries/get_pipeline_schedules.query.graphql';
@@ -38,7 +37,7 @@ export default {
     RefSelector,
     TimezoneDropdown,
   },
-  mixins: [glFeatureFlagsMixin(), PipelineVariablesPermissionsMixin],
+  mixins: [glFeatureFlagsMixin()],
   inject: [
     'projectPath',
     'projectId',
@@ -46,7 +45,6 @@ export default {
     'dailyLimit',
     'settingsLink',
     'schedulesPath',
-    'userRole',
   ],
   props: {
     timezoneData: {
@@ -59,6 +57,10 @@ export default {
       default: '',
     },
     editing: {
+      type: Boolean,
+      required: true,
+    },
+    canSetPipelineVariables: {
       type: Boolean,
       required: true,
     },
@@ -296,6 +298,7 @@ export default {
           :value="cronTimezone"
           :timezone-data="timezoneData"
           name="schedule-timezone"
+          required
           @input="setTimezone"
         />
       </gl-form-group>
@@ -332,7 +335,7 @@ export default {
       />
       <!--Variable List-->
       <pipeline-variables-form-group
-        v-if="canViewPipelineVariables"
+        v-if="canSetPipelineVariables"
         :initial-variables="variables"
         :editing="editing"
         @update-variables="updatedVariables = $event"

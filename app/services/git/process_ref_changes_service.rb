@@ -2,8 +2,6 @@
 
 module Git
   class ProcessRefChangesService < BaseService
-    PIPELINE_PROCESS_LIMIT = 4
-
     def execute
       changes = params[:changes]
 
@@ -70,11 +68,13 @@ module Git
     end
 
     def under_process_limit?(change)
-      change[:index] < process_limit || Feature.enabled?(:git_push_create_all_pipelines, project)
+      return true if process_limit == 0 # 0 allows for unlimited pipelines
+
+      change[:index] < process_limit
     end
 
     def process_limit
-      PIPELINE_PROCESS_LIMIT
+      Gitlab::CurrentSettings.git_push_pipeline_limit
     end
 
     def warn_if_over_process_limit(changes)

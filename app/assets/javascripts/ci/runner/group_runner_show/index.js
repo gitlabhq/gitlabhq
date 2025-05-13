@@ -17,7 +17,7 @@ export const initGroupRunnerShow = (selector = '#js-group-runner-show') => {
     return null;
   }
 
-  const { runnerId, runnersPath, editGroupRunnerPath } = el.dataset;
+  const { runnerId, runnersPath, editPath } = el.dataset;
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
@@ -31,7 +31,7 @@ export const initGroupRunnerShow = (selector = '#js-group-runner-show') => {
         props: {
           runnerId,
           runnersPath,
-          editGroupRunnerPath,
+          editPath,
         },
       });
     },

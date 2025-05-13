@@ -27,6 +27,7 @@ const plugins = [
   '@babel/plugin-transform-class-static-block',
 ];
 
+const env = {};
 // Jest is running in node environment
 const isJest = Boolean(process.env.JEST_WORKER_ID);
 if (isJest) {
@@ -40,6 +41,22 @@ if (isJest) {
       },
     ],
   ];
+} else {
+  env.istanbul = {
+    plugins: [
+      [
+        'istanbul',
+        {
+          extension: ['.js', '.vue', '.mjs', '.cjs'],
+        },
+      ],
+    ],
+  };
 }
 
-module.exports = { presets, plugins, sourceType: 'unambiguous' };
+module.exports = {
+  presets,
+  plugins,
+  sourceType: 'unambiguous',
+  env,
+};

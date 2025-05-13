@@ -15,7 +15,7 @@ describe('RunnerActionsCell', () => {
   const findRunnerPauseBtn = () => wrapper.findComponent(RunnerPauseButton);
   const findDeleteBtn = () => wrapper.findComponent(RunnerDeleteButton);
 
-  const createComponent = ({ runner = {}, ...props } = {}) => {
+  const createComponent = ({ runner = {}, ...props } = {}, options) => {
     wrapper = shallowMountExtended(RunnerActionsCell, {
       propsData: {
         editUrl: mockRunner.editAdminUrl,
@@ -28,6 +28,7 @@ describe('RunnerActionsCell', () => {
         },
         ...props,
       },
+      ...options,
     });
   };
 
@@ -35,7 +36,16 @@ describe('RunnerActionsCell', () => {
     it('Displays the runner edit link with the correct href', () => {
       createComponent();
 
+      expect(findEditBtn().props('size')).toBe('medium');
       expect(findEditBtn().attributes('href')).toBe(mockRunner.editAdminUrl);
+    });
+
+    it('Displays button with size prop', () => {
+      createComponent({
+        size: 'small',
+      });
+
+      expect(findEditBtn().props('size')).toBe('small');
     });
 
     it('Does not render the runner edit link when user cannot update', () => {
@@ -64,7 +74,16 @@ describe('RunnerActionsCell', () => {
     it('Renders a compact pause button', () => {
       createComponent();
 
+      expect(findRunnerPauseBtn().props('size')).toBe('medium');
       expect(findRunnerPauseBtn().props('compact')).toBe(true);
+    });
+
+    it('Displays button with size prop', () => {
+      createComponent({
+        size: 'small',
+      });
+
+      expect(findRunnerPauseBtn().props('size')).toBe('small');
     });
 
     it('Does not render the runner pause button when user cannot update', () => {
@@ -85,7 +104,16 @@ describe('RunnerActionsCell', () => {
     it('Renders a compact delete button', () => {
       createComponent();
 
+      expect(findDeleteBtn().props('size')).toBe('medium');
       expect(findDeleteBtn().props('compact')).toBe(true);
+    });
+
+    it('Displays button with size prop', () => {
+      createComponent({
+        size: 'small',
+      });
+
+      expect(findDeleteBtn().props('size')).toBe('small');
     });
 
     it('Passes runner data to delete button', () => {
@@ -129,6 +157,21 @@ describe('RunnerActionsCell', () => {
       });
 
       expect(findDeleteBtn().exists()).toBe(false);
+    });
+  });
+
+  describe('Slot', () => {
+    it('shows additional content', () => {
+      createComponent(
+        {},
+        {
+          slots: {
+            default: '<div>actions</div>',
+          },
+        },
+      );
+
+      expect(wrapper.text()).toContain('actions');
     });
   });
 });

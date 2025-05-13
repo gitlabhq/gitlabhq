@@ -108,6 +108,7 @@ RSpec.describe BoardsHelper do
         allow(helper).to receive(:can?).with(user, :create_saved_replies, project).and_return(false)
         allow(helper).to receive(:can?).with(user, :create_work_item, project.group).and_return(false)
         allow(helper).to receive(:can?).with(user, :bulk_admin_epic, project).and_return(false)
+        allow(helper).to receive(:can?).with(user, :admin_issue, project).and_return(false)
         allow(helper).to receive(:can?).with(user, :create_projects, project.group).and_return(false)
       end
 
@@ -167,6 +168,7 @@ RSpec.describe BoardsHelper do
         allow(helper).to receive(:can?).with(user, :create_saved_replies, base_group).and_return(false)
         allow(helper).to receive(:can?).with(user, :create_work_item, base_group).and_return(false)
         allow(helper).to receive(:can?).with(user, :bulk_admin_epic, base_group).and_return(false)
+        allow(helper).to receive(:can?).with(user, :admin_issue, base_group).and_return(false)
         allow(helper).to receive(:can?).with(user, :create_projects, base_group).and_return(false)
       end
 

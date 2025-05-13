@@ -69,10 +69,6 @@ describe('InstallAgentModal', () => {
       expect(findHelmExternalLinkIcon().props()).toMatchObject({ name: 'external-link', size: 12 });
     });
 
-    it('shows advanced agent installation instructions', () => {
-      expect(wrapper.text()).toContain(I18N_AGENT_TOKEN.advancedInstallTitle);
-    });
-
     it('shows agent token as an input value', () => {
       expect(findInput().props('value')).toBe(agentToken);
     });

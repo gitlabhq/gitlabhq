@@ -1,5 +1,5 @@
 - title: "Container Scanning default severity threshold set to `medium`"
-  removal_milestone: "18.0"
+  removal_milestone: "Cancelled"
   announcement_milestone: "17.9"
   breaking_change: true
   window: 1  # Can be 1, 2, or 3 - The window when the breaking change will be deployed on GitLab.com

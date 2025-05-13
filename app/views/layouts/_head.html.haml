@@ -65,10 +65,13 @@
 
   = webpack_bundle_tag 'super_sidebar'
 
+  - if ENV['BABEL_ENV'] == 'istanbul'
+    = webpack_bundle_tag 'coverage_persistence'
+
   - if vite_enabled?
     = render 'layouts/vite_main'
   - else
-    = webpack_controller_bundle_tags
+    = webpack_controller_bundle_tags(@js_action_name)
 
   = yield :page_specific_javascripts
 

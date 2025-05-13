@@ -79,10 +79,11 @@ RSpec.describe Emails::Imports, feature_category: :importers do
 
         it 'sends success email with skipped rows info' do
           is_expected.to have_subject("#{group.name} | Placeholder reassignments completed successfully")
-          is_expected.to have_content("Items assigned to placeholder users were reassigned to users in #{group.name}")
-          is_expected.to have_content('1 placeholder user matched to user.')
-          is_expected.to have_content('1 placeholder user skipped.')
-          is_expected.not_to have_content('placeholder users not matched to users.')
+          is_expected.to have_content(
+            "Items assigned to placeholder users have been reassigned to users in #{group.name}")
+          is_expected.to have_content('1 placeholder user has been matched to a user.')
+          is_expected.to have_content('1 placeholder user has been skipped.')
+          is_expected.not_to have_content('placeholder users have not been matched to users.')
           is_expected.to have_body_text(group_group_members_url(group, tab: 'placeholders'))
         end
       end
@@ -98,11 +99,10 @@ RSpec.describe Emails::Imports, feature_category: :importers do
           is_expected.to have_subject("#{group.name} | Placeholder reassignments completed with errors")
           is_expected.to have_content('Placeholder reassignments completed with errors')
           is_expected.to have_content(
-            "Items assigned to placeholder users were reassigned to users in #{group.name}"
-          )
-          is_expected.to have_content('689 placeholder users matched to users.')
-          is_expected.to have_content('1 placeholder user not matched to user.')
-          is_expected.to have_content('25 placeholder users skipped.')
+            "Items assigned to placeholder users have been reassigned to users in #{group.name}")
+          is_expected.to have_content('689 placeholder users have been matched to users.')
+          is_expected.to have_content('1 placeholder user has not been matched to a user.')
+          is_expected.to have_content('25 placeholder users have been skipped.')
           is_expected.to have_body_text(group_group_members_url(group, tab: 'placeholders', status: 'failed'))
         end
       end
@@ -115,11 +115,10 @@ RSpec.describe Emails::Imports, feature_category: :importers do
           is_expected.to have_subject("#{group.name} | Placeholder reassignments completed with errors")
           is_expected.to have_content('Placeholder reassignments completed with errors')
           is_expected.to have_content(
-            "Items assigned to placeholder users were reassigned to users in #{group.name}"
-          )
-          is_expected.to have_content('689 placeholder users matched to users.')
-          is_expected.to have_content('362 placeholder users not matched to users.')
-          is_expected.not_to have_content('placeholder users skipped.')
+            "Items assigned to placeholder users have been reassigned to users in #{group.name}")
+          is_expected.to have_content('689 placeholder users have been matched to users.')
+          is_expected.to have_content('362 placeholder users have not been matched to users.')
+          is_expected.not_to have_content('placeholder users have been skipped.')
           is_expected.to have_body_text(group_group_members_url(group, tab: 'placeholders', status: 'failed'))
         end
       end

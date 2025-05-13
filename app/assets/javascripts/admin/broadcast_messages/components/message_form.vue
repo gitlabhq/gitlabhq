@@ -9,6 +9,7 @@ import {
   GlFormInput,
   GlFormSelect,
   GlFormTextarea,
+  GlModal,
 } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { s__, __ } from '~/locale';
@@ -43,6 +44,7 @@ export default {
     GlFormInput,
     GlFormSelect,
     GlFormTextarea,
+    GlModal,
   },
   directives: {
     SafeHtml,
@@ -85,6 +87,12 @@ export default {
     showInCliDescription: s__(
       'BroadcastMessages|Show the broadcast message in a command-line interface as a Git remote response',
     ),
+    confirm: {
+      title: s__('BroadcastMessages|Security Notice'),
+      text: s__(
+        'BroadcastMessages|Broadcast messages must not contain sensitive information. All broadcast messages are publicly accessible through the API, regardless of path or role scoping.',
+      ),
+    },
   },
   messageThemes: THEMES,
   messageTypes: TYPES,
@@ -238,14 +246,31 @@ export default {
       }
       return TARGET_ALL;
     },
+    confirmSubmit() {
+      this.$refs.confirmModal.show();
+    },
   },
   safeHtmlConfig: {
     ADD_TAGS: ['use'],
   },
+  modal: {
+    actionPrimary: {
+      text: s__('BroadcastMessages|I understand and confirm'),
+      attributes: {
+        variant: 'confirm',
+      },
+    },
+    actionSecondary: {
+      text: __('Cancel'),
+      attributes: {
+        variant: 'default',
+      },
+    },
+  },
 };
 </script>
 <template>
-  <gl-form @submit.prevent="onSubmit">
+  <gl-form @submit.prevent="confirmSubmit">
     <gl-broadcast-message
       class="gl-my-6"
       :type="type"
@@ -366,5 +391,15 @@ export default {
         {{ $options.i18n.cancel }}
       </gl-button>
     </div>
+
+    <gl-modal
+      ref="confirmModal"
+      modal-id="confirm-modal"
+      :title="$options.i18n.confirm.title"
+      :action-primary="$options.modal.actionPrimary"
+      :action-secondary="$options.modal.actionSecondary"
+      @primary="onSubmit"
+      >{{ $options.i18n.confirm.text }}</gl-modal
+    >
   </gl-form>
 </template>

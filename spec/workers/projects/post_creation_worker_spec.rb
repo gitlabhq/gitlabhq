@@ -22,6 +22,18 @@ RSpec.describe Projects::PostCreationWorker, feature_category: :source_code_mana
         end
       end
 
+      context 'when find_or_initialize_integration returns nil' do
+        before do
+          allow_next_instance_of(Project) do |instance|
+            allow(instance).to receive(:find_or_initialize_integration).and_return(nil)
+          end
+        end
+
+        it 'does not create prometheus integration' do
+          expect { subject }.not_to change { Integration.count }
+        end
+      end
+
       context 'when project has access to shared integration' do
         context 'Prometheus application is shared via group cluster' do
           let(:project) { create(:project, group: group) }

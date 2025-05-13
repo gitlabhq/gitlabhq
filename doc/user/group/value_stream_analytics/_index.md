@@ -43,26 +43,20 @@ Value stream analytics offers different features at the project and group level 
 - On GitLab Free, value stream analytics does not aggregate data. It queries the database directly where the date range filter is applied to the creation date of issues and merge request. You can view value stream analytics with pre-defined default stages.
 - On GitLab Premium, value stream analytics aggregates data and applies the date range filter on the end event. You can also create, edit, and delete value streams.
 
-|Feature|Group level (licensed)|Project level (licensed)|Project level (FOSS)|
-|-|-|-|-|
-|Create custom value streams|Yes|Yes|no, only one value stream (default) is present with the default stages|
-|Create custom stages|Yes|Yes|No|
-|Filtering (for example, by author, label, milestone)|Yes|Yes|Yes|
-|Stage time chart|Yes|Yes|No|
-|Total time chart|Yes|Yes|No|
-|Task by type chart|Yes|No|No|
-|DORA Metrics|Yes|Yes|No|
-|Cycle time and lead time summary (Lifecycle metrics)|Yes|Yes|No|
-|New issues, commits, and deploys (Lifecycle metrics)|Yes, excluding commits|Yes|Yes|
-|Uses aggregated backend|Yes|Yes|No|
-|Date filter behavior|Filters items [finished within the date range](https://gitlab.com/groups/gitlab-org/-/epics/6046)|Filters items by creation date.|Filters items by creation date.|
-|Authorization|At least reporter|At least reporter|Can be public|
-
-{{< alert type="note" >}}
-
-Feature parity of project-level with group-level value stream analytics is achieved by using the new record `ProjectNamespace`. For details about this consolidation initiative, see the [Organization documentation](../../../development/organization/_index.md).
-
-{{< /alert >}}
+| Feature                                              | Group level (licensed)                                                                        | Project level (licensed)        | Project level (FOSS) |
+|------------------------------------------------------|-----------------------------------------------------------------------------------------------|---------------------------------|----------------------|
+| Create custom value streams                          | Yes                                                                                           | Yes                             | No, only one value stream (default) is present with the default stages |
+| Create custom stages                                 | Yes                                                                                           | Yes                             | No                   |
+| Filtering (for example, by author, label, milestone) | Yes                                                                                           | Yes                             | Yes                  |
+| Stage time chart                                     | Yes                                                                                           | Yes                             | No                   |
+| Total time chart                                     | Yes                                                                                           | Yes                             | No                   |
+| Task by type chart                                   | Yes                                                                                           | No                              | No                   |
+| DORA Metrics                                         | Yes                                                                                           | Yes                             | No                   |
+| Cycle time and lead time summary (Lifecycle metrics) | Yes                                                                                           | Yes                             | No                   |
+| New issues, commits, and deploys (Lifecycle metrics) | Yes, excluding commits                                                                        | Yes                             | Yes                  |
+| Uses aggregated backend                              | Yes                                                                                           | Yes                             | No                   |
+| Date filter behavior                                 | Filters items [finished in the date range](https://gitlab.com/groups/gitlab-org/-/epics/6046) | Filters items by creation date. | Filters items by creation date. |
+| Authorization                                        | At least reporter                                                                             | At least reporter               | Can be public        |
 
 ## How value stream analytics works
 
@@ -116,8 +110,6 @@ The following stage events are available:
 - MR last approved at
 
 These events play a key role in the duration calculation, which is calculated by the formula: duration = end event time - start event time.
-
-To learn what start and end events can be paired, see [Validating start and end events](../../../development/value_stream_analytics.md#validating-start-and-end-events).
 
 You can share your ideas or feedback about stage events in [issue 520962](https://gitlab.com/gitlab-org/gitlab/-/issues/520962).
 
@@ -179,8 +171,6 @@ The following table gives an overview of the pre-defined stages in value stream 
 Value stream analytics works on timestamp data and aggregates only the final start and stop events of the stage. For items that move back and forth between stages multiple times, the stage time is calculated solely from the final events' timestamps.
 
 {{< /alert >}}
-
-For information about how value stream analytics calculates each stage, see the [Value stream analytics development guide](../../../development/value_stream_analytics.md).
 
 #### Example workflow
 
@@ -378,9 +368,7 @@ The **Overview** page in value stream analytics displays key metrics of the DevS
 Value stream analytics includes the following lifecycle metrics:
 
 - **Lead time**: Median time from when the issue was created to when it was closed.
-- **Cycle time**: Median time from first commit to issue closed. GitLab measures cycle time from the earliest commit of a
-  [linked issue's merge request](../../project/issues/crosslinking_issues.md#from-commit-messages) to when that issue is closed.
-  The cycle time approach underestimates the lead time because merge request creation is always later than commit time.
+- **Cycle time**: Median time between when an issue is first [referenced in the commit message](../../project/issues/crosslinking_issues.md#from-commit-messages) of a merge request and when that referenced issue is closed. You must include `#` followed by the issue number (for example, `#123`) in the commit message, otherwise no data is displayed. Cycle time is typically shorter than lead time because the merge request is created after the first commit.
 - **New issues**: Number of new issues created.
 - **Deploys**: Total number of deployments to production.
 

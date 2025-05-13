@@ -439,7 +439,7 @@ export default {
     hide-footer
     scrollable
     :title="$options.i18n.COMMAND_PALETTE"
-    body-class="!gl-p-0 !gl-min-h-26"
+    body-class="!gl-p-0"
     modal-class="global-search-modal"
     content-class="gl-mt-2"
     :centered="false"

@@ -17,7 +17,7 @@
       display: block;
 
       &:hover {
-        background-color: var(--gray-50, $gray-50);
+        @apply gl-bg-strong;
       }
 
       // stylelint-disable-next-line gitlab/no-gl-class

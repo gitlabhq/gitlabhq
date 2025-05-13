@@ -37,15 +37,23 @@ describe('ProjectsList', () => {
     );
   });
 
-  describe('when `ProjectListItem` emits `refetch` event', () => {
+  describe.each`
+    eventName             | payload
+    ${'refetch'}          | ${undefined}
+    ${'hover-visibility'} | ${'private'}
+    ${'hover-stat'}       | ${'Stars'}
+    ${'click-stat'}       | ${'Stars'}
+    ${'click-avatar'}     | ${undefined}
+    ${'click-topic'}      | ${undefined}
+  `('when `ProjectListItem` emits $eventName event', ({ eventName, payload }) => {
     beforeEach(() => {
       createComponent();
 
-      wrapper.findComponent(ProjectsListItem).vm.$emit('refetch');
+      wrapper.findComponent(ProjectsListItem).vm.$emit(eventName, payload);
     });
 
-    it('emits `refetch` event', () => {
-      expect(wrapper.emitted('refetch')).toEqual([[]]);
+    it(`emits ${eventName}`, () => {
+      expect(wrapper.emitted(eventName)).toEqual([[payload]]);
     });
   });
 });

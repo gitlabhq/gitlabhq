@@ -267,18 +267,11 @@ export default {
     <crud-component
       ref="packagesCrud"
       :title="$options.i18n.settingBlockTitle"
+      :description="$options.i18n.settingBlockDescription"
       :toggle-text="$options.i18n.createProtectionRuleText"
       @showForm="openNewFormDrawer"
     >
       <template #default>
-        <p
-          class="gl-pb-0 gl-text-subtle"
-          :class="{ 'gl-px-5 gl-pt-4': containsTableItems }"
-          data-testid="description"
-        >
-          {{ $options.i18n.settingBlockDescription }}
-        </p>
-
         <gl-alert
           v-if="alertErrorMessage"
           class="gl-mb-5"

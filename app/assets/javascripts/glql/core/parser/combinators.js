@@ -20,9 +20,16 @@ export const Parser = (parserFn) => ({
   },
 });
 
-export const str = (s) =>
+export const tag = (s) =>
   Parser((input) =>
     input.startsWith(s) ? success(s, input.slice(s.length)) : error(s, input.slice(0, s.length)),
+  );
+
+export const tagNoCase = (s) =>
+  Parser((input) =>
+    input.slice(0, s.length).toLowerCase() === s.toLowerCase()
+      ? success(input.slice(0, s.length), input.slice(s.length))
+      : error(s, truncate(input, 10)),
   );
 
 export const regex = (re, description) =>

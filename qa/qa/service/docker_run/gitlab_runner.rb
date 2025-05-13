@@ -53,11 +53,8 @@ module QA
         end
 
         def run_unregister_command!
-          cmd = <<~CMD.tr("\n", ' ')
-            docker exec --detach #{@name} sh -c "#{unregister_command}"
-          CMD
-
-          shell(cmd, mask_secrets: [runner_auth_token])
+          output = shell("docker exec #{@name} sh -c '#{unregister_command}'", mask_secrets: [runner_auth_token])
+          confirm_unregistered(output)
         end
 
         def tags=(tags)
@@ -115,11 +112,19 @@ module QA
 
         def runner_auth_token
           runner_list = shell("docker exec #{@name} sh -c 'gitlab-runner list'")
-          runner_list.match(/Token\e\[0;m=([^ ]+)/)&.[](1)
+          runner_list.match(/Token\e\[0;m=([^ ]+)/)&.[](1) || raise("No token found in runner list output")
         end
 
         def unregister_command
           "gitlab-runner unregister --url #{@address} --token #{runner_auth_token}"
+        end
+
+        def unregister_message_pattern
+          /Unregistering runner( manager)? from GitLab succeeded/
+        end
+
+        def confirm_unregistered(output)
+          raise("Failed to unregister. Shell response: #{output}") unless output&.match?(unregister_message_pattern)
         end
 
         # Ping Cloudflare DNS, should fail

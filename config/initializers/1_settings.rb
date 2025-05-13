@@ -207,6 +207,7 @@ Settings.gitlab['email_enabled'] ||= true if Settings.gitlab['email_enabled'].ni
 Settings.gitlab['email_from'] ||= ENV['GITLAB_EMAIL_FROM'] || "gitlab@#{Settings.gitlab.host}"
 Settings.gitlab['email_display_name'] ||= ENV['GITLAB_EMAIL_DISPLAY_NAME'] || 'GitLab'
 Settings.gitlab['email_reply_to'] ||= ENV['GITLAB_EMAIL_REPLY_TO'] || "noreply@#{Settings.gitlab.host}"
+Settings.gitlab['email_subject_prefix'] ||= ENV['GITLAB_EMAIL_SUBJECT_PREFIX'] || ""
 Settings.gitlab['email_subject_suffix'] ||= ENV['GITLAB_EMAIL_SUBJECT_SUFFIX'] || ""
 Settings.gitlab['email_smime'] = SmimeSignatureSettings.parse(Settings.gitlab['email_smime'])
 Settings.gitlab['email_smtp_secret_file'] = Settings.absolute(Settings.gitlab['email_smtp_secret_file'] || File.join(Settings.encrypted_settings['path'], "smtp.yaml.enc"))
@@ -265,6 +266,9 @@ end
 Gitlab.ee do
   Settings['elasticsearch'] ||= {}
   Settings.elasticsearch['indexer_path'] ||= Gitlab::Utils.which('gitlab-elasticsearch-indexer')
+
+  Settings['zoekt'] ||= {}
+  Settings.zoekt['bin_path'] ||= Gitlab::Utils.which('gitlab-zoekt')
 end
 
 #
@@ -748,8 +752,16 @@ Settings.cron_jobs['ci_schedule_old_pipelines_removal_cron_worker'] ||= {}
 Settings.cron_jobs['ci_schedule_old_pipelines_removal_cron_worker']['cron'] ||= '*/11 * * * *'
 Settings.cron_jobs['ci_schedule_old_pipelines_removal_cron_worker']['job_class'] = 'Ci::ScheduleOldPipelinesRemovalCronWorker'
 Settings.cron_jobs['version_version_check_cron'] ||= {}
-Settings.cron_jobs['version_version_check_cron']['cron'] ||= "#{rand(60)} #{rand(24)} * * *"
-Settings.cron_jobs['version_version_check_cron']['job_class'] = 'Gitlab::Version::VersionCheckCronWorker'
+Settings.cron_jobs['version_version_check_cron']['cron'] ||= "0 0 * * * UTC"
+Settings.cron_jobs['version_version_check_cron']['job_class'] = 'Gitlab::Scheduling::ScheduleWithinWorker'
+Settings.cron_jobs['version_version_check_cron']['args'] = {
+  'worker_class' => 'Gitlab::Version::VersionCheckCronWorker',
+  'within_minutes' => 59,
+  'within_hours' => 23
+}
+Settings.cron_jobs['import_placeholder_user_cleanup_worker'] ||= {}
+Settings.cron_jobs['import_placeholder_user_cleanup_worker']['cron'] ||= "0 0 * * *"
+Settings.cron_jobs['import_placeholder_user_cleanup_worker']['job_class'] = 'Import::PlaceholderUserCleanupWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}
@@ -824,6 +836,9 @@ Gitlab.ee do
   Settings.cron_jobs['ldap_sync_worker'] ||= {}
   Settings.cron_jobs['ldap_sync_worker']['cron'] ||= '30 1 * * *'
   Settings.cron_jobs['ldap_sync_worker']['job_class'] = 'LdapSyncWorker'
+  Settings.cron_jobs['ldap_admin_sync_worker'] ||= {}
+  Settings.cron_jobs['ldap_admin_sync_worker']['cron'] ||= '30 3 * * *'
+  Settings.cron_jobs['ldap_admin_sync_worker']['job_class'] = 'Authz::LdapAdminRoleWorker'
   Settings.cron_jobs['queue_refresh_of_broken_adherence_groups_worker'] ||= {}
   Settings.cron_jobs['queue_refresh_of_broken_adherence_groups_worker']['cron'] ||= '*/20 * * * *'
   Settings.cron_jobs['queue_refresh_of_broken_adherence_groups_worker']['job_class'] = 'ComplianceManagement::QueueRefreshOfBrokenAdherenceGroupsWorker'
@@ -867,10 +882,10 @@ Gitlab.ee do
   Settings.cron_jobs['concurrency_limit_resume_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['concurrency_limit_resume_worker']['job_class'] ||= 'ConcurrencyLimit::ResumeWorker'
   Settings.cron_jobs['sync_seat_link_worker'] ||= {}
-  Settings.cron_jobs['sync_seat_link_worker']['cron'] ||= "#{rand(60)} #{rand(3..4)} * * * UTC"
+  Settings.cron_jobs['sync_seat_link_worker']['cron'] ||= "#{rand(60)} #{rand(3..4)} * * * UTC" # rubocop: disable Scalability/RandomCronSchedule -- https://gitlab.com/gitlab-org/gitlab/-/issues/536393
   Settings.cron_jobs['sync_seat_link_worker']['job_class'] = 'SyncSeatLinkWorker'
   Settings.cron_jobs['sync_service_token_worker'] ||= {}
-  Settings.cron_jobs['sync_service_token_worker']['cron'] ||= "#{rand(60)} * * * * UTC"
+  Settings.cron_jobs['sync_service_token_worker']['cron'] ||= "#{rand(60)} * * * * UTC" # rubocop: disable Scalability/RandomCronSchedule -- https://gitlab.com/gitlab-org/gitlab/-/issues/536393
   Settings.cron_jobs['sync_service_token_worker']['job_class'] = '::CloudConnector::SyncServiceTokenWorker'
   Settings.cron_jobs['users_create_statistics_worker'] ||= {}
   Settings.cron_jobs['users_create_statistics_worker']['cron'] ||= '2 15 * * *'
@@ -1017,6 +1032,9 @@ Gitlab.ee do
   Settings.cron_jobs['delete_expired_vulnerability_exports_worker'] ||= {}
   Settings.cron_jobs['delete_expired_vulnerability_exports_worker']['cron'] ||= '0 4 * * *'
   Settings.cron_jobs['delete_expired_vulnerability_exports_worker']['job_class'] = 'Vulnerabilities::DeleteExpiredExportsWorker'
+  Settings.cron_jobs['ai_duo_workflows_fail_stuck_workflows_worker'] ||= {}
+  Settings.cron_jobs['ai_duo_workflows_fail_stuck_workflows_worker']['cron'] ||= '*/30 * * * *'
+  Settings.cron_jobs['ai_duo_workflows_fail_stuck_workflows_worker']['job_class'] ||= 'Ai::DuoWorkflows::FailStuckWorkflowsWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}
@@ -1145,24 +1163,12 @@ Gitlab.ee do
 
   Settings.duo_workflow.reverse_merge!(
     secure: true,
+    service_url: nil, # service_url is constructued in Gitlab::DuoWorkflow::Client
     debug: false,
     executor_binary_url: "https://gitlab.com/api/v4/projects/58711783/packages/generic/duo-workflow-executor/#{executor_version}/duo-workflow-executor.tar.gz",
     executor_binary_urls: executor_binary_urls,
     executor_version: executor_version
   )
-
-  # Default to proxy via Cloud Connector
-  unless Settings.duo_workflow['service_url'].present?
-    cloud_connector_uri = URI.parse(Settings.cloud_connector.base_url)
-
-    # Cloudflare has been disabled untill
-    # gets resolved https://gitlab.com/gitlab-org/gitlab/-/issues/509586
-    # Settings.duo_workflow['service_url'] = "#{cloud_connector_uri.host}:#{cloud_connector_uri.port}"
-
-    service_url = "duo-workflow#{cloud_connector_uri.host.include?('staging') ? '.staging' : ''}.runway.gitlab.net:#{cloud_connector_uri.port}"
-    Settings.duo_workflow['service_url'] = service_url
-    Settings.duo_workflow['secure'] = cloud_connector_uri.scheme == 'https'
-  end
 end
 
 #

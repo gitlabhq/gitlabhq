@@ -69,6 +69,7 @@ RSpec.describe BulkInsertSafe, feature_category: :database do
 
       include BulkInsertSafe
       include ShaAttribute
+      include Gitlab::EncryptedAttribute
 
       validates :name, :enum_value, :secret_value, :sha_value, :jsonb_value, presence: true
 
@@ -81,7 +82,7 @@ RSpec.describe BulkInsertSafe, feature_category: :database do
       attr_encrypted :secret_value,
         mode: :per_attribute_iv,
         algorithm: 'aes-256-gcm',
-        key: Settings.attr_encrypted_db_key_base_32,
+        key: :db_key_base_32,
         insecure_mode: false
 
       attribute :enum_value, default: 'case_1'

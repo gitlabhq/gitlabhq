@@ -119,6 +119,29 @@ describe('RunnerList', () => {
     expect(findCell({ fieldKey: 'actions' }).exists()).toBe(true);
   });
 
+  describe('fixed table appearance', () => {
+    it('is enabled by default', () => {
+      createComponent({
+        stubs: {
+          GlTableLite: stubComponent(GlTableLite),
+        },
+      });
+
+      expect(findTable().attributes('fixed')).toBe('true');
+    });
+
+    it('can be disabled', () => {
+      createComponent({
+        props: { fixed: true },
+        stubs: {
+          GlTableLite: stubComponent(GlTableLite),
+        },
+      });
+
+      expect(findTable().attributes('fixed')).toBe('true');
+    });
+  });
+
   describe('When the list is checkable', () => {
     beforeEach(() => {
       createComponent(

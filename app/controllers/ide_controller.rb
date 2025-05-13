@@ -26,11 +26,10 @@ class IdeController < ApplicationController
     @fork_info = fork_info(project, params[:branch])
     push_frontend_feature_flag(:web_ide_multi_domain, @project.group)
 
-    render layout: helpers.use_new_web_ide? ? 'fullscreen' : 'application'
+    render layout: 'fullscreen'
   end
 
   def oauth_redirect
-    return render_404 unless ::WebIde::DefaultOauthApplication.feature_enabled?(current_user)
     # TODO - It's **possible** we end up here and no oauth application has been set up.
     # We need to have better handling of these edge cases. Here's a follow-up issue:
     # https://gitlab.com/gitlab-org/gitlab/-/issues/433322
@@ -54,8 +53,6 @@ class IdeController < ApplicationController
   end
 
   def ensure_web_ide_oauth_application!
-    return unless ::WebIde::DefaultOauthApplication.feature_enabled?(current_user)
-
     ::WebIde::DefaultOauthApplication.ensure_oauth_application!
   end
 

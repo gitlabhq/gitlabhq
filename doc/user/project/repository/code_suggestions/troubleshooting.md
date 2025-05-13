@@ -9,7 +9,7 @@ title: Troubleshooting Code Suggestions
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q
+- Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -17,6 +17,7 @@ title: Troubleshooting Code Suggestions
 {{< history >}}
 
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+- Changed to include GitLab Duo Core in GitLab 18.0.
 
 {{< /history >}}
 
@@ -60,7 +61,7 @@ Token validation failed in Language Server:
 ```
 
 If GitLab has access to the [cloud server](../../../ai_features.md), try
-[manually synchronizing your license](../../../../subscriptions/self_managed/_index.md#manually-synchronize-subscription-data).
+[manually synchronizing your license](../../../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data).
 
 ## Authentication troubleshooting
 
@@ -191,7 +192,7 @@ For non-Code Suggestions troubleshooting for Microsoft Visual Studio, see
 
 ### IntelliCode is missing
 
-Code Suggestions requires the **IntelliCode** component of Visual Studio. If the component
+Code Suggestions requires the IntelliCode component of Visual Studio. If the component
 is missing, you might see an error like this when you start Visual Studio:
 
 ```plaintext
@@ -211,7 +212,7 @@ but found 0 after applying applicable constraints.
 [...]
 ```
 
-To fix this problem, install the **IntelliCode** component:
+To fix this problem, install the IntelliCode component:
 
 1. In the Windows start menu, search for the **Visual Studio Installer** and open it.
 1. Select your Visual Studio instance, then select **Modify**.

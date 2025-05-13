@@ -25,10 +25,6 @@ module Mutations
           def resolve(branch_rule_id:, squash_option:)
             branch_rule = authorized_find!(id: branch_rule_id)
 
-            if feature_disabled?(branch_rule.project)
-              raise_resource_not_available_error! 'Squash options feature disabled'
-            end
-
             service_response = ::Projects::BranchRules::SquashOptions::UpdateService.new(
               branch_rule,
               squash_option: squash_option,
@@ -39,12 +35,6 @@ module Mutations
               squash_option: (service_response.payload if service_response.success?),
               errors: service_response.errors
             }
-          end
-
-          private
-
-          def feature_disabled?(project)
-            Feature.disabled?(:branch_rule_squash_settings, project)
           end
         end
       end

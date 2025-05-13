@@ -31,8 +31,6 @@ describe('UsersChart', () => {
     wrapper = shallowMount(UsersChart, {
       apolloProvider: createMockApollo([[usersQuery, queryHandler]]),
       propsData: {
-        startDate: new Date(2020, 9, 26),
-        endDate: new Date(2020, 10, 1),
         totalDataPoints: mockCountsData2.length,
       },
     });

@@ -15,6 +15,8 @@ class SentNotification < ApplicationRecord
   validates :in_reply_to_discussion_id, format: { with: /\A\h{40}\z/, allow_nil: true }
   validate :note_valid
 
+  before_create :ensure_created_at
+
   class << self
     def reply_key
       SecureRandom.hex(16)
@@ -100,6 +102,12 @@ class SentNotification < ApplicationRecord
   end
 
   private
+
+  # TODO: Remove in 18.1 as this is only necessary while the default is loaded via the migration.
+  # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186703#note_2432949624
+  def ensure_created_at
+    self.created_at = Time.current
+  end
 
   def reply_params
     {

@@ -53,7 +53,7 @@ module Auth
       })
     end
 
-    def self.push_pull_nested_repositories_access_token(name)
+    def self.push_pull_nested_repositories_access_token(name, project:)
       name = name.chomp('/')
 
       access_token(
@@ -61,11 +61,12 @@ module Auth
           name => %w[pull push],
           "#{name}/*" => %w[pull]
         },
+        project: project,
         use_key_as_project_path: true
       )
     end
 
-    def self.push_pull_move_repositories_access_token(name, new_namespace)
+    def self.push_pull_move_repositories_access_token(name, new_namespace, project:)
       name = name.chomp('/')
 
       access_token(
@@ -74,11 +75,12 @@ module Auth
           "#{name}/*" => %w[pull],
           "#{new_namespace}/*" => %w[push]
         },
+        project: project,
         use_key_as_project_path: true
       )
     end
 
-    def self.access_token(names_and_actions, type = 'repository', use_key_as_project_path: false)
+    def self.access_token(names_and_actions, type = 'repository', use_key_as_project_path: false, project: nil)
       registry = Gitlab.config.registry
       token = JSONWebToken::RSAToken.new(registry.key)
       token.issuer = registry.issuer
@@ -90,7 +92,7 @@ module Auth
           type: type,
           name: name,
           actions: actions,
-          meta: access_metadata(path: name, use_key_as_project_path: use_key_as_project_path, actions: actions)
+          meta: access_metadata(path: name, use_key_as_project_path: use_key_as_project_path, actions: actions, project: project)
         }.compact
       end
 
@@ -102,9 +104,8 @@ module Auth
     end
 
     def self.access_metadata(project: nil, path: nil, use_key_as_project_path: false, actions: [], user: nil)
-      return { project_path: path.chomp('/*').downcase } if use_key_as_project_path
+      return access_metadata_with_key_as_project_path(project:, path:, actions:, user:) if use_key_as_project_path
 
-      # If the project is not given, try to infer it from the provided path
       if project.nil?
         return if path.nil? # If no path is given, return early
         return if path == 'import' # Ignore the special 'import' path
@@ -124,13 +125,22 @@ module Auth
       {
         project_path: project&.full_path&.downcase,
         project_id: project&.id,
-        root_namespace_id: project&.root_ancestor&.id,
-        tag_deny_access_patterns: tag_deny_access_patterns(project, user, actions),
-        tag_immutable_patterns: tag_immutable_patterns(project, user, actions)
-      }.compact
+        root_namespace_id: project&.root_ancestor&.id
+      }.merge(patterns_metadata(project, user, actions)).compact
     end
 
     private
+
+    def self.access_metadata_with_key_as_project_path(project:, path:, actions: [], user: nil)
+      { project_path: path.chomp('/*').downcase }.merge(patterns_metadata(project, user, actions)).compact
+    end
+
+    def self.patterns_metadata(project, user, actions)
+      {
+        tag_deny_access_patterns: tag_deny_access_patterns(project, user, actions),
+        tag_immutable_patterns: tag_immutable_patterns(project, actions)
+      }
+    end
 
     def self.tag_deny_access_patterns(project, user, actions)
       return if project.nil? || user.nil?
@@ -167,8 +177,8 @@ module Auth
       patterns
     end
 
-    def self.tag_immutable_patterns(project, user, actions)
-      return if project.nil? || user.nil?
+    def self.tag_immutable_patterns(project, actions)
+      return if project.nil?
       return unless Feature.enabled?(:container_registry_immutable_tags, project)
       return unless (actions & %w[push delete *]).any?
 
@@ -386,11 +396,24 @@ module Auth
 
         repository_project = push_scope_container_registry_path.repository_project
 
-        repository_project.container_registry_protection_rules.for_push_exists?(
-          access_level: repository_project.team.max_member_access(current_user&.id),
+        protection_rule_for_push_exists?(
+          current_user: current_user || deploy_token,
+          project: repository_project,
           repository_path: push_scope_container_registry_path.to_s
         )
       end
+    end
+
+    def protection_rule_for_push_exists?(current_user:, project:, repository_path:)
+      service_response = ContainerRegistry::Protection::CheckRuleExistenceService.for_push(
+        current_user: current_user,
+        project: project,
+        params: { repository_path: repository_path }
+      ).execute
+
+      raise ArgumentError, service_response.message if service_response.error?
+
+      service_response[:protection_rule_exists?]
     end
 
     # Overridden in EE

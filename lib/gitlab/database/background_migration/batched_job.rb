@@ -13,6 +13,7 @@ module Gitlab
         self.table_name = :batched_background_migration_jobs
 
         MAX_ATTEMPTS = 3
+        MAX_SIDEKIQ_SHUTDOWN_FAILURES = 15
         MIN_BATCH_SIZE = 1
         SUB_BATCH_SIZE_REDUCE_FACTOR = 0.75
         SUB_BATCH_SIZE_THRESHOLD = 65
@@ -65,6 +66,10 @@ module Gitlab
           after_transition any => :failed do |job, transition|
             exception, from_sub_batch = job.class.extract_transition_options(transition.args)
 
+            # For jobs that could not complete work within the shutdown timeout when Sidekiq
+            # is shutting down, do not count this as an attempt.
+            job.decrement!(:attempts) if job.handle_sidekiq_shutdown_failure?(exception)
+
             job.reduce_sub_batch_size! if from_sub_batch && job.can_reduce_sub_batch_size?
 
             job.split_and_retry! if job.can_split?(exception)
@@ -101,6 +106,8 @@ module Gitlab
 
         delegate :job_class, :table_name, :column_name, :job_arguments, :job_class_name,
           to: :batched_migration, prefix: :migration
+
+        delegate :sidekiq_shutdown_failures, to: :batched_job_transition_logs
 
         def self.extract_transition_options(args)
           error_hash = args.find { |arg| arg[:error].present? }
@@ -242,6 +249,19 @@ module Gitlab
           diff = initial_sub_batch_size - reduced_sub_batch_size
 
           (1.0 * diff / initial_sub_batch_size * 100).round(2) > SUB_BATCH_SIZE_THRESHOLD
+        end
+
+        def sidekiq_shutdown_failures_count
+          sidekiq_shutdown_failures.count
+        end
+
+        def handle_sidekiq_shutdown_failure?(exception)
+          return false unless Feature.enabled?(:bbm_retry_sidekiq_shutdown_exception, Feature.current_request)
+          return false unless exception.is_a?(Sidekiq::Shutdown)
+          return false unless attempts > 1
+          return false unless sidekiq_shutdown_failures_count <= MAX_SIDEKIQ_SHUTDOWN_FAILURES
+
+          true
         end
       end
     end

@@ -224,6 +224,7 @@ RSpec.configure do |config|
   config.include OrphanFinalArtifactsCleanupHelpers, :orphan_final_artifacts_cleanup
   config.include ClickHouseHelpers, :click_house
   config.include WorkItems::DataSync::AssociationsHelpers
+  config.include StateMachinesRspec::Matchers
 
   config.include_context 'when rendered has no HTML escapes', type: :view
   config.include_context 'with STI disabled', type: :model
@@ -277,10 +278,6 @@ RSpec.configure do |config|
     ::Ci::ApplicationRecord.set_open_transactions_baseline
   end
 
-  config.around do |example|
-    example.run
-  end
-
   config.append_after do
     ApplicationRecord.reset_open_transactions_baseline
     ::Ci::ApplicationRecord.reset_open_transactions_baseline
@@ -312,10 +309,6 @@ RSpec.configure do |config|
       # It's disabled in specs because we don't support certain features which
       # cause spec failures.
       stub_feature_flags(gitlab_error_tracking: false)
-
-      # Disable this to avoid the Web IDE modals popping up in tests:
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/385453
-      stub_feature_flags(vscode_web_ide: false)
 
       # Disable `main_branch_over_master` as we migrate
       # from `master` to `main` accross our codebase.
@@ -460,7 +453,7 @@ RSpec.configure do |config|
 
   config.around do |example|
     with_sidekiq_server_middleware do |chain|
-      Gitlab::SidekiqMiddleware.server_configurator(
+      Gitlab::SidekiqMiddleware::Server.configurator(
         metrics: false, # The metrics don't go anywhere in tests
         arguments_logger: false, # We're not logging the regular messages for inline jobs
         skip_jobs: false # We're not skipping jobs for inline tests
@@ -612,28 +605,26 @@ RedisClient.register(RedisCommands::Instrumentation)
 module UsersInternalAllowExclusiveLease
   extend ActiveSupport::Concern
 
-  class_methods do
-    def unique_internal(scope, username, email_pattern, &block)
-      # this lets skip transaction checks when Users::Internal bots are created in
-      # let_it_be blocks during test set-up.
-      #
-      # Users::Internal bot creation within examples are still checked since the RSPec.current_scope is :example
-      if ::RSpec.respond_to?(:current_scope) && ::RSpec.current_scope == :before_all
-        Gitlab::ExclusiveLease.skipping_transaction_check { super }
-      else
-        super
-      end
-    end
-
-    # TODO: Until https://gitlab.com/gitlab-org/gitlab/-/issues/442780 is resolved we're creating internal users in the
-    # first organization as a temporary workaround. Many specs lack an organization in the database, causing foreign key
-    # constraint violations when creating internal users. We're not seeding organizations before all specs for
-    # performance.
-    def create_unique_internal(scope, username, email_pattern, &creation_block)
-      Organizations::Organization.first || FactoryBot.create(:organization)
-
+  def unique_internal(scope, username, email_pattern, &block)
+    # this lets skip transaction checks when Users::Internal bots are created in
+    # let_it_be blocks during test set-up.
+    #
+    # Users::Internal bot creation within examples are still checked since the RSPec.current_scope is :example
+    if ::RSpec.respond_to?(:current_scope) && ::RSpec.current_scope == :before_all
+      Gitlab::ExclusiveLease.skipping_transaction_check { super }
+    else
       super
     end
+  end
+
+  # TODO: Until https://gitlab.com/gitlab-org/gitlab/-/issues/442780 is resolved we're creating internal users in the
+  # first organization as a temporary workaround. Many specs lack an organization in the database, causing foreign key
+  # constraint violations when creating internal users. We're not seeding organizations before all specs for
+  # performance.
+  def create_unique_internal(scope, username, email_pattern, &creation_block)
+    Organizations::Organization.first || FactoryBot.create(:organization)
+
+    super
   end
 end
 

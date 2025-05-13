@@ -14,10 +14,11 @@ module Ci
 
     before_create :ensure_resource
 
-    enum process_mode: {
+    enum :process_mode, {
       unordered: 0,
       oldest_first: 1,
-      newest_first: 2
+      newest_first: 2,
+      newest_ready_first: 3
     }
 
     ##
@@ -52,6 +53,9 @@ module Ci
           .order(Arel.sql("commit_id ASC, #{sort_by_job_status}"))
       elsif newest_first?
         processables.waiting_for_resource_or_upcoming
+          .order(Arel.sql("commit_id DESC, #{sort_by_job_status}"))
+      elsif newest_ready_first?
+        processables.waiting_for_resource
           .order(Arel.sql("commit_id DESC, #{sort_by_job_status}"))
       else
         Ci::Processable.none

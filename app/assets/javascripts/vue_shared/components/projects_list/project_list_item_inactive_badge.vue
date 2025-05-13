@@ -5,6 +5,7 @@ import { __ } from '~/locale';
 export default {
   name: 'ProjectListItemInactiveBadge',
   i18n: {
+    pendingDeletion: __('Pending deletion'),
     archived: __('Archived'),
   },
   components: {
@@ -17,7 +18,17 @@ export default {
     },
   },
   computed: {
+    isPendingDeletion() {
+      return Boolean(this.project.markedForDeletionOn);
+    },
     inactiveBadge() {
+      if (this.isPendingDeletion) {
+        return {
+          variant: 'warning',
+          text: this.$options.i18n.pendingDeletion,
+        };
+      }
+
       if (this.project.archived) {
         return {
           variant: 'info',

@@ -29,7 +29,7 @@ We only use Gollum as a storage abstraction layer, to handle the mapping between
 
 When rendering wiki pages, we don't use Gollum at all and instead go through a
 [custom Banzai pipeline](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/banzai/pipeline/wiki_pipeline.rb).
-This adds some [wiki-specific markup](../user/markdown.md#wiki-specific-markdown), such as the Gollum `[[link]]` syntax.
+This adds some [wiki-specific markup](../user/project/wiki/markdown.md), such as the Gollum `[[link]]` syntax.
 
 Because we do not make use of most of the Gollum features, we plan to move away from it entirely at some point.
 [See this epic](https://gitlab.com/groups/gitlab-org/-/epics/2381) for reference.

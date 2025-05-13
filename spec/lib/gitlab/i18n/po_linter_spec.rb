@@ -379,6 +379,23 @@ RSpec.describe Gitlab::I18n::PoLinter do
     end
   end
 
+  describe '#validate_single_and_plural_variables' do
+    it 'does not allow mixing variable types in singular and plural forms' do
+      pluralized_entry = fake_translation(
+        msgid: 'CycleAnalytics|%{stageName}',
+        translation: '%{stageName}',
+        plural_id: 'CycleAnalytics|%d stages selected',
+        plurals: ['%d stages selected']
+      )
+
+      errors = []
+
+      linter.validate_variables(errors, pluralized_entry)
+
+      expect(errors).to eq(["is combining named variables with unnamed variables"])
+    end
+  end
+
   describe '#validate_translation' do
     let(:entry) { fake_translation(msgid: 'Hello %{world}', translation: 'Bonjour %{world}') }
 
@@ -397,7 +414,7 @@ RSpec.describe Gitlab::I18n::PoLinter do
 
       linter.validate_translation(errors, entry)
 
-      expect(errors).to include('Failure translating to en: broken')
+      expect(errors).to include("Failure translating to en in #{po_path}: broken")
     end
 
     it 'adds an error message when translating fails when translating with context' do
@@ -408,7 +425,7 @@ RSpec.describe Gitlab::I18n::PoLinter do
 
       linter.validate_translation(errors, entry)
 
-      expect(errors).to include('Failure translating to en: broken')
+      expect(errors).to include("Failure translating to en in #{po_path}: broken")
     end
 
     it "adds an error when trying to translate with incorrect variables when using unnamed variables" do
@@ -490,7 +507,7 @@ RSpec.describe Gitlab::I18n::PoLinter do
       result = linter.fill_in_variables(['%{hello}'])
 
       expect(result).to be_a(Hash)
-      expect(result).to include('hello' => an_instance_of(String))
+      expect(result).to include(hello: an_instance_of(String))
     end
   end
 end

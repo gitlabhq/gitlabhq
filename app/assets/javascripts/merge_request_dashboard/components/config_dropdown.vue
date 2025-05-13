@@ -102,7 +102,7 @@ export default {
           },
         });
 
-        window.navigation.reload();
+        window.location.reload();
       } catch (error) {
         this.savingPreferences = false;
 

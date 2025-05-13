@@ -1446,10 +1446,12 @@ RSpec.describe Integration, feature_category: :integrations do
       expect(hash['encrypted_properties']).not_to eq(record.encrypted_properties)
       expect(hash['encrypted_properties_iv']).not_to eq(record.encrypted_properties_iv)
 
+      options = record.send(:evaluated_attr_encrypted_options_for, :properties)
+        .merge(iv: hash['encrypted_properties_iv'])
       decrypted = described_class.attr_decrypt(
         :properties,
         hash['encrypted_properties'],
-        { iv: hash['encrypted_properties_iv'] }
+        options
       )
 
       expect(decrypted).to eq db_props

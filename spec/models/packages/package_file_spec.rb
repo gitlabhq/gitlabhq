@@ -39,20 +39,20 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
       let(:file) { fixture_file_upload('spec/fixtures/dk.png') }
       let(:params) { { file: file, file_name: file_name, status: status } }
 
-      subject { package.package_files.create!(params) }
+      subject(:create_package_file) { package.package_files.create!(params) }
 
       context 'file_name' do
         let(:file_name) { package_file.file_name }
 
         it 'can not save a duplicated file' do
-          expect { subject }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: File name has already been taken")
+          expect { create_package_file }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: File name has already been taken")
         end
 
         context 'with a pending destruction package duplicated file' do
           let(:status) { :pending_destruction }
 
           it 'can save it' do
-            expect { subject }.to change { package.package_files.count }.from(1).to(2)
+            expect { create_package_file }.to change { package.package_files.count }.from(1).to(2)
           end
         end
       end
@@ -72,9 +72,9 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
 
           it 'does not allow invalid sha256 characters' do
             if expected_success
-              expect { subject }.not_to raise_error
+              expect { create_package_file }.not_to raise_error
             else
-              expect { subject }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: File sha256 is invalid")
+              expect { create_package_file }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: File sha256 is invalid")
             end
           end
         end
@@ -162,13 +162,13 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
           conan_package_reference: other_package_reference)
       end
 
-      subject { described_class.with_conan_package_reference(reference) }
+      subject(:result) { described_class.with_conan_package_reference(reference) }
 
       context 'with existing reference' do
         let(:reference) { matching_package_file.conan_file_metadatum.package_reference.reference }
 
         it 'returns package files with matching reference' do
-          expect(subject).to contain_exactly(matching_package_file)
+          expect(result).to contain_exactly(matching_package_file)
         end
       end
 
@@ -176,7 +176,7 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
         let(:reference) { non_existing_record_id.to_s }
 
         it 'returns empty relation' do
-          expect(subject).to be_empty
+          expect(result).to be_empty
         end
       end
     end
@@ -203,13 +203,13 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
       end
 
       describe '.with_conan_recipe_revision' do
-        subject { described_class.with_conan_recipe_revision(revision) }
+        subject(:result) { described_class.with_conan_recipe_revision(revision) }
 
         context 'with existing revision' do
           let(:revision) { recipe_revision.revision }
 
           it 'returns package files with matching recipe revision' do
-            expect(subject).to contain_exactly(package_file_with_revision)
+            expect(result).to contain_exactly(package_file_with_revision)
           end
         end
 
@@ -217,16 +217,66 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
           let(:revision) { 'nonexistent' }
 
           it 'returns empty relation' do
-            expect(subject).to be_empty
+            expect(result).to be_empty
           end
         end
       end
 
       describe '.without_conan_recipe_revision' do
-        subject { described_class.without_conan_recipe_revision }
+        subject(:result) { described_class.without_conan_recipe_revision }
 
         it 'returns only package files without recipe revision' do
-          expect(subject).to contain_exactly(package_file_without_revision)
+          expect(result).to contain_exactly(package_file_without_revision)
+        end
+      end
+    end
+
+    context 'package revision scopes' do
+      let_it_be(:package_revision) { package.conan_package_revisions.first }
+      let_it_be(:other_package_revision) { create(:conan_package_revision, package_reference: package.conan_package_references.first) }
+
+      let_it_be(:package_file_with_revision) do
+        create(:conan_package_file, :conan_package,
+          package: package,
+          conan_package_revision: package_revision)
+      end
+
+      let_it_be(:package_file_with_other_revision) do
+        create(:conan_package_file, :conan_package,
+          package: package,
+          conan_package_revision: other_package_revision)
+      end
+
+      let_it_be(:package_file_without_revision) do
+        create(:conan_package_file, :conan_package,
+          package: package, conan_recipe_revision: nil, conan_package_revision: nil)
+      end
+
+      describe '.with_conan_package_revision' do
+        subject(:result) { described_class.with_conan_package_revision(revision) }
+
+        context 'with existing revision' do
+          let(:revision) { package_revision.revision }
+
+          it 'returns package files with matching package revision' do
+            expect(result).to contain_exactly(package_file_with_revision)
+          end
+        end
+
+        context 'when revision does not exist' do
+          let(:revision) { 'nonexistent' }
+
+          it 'returns empty relation' do
+            expect(result).to be_empty
+          end
+        end
+      end
+
+      describe '.without_conan_package_revision' do
+        subject(:result) { described_class.without_conan_package_revision }
+
+        it 'returns only package files without package revision' do
+          expect(result).to contain_exactly(package_file_without_revision)
         end
       end
     end
@@ -364,13 +414,13 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
       end
 
       with_them do
-        subject { described_class.where(package:).order_by(column_name, order) }
+        subject(:ordered_files) { described_class.where(package:).order_by(column_name, order) }
 
         it 'returns the package files in the expected order' do
           if expected_order
-            expect(subject.first(2)).to eq(expected_order.call(older_file, newer_file))
+            expect(ordered_files.first(2)).to eq(expected_order.call(older_file, newer_file))
           else
-            expect(subject.order_values).to be_empty
+            expect(ordered_files.order_values).to be_empty
           end
         end
       end
@@ -386,17 +436,17 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
       let(:extra_join) { :helm_file_metadatum }
       let(:extra_where) { { packages_helm_file_metadata: { channel: 'alpha' } } }
 
-      subject { described_class.most_recent_for(Packages::Package.id_in(helm_package.id), extra_join: extra_join, extra_where: extra_where) }
+      subject(:joined_result) { described_class.most_recent_for(Packages::Package.id_in(helm_package.id), extra_join: extra_join, extra_where: extra_where) }
 
       it 'returns the most recent package for the selected channel' do
-        expect(subject).to contain_exactly(helm_package_file2)
+        expect(joined_result).to contain_exactly(helm_package_file2)
       end
 
       context 'with package files pending destruction' do
         let_it_be(:package_file_pending_destruction) { create(:helm_package_file, :pending_destruction, package: helm_package, channel: 'alpha') }
 
         it 'does not return them' do
-          expect(subject).to contain_exactly(helm_package_file2)
+          expect(joined_result).to contain_exactly(helm_package_file2)
         end
       end
     end
@@ -427,26 +477,26 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
   describe '#update_file_store callback' do
     let_it_be(:package_file) { build(:package_file, :nuget, size: nil) }
 
-    subject { package_file.save! }
+    subject(:save_result) { package_file.save! }
 
     it 'updates metadata columns' do
       expect(package_file)
         .to receive(:update_file_store)
         .and_call_original
 
-      expect { subject }.to change { package_file.size }.from(nil).to(3513)
+      expect { save_result }.to change { package_file.size }.from(nil).to(3513)
     end
   end
 
   context 'update callbacks' do
-    subject { package_file.save! }
+    subject(:save_result) { package_file.save! }
 
     shared_examples 'executing the default callback' do
       it 'executes the default callback' do
         expect(package_file).to receive(:remove_previously_stored_file)
         expect(package_file).not_to receive(:move_in_object_storage)
 
-        subject
+        save_result
       end
     end
 
@@ -499,7 +549,7 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
           expect(package_file.file.file).to receive(:copy_to).and_call_original
           expect(package_file.file.file).to receive(:delete).and_call_original
 
-          subject
+          save_result
         end
       end
     end

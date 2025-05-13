@@ -78,6 +78,17 @@ module WikiHelper
     )
   end
 
+  def wiki_404_messages
+    title = s_("Wiki404|This page doesn't exist")
+    writable_body = s_("Wiki404|Would you like to create it?")
+    readonly_body = s_('Wiki404|Use the sidebar to find a different page.')
+
+    {
+      writable: { title: title, body: writable_body },
+      readonly: { title: title, body: readonly_body }
+    }
+  end
+
   def wiki_empty_state_messages(wiki)
     case wiki.container
     when Project

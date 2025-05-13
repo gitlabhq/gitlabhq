@@ -2,6 +2,7 @@
 
 module Resolvers
   class BoardListIssuesResolver < BaseResolver
+    prepend ::Issues::LookAheadPreloads
     include BoardItemFilterable
 
     argument :filters, Types::Boards::BoardIssueInputType,
@@ -12,14 +13,14 @@ module Resolvers
 
     alias_method :list, :object
 
-    def resolve(**args)
+    def resolve_with_lookahead(**args)
       filters = item_filters(args[:filters])
       mutually_exclusive_milestone_args!(filters)
 
       filter_params = filters.merge(board_id: list.board.id, id: list.id)
       service = ::Boards::Issues::ListService.new(list.board.resource_parent, context[:current_user], filter_params)
 
-      service.execute
+      apply_lookahead(service.execute)
     end
 
     # https://gitlab.com/gitlab-org/gitlab/-/issues/235681

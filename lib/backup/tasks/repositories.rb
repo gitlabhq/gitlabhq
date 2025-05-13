@@ -13,7 +13,11 @@ module Backup
         super(progress: progress, options: options)
       end
 
-      def human_name = _('repositories')
+      def human_name
+        return _('repositories') unless @options.repositories_server_side_backup
+
+        _('repositories (Gitaly server-side)')
+      end
 
       def destination_path = 'repositories'
 

@@ -17,7 +17,6 @@ module Ci
     has_one :sourced_pipeline, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_job_id, inverse_of: :source_job
     has_one :trigger, through: :pipeline
 
-    belongs_to :trigger_request
     belongs_to :resource_group, class_name: 'Ci::ResourceGroup', inverse_of: :processables
 
     accepts_nested_attributes_for :needs
@@ -133,6 +132,8 @@ module Ci
       :legacy_detached_merge_request_pipeline?,
       :merge_train_pipeline?,
       to: :pipeline
+
+    delegate :short_token, to: :trigger, prefix: true, allow_nil: true
 
     def clone(current_user:, new_job_variables_attributes: [])
       new_attributes = self.class.clone_accessors.index_with do |attribute|
@@ -265,14 +266,6 @@ module Ci
 
     def manual_confirmation_message
       options[:manual_confirmation] if manual_job?
-    end
-
-    def trigger_short_token
-      if ::Feature.enabled?(:ci_read_trigger_from_ci_pipeline, project)
-        trigger&.short_token
-      else
-        trigger_request&.trigger_short_token
-      end
     end
 
     private

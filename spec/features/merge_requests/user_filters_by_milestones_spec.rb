@@ -50,7 +50,7 @@ RSpec.describe 'Merge Requests > User filters by milestones', :js, feature_categ
     end
 
     context 'with an upcoming milestone' do
-      let(:milestone) { create(:milestone, project: project, due_date: Date.tomorrow) }
+      let(:milestone) { create(:milestone, project: project, start_date: Date.tomorrow) }
 
       it 'shows merge requests' do
         select_tokens 'Milestone', '=', 'Upcoming', submit: true

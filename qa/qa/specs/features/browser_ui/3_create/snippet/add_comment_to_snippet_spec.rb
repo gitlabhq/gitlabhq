@@ -2,18 +2,12 @@
 
 module QA
   RSpec.describe 'Create', product_group: :source_code do
-    describe 'Adding comments on snippets' do
+    describe 'Adding comments to project snippets' do
       let(:comment_author) { Runtime::User::Store.additional_test_user }
       let(:comment_content) { 'Comment 123' }
       let(:edited_comment_content) { 'Nice snippet!' }
 
-      let(:personal_snippet) do
-        Resource::Snippet.fabricate! do |snippet|
-          snippet.title = 'Personal snippet with a comment'
-        end
-      end
-
-      let(:project_snippet) do
+      let!(:project_snippet) do
         Resource::ProjectSnippet.fabricate! do |snippet|
           snippet.title = 'Project snippet with a comment'
         end
@@ -23,29 +17,23 @@ module QA
         Flow::Login.sign_in
       end
 
-      shared_examples 'comments on snippets' do |snippet_type, testcase|
-        it "adds, edits, and deletes a comment on a #{snippet_type}", testcase: testcase do
-          send(snippet_type)
+      it "adds, edits, and deletes a comment on a project snippet",
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347817' do
+        Page::Main::Menu.perform(&:sign_out)
 
-          Page::Main::Menu.perform(&:sign_out)
+        Flow::Login.sign_in(as: comment_author)
 
-          Flow::Login.sign_in(as: comment_author)
+        project_snippet.visit!
 
-          send(snippet_type).visit!
+        create_comment
+        verify_comment_content(comment_author.username, comment_content)
 
-          create_comment
-          verify_comment_content(comment_author.username, comment_content)
+        edit_comment
+        verify_comment_content(comment_author.username, edited_comment_content)
 
-          edit_comment
-          verify_comment_content(comment_author.username, edited_comment_content)
-
-          delete_comment
-          verify_comment_deleted
-        end
+        delete_comment
+        verify_comment_deleted
       end
-
-      it_behaves_like 'comments on snippets', :personal_snippet, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347816'
-      it_behaves_like 'comments on snippets', :project_snippet, 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347817'
 
       def create_comment
         Page::Dashboard::Snippet::Show.perform do |snippet|

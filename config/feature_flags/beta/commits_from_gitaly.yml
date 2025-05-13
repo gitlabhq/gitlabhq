@@ -1,0 +1,9 @@
+---
+name: commits_from_gitaly
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/496665
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181537
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/519729
+milestone: '17.10'
+group: group::source code
+type: beta
+default_enabled: true

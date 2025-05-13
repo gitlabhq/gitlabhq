@@ -5,7 +5,7 @@
 - add_page_specific_style 'page_bundles/new_namespace'
 - add_page_specific_style 'page_bundles/projects'
 
-- if Feature.enabled?(:new_project_creation_form, @user)
+- if Feature.enabled?(:new_project_creation_form, current_user)
   #js-vue-new-project-app{ data: {
     namespace_full_path: GroupFinder.new(current_user).execute(id: namespace_id_from(params))&.full_path || @current_user_group&.full_path,
     namespace_id: namespace_id_from(params).to_s || @current_user_group&.id.to_s,
@@ -42,7 +42,8 @@
     import_gitea_import_path: new_import_gitea_path(namespace_id: @namespace&.id),
     import_git_enabled: git_import_enabled?.to_s,
     import_manifest_enabled: manifest_import_enabled?.to_s,
-    import_manifest_import_path: new_import_manifest_path(namespace_id: @namespace&.id) } }
+    import_manifest_import_path: new_import_manifest_path(namespace_id: @namespace&.id),
+    import_by_url_validate_path: import_url_validate_path } }
 - else
   .project-edit-container
     .project-edit-errors

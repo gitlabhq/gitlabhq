@@ -27,6 +27,21 @@ describe('transformAstToDisplayFields', () => {
     ]);
   });
 
+  it('transforms multiple field names with aliases correctly', () => {
+    const input = ast.collection(
+      ast.fieldName('title').withAlias(ast.string('Custom Title')),
+      ast.fieldName('description').withAlias(ast.string('Details')),
+      ast.fieldName('createdAt').withAlias(ast.string('Created')),
+    );
+
+    const result = transformAstToDisplayFields(input);
+    expect(result).toEqual([
+      { key: 'title', label: 'Custom Title', name: 'title' },
+      { key: 'descriptionHtml', label: 'Details', name: 'descriptionHtml' },
+      { key: 'createdAt', label: 'Created', name: 'createdAt' },
+    ]);
+  });
+
   it('transforms multiple field names with aliases', () => {
     const input = ast.collection(
       ast.fieldName('assignee'),

@@ -1,7 +1,7 @@
 import { GlPagination, GlTable } from '@gitlab/ui';
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
+import axios from '~/lib/utils/axios_utils';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import InactiveAccessTokenTableApp from '~/access_tokens/components/inactive_access_token_table_app.vue';
 import { HTTP_STATUS_OK, HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';

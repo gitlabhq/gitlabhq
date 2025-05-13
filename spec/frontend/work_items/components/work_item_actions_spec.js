@@ -1,4 +1,4 @@
-import { GlDisclosureDropdown, GlModal, GlDisclosureDropdownItem } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlModal, GlDisclosureDropdownItem, GlLoadingIcon } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/project_namespace_work_item_types.query.graphql.json';
@@ -91,6 +91,7 @@ describe('WorkItemActions component', () => {
   const findNotificationsToggle = () => wrapper.findByTestId('notifications-toggle-form');
   const findMoveButton = () => wrapper.findByTestId('move-action');
   const findMoveModal = () => wrapper.findComponent(MoveWorkItemModal);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
   const modalShowSpy = jest.fn();
   const $toast = {
@@ -144,6 +145,7 @@ describe('WorkItemActions component', () => {
     parentId = null,
     projectId = 'gid://gitlab/Project/1',
     namespaceFullName = 'GitLab.org / GitLab Test',
+    updateInProgress = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemActions, {
       isLoggedIn: isLoggedIn(),
@@ -183,6 +185,7 @@ describe('WorkItemActions component', () => {
         namespaceFullName,
         showSidebar: true,
         truncationEnabled: true,
+        updateInProgress,
       },
       mocks: {
         $toast,
@@ -382,12 +385,14 @@ describe('WorkItemActions component', () => {
       },
     );
 
-    it('emits `toggleWorkItemConfidentiality` event when clicked', () => {
+    it('emits `toggleWorkItemConfidentiality` event when clicked', async () => {
       createComponent();
 
       findConfidentialityToggleButton().vm.$emit('action');
 
       expect(wrapper.emitted('toggleWorkItemConfidentiality')[0]).toEqual([true]);
+
+      await nextTick();
       expect(toast).toHaveBeenCalledWith('Confidentiality turned on.');
     });
 
@@ -401,6 +406,12 @@ describe('WorkItemActions component', () => {
       expect(findConfidentialityToggleButton().props('item')).toMatchObject({
         extraAttrs: { disabled: true },
       });
+    });
+
+    it('shows loading icon badge when the work item is confidential', () => {
+      createComponent({ updateInProgress: true });
+
+      expect(findLoadingIcon().exists()).toBe(true);
     });
   });
 

@@ -1,7 +1,7 @@
 import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import GlobalSearchDefaultPlaces from '~/super_sidebar/components/global_search/components/global_search_default_places.vue';
-import SearchResultHoverLayover from '~/super_sidebar/components/global_search/components/global_search_hover_overlay.vue';
+import SearchResultFocusLayover from '~/super_sidebar/components/global_search/components/global_search_focus_overlay.vue';
 import {
   EVENT_CLICK_YOUR_WORK_IN_COMMAND_PALETTE,
   EVENT_CLICK_EXPLORE_IN_COMMAND_PALETTE,
@@ -28,7 +28,7 @@ describe('GlobalSearchDefaultPlaces', () => {
 
   const findGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
   const findItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
-  const findLayover = () => wrapper.findComponent(SearchResultHoverLayover);
+  const findLayover = () => wrapper.findComponent(SearchResultFocusLayover);
 
   describe('given no contextSwitcherLinks', () => {
     beforeEach(() => {
@@ -77,7 +77,7 @@ describe('GlobalSearchDefaultPlaces', () => {
           text: 'Explore',
           href: '/explore',
           extraAttrs: {
-            class: 'show-hover-layover',
+            class: 'show-focus-layover',
             'data-track-action': 'click_command_palette_item',
             'data-track-extra': '{"title":"Explore"}',
             'data-track-label': 'item_without_id',
@@ -90,7 +90,7 @@ describe('GlobalSearchDefaultPlaces', () => {
           text: 'Admin area',
           href: '/admin',
           extraAttrs: {
-            class: 'show-hover-layover',
+            class: 'show-focus-layover',
             'data-track-action': 'click_command_palette_item',
             'data-track-extra': '{"title":"Admin area"}',
             'data-track-label': 'item_without_id',
@@ -103,7 +103,7 @@ describe('GlobalSearchDefaultPlaces', () => {
           text: 'Leave admin mode',
           href: '/admin/session/destroy',
           extraAttrs: {
-            class: 'show-hover-layover',
+            class: 'show-focus-layover',
             'data-track-action': 'click_command_palette_item',
             'data-track-extra': '{"title":"Leave admin mode"}',
             'data-track-label': 'item_without_id',

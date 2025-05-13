@@ -46,7 +46,7 @@ export default {
 </script>
 
 <template>
-  <gl-table-lite :fields="$options.fields" :items="items">
+  <gl-table-lite :fields="$options.fields" :items="items" stacked="md">
     <template #head(systemId)="{ label }">
       {{ label }}
       <help-popover>

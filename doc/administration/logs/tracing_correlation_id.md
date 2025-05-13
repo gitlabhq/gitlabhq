@@ -54,8 +54,8 @@ Another approach to finding the correct correlation ID is to search or watch
 your logs and find the `correlation_id` value for the log entry that you're
 watching for.
 
-For example, let's say that you want learn what's happening or breaking when
-you reproduce an action in GitLab. You could tail the GitLab logs, filtering
+For example, if you want to learn what's happening or breaking when
+you reproduce an action in GitLab, you could tail the GitLab logs, filtering
 to requests by your user, and then watch the requests until you see what you're
 interested in.
 
@@ -197,11 +197,9 @@ You can then view the database details for this request:
 
    ![A highlighted example request in an open Request Selector dropdown list](img/select-request-id-from-request-selector-drop-down-menu_v14_3.png)
 
-   <!-- vale gitlab_base.Substitutions = NO -->
 1. Select the `pg` link in the Progress Bar to view the database queries executed by the API request:
 
    ![GitLab API database details: 29ms / 34 queries](img/view-pg-details_v14_3.png)
-   <!-- vale gitlab_base.Substitutions = YES -->
 
    The database query dialog is displayed:
 

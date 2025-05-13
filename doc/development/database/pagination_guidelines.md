@@ -229,18 +229,18 @@ Keyset pagination used in both the [GraphQL API](../graphql_guide/pagination.md#
 
 Consider the following `issues` table:
 
-|`id`|`project_id`|
-|-|-|
-|1|1|
-|2|1|
-|3|2|
-|4|1|
-|5|1|
-|6|2|
-|7|2|
-|8|1|
-|9|1|
-|10|2|
+| `id` | `project_id` |
+|------|--------------|
+| 1    | 1            |
+| 2    | 1            |
+| 3    | 2            |
+| 4    | 1            |
+| 5    | 1            |
+| 6    | 2            |
+| 7    | 2            |
+| 8    | 1            |
+| 9    | 1            |
+| 10   | 2            |
 
 Let's paginate over the whole table ordered by the primary key (`id`). The query for the first page is the same as the offset pagination query, for simplicity, we use 5 as the page size:
 

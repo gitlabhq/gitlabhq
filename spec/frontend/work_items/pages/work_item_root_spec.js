@@ -55,6 +55,7 @@ describe('Work items root component', () => {
       modalWorkItemFullPath: '',
       isDrawer: false,
       modalIsGroup: null,
+      isBoard: false,
     });
   });
 

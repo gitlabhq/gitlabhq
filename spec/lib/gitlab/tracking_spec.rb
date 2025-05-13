@@ -20,20 +20,20 @@ RSpec.describe Gitlab::Tracking, feature_category: :application_instrumentation 
 
   it { is_expected.to delegate_method(:flush).to(:tracker) }
 
-  describe '.options' do
+  describe '.frontend_client_options' do
     shared_examples 'delegates to destination' do |klass|
       before do
         allow_next_instance_of(klass) do |instance|
-          allow(instance).to receive(:options).and_call_original
+          allow(instance).to receive(:frontend_client_options).and_call_original
         end
       end
 
       it "delegates to #{klass} destination" do
         expect_next_instance_of(klass) do |instance|
-          expect(instance).to receive(:options)
+          expect(instance).to receive(:frontend_client_options)
         end
 
-        subject.options(nil)
+        subject.frontend_client_options(nil)
       end
     end
 
@@ -53,7 +53,7 @@ RSpec.describe Gitlab::Tracking, feature_category: :application_instrumentation 
           linkClickTracking: true
         }
 
-        expect(subject.options(nil)).to match(expected_fields)
+        expect(subject.frontend_client_options(nil)).to match(expected_fields)
       end
     end
 
@@ -70,7 +70,7 @@ RSpec.describe Gitlab::Tracking, feature_category: :application_instrumentation 
           linkClickTracking: true
         }
 
-        expect(subject.options(nil)).to match(expected_fields)
+        expect(subject.frontend_client_options(nil)).to match(expected_fields)
       end
     end
 
@@ -98,7 +98,7 @@ RSpec.describe Gitlab::Tracking, feature_category: :application_instrumentation 
     it 'when feature flag is disabled' do
       stub_feature_flags(additional_snowplow_tracking: false)
 
-      expect(subject.options(nil)).to include(
+      expect(subject.frontend_client_options(nil)).to include(
         formTracking: false,
         linkClickTracking: false
       )
@@ -137,7 +137,7 @@ RSpec.describe Gitlab::Tracking, feature_category: :application_instrumentation 
 
         expect(Gitlab::Tracking::StandardContext)
           .to receive(:new)
-                .with(project_id: project.id, user: user, namespace_id: namespace.id, plan_name: namespace.actual_plan_name, extra_key_1: 'extra value 1', extra_key_2: 'extra value 2')
+                .with(project_id: project.id, user: user, namespace: namespace, plan_name: namespace.actual_plan_name, extra_key_1: 'extra value 1', extra_key_2: 'extra value 2')
                 .and_call_original
 
         expect_any_instance_of(klass).to receive(:event) do |_, category, action, args|

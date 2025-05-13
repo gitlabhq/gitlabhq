@@ -307,9 +307,14 @@ includes users' email addresses.
 
 Changing an enterprise user's primary email to an email from a non-verified domain automatically removes the enterprise badge from the account. This does not alter any account roles or permissions for the user, but does limit the group Owner's ability to manage this account.
 
-### Disable password authentication for enterprise users
+### Disable authentication methods
 
-A top-level group Owner can [disable password authentication for enterprise users](../group/saml_sso/_index.md#disable-password-authentication-for-enterprise-users).
+A top-level group Owner can disable specific authentication methods to reduce the security footprint.
+
+Within the top-level group, the Owner can:
+
+- [Disable password authentication](../group/saml_sso/_index.md#disable-password-authentication-for-enterprise-users).
+- [Disable personal access tokens](../../user/profile/personal_access_tokens.md#disable-personal-access-tokens-for-enterprise-users).
 
 ## Related topics
 

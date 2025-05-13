@@ -46,23 +46,59 @@ For deprecation reviewers (Technical Writers only):
   https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc
 -->
 
+<%-
+  CANCELLED_STATUSES = ["Cancelled", "Canceled"]
+  PENDING_STATUSES = ["Pending"]
+  SPECIAL_STATUSES = CANCELLED_STATUSES + PENDING_STATUSES
+  # Regex for identifying semantic version numbers (like "16.0" or "15.3")
+  # This distinguishes actual version releases from special statuses.
+  VERSION_NUMBER_PATTERN = /^\d+(\.\d+)*$/
+-%>
 <% if milestones.any? -%><div class="js-deprecation-filters"></div><%- end -%>
 <%- milestones.each do |milestone| %>
-<div class="milestone-wrapper" data-milestone="<%= milestone %>">
+<%-
+  # Process milestone to determine its type and set appropriate attributes
 
+  # Check if this is a special status milestone (like "Pending" or "Cancelled")
+  is_cancelled = CANCELLED_STATUSES.any? { |status| milestone.downcase == status.downcase }
+  is_pending = PENDING_STATUSES.any? { |status| milestone.downcase == status.downcase }
+  is_special_status = is_cancelled || is_pending
+
+  # Special status milestones get a data attribute that allows them to be
+  # treated differently by the filtering JavaScript on the website.
+  special_attr = is_special_status ? " data-special-status=\"true\"" : ""
+
+  # Only add the data-milestone attribute to numeric version milestones
+  # This ensures filtering works correctly by excluding special statuses
+  # from being treated as filterable versions
+  is_version_number = milestone =~ VERSION_NUMBER_PATTERN
+  data_milestone_attr = is_version_number ? " data-milestone=\"#{milestone}\"" : ""
+-%>
+<div class="milestone-wrapper"<%= special_attr %><%= data_milestone_attr %>>
+
+<% if is_cancelled -%>
+## Cancelled changes
+
+The following changes have been cancelled.
+<%- elsif is_pending -%>
+## Pending changes
+
+The following changes have been removed from their original milestone and are being reassessed.
+<%- else -%>
 ## GitLab <%= milestone %>
+<%- end -%>
   <%- entries.select{|d| d["removal_milestone"] == milestone}.each do |deprecation| %>
-<div class="deprecation <% if deprecation["breaking_change"] -%>breaking-change<% end %>" data-milestone="<%= milestone %>">
+<div class="deprecation <% if deprecation["breaking_change"] -%>breaking-change<% end %>"<%= data_milestone_attr %>>
 
 ### <%= deprecation["title"] %>
 
 <div class="deprecation-notes">
 
 - Announced in GitLab <span class="milestone"><%= deprecation["announcement_milestone"]%></span>
-<% if deprecation["end_of_support_milestone"] -%>
+<% if deprecation["end_of_support_milestone"] && !is_special_status -%>
 - End of Support in GitLab <span class="milestone"><%= deprecation["end_of_support_milestone"]%></span>
 <% end -%>
-<% if deprecation["removal_milestone"] -%>
+<% if deprecation["removal_milestone"] && !is_special_status -%>
 - Removal in GitLab <span class="milestone"><%= deprecation["removal_milestone"]%></span><% if deprecation["breaking_change"] -%> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))<% end %>
 <% end -%>
 <% if deprecation["issue_url"] -%>
@@ -70,6 +106,19 @@ For deprecation reviewers (Technical Writers only):
 <%- end -%>
 
 </div>
+<% if is_cancelled -%>
+{{< alert type="note" >}}
+
+This change has been cancelled.
+
+{{< /alert >}}
+<%- elsif is_pending -%>
+{{< alert type="note" >}}
+
+This change has been removed from its original milestone and is being reassessed.
+
+{{< /alert >}}
+<%- end -%>
 
 <%= deprecation["body"] -%>
 

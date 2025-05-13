@@ -107,6 +107,8 @@ The secure stage is responsible for maintaining the following CI/CD Templates an
 
 Changes must always be made to both the CI/CD template _and_ component for your group, and you must also determine if the changes need to be applied to the _latest_ CI/CD template.
 
+Analyzers are also referenced in the [`Secure-Binaries.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Secure-Binaries.gitlab-ci.yml) file for [offline environments](../../user/application_security/offline_deployments/_index.md#using-the-official-gitlab-template). Ensure this file is also kept in sync when doing changes.
+
 ### Execution criteria
 
 [Enabling SAST](../../user/application_security/sast/_index.md#configure-sast-in-your-cicd-yaml) requires including a pre-defined [template](https://gitlab.com/gitlab-org/gitlab/-/blob/ee4d473eb9a39f2f84b719aa0ca13d2b8e11dc7e/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml) to your GitLab CI/CD configuration.
@@ -367,7 +369,7 @@ Choose one of the following scenarios based on whether the major version release
 Assuming the current analyzer release is `v{N}`:
 
 1. [Configure protected tags and branches](#configure-protected-tags-and-branches).
-1. When the milestone of the major release is almost complete, and there are no more changes to be merged into the `default` branch:
+1. During the milestone of the major release, when there are no more changes to be merged into the `default` branch:
    1. Create a `v{N}` branch from the `default` branch.
    1. Create and merge a new Merge Request in the `default` branch containing only the following change to the `CHANGELOG.md` file:
 
@@ -396,7 +398,7 @@ Assuming the current analyzer release is `v{N}`:
 
       Using `release candidates` allows us to release **all breaking changes in a single major version bump**, which follows the [semver guidance](https://semver.org) of only making breaking changes in a major version update.
 
-1. When the milestone of the major release is almost complete, and there are no more changes to be merged into the `default` or `v{N+1}` branches:
+1. During the milestone of the major release, when there are no more changes to be merged into the `default`  or `v{N+1}` branches:
    1. Create a `v{N}` branch from the `default` branch.
    1. Create a Merge Request in the `v{N+1}` branch to squash all the `release candidate` changelog entries into a single entry for `v{N+1}`.
 
@@ -660,9 +662,9 @@ The analyzer images are rebuilt on a daily basis to ensure that we frequently an
 
 This process only applies to the images used in versions of GitLab matching the current MAJOR release. The intent is not to release a newer version each day but rather rebuild each active variant of an image and overwrite the corresponding tags:
 
-- the `MAJOR.MINOR.PATCH` image tag (e.g.: `4.1.7`)
-- the `MAJOR.MINOR` image tag(e.g.: `4.1`)
-- the `MAJOR` image tag (e.g.: `4`)
+- the `MAJOR.MINOR.PATCH` image tag (for example: `4.1.7`)
+- the `MAJOR.MINOR` image tag(for example: `4.1`)
+- the `MAJOR` image tag (for example: `4`)
 - the `latest` image tag
 
 The implementation of the rebuild process may vary [depending on the project](../../user/application_security/detect/vulnerability_scanner_maintenance.md), though a shared CI configuration is available in our [development ci-templates project](https://gitlab.com/gitlab-org/security-products/ci-templates/-/blob/master/includes-dev/docker.yml) to help achieving this.

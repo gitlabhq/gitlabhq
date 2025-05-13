@@ -60,7 +60,7 @@ RSpec.describe TwoFactor::DestroyService, feature_category: :system_access do
       context 'when the executor is authorized to disable two-factor authentication' do
         shared_examples_for 'disables two-factor authentication' do
           it 'returns success' do
-            expect(subject).to eq({ status: :success })
+            expect(subject).to include({ status: :success })
           end
 
           it 'disables the two-factor authentication of the user' do

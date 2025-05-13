@@ -2,10 +2,16 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 import { dispatchSnowplowEvent } from '~/tracking/dispatch_snowplow_event';
 import getStandardContext from '~/tracking/get_standard_context';
+import { isEventEligible } from '~/tracking/utils';
 import { extraContext, servicePingContext } from './mock_data';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/tracking/get_standard_context');
+jest.mock('~/tracking/utils', () => ({
+  ...jest.requireActual('~/tracking/utils'),
+  isEventEligible: jest.fn(),
+  validateEvent: jest.fn(),
+}));
 
 const category = 'Incident Management';
 const action = 'view_incident_details';
@@ -20,6 +26,7 @@ describe('dispatchSnowplowEvent', () => {
   beforeEach(() => {
     snowplowMock.mockClear();
     Sentry.captureException.mockClear();
+    isEventEligible.mockReturnValue(true);
   });
 
   it('calls snowplow trackStructEvent with correct arguments', () => {
@@ -72,5 +79,25 @@ describe('dispatchSnowplowEvent', () => {
     dispatchSnowplowEvent(category, action, {});
 
     expect(Sentry.captureException).toHaveBeenCalledTimes(1);
+  });
+
+  it('returns false when event is not eligible', () => {
+    isEventEligible.mockReturnValue(false);
+
+    const result = dispatchSnowplowEvent(category, action, {});
+
+    expect(result).toBe(false);
+    expect(snowplowMock).not.toHaveBeenCalled();
+  });
+
+  it('returns true and tracks event when event is eligible', () => {
+    isEventEligible.mockReturnValue(true);
+
+    snowplowMock.mockImplementation(() => {});
+
+    const result = dispatchSnowplowEvent(category, action, {});
+
+    expect(result).toBe(true);
+    expect(snowplowMock).toHaveBeenCalledTimes(1);
   });
 });

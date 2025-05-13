@@ -74,14 +74,6 @@
         -# haml-lint:disable InlineJavaScript
         %script#js-confidential-issue-data{ type: "application/json" }= { is_confidential: issuable_sidebar[:confidential], is_editable: can_edit_issuable }.to_json.html_safe
 
-        -# REMOVE BLOCK - cf. https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172577
-        .block
-          .hide-collapsed.gl-flex.gl-items-center.gl-font-bold.gl-leading-20.gl-text-default
-            = _('Confidentiality')
-          .hide-collapsed.gl-text-subtle
-            = _("Confidentiality controls have moved to the issue actions menu (%{icon}) at the top of the page.").html_safe % { icon: sprite_icon('ellipsis_v', size: 12, css_class: 'gl-align-middle') }
-        -# END REMOVE BLOCK
-
         = render_if_exists 'shared/issuable/sidebar_cve_id_request', issuable_sidebar: issuable_sidebar
 
       .js-sidebar-participants-widget-root

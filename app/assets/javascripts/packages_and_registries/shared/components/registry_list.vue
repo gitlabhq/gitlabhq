@@ -96,7 +96,7 @@ export default {
 
 <template>
   <div>
-    <div v-if="!hiddenDelete" class="gl-mb-3 gl-mt-5 gl-flex gl-items-center gl-justify-between">
+    <div v-if="!hiddenDelete" class="gl-my-3 gl-flex gl-items-center gl-justify-between">
       <div class="gl-flex gl-items-center">
         <gl-form-checkbox
           class="gl-ml-2 gl-pt-2"
@@ -107,12 +107,11 @@ export default {
           @change="onChange"
         />
 
-        <p class="gl-mb-0 gl-font-bold">{{ title }}</p>
+        <p class="gl-mb-0">{{ title }}</p>
       </div>
 
       <gl-button
         :disabled="disableDeleteButton"
-        category="secondary"
         variant="danger"
         @click="$emit('delete', selectedItems)"
       >

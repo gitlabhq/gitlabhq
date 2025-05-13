@@ -16,8 +16,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import Tracking from '~/tracking';
 import PersistedPagination from '~/packages_and_registries/shared/components/persisted_pagination.vue';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
-import MetadataDatabaseAlert from '~/packages_and_registries/shared/components/container_registry_metadata_database_alert.vue';
-import DockerHubRateLimitsAlert from '~/vue_shared/components/docker_hub_rate_limits_alert.vue';
+import MetadataDatabaseBanner from '~/packages_and_registries/shared/components/container_registry_metadata_database_banner.vue';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   getPageParams,
@@ -65,14 +64,13 @@ export default {
         /* webpackChunkName: 'container_registry_components' */ '~/packages_and_registries/shared/components/cli_commands.vue'
       ),
     DeleteModal,
-    DockerHubRateLimitsAlert,
     GlSprintf,
     GlLink,
     GlAlert,
     GlSkeletonLoader,
     RegistryHeader,
     DeleteImage,
-    MetadataDatabaseAlert,
+    MetadataDatabaseBanner,
     PersistedPagination,
     PersistedSearch,
   },
@@ -254,9 +252,7 @@ export default {
 
 <template>
   <div>
-    <docker-hub-rate-limits-alert class="gl-my-5" />
-
-    <metadata-database-alert v-if="!config.isMetadataDatabaseEnabled" />
+    <metadata-database-banner v-if="!config.isMetadataDatabaseEnabled" />
     <gl-alert
       v-if="showDeleteAlert"
       :variant="deleteAlertType"
@@ -306,11 +302,13 @@ export default {
             :docker-build-command="dockerBuildCommand"
             :docker-push-command="dockerPushCommand"
             :docker-login-command="dockerLoginCommand"
+            class="!gl-w-auto"
           />
           <gl-button
             v-if="config.showContainerRegistrySettings"
             v-gl-tooltip="$options.i18n.SETTINGS_TEXT"
             icon="settings"
+            class="!gl-w-auto"
             :href="config.settingsPath"
             :aria-label="$options.i18n.SETTINGS_TEXT"
           />

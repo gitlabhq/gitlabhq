@@ -100,6 +100,19 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     end
   end
 
+  shared_examples 'API that accepts active parameter for GroupFinder' do
+    [nil, true, false].each do |active_value|
+      it "passes #{active_value.inspect} active parameter to the GroupsFinder" do
+        params = { active: active_value }
+
+        expect(GroupsFinder).to receive(:new)
+          .with(user1, hash_including(active: active_value)).and_call_original
+
+        get api('/groups', user1), params: params
+      end
+    end
+  end
+
   describe "GET /groups" do
     shared_examples 'groups list N+1' do
       it 'avoids N+1 queries', :use_sql_query_cache do
@@ -602,6 +615,8 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(response_groups).to match_array([group1.id, subgroup1.id])
       end
     end
+
+    it_behaves_like 'API that accepts active parameter for GroupFinder'
   end
 
   describe "GET /groups/:id" do
@@ -990,6 +1005,39 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['shared_runners_setting']).to eq("disabled_and_overridable")
         end
+      end
+    end
+
+    context 'marked_for_deletion_on attribute' do
+      it 'is exposed' do
+        get api("/groups/#{group1.id}", user1)
+
+        expect(json_response).to have_key 'marked_for_deletion_on'
+      end
+    end
+
+    context 'when using the marked_for_deletion_on filter' do
+      let_it_be(:group_with_deletion_on) { create(:group_with_deletion_schedule, name: "group_with_deletion_on", marked_for_deletion_on: Date.parse('2024-01-01'), owners: user1) }
+      let_it_be(:group_without_deletion) { create(:group, name: "group_without_deletion", owners: user1) }
+      let(:response_groups) { json_response.map { |group| group['id'] } }
+
+      it 'returns groups marked for deletion on the specified date' do
+        get api("/groups", user1), params: { marked_for_deletion_on: Date.parse('2024-01-01') }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(response_groups).to contain_exactly(group_with_deletion_on.id)
+        expect(json_response.map { |group| group["marked_for_deletion_on"] }).to contain_exactly(Date.parse('2024-01-01').iso8601)
+      end
+
+      it 'returns all groups when marked_for_deletion_on is not specified' do
+        get api("/groups", user1)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(response_groups).to contain_exactly(group1.id, group_with_deletion_on.id, group_without_deletion.id)
       end
     end
   end
@@ -2417,6 +2465,196 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     end
   end
 
+  describe "POST /groups/:id/archive" do
+    let_it_be(:user1) { create(:user) }
+    let_it_be(:user2) { create(:user) }
+
+    let_it_be_with_refind(:group) { create(:group, owners: user1) }
+    let_it_be_with_refind(:group_2) { create(:group, owners: user1) }
+    let_it_be_with_refind(:project1) { create(:project, namespace: group) }
+    let_it_be_with_refind(:project2) { create(:project, namespace: group) }
+    let_it_be_with_refind(:project3) { create(:project, namespace: group_2) }
+
+    before do
+      stub_feature_flags(archive_group: true)
+    end
+
+    context 'when unauthenticated' do
+      it 'returns 401' do
+        post api("/groups/#{group.id}/archive")
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when authenticated as owner' do
+      it 'archives the group and all of its projects', :aggregate_failures do
+        expect_log_keys(
+          caller_id: "POST /api/:version/groups/:id/archive",
+          route: "/api/:version/groups/:id/archive",
+          root_namespace: group.path
+        )
+
+        post api("/groups/#{group.id}/archive", user1)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(json_response['id']).to eq(group.id)
+        expect(json_response['archived']).to be true
+        expect(group.namespace_settings.reload.archived).to eq(true)
+        expect(project1.reload.archived?).to be true
+        expect(project2.reload.archived?).to be true
+      end
+    end
+
+    context 'when authenticated as owner and group is already archived' do
+      before do
+        group.namespace_settings.update!(archived: true)
+      end
+
+      it 'returns an error', :aggregate_failures do
+        post api("/groups/#{group.id}/archive", user1)
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq("Group is already archived!")
+      end
+    end
+
+    context 'when authenticated as owner and project is shared with the group' do
+      before do
+        project3.project_group_links.create!(
+          group_id: group.id,
+          group_access: Gitlab::Access::DEVELOPER,
+          expires_at: 1.month.from_now
+        )
+      end
+
+      it 'does not archive the shared project', :aggregate_failures do
+        post api("/groups/#{group.id}/archive", user1)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(project1.reload.archived?).to be true
+        expect(project2.reload.archived?).to be true
+        expect(project3.reload.archived?).to be false
+      end
+    end
+
+    context 'when authenticated as non-owner' do
+      it 'returns 403' do
+        post api("/groups/#{group.id}/archive", user2)
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(archive_group: false)
+      end
+
+      it 'returns 403' do
+        post api("/groups/#{group.id}/archive", user1)
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+  end
+
+  describe "POST /groups/:id/unarchive" do
+    let_it_be(:user1) { create(:user) }
+    let_it_be(:user2) { create(:user) }
+
+    let_it_be_with_refind(:group) { create(:group, owners: user1) }
+    let_it_be_with_refind(:group_2) { create(:group, owners: user1) }
+    let_it_be_with_refind(:project1) { create(:project, namespace: group) }
+    let_it_be_with_refind(:project2) { create(:project, namespace: group) }
+    let_it_be_with_refind(:project3) { create(:project, namespace: group_2) }
+
+    before_all do
+      stub_feature_flags(archive_group: true)
+      group.namespace_settings.update!(archived: true)
+      project1.update!(archived: true)
+      project2.update!(archived: true)
+    end
+
+    context 'when unauthenticated' do
+      it 'returns 401' do
+        post api("/groups/#{group.id}/unarchive")
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when authenticated as owner and group is archived' do
+      it 'unarchives the group and all of its projects', :aggregate_failures do
+        expect_log_keys(
+          caller_id: "POST /api/:version/groups/:id/unarchive",
+          route: "/api/:version/groups/:id/unarchive",
+          root_namespace: group.path
+        )
+
+        post api("/groups/#{group.id}/unarchive", user1)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(json_response['id']).to eq(group.id)
+        expect(json_response['archived']).to be false
+        expect(group.namespace_settings.reload.archived).to eq(false)
+        expect(project1.reload.archived?).to be false
+        expect(project2.reload.archived?).to be false
+      end
+    end
+
+    context 'when authenticated as owner and group is already unarchived' do
+      before do
+        group.namespace_settings.update!(archived: false)
+      end
+
+      it 'returns an error', :aggregate_failures do
+        post api("/groups/#{group.id}/unarchive", user1)
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq("Group is already unarchived!")
+      end
+    end
+
+    context 'when authenticated as owner and project is shared with the group' do
+      before do
+        project3.project_group_links.create!(
+          group_id: group.id,
+          group_access: Gitlab::Access::DEVELOPER,
+          expires_at: 1.month.from_now
+        )
+
+        group.namespace_settings.update!(archived: true)
+        project1.update!(archived: true)
+        project2.update!(archived: true)
+        project3.update!(archived: true)
+      end
+
+      it 'does not unarchive the shared project', :aggregate_failures do
+        post api("/groups/#{group.id}/unarchive", user1)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(project1.reload.archived?).to be false
+        expect(project2.reload.archived?).to be false
+        expect(project3.reload.archived?).to be true
+      end
+    end
+
+    context 'when authenticated as non-owner' do
+      it 'returns 403' do
+        post api("/groups/#{group.id}/unarchive", user2)
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(archive_group: false)
+      end
+
+      it 'returns 403' do
+        post api("/groups/#{group.id}/unarchive", user1)
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+  end
+
   describe 'GET /groups/:id/subgroups' do
     let!(:subgroup1) { create(:group, parent: group1) }
     let!(:subgroup2) { create(:group, :private, parent: group1) }
@@ -2575,6 +2813,8 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       let(:parent) { group1 }
       let(:endpoint) { api("/groups/#{group1.id}/subgroups", user1) }
     end
+
+    it_behaves_like 'API that accepts active parameter for GroupFinder'
   end
 
   describe 'GET /groups/:id/descendant_groups' do
@@ -2718,6 +2958,8 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       let(:parent) { group1 }
       let(:endpoint) { api("/groups/#{group1.id}/descendant_groups", user1) }
     end
+
+    it_behaves_like 'API that accepts active parameter for GroupFinder'
   end
 
   describe "POST /groups" do
@@ -3052,115 +3294,99 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
     end
 
-    context 'feature is available' do
-      context 'when delayed group deletion is enabled' do
-        before do
-          stub_application_setting(delayed_group_deletion: true)
+    it_behaves_like 'marks group for delayed deletion'
+
+    context 'when deletion adjourned period is 0' do
+      before do
+        stub_application_setting(deletion_adjourned_period: 0)
+      end
+
+      it_behaves_like 'immediately enqueues the job to delete the group'
+    end
+
+    context 'when delayed group deletion is disabled' do
+      before do
+        stub_application_setting(delayed_group_deletion: false)
+      end
+
+      it_behaves_like 'marks group for delayed deletion'
+    end
+
+    context 'when permanently_remove param is sent' do
+      before do
+        stub_application_setting(delayed_group_deletion: true)
+      end
+
+      context 'if permanently_remove is true' do
+        let(:params) { { permanently_remove: true } }
+
+        context 'if group is a subgroup' do
+          let(:subgroup) { create(:group, parent: group) }
+
+          subject { delete api("/groups/#{subgroup.id}", user), params: params }
+
+          context 'when group is already marked for deletion' do
+            before do
+              create(:group_deletion_schedule, group: subgroup, marked_for_deletion_on: Date.current)
+            end
+
+            context 'when full_path param is not passed' do
+              it_behaves_like 'does not immediately enqueues the job to delete the group',
+                '`full_path` is incorrect. You must enter the complete path for the subgroup.'
+            end
+
+            context 'when full_path param is not equal to full_path' do
+              let(:params) { { permanently_remove: true, full_path: subgroup.path } }
+
+              it_behaves_like 'does not immediately enqueues the job to delete the group',
+                '`full_path` is incorrect. You must enter the complete path for the subgroup.'
+            end
+
+            context 'when the full_path param is passed and it matches the full path of subgroup' do
+              let(:params) { { permanently_remove: true, full_path: subgroup.full_path } }
+
+              it_behaves_like 'immediately enqueues the job to delete the group'
+            end
+          end
+
+          context 'when group is not marked for deletion' do
+            it_behaves_like 'does not immediately enqueues the job to delete the group', 'Group must be marked for deletion first.'
+          end
         end
 
-        it_behaves_like 'marks group for delayed deletion'
+        context 'if group is not a subgroup' do
+          subject { delete api("/groups/#{group.id}", user), params: params }
 
-        context 'when deletion adjourned period is 0' do
-          before do
-            stub_application_setting(deletion_adjourned_period: 0)
-          end
-
-          it_behaves_like 'immediately enqueues the job to delete the group'
-        end
-
-        context 'when permanently_remove param is sent' do
-          before do
-            stub_application_setting(delayed_group_deletion: true)
-          end
-
-          context 'if permanently_remove is true' do
-            let(:params) { { permanently_remove: true } }
-
-            context 'if group is a subgroup' do
-              let(:subgroup) { create(:group, parent: group) }
-
-              subject { delete api("/groups/#{subgroup.id}", user), params: params }
-
-              context 'when group is already marked for deletion' do
-                before do
-                  create(:group_deletion_schedule, group: subgroup, marked_for_deletion_on: Date.current)
-                end
-
-                context 'when full_path param is not passed' do
-                  it_behaves_like 'does not immediately enqueues the job to delete the group',
-                    '`full_path` is incorrect. You must enter the complete path for the subgroup.'
-                end
-
-                context 'when full_path param is not equal to full_path' do
-                  let(:params) { { permanently_remove: true, full_path: subgroup.path } }
-
-                  it_behaves_like 'does not immediately enqueues the job to delete the group',
-                    '`full_path` is incorrect. You must enter the complete path for the subgroup.'
-                end
-
-                context 'when the full_path param is passed and it matches the full path of subgroup' do
-                  let(:params) { { permanently_remove: true, full_path: subgroup.full_path } }
-
-                  it_behaves_like 'immediately enqueues the job to delete the group'
-                end
-              end
-
-              context 'when group is not marked for deletion' do
-                it_behaves_like 'does not immediately enqueues the job to delete the group', 'Group must be marked for deletion first.'
-              end
-            end
-
-            context 'if group is not a subgroup' do
-              subject { delete api("/groups/#{group.id}", user), params: params }
-
-              it_behaves_like 'does not immediately enqueues the job to delete the group', '`permanently_remove` option is only available for subgroups.'
-            end
-          end
-
-          context 'if permanently_remove is not true' do
-            context 'when it is false' do
-              let(:params) { { permanently_remove: false } }
-
-              it_behaves_like 'marks group for delayed deletion'
-            end
-
-            context 'when it is non boolean' do
-              let(:params) { { permanently_remove: 'something_random' } }
-
-              it_behaves_like 'marks group for delayed deletion'
-            end
-          end
+          it_behaves_like 'does not immediately enqueues the job to delete the group', '`permanently_remove` option is only available for subgroups.'
         end
       end
 
-      context 'when the mark for deletion service fails' do
-        before do
-          allow(::Groups::MarkForDeletionService).to receive_message_chain(:new, :execute)
-            .and_return({ status: :error, message: 'error' })
+      context 'if permanently_remove is not true' do
+        context 'when it is false' do
+          let(:params) { { permanently_remove: false } }
+
+          it_behaves_like 'marks group for delayed deletion'
         end
 
-        it 'returns an error' do
-          subject
+        context 'when it is non boolean' do
+          let(:params) { { permanently_remove: 'something_random' } }
 
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']).to eq('error')
+          it_behaves_like 'marks group for delayed deletion'
         end
       end
     end
 
-    context 'feature is not available' do
+    context 'when the mark for deletion service fails' do
       before do
-        stub_feature_flags(downtier_delayed_deletion: false)
+        allow(::Groups::MarkForDeletionService).to receive_message_chain(:new, :execute)
+          .and_return({ status: :error, message: 'error' })
       end
 
-      it_behaves_like 'immediately enqueues the job to delete the group'
+      it 'returns an error' do
+        subject
 
-      context 'when permanently_remove param is sent' do
-        before do
-          params.merge!(permanently_remove: true)
-        end
-
-        it_behaves_like 'immediately enqueues the job to delete the group'
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq('error')
       end
     end
   end
@@ -3174,51 +3400,37 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
     subject { post api("/groups/#{group.id}/restore", user) }
 
-    context 'when the downtier_delayed_deletion feature flag is enabled' do
-      context 'when authenticated as owner' do
-        context 'restoring is successful' do
-          it 'restores the group to original state' do
-            subject
+    context 'when authenticated as owner' do
+      context 'restoring is successful' do
+        it 'restores the group to original state' do
+          subject
 
-            expect(response).to have_gitlab_http_status(:created)
-            expect(json_response['marked_for_deletion_on']).to be_falsey
-          end
-        end
-
-        context 'when restoring fails' do
-          before do
-            allow(::Groups::RestoreService).to receive_message_chain(:new, :execute).and_return({ status: :error, message: 'error' })
-          end
-
-          it 'returns error' do
-            subject
-
-            expect(response).to have_gitlab_http_status(:bad_request)
-            expect(json_response['message']).to eq('error')
-          end
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['marked_for_deletion_on']).to be_falsey
         end
       end
 
-      context 'when authenticated as a user without access to the group' do
-        subject { post api("/groups/#{group.id}/restore", unauthorized_user) }
+      context 'when restoring fails' do
+        before do
+          allow(::Groups::RestoreService).to receive_message_chain(:new, :execute).and_return({ status: :error, message: 'error' })
+        end
 
-        it 'returns 403' do
+        it 'returns error' do
           subject
 
-          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq('error')
         end
       end
     end
 
-    context 'when the downtier_delayed_deletion feature flag is disabled' do
-      before do
-        stub_feature_flags(downtier_delayed_deletion: false)
-      end
+    context 'when authenticated as a user without access to the group' do
+      subject { post api("/groups/#{group.id}/restore", unauthorized_user) }
 
-      it 'returns 404' do
+      it 'returns 403' do
         subject
 
-        expect(response).to have_gitlab_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
   end

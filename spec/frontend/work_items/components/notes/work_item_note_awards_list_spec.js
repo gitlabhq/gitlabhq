@@ -15,6 +15,11 @@ import {
 } from 'jest/work_items/mock_data';
 import { EMOJI_THUMBS_UP, EMOJI_THUMBS_DOWN } from '~/emoji/constants';
 
+jest.mock('~/work_items/notes/award_utils', () => ({
+  ...jest.requireActual('~/work_items/notes/award_utils'),
+  getNewCustomEmojiPath: jest.fn().mockReturnValue('/groups/gitlab-org/-/custom_emoji/new'),
+}));
+
 Vue.use(VueApollo);
 
 describe('Work Item Note Awards List', () => {
@@ -76,6 +81,16 @@ describe('Work Item Note Awards List', () => {
   });
 
   describe('when not editing', () => {
+    it('renders the awards list', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findAwardsList().exists()).toBe(true);
+      expect(findAwardsList().props('customEmojiPath')).toBe(
+        '/groups/gitlab-org/-/custom_emoji/new',
+      );
+    });
+
     it.each([true, false])('passes emoji permission to awards-list', (hasAwardEmojiPermission) => {
       const note = {
         ...firstNote,

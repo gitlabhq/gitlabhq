@@ -3,6 +3,7 @@
 module IncidentManagement
   class ProjectIncidentManagementSetting < ApplicationRecord
     include Gitlab::Utils::StrongMemoize
+    include Gitlab::EncryptedAttribute
 
     belongs_to :project
 
@@ -12,7 +13,7 @@ module IncidentManagement
 
     attr_encrypted :pagerduty_token,
       mode: :per_attribute_iv,
-      key: ::Settings.attr_encrypted_db_key_base_32,
+      key: :db_key_base_32,
       algorithm: 'aes-256-gcm',
       encode: false, # No need to encode for binary column https://github.com/attr-encrypted/attr_encrypted#the-encode-encode_iv-encode_salt-and-default_encoding-options
       encode_iv: false

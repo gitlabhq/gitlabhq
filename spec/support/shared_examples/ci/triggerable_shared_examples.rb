@@ -6,9 +6,8 @@ RSpec.shared_examples 'a triggerable processable' do |factory|
 
     let_it_be(:described_instance) { create(factory) } # rubocop:disable Rails/SaveBang -- This is a factory, not a Rails method call
 
-    context 'when trigger_request is present' do
+    context 'when trigger is present' do
       let_it_be(:trigger) { create(:ci_trigger, project: project) }
-      let_it_be(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, trigger: trigger) }
 
       let(:predefined_trigger_variables) do
         [
@@ -18,7 +17,6 @@ RSpec.shared_examples 'a triggerable processable' do |factory|
       end
 
       before do
-        described_instance.trigger_request = trigger_request
         described_instance.trigger = trigger
       end
 

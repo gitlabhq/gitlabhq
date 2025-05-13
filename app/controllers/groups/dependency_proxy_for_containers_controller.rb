@@ -30,7 +30,12 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
       if result[:manifest]
         send_manifest(result[:manifest], from_cache: result[:from_cache])
       else
-        send_dependency(manifest_header, DependencyProxy::Registry.manifest_url(image, tag), manifest_file_name)
+        send_dependency(
+          manifest_header,
+          DependencyProxy::Registry.manifest_url(image, tag),
+          manifest_file_name,
+          ssrf_params: ssrf_params
+        )
       end
     else
       render status: result[:http_status], json: result[:message]
@@ -44,9 +49,14 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
       event_name = tracking_event_name(object_type: :blob, from_cache: true)
       track_package_event(event_name, :dependency_proxy, namespace: group, user: auth_user)
 
-      send_upload(blob.file)
+      send_upload(blob.file, ssrf_params: ssrf_params)
     else
-      send_dependency(token_header, DependencyProxy::Registry.blob_url(image, permitted_params[:sha]), blob_file_name)
+      send_dependency(
+        token_header,
+        DependencyProxy::Registry.blob_url(image, permitted_params[:sha]),
+        blob_file_name,
+        ssrf_params: ssrf_params
+      )
     end
   end
 
@@ -123,7 +133,8 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
       manifest.file,
       proxy: true,
       redirect_params: { query: { 'response-content-type' => content_type } },
-      send_params: { type: content_type }
+      send_params: { type: content_type },
+      ssrf_params: ssrf_params
     )
   end
 
@@ -182,5 +193,19 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
 
   def manifest_header
     token_header.merge(Accept: ::DependencyProxy::Manifest::ACCEPTED_TYPES)
+  end
+
+  def ssrf_params
+    return {} if Feature.disabled?(:dependency_proxy_for_containers_ssrf_protection, group)
+
+    {
+      ssrf_filter: true,
+      allow_localhost: allow_localhost?,
+      allowed_uris: ObjectStoreSettings.enabled_endpoint_uris
+    }
+  end
+
+  def allow_localhost?
+    Gitlab.dev_or_test_env? || Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
   end
 end

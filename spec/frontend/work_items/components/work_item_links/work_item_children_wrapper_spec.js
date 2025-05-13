@@ -92,7 +92,6 @@ describe('WorkItemChildrenWrapper', () => {
         fullPath: 'test/project',
         workItemType,
         workItemId: 'gid://gitlab/WorkItem/515',
-        workItemIid: '1',
         confidential,
         children,
         isTopLevel,

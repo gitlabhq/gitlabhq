@@ -89,7 +89,7 @@ To be added as a contact, [create a ticket with the GitLab Support team](https:/
 ## Unable to link subscription to namespace
 
 On GitLab.com, if you cannot link a subscription to your namespace, you might have insufficient permissions.
-Ensure that you have the Owner role for that namespace, and review the [transfer restrictions](_index.md#transfer-restrictions).
+Ensure that you have the Owner role for that namespace, and review the [transfer restrictions](../manage_subscription.md#transfer-restrictions).
 
 ## Subscription data fails to synchronize
 

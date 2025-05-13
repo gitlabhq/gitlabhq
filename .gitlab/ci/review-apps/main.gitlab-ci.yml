@@ -44,10 +44,10 @@ review-build-cng-env:
       scripts/trigger-build.rb
       VERSION
   before_script:
-    - apk add --no-cache --update curl  # Not present in ruby-alpine, so we add it manually
     - !reference [".fast-no-clone-job", before_script]
     - !reference [".build-cng-env", before_script]
     - mv VERSION GITLAB_WORKHORSE_VERSION  # GITLAB_WORKHORSE_VERSION is a symlink to VERSION
+    - mkdir -p tmp # create tmp folder for trigger-build.rb due to not cloning repository
 
 review-build-cng:
   extends:

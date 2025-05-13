@@ -21,7 +21,7 @@ package regarding PostgreSQL versions, not all.
 
 Usually, PostgreSQL versions change with major or minor GitLab releases. However, patch versions
 of the Linux package sometimes update the patch level of PostgreSQL. We've established a
-[yearly cadence for PostgreSQL upgrades](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/data-access/database-framework/postgresql-upgrade-cadence/)
+yearly cadence for PostgreSQL upgrades
 and trigger automatic database upgrades in the release before the new version is required.
 
 For example:
@@ -40,6 +40,7 @@ Read more about update policies and warnings in the PostgreSQL
 
 | First GitLab version | PostgreSQL versions | Default version for fresh installs | Default version for upgrades | Notes |
 | -------------- | ------------------- | ---------------------------------- | ---------------------------- | ----- |
+| 18.0.0 | 16.8 | 16.8 | 16.8 | Package upgrades are aborted if PostgreSQL is not upgraded to 16 already. |
 | 17.11.0 | 14.17, 16.8 | 16.8 | 16.8 | Package upgrades automatically perform an upgrade to PostgreSQL 16 for nodes that are not part of a Geo or HA cluster, unless [opted out](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades). |
 | 17.10.0 | 14.17, 16.8 | 16.8 | 16.8 | Fresh installs now default to PostgreSQL 16. |
 | 17.9.2, 17.8.5, 17.7.7 | 14.17, 16.8 | 14.17 | 16.8 | |

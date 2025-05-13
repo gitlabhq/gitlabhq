@@ -8,9 +8,11 @@ class RegenerateCiJobTokenSigningKey < Gitlab::Database::Migration[2.2]
   restrict_gitlab_migration gitlab_schema: :gitlab_main
 
   class ApplicationSetting < MigrationRecord
+    include Gitlab::EncryptedAttribute
+
     attr_encrypted :ci_job_token_signing_key, {
       mode: :per_attribute_iv,
-      key: Settings.attr_encrypted_db_key_base_32,
+      key: :db_key_base_32,
       algorithm: 'aes-256-gcm',
       encode: false,
       encode_iv: false

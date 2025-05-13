@@ -35,6 +35,10 @@ require('gitlab').setup({
 })
 ```
 
+## Update the extension
+
+To update the `gitlab.vim` plugin, use `git pull` or your specific Vim plugin manager.
+
 ## Report issues with the extension
 
 Report any issues, bugs, or feature requests in the

@@ -1,5 +1,5 @@
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import FilteredSearchSpecHelper from 'helpers/filtered_search_spec_helper';
 import waitForPromises from 'helpers/wait_for_promises';

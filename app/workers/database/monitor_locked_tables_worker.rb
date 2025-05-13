@@ -36,6 +36,7 @@ module Database
       tables_lock_info_per_db.each do |database_name, database_results|
         next if database_results[:tables_need_lock].empty?
         break if Feature.disabled?(:lock_tables_in_monitoring, type: :ops)
+        break if Feature.enabled?(:disallow_database_ddl_feature_flags, type: :ops)
 
         LockTablesWorker.perform_async(database_name, database_results[:tables_need_lock])
       end

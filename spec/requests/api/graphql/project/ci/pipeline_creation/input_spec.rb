@@ -222,7 +222,7 @@ RSpec.describe 'Query.project.ciPipelineCreationInputs', feature_category: :pipe
         post_graphql(query, current_user: user)
 
         expect(graphql_errors)
-          .to include(a_hash_including('message' => 'ref can only be an existing branch or tag'))
+          .to include(a_hash_including('message' => 'Can only run new pipelines for an existing branch or tag'))
       end
     end
   end

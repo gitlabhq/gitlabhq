@@ -161,6 +161,12 @@ export default {
       return this.sortDirection === constants.DESC;
     },
     noteableType() {
+      if (this.noteableData.type?.toUpperCase() === constants.INCIDENT_NOTEABLE_TYPE) {
+        return (
+          this.noteableData.type.charAt(0).toUpperCase() +
+          this.noteableData.type.slice(1).toLowerCase()
+        );
+      }
       return this.noteableData.noteableType;
     },
     previewNoteId() {

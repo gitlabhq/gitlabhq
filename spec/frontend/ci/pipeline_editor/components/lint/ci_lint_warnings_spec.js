@@ -1,5 +1,5 @@
 import { GlAlert, GlSprintf } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { trimText } from 'helpers/text_helper';
 import CiLintWarnings from '~/ci/pipeline_editor/components/lint/ci_lint_warnings.vue';
 
@@ -9,17 +9,20 @@ describe('CI lint warnings', () => {
   let wrapper;
 
   const createComponent = (limit = 25) => {
-    wrapper = mount(CiLintWarnings, {
+    wrapper = shallowMountExtended(CiLintWarnings, {
       propsData: {
         warnings,
         maxWarnings: limit,
+      },
+      stubs: {
+        GlSprintf,
       },
     });
   };
 
   const findWarningAlert = () => wrapper.findComponent(GlAlert);
   const findWarnings = () => wrapper.findAll('[data-testid="ci-lint-warning"]');
-  const findWarningMessage = () => trimText(wrapper.findComponent(GlSprintf).text());
+  const findWarningMessage = () => trimText(wrapper.findByTestId('warning-summary').text());
 
   it('displays the warning alert', () => {
     createComponent();

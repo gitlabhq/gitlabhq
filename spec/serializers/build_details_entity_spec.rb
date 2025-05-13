@@ -311,27 +311,13 @@ RSpec.describe BuildDetailsEntity, feature_category: :continuous_integration do
       let_it_be(:trigger) { create(:ci_trigger, project: project) }
       let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project, trigger: trigger) }
       let_it_be(:pipeline_variable) { create(:ci_pipeline_variable, pipeline: pipeline) }
-      let_it_be(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, trigger: trigger) }
-      let_it_be(:build) { create(:ci_build, pipeline: pipeline, trigger_request: trigger_request).present(current_user: user) }
+      let_it_be(:build) { create(:ci_build, pipeline: pipeline).present(current_user: user) }
 
       it 'exposes trigger' do
         expect(subject[:trigger]).to be_present
         expect(subject[:trigger][:short_token]).to eq(build.trigger_short_token)
         expect(subject[:trigger][:variables][0][:key]).to eq(pipeline_variable.key)
         expect(subject[:trigger][:variables][0][:value]).to eq(pipeline_variable.value)
-      end
-
-      context 'when ff ci_read_trigger_from_ci_pipeline is disabled' do
-        before do
-          stub_feature_flags(ci_read_trigger_from_ci_pipeline: false)
-        end
-
-        it 'exposes trigger' do
-          expect(subject[:trigger]).to be_present
-          expect(subject[:trigger][:short_token]).to eq(build.trigger_short_token)
-          expect(subject[:trigger][:variables][0][:key]).to eq(pipeline_variable.key)
-          expect(subject[:trigger][:variables][0][:value]).to eq(pipeline_variable.value)
-        end
       end
     end
   end

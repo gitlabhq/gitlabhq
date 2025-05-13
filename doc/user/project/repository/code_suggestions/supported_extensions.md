@@ -9,7 +9,7 @@ title: Supported extensions and languages
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q
+- Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -17,6 +17,7 @@ title: Supported extensions and languages
 {{< history >}}
 
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+- Changed to include GitLab Duo Core in GitLab 18.0.
 
 {{< /history >}}
 
@@ -156,11 +157,11 @@ To do this:
 
 1. Find your desired language in the list of
    [language identifiers](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocumentItem).
-   You need the **Identifier** for your languages in a later step.
+   You need the identifier for your languages in a later step.
 1. In your IDE, on the top bar, select your IDE name, then select **Settings**.
 1. On the left sidebar, select **Tools > GitLab Duo**.
 1. Under **Code Suggestions Enabled Languages > Additional languages**, add the identifier for each language
-   you want to support. Identifiers should be in lower case, like `html`. Separate multiple identifiers with commas,
+   you want to support. Identifiers should be in lowercase, like `html`. Separate multiple identifiers with commas,
    like `html,powershell,latex`, and don't add leading periods to each identifier.
 1. Select **OK**.
 

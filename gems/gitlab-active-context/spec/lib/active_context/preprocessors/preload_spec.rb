@@ -15,7 +15,7 @@ RSpec.describe ActiveContext::Preprocessors::Preload do
   let(:reference_2) { reference_class.new(collection_id: collection_id, routing: partition, args: object_id) }
 
   let(:mock_adapter) { double }
-  let(:mock_collection) { double(name: collection_name, partition_for: partition) }
+  let(:mock_collection) { double(name: collection_name, partition_for: partition, include_ref_fields: true) }
   let(:mock_object) { double(id: object_id) }
   let(:mock_relation) { double(find_by: mock_object) }
   let(:mock_connection) { double(id: connection_id) }
@@ -60,14 +60,11 @@ RSpec.describe ActiveContext::Preprocessors::Preload do
   end
 
   context 'when the model klass does not implement :preload_indexing_data' do
-    it 'logs and does not raise an error' do
-      expect(::ActiveContext::Logger).to receive(:exception).with(ActiveContext::Preprocessors::Preload::IndexingError)
+    it 'returns all refs as failed' do
+      expect(::ActiveContext::Logger).to receive(:retryable_exception).with(
+        ActiveContext::Preprocessors::Preload::PreloadError, refs: anything)
 
-      expect { preprocess_refs }.not_to raise_error
-    end
-
-    it 'returns references' do
-      expect(preprocess_refs).to eq([reference_1, reference_2])
+      expect(preprocess_refs[:failed]).to match_array([reference_1, reference_2])
     end
   end
 end

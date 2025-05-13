@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
   computed: {
@@ -11,7 +12,9 @@ export default {
       return this.getNoteableDataByProp('archived_project_docs_path');
     },
     lockedIssueDocsPath() {
-      return this.getNoteableDataByProp('locked_discussion_docs_path');
+      return helpPagePath('user/discussions/_index.md', {
+        anchor: 'prevent-comments-by-locking-the-discussion',
+      });
     },
   },
   methods: {

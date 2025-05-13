@@ -1,0 +1,16 @@
+---
+name: gitlab_base.NonStandardListDashes
+description: |
+  Use only standard dashes (hyphens). Do not use:
+  - U+2013: EN DASH
+  - U+2014: EM DASH
+extends: existence
+message: "Do not use EN or EM dashes for list items."
+vocab: false
+level: error
+ignorecase: true
+nonword: true
+link: https://docs.gitlab.com/development/documentation/styleguide/#punctuation
+scope: raw
+tokens:
+  - '^ *?[\u2013\u2014]'

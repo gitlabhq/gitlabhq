@@ -2,35 +2,59 @@ import { ExpandLinesAdapter } from '~/rapid_diffs/expand_lines/adapter';
 import { setHTMLFixture } from 'helpers/fixtures';
 import { getLines } from '~/rapid_diffs/expand_lines/get_lines';
 import { DiffLineRow } from '~/rapid_diffs/expand_lines/diff_line_row';
+import { createAlert } from '~/alert';
 
+jest.mock('~/alert');
 jest.mock('~/rapid_diffs/expand_lines/get_lines');
 
 describe('ExpandLinesAdapter', () => {
-  const getExpandButton = () => document.querySelector('[data-click="expandLines"]');
-  const getResultingHtml = () => document.querySelector('#response');
-  const getSurroundingLines = () => [
-    new DiffLineRow(document.querySelector('[data-hunk-lines="1"]')),
-    new DiffLineRow(document.querySelector('[data-hunk-lines="2"]')),
-  ];
-  const getDiffFileContext = () => {
-    return { data: { diffLinesPath: '/lines' }, viewer: 'text_parallel' };
+  const getExpandButton = (direction = 'up') =>
+    document.querySelector(`[data-expand-direction="${direction}"]`);
+  const getResultingHtml = () => document.querySelector('[data-hunk-lines="3"]');
+  const getSurroundingLines = (direction) => {
+    const prev = getExpandButton(direction).closest('tr').previousElementSibling;
+    const next = getExpandButton(direction).closest('tr').nextElementSibling;
+    return [prev ? new DiffLineRow(prev) : null, next ? new DiffLineRow(next) : null];
   };
+  const getDiffFileContext = () => {
+    return { data: { diffLinesPath: '/lines', viewer: 'text_parallel' } };
+  };
+  const click = (direction) => {
+    return ExpandLinesAdapter.clicks.expandLines.call(
+      getDiffFileContext(),
+      new MouseEvent('click'),
+      getExpandButton(direction),
+    );
+  };
+  // tabindex="0" makes document.activeElement actually work in JSDOM
+  const createLinesResponse = () =>
+    '<tr data-hunk-lines="3"><td><a data-line-number="5" tabindex="0"></a></td></tr>';
 
   beforeEach(() => {
     setHTMLFixture(`
       <table>
         <tbody>
+          <tr>
+            <td>
+              <button data-click="expandLines" data-expand-direction="up"></button>
+            </td>
+          </tr>
           <tr data-hunk-lines="1">
             <td>
             </td>
           </tr>
           <tr>
             <td>
-              <button data-click="expandLines" data-expand-direction="up"></button>
+              <button data-click="expandLines" data-expand-direction="both"></button>
             </td>
           </tr>
           <tr data-hunk-lines="2">
             <td>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <button data-click="expandLines" data-expand-direction="down"></button>
             </td>
           </tr>
         </tbody>
@@ -38,21 +62,30 @@ describe('ExpandLinesAdapter', () => {
     `);
   });
 
-  it('expands lines', async () => {
-    getLines.mockResolvedValueOnce('<div id="response"></div>');
-    await ExpandLinesAdapter.clicks.expandLines.call(
-      getDiffFileContext(),
-      new MouseEvent('click'),
-      getExpandButton(),
-    );
+  it.each(['up', 'both', 'down'])('expands lines in %s direction(s)', async (direction) => {
+    getLines.mockResolvedValueOnce(createLinesResponse());
+    const surroundingLines = getSurroundingLines(direction);
+    await click(direction);
     expect(getLines).toHaveBeenCalledWith({
-      expandDirection: 'up',
-      surroundingLines: getSurroundingLines(),
+      expandDirection: direction,
+      surroundingLines,
       diffLinesPath: '/lines',
       view: 'parallel',
     });
     expect(getResultingHtml()).not.toBe(null);
-    expect(getExpandButton()).toBe(null);
+    expect(getExpandButton(direction)).toBe(null);
+  });
+
+  it('focuses first inserted line number', async () => {
+    getLines.mockResolvedValueOnce(createLinesResponse());
+    await click('down');
+    expect(document.activeElement).toEqual(getResultingHtml().querySelector('[data-line-number]'));
+  });
+
+  it('focuses last inserted line number', async () => {
+    getLines.mockResolvedValueOnce(createLinesResponse());
+    await click();
+    expect(document.activeElement).toEqual(getResultingHtml().querySelector('[data-line-number]'));
   });
 
   it('prevents expansion while processing another expansion', () => {
@@ -65,17 +98,21 @@ describe('ExpandLinesAdapter', () => {
           }),
       ),
     );
-    ExpandLinesAdapter.clicks.expandLines.call(
-      getDiffFileContext(),
-      new MouseEvent('click'),
-      getExpandButton(),
-    );
-    ExpandLinesAdapter.clicks.expandLines.call(
-      getDiffFileContext(),
-      new MouseEvent('click'),
-      getExpandButton(),
-    );
+    click();
+    click();
     expect(getLines).toHaveBeenCalledTimes(1);
-    res();
+    res(createLinesResponse());
+  });
+
+  it('handles lines fetching error', async () => {
+    const error = new Error();
+    getLines.mockRejectedValue(error);
+    await click();
+    expect(createAlert).toHaveBeenCalledWith({
+      message: 'Failed to expand lines, please try again.',
+      error,
+    });
+    expect(getExpandButton().closest('tr').dataset.loading).toBe(undefined);
+    expect(getExpandButton().disabled).toBe(false);
   });
 });

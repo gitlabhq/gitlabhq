@@ -9,32 +9,11 @@ class MigrateGlobalSearchSettingsInApplicationSettingsV2 < Gitlab::Database::Mig
   end
 
   def up
-    ApplicationSetting.reset_column_information
-
-    application_setting = ApplicationSetting.last
-    return unless application_setting
-
-    # rubocop:disable Gitlab/FeatureFlagWithoutActor -- Does not execute in user context
-    search_settings = application_setting.search
-    search_settings[:global_search_block_anonymous_searches_enabled] =
-      Feature.enabled?(:block_anonymous_global_searches)
-
-    if Gitlab.ee?
-      search_settings[:global_search_limited_indexing_enabled] =
-        Feature.enabled?(:advanced_global_search_for_limited_indexing)
-    end
-    # rubocop:enable Gitlab/FeatureFlagWithoutActor
-
-    application_setting.update_columns(search: search_settings, updated_at: Time.current)
+    # no-op
+    # references to feature flags removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188747
   end
 
   def down
-    application_setting = ApplicationSetting.last
-    return unless application_setting
-
-    search_settings_hash = application_setting.search
-    search_settings_hash.delete('global_search_block_anonymous_searches_enabled')
-    search_settings_hash.delete('global_search_limited_indexing_enabled')
-    application_setting.update_column(:search, search_settings_hash)
+    # No op
   end
 end

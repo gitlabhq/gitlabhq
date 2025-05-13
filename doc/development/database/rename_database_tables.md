@@ -52,19 +52,24 @@ Note that, in this release (N.M), the `tickets` database table does not exist ye
 
 ### Release N.M+1: Rename the database table
 
-Consider the next release as "Release N.M".
+Consider the next release as "Release N.M+1".
 
-Execute a standard migration (not a post-migration):
+1. Execute a standard migration (not a post-migration):
 
-```ruby
-  def up
-    rename_table_safely(:issues, :tickets)
-  end
+   ```ruby
+      def up
+        rename_table_safely(:issues, :tickets)
+      end
 
-  def down
-    undo_rename_table_safely(:issues, :tickets)
-  end
-```
+      def down
+        undo_rename_table_safely(:issues, :tickets)
+      end
+    ```
+
+<!-- vale gitlab_base.Substitutions = NO -->
+1. Rename the table's [dictionary file](database_dictionary.md) (under `db/docs`) with the new name (like `db/docs/tickets.yml` in this example). Update `introduced_by_url` and `milestone` attributes.
+<!-- vale gitlab_base.Substitutions = YES -->
+1. Create an entry for the interim view (with the old table's name) in `db/docs/deleted_views`. This is because the view gets deleted by [`finalize_table_rename`](https://gitlab.com/gitlab-org/gitlab/-/blob/33dabf39e75ef01cd0914ed44f0954c8b72d5fe3/lib/gitlab/database/rename_table_helpers.rb#L20) in the post-deployment migration of the same merge request.
 
 **Important notes:**
 
@@ -100,7 +105,7 @@ At this point, we don't have applications using the old database table name in t
      end
    ```
 
-1. Additionally the table definition from `TABLES_TO_BE_RENAMED` **must** be removed.
+1. The table name **must** be removed from `TABLES_TO_BE_RENAMED`.
 
    To do so, edit the `TABLES_TO_BE_RENAMED` constant in `lib/gitlab/database.rb`:
 

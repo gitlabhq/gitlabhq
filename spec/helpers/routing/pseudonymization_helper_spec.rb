@@ -326,7 +326,28 @@ RSpec.describe ::Routing::PseudonymizationHelper, feature_category: :product_ana
       stub_feature_flags(mask_page_urls: false)
     end
 
+    context 'when snowplow is enabled' do
+      before do
+        stub_application_setting(snowplow_enabled: true)
+      end
+
+      it 'returns nil' do
+        expect(subject).to be_nil
+      end
+    end
+
+    context 'when snowplow is disabled' do
+      before do
+        stub_application_setting(snowplow_enabled: false)
+      end
+
+      it 'does NOT return nil, but generates masked url' do
+        expect(subject).to eq("http://test.host")
+      end
+    end
+
     it 'returns nil' do
+      stub_application_setting(snowplow_enabled: true)
       expect(subject).to be_nil
     end
   end

@@ -229,7 +229,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   # Overridden in EE
   def build_auth_user_params
-    { organization_id: Current.organization&.id }
+    { organization_id: Current.organization.id }
   end
 
   # Overridden in EE

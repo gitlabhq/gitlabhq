@@ -159,7 +159,7 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
       end
 
       it 'does not include download_links' do
-        expect(subject[:download_links]).to be_empty
+        expect(subject[:download_links]).to eq([])
       end
     end
 
@@ -406,6 +406,70 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
     end
   end
 
+  describe '#code_dropdown_ide_data' do
+    before do
+      helper.instance_variable_set(:@project, project)
+      helper.instance_variable_set(:@ref, sha)
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive(:show_web_ide_button?).and_return(true)
+      allow(helper).to receive(:show_gitpod_button?).and_return(false)
+      allow(helper).to receive(:web_ide_url).and_return("/-/ide/project/#{project.full_path}/edit/#{sha}")
+      allow(helper).to receive(:gitpod_url).and_return('')
+    end
+
+    subject { helper.code_dropdown_ide_data }
+
+    it 'returns a hash with IDE-related attributes' do
+      expect(subject).to include(
+        gitpod_enabled: false,
+        show_web_ide_button: true,
+        show_gitpod_button: false,
+        web_ide_url: "/-/ide/project/#{project.full_path}/edit/#{sha}",
+        gitpod_url: ''
+      )
+    end
+
+    context 'when user has gitpod enabled' do
+      before do
+        user.gitpod_enabled = true
+      end
+
+      it 'includes gitpod_enabled: true' do
+        expect(subject).to include(gitpod_enabled: true)
+      end
+    end
+
+    context 'when there is no current user' do
+      before do
+        allow(helper).to receive(:current_user).and_return(nil)
+      end
+
+      it 'includes gitpod_enabled: false' do
+        expect(subject).to include(gitpod_enabled: false)
+      end
+    end
+
+    context 'when web IDE button is not shown' do
+      before do
+        allow(helper).to receive(:show_web_ide_button?).and_return(false)
+      end
+
+      it 'includes show_web_ide_button: false' do
+        expect(subject).to include(show_web_ide_button: false)
+      end
+    end
+
+    context 'when gitpod button is shown' do
+      before do
+        allow(helper).to receive(:show_gitpod_button?).and_return(true)
+      end
+
+      it 'includes show_gitpod_button: true' do
+        expect(subject).to include(show_gitpod_button: true)
+      end
+    end
+  end
+
   describe '.patch_branch_name' do
     before do
       allow(helper).to receive(:current_user).and_return(user)
@@ -465,6 +529,155 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
         expect(subject).to match a_hash_including(
           fork_path: fork_path,
           fork_modal_id: 'modal-confirm-fork-webide')
+      end
+    end
+  end
+
+  describe '#compact_code_dropdown_data' do
+    let(:ref) { 'main' }
+    let(:archive_prefix) { "#{project.path}-#{ref}" }
+
+    before do
+      helper.instance_variable_set(:@project, project)
+      helper.instance_variable_set(:@ref, ref)
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive(:ssh_enabled?).and_return(true)
+      allow(helper).to receive(:http_enabled?).and_return(true)
+      allow(helper).to receive(:show_xcode_link?).and_return(false)
+      allow(helper).to receive(:code_dropdown_ide_data)
+                         .and_return({
+                           gitpod_enabled: false,
+                           show_web_ide_button: true,
+                           show_gitpod_button: false,
+                           web_ide_url: "/-/ide/project/#{project.full_path}/edit/#{ref}",
+                           gitpod_url: ''
+                         })
+    end
+
+    subject { helper.compact_code_dropdown_data(project, ref) }
+
+    it 'returns a hash with the expected keys' do
+      expected_keys = [
+        :ssh_url, :http_url, :xcode_url,
+        :ide_data, :directory_download_links
+      ]
+      expect(subject.keys).to match_array(expected_keys)
+    end
+
+    it 'includes SSH URL when SSH is enabled' do
+      expect(subject[:ssh_url]).to eq(ssh_clone_url_to_repo(project))
+    end
+
+    it 'includes HTTP URL when HTTP is enabled' do
+      expect(subject[:http_url]).to eq(http_clone_url_to_repo(project))
+    end
+
+    it 'includes empty Xcode URL when Xcode link is not shown' do
+      expect(subject[:xcode_url]).to eq('')
+    end
+
+    context 'when current user has a namespace' do
+      before do
+        allow(user).to receive(:namespace).and_return(build_stubbed(:namespace))
+      end
+
+      it 'includes IDE data as JSON' do
+        ide_data = {
+          gitpod_enabled: false,
+          show_web_ide_button: true,
+          show_gitpod_button: false,
+          web_ide_url: "/-/ide/project/#{project.full_path}/edit/#{ref}",
+          gitpod_url: ''
+        }
+        expect(subject[:ide_data]).to eq(ide_data.to_json)
+      end
+    end
+
+    context 'when current user does not have a namespace' do
+      before do
+        allow(user).to receive(:namespace).and_return(nil)
+      end
+
+      it 'returns empty IDE data' do
+        expect(subject[:ide_data]).to eq('')
+      end
+    end
+
+    context 'when there is no current user' do
+      before do
+        allow(helper).to receive(:current_user).and_return(nil)
+      end
+
+      it 'returns empty IDE data' do
+        expect(subject[:ide_data]).to eq('')
+      end
+    end
+
+    context 'for repository' do
+      context 'when it is not empty' do
+        before do
+          allow(project).to receive(:empty_repo?).and_return(false)
+        end
+
+        it 'includes directory download links as JSON' do
+          expected_links = helper.download_links(project, ref, archive_prefix).to_json
+          expect(subject[:directory_download_links]).to eq(expected_links)
+        end
+      end
+
+      context 'when it is empty' do
+        before do
+          allow(project).to receive(:empty_repo?).and_return(true)
+        end
+
+        it 'includes empty directory download links' do
+          expect(subject[:directory_download_links]).to be_empty
+        end
+      end
+    end
+
+    context 'when SSH is disabled' do
+      before do
+        allow(helper).to receive(:ssh_enabled?).and_return(false)
+      end
+
+      it 'returns empty SSH URL' do
+        expect(subject[:ssh_url]).to eq('')
+      end
+    end
+
+    context 'when HTTP is disabled' do
+      before do
+        allow(helper).to receive(:http_enabled?).and_return(false)
+      end
+
+      it 'returns empty HTTP URL' do
+        expect(subject[:http_url]).to eq('')
+      end
+    end
+
+    context 'when Xcode link should be shown' do
+      before do
+        allow(helper).to receive(:show_xcode_link?).and_return(true)
+        allow(helper).to receive(:xcode_uri_to_repo).with(project).and_return('xcode://example.com/project.git')
+      end
+
+      it 'includes Xcode URL' do
+        expect(subject[:xcode_url]).to eq('xcode://example.com/project.git')
+      end
+    end
+
+    context 'when ref is nil' do
+      let(:ref) { nil }
+
+      before do
+        allow(project).to receive(:empty_repo?).and_return(false)
+      end
+
+      it 'uses empty string for archive prefix' do
+        expect(helper).to receive(:download_links).with(project, nil, '').and_return([])
+
+        subject
       end
     end
   end

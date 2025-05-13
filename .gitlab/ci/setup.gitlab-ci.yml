@@ -90,6 +90,7 @@ gitlab_git_test:
 verify-tests-yml:
   extends:
     - .setup:rules:verify-tests-yml
+    - .failure_category_after_script
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.20
   stage: preflight
   needs: []
@@ -111,6 +112,7 @@ generate-frontend-fixtures-mapping:
   extends:
     - .setup:rules:generate-frontend-fixtures-mapping
     - .use-pg16
+    - .failure_category_after_script
     - .ruby-cache
   needs: ["setup-test-env"]
   stage: prepare
@@ -126,7 +128,9 @@ generate-frontend-fixtures-mapping:
       - ${FRONTEND_FIXTURES_MAPPING_PATH}
 
 detect-tests:
-  extends: .rails:rules:detect-tests
+  extends:
+    - .rails:rules:detect-tests
+    - .failure_category_after_script
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-slim
   needs: []
   stage: prepare
@@ -212,7 +216,7 @@ e2e-test-pipeline-generate:
 
 # This is the start of the chain of E2E jobs for CE
 # After playing this, it'll follow up with:
-# compile-production-assets as-if-foss -> build-assets-image as-if-foss --\
+# compile-production-assets as-if-foss --\
 #                                                                         \-> e2e:test-on-omnibus-ce
 # build-qa-image as-if-foss ----------------------------------------------/
 e2e-test-pipeline-generate as-if-foss:

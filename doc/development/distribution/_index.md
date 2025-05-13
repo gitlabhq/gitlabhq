@@ -16,7 +16,7 @@ to one must be made to the other to retain feature parity.
 ## Contributing
 
 The primary projects handled by Distribution are listed below. For more
-information, visit the [Distribution team engineering handbook page](https://handbook.gitlab.com/handbook/engineering/infrastructure/core-platform/systems/distribution/)
+information, visit the [Distribution team engineering handbook page](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/gitlab-delivery/distribution/)
 or select one of the subsections in the navigation bar.
 
 ### GitLab application

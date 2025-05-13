@@ -82,8 +82,12 @@ RSpec.describe Ci::RunningBuild, feature_category: :continuous_integration do
     end
   end
 
-  it_behaves_like 'cleanup by a loose foreign key' do
-    let!(:parent) { create(:project) }
-    let!(:model) { create(:ci_running_build, project: parent) }
+  describe 'loose foreign keys' do
+    context 'with loose foreign key on projects.id' do
+      it_behaves_like 'cleanup by a loose foreign key' do
+        let!(:parent) { project }
+        let!(:model) { create(:ci_running_build, project: parent) }
+      end
+    end
   end
 end

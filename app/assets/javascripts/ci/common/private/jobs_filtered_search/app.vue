@@ -40,16 +40,14 @@ export default {
         },
       ];
 
-      if (this.glFeatures.populateAndUseBuildSourceTable) {
-        tokens.push({
-          type: TOKEN_TYPE_JOBS_SOURCE,
-          title: TOKEN_TITLE_JOBS_SOURCE,
-          icon: 'trigger-source',
-          unique: true,
-          token: JobSourceToken,
-          operators: OPERATORS_IS,
-        });
-      }
+      tokens.push({
+        type: TOKEN_TYPE_JOBS_SOURCE,
+        title: TOKEN_TITLE_JOBS_SOURCE,
+        icon: 'trigger-source',
+        unique: true,
+        token: JobSourceToken,
+        operators: OPERATORS_IS,
+      });
 
       if (this.glFeatures.adminJobsFilterRunnerType) {
         tokens.push({
@@ -76,10 +74,6 @@ export default {
                 },
               ];
             case 'sources':
-              if (!this.glFeatures.populateAndUseBuildSourceTable) {
-                return acc;
-              }
-
               return [
                 ...acc,
                 {

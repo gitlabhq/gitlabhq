@@ -47,7 +47,6 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:filter_blob_path, current_user)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
     push_frontend_feature_flag(:directory_code_dropdown_updates, current_user)
-    push_frontend_feature_flag(:ci_pipeline_status_realtime, @project)
 
     if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
       push_licensed_feature(:security_orchestration_policies)
@@ -510,6 +509,7 @@ class ProjectsController < Projects::ApplicationController
       mr_default_target_self
       warn_about_potentially_unwanted_characters
       enforce_auth_checks_on_uploads
+      merge_request_title_regex
       emails_enabled
     ]
 
@@ -557,6 +557,7 @@ class ProjectsController < Projects::ApplicationController
       :service_desk_enabled,
       :merge_commit_template_or_default,
       :squash_commit_template_or_default,
+      :merge_request_title_regex,
       { project_setting_attributes: project_setting_attributes,
         project_feature_attributes: project_feature_attributes }
     ]

@@ -1,5 +1,5 @@
 ---
-stage: Systems
+stage: Data Access
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Gitaly on Kubernetes
@@ -200,9 +200,9 @@ gitlab:
           memory: 32Mi
 ```
 
-#### Configure concurrency rate limiting
+#### Configure concurrency limiting
 
-As well as using cgroups, you can use concurrency limits to further help protect the service from abnormal traffic patterns. For more information, see
+You can use concurrency limits to help protect the service from abnormal traffic patterns. For more information, see
 [concurrency configuration documentation](concurrency_limiting.md) and [how to monitor limits](monitoring.md#monitor-gitaly-concurrency-limiting).
 
 #### Isolate Gitaly pods

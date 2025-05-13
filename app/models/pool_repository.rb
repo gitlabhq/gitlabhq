@@ -42,6 +42,10 @@ class PoolRepository < ApplicationRecord
       transition all => :obsolete
     end
 
+    event :reinitialize do
+      transition all - [:scheduled] => :none, unless: :pool_exists?
+    end
+
     state all - [:ready] do
       def joinable?
         false
@@ -114,6 +118,10 @@ class PoolRepository < ApplicationRecord
   end
 
   private
+
+  def pool_exists?
+    object_pool.exists?
+  end
 
   def set_disk_path
     update!(disk_path: storage.disk_path) if disk_path.blank?

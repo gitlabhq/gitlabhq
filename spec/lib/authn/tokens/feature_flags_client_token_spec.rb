@@ -13,8 +13,11 @@ RSpec.describe Authn::Tokens::FeatureFlagsClientToken, :aggregate_failures, feat
   context 'with valid Feature Flags Client token' do
     let(:plaintext) { feature_flags_client.token }
     let(:valid_revocable) { feature_flags_client }
+    let_it_be(:default_prefix) { ::Operations::FeatureFlagsClient::FEATURE_FLAGS_CLIENT_TOKEN_PREFIX }
 
     it_behaves_like 'finding the valid revocable'
+
+    it_behaves_like 'contains instance prefix when enabled'
 
     describe '#revoke!' do
       subject(:revoke) { token.revoke!(user) }

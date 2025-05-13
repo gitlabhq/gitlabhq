@@ -19,6 +19,52 @@ RSpec.describe Projects::RunnersController, feature_category: :fleet_visibility 
     sign_in(user)
   end
 
+  describe '#show' do
+    context 'when user is maintainer' do
+      before_all do
+        project.add_maintainer(user)
+      end
+
+      it 'renders show with 200 status code' do
+        get :show, params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      context 'with an instance runner' do
+        let(:runner) { create(:ci_runner, :instance) }
+
+        it 'renders show with 200 status code' do
+          get :show, params: params
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+    end
+
+    context 'when user is not maintainer' do
+      before_all do
+        project.add_developer(user)
+      end
+
+      it 'renders a 404' do
+        get :show, params: params
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      context 'with an instance runner' do
+        let(:runner) { create(:ci_runner, :instance) }
+
+        it 'renders a 404' do
+          get :show, params: params
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+  end
+
   describe '#new' do
     let(:params) do
       {

@@ -2,6 +2,8 @@
 import { GlTooltipDirective, GlButton, GlButtonGroup, GlLoadingIcon } from '@gitlab/ui';
 import { InternalEvents } from '~/tracking';
 import { HISTORY_BUTTON_CLICK } from '~/tracking/constants';
+import { logError } from '~/lib/logger';
+import { captureException } from '~/sentry/sentry_browser_wrapper';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import pathLastCommitQuery from 'shared_queries/repository/path_last_commit.query.graphql';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
@@ -59,44 +61,46 @@ export default {
           pipeline: pipelines?.length && pipelines[0].node,
         };
       },
+      result() {
+        // we use a manual subscribeToMore call due to issues with
+        // the skip hook not working correctly for the subscription
+        if (this.commit?.pipeline?.id) {
+          this.$apollo.queries.commit.subscribeToMore({
+            document: pipelineCiStatusUpdatedSubscription,
+            variables: {
+              pipelineId: this.commit.pipeline.id,
+            },
+            updateQuery(
+              previousData,
+              {
+                subscriptionData: {
+                  data: { ciPipelineStatusUpdated },
+                },
+              },
+            ) {
+              if (ciPipelineStatusUpdated) {
+                const updatedData = structuredClone(previousData);
+                const pipeline =
+                  updatedData.project?.repository?.paginatedTree?.nodes[0]?.lastCommit?.pipelines
+                    ?.edges[0]?.node || {};
+
+                pipeline.detailedStatus = ciPipelineStatusUpdated.detailedStatus;
+
+                return updatedData;
+              }
+
+              return previousData;
+            },
+          });
+        }
+      },
       error(error) {
+        logError(`Unexpected error while fetching projectInfo query`, error);
+        captureException(error);
+
         throw error;
       },
       pollInterval: POLL_INTERVAL,
-      subscribeToMore: {
-        document() {
-          return pipelineCiStatusUpdatedSubscription;
-        },
-        variables() {
-          return {
-            pipelineId: this.commit?.pipeline?.id,
-          };
-        },
-        skip() {
-          return !this.showRealTimePipelineStatus || !this.commit?.pipeline?.id;
-        },
-        updateQuery(
-          previousData,
-          {
-            subscriptionData: {
-              data: { ciPipelineStatusUpdated },
-            },
-          },
-        ) {
-          if (ciPipelineStatusUpdated) {
-            const updatedData = structuredClone(previousData);
-            const pipeline =
-              updatedData.project?.repository?.paginatedTree?.nodes[0]?.lastCommit?.pipelines
-                ?.edges[0]?.node || {};
-
-            pipeline.detailedStatus = ciPipelineStatusUpdated.detailedStatus;
-
-            return updatedData;
-          }
-
-          return previousData;
-        },
-      },
     },
   },
   props: {
@@ -128,9 +132,6 @@ export default {
     },
     showCommitId() {
       return this.commit?.sha?.substr(0, 8);
-    },
-    showRealTimePipelineStatus() {
-      return this.glFeatures.ciPipelineStatusRealtime;
     },
   },
   watch: {

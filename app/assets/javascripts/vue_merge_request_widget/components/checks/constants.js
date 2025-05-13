@@ -39,6 +39,7 @@ export const FAILURE_REASONS = {
   locked_lfs_files: __('All LFS files must be unlocked.'),
   security_policy_violations: __('All policy rules must be satisfied.'),
   merge_time: __('Cannot merge until this date and time.'),
+  title_regex: __('The title must match the required regex.'),
 };
 
 export const ICON_NAMES = Object.freeze({

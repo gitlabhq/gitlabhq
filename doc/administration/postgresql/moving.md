@@ -46,9 +46,9 @@ To move databases from one instance to another:
 
    In rare occasions, you might notice database performance issues after you perform
    a `pg_dump` and restore. This can happen because `pg_dump` does not contain the statistics
-   [used by the optimizer to make query planning decisions](https://www.postgresql.org/docs/14/app-pgdump.html).
+   [used by the optimizer to make query planning decisions](https://www.postgresql.org/docs/16/app-pgdump.html).
    If performance degrades after a restore, fix the problem by finding the problematic query,
-   then running ANALYZE on the tables used by the query.  
+   then running ANALYZE on the tables used by the query.
 
    {{< /alert >}}
 

@@ -169,6 +169,7 @@ export const packageData = (extend) => ({
   protectionRuleExists: false,
   ...userPermissionsData,
   ...extend,
+  metadata: null,
 });
 
 export const conanMetadata = () => ({
@@ -236,13 +237,7 @@ export const packageDetailsQuery = ({ extendPackage = {} } = {}) => ({
   data: {
     package: {
       ...packageData(),
-      metadata: {
-        ...conanMetadata(),
-        ...composerMetadata(),
-        ...pypiMetadata(),
-        ...mavenMetadata(),
-        ...nugetMetadata(),
-      },
+      metadata: packageTypeMetadataQueryMapping[extendPackage.packageType]?.() || null,
       project: {
         id: '1',
         path: 'projectPath',

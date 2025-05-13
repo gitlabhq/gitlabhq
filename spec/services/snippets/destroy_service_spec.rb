@@ -15,7 +15,7 @@ RSpec.describe Snippets::DestroyService, feature_category: :source_code_manageme
 
       it 'returns a ServiceResponse error' do
         expect(subject).to be_error
-        expect(subject.reason).to eq(404)
+        expect(subject.reason).to eq(described_class::SNIPPET_NOT_FOUND_ERROR)
       end
     end
 
@@ -36,7 +36,7 @@ RSpec.describe Snippets::DestroyService, feature_category: :source_code_manageme
 
       it 'returns ServiceResponse error' do
         expect(subject).to be_error
-        expect(subject.reason).to eq(403)
+        expect(subject.reason).to eq(described_class::SNIPPET_ACCESS_ERROR)
       end
     end
 
@@ -47,7 +47,7 @@ RSpec.describe Snippets::DestroyService, feature_category: :source_code_manageme
 
       it 'returns ServiceResponse error' do
         expect(subject).to be_error
-        expect(subject.reason).to eq(400)
+        expect(subject.reason).to eq(described_class::FAILED_TO_DELETE_ERROR)
       end
     end
 

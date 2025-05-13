@@ -2,6 +2,7 @@
 package sendurl
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -187,10 +188,14 @@ func (e *entry) createNewRequest(w http.ResponseWriter, r *http.Request, params 
 
 func (e *entry) handleRequestError(w http.ResponseWriter, r *http.Request, err error, params *entryParams) {
 	status := http.StatusInternalServerError
+	var allowedIPError *transport.AllowedIPError
 
-	if params.TimeoutResponseStatus != 0 && os.IsTimeout(err) {
+	switch {
+	case params.TimeoutResponseStatus != 0 && os.IsTimeout(err):
 		status = params.TimeoutResponseStatus
-	} else if params.ErrorResponseStatus != 0 {
+	case errors.As(err, &allowedIPError):
+		status = http.StatusForbidden
+	case params.ErrorResponseStatus != 0:
 		status = params.ErrorResponseStatus
 	}
 

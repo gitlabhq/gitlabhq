@@ -38,11 +38,6 @@ export default {
       },
     },
   },
-  data() {
-    return {
-      selected: this.value,
-    };
-  },
   computed: {
     statusDropdownOptions() {
       return this.$options.STATUS_LIST.map((status) => ({
@@ -71,14 +66,14 @@ export default {
 <template>
   <gl-collapsible-listbox
     ref="dropdown"
-    v-model="selected"
+    :selected="value"
     :header-text="headerText"
     block
     :toggle-text="currentStatusLabel"
     :items="statusDropdownOptions"
     toggle-class="dropdown-menu-toggle gl-mb-2"
     data-testid="escalation-status-dropdown"
-    @select="$emit('input', selected)"
+    @select="$emit('input', $event)"
   >
     <template #list-item="{ item }">
       <span class="gl-block">{{ item.text }}</span>

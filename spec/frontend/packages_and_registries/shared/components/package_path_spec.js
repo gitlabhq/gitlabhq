@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import PackagePath from '~/packages_and_registries/shared/components/package_path.vue';
 
@@ -6,7 +6,7 @@ describe('PackagePath', () => {
   let wrapper;
 
   const mountComponent = (propsData = { path: 'foo' }) => {
-    wrapper = shallowMount(PackagePath, {
+    wrapper = shallowMountExtended(PackagePath, {
       propsData,
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
@@ -21,7 +21,7 @@ describe('PackagePath', () => {
   const ELLIPSIS_CHEVRON = 'ellipsis-chevron';
   const LEAF_LINK = 'leaf-link';
 
-  const findItem = (name) => wrapper.find(`[data-testid="${name}"]`);
+  const findItem = (name) => wrapper.findByTestId(name);
   const findTooltip = (w) => getBinding(w.element, 'gl-tooltip');
 
   describe.each`

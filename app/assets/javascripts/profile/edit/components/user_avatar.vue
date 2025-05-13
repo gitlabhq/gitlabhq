@@ -3,6 +3,7 @@ import $ from 'jquery';
 import { GlAvatar, GlAvatarLink, GlButton, GlLink, GlSprintf } from '@gitlab/ui';
 import { loadCSSFile } from '~/lib/utils/css_utils';
 import SafeHtmlDirective from '~/vue_shared/directives/safe_html';
+import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 
 import { avatarI18n } from '../constants';
 
@@ -14,6 +15,7 @@ export default {
     GlButton,
     GlLink,
     GlSprintf,
+    SettingsSection,
   },
   directives: {
     SafeHtml: SafeHtmlDirective,
@@ -65,20 +67,18 @@ export default {
 </script>
 
 <template>
-  <div class="js-search-settings-section gl-pb-6">
+  <settings-section :heading="$options.i18n.publicAvatar">
+    <template #description>
+      <gl-sprintf :message="avatarHelpText">
+        <template #gravatar_link>
+          <gl-link :href="gravatarLink.url" target="__blank">
+            {{ gravatarLink.hostname }}
+          </gl-link>
+        </template>
+      </gl-sprintf>
+    </template>
+
     <div class="profile-settings-sidebar">
-      <h4 class="gl-my-0">
-        {{ $options.i18n.publicAvatar }}
-      </h4>
-      <p class="gl-text-subtle">
-        <gl-sprintf :message="avatarHelpText">
-          <template #gravatar_link>
-            <gl-link :href="gravatarLink.url" target="__blank">
-              {{ gravatarLink.hostname }}
-            </gl-link>
-          </template>
-        </gl-sprintf>
-      </p>
       <div
         v-if="brandProfileImageGuidelines"
         v-safe-html="brandProfileImageGuidelines"
@@ -173,5 +173,5 @@ export default {
         </div>
       </div>
     </div>
-  </div>
+  </settings-section>
 </template>

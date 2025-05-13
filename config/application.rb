@@ -41,7 +41,7 @@ module Gitlab
     config.active_support.executor_around_test_case = nil # New default is true
     config.active_support.isolation_level = nil # New default is thread
     config.active_support.key_generator_hash_digest_class = nil # New default is OpenSSL::Digest::SHA256
-    config.active_support.cache_format_version = nil
+    config.active_support.cache_format_version = 7.1
 
     # Rails 6.1
     config.action_dispatch.cookies_same_site_protection = nil # New default is :lax
@@ -87,6 +87,7 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/patch/database_config')
     require_dependency Rails.root.join('lib/gitlab/patch/redis_cache_store')
     require_dependency Rails.root.join('lib/gitlab/patch/old_redis_cache_store')
+    require_dependency Rails.root.join('lib/gitlab/pdf')
     require_dependency Rails.root.join('lib/gitlab/exceptions_app')
 
     unless ::Gitlab.next_rails?
@@ -305,6 +306,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/commit_description.css"
     config.assets.precompile << "page_bundles/commit_rapid_diffs.css"
     config.assets.precompile << "page_bundles/commits.css"
+    config.assets.precompile << "page_bundles/compare_rapid_diffs.css"
     config.assets.precompile << "page_bundles/cycle_analytics.css"
     config.assets.precompile << "page_bundles/dashboard.css"
     config.assets.precompile << "page_bundles/dashboard_projects.css"
@@ -336,6 +338,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/merge_request_analytics.css"
     config.assets.precompile << "page_bundles/merge_request_rapid_diffs.css"
     config.assets.precompile << "page_bundles/merge_requests.css"
+    config.assets.precompile << "page_bundles/merge_request_creation_rapid_diffs.css"
     config.assets.precompile << "page_bundles/milestone.css"
     config.assets.precompile << "page_bundles/ml_experiment_tracking.css"
     config.assets.precompile << "page_bundles/new_namespace.css"

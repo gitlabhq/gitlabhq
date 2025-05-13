@@ -116,7 +116,6 @@ export default {
       :selected="isBlameViewer"
       category="primary"
       variant="default"
-      data-test-id="blame-toggle"
       @click="switchToViewer($options.BLAME_VIEWER)"
       >{{ __('Blame') }}</gl-button
     >

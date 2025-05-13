@@ -14,7 +14,7 @@ module Ci
       partition_foreign_key: :partition_id
     belongs_to :runner, class_name: 'Ci::Runner'
 
-    enum runner_type: ::Ci::Runner.runner_types
+    enum :runner_type, ::Ci::Runner.runner_types
 
     def self.upsert_build!(build)
       raise ArgumentError, 'build has not been picked by a runner' if build.runner.nil?

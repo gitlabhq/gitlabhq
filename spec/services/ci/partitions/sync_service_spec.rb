@@ -50,24 +50,7 @@ RSpec.describe Ci::Partitions::SyncService, feature_category: :ci_scaling do
       end
 
       it 'updates ci_partitions statuses', :aggregate_failures do
-        expect(ci_partition).to receive(:above_threshold?).with(Ci::Partition::MAX_PARTITION_SIZE).and_return(true)
-
-        expect { execute_service }
-          .to change { ci_partition.reload.status }.from(current_status).to(active_status)
-          .and change { next_ci_partition.reload.status }.from(preparing_status).to(current_status)
-      end
-    end
-
-    context 'when executed on staging' do
-      before do
-        allow_next_found_instance_of(Ci::Partition) do |partition|
-          allow(partition).to receive(:all_partitions_exist?).and_return(true)
-        end
-      end
-
-      it 'updates ci_partitions statuses', :aggregate_failures do
-        expect(Gitlab).to receive(:staging?).and_return(true)
-        expect(ci_partition).to receive(:above_threshold?).with(Ci::Partition::GSTG_PARTITION_SIZE).and_return(true)
+        expect(ci_partition).to receive(:above_threshold?).and_return(true)
 
         expect { execute_service }
           .to change { ci_partition.reload.status }.from(current_status).to(active_status)

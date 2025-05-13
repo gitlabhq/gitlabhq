@@ -47,6 +47,26 @@
   }
 }
 
+.pipeline-mini-graph-search {
+  // stylelint-disable-next-line gitlab/no-gl-class
+  .gl-form-input {
+    @apply gl-w-full gl-h-auto gl-py-4 gl-border-none gl-rounded-none gl-text-base gl-leading-normal;
+    padding-left: calc(#{$gl-spacing-scale-7} + #{$gl-spacing-scale-2});
+    padding-right: calc(#{$gl-spacing-scale-6} + #{$gl-spacing-scale-2});
+    background-color: var(--gl-dropdown-search-background-color);
+    @apply gl-border-b;
+
+    &:hover {
+      @apply gl-shadow-none;
+    }
+  }
+
+  // stylelint-disable-next-line gitlab/no-gl-class
+  .gl-search-box-by-type-search-icon {
+    @apply gl-inset-4;
+  }
+}
+
 // Pipeline failed status
 .ci-job-component.ci-job-item-failed:not(:hover):not(:focus) > a {
   @include ci-job-item-failed-status-bg;

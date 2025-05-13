@@ -437,7 +437,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
         end
 
         it 'reports error if repo URL is not a valid Git repository' do
-          stub_request(:get, "http://foo/bar/info/refs?service=git-upload-pack").to_return(status: 200, body: "not-a-git-repo")
+          allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).with('http://foo/bar').and_return(false)
 
           fill_in 'project_import_url', with: 'http://foo/bar'
           # simulate blur event
@@ -449,7 +449,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
         end
 
         it 'reports error if repo URL is not a valid Git repository and submit button is clicked immediately' do
-          stub_request(:get, "http://foo/bar/info/refs?service=git-upload-pack").to_return(status: 200, body: "not-a-git-repo")
+          allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).with('http://foo/bar').and_return(false)
 
           fill_in 'project_import_url', with: 'http://foo/bar'
           click_on 'Create project'
@@ -461,10 +461,8 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
 
         it 'keeps "Import project" tab open after form validation error' do
           collision_project = create(:project, name: 'test-name-collision', namespace: user.namespace)
-          stub_request(:get, "http://foo/bar/info/refs?service=git-upload-pack").to_return(
-            { status: 200,
-              body: '001e# service=git-upload-pack',
-              headers: { 'Content-Type': 'application/x-git-upload-pack-advertisement' } })
+
+          allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).with('http://foo/bar').and_return(true)
 
           fill_in 'project_import_url', with: 'http://foo/bar'
           fill_in 'project_name', with: collision_project.name
@@ -492,7 +490,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
         end
 
         it 'reports error when invalid url is provided' do
-          stub_request(:get, "http://foo/bar/info/refs?service=git-upload-pack").to_return(status: 200, body: "not-a-git-repo")
+          allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).with('http://foo/bar').and_return(false)
 
           fill_in 'project_import_url', with: 'http://foo/bar'
 
@@ -503,10 +501,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
         end
 
         it 'initiates import when valid repo url is provided' do
-          stub_request(:get, "http://foo/bar/info/refs?service=git-upload-pack").to_return(
-            { status: 200,
-              body: '001e# service=git-upload-pack',
-              headers: { 'Content-Type': 'application/x-git-upload-pack-advertisement' } })
+          allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).with('http://foo/bar').and_return(true)
 
           fill_in 'project_import_url', with: 'http://foo/bar'
 

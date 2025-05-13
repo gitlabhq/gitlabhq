@@ -42,13 +42,16 @@ default:
   CREATE_RAILS_FLAKY_TEST_ISSUES: "true"
   CREATE_RAILS_SLOW_TEST_ISSUES: "true"
   CREATE_RAILS_TEST_FAILURE_ISSUES: "true"
+  GLCI_PUSH_RAILS_TEST_FAILURE_ISSUES_TO_GCS: "true"
 
 .default-merge-request-variables: &default-merge-request-variables
-  NO_SOURCEMAPS: "true"
   ADD_SLOW_TEST_NOTE_TO_MERGE_REQUEST: "true"
+  CREATE_RAILS_TEST_FAILURE_ISSUES: "false"
   FF_NETWORK_PER_BUILD: "true"
   FF_TIMESTAMPS: "true"
   FF_USE_FASTZIP: "true"
+  NO_SOURCEMAPS: "true"
+  GLCI_PUSH_RAILS_TEST_FAILURE_ISSUES_TO_GCS: "true"
 
 .if-merge-request-security-canonical-sync: &if-merge-request-security-canonical-sync
   if: '$CI_MERGE_REQUEST_SOURCE_PROJECT_PATH == "gitlab-org/security/gitlab" && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
@@ -229,6 +232,7 @@ variables:
   RSPEC_CHANGED_FILES_PATH: rspec/changed_files.txt
   RSPEC_FAIL_FAST_THRESHOLD: 20
   RSPEC_FAST_QUARANTINE_PATH: rspec/fast_quarantine-gitlab.txt
+  RSPEC_TEST_ALREADY_FAILED_ON_DEFAULT_BRANCH_MARKER_PATH: rspec/test_already_failed_on_master.txt
   RSPEC_LAST_RUN_RESULTS_FILE: rspec/rspec_last_run_results.txt
   RSPEC_MATCHING_JS_FILES_PATH: rspec/js_matching_files.txt
   RSPEC_MATCHING_TESTS_EE_PATH: rspec/matching_tests-ee.txt

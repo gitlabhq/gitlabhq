@@ -24,6 +24,7 @@ export const WIDGET_TYPE_PROGRESS = 'PROGRESS';
 export const WIDGET_TYPE_HIERARCHY = 'HIERARCHY';
 export const WIDGET_TYPE_MILESTONE = 'MILESTONE';
 export const WIDGET_TYPE_ITERATION = 'ITERATION';
+export const WIDGET_TYPE_STATUS = 'STATUS';
 export const WIDGET_TYPE_NOTES = 'NOTES';
 export const WIDGET_TYPE_HEALTH_STATUS = 'HEALTH_STATUS';
 export const WIDGET_TYPE_LINKED_ITEMS = 'LINKED_ITEMS';
@@ -33,6 +34,7 @@ export const WIDGET_TYPE_DEVELOPMENT = 'DEVELOPMENT';
 export const WIDGET_TYPE_CRM_CONTACTS = 'CRM_CONTACTS';
 export const WIDGET_TYPE_EMAIL_PARTICIPANTS = 'EMAIL_PARTICIPANTS';
 export const WIDGET_TYPE_CUSTOM_FIELDS = 'CUSTOM_FIELDS';
+export const WIDGET_TYPE_VULNERABILITIES = 'VULNERABILITIES';
 
 export const WORK_ITEM_TYPE_ENUM_EPIC = 'EPIC';
 export const WORK_ITEM_TYPE_ENUM_INCIDENT = 'INCIDENT';
@@ -86,63 +88,6 @@ export const sprintfWorkItem = (msg, workItemTypeArg, parentWorkItemType = '') =
       parentWorkItemType: parentWorkItemType.toLocaleLowerCase(),
     }),
   );
-};
-
-export const WORK_ITEMS_TYPE_MAP = {
-  [WORK_ITEM_TYPE_ENUM_INCIDENT]: {
-    icon: `issue-type-incident`,
-    name: s__('WorkItem|Incident'),
-    value: WORK_ITEM_TYPE_NAME_INCIDENT,
-  },
-  [WORK_ITEM_TYPE_ENUM_ISSUE]: {
-    icon: `issue-type-issue`,
-    name: s__('WorkItem|Issue'),
-    value: WORK_ITEM_TYPE_NAME_ISSUE,
-    routeParamName: 'issues',
-  },
-  [WORK_ITEM_TYPE_ENUM_TASK]: {
-    icon: `issue-type-task`,
-    name: s__('WorkItem|Task'),
-    value: WORK_ITEM_TYPE_NAME_TASK,
-  },
-  [WORK_ITEM_TYPE_ENUM_TEST_CASE]: {
-    icon: `issue-type-test-case`,
-    name: s__('WorkItem|Test case'),
-    value: WORK_ITEM_TYPE_NAME_TEST_CASE,
-  },
-  [WORK_ITEM_TYPE_ENUM_REQUIREMENTS]: {
-    icon: `issue-type-requirements`,
-    name: s__('WorkItem|Requirements'),
-    value: WORK_ITEM_TYPE_NAME_REQUIREMENTS,
-  },
-  [WORK_ITEM_TYPE_ENUM_OBJECTIVE]: {
-    icon: `issue-type-objective`,
-    name: s__('WorkItem|Objective'),
-    value: WORK_ITEM_TYPE_NAME_OBJECTIVE,
-  },
-  [WORK_ITEM_TYPE_ENUM_KEY_RESULT]: {
-    icon: `issue-type-keyresult`,
-    name: s__('WorkItem|Key result'),
-    value: WORK_ITEM_TYPE_NAME_KEY_RESULT,
-  },
-  [WORK_ITEM_TYPE_ENUM_EPIC]: {
-    icon: `epic`,
-    name: s__('WorkItem|Epic'),
-    value: WORK_ITEM_TYPE_NAME_EPIC,
-    routeParamName: 'epics',
-  },
-};
-
-export const NAME_TO_ENUM_MAP = {
-  [WORK_ITEM_TYPE_NAME_EPIC]: WORK_ITEM_TYPE_ENUM_EPIC,
-  [WORK_ITEM_TYPE_NAME_INCIDENT]: WORK_ITEM_TYPE_ENUM_INCIDENT,
-  [WORK_ITEM_TYPE_NAME_ISSUE]: WORK_ITEM_TYPE_ENUM_ISSUE,
-  [WORK_ITEM_TYPE_NAME_KEY_RESULT]: WORK_ITEM_TYPE_ENUM_KEY_RESULT,
-  [WORK_ITEM_TYPE_NAME_OBJECTIVE]: WORK_ITEM_TYPE_ENUM_OBJECTIVE,
-  [WORK_ITEM_TYPE_NAME_REQUIREMENTS]: WORK_ITEM_TYPE_ENUM_REQUIREMENTS,
-  [WORK_ITEM_TYPE_NAME_TASK]: WORK_ITEM_TYPE_ENUM_TASK,
-  [WORK_ITEM_TYPE_NAME_TEST_CASE]: WORK_ITEM_TYPE_ENUM_TEST_CASE,
-  [WORK_ITEM_TYPE_NAME_TICKET]: WORK_ITEM_TYPE_ENUM_TICKET,
 };
 
 export const FORM_TYPES = {
@@ -232,6 +177,7 @@ export const LINKED_ITEMS_ANCHOR = 'linkeditems';
 export const CHILD_ITEMS_ANCHOR = 'childitems';
 export const TASKS_ANCHOR = 'tasks';
 export const DEVELOPMENT_ITEMS_ANCHOR = 'developmentitems';
+export const VULNERABILITIES_ITEMS_ANCHOR = 'vulnerabilitiesitems';
 
 export const ISSUABLE_EPIC = 'issue-type-epic';
 
@@ -262,8 +208,8 @@ export const RELATED_ITEM_ID_URL_QUERY_PARAM = 'related_item_id';
 export const WORK_ITEM_REFERENCE_CHAR = '#';
 
 export const NEW_WORK_ITEM_IID = 'new-work-item-iid';
-
 export const NEW_WORK_ITEM_GID = 'gid://gitlab/WorkItem/new';
+export const NO_WORK_ITEM_IID = 'no-work-item-iid';
 
 export const NEW_EPIC_FEEDBACK_PROMPT_EXPIRY = '2024-12-31';
 export const NEW_ISSUE_FEEDBACK_PROMPT_EXPIRY = '2025-04-25';
@@ -326,7 +272,36 @@ export const ALLOWED_CONVERSION_TYPES = [
   WORK_ITEM_TYPE_NAME_ISSUE,
 ];
 
-export const WORK_ITEM_TYPE_NAME_MAP = {
+export const NAME_TO_ENUM_MAP = {
+  [WORK_ITEM_TYPE_NAME_EPIC]: WORK_ITEM_TYPE_ENUM_EPIC,
+  [WORK_ITEM_TYPE_NAME_INCIDENT]: WORK_ITEM_TYPE_ENUM_INCIDENT,
+  [WORK_ITEM_TYPE_NAME_ISSUE]: WORK_ITEM_TYPE_ENUM_ISSUE,
+  [WORK_ITEM_TYPE_NAME_KEY_RESULT]: WORK_ITEM_TYPE_ENUM_KEY_RESULT,
+  [WORK_ITEM_TYPE_NAME_OBJECTIVE]: WORK_ITEM_TYPE_ENUM_OBJECTIVE,
+  [WORK_ITEM_TYPE_NAME_REQUIREMENTS]: WORK_ITEM_TYPE_ENUM_REQUIREMENTS,
+  [WORK_ITEM_TYPE_NAME_TASK]: WORK_ITEM_TYPE_ENUM_TASK,
+  [WORK_ITEM_TYPE_NAME_TEST_CASE]: WORK_ITEM_TYPE_ENUM_TEST_CASE,
+  [WORK_ITEM_TYPE_NAME_TICKET]: WORK_ITEM_TYPE_ENUM_TICKET,
+};
+
+export const NAME_TO_ICON_MAP = {
+  [WORK_ITEM_TYPE_NAME_EPIC]: 'epic',
+  [WORK_ITEM_TYPE_NAME_INCIDENT]: 'issue-type-incident',
+  [WORK_ITEM_TYPE_NAME_ISSUE]: 'issue-type-issue',
+  [WORK_ITEM_TYPE_NAME_KEY_RESULT]: 'issue-type-keyresult',
+  [WORK_ITEM_TYPE_NAME_OBJECTIVE]: 'issue-type-objective',
+  [WORK_ITEM_TYPE_NAME_REQUIREMENTS]: 'issue-type-requirements',
+  [WORK_ITEM_TYPE_NAME_TASK]: 'issue-type-task',
+  [WORK_ITEM_TYPE_NAME_TEST_CASE]: 'issue-type-test-case',
+  [WORK_ITEM_TYPE_NAME_TICKET]: 'issue-type-ticket',
+};
+
+export const NAME_TO_ROUTE_MAP = {
+  [WORK_ITEM_TYPE_NAME_EPIC]: WORK_ITEM_TYPE_ROUTE_EPIC,
+  [WORK_ITEM_TYPE_NAME_ISSUE]: WORK_ITEM_TYPE_ROUTE_ISSUE,
+};
+
+export const NAME_TO_TEXT_MAP = {
   [WORK_ITEM_TYPE_NAME_EPIC]: s__('WorkItem|Epic'),
   [WORK_ITEM_TYPE_NAME_INCIDENT]: s__('WorkItem|Incident'),
   [WORK_ITEM_TYPE_NAME_ISSUE]: s__('WorkItem|Issue'),
@@ -338,7 +313,7 @@ export const WORK_ITEM_TYPE_NAME_MAP = {
   [WORK_ITEM_TYPE_NAME_TICKET]: s__('WorkItem|Ticket'),
 };
 
-export const WORK_ITEM_TYPE_NAME_LOWERCASE_MAP = {
+export const NAME_TO_TEXT_LOWERCASE_MAP = {
   [WORK_ITEM_TYPE_NAME_EPIC]: s__('WorkItem|epic'),
   [WORK_ITEM_TYPE_NAME_INCIDENT]: s__('WorkItem|incident'),
   [WORK_ITEM_TYPE_NAME_ISSUE]: s__('WorkItem|issue'),
@@ -373,6 +348,7 @@ export const WORK_ITEM_WIDGETS_NAME_MAP = {
   [WIDGET_TYPE_DESIGNS]: s__('WorkItem|Designs'),
   [WIDGET_TYPE_DEVELOPMENT]: s__('WorkItem|Development'),
   [WIDGET_TYPE_CRM_CONTACTS]: s__('WorkItem|Contacts'),
+  [WIDGET_TYPE_VULNERABILITIES]: s__('WorkItem|Related vulnerabilities'),
 };
 
 export const CUSTOM_FIELDS_TYPE_NUMBER = 'NUMBER';

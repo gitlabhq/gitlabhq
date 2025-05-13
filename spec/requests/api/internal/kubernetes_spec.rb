@@ -272,16 +272,22 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
             k8s_api_proxy_requests_unique_users_via_ci_access: event_data,
             k8s_api_proxy_requests_unique_users_via_user_access: event_data,
             k8s_api_proxy_requests_unique_users_via_pat_access: event_data,
-            register_agent_at_kas: [{
-              project_id: projects.each_value.first.id,
-              agent_version: "v17.1.0",
-              architecture: "arm64"
-            },
+            register_agent_at_kas: [
+              {
+                project_id: projects.each_value.first.id,
+                agent_version: "v17.1.0",
+                architecture: "arm64"
+                # does not send agent_id, because it's an "older" agent
+                # does not send kubernetes_version, because it's an "older" agent
+              },
               {
                 project_id: projects.values.last.id,
-                agent_version: "v17.0.0",
-                architecture: "amd64"
-              }]
+                agent_version: "v18.0.0",
+                architecture: "amd64",
+                agent_id: 12,
+                kubernetes_version: "1.33"
+              }
+            ]
           }
         end
 
@@ -300,6 +306,12 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
                   label: event[:agent_version],
                   property: event[:architecture]
                 }
+
+                additional_properties[:value] = event[:agent_id] if event[:agent_id].present?
+
+                if event[:kubernetes_version].present?
+                  additional_properties[:kubernetes_version] = event[:kubernetes_version]
+                end
               end
 
               expect(Gitlab::InternalEvents).to receive(:track_event)
@@ -313,6 +325,104 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
           end
 
           expect(response).to have_gitlab_http_status(:no_content)
+        end
+      end
+
+      context 'when register_agent_at_kas events are sent with extra telemetry data' do
+        let_it_be(:project) { create(:project) }
+
+        subject { send_request(params: { events: { register_agent_at_kas: [event_data] } }) }
+
+        shared_examples 'tracks event and returns no_content' do
+          it 'tracks event and returns no_content', :aggregate_failures do
+            expect { subject }
+              .to trigger_internal_events('register_agent_at_kas')
+              .with(
+                user: nil,
+                project: project,
+                additional_properties: expected_additional_properties,
+                category: 'InternalEventTracking'
+              )
+          end
+        end
+
+        context 'when event contains empty telemetry data' do
+          let(:event_data) do
+            {
+              project_id: project.id,
+              agent_version: 'v17.1.0',
+              architecture: 'arm64',
+              agent_id: 1,
+              kubernetes_version: '1.30',
+              extra_telemetry_data: {}
+            }
+          end
+
+          let(:expected_additional_properties) do
+            {
+              label: event_data[:agent_version],
+              property: event_data[:architecture],
+              value: event_data[:agent_id],
+              kubernetes_version: event_data[:kubernetes_version]
+            }
+          end
+
+          include_examples 'tracks event and returns no_content'
+        end
+
+        context 'when event contains unknown telemetry data' do
+          let(:event_data) do
+            {
+              project_id: project.id,
+              agent_version: 'v17.1.0',
+              architecture: 'arm64',
+              agent_id: 1,
+              kubernetes_version: '1.30',
+              extra_telemetry_data: {
+                unknown: 'unknown'
+              }
+            }
+          end
+
+          let(:expected_additional_properties) do
+            {
+              label: event_data[:agent_version],
+              property: event_data[:architecture],
+              value: event_data[:agent_id],
+              kubernetes_version: event_data[:kubernetes_version]
+            }
+          end
+
+          include_examples 'tracks event and returns no_content'
+        end
+
+        context 'when event contains installation method and helm chart version in telemetry data' do
+          let(:event_data) do
+            {
+              project_id: project.id,
+              agent_version: 'v17.1.0',
+              architecture: 'arm64',
+              agent_id: 1,
+              kubernetes_version: '1.30',
+              extra_telemetry_data: {
+                installation_method: 'helm-chart',
+                helm_chart_version: '1.0.0'
+              }
+            }
+          end
+
+          let(:expected_additional_properties) do
+            {
+              label: event_data[:agent_version],
+              property: event_data[:architecture],
+              value: event_data[:agent_id],
+              kubernetes_version: event_data[:kubernetes_version],
+              installation_method: 'helm-chart',
+              helm_chart_version: '1.0.0'
+            }
+          end
+
+          include_examples 'tracks event and returns no_content'
         end
       end
 
@@ -629,7 +739,9 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
           'warden.user.user.key' => [[user.id], user.authenticatable_salt],
           '_csrf_token' => csrf_token
         }
-      )
+      ).tap do
+        cookies.delete(Gitlab::Application.config.session_options[:key])
+      end
     end
 
     def stub_user_session_with_no_user_id(user, csrf_token)
@@ -638,7 +750,9 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
           'warden.user.user.key' => [[nil], user.authenticatable_salt],
           '_csrf_token' => csrf_token
         }
-      )
+      ).tap do
+        cookies.delete(Gitlab::Application.config.session_options[:key])
+      end
     end
 
     def mask_token(encoded_token)

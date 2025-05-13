@@ -17,6 +17,11 @@ RSpec.describe 'User sorts merge requests', :js, feature_category: :code_review_
   let_it_be(:project) { create(:project, :public, group: group) }
 
   before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+
     sign_in(user)
 
     visit(project_merge_requests_path(project))

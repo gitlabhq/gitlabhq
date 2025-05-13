@@ -4,28 +4,9 @@
 
 Migrations are similiar to database migrations: they create collections, update schemas, run backfills, etc.
 
-### Migration to create a collection
+See [migrations](migrations.md) for more details.
 
-Create a file in `ActiveContext::Config.migrations_path`, e.g. `ee/db/active_context/migrate/20250311135734_create_merge_requests.rb`:
-
-```ruby
-# frozen_string_literal: true
-
-class CreateMergeRequests < ActiveContext::Migration[1.0]
-  milestone '17.9'
-
-  def migrate!
-    create_collection :merge_requests, number_of_partitions: 3 do |c|
-      c.bigint :issue_id, index: true
-      c.bigint :namespace_id, index: true
-      c.prefix :traversal_ids
-      c.vector :embeddings, dimensions: 768
-    end
-  end
-end
-```
-
-A migration worker will apply migrations for the active connection. See [Migrations](how_it_works.md#migrations).
+A migration worker applies migrations for the active connection. See [Migrations](how_it_works.md#migrations).
 
 If you want to run the worker manually, execute:
 
@@ -86,7 +67,7 @@ Instance methods required:
 
 - `init`: reads from `serialized_args`
 - `as_indexed_json` or `as_indexed_jsons`: a hash or array of hashes containing the data representation of the object
-- `operation`: determines the operation which can be one of `upsert` or `delete`
+- `operation`: determines the operation which can be one of `upsert`, `update` or `delete`. See [operation types](#operation-types) for more details.
 - `identifier`: unique identifier
 
 Optional methods:
@@ -135,7 +116,7 @@ When documents with a populated content field already exists:
 
 ```ruby
 add_preprocessor :embeddings do |refs|
-  apply_embeddings(refs: refs, target_field: :embedding, content_field: :content)
+  apply_embeddings(refs: refs, content_field: :content)
 end
 ```
 
@@ -143,13 +124,33 @@ When the ref doesn't have existing documents:
 
 ```ruby
 add_preprocessor :embeddings do |refs|
-  apply_embeddings(refs: refs, target_field: :embedding, content_field: :title_and_description)
+  apply_embeddings(refs: refs, content_method: :title_and_description)
 end
 
 def title_and_description
   "Title: #{database_record.title}\n\nDescription: #{database_record.description}"
 end
 ```
+
+See [how to set initial embedding model](how_to.md#set-embedding-model) and [how to migrate from one embedding model to another](how_to.md#migrate-from-one-embedding-model-to-another).
+
+### Operation types
+
+#### `upsert`
+
+Creates or updates documents, handling cases where a single reference has less documents than before by performing a delete cleanup operation.
+
+The document content can be full or partial json.
+
+#### `update`
+
+Updates documents that already exist.
+
+The document content can be full or partial json.
+
+#### `delete`
+
+Deletes all documents belonging to a reference.
 
 ### Examples
 

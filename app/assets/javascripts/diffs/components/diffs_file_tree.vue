@@ -5,6 +5,7 @@ import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import { getCookie, setCookie } from '~/lib/utils/common_utils';
 import * as types from '~/diffs/store/mutation_types';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import FileBrowserHeight from '~/diffs/components/file_browser_height.vue';
 import {
   INITIAL_TREE_WIDTH,
   MIN_TREE_WIDTH,
@@ -15,7 +16,7 @@ import TreeList from './tree_list.vue';
 
 export default {
   name: 'DiffsFileTree',
-  components: { TreeList, PanelResizer },
+  components: { FileBrowserHeight, TreeList, PanelResizer },
   minTreeWidth: MIN_TREE_WIDTH,
   maxTreeWidth: window.innerWidth / 2,
   props: {
@@ -34,20 +35,20 @@ export default {
       default: undefined,
       required: false,
     },
+    groupBlobsListItems: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
-    const treeWidth =
-      parseInt(
-        getCookie(TREE_LIST_WIDTH_STORAGE_KEY) || localStorage.getItem(TREE_LIST_WIDTH_STORAGE_KEY),
-        10,
-      ) || INITIAL_TREE_WIDTH;
-
     return {
-      treeWidth,
-      newWidth: null,
-      cachedHeight: null,
-      cachedTop: null,
+      treeWidth: INITIAL_TREE_WIDTH,
+      rowHeight: 0,
       floating: false,
+      newWidth: 0,
+      cachedHeight: 0,
+      cachedTop: 0,
     };
   },
   computed: {
@@ -57,10 +58,12 @@ export default {
     applyNewWidthDebounced() {
       return debounce(this.applyNewWidth, 250);
     },
-    rootStyle() {
+    floatingWrapperStyles() {
+      if (!this.floating) return undefined;
       return {
-        width: `${this.treeWidth}px`,
-        height: this.cachedHeight ? `${this.cachedHeight}px` : undefined,
+        height: `${this.cachedHeight}px`,
+        width: `${this.newWidth}px`,
+        top: `${this.cachedTop}px`,
       };
     },
   },
@@ -69,10 +72,23 @@ export default {
       this.applyNewWidthDebounced();
     },
   },
+  created() {
+    this.restoreTreeWidthUserPreference();
+  },
+  mounted() {
+    const computedStyles = getComputedStyle(this.$refs.root.$el);
+    this.rowHeight = parseInt(computedStyles.getPropertyValue('--file-row-height'), 10);
+  },
   methods: {
     ...mapActions(useLegacyDiffs, {
       setCurrentDiffFile: types.SET_CURRENT_DIFF_FILE,
     }),
+    restoreTreeWidthUserPreference() {
+      const userPreference =
+        getCookie(TREE_LIST_WIDTH_STORAGE_KEY) || localStorage.getItem(TREE_LIST_WIDTH_STORAGE_KEY);
+      if (!userPreference) return;
+      this.treeWidth = parseInt(userPreference, 10);
+    },
     onFileClick(file) {
       this.setCurrentDiffFile(file.fileHash);
       this.$emit('clickFile', file);
@@ -111,22 +127,20 @@ export default {
 </script>
 
 <template>
-  <div
+  <file-browser-height
+    ref="root"
     data-testid="file-browser-tree"
-    :style="rootStyle"
+    :style="{ width: `${treeWidth}px` }"
     class="rd-app-sidebar diff-tree-list"
     :class="{ 'diff-tree-list-floating': floating }"
   >
     <div
       data-testid="file-browser-floating-wrapper"
       class="diff-tree-list-floating-wrapper"
-      :style="{
-        width: newWidth ? `${newWidth}px` : undefined,
-        top: cachedTop ? `${cachedTop}px` : undefined,
-      }"
+      :style="floatingWrapperStyles"
     >
       <panel-resizer
-        class="diff-tree-list-resizer"
+        class="diff-tree-list-resizer gl-hidden lg:gl-block"
         :start-size="treeWidth"
         :min-size="$options.minTreeWidth"
         :max-size="$options.maxTreeWidth"
@@ -139,8 +153,11 @@ export default {
         :hide-file-stats="hideFileStats"
         :loaded-files="loadedFiles"
         :total-files-count="totalFilesCount"
+        :row-height="rowHeight"
+        :group-blobs-list-items="groupBlobsListItems"
         @clickFile="onFileClick"
+        @toggleFolder="$emit('toggleFolder', $event)"
       />
     </div>
-  </div>
+  </file-browser-height>
 </template>

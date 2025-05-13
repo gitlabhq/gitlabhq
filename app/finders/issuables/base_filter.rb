@@ -2,13 +2,13 @@
 
 module Issuables
   class BaseFilter
-    attr_reader :params
-
     FILTER_NONE = 'none'
     FILTER_ANY = 'any'
 
-    def initialize(params:)
+    def initialize(params:, parent: nil, current_user: nil)
       @params = params
+      @parent = parent
+      @current_user = current_user
     end
 
     def filter
@@ -16,6 +16,8 @@ module Issuables
     end
 
     private
+
+    attr_reader :params, :parent, :current_user
 
     def or_params
       params[:or]

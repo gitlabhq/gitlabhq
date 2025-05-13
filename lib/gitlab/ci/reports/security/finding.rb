@@ -16,7 +16,6 @@ module Gitlab
           attr_reader :metadata_version
           attr_reader :name
           attr_reader :old_location
-          attr_reader :project_fingerprint
           attr_reader :report_type
           attr_reader :scanner
           attr_reader :scan
@@ -55,8 +54,6 @@ module Gitlab
             @vulnerability_finding_signatures_enabled = vulnerability_finding_signatures_enabled
             @found_by_pipeline = found_by_pipeline
             @cvss = cvss
-
-            @project_fingerprint = generate_project_fingerprint
           end
 
           def to_hash
@@ -69,7 +66,6 @@ module Gitlab
               evidence
               metadata_version
               name
-              project_fingerprint
               raw_metadata
               report_type
               scanner
@@ -192,10 +188,6 @@ module Gitlab
           end
 
           private
-
-          def generate_project_fingerprint
-            Digest::SHA1.hexdigest(uuid.to_s)
-          end
 
           def location_fingerprints
             @location_fingerprints ||= signature_hexes << location&.fingerprint

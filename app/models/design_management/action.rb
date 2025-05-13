@@ -13,7 +13,7 @@ module DesignManagement
     belongs_to :design, class_name: "DesignManagement::Design", inverse_of: :actions
     belongs_to :version, class_name: "DesignManagement::Version", inverse_of: :actions
 
-    enum event: { creation: 0, modification: 1, deletion: 2 }
+    enum :event, { creation: 0, modification: 1, deletion: 2 }
 
     # we assume sequential ordering.
     scope :ordered, -> { order(version_id: :asc) }

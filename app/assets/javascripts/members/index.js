@@ -4,6 +4,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
 import { parseDataAttributes } from '~/members/utils';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { TABS } from 'ee_else_ce/members/tabs_metadata';
 import MembersTabs from './components/members_tabs.vue';
 import membersStore from './store';
@@ -39,6 +40,8 @@ export const initMembersApp = (el, context, options) => {
     namespaceUserLimit,
     availableRoles,
     reassignmentCsvPath,
+    restrictReassignmentToEnterprise,
+    allowInactivePlaceholderReassignment,
     ...vuexStoreAttributes
   } = parseDataAttributes(el);
 
@@ -84,6 +87,8 @@ export const initMembersApp = (el, context, options) => {
       availableRoles,
       context,
       reassignmentCsvPath,
+      restrictReassignmentToEnterprise,
+      allowInactivePlaceholderReassignment: parseBoolean(allowInactivePlaceholderReassignment),
       group: {
         id: isGroup ? sourceId : null,
         name: groupName,

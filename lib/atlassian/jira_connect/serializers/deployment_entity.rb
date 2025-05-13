@@ -7,7 +7,8 @@ module Atlassian
         include Gitlab::Routing
         include Gitlab::Utils::StrongMemoize
 
-        COMMITS_LIMIT = 5_000
+        COMMITS_LIMIT = 2000
+        ISSUE_KEY_LIMIT = 500
 
         format_with(:iso8601, &:iso8601)
 
@@ -26,7 +27,8 @@ module Atlassian
         expose :generate_deployment_commands_from_integration_configuration, as: :commands
 
         def issue_keys
-          @issue_keys ||= (issue_keys_from_pipeline + issue_keys_from_commits_since_last_deploy).uniq
+          @issue_keys ||= (issue_keys_from_pipeline + issue_keys_from_commits_since_last_deploy)
+            .uniq.first(ISSUE_KEY_LIMIT)
         end
 
         def associations
@@ -109,19 +111,20 @@ module Atlassian
             .successful_deployments
             .id_not_in(deployment.id)
             .ordered
-            .find_by_ref(deployment.ref)
+            .first
             &.commit
 
+          commit_range = if last_deployed_commit
+                           "#{last_deployed_commit.id}..#{deployment.commit.id}"
+                         else
+                           deployment.commit.id
+                         end
+
           commits = project.repository.commits(
-            deployment.ref,
-            before: deployment.commit.created_at,
-            after: last_deployed_commit&.created_at,
+            commit_range,
             skip_merges: true,
             limit: COMMITS_LIMIT
           )
-
-          # Include this deploy's commit, as the `before:` param in `Repository#list_commits_by` excluded it.
-          commits << deployment.commit
 
           commits.flat_map do |commit|
             JiraIssueKeyExtractor.new(commit.message).issue_keys

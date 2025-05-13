@@ -41,8 +41,6 @@ RSpec.describe 'gitlab-backup-cli backup subcommand', type: :thor do
     let(:executor) { Gitlab::Backup::Cli::BackupExecutor }
 
     before do
-      allow(Gitlab::Backup::Cli).to receive(:rails_environment!)
-
       expect_next_instance_of(backup_subcommand) do |instance|
         allow(instance).to receive(:build_context).and_return(context)
       end

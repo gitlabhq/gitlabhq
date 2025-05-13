@@ -10,7 +10,6 @@ module API
 
     before do
       authenticate!
-      not_found! unless Feature.enabled?(:importer_user_mapping_reassignment_csv, current_user)
       forbidden! unless can?(current_user, :owner_access, user_group)
     end
 

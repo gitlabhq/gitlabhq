@@ -145,7 +145,7 @@ RSpec.describe Gitlab::Ci::Config::External::File::Base, feature_category: :pipe
         it 'surfaces interpolation errors' do
           expect(valid?).to be_falsy
           expect(file.errors)
-            .to include('`some-location.yml`: unknown interpolation key: `abcd`')
+            .to include('`some-location.yml`: unknown input name provided: `abcd`')
         end
       end
 

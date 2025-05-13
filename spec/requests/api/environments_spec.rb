@@ -632,6 +632,34 @@ RSpec.describe API::Environments, feature_category: :continuous_delivery do
         end
       end
 
+      context 'with a stopped environment' do
+        before do
+          environment.update!(state: :stopped)
+        end
+
+        it 'returns a 200' do
+          post api("/projects/#{project.id}/environments/#{environment.id}/stop", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('public_api/v4/environment')
+          expect(environment.reload).to be_stopped
+        end
+      end
+
+      context 'with a stopping environment' do
+        before do
+          environment.update!(state: :stopping)
+        end
+
+        it 'returns a 200' do
+          post api("/projects/#{project.id}/environments/#{environment.id}/stop", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('public_api/v4/environment')
+          expect(environment.reload).to be_stopping
+        end
+      end
+
       it 'returns a 404 for non existing id' do
         post api("/projects/#{project.id}/environments/#{non_existing_record_id}/stop", user)
 

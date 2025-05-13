@@ -36,7 +36,7 @@ module Types
           }
 
         def can_invite_members?
-          Ability.allowed?(current_user, :admin_project_member, object.work_item.project)
+          Ability.allowed?(current_user, :invite_project_members, object.work_item.project)
         end
       end
       # rubocop:enable Graphql/AuthorizeTypes

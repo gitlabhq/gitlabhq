@@ -40,10 +40,6 @@ RSpec.describe Resolvers::ProjectJobsResolver, feature_category: :continuous_int
       end
 
       context 'when filtering by source' do
-        before do
-          stub_feature_flags(populate_and_use_build_source_table: true)
-        end
-
         let_it_be(:successful_build_source) { create(:ci_build_source, build: successful_build, source: 'scan_execution_policy') }
         let_it_be(:pending_build_source) { create(:ci_build_source, build: pending_build, source: 'scan_execution_policy') }
         let(:args) { { sources: %w[scan_execution_policy] } }
@@ -55,16 +51,6 @@ RSpec.describe Resolvers::ProjectJobsResolver, feature_category: :continuous_int
           let(:args) { { sources: %w[scan_execution_policy trigger] } }
 
           it { is_expected.to contain_exactly(successful_build, pending_build, failed_build) }
-        end
-
-        context 'when FF is disabled' do
-          before do
-            stub_feature_flags(populate_and_use_build_source_table: false)
-          end
-
-          it 'does not filter by source' do
-            is_expected.to contain_exactly(successful_build, successful_build_two, failed_build, pending_build)
-          end
         end
 
         context 'with name filter also present' do

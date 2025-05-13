@@ -852,6 +852,26 @@ describe('init markdown', () => {
           expect(textArea.value).toEqual(expectedText);
         });
 
+        it('wraps collapsible section text correctly', () => {
+          const initialValue = 'first line\nsecond line';
+          textArea.value = initialValue;
+          textArea.setSelectionRange(0, initialValue.length);
+          const tag = '<details><summary>Click to expand</summary>\n{text}\n</details>';
+
+          insertMarkdownText({
+            textArea,
+            text: textArea.value,
+            tag,
+            blockTag: null,
+            selected: initialValue,
+            wrap: true,
+          });
+
+          const expectedText = `<details><summary>Click to expand</summary>\n${initialValue}\n</details>`;
+
+          expect(textArea.value).toEqual(expectedText);
+        });
+
         it.each([{ linePrefix: '> ' }, { linePrefix: '  >' }, { linePrefix: '>' }])(
           "removes quotes correctly when line prefix '$linePrefix'",
           ({ linePrefix }) => {

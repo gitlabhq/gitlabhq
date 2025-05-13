@@ -1,4 +1,3 @@
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { merge } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
@@ -6,6 +5,7 @@ import Vuex from 'vuex';
 import { nextTick } from 'vue';
 import { GlDatepicker, GlFormCheckbox } from '@gitlab/ui';
 import originalOneReleaseForEditingQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/one_release_for_editing.query.graphql.json';
+import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import createMilestoneComboboxState from '~/milestones/stores/state';
 import { convertOneReleaseGraphQLResponse } from '~/releases/util';

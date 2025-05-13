@@ -58,6 +58,7 @@ workflow:
     - !reference [.qa-install, before_script]
     - !reference [.cng-deploy-cmd, script]
   after_script:
+    - !reference [.failure_category_after_script, after_script]
     - !reference [.gitlab-qa-report, after_script]
     - bundle exec orchestrator log events --save
     - bundle exec orchestrator log pods --save --containers all --no-fail-on-missing-pods
@@ -95,12 +96,10 @@ build-cng-env:
   needs:
     - pipeline: $PARENT_PIPELINE_ID
       job: clone-gitlab-repo
-    - pipeline: $PARENT_PIPELINE_ID
-      job: compile-production-assets
   variables:
     CNG_COMMIT_SHA: $GITLAB_CNG_MIRROR_REF
     CNG_ACCESS_TOKEN: $CNG_MIRROR_ACCESS_TOKEN
-    CNG_SKIP_REDUNDANT_JOBS: "false"
+    CNG_SKIP_REDUNDANT_JOBS: "true"
     GIT_STRATEGY: none
 
 build-cng:

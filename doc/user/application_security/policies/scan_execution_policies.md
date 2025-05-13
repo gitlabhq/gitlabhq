@@ -113,6 +113,7 @@ the following sections and tables provide an alternative.
 
 {{< history >}}
 
+- Feature flags for action limits [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/535605) in GitLab 18.0 [with flags](../../../administration/feature_flags.md) named `scan_execution_policy_action_limit` (for projects) and `scan_execution_policy_action_limit_group` (for groups).
 - Limit of actions per policy [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/472213) in GitLab 17.4 [with flags](../../../administration/feature_flags.md) named `scan_execution_policy_action_limit` (for projects) and `scan_execution_policy_action_limit_group` (for groups). Disabled by default.
 
 {{< /history >}}
@@ -369,12 +370,12 @@ rule in the defined policy are met.
 | `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/on-demand_scan.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
 | `variables` | `object` | | A set of CI variables, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the variable name, with its `value` provided as a string. This parameter supports any variable that the GitLab CI job supports for the specified scan. |
 | `tags` | `array` of `string` | | A list of runner tags for the policy. The policy jobs are run by runner with the specified tags. |
-| `template` | `string` | `default`, `latest` | CI/CD template version to be enforced. The [`latest`](../../../development/cicd/templates.md#latest-version) version may introduce breaking changes. See the `stable` and `latest` [security templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Jobs). |
+| `template` | `string` | `default`, `latest` | CI/CD template version to enforce. The `latest` version may introduce breaking changes. See the `stable` and `latest` [security templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Jobs). |
 | `scan_settings` | `object` | | A set of scan settings, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the setting name, with its `value` provided as a boolean or string. This parameter supports the settings defined in [scan settings](#scan-settings). |
 
 {{< alert type="note" >}}
 
-If you have Merge Request Pipelines enabled for your project, you must select `template: latest` in your policy for each enforced scan. Using the latest template is crucial for compatibility with Merge Request Pipelines and allows you to take full advantage of GitLab security features. For more information on using security scanning tools with Merge Request Pipelines, please refer to our [security scanning documentation](../detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines).
+If you have merge request pipelines enabled for your project, you must set the `AST_ENABLE_MR_PIPELINES` CI/CD variable to `"true"` in your policy for each enforced scan. For more information on using security scanning tools with merge request pipelines, refer to the [security scanning documentation](../../application_security/detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines).
 
 {{< /alert >}}
 

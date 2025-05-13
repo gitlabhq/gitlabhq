@@ -72,25 +72,11 @@ RSpec.describe Settings, feature_category: :system_access do
     end
   end
 
-  describe '.attr_encrypted_db_key_base_truncated' do
-    it 'returns the first item from #db_key_base_keys_truncated' do
-      expect(described_class.attr_encrypted_db_key_base_truncated)
-        .to eq(described_class.db_key_base_keys_truncated.first)
-    end
-  end
-
   describe '.db_key_base_keys_truncated' do
     it 'is an array of string with maximum 32 bytes size' do
       described_class.db_key_base_keys_truncated.each do |key|
         expect(key.bytesize).to be <= 32
       end
-    end
-  end
-
-  describe '.attr_encrypted_db_key_base_32' do
-    it 'returns the first item from #db_key_base_keys_32_bytes' do
-      expect(described_class.attr_encrypted_db_key_base_32)
-        .to eq(described_class.db_key_base_keys_32_bytes.first)
     end
   end
 
@@ -141,18 +127,26 @@ RSpec.describe Settings, feature_category: :system_access do
     end
   end
 
-  describe '.attr_encrypted_db_key_base' do
-    it 'returns the first item from #attr_encrypted_db_key_base' do
-      expect(described_class.attr_encrypted_db_key_base)
-        .to eq(described_class.db_key_base_keys.first)
-    end
-  end
-
   describe '.db_key_base_keys' do
     before do
       allow(Gitlab::Application.credentials)
         .to receive(:db_key_base)
         .and_return(raw_keys)
+      # Reset memoization
+      described_class.instance_variable_set(:@db_key_base_keys, nil)
+    end
+
+    describe 'memoization' do
+      let(:raw_keys) { 'a' }
+
+      it 'memoizes the value' do
+        db_key_base_keys = described_class.db_key_base_keys
+
+        expect(described_class.db_key_base_keys).to be(db_key_base_keys)
+
+        expect(Gitlab::Application.credentials)
+          .to have_received(:db_key_base).once
+      end
     end
 
     context 'when db key base secret is a string' do

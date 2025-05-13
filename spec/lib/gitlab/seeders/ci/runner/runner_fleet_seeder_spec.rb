@@ -103,5 +103,19 @@ RSpec.describe ::Gitlab::Seeders::Ci::Runner::RunnerFleetSeeder, feature_categor
         expect { seed }.to raise_error(RuntimeError)
       end
     end
+
+    context 'when feature flag allow_organization_creation is disabled' do
+      let_it_be(:default_organization) { create(:organization, :default) }
+
+      before do
+        stub_feature_flags(allow_organization_creation: false)
+      end
+
+      it 'uses the default organization ID' do
+        expect(::Organizations::Organization).not_to receive(:default_organization)
+        expect { seed }.not_to raise_error
+        expect(Group.search(registration_prefix).pluck(:organization_id)).to all(eq(default_organization.id))
+      end
+    end
   end
 end

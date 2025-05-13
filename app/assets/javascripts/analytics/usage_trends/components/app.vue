@@ -1,5 +1,5 @@
 <script>
-import { TODAY, TOTAL_DAYS_TO_SHOW, START_DATE } from '../constants';
+import { TOTAL_DAYS_TO_SHOW } from '../constants';
 import ChartsConfig from './charts_config';
 import UsageCounts from './usage_counts.vue';
 import UsageTrendsCountChart from './usage_trends_count_chart.vue';
@@ -13,8 +13,6 @@ export default {
     UsersChart,
   },
   TOTAL_DAYS_TO_SHOW,
-  START_DATE,
-  TODAY,
   configs: ChartsConfig,
 };
 </script>
@@ -22,11 +20,7 @@ export default {
 <template>
   <div>
     <usage-counts />
-    <users-chart
-      :start-date="$options.START_DATE"
-      :end-date="$options.TODAY"
-      :total-data-points="$options.TOTAL_DAYS_TO_SHOW"
-    />
+    <users-chart :total-data-points="$options.TOTAL_DAYS_TO_SHOW" />
     <usage-trends-count-chart
       v-for="chartOptions in $options.configs"
       :key="chartOptions.chartTitle"

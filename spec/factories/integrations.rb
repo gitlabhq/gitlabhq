@@ -529,5 +529,6 @@ FactoryBot.define do
   trait :instance do
     project { nil }
     instance { true }
+    organization { association(:organization, :default) }
   end
 end

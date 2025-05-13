@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
   let_it_be(:build) { create(:ci_build, :running) }
 
   before do
-    stub_feature_flags(ci_enable_live_trace: true)
+    stub_application_setting(ci_job_live_trace_enabled: true)
   end
 
   describe 'delegates' do

@@ -26,12 +26,12 @@ export default {
   emits: ['jobActionExecuted'],
   computed: {
     hasJobAction() {
-      return Boolean(this.status?.action?.id);
+      return Boolean(this.status?.action?.id && this.status?.action?.icon);
     },
     item() {
       return {
         text: this.job.name,
-        href: this.status?.detailsPath || '',
+        href: this.status?.detailsPath || this.status?.deploymentDetailsPath || '',
       };
     },
     status() {

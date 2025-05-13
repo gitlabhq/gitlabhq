@@ -171,7 +171,7 @@ Most GitLab instances have their `public_runner_releases_url` set to
 `https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-runner/releases`,
 which can prevent you from [filtering requests](#filter-requests).
 
-To resolve this issue, [configure GitLab to no longer fetch runner release version data from GitLab.com](../administration/settings/continuous_integration.md#disable-runner-version-management).
+To resolve this issue, [configure GitLab to no longer fetch runner release version data from GitLab.com](../administration/settings/continuous_integration.md#control-runner-version-management).
 
 ### GitLab subscription management is blocked
 
@@ -198,6 +198,6 @@ This error can occur when outbound requests to the GitLab cloud server are not a
 
 1. Add `https://cloud.gitlab.com:443` to the [allowlist](#allow-outbound-requests-to-certain-ip-addresses-and-domains).
 1. Select **Save Changes**.
-1. After GitLab has access to the [cloud server](../user/ai_features.md), [manually synchronize your license](../subscriptions/self_managed/_index.md#manually-synchronize-subscription-data)
+1. After GitLab has access to the [cloud server](../user/ai_features.md), [manually synchronize your license](../subscriptions/manage_subscription.md#manually-synchronize-subscription-data)
 
 For more information, see the [GitLab Duo Code Suggestions troubleshooting documentation](../user/project/repository/code_suggestions/troubleshooting.md).

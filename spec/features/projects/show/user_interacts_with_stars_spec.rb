@@ -9,7 +9,6 @@ RSpec.describe 'Projects > Show > User interacts with project stars', :js, featu
     let(:user) { create(:user) }
 
     before do
-      stub_feature_flags(vscode_web_ide: false)
       sign_in(user)
       visit(project_path(project))
     end

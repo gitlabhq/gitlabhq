@@ -2,6 +2,7 @@
 
 class ClusterSerializer < BaseSerializer
   include WithPagination
+
   entity ClusterEntity
 
   def represent_list(resource)

@@ -163,7 +163,7 @@ export default {
             :title="restProjectsTooltip"
             class="deploy-project-label gl-mb-2 gl-mr-2 gl-truncate"
             href="#"
-            @click.native="toggleExpanded"
+            @click="toggleExpanded"
           >
             <span class="gl-truncate">{{ restProjectsLabel }}</span>
           </gl-badge>

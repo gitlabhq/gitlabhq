@@ -7,7 +7,7 @@ module Gitlab
         Command = Struct.new(
           :source, :project, :current_user,
           :origin_ref, :checkout_sha, :after_sha, :before_sha, :source_sha, :target_sha,
-          :trigger_request, :schedule, :merge_request, :external_pull_request,
+          :schedule, :merge_request, :external_pull_request,
           :ignore_skip_ci, :save_incompleted,
           :seeds_block, :variables_attributes, :push_options,
           :chat_data, :allow_mirror_update, :bridge, :content, :dry_run, :linting, :logger, :pipeline_policy_context,
@@ -43,10 +43,9 @@ module Gitlab
           end
 
           def merge_request_ref_exists?
-            strong_memoize(:merge_request_ref_exists) do
-              MergeRequest.merge_request_ref?(origin_ref) &&
-                project.repository.ref_exists?(origin_ref)
-            end
+            return check_merge_request_ref if Feature.enabled?(:pull_ref_directly_from_gitaly, project)
+
+            strong_memoize(:merge_request_ref_exists) { check_merge_request_ref }
           end
 
           def ref
@@ -165,6 +164,10 @@ module Gitlab
 
           def gitlab_org_project?
             project.full_path == 'gitlab-org/gitlab'
+          end
+
+          def check_merge_request_ref
+            MergeRequest.merge_request_ref?(origin_ref) && project.repository.ref_exists?(origin_ref)
           end
         end
       end

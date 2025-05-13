@@ -70,17 +70,17 @@ The mergeability checks live under `app/services/merge_requests/mergeability/`.
 
 ## Considerations
 
-1. **Should it be skippable?** If it is part of the merge when checks pass work,
+1. Should it be skippable? If it is part of the merge when checks pass work,
    then we should add the skippable check. Otherwise, you should return `false`.
-1. **Performance**: These mergeability checks are run very frequently, and therefore
+1. Performance: These mergeability checks are run very frequently, and therefore
    performance is a big consideration here. It is critical to check how the new
    mergeability check performs. In general, we are expecting around 10-20 ms.
-1. **Caching is an option too.** We can set the `def cacheable?` method to return `true`,
+1. Caching is an option too. We can set the `def cacheable?` method to return `true`,
    and in that case, we need to create another method `def cache_key` to set the
    cache key for the particular check. Cache invalidation can often be tricky,
    and we must consider all the edge cases in the cache key. If we keep the timing
    around 10-20 ms, then caching is not needed.
-1. **Time the checks.** We time each check through the `app/services/merge_requests/mergeability/logger.rb`
+1. Time the checks. We time each check through the `app/services/merge_requests/mergeability/logger.rb`
    class, which can then be viewed in Kibana.
 
 ## How the classes work together

@@ -6,12 +6,6 @@ export default {
   components: {
     StateContainer,
   },
-  props: {
-    mr: {
-      type: Object,
-      required: true,
-    },
-  },
 };
 </script>
 <template>

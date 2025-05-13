@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
@@ -29,7 +30,10 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
       create(:ci_runner_machine, runner: instance_runner, version: 'abc', revision: '123', ip_address: '127.0.0.1')
     end
 
-    let_it_be(:project_runner) { create(:ci_runner, :project, :paused, description: 'Project runner', projects: [project]) }
+    let_it_be(:project_runner) do
+      create(:ci_runner, :project, :paused, description: 'Project runner', projects: [project])
+    end
+
     let_it_be(:project_runner_manager) do
       create(:ci_runner_machine, runner: project_runner, version: 'def', revision: '456', ip_address: '127.0.0.1')
     end
@@ -107,7 +111,7 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
           end
         end
 
-        context 'runner_type is INSTANCE_TYPE and status is ONLINE' do
+        context 'when runner_type is INSTANCE_TYPE and status is ONLINE' do
           let(:runner_type) { 'INSTANCE_TYPE' }
           let(:status) { 'ONLINE' }
 
@@ -116,7 +120,7 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
           it_behaves_like 'a working graphql query returning expected runners'
         end
 
-        context 'runner_type is PROJECT_TYPE and status is NEVER_CONTACTED' do
+        context 'when runner_type is PROJECT_TYPE and status is NEVER_CONTACTED' do
           let(:runner_type) { 'PROJECT_TYPE' }
           let(:status) { 'NEVER_CONTACTED' }
 
@@ -356,14 +360,6 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
   describe 'pagination' do
     let(:data_path) { [:runners] }
 
-    def pagination_query(params)
-      graphql_query_for(:runners, params, "#{page_info} nodes { id }")
-    end
-
-    def pagination_results_data(runners)
-      runners.map { |runner| GitlabSchema.parse_gid(runner['id'], expected_type: ::Ci::Runner).model_id.to_i }
-    end
-
     let_it_be(:runners) do
       common_args = {
         version: 'abc',
@@ -378,6 +374,14 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
         create_ci_runner(created_at: 2.days.ago, contacted_at: 2.days.ago, **common_args),
         create_ci_runner(created_at: 3.days.ago, contacted_at: 1.second.ago, **common_args)
       ]
+    end
+
+    def pagination_query(params)
+      graphql_query_for(:runners, params, "#{page_info} nodes { id }")
+    end
+
+    def pagination_results_data(runners)
+      runners.map { |runner| GitlabSchema.parse_gid(runner['id'], expected_type: ::Ci::Runner).model_id.to_i }
     end
 
     context 'when sorted by contacted_at ascending' do
@@ -409,7 +413,7 @@ RSpec.describe 'Group.runners', feature_category: :fleet_visibility do
   let_it_be(:group_owner) { create_default(:user, owner_of: group) }
 
   describe 'edges' do
-    let_it_be(:runner) { create(:ci_runner, :group, :paused, description: 'Project runner', groups: [group]) }
+    let_it_be(:runner) { create(:ci_runner, :group, :paused, description: 'Group runner', groups: [group]) }
 
     let(:query) do
       %(
@@ -431,8 +435,47 @@ RSpec.describe 'Group.runners', feature_category: :fleet_visibility do
       r = GitlabSchema.execute(query, context: { current_user: group_owner }, variables: { path: group.full_path })
 
       edges = graphql_dig_at(r.to_h, :data, :group, :runners, :edges)
+      web_url = group_runner_url(group, runner)
+      edit_web_url = edit_group_runner_url(group, runner)
 
-      expect(edges).to contain_exactly(a_graphql_entity_for(web_url: be_present, edit_url: be_present))
+      expect(edges).to contain_exactly(a_graphql_entity_for(web_url: web_url, edit_url: edit_web_url))
+    end
+  end
+end
+
+RSpec.describe 'Project.runners', feature_category: :fleet_visibility do
+  include GraphqlHelpers
+
+  let_it_be(:project) { create(:project) }
+  let_it_be(:maintainer) { create_default(:user, maintainer_of: project) }
+
+  describe 'edges' do
+    let_it_be(:runner) { create(:ci_runner, :project, :paused, description: 'Project runner', projects: [project]) }
+
+    let(:query) do
+      %(
+        query($path: ID!) {
+          project(fullPath: $path) {
+            runners {
+              edges {
+                webUrl
+                editUrl
+                node { #{all_graphql_fields_for('CiRunner')} }
+              }
+            }
+          }
+        }
+      )
+    end
+
+    it 'contains custom edge information' do
+      r = GitlabSchema.execute(query, context: { current_user: maintainer }, variables: { path: project.full_path })
+
+      edges = graphql_dig_at(r.to_h, :data, :project, :runners, :edges)
+      web_url = project_runner_url(project, runner)
+      edit_web_url = edit_project_runner_url(project, runner)
+
+      expect(edges).to contain_exactly(a_graphql_entity_for(web_url: web_url, edit_url: edit_web_url))
     end
   end
 end

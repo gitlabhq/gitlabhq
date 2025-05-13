@@ -90,20 +90,6 @@ module WorkItems
 
     scope :order_by_name_asc, -> { order(arel_table[:name].lower.asc) }
     scope :by_type, ->(base_type) { where(base_type: base_type) }
-    scope :with_id_and_fallback, ->(ids) {
-      # This shouldn't work for nil ids as we expect newer instances to have NULL values in old_id
-      ids = Array(ids).compact
-      return none if ids.blank?
-
-      where(id: ids).or(where(old_id: ids))
-    }
-
-    def self.find_by_id_with_fallback(id)
-      results = with_id_and_fallback(id)
-      return results.first if results.to_a.size <= 1 # Using to_a to avoid an additional query. Loads the relationship.
-
-      results.find { |type| type.id == id }
-    end
 
     def self.default_by_type(type)
       found_type = find_by(base_type: type)
@@ -221,7 +207,7 @@ module WorkItems
       WorkItems::Type.base_types.keys.excluding(*EE_BASE_TYPES)
     end
 
-    # overriden in EE to check for EE-specific restrictions
+    # overridden in EE to check for EE-specific restrictions
     def authorized_types(types, _resource_parent, _relation)
       types
     end

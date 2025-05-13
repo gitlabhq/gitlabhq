@@ -1,7 +1,5 @@
 <script>
 import { GlLoadingIcon, GlButton } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters as mapVuexGetters } from 'vuex';
 import { mapActions, mapState } from 'pinia';
 import { sprintf } from '~/locale';
 import { createAlert } from '~/alert';
@@ -16,6 +14,7 @@ import NotDiffableViewer from '~/vue_shared/components/diff_viewer/viewers/not_d
 import NoteForm from '~/notes/components/note_form.vue';
 import eventHub from '~/notes/event_hub';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
 import { IMAGE_DIFF_POSITION_TYPE } from '../constants';
 import { SAVING_THE_COMMENT_FAILED, SOMETHING_WENT_WRONG } from '../i18n';
 import { getDiffMode } from '../store/utils';
@@ -70,7 +69,7 @@ export default {
       'getCommentFormForDiffFile',
       'diffLines',
     ]),
-    ...mapVuexGetters(['getNoteableData', 'noteableType', 'getUserData']),
+    ...mapState(useNotes, ['getNoteableData', 'noteableType', 'getUserData']),
     diffMode() {
       return getDiffMode(this.diffFile);
     },

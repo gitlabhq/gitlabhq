@@ -3,6 +3,7 @@
 module AlertManagement
   class HttpIntegration < ApplicationRecord
     include ::Gitlab::Routing
+    include Gitlab::EncryptedAttribute
 
     LEGACY_IDENTIFIERS = %w[legacy legacy-prometheus].freeze
 
@@ -10,7 +11,7 @@ module AlertManagement
 
     attr_encrypted :token,
       mode: :per_attribute_iv,
-      key: Settings.attr_encrypted_db_key_base_32,
+      key: :db_key_base_32,
       algorithm: 'aes-256-gcm'
 
     attribute :endpoint_identifier, default: -> { SecureRandom.hex(8) }
@@ -35,7 +36,7 @@ module AlertManagement
     scope :active, -> { where(active: true) }
     scope :ordered_by_type_and_id, -> { order(:type_identifier, :id) }
 
-    enum type_identifier: {
+    enum :type_identifier, {
       http: 0,
       prometheus: 1
     }

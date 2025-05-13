@@ -193,7 +193,7 @@ The relationship only shows up in the UI if the user can see both items.
 When you try to close an epic linked to an open blocker, a warning is displayed.
 
 To manage linked epics through our API, see the
-[Work Items API](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items/).
+Work Items API.
 
 ### Add a linked item
 

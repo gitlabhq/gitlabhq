@@ -16,7 +16,7 @@ RSpec.describe Milestone, 'Milestoneish', factory_default: :keep do
   let_it_be(:issue, reload: true) { create(:work_item, milestone: milestone, assignees: [member], labels: [label1]) }
   let_it_be(:security_issue_1, reload: true) { create(:work_item, :confidential, author: author, milestone: milestone, labels: [label2]) }
   let_it_be(:security_issue_2, reload: true) { create(:work_item, :confidential, assignees: [assignee], milestone: milestone) }
-  let_it_be(:closed_issue_1, reload: true) { create(:work_item, :closed, milestone: milestone) }
+  let_it_be(:closed_issue_1, reload: true) { create(:work_item, :task, :closed, milestone: milestone) }
   let_it_be(:closed_issue_2, reload: true) { create(:work_item, :closed, milestone: milestone) }
   let_it_be(:closed_security_issue_1, reload: true) { create(:work_item, :confidential, :closed, author: author, milestone: milestone) }
   let_it_be(:closed_security_issue_2, reload: true) { create(:work_item, :confidential, :closed, assignees: [assignee], milestone: milestone) }

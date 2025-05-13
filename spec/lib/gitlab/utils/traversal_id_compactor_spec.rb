@@ -26,8 +26,8 @@ RSpec.describe Gitlab::Utils::TraversalIdCompactor, feature_category: :secrets_m
 
       expect(result).to eq([
         [1, 2],
-        [9, 10, 11],
         [1, 6],
+        [9, 10, 11],
         [1, 21]
       ])
     end
@@ -57,9 +57,9 @@ RSpec.describe Gitlab::Utils::TraversalIdCompactor, feature_category: :secrets_m
       result = compactor.compact(traversal_ids, 3)
 
       expect(result).to eq([
-        [6, 7],
+        [1],
         [5, 6],
-        [1]
+        [6, 7]
       ])
     end
 

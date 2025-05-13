@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :conan_package_revision, class: 'Packages::Conan::PackageRevision' do
     package do
-      association(:conan_package, without_package_files: true)
+      association(:conan_package, conan_package_revisions: [], without_package_files: true)
     end
 
     project { package.project }

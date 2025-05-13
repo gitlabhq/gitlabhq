@@ -66,6 +66,47 @@ module Gitlab
             Result.new(stdout: stdout, stderr: stderr, status: status, duration: duration)
           end
 
+          # Execute a process and intercept its captured output line by line
+          #
+          # @example Usage
+          #    Shell::Command.new('echo', 'Some amazing output').capture_each { |stream, output| puts output }
+          # @yieldparam [Symbol] stream type (either :stdout or :stderr)
+          # @yieldparam [String] output
+          # @return [Command::Result] -- Captured output from executing a process
+          def capture_each
+            start = Time.now
+
+            stdout = +''
+            stderr = +''
+            status = Open3.popen3(env, *cmd_args, chdir: chdir) do |i, o, e, wait_thread|
+              i.close_write
+
+              io_threads = []
+              io_threads << Thread.new do
+                until o.eof?
+                  o.gets.tap do |output|
+                    stdout << output
+                    yield :stdout, output.chomp
+                  end
+                end
+              end
+              io_threads << Thread.new do
+                until e.eof?
+                  e.gets.tap do |error|
+                    stderr << error
+                    yield :stderr, error.chomp
+                  end
+                end
+              end
+
+              io_threads.each(&:join)
+              wait_thread.value
+            end
+
+            duration = Time.now - start
+            Result.new(stdout: stdout, stderr: stderr, status: status, duration: duration)
+          end
+
           # Run single command in pipeline mode with optional input or output redirection
           #
           # @param [IO|String|Array] input stdin redirection

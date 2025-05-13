@@ -92,7 +92,7 @@ For other actions that create to-do items like assignments or review requests,
 you receive only one notification per action type, even if that action occurs multiple times in the same issue or merge request.
 
 To-do items aren't affected by [GitLab notification email settings](profile/notifications.md).
-The only exception: If your notification setting is set to **Custom** and **Added as approver** is
+The only exception: If your notification setting is set to **Custom** and **Merge request you're eligible to approve is created** is
 selected, you get a to-do item when you are eligible to approve a merge request.
 
 ## Create a to-do item

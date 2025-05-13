@@ -67,7 +67,9 @@ module Gitlab
               "gitlab.webservice.workhorse.image" => "#{IMAGE_REPOSITORY}/gitlab-workhorse-ee",
               "gitlab.webservice.workhorse.tag" => workhorse_version,
               "gitlab.kas.image.repository" => "#{IMAGE_REPOSITORY}/gitlab-kas",
-              "gitlab.kas.image.tag" => with_semver_prefix(kas_version)
+              "gitlab.kas.image.tag" => with_semver_prefix(kas_version),
+              "gitlab.registry.image.repository" => "#{IMAGE_REPOSITORY}/gitlab-container-registry",
+              "gitlab.registry.image.tag" => registry_version
             }
           end
 

@@ -18,10 +18,30 @@ Your profile also includes settings, which you use to customize your GitLab expe
 
 ## Access your user profile
 
+{{< history >}}
+
+- Accessing the profile with the user ID was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185387) in GitLab 17.11.
+
+{{< /history >}}
+
 To access your profile:
 
 1. On the left sidebar, select your avatar.
 1. Select your name or username.
+
+You can also access a users' profile page by using the ID instead of the username at `https://gitlab.example.com/-/u/<id>`.
+For example, if your username is `gitlab-user` has an ID `12345`, you can access the profile page either at
+`https://gitlab.example.com/gitlab-user` or `https://gitlab.example.com/-/u/12345`.
+
+## Find the user ID
+
+You might need the user ID if you want to interact with it using the [GitLab API](../../api/_index.md).
+
+To find the user ID:
+
+1. Go to the users' profile page.
+1. On the profile page, in the upper-right corner, select **Actions** (**{ellipsis_v}**).
+1. Select **Copy user ID**.
 
 ## Access your user settings
 
@@ -64,8 +84,7 @@ Prerequisites:
 
 - Your namespace must not:
   - Contain a project with [Container Registry](../packages/container_registry/_index.md) tags.
-  - Have a project that hosts [GitLab Pages](../project/pages/_index.md). For more information,
-    see [changing your username in the GitLab Team Handbook](https://handbook.gitlab.com/handbook/tools-and-tips/#change-your-username-at-gitlabcom).
+  - Have a project that hosts [GitLab Pages](../project/pages/_index.md).
 - Your username:
   - Must be between 2 and 255 characters in length.
   - Must only include non-accented letters, digits, `_`, `-`, and `.`.

@@ -72,11 +72,12 @@ RSpec.describe Packages::TerraformModule::Metadatum, type: :model, feature_categ
       using RSpec::Parameterized::TableSyntax
 
       where(:version, :valid, :semver_major, :semver_minor, :semver_patch, :semver_prerelease) do
-        '1'          | false | nil | nil | nil | nil
-        '1.2'        | false | nil | nil | nil | nil
-        '1.2.3'      | true  | 1   | 2   | 3   | nil
-        '1.2.3-beta' | true  | 1   | 2   | 3   | 'beta'
-        '1.2.3.beta' | false | nil | nil | nil | nil
+        '1'                | false | nil | nil | nil          | nil
+        '1.2'              | false | nil | nil | nil          | nil
+        '1.2.3'            | true  | 1   | 2   | 3            | nil
+        '1.2.3-beta'       | true  | 1   | 2   | 3            | 'beta'
+        '1.2.3.beta'       | false | nil | nil | nil          | nil
+        '0.0.202503162134' | true  | 0   | 0   | 202503162134 | nil
       end
 
       with_them do

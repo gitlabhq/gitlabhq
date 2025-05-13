@@ -48,8 +48,8 @@ then imported into another GitLab instance.
 
 ### Preserving user contributions
 
-The requirements for preserving user contribution depends on whether you're migrating to GitLab.com or to a GitLab
-Self-Managed instance.
+The requirements for preserving user contribution depends on whether you're migrating to GitLab.com
+or to a GitLab Self-Managed instance.
 
 #### When migrating from GitLab Self-Managed to GitLab.com
 
@@ -235,6 +235,7 @@ Items that are **not** exported include:
 - Build traces and artifacts
 - Package and container registry images
 - CI/CD variables
+- CI/CD job token allowlist
 - Webhooks
 - Any encrypted tokens
 - [Number of required approvals](https://gitlab.com/gitlab-org/gitlab/-/issues/221087)
@@ -246,9 +247,6 @@ Items that are **not** exported include:
 - Links between issues and linked items
 - Links to related merge requests
 - Pipeline schedule variables
-
-Migrating projects with file exports uses the same export and import mechanisms as creating projects from templates at the [group](../../group/custom_project_templates.md) and
-[instance](../../../administration/custom_project_templates.md) levels. Therefore, the list of exported items is the same.
 
 ### Import a project and its data
 

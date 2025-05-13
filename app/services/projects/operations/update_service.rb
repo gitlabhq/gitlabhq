@@ -92,6 +92,9 @@ module Projects
         return {} unless attrs = params[:prometheus_integration_attributes]
 
         integration = project.find_or_initialize_integration(::Integrations::Prometheus.to_param)
+
+        return {} unless integration
+
         integration.assign_attributes(attrs)
         attrs = integration.to_database_hash
 

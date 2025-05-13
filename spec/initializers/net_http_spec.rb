@@ -21,7 +21,8 @@ RSpec.describe 'Net::Http patch', feature_category: :integrations do
 
   shared_examples 'logging behavior for decompressed content' do |size|
     it 'logs the decompressed content size' do
-      expect(Gitlab::AppJsonLogger).to receive(:debug).with(message: 'net/http: response decompressed', size: size)
+      expect(Gitlab::AppJsonLogger).to receive(:debug).with(message: 'net/http: response decompressed', size: size,
+        caller: anything)
 
       res = Net::HTTPResponse.read_new(io)
       res.decode_content = true

@@ -193,6 +193,9 @@ export default {
     toggleClosedItemsClasses() {
       return { '!gl-px-3 gl-pb-3 gl-pt-2': !this.hasAllLinkedItemsHidden };
     },
+    shouldShowRelationshipsWidget() {
+      return this.linkedWorkItems.length > 0 || this.canAdminWorkItemLink;
+    },
   },
   mounted() {
     this.showLabels = getToggleFromLocalStorage(this.showLabelsLocalStorageKey);
@@ -333,6 +336,7 @@ export default {
 </script>
 <template>
   <crud-component
+    v-if="shouldShowRelationshipsWidget"
     ref="widget"
     :anchor-id="widgetName"
     :title="$options.i18n.title"
@@ -398,7 +402,6 @@ export default {
       <work-item-relationship-list
         v-if="openBlocksLinks.length"
         :parent-work-item-id="workItemId"
-        :parent-work-item-iid="workItemIid"
         :linked-items="openBlocksLinks"
         :relationship-type="$options.linkedCategories.BLOCKS"
         :heading="$options.i18n.blockingTitle"
@@ -419,7 +422,6 @@ export default {
       <work-item-relationship-list
         v-if="openIsBlockedByLinks.length"
         :parent-work-item-id="workItemId"
-        :parent-work-item-iid="workItemIid"
         :linked-items="openIsBlockedByLinks"
         :relationship-type="$options.linkedCategories.IS_BLOCKED_BY"
         :heading="$options.i18n.blockedByTitle"
@@ -440,7 +442,6 @@ export default {
       <work-item-relationship-list
         v-if="openRelatesToLinks.length"
         :parent-work-item-id="workItemId"
-        :parent-work-item-iid="workItemIid"
         :linked-items="openRelatesToLinks"
         :relationship-type="$options.linkedCategories.RELATES_TO"
         :heading="$options.i18n.relatedToTitle"

@@ -77,17 +77,12 @@ Devise.setup do |config|
   # For bcrypt, this is the cost for hashing the password and defaults to 10. If
   # using other encryptors, it sets how many times you want the password re-encrypted.
   #
-  # Limiting the stretches to just one in testing will increase the performance of
+  # Limiting the stretches to just 5 in testing will increase the performance of
   # your test suite dramatically. However, it is STRONGLY RECOMMENDED to not use
-  # a value less than 10 in other environments.
+  # a value less than 10 in other environments. (Note that Devise will ignore
+  # a value of 1 for stretches.)
 
-  # The bcrypt gem does not allow stretches to be set less than 4 (it will ignore it).
-  # To allow password WF upgrade testing (spec/models/concerns/encrypted_user_password_spec.rb),
-  # changing the test-side configuration to 5 to give the test something to do,
-  # along with changing the production value to 13 for https://gitlab.com/gitlab-org/gitlab/-/issues/222481.
-  # config.stretches = Rails.env.test? ? 5 : 13
-  # NOTE: This is being overridden in the `encrypted_user_password.rb` concern, behind an FF
-  config.stretches = Rails.env.test? ? 1 : 10
+  config.stretches = Rails.env.test? ? 5 : 13
 
   # Set up a pepper to generate the encrypted password.
   # config.pepper = "2ef62d549c4ff98a5d3e0ba211e72cff592060247e3bbbb9f499af1222f876f53d39b39b823132affb32858168c79c1d7741d26499901b63c6030a42129924ef"

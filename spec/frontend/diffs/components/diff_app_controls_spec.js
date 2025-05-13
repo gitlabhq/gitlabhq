@@ -97,6 +97,7 @@ describe('DiffAppControls', () => {
         showWhitespace: false,
         diffViewType: 'parallel',
         viewDiffsFileByFile: true,
+        fileByFileSupported: true,
       });
     });
 

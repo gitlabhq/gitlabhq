@@ -30,6 +30,7 @@ class Environment < ApplicationRecord
   has_many :successful_deployments, -> { success }, class_name: 'Deployment'
   has_many :active_deployments, -> { active }, class_name: 'Deployment'
   has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :environment
+  has_many :managed_resources, class_name: 'Clusters::Agents::ManagedResource', inverse_of: :environment
 
   # NOTE: If you preload multiple last deployments of environments, use Preloaders::Environments::DeploymentPreloader.
   has_one :last_deployment, -> { success.ordered }, class_name: 'Deployment', inverse_of: :environment
@@ -193,7 +194,7 @@ class Environment < ApplicationRecord
     where(auto_delete_at: nil)
   end
 
-  enum tier: {
+  enum :tier, {
     production: 0,
     staging: 1,
     testing: 2,
@@ -201,10 +202,10 @@ class Environment < ApplicationRecord
     other: 4
   }
 
-  enum auto_stop_setting: {
+  enum :auto_stop_setting, {
     always: 0,
     with_action: 1
-  }, _prefix: true
+  }, prefix: true
 
   state_machine :state, initial: :available do
     event :start do
@@ -459,7 +460,7 @@ class Environment < ApplicationRecord
   def additional_metrics(*args)
     return unless has_metrics_and_can_query?
 
-    prometheus_adapter.query(:additional_metrics_environment, self, *args.map(&:to_f))
+    prometheus_adapter&.query(:additional_metrics_environment, self, *args.map(&:to_f))
   end
 
   def prometheus_adapter
@@ -622,7 +623,7 @@ class Environment < ApplicationRecord
   end
 
   def has_metrics_and_can_query?
-    has_metrics? && prometheus_adapter.can_query?
+    has_metrics? && prometheus_adapter&.can_query?
   end
 
   def generate_slug

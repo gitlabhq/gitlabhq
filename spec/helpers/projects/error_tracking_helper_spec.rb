@@ -8,6 +8,13 @@ RSpec.describe Projects::ErrorTrackingHelper do
   let(:project) { build_stubbed(:project) }
   let(:current_user) { build_stubbed(:user) }
 
+  before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+  end
+
   describe '#error_tracking_data' do
     let(:can_enable_error_tracking) { true }
     let(:setting_path) { project_settings_operations_path(project) }

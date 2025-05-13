@@ -131,7 +131,7 @@ RSpec.shared_examples_for 'services security ci configuration create service' do
           <<-YAML
           image: python:latest
 
-          test:
+          test: @@@invalid
             script:
               - python setup.py test
               - pip install tox flake8  # you can also use tox
@@ -141,7 +141,6 @@ RSpec.shared_examples_for 'services security ci configuration create service' do
 
         it 'returns a ServiceResponse error' do
           expect(project).to receive(:ci_config_for).and_return(invalid_yaml)
-          expect(YAML).to receive(:safe_load).and_raise(Psych::Exception)
 
           expect(result).to be_kind_of(ServiceResponse)
           expect(result.status).to eq(:error)

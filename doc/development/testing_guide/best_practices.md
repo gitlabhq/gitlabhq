@@ -1092,7 +1092,7 @@ and as the docs state, may include fractional seconds.
 
 When Rails models are saved to the database,
 any timestamps they have are stored using a type in PostgreSQL called `timestamp without time zone`,
-which has microsecond resolution—that is six digits after the decimal.
+which has microsecond resolution (six digits after the decimal).
 So if `1577987974.6472975` is sent to PostgreSQL,
 it truncates the last digit of the fractional part and instead saves `1577987974.647297`.
 
@@ -1345,15 +1345,15 @@ variables example can be used, but avoid this if at all possible.
 
 #### Elasticsearch specs
 
-Specs that require Elasticsearch must be marked with the `:elastic` trait. This
-creates and deletes indices before and after all examples.
+Specs that require Elasticsearch must be marked with the `:elastic` or `:elastic_delete_by_query` metadata. The `:elastic`
+metadata creates and deletes indices before and after all examples.
 
-The `:elastic_delete_by_query` trait was added to reduce runtime for pipelines by creating and deleting indices at the
+The `:elastic_delete_by_query` metadata was added to reduce runtime for pipelines by creating and deleting indices at the
 start and end of each context only. The [Elasticsearch delete by query API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-delete-by-query.html)
 is used to delete data in all indices (except the migrations index) between examples to ensure a clean index.
 
-The `:elastic_clean` trait creates and deletes indices between examples to ensure a clean index. This way, tests are not
-polluted with non-essential data. If using the `:elastic` or `:elastic_delete_by_query` trait
+The `:elastic_clean` metadata creates and deletes indices between examples to ensure a clean index. This way, tests are not
+polluted with non-essential data. If using the `:elastic` or `:elastic_delete_by_query` metadata
 is causing issues, use `:elastic_clean` instead. `:elastic_clean` is significantly slower than the other traits
 and should be used sparingly.
 
@@ -1368,7 +1368,7 @@ There are some exceptions, such as checking for structural changes rather than i
 {{< alert type="note" >}}
 
 Elasticsearch indexing uses [`Gitlab::Redis::SharedState`](../redis.md#gitlabrediscachesharedstatequeues).
-Therefore, the Elasticsearch traits dynamically use the `:clean_gitlab_redis_shared_state` trait.
+Therefore, the Elasticsearch metadata dynamically uses `:clean_gitlab_redis_shared_state`.
 You do not need to add `:clean_gitlab_redis_shared_state` manually.
 
 {{< /alert >}}
@@ -1390,6 +1390,9 @@ Additionally, you can use the `ensure_elasticsearch_index!` method to overcome t
 It uses the [Elasticsearch Refresh API](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-refresh.html#refresh-api-desc)
 to make sure all operations performed on an index since the last refresh are available for search. This method is typically
 called after loading data into PostgreSQL to ensure the data is indexed and searchable.
+
+Helper methods from `ElasticsearchHelpers` are automatically included when using any of the Elasticsearch metadata. You
+can include them directly with the `:elastic_helpers` metadata.
 
 You can use the `SEARCH_SPEC_BENCHMARK` environment variable to benchmark test setup steps:
 
@@ -1591,7 +1594,7 @@ Time returned from a database can differ in precision from time objects
 in Ruby, so we need flexible tolerances when comparing in specs.
 
 The PostgreSQL time and timestamp types
-have [the resolution of 1 microsecond](https://www.postgresql.org/docs/current/datatype-datetime.html).
+have [the resolution of 1 microsecond](https://www.postgresql.org/docs/16/datatype-datetime.html).
 However, the precision of Ruby `Time` can vary [depending on the OS.](https://blog.paulswartz.net/post/142749676062/ruby-time-precision-os-x-vs-linux)
 
 Consider the following snippet:

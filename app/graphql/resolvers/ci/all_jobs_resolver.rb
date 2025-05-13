@@ -5,7 +5,7 @@ module Resolvers
     class AllJobsResolver < BaseResolver
       include LooksAhead
 
-      type ::Types::Ci::JobType.connection_type, null: true
+      type ::Types::Ci::JobInterface.connection_type, null: true
 
       argument :statuses, [::Types::Ci::JobStatusEnum],
         required: false,
@@ -54,6 +54,11 @@ module Resolvers
             html_summary: [:trace_chunks]
           }
         })
+      end
+
+      # Overridden in EE
+      def unconditional_includes
+        []
       end
     end
   end

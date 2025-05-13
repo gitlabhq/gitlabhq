@@ -6,6 +6,7 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
   include AdminModeHelper
 
+  let_it_be(:group) { create(:group) }
   let_it_be_with_reload(:project) { create(:project) }
   let_it_be(:base_url) { "#{Gitlab.config.gitlab.url}/api/v4/" }
 
@@ -20,6 +21,20 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
       url = helper.package_registry_instance_url(:npm)
 
       expect(url).to eq("#{base_url}packages/npm")
+    end
+  end
+
+  describe '#package_registry_group_url' do
+    context 'when registry_type is not provided' do
+      subject { helper.package_registry_group_url(1) }
+
+      it { is_expected.to eq("#{base_url}groups/1/-/packages/maven") }
+    end
+
+    context 'when registry_type is provided' do
+      subject { helper.package_registry_group_url(1, :npm) }
+
+      it { is_expected.to eq("#{base_url}groups/1/-/packages/npm") }
     end
   end
 
@@ -365,10 +380,23 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
         empty_list_illustration: match_asset_path('illustrations/empty-state/empty-package-md.svg'),
         endpoint: project_packages_path(project),
         full_path: project.full_path,
-        group_list_url: '',
         npm_instance_url: package_registry_instance_url(:npm),
         page_type: 'projects',
         project_list_url: project_packages_path(project)
+      )
+    end
+
+    it 'returns the correct data when the project is not part of a group' do
+      is_expected.to include(
+        group_list_url: ''
+      )
+    end
+
+    it 'returns the correct data when the project is part of a group' do
+      project.update!(group: group)
+
+      is_expected.to include(
+        group_list_url: group_packages_path(group)
       )
     end
 

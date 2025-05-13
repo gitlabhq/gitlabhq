@@ -317,7 +317,7 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
 
       it 'sets the note text' do
         expect(subject.note)
-          .to eq %q(<div>changed title from <code class="idiff"><span class="idiff left right deletion">Old **title**</span></code> to <code class="idiff"><span class="idiff left right addition">_Lorem_ ipsum</span></code></div>)
+          .to eq %q(<p>changed title from <code class="idiff"><span class="idiff left right deletion">Old **title**</span></code> to <code class="idiff"><span class="idiff left right addition">_Lorem_ ipsum</span></code></p>)
       end
     end
   end

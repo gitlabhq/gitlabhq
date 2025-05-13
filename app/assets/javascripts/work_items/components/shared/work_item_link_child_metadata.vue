@@ -15,10 +15,6 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
-    iid: {
-      type: String,
-      required: true,
-    },
     reference: {
       type: String,
       required: true,

@@ -1,18 +1,20 @@
 - title: "GitLab Advanced SAST will be enabled by default"
-  removal_milestone: "18.0"
+  removal_milestone: "19.0"
   announcement_milestone: "17.9"
   breaking_change: true
   window: 1
-  reporter: adamcohen
+  reporter: connorgilbert
   stage: application security testing
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/513685
   impact: medium
+  check_impact: Refer to the [Understanding this change](https://gitlab.com/gitlab-org/gitlab/-/issues/513685#understanding-this-change) section for details.
   scope: instance
   resolution_role: Developer
   manual_task: true
   body: |  # (required) Don't change this line.
-    In GitLab 18.0, we will update the [SAST CI/CD templates](https://docs.gitlab.com/user/application_security/sast#stable-vs-latest-sast-templates) to enable [GitLab Advanced SAST](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast) by default in projects with GitLab Ultimate.
-    Before this change, the GitLab Advanced SAST analyzer was enabled only if you set the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `true`.
+    In GitLab 19.0, we will update the [SAST CI/CD templates](https://docs.gitlab.com/user/application_security/sast#stable-vs-latest-sast-templates) to enable [GitLab Advanced SAST](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast) by default in projects with GitLab Ultimate.
+    Before this change, the GitLab Advanced SAST analyzer is enabled only if you set the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `true`.
+    This change was previously scheduled for GitLab 18.0 and has now been delayed.
 
     Advanced SAST delivers more accurate results by using cross-file, cross-function scanning and a new ruleset.
     Advanced SAST takes over coverage for [supported languages](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast#supported-languages) and disables scanning for that language in the previous scanner.
@@ -20,4 +22,4 @@
 
     Because it scans your project in more detail, Advanced SAST may take more time to scan your project.
     If needed, you can [disable GitLab Advanced SAST](https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast#disable-gitlab-advanced-sast-scanning) by setting the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `false`.
-    You can set this variable in your project, group, or policy now to prevent Advanced SAST from being enabled by default in GitLab 18.0.
+    You can set this variable in your project, group, or policy now to prevent Advanced SAST from being enabled by default in GitLab 19.0.

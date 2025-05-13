@@ -1,0 +1,17 @@
+---
+name: gitlab_base.NonStandardHyphens
+description: |
+  Do not use non-standard dashes or hyphens. Use standard hyphen ("minus"), separate sentences, or commas instead:
+  - U+2010: HYPHEN
+  - U+2011: NON-BREAKING HYPHEN
+  - U+2013: EN DASH
+  - U+2014: EM DASH
+extends: existence
+message: "Do not use non-standard dashes or hyphens. Use standard hyphen ('minus'), separate sentences, or commas instead"
+vocab: false
+nonword: true
+level: warning
+link: https://docs.gitlab.com/development/documentation/styleguide/#punctuation
+scope: text
+raw:
+  - '[\u2010\u2011\u2013\u2014]'

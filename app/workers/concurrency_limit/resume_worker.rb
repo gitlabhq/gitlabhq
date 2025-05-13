@@ -28,7 +28,6 @@ module ConcurrencyLimit
       workers.each do |worker|
         limit = ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.limit_for(worker: worker)
         queue_size = queue_size(worker)
-        report_prometheus_metrics(worker, queue_size, limit)
 
         next unless queue_size > 0
         next if limit < 0 # do not re-queue jobs if circuit-broken
@@ -85,19 +84,6 @@ module ConcurrencyLimit
 
     def workers
       Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.workers
-    end
-
-    def report_prometheus_metrics(worker, queue_size, limit)
-      queue_size_metric = Gitlab::Metrics.gauge(:sidekiq_concurrency_limit_queue_jobs,
-        'Number of jobs queued by the concurrency limit middleware.',
-        {},
-        :max)
-      queue_size_metric.set({ worker: worker.name }, queue_size)
-
-      limit_metric = Gitlab::Metrics.gauge(:sidekiq_concurrency_limit_max_concurrent_jobs,
-        'Max number of concurrent running jobs.',
-        {})
-      limit_metric.set({ worker: worker.name }, limit || BATCH_SIZE)
     end
   end
 end

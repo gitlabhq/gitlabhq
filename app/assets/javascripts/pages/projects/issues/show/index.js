@@ -1,4 +1,5 @@
 import { issuableInitialDataById, isLegacyIssueType } from '~/issues/show/utils/issuable_data';
+import { WORK_ITEM_TYPE_NAME_ISSUE } from '~/work_items/constants';
 
 const initLegacyIssuePage = async () => {
   const [{ initShow }] = await Promise.all([import('~/issues')]);
@@ -8,7 +9,7 @@ const initLegacyIssuePage = async () => {
 const initWorkItemPage = async () => {
   const [{ initWorkItemsRoot }] = await Promise.all([import('~/work_items')]);
 
-  initWorkItemsRoot({ workItemType: 'issue' });
+  initWorkItemsRoot({ workItemType: WORK_ITEM_TYPE_NAME_ISSUE });
 };
 
 const issuableData = issuableInitialDataById('js-issuable-app');

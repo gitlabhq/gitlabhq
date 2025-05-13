@@ -78,5 +78,5 @@ end
 
 ## Further Reading
 
-- [PostgreSQL System Catalogs](https://www.postgresql.org/docs/current/catalogs.html)
-- [PostgreSQL Views](https://www.postgresql.org/docs/current/sql-createview.html)
+- [PostgreSQL System Catalogs](https://www.postgresql.org/docs/16/catalogs.html)
+- [PostgreSQL Views](https://www.postgresql.org/docs/16/sql-createview.html)

@@ -27,7 +27,7 @@ export default {
 <template>
   <a
     v-gl-tooltip:super-sidebar.right="$options.i18n.homepage"
-    class="brand-logo"
+    class="brand-logo gl-inline-block gl-rounded-base gl-border-none gl-bg-transparent gl-p-2 focus:gl-focus active:gl-focus"
     :href="rootPath"
     data-track-action="click_link"
     data-track-label="gitlab_logo_link"

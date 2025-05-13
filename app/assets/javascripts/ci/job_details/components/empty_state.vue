@@ -1,15 +1,12 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import ManualJobForm from '~/ci/job_details/components/manual_job_form.vue';
-import PipelineVariablesPermissionsMixin from '~/ci/mixins/pipeline_variables_permissions_mixin';
 
 export default {
   components: {
     GlButton,
     ManualJobForm,
   },
-  mixins: [PipelineVariablesPermissionsMixin],
-  inject: ['projectPath', 'userRole'],
   props: {
     illustrationPath: {
       type: String,
@@ -73,9 +70,6 @@ export default {
     shouldRenderManualVariables() {
       return this.playable && !this.scheduled;
     },
-    shouldRenderPipelineVariablesText() {
-      return this.canViewPipelineVariables && this.shouldRenderManualVariables && !this.isRetryable;
-    },
   },
 };
 </script>
@@ -97,11 +91,6 @@ export default {
       </h2>
       <p v-if="content" class="gl-mb-0 gl-mt-4" data-testid="job-empty-state-content">
         {{ content }}
-        <template v-if="shouldRenderPipelineVariablesText">{{
-          s__(
-            'CiVariables|You can add CI/CD variables below for last-minute configuration changes before starting the job.',
-          )
-        }}</template>
       </p>
       <manual-job-form
         v-if="shouldRenderManualVariables"
@@ -109,7 +98,6 @@ export default {
         :job-id="jobId"
         :job-name="jobName"
         :confirmation-message="confirmationMessage"
-        :can-view-pipeline-variables="canViewPipelineVariables"
         @hideManualVariablesForm="$emit('hideManualVariablesForm')"
       />
       <div

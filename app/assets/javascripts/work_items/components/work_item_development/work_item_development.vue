@@ -1,20 +1,17 @@
 <script>
 import { GlIcon, GlAlert, GlTooltipDirective } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-
-import { s__, __ } from '~/locale';
-import { findWidget } from '~/issues/list/utils';
-
+import { ERROR_POLICY_ALL } from '~/lib/graphql';
+import { s__, __, sprintf } from '~/locale';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import workItemDevelopmentQuery from '~/work_items/graphql/work_item_development.query.graphql';
 import workItemDevelopmentUpdatedSubscription from '~/work_items/graphql/work_item_development.subscription.graphql';
 import {
-  sprintfWorkItem,
-  WIDGET_TYPE_DEVELOPMENT,
-  STATE_OPEN,
   DEVELOPMENT_ITEMS_ANCHOR,
+  NAME_TO_TEXT_LOWERCASE_MAP,
+  STATE_OPEN,
 } from '~/work_items/constants';
-
+import { findDevelopmentWidget } from '~/work_items/utils';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import WorkItemActionsSplitButton from '~/work_items/components/work_item_links/work_item_actions_split_button.vue';
 import WorkItemDevelopmentRelationshipList from './work_item_development_relationship_list.vue';
@@ -59,18 +56,22 @@ export default {
       workItemDevelopment: {},
       showCreateBranchAndMrModal: false,
       showBranchFlow: true,
-      showMergeRequestFlow: false,
       showCreateOptions: true,
     };
   },
   computed: {
+    itemCount() {
+      return (
+        this.relatedMergeRequests.length + this.relatedBranches.length + this.featureFlags.length
+      );
+    },
     canUpdate() {
       return this.workItem?.userPermissions?.updateWorkItem;
     },
     workItemState() {
       return this.workItem?.state;
     },
-    workItemTypeName() {
+    workItemType() {
       return this.workItem?.workItemType?.name;
     },
     isLoading() {
@@ -111,21 +112,21 @@ export default {
     },
     openStateText() {
       return this.closingMergeRequests.length > 1
-        ? sprintfWorkItem(
+        ? sprintf(
             s__(
               'WorkItem|This %{workItemType} will be closed when any of the following is merged.',
             ),
-            this.workItemTypeName,
+            { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] },
           )
-        : sprintfWorkItem(
+        : sprintf(
             s__('WorkItem|This %{workItemType} will be closed when the following is merged.'),
-            this.workItemTypeName,
+            { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] },
           );
     },
     closedStateText() {
-      return sprintfWorkItem(
+      return sprintf(
         s__('WorkItem|The %{workItemType} was closed automatically when a branch was merged.'),
-        this.workItemTypeName,
+        { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] },
       );
     },
     tooltipText() {
@@ -199,11 +200,12 @@ export default {
         };
       },
       update(data) {
-        return findWidget(WIDGET_TYPE_DEVELOPMENT, data?.workItem) || {};
+        return findDevelopmentWidget(data?.workItem) || {};
       },
       skip() {
         return !this.workItemIid;
       },
+      errorPolicy: ERROR_POLICY_ALL,
       error(error) {
         this.error = s__(
           "WorkItem|One or more items cannot be shown. If you're using SAML authentication, this could mean your session has expired.",
@@ -224,10 +226,9 @@ export default {
     },
   },
   methods: {
-    openModal(createBranch = true, createMergeRequest = false) {
+    openModal(createBranch = true) {
       this.toggleCreateModal(true);
       this.showBranchFlow = createBranch;
-      this.showMergeRequestFlow = createMergeRequest;
     },
     toggleCreateModal(showOrhide) {
       this.showCreateBranchAndMrModal = showOrhide;
@@ -246,6 +247,7 @@ export default {
       v-if="shouldShowDevWidget"
       ref="workItemDevelopment"
       :title="s__('WorkItem|Development')"
+      :count="itemCount"
       :anchor-id="$options.DEVELOPMENT_ITEMS_ANCHOR"
       :is-loading="isLoading"
       is-collapsible
@@ -297,10 +299,8 @@ export default {
       v-if="!isLoading"
       :show-modal="showCreateBranchAndMrModal"
       :show-branch-flow="showBranchFlow"
-      :show-merge-request-flow="showMergeRequestFlow"
       :work-item-iid="workItemIid"
-      :work-item-id="workItemId"
-      :work-item-type="workItemTypeName"
+      :work-item-type="workItemType"
       :work-item-full-path="workItemFullPath"
       :is-confidential-work-item="isConfidentialWorkItem"
       :project-id="projectId"

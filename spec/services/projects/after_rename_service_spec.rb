@@ -33,6 +33,7 @@ RSpec.describe Projects::AfterRenameService, feature_category: :groups_and_proje
       # call. This makes testing a bit easier.
       allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
 
+      stub_container_registry_config(enabled: false)
       stub_application_setting(hashed_storage_enabled: true)
     end
 
@@ -46,8 +47,6 @@ RSpec.describe Projects::AfterRenameService, feature_category: :groups_and_proje
     end
 
     it 'renames a repository' do
-      stub_container_registry_config(enabled: false)
-
       expect_any_instance_of(SystemHooksService)
         .to receive(:execute_hooks_for)
         .with(project, :rename)
@@ -94,7 +93,7 @@ RSpec.describe Projects::AfterRenameService, feature_category: :groups_and_proje
 
         it 'renames the base repository in the registry' do
           expect(ContainerRegistry::GitlabApiClient).to receive(:rename_base_repository_path)
-            .with(full_path_before_rename, name: path_after_rename).and_return(:ok)
+            .with(full_path_before_rename, name: path_after_rename, project: project).and_return(:ok)
 
           service_execute
         end

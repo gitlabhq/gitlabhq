@@ -71,8 +71,7 @@ export default {
       <kubernetes-pods
         :namespace="namespace"
         :configuration="configuration"
-        @loading="$emit('loading', $event)"
-        @update-failed-state="$emit('update-failed-state', $event)"
+        @update-cluster-state="$emit('update-cluster-state', $event)"
         @cluster-error="$emit('cluster-error', $event)"
         @select-item="$emit('select-item', $event)"
         @delete-pod="$emit('delete-pod', $event)"

@@ -39,8 +39,8 @@ export const SEARCH_SCOPE = {
 export const GLOBAL_COMMANDS_GROUP_TITLE = s__('CommandPalette|Global Commands');
 export const USERS_GROUP_TITLE = s__('GlobalSearch|Users');
 export const PAGES_GROUP_TITLE = s__('CommandPalette|Pages');
-export const PROJECTS_GROUP_TITLE = s__('GlobalSearch|Projects');
-export const GROUPS_GROUP_TITLE = s__('GlobalSearch|Groups');
+export const PROJECTS_GROUP_TITLE = s__("GlobalSearch|Projects I'm a member of");
+export const GROUPS_GROUP_TITLE = s__("GlobalSearch|Groups I'm a member of");
 export const ISSUES_GROUP_TITLE = s__('GlobalSearch|Issues');
 export const PATH_GROUP_TITLE = s__('CommandPalette|Project files');
 export const SETTINGS_GROUP_TITLE = s__('CommandPalette|Settings');
@@ -75,3 +75,6 @@ export const OVERLAY_GOTO = s__('GlobalSearch|Go to %{kbdStart}↵%{kbdEnd}');
 
 export const FREQUENTLY_VISITED_PROJECTS_HANDLE = 'FREQUENTLY_VISITED_PROJECTS_HANDLE';
 export const FREQUENTLY_VISITED_GROUPS_HANDLE = 'FREQUENTLY_VISITED_GROUPS_HANDLE';
+
+export const GROUPS_GROUP_HANDLE = 'Groups';
+export const PROJECTS_GROUP_HANDLE = 'Projects';

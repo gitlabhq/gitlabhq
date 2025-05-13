@@ -145,6 +145,7 @@ export default {
         v-model.trim="protectionRuleFormData.repositoryPathPattern"
         type="text"
         required
+        autofocus
         :disabled="isFieldDisabled"
       />
       <template #description>

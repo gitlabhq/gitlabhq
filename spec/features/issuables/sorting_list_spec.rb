@@ -13,6 +13,13 @@ RSpec.describe 'Sort Issuable List', feature_category: :team_planning do
   let(:first_updated_issuable) { issuables.order_updated_asc.first }
   let(:last_updated_issuable) { issuables.order_updated_desc.first }
 
+  before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+  end
+
   context 'for merge requests' do
     include MergeRequestHelpers
 

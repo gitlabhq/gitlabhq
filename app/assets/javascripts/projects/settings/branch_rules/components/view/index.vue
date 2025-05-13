@@ -254,15 +254,19 @@ export default {
       return this.showApprovers || this.showSquashSetting;
     },
     showSquashSetting() {
-      return (
-        this.glFeatures.branchRuleSquashSettings &&
-        !this.branch?.includes('*') &&
-        !this.isAllProtectedBranchesRule
-      ); // Squash settings are not available for wildcards or All protected branches
+      return !this.branch?.includes('*') && !this.isAllProtectedBranchesRule; // Squash settings are not available for wildcards or All protected branches
     },
     showEditSquashSetting() {
       return (
         this.canAdminProtectedBranches && (this.allowEditSquashSetting || this.isAllBranchesRule)
+      );
+    },
+    showDeleteRuleBtn() {
+      return (
+        this.glFeatures.editBranchRules &&
+        this.branchRule &&
+        this.canAdminProtectedBranches &&
+        !this.isAllBranchesRule
       );
     },
   },
@@ -448,7 +452,7 @@ export default {
     <page-heading :heading="$options.i18n.pageTitle">
       <template #actions>
         <gl-button
-          v-if="glFeatures.editBranchRules && branchRule && canAdminProtectedBranches"
+          v-if="showDeleteRuleBtn"
           v-gl-modal="$options.deleteModalId"
           data-testid="delete-rule-button"
           category="secondary"

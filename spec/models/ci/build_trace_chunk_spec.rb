@@ -16,7 +16,7 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_git
   end
 
   before do
-    stub_feature_flags(ci_enable_live_trace: true)
+    stub_application_setting(ci_job_live_trace_enabled: true)
     stub_artifacts_object_storage
   end
 

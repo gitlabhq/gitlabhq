@@ -1,7 +1,7 @@
 <script>
 import { isEmpty } from 'lodash';
 import { GlButton, GlFormGroup, GlFormInput } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import { MASK_ITEM_VALUE_HIDDEN } from '../constants';
 
 export default {
@@ -26,7 +26,7 @@ export default {
       required: false,
       default: null,
     },
-    isEditing: {
+    isExisting: {
       type: Boolean,
       required: false,
       default: false,
@@ -56,7 +56,10 @@ export default {
       return isEmpty(this.valueInvalidFeedback);
     },
     displayValue() {
-      return this.isEditing ? MASK_ITEM_VALUE_HIDDEN : this.itemValue;
+      return this.isExisting ? MASK_ITEM_VALUE_HIDDEN : this.itemValue;
+    },
+    removeAriaLabel() {
+      return sprintf(s__('Webhooks|Remove item %{index}'), { index: this.index + 1 });
     },
   },
   methods: {
@@ -97,7 +100,7 @@ export default {
         :id="valueInputId"
         :name="inputName('value')"
         :value="displayValue"
-        :disabled="isEditing"
+        :disabled="isExisting"
         :state="valueState"
         @input="onValueInput"
       />
@@ -114,15 +117,15 @@ export default {
         :id="keyInputId"
         :name="inputName('key')"
         :value="itemKey"
-        :disabled="isEditing"
+        :disabled="isExisting"
         :state="keyState"
         @input="onKeyInput"
       />
     </gl-form-group>
     <gl-button
       icon="remove"
-      :aria-label="__('Remove')"
-      :disabled="isEditing"
+      :aria-label="removeAriaLabel"
+      :disabled="isExisting"
       class="gl-mt-6"
       @click="onRemoveClick"
     />

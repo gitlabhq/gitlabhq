@@ -245,9 +245,21 @@ for new and updated records while the removal and fix are in progress.
 The details of the work might vary and require different approaches.
 Consult the Database team, reviewers, or maintainers to plan the work.
 
-## Finding Unused Indexes
+## Dropping unused indexes
 
-To see which indexes are unused you can run the following query:
+Unused indexes should be dropped because they increase [maintainence overhead](#maintenance-overhead), consume
+disk space, and can degrade query planning efficiency without providing any performance benefit.
+However, dropping an index that's still used could result in query performance degradation or timeouts,
+potentially leading to incidents. It's important to [verify the index is unused](#verifying-that-an-index-is-unused)
+on both on GitLab.com and self-managed instances prior to removal.
+
+- For large tables, consider [dropping the index asynchronously](#drop-indexes-asynchronously).
+- For partitioned tables, only the parent index can be dropped. PostgreSQL does not permit child indexes
+  (i.e. the corresponding indexes on its partitions) to be independently removed.
+
+### Finding possible unused indexes
+
+To see which indexes are candidates for removal, you can run the following query:
 
 ```sql
 SELECT relname as table_name, indexrelname as index_name, idx_scan, idx_tup_read, idx_tup_fetch, pg_size_pretty(pg_relation_size(indexrelname::regclass))
@@ -259,28 +271,126 @@ AND idx_tup_fetch = 0
 ORDER BY pg_relation_size(indexrelname::regclass) desc;
 ```
 
-This query outputs a list containing all indexes that are never used and sorts
-them by indexes sizes in descending order. This query helps in
-determining whether existing indexes are still required. More information on
-the meaning of the various columns can be found at
-<https://www.postgresql.org/docs/current/monitoring-stats.html>.
+This query outputs a list containing all indexes that have not been used since the stats were last reset and sorts
+them by index size in descending order. More information on the meaning of the various columns can be found at
+<https://www.postgresql.org/docs/16/monitoring-stats.html>.
 
-To determine if an index is still being used on production, use [Grafana](https://dashboards.gitlab.net/explore?schemaVersion=1&panes=%7B%22pum%22%3A%7B%22datasource%22%3A%22mimir-gitlab-gprd%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22expr%22%3A%22sum+by+%28type%29%28rate%28pg_stat_user_indexes_idx_scan%7Benv%3D%5C%22gprd%5C%22%2C+indexrelname%3D%5C%22INSERT+INDEX+NAME+HERE%5C%22%7D%5B30d%5D%29%29%22%2C%22range%22%3Atrue%2C%22instant%22%3Atrue%2C%22datasource%22%3A%7B%22type%22%3A%22prometheus%22%2C%22uid%22%3A%22mimir-gitlab-gprd%22%7D%2C%22editorMode%22%3A%22code%22%2C%22legendFormat%22%3A%22__auto%22%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%7D%7D&orgId=1):
+For GitLab.com, you can check the latest generated [production reports](https://console.postgres.ai/gitlab/reports/)
+on postgres.ai and inspect the `H002 Unused Indexes` file.
 
-```sql
-sum by (type)(rate(pg_stat_user_indexes_idx_scan{env="gprd", indexrelname="INSERT INDEX NAME HERE"}[30d]))
-```
+{{< alert type="warning" >}}
 
-Because the query output relies on the actual usage of your database, it
-may be affected by factors such as:
+These reports only show indexes that have no recorded usage **since the last statistics reset.**
+They do not guarantee that the indexes are never used.
 
-- Certain queries never being executed, thus not being able to use certain
-  indexes.
-- Certain tables having little data, resulting in PostgreSQL using sequence
-  scans instead of index scans.
+{{< /alert >}}
 
-This data is only reliable for a frequently used database with
-plenty of data, and using as many GitLab features as possible.
+### Verifying that an index is unused
+
+This section contains resources to help you evaluate an index and confirm that it's safe to remove. Note that
+this is only a suggested guide and is not exhaustive. Ultimately, the goal is to gather enough data to justify
+dropping the index.
+
+Be aware that certain factors can give the false impression that an index is unused, such as:
+
+- There may be queries that run on self-managed but not on GitLab.com.
+- The index may be used for very infrequent processes such as periodic cron jobs.
+- On tables that have little data, PostgreSQL may initially prefer a sequential scan over an index scan
+  until the table is large enough.
+
+#### Investigating index usage
+
+1. Start by gathering all the metadata available for the index, verifying its name and definition.
+   - The index name in the development environment may not match production. It's important to correlate the indexes
+    based on definition rather than name. To check its definition, you can:
+      - Manually inspect [db/structure.sql](https://gitlab.com/gitlab-org/gitlab/-/blob/master/db/structure.sql)
+         (This file does **not** include data on dynamically generated partitions.)
+      - [Use Database Lab to check the status of an index.](database_lab.md#checking-indexes)
+   - For partitioned tables, child indexes are often named differently than the parent index.
+     To list all child indexes, you can:
+      - Run `\d+ <PARENT_INDEX_NAME>` in [Database Lab](database_lab.md).
+      - Run the following query to see the full parent-child index structure in more detail:
+
+        ```sql
+        SELECT
+          parent_idx.relname AS parent_index,
+          child_tbl.relname AS child_table,
+          child_idx.relname AS child_index,
+          dep.deptype,
+          pg_get_indexdef(child_idx.oid) AS child_index_def
+        FROM
+          pg_class parent_idx
+        JOIN pg_depend dep ON dep.refobjid = parent_idx.oid
+        JOIN pg_class child_idx ON child_idx.oid = dep.objid
+        JOIN pg_index i ON i.indexrelid = child_idx.oid
+        JOIN pg_class child_tbl ON i.indrelid = child_tbl.oid
+        WHERE
+          parent_idx.relname = '<PARENT_INDEX_NAME>';
+        ```
+
+1. For GitLab.com, you can view index usage data in [Grafana](https://dashboards.gitlab.net/goto/shHCmIxHg?orgId=1).
+   - Query the metric `pg_stat_user_indexes_idx_scan` filtered by the relevant index(s) for at least the last 6 months.
+     The query below shows index usage across all database instances combined.
+
+     ```sql
+     sum by (indexrelname) (pg_stat_user_indexes_idx_scan{env="gprd", relname=~"<TABLE_NAME_REGEX>", indexrelname=~"<INDEX_NAME_REGEX>"})
+     ```
+
+   - For partitioned tables, we must check that **all child indexes are unused** prior to dropping the parent.
+
+If the data shows that an index has zero or negligible usage, it's a strong candidate for removal. However, keep in mind that
+this is limited to usage on GitLab.com. We should still [investigate all related queries](#investigating-related-queries) to
+ensure it can be safely removed for self-managed instances.
+
+An index that shows low usage may still be dropped **if** we can confirm that other existing indexes would sufficiently
+support the queries using it. PostgreSQL decides which index to use based on data distribution statistics, so in certain
+situations it may slightly prefer one index over another even if both indexes adequately support the query, which may
+account for the occasional usage.
+
+#### Investigating related queries
+
+The following are ways to find all queries that _may_ utilize the index. It's important to understand the context in
+which the queries are or may be executed so that we can determine if the index either:
+
+- Has no queries on GitLab.com nor on self-managed that depend on it.
+- Can be sufficiently supported by other existing indexes.
+
+1. Investigate the origins of the index.
+   - Dig through the commit history, related merge requests, and issues that introduced the index.
+   - Try to find answers to questions such as:
+      - Why was the index added in the first place? What query was it meant to support?
+      - Does that query still exist and get executed?
+      - Is it only applicable to self-managed instances?
+
+1. Examine queries outputted from running the [`rspec:merge-auto-explain-logs`](https://gitlab.com/gitlab-org/gitlab/-/jobs/9805995367) CI job.
+   - This job collects and analyzes queries executed through tests. The output is saved as an artifact: `auto_explain/auto_explain.ndjson.gz`
+   - Since we don't always have 100% test coverage, this job may not capture all possible queries and variations.
+
+1. Examine queries recorded in [postgres logs](https://log.gprd.gitlab.net/app/r/s/A55hK) on Kibana.
+   - Generally, you can filter for `json.sql` values that contain the table name and key column(s) from the index definition. Example KQL:
+
+     ```plaintext
+     json.sql: <TABLE_NAME> AND json.sql: *<COLUMN_NAME>*
+     ```
+
+   - While there are many factors that affect index usage, the query's filtering and ordering clauses often have the most influence.
+     A general guideline is to find queries whose conditions align with the index structure. For example, PostgreSQL is more likely
+     to utilize a B-Tree index for queries that filter on the index's leading column(s) and satisfy its partial predicate (if any).
+   - Caveat: We only keep the last 7 days of logs and this data does not apply to self-managed usage.
+
+1. Manually search through the GitLab codebase.
+   - This process may be tedious but it's the most reliable way to ensure there are no other queries we missed from the previous actions,
+     especially ones that are infrequent or only apply to self-managed instances.
+   - It's possible there are queries that were introduced some time after the index was initially added,
+     so we can't always depend on the index origins; we must also examine the current state of the codebase.
+   - To help direct your search, try to gather context about how the table is used and what features access it. Look for queries
+     that involve key columns from the index definition, particularly those that are part of the filtering or ordering clauses.
+   - Another approach is to conduct a keyword search for the model/table name and any relevant columns. However, this could be a
+     trickier and long-winded process since some queries may be dynamically compiled from code across multiple files.
+
+After collecting the relevant queries, you can then obtain [EXPLAIN plans](understanding_explain_plans.md) to help you assess if a query
+relies on the index in question. For this process, it's necessary to have a good understanding of how indexes support queries and how
+their usage is affected by data distribution changes. We recommend seeking guidance from a database domain expert to help with your assessment.
 
 ## Requirements for naming indexes
 
@@ -406,7 +516,7 @@ It is commonly done by creating two [post deployment migrations](post_deployment
 In most cases, no additional work is needed. The new index is created and is used
 as expected when queuing and executing the batched background migration.
 
-[Expression indexes](https://www.postgresql.org/docs/current/indexes-expressional.html),
+[Expression indexes](https://www.postgresql.org/docs/16/indexes-expressional.html),
 however, do not generate statistics for the new index on creation. Autovacuum
 eventually runs `ANALYZE`, and updates the statistics so the new index is used.
 Run `ANALYZE` explicitly only if it is needed right after the index

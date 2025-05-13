@@ -65,10 +65,7 @@ To change profile details, including name and email address:
 1. Edit **Your personal details**.
 1. Select **Save changes**.
 
-If you want to transfer ownership of the Customers Portal profile
-to another person, after you enter that person's personal details, you must also:
-
-- [Change the linked GitLab.com account](#change-the-linked-account), if you have one linked.
+You can also [transfer ownership of the Customers Portal profile and billing account](https://support.gitlab.com/hc/en-us/articles/17767356437148-How-to-transfer-subscription-ownership) to another person.
 
 ## Change your company details
 
@@ -95,9 +92,11 @@ To change the subscription contact:
 1. Edit the contact details.
 1. Select **Save changes**.
 
-### Add a secondary contact
+### Add a billing account manager
 
-To add a secondary contact for your account:
+Billing account managers can view and manage subscriptions and billing account information in the Customers Portal.
+
+To add another billing account manager for your account:
 
 1. Ensure an account exists in the [Customers Portal](https://customers.gitlab.com/customers/sign_in) for the user you want to add.
 1. [Create a ticket with the Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293). Include any relevant material in your request.

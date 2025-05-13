@@ -2,6 +2,7 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Learn how to use merge request pipelines in GitLab CI/CD to test changes efficiently, run targeted jobs, and improve code quality before merging.
 title: Merge request pipelines
 ---
 

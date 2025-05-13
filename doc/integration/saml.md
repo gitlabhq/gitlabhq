@@ -12,14 +12,18 @@ title: SAML SSO for GitLab Self-Managed
 
 {{< /details >}}
 
+{{< alert type="note" >}}
+
+For GitLab.com, see [SAML SSO for GitLab.com groups](../user/group/saml_sso/_index.md).
+
+{{< /alert >}}
+
 This page describes how to set up instance-wide SAML single sign on (SSO) for
 GitLab Self-Managed.
 
 You can configure GitLab to act as a SAML service provider (SP). This allows
 GitLab to consume assertions from a SAML identity provider (IdP), such as
 Okta, to authenticate users.
-
-To set up SAML on GitLab.com, see [SAML SSO for GitLab.com groups](../user/group/saml_sso/_index.md).
 
 For more information on:
 
@@ -70,7 +74,7 @@ For more information on:
    ```ruby
    gitlab_rails['omniauth_providers'] = [
      {
-       name: "saml",
+       name: "saml", # This must be lowercase.
        label: "Provider name", # optional label for login button, defaults to "Saml"
        args: {
          assertion_consumer_service_url: "https://gitlab.example.com/users/auth/saml/callback",
@@ -3025,16 +3029,8 @@ In the following example, the value of `uid` attribute in the SAML response is s
 
 ## Assertion encryption (optional)
 
-GitLab requires the use of TLS encryption with SAML 2.0. Sometimes, GitLab needs
-additional assertion encryption. For example, if you:
-
-- Terminate TLS encryption early at a load balancer.
-- Include sensitive details in assertions that you do not want appearing in logs.
-
-Most organizations should not need additional encryption at this layer.
-
-Your IdP encrypts the assertion with the public certificate of GitLab.
-GitLab decrypts the `EncryptedAssertion` with its private key.
+Encrypting the SAML assertion is optional but recommended. This adds an additional layer of protection
+to prevent unencrypted data being logged or intercepted by malicious actors. 
 
 {{< alert type="note" >}}
 
@@ -3043,9 +3039,9 @@ assertion encryption and request signing.
 
 {{< /alert >}}
 
-The SAML integration supports `EncryptedAssertion`. To encrypt your assertions,
-define the private key and the public certificate of your GitLab instance in the
-SAML settings.
+To encrypt your SAML assertions, define the private key and the public certificate in the GitLab
+SAML settings. Your IdP encrypts the assertion with the public certificate and
+GitLab decrypts the assertion with the private key.
 
 When you define the key and certificate, replace all line feeds in the key file with `\n`.
 This makes the key file one long string with no line feeds.

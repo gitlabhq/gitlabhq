@@ -23,7 +23,7 @@ module Gitlab
 
         contexts = [
           Tracking::StandardContext.new(
-            namespace_id: namespace&.id,
+            namespace: namespace,
             plan_name: namespace&.actual_plan_name,
             project_id: project_id,
             user: user,
@@ -33,8 +33,8 @@ module Gitlab
         track_struct_event(tracker, category, action, label: label, property: property, value: value, contexts: contexts)
       end
 
-      def options(group)
-        tracker.options(group)
+      def frontend_client_options(group)
+        tracker.frontend_client_options(group)
       end
 
       def collector_hostname

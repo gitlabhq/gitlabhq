@@ -19,6 +19,24 @@ $none-code-mark: #d3e3f4;
 }
 
 .code.none {
+  --code-light-theme: 1;
+  --diff-expansion-background-color: #{$gl-color-neutral-100};
+
+  --code-background: #{$gl-color-neutral-0};
+
+  --code-line-nubmer-background-color: #{$gl-color-neutral-10};
+  --code-line-nubmer-color: #{$gl-color-alpha-dark-24};
+
+  --code-old-diff-line-number-background-color: #{$gl-color-neutral-50};
+  --code-old-diff-sign-color: #{$gl-color-neutral-800};
+  --code-old-diff-background-color: #{$gl-color-neutral-50};
+  --code-old-inline-diff-background-color: #{rgba(0,0,0,0.1)};
+
+  --code-new-diff-line-number-background-color: #{$gl-color-neutral-50};
+  --code-new-diff-sign-color: #{$gl-color-neutral-800};
+  --code-new-diff-background-color: #{$gl-color-neutral-50};
+  --code-new-inline-diff-background-color: #{rgba(0,0,0,0.1)};
+
   // Highlight.js theme overrides (https://gitlab.com/gitlab-org/gitlab/-/issues/365167)
   // We should be able to remove the overrides once the upstream issue is fixed (https://github.com/sourcegraph/sourcegraph/issues/23251)
   &.blob-viewer {
@@ -74,10 +92,6 @@ $none-code-mark: #d3e3f4;
     .new-nonewline.line_content,
     .old-nonewline.line_content {
       @include match-line;
-    }
-
-    &.diff-grid-row {
-      --diff-expansion-background-color: #{$gl-color-neutral-100};
     }
 
     .line-coverage {

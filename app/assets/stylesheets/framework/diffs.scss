@@ -3,15 +3,6 @@
 
 $diff-file-header: 41px;
 
-:root {
-  --diff-warning-text-color: var(--gl-feedback-warning-text-color);
-  --diff-warning-background-color: var(--gl-feedback-warning-background-color);
-}
-
-:root.gl-dark {
-  --diff-warning-background-color: #453522;
-}
-
 // Common
 .diff-file {
   margin-bottom: $gl-padding;

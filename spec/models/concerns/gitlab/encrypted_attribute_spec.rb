@@ -27,8 +27,8 @@ RSpec.describe Gitlab::EncryptedAttribute, feature_category: :shared do
             record.attr_encrypted_attributes[:token][:operation] = :encrypting
           end
 
-          it 'returns correct secret' do
-            expect(record.__send__(key_method, :token))
+          it 'returns the encryption key secret' do
+            expect(record.__send__(key_method))
               .to eq(Gitlab::Encryption::KeyProvider[key_method].encryption_key.secret)
           end
         end
@@ -38,9 +38,9 @@ RSpec.describe Gitlab::EncryptedAttribute, feature_category: :shared do
             record.attr_encrypted_attributes[:token][:operation] = :decrypting
           end
 
-          it 'returns correct secrets' do
-            expect(record.__send__(key_method, :token))
-              .to eq(Gitlab::Encryption::KeyProvider[key_method].decryption_keys.map(&:secret))
+          it 'returns the encryption key secret' do
+            expect(record.__send__(key_method))
+              .to eq(Gitlab::Encryption::KeyProvider[key_method].encryption_key.secret)
           end
         end
       end

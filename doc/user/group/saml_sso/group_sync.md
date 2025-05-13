@@ -292,7 +292,7 @@ To link the SAML groups:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/480766) for GitLab.com in GitLab 17.8 [with a flag](../../../administration/feature_flags.md) named `saml_groups_duo_pro_add_on_assignment`. Disabled by default.
-
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512141) for Self-Managed in GitLab 17.11.
 {{< /history >}}
 
 Prerequisites:
@@ -301,12 +301,49 @@ Prerequisites:
 
 SAML Group Sync can manage GitLab Duo seat assignment and removal based on IdP group membership. Seats are only assigned when there are seats remaining in the subscription.
 
+{{< tabs >}}
+
+{{< tab title="GitLab.com" >}}
+
+To configure for GitLab.com:
+
 1. When [configuring a SAML Group Link](#configure-saml-group-links), select the **Assign GitLab Duo seats to users in this group** checkbox.
 1. Select **Save**.
 1. Repeat to add additional group links for all SAML users that should be assigned a GitLab Duo Pro or GitLab Duo Enterprise seat.
    GitLab Duo seats are unassigned for users whose identity provider group memberships do not match a group link with this setting enabled.
 
 The checkbox does not appear for groups without an active GitLab Duo add-on subscription.
+
+{{< /tab >}}
+
+{{< tab title="GitLab Self-Managed" >}}
+
+To configure Self-Managed:
+
+1. Configure the [SAML OmniAuth Provider](../../../integration/saml.md).
+1. Ensure your configuration includes `groups_attribute` and `duo_add_on_groups`. Any users who are a member of one or more of the `duo_add_on_groups` will have a GitLab Duo seat assigned, if a seat is available. See the following provider configuration example in `/etc/gitlab/gitlab.rb` for reference:
+
+   ```ruby
+   gitlab_rails['omniauth_providers'] = [
+     {
+       name: "saml",
+       label: "Provider name",
+       groups_attribute: 'Groups',
+       duo_add_on_groups: ['Developers', 'Freelancers'],
+       args: {
+         assertion_consumer_service_url: "https://gitlab.example.com/users/auth/saml/callback",
+         idp_cert_fingerprint: "43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8",
+         idp_sso_target_url: "https://login.example.com/idp",
+         issuer: "https://gitlab.example.com",
+         name_identifier_format: "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
+       }
+     }
+   ]
+   ```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ## Microsoft Azure Active Directory integration
 

@@ -46,7 +46,7 @@ module API
 
           source = find_source(source_type, params[:id])
 
-          authorize_admin_source_member!(source_type, source)
+          authorize_invite_source_member!(source_type, source)
 
           create_service_params = declared_params.merge(source: source)
 

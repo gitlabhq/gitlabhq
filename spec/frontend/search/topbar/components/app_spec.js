@@ -1,6 +1,6 @@
 import { GlButton } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { MOCK_QUERY } from 'jest/search/mock_data';
@@ -9,7 +9,6 @@ import GlobalSearchTopbar from '~/search/topbar/components/app.vue';
 import MarkdownDrawer from '~/vue_shared/components/markdown_drawer/markdown_drawer.vue';
 import SearchTypeIndicator from '~/search/topbar/components/search_type_indicator.vue';
 import GlobalSearchInput from '~/search/topbar/components/global_search_input.vue';
-import { ENTER_KEY } from '~/lib/utils/keys';
 import {
   SYNTAX_OPTIONS_ADVANCED_DOCUMENT,
   SYNTAX_OPTIONS_ZOEKT_DOCUMENT,
@@ -177,30 +176,6 @@ describe('GlobalSearchTopbar', () => {
 
   describe('actions', () => {
     describe.each`
-      FF                                    | scope       | searchType    | called
-      ${{ zoektMultimatchFrontend: false }} | ${'blobs'}  | ${'zoekt'}    | ${true}
-      ${{ zoektMultimatchFrontend: false }} | ${'issues'} | ${'advanced'} | ${true}
-      ${{ zoektMultimatchFrontend: false }} | ${'blobs'}  | ${'advanced'} | ${true}
-      ${{ zoektMultimatchFrontend: true }}  | ${'issues'} | ${'advanced'} | ${true}
-      ${{ zoektMultimatchFrontend: true }}  | ${'issues'} | ${'advanced'} | ${true}
-      ${{ zoektMultimatchFrontend: true }}  | ${'blobs'}  | ${'zoekt'}    | ${false}
-    `('hitting enter inside search box', ({ FF, scope, searchType, called }) => {
-      beforeEach(() => {
-        getterSpies.currentScope = jest.fn(() => scope);
-        createComponent({
-          featureFlag: FF,
-          initialState: { searchType },
-        });
-      });
-
-      it(`calls applyQuery ${called ? '' : 'NOT '}`, async () => {
-        await nextTick();
-        findGlSearchBox().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));
-        expect(actionSpies.applyQuery).toHaveBeenCalledTimes(called ? 1 : 0);
-      });
-    });
-
-    describe.each`
       search    | reload
       ${''}     | ${0}
       ${'test'} | ${1}
@@ -228,49 +203,5 @@ describe('GlobalSearchTopbar', () => {
         expect(actionSpies.preloadStoredFrequentItems).toHaveBeenCalled();
       });
     });
-  });
-
-  describe('search computed property setter', () => {
-    describe.each`
-      FF                                    | scope       | searchType    | debounced
-      ${{ zoektMultimatchFrontend: true }}  | ${'blobs'}  | ${'zoekt'}    | ${true}
-      ${{ zoektMultimatchFrontend: false }} | ${'blobs'}  | ${'zoekt'}    | ${false}
-      ${{ zoektMultimatchFrontend: true }}  | ${'issues'} | ${'zoekt'}    | ${false}
-      ${{ zoektMultimatchFrontend: true }}  | ${'blobs'}  | ${'advanced'} | ${false}
-    `(
-      'when isMultiMatch is $debounced (FF: $FF, scope: $scope, searchType: $searchType)',
-      ({ FF, scope, searchType, debounced }) => {
-        beforeEach(() => {
-          getterSpies.currentScope = jest.fn(() => scope);
-          actionSpies.setQuery.mockClear();
-
-          createComponent({
-            featureFlag: FF,
-            initialState: { searchType },
-          });
-
-          wrapper.vm.debouncedSetQuery = jest.fn();
-        });
-
-        it(`${debounced ? 'calls debouncedSetQuery' : 'calls setQuery directly'}`, () => {
-          findGlSearchBox().vm.$emit('input', 'new search value');
-
-          if (debounced) {
-            expect(actionSpies.setQuery).not.toHaveBeenCalled();
-          } else {
-            expect(actionSpies.setQuery).toHaveBeenCalled();
-
-            const lastCallArgs = actionSpies.setQuery.mock.calls[0];
-            const payload = lastCallArgs[lastCallArgs.length - 1];
-            expect(payload).toEqual(
-              expect.objectContaining({
-                key: 'search',
-                value: 'new search value',
-              }),
-            );
-          }
-        });
-      },
-    );
   });
 });

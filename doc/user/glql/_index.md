@@ -34,7 +34,7 @@ GitLab Query Language (GLQL) is an attempt to create a single query language for
 Use it to filter and embed content from anywhere in the platform, using familiar syntax.
 
 Embed queries in Markdown code blocks.
-The rendered output of this query is called a view.
+A view is the rendered output of a GLQL source code block.
 
 Share your feedback in the [GLQL beta feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/509791).
 
@@ -62,6 +62,8 @@ For a full list of supported fields, supported operators, and value types, see [
 | `in`          | Contained in list                       | `or` / `is one of`     |
 | `>`           | Greater than                            | {{< icon name="dotted-circle" >}} No |
 | `<`           | Less than                               | {{< icon name="dotted-circle" >}} No |
+| `>=`          | Greater than or equal to                | {{< icon name="dotted-circle" >}} No |
+| `<=`          | Less than or equal to                   | {{< icon name="dotted-circle" >}} No |
 
 **Logical operators**: Only `and` is supported.
 `or` is indirectly supported for some fields by using the `in` comparison operator.
@@ -83,15 +85,8 @@ Values can include:
 
 ## GLQL views
 
-{{< history >}}
-
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/508956) in GitLab 17.7: Configuring the presentation layer using YAML front matter is deprecated.
-- Parameters `title` and `description` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183709) in GitLab 17.10.
-
-{{< /history >}}
-
-A view created with GLQL is a display representation of a query that executes to
-fetch the desired results.
+A view is the output of a GLQL source code block in Markdown. The source includes YAML
+attributes that describe how to display the GLQL query results, along with the query.
 
 ### Supported areas
 
@@ -106,12 +101,13 @@ Views can be embedded in the following areas:
 
 ### Syntax
 
-The syntax of views is a superset of YAML that consists of:
+The syntax of a view's source is a superset of YAML that consists of:
 
 - The `query` parameter: Expressions joined together with a logical operator, such as `and`.
-- Parameters related to the presentation layer, like `display`, `limit`, or `fields`, `title`, and `description`.
+- Parameters related to the presentation layer, like `display`, `limit`, or `fields`, `title`, and `description`
+  represented as YAML.
 
-A GLQL view is defined in Markdown as a code block, similar to other code blocks like Mermaid.
+A view is defined in Markdown as a code block, similar to other code blocks like Mermaid.
 
 For example:
 
@@ -129,13 +125,20 @@ query: project = "gitlab-org/gitlab" AND assignee = currentUser() AND state = op
 ```
 ````
 
-This query should render a table like the one below:
+This source should render a table like the one below:
 
 ![A table listing issues assigned to the current user](img/glql_table_v17_10.png)
 
 #### Presentation syntax
 
-Aside from the `query` parameter, you can configure presentation details for your GLQL query using some
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/508956) in GitLab 17.7: Configuring the presentation layer using YAML front matter is deprecated.
+- Parameters `title` and `description` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183709) in GitLab 17.10.
+
+{{< /history >}}
+
+Aside from the `query` parameter, you can configure presentation details for your view using some
 more optional parameters.
 
 Supported parameters:
@@ -144,7 +147,7 @@ Supported parameters:
 | ------------- | --------------------------- | ----------- |
 | `description` | None                        | An optional description to display below the title. |
 | `display`     | `table`                     | How to display the data. Supported options: `table`, `list`, or `orderedList`. |
-| `fields`      | `title`                     | A comma-separated list of [fields](fields.md). All fields allowed in columns of a GLQL view are supported. |
+| `fields`      | `title`                     | A comma-separated list of [fields](fields.md#fields-in-glql-views). |
 | `limit`       | `100`                       | How many items to display. The maximum value is `100`. |
 | `title`       | `GLQL table` or `GLQL list` | A title displayed at the top of the GLQL view. |
 
@@ -164,3 +167,45 @@ query: project = "gitlab-org/gitlab" AND assignee = currentUser() AND state = op
 
 To create dynamically generated columns, use functions in the `fields` parameters in views.
 For a full list, see [Functions in GLQL views](functions.md#functions-in-glql-views).
+
+#### Custom field aliases
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/535558) in GitLab 18.0.
+
+{{< /history >}}
+
+To rename a table view's column to a custom value, use the `AS` syntax keyword to alias fields.
+
+````yaml
+```glql
+display: list
+fields: title, labels("workflow::*") AS "Workflow", labels("priority::*") AS "Priority"
+limit: 5
+query: project = "gitlab-org/gitlab" AND assignee = currentUser() AND state = opened
+```
+````
+
+This source displays a view with columns `Title`, `Workflow` and `Priority`.
+
+### View actions
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184788) in GitLab 17.11.
+- **Reload** action [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/537310) in GitLab 18.0.
+
+{{< /history >}}
+
+When a view appears on a page, use the **View actions** ({{< icon name="ellipsis_v" >}}) dropdown to take
+an action on it.
+
+Supported actions:
+
+| Action        | Description                                                    |
+| ------------- | -------------------------------------------------------------- |
+| View source   | View the source of the view.                                   |
+| Copy source   | Copy the source of the view to clipboard.                      |
+| Copy contents | Copy the table or list contents to clipboard. |
+| Reload        | Reload this view.                                              |

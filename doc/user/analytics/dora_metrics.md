@@ -2,6 +2,7 @@
 stage: Plan
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Gain insights into DevOps performance and identify opportunities for workflow improvements.
 title: DevOps Research and Assessment (DORA) metrics
 ---
 
@@ -116,6 +117,12 @@ The first step is to benchmark the CI/CD pipelines' efficiency between groups an
 - Improving the performance of your pipelines.
 
 ## Time to restore service
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356959) in GitLab 15.1.
+
+{{< /history >}}
 
 Time to restore service is the amount of time it takes an organization to recover from a failure in production.
 

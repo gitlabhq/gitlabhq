@@ -3,22 +3,30 @@
 require 'spec_helper'
 
 RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category: :global_search do
-  let(:collection) { 'items' }
+  let(:collection) { double(collection_name: collection_name) }
+  let(:collection_name) { 'items' }
   let(:client) { instance_double(ActiveContext::Databases::Postgresql::Client) }
   let(:adapter) { instance_double(ActiveContext::Databases::Postgresql::Adapter, client: client) }
   let(:connection) { double(quote: double, quote_column_name: double) }
   let(:relation) { double.as_null_object }
   let(:model_class) { double(connection: connection, all: relation, unscoped: relation) }
+  let(:user) { double }
+  let(:search_embedding_version) { { field: 'preset_field', model: model } }
+  let(:model) { 'some-model' }
+  let(:generated_embedding) { [0.5, 0.6] }
 
   before do
-    allow(client).to receive(:with_model_for).with(collection).and_yield(model_class)
+    allow(client).to receive(:with_model_for).with(collection_name).and_yield(model_class)
     allow(ActiveContext).to receive(:adapter).and_return(adapter)
+    allow(collection).to receive(:current_search_embedding_version).and_return(search_embedding_version)
+    allow(ActiveContext::Embeddings).to receive(:generate_embeddings)
+      .with(anything, model: model, user: user).and_return([generated_embedding])
   end
 
   shared_examples 'a SQL transformer' do |query, expected_sql|
     it 'generates the expected SQL' do
       allow(relation).to receive(:to_sql).and_return(expected_sql)
-      result = described_class.transform(collection, query)
+      result = described_class.transform(collection: collection, node: query, user: user)
       expect(result).to eq(expected_sql)
     end
   end
@@ -126,6 +134,13 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
       "SELECT \"items\".* FROM \"items\" ORDER BY \"embedding\" <=> '[0.1,0.2]' LIMIT 5"
 
     it_behaves_like 'a SQL transformer',
+      ActiveContext::Query.knn(
+        content: 'something',
+        limit: 5
+      ),
+      "SELECT \"items\".* FROM \"items\" ORDER BY \"embedding\" <=> '[0.5,0.6]' LIMIT 5"
+
+    it_behaves_like 'a SQL transformer',
       ActiveContext::Query.filter(status: 'active').knn(
         target: 'embedding',
         vector: [0.1, 0.2],
@@ -181,5 +196,11 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
       ).limit(10),
       "SELECT subq.* FROM (SELECT \"items\".* FROM \"items\" " \
         "ORDER BY \"embedding\" <=> '[0.1,0.2]' LIMIT 5) subq LIMIT 10"
+  end
+
+  context 'with all queries' do
+    it_behaves_like 'a SQL transformer',
+      ActiveContext::Query.all,
+      "SELECT \"items\".* FROM \"items\""
   end
 end

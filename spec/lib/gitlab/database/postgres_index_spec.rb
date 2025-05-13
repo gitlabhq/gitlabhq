@@ -88,6 +88,24 @@ RSpec.describe Gitlab::Database::PostgresIndex, feature_category: :database do
     end
   end
 
+  describe '.without_parent_partitioned_tables' do
+    subject(:postgres_indexes) { described_class.without_parent_partitioned_tables.map(&:name) }
+
+    it 'excludes indexes from parent partitioned tables' do
+      expect(postgres_indexes).not_to include('_test_partitioned_pkey')
+    end
+
+    it 'includes indexes from partition children' do
+      expect(postgres_indexes).to include('_test_partitioned_1_pkey')
+    end
+
+    it 'includes indexes from non-partitioned tables', :aggregate_failures do
+      expect(postgres_indexes).to include('foo_idx')
+      expect(postgres_indexes).to include('bar_key')
+      expect(postgres_indexes).to include('_test_gitlab_main_example_table_pkey')
+    end
+  end
+
   describe '#bloat_size' do
     subject { build(:postgres_index, bloat_estimate: bloat_estimate) }
 

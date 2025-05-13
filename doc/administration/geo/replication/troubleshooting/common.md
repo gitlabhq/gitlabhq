@@ -1,5 +1,5 @@
 ---
-stage: Systems
+stage: Tenant Scale
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Troubleshooting common Geo errors
@@ -34,15 +34,15 @@ to help identify if something is wrong:
 - Is the secondary site's tracking database configured?
 - Is the secondary site's tracking database connected?
 - Is the secondary site's tracking database up-to-date?
-- Is the secondary site's status less than 10 minutes old?
+- Is the secondary site's status less than 1 hour old?
 
-A site shows as "Unhealthy" if the site's status is more than 10 minutes old. In that case, try running the following in the [Rails console](../../../operations/rails_console.md) on the affected secondary site:
+A site shows as "Unhealthy" if the site's status is more than 1 hour old. In that case, try running the following in the [Rails console](../../../operations/rails_console.md) on the affected secondary site:
 
 ```ruby
 Geo::MetricsUpdateWorker.new.perform
 ```
 
-If it raises an error, then the error is probably also preventing the jobs from completing. If it takes longer than 10 minutes, then the status might flap or persist as "Unhealthy", even if the status does occasionally get updated. This might be due to growth in usage, growth in data over time, or performance bugs such as a missing database index.
+If it raises an error, then the error is probably also preventing the jobs from completing. If it takes longer than 1 hour, then the status might flap or persist as "Unhealthy", even if the status does occasionally get updated. This might be due to growth in usage, growth in data over time, or performance bugs such as a missing database index.
 
 You can monitor system CPU load with a utility like `top` or `htop`. If PostgreSQL is using a significant amount of CPU, it might indicate that there's a problem, or that the system is underprovisioned. System memory should also be monitored.
 
@@ -230,7 +230,7 @@ methods we use for replicating and verifying each data type in [supported Geo da
 To find more details about failed items, check
 [the `gitlab-rails/geo.log` file](../../../logs/log_parsing.md#find-most-common-geo-sync-errors)
 
-If you notice replication or verification failures, you can try to [resolve them](replication.md).
+If you notice replication or verification failures, you can try to [resolve them](synchronization_verification.md).
 
 ##### Fixing errors found when running the Geo check Rake task
 
@@ -441,7 +441,7 @@ To check if PostgreSQL replication is working, check if:
 - [Sites are pointing to the correct database node](#are-sites-pointing-to-the-correct-database-node).
 - [Geo can detect the current site correctly](#can-geo-detect-the-current-site-correctly).
 
-If you're still having problems, see the [advanced replication troubleshooting](replication.md).
+If you're still having problems, see the [advanced replication troubleshooting](synchronization_verification.md).
 
 #### Are sites pointing to the correct database node?
 
@@ -659,6 +659,45 @@ to manually create the index. Creating the index causes PostgreSQL to
 consume slightly more resources until it finishes. Afterward, CPU usage might
 remain high while verification continues, but queries should complete
 significantly faster, and secondary site status should update correctly.
+
+### Verification failed with: `Verification timed out after (...)`
+
+From GitLab 16.11, Geo may create duplicate `JobArtifactRegistry` entries for the same `artifact_id`, which can lead to synchronization
+failures between primary and secondary sites. This issue may also impact `UploadRegistry` and `PackageFileRegistry` entries.
+
+To determine if you might be experiencing this issue and remove the duplicate entries:
+
+1. Open a [Rails console](../../../operations/rails_console.md) in the secondary site.
+1. Get the number of model record IDs that have duplicates:
+
+   ```ruby
+   artifact_ids = Geo::JobArtifactRegistry.group(:artifact_id).having('COUNT(*) > 1').pluck(:artifact_id); artifact_ids.size
+   upload_ids = Geo::UploadRegistry.group(:file_id).having('COUNT(*) > 1').pluck(:file_id); upload_ids.size
+   package_file_ids = Geo::PackageFileRegistry.group(:package_file_id).having('COUNT(*) > 1').pluck(:package_file_id); package_file_ids.size
+   ```
+
+1. Output the IDs:
+
+   ```ruby
+   puts 'BEGIN Artifact IDs', artifact_ids, 'END Artifact IDs'
+   puts 'BEGIN Upload IDs', upload_ids, 'END Upload IDs'
+   puts 'BEGIN Package File IDs', package_file_ids, 'END Package File IDs'
+   ```
+
+   If the output is empty, you are not affected. Otherwise, save
+   the terminal output in a text file in case you lose connection later.
+
+1. Delete all duplicates:
+
+   ```ruby
+   Geo::JobArtifactRegistry.where(artifact_id: artifact_ids).delete_all
+   Geo::UploadRegistry.where(file_id: upload_ids).delete_all
+   Geo::PackageFileRegistry.where(package_file_id: package_file_ids).delete_all
+   ```
+
+1. Wait for the background jobs to create the registry rows again and resync.
+
+Follow [issue 479852](https://gitlab.com/gitlab-org/gitlab/-/issues/479852) to get feedback on the fix.
 
 ### Error `end of file reached` when running Geo Rake check task on secondary
 

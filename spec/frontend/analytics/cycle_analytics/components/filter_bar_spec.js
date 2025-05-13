@@ -1,9 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import axios from '~/lib/utils/axios_utils';
 import {
   filterMilestones,
   filterLabels,

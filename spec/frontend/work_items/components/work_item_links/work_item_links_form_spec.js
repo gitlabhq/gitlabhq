@@ -2,7 +2,6 @@ import Vue, { nextTick } from 'vue';
 import { GlForm, GlFormGroup, GlFormInput, GlFormCheckbox, GlTooltip } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/project_namespace_work_item_types.query.graphql.json';
-import { sprintf } from '~/locale';
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -13,13 +12,11 @@ import WorkItemGroupsListbox from '~/work_items/components/work_item_links/work_
 import WorkItemProjectsListbox from '~/work_items/components/work_item_links/work_item_projects_listbox.vue';
 import {
   FORM_TYPES,
-  WORK_ITEM_TYPE_ENUM_TASK,
-  WORK_ITEM_TYPE_ENUM_ISSUE,
+  MAX_WORK_ITEMS,
+  SEARCH_DEBOUNCE,
   WORK_ITEM_TYPE_NAME_EPIC,
   WORK_ITEM_TYPE_NAME_ISSUE,
-  SEARCH_DEBOUNCE,
-  WORK_ITEM_TYPE_ENUM_EPIC,
-  MAX_WORK_ITEMS,
+  WORK_ITEM_TYPE_NAME_TASK,
 } from '~/work_items/constants';
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
@@ -73,7 +70,7 @@ describe('WorkItemLinksForm', () => {
     parentMilestone = null,
     formType = FORM_TYPES.create,
     parentWorkItemType = WORK_ITEM_TYPE_NAME_ISSUE,
-    childrenType = WORK_ITEM_TYPE_ENUM_TASK,
+    childrenType = WORK_ITEM_TYPE_NAME_TASK,
     updateMutation = updateMutationResolver,
     createMutation = createMutationResolver,
     isGroup = false,
@@ -227,7 +224,6 @@ describe('WorkItemLinksForm', () => {
 
         await waitForPromises();
 
-        expect(wrapper.vm.childWorkItemType).toEqual(workItemTypeIdForTask);
         expect(createMutationResolver).toHaveBeenCalledWith({
           input: {
             title: 'Create confidential task',
@@ -248,7 +244,7 @@ describe('WorkItemLinksForm', () => {
         await createComponent({
           isGroup: true,
           parentWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
-          childrenType: WORK_ITEM_TYPE_ENUM_ISSUE,
+          childrenType: WORK_ITEM_TYPE_NAME_ISSUE,
         });
       });
 
@@ -287,7 +283,7 @@ describe('WorkItemLinksForm', () => {
           parentConfidential: true,
           isGroup: true,
           parentWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
-          childrenType: WORK_ITEM_TYPE_ENUM_ISSUE,
+          childrenType: WORK_ITEM_TYPE_NAME_ISSUE,
         });
 
         submitForm({ title: 'Create confidential issue', fullPath: projectData[0].fullPath });
@@ -316,7 +312,7 @@ describe('WorkItemLinksForm', () => {
         await createComponent({
           isGroup: true,
           parentWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
-          childrenType: WORK_ITEM_TYPE_ENUM_EPIC,
+          childrenType: WORK_ITEM_TYPE_NAME_EPIC,
         });
       });
 
@@ -324,7 +320,6 @@ describe('WorkItemLinksForm', () => {
         expect(findInput().exists()).toBe(true);
         expect(findGroupsSelector().props()).toMatchObject({
           fullPath: 'group-a',
-          isGroup: true,
           selectedGroupFullPath: 'group-a',
         });
         expect(findAddChildButton().text()).toBe('Create epic');
@@ -363,16 +358,14 @@ describe('WorkItemLinksForm', () => {
         parentConfidential: false,
         isGroup: true,
         parentWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
-        childrenType: WORK_ITEM_TYPE_ENUM_ISSUE,
+        childrenType: WORK_ITEM_TYPE_NAME_ISSUE,
       });
 
       findInput().vm.$emit('input', 'Pretending to add an issue');
 
       findProjectSelector().vm.$emit('selectProject', projectData[0]);
 
-      await wrapper.setProps({
-        childrenType: WORK_ITEM_TYPE_ENUM_EPIC,
-      });
+      await wrapper.setProps({ childrenType: WORK_ITEM_TYPE_NAME_EPIC });
 
       findInput().vm.$emit('input', 'Actually adding an epic');
 
@@ -400,7 +393,7 @@ describe('WorkItemLinksForm', () => {
         parentConfidential: false,
         isGroup: true,
         parentWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
-        childrenType: WORK_ITEM_TYPE_ENUM_ISSUE,
+        childrenType: WORK_ITEM_TYPE_NAME_ISSUE,
         createGroupLevelWorkItems: false,
       });
 
@@ -439,7 +432,7 @@ describe('WorkItemLinksForm', () => {
       expect(findWorkItemTokenInput().props()).toMatchObject({
         value: [],
         fullPath: 'group-a',
-        childrenType: WORK_ITEM_TYPE_ENUM_TASK,
+        childrenType: WORK_ITEM_TYPE_NAME_TASK,
         childrenIds: [],
         parentWorkItemId: 'gid://gitlab/WorkItem/1',
         areWorkItemsToAddValid: true,
@@ -469,19 +462,8 @@ describe('WorkItemLinksForm', () => {
 
       expect(findWorkItemTokenInput().props('areWorkItemsToAddValid')).toBe(false);
       expect(findValidationElement().exists()).toBe(true);
-      expect(findValidationElement().text().trim()).toBe(
-        sprintf(
-          '%{invalidWorkItemsList} cannot be added: Cannot assign a non-confidential %{childWorkItemType} to a confidential parent %{parentWorkItemType}. Make the selected %{childWorkItemType} confidential and try again.',
-          {
-            // Only non-confidential work items are shown in the error message
-            invalidWorkItemsList: availableWorkItemsResponse.data.workspace.workItems.nodes
-              .filter((wi) => !wi.confidential)
-              .map((wi) => wi.title)
-              .join(', '),
-            childWorkItemType: 'Task',
-            parentWorkItemType: 'Issue',
-          },
-        ),
+      expect(findValidationElement().text()).toBe(
+        'Task 1, Task 2, Task 3 cannot be added: Cannot assign a non-confidential task to a confidential parent issue. Make the selected task confidential and try again.',
       );
     });
 

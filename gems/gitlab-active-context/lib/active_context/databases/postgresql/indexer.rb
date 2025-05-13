@@ -42,14 +42,20 @@ module ActiveContext
         def build_operation(ref)
           case ref.operation.to_sym
           when :upsert
-            ref.jsons.each do |hash|
-              @operations << { "#{ref.partition_name}": { upsert: build_indexed_json(hash, ref) }, ref: ref }
-            end
+            build_upsert_operations(ref)
             @operations << build_delete_operation(ref: ref, include_ref_version: true)
+          when :update
+            build_upsert_operations(ref)
           when :delete
             @operations << build_delete_operation(ref: ref)
           else
             raise StandardError, "Operation #{ref.operation} is not supported"
+          end
+        end
+
+        def build_upsert_operations(ref)
+          ref.jsons.each do |hash|
+            @operations << { "#{ref.partition_name}": { upsert: build_indexed_json(hash, ref) }, ref: ref }
           end
         end
 

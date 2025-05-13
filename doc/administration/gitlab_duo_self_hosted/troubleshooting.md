@@ -1,5 +1,5 @@
 ---
-stage: AI-Powered
+stage: AI-powered
 group: Custom Models
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Troubleshooting tips for deploying GitLab Duo Self-Hosted
@@ -8,7 +8,7 @@ title: Troubleshooting GitLab Duo Self-Hosted
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
 - Offering: GitLab Self-Managed
 
@@ -19,8 +19,9 @@ title: Troubleshooting GitLab Duo Self-Hosted
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../feature_flags.md) named `ai_custom_model`. Disabled by default.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
-- Feature flag `ai_custom_model` removed in GitLab 17.8
-- Generally available in GitLab 17.9
+- Feature flag `ai_custom_model` removed in GitLab 17.8.
+- Generally available in GitLab 17.9.
+- Changed to include Premium in GitLab 18.0.
 
 {{< /history >}}
 
@@ -95,7 +96,7 @@ We provide two debugging scripts to help administrators verify their self-hosted
      ```shell
      poetry run troubleshoot \
        --model-family=claude_3 \
-       --model-identifier=bedrock/anthropic.claude-3-7-sonnet-20250219-v1:0
+       --model-identifier=bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0
      ```
 
      For a `mixtral` model running on vLLM:
@@ -257,7 +258,7 @@ echo $AIGW_CUSTOM_MODELS__ENABLED # must be true
 ```
 
 If the environment variables are not set up correctly, set them by
-[creating a container](../../install/install_ai_gateway.md#find-the-ai-gateway-release).
+[creating a container](../../install/install_ai_gateway.md#find-the-ai-gateway-image).
 
 ## Check if the model is reachable from AI gateway
 
@@ -295,7 +296,7 @@ If not successful, verify your network configurations.
 
 ## The image's platform does not match the host
 
-When [finding the AI gateway release](../../install/install_ai_gateway.md#find-the-ai-gateway-release),
+When [finding the AI gateway release](../../install/install_ai_gateway.md#find-the-ai-gateway-image),
 you might get an error that states `The requested image's platform (linux/amd64) does not match the detected host`.
 
 To work around this error, add `--platform linux/amd64` to the `docker run` command:

@@ -240,6 +240,9 @@ export default {
 
       this.$emit('submit-form', formData);
     },
+    handleModalClose() {
+      this.$emit('close-commit-changes-modal');
+    },
   },
   deleteLfsHelpPath: helpPagePath('topics/git/lfs/_index', {
     anchor: 'delete-a-git-lfs-file-from-repository-history',
@@ -258,6 +261,8 @@ export default {
     :action-primary="primaryOptions"
     :action-cancel="cancelOptions"
     @primary="handlePrimaryAction"
+    @cancel="handleModalClose"
+    @close="handleModalClose"
   >
     <slot name="body"></slot>
     <div v-if="showLfsWarning">

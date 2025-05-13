@@ -2,15 +2,20 @@
 
 require 'spec_helper'
 
-# rubocop:disable RSpec/FactoriesInMigrationSpecs -- This uses a factory to build projects
 RSpec.describe Gitlab::BackgroundMigration::BackfillMilestoneReleasesProjectId, feature_category: :release_orchestration do
   let(:groups_table) { table(:namespaces) { |t| t.primary_key = :id } }
   let(:projects_table) { table(:projects) { |t| t.primary_key = :id } }
   let(:releases_table) { table(:releases) { |t| t.primary_key = :id } }
   let(:milestone_releases_table) { table(:milestone_releases) { |t| t.primary_key = :milestone_id } }
 
-  let!(:group) { create(:group) }
-  let!(:project1) { create(:project, :repository, :public, namespace: group) }
+  let!(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
+  let!(:group) do
+    groups_table.create!(name: 'group-namespace', path: 'namespace', type: 'Group', organization_id: organization.id)
+  end
+
+  let!(:project1) do
+    projects_table.create!(namespace_id: group.id, project_namespace_id: group.id, organization_id: organization.id)
+  end
 
   let!(:release_1) { releases_table.create!(id: 100, project_id: project1.id, released_at: 3.days.ago, tag: 'v1.1') }
   let!(:release_2) { releases_table.create!(id: 101, project_id: project1.id, released_at: 2.days.ago, tag: 'v1.2') }
@@ -82,4 +87,3 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillMilestoneReleasesProjectId, 
     end
   end
 end
-# rubocop:enable RSpec/FactoriesInMigrationSpecs

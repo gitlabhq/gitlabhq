@@ -15,6 +15,11 @@ export default {
       required: false,
       default: null,
     },
+    size: {
+      type: String,
+      default: 'medium',
+      required: false,
+    },
   },
   I18N_EDIT,
 };
@@ -26,6 +31,7 @@ export default {
     v-gl-tooltip="$options.I18N_EDIT"
     :aria-label="$options.I18N_EDIT"
     :href="href"
+    :size="size"
     icon="pencil"
     v-on="$listeners"
   />

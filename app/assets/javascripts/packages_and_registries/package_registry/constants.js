@@ -13,6 +13,7 @@ export {
   CANCEL_DELETE_PACKAGE_FILE_TRACKING_ACTION,
   DOWNLOAD_PACKAGE_ASSET_TRACKING_ACTION,
   SELECT_PACKAGE_FILE_TRACKING_ACTION,
+  INSTALL_PACKAGE_TRACKING_ACTION,
 } from '~/packages_and_registries/shared/constants';
 
 export const PACKAGE_TYPE_CONAN = 'CONAN';
@@ -168,6 +169,7 @@ export const NPM_PACKAGE_MANAGER = 'npm';
 export const YARN_PACKAGE_MANAGER = 'yarn';
 
 export const PROJECT_PACKAGE_ENDPOINT_TYPE = 'project';
+export const GROUP_PACKAGE_ENDPOINT_TYPE = 'group';
 export const INSTANCE_PACKAGE_ENDPOINT_TYPE = 'instance';
 
 export const GRAPHQL_PAGE_SIZE = 20;

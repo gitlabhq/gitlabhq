@@ -177,12 +177,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         end
       end
 
-      subject do
-        download_file(
-          file_name: package_file.file_name,
-          request_headers: headers
-        )
-      end
+      subject { download_file(file_name: package_file.file_name, request_headers: headers) }
 
       if params[:valid]
         it_behaves_like 'allowing the download'
@@ -201,15 +196,18 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
   end
 
   shared_examples 'downloads with a job token' do
-    where(:valid, :sent_using) do
-      true  | :custom_params
-      false | :custom_params
-      true  | :basic_auth
-      false | :basic_auth
+    shared_examples 'invalid download' do
+      it_behaves_like 'not allowing the download with', :unauthorized
+    end
+
+    where(:token, :sent_using, :shared_example_name) do
+      lazy { job.token } | :custom_params | 'allowing the download'
+      'not_valid'        | :custom_params | 'invalid download'
+      lazy { job.token } | :basic_auth    | 'allowing the download'
+      'not_valid'        | :basic_auth    | 'invalid download'
     end
 
     with_them do
-      let(:token) { valid ? job.token : 'not_valid' }
       let(:headers) { basic_auth_header(::Gitlab::Auth::CI_JOB_USER, token) }
       let(:params) { { job_token: token } }
 
@@ -223,11 +221,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       end
 
       context 'with a running job' do
-        if params[:valid]
-          it_behaves_like 'allowing the download'
-        else
-          it_behaves_like 'not allowing the download with', :unauthorized
-        end
+        it_behaves_like params[:shared_example_name]
       end
 
       context 'with a finished job' do
@@ -988,7 +982,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
       with_them do
         it 'authorizes upload' do
-          authorize_upload({}, headers.merge(headers.merge(basic_auth_header(username, password))))
+          authorize_upload({}, headers.merge(basic_auth_header(username, password)))
 
           expect(response).to have_gitlab_http_status(:ok)
         end

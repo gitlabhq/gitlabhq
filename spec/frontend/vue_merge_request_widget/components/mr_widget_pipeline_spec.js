@@ -2,8 +2,8 @@ import Vue, { nextTick } from 'vue';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import { trimText } from 'helpers/text_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -40,13 +40,11 @@ describe('MRWidgetPipeline', () => {
 
   const defaultProps = {
     pipeline: mockData.pipeline,
-    pipelineEtag: '/api/graphql:pipelines/sha/a3cf305c10be3fafdd89b12cb1c389e6bde45875',
     pipelineMiniGraphVariables: {
       iid: '12',
       fullPath: 'project/path',
     },
     ciStatus: SUCCESS,
-    hasCi: true,
     mrTroubleshootingDocsPath: 'help',
     ciTroubleshootingDocsPath: 'ci-help',
     targetProjectId: 1,

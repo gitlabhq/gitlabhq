@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
   let(:chunked_io) { described_class.new(build) }
 
   before do
-    stub_feature_flags(ci_enable_live_trace: true)
+    stub_application_setting(ci_job_live_trace_enabled: true)
   end
 
   describe "#initialize" do

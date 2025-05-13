@@ -466,10 +466,10 @@ As an end user, you can verify package signatures with the following steps:
 
    # Download signatures from GitLab's generic package registry
    # Replace these values with your project's details:
-   # GITLAB_URL: Your GitLab instance URL (e.g., https://gitlab.com)
+   # GITLAB_URL: Your GitLab instance URL (for example, https://gitlab.com)
    # PROJECT_ID: Your project's ID number
    # PACKAGE_NAME: Your package name
-   # VERSION: Package version (e.g., 1.0.0)
+   # VERSION: Package version (for example, 1.0.0)
    # FILENAME: The exact filename of your downloaded package
 
    curl --output "${FILENAME}.sig" \

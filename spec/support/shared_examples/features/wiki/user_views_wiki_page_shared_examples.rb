@@ -109,12 +109,16 @@ RSpec.shared_examples 'User views a wiki page' do
       end
     end
 
-    it 'shows the creation page if file does not exist' do
+    it 'shows the page doesn\'t exist if file does not exist' do
       expect(page).to have_link('image', href: "#{wiki.wiki_base_path}/#{path}")
 
       click_on('image')
 
       expect(page).to have_current_path(%r{wikis/#{path}})
+      expect(page).to have_content("This page doesn't exist")
+
+      click_link("Create this page…")
+
       expect(page).to have_content('New page')
     end
   end

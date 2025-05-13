@@ -26,8 +26,12 @@ RSpec.describe Namespaces::EnableDescendantsCacheCronWorker, '#perform', :clean_
     it 'creates the cache record for the top level group and the subgroup' do
       metadata = worker.perform
 
-      ids = Namespaces::Descendants.pluck(:namespace_id)
+      cache_records = Namespaces::Descendants.all
+      ids = cache_records.map(&:id)
       expect(ids).to match_array([group.id, subgroup.id])
+
+      outdated_ats = cache_records.map(&:outdated_at)
+      expect(outdated_ats).to all(be_present)
 
       expect(metadata).to eq({ over_time: false, last_id: nil, cache_count: 2 })
     end

@@ -512,10 +512,6 @@ RSpec.describe 'Internal Events matchers', :clean_gitlab_redis_shared_state, fea
         let(:label) { expected_label }
       end
 
-      it_behaves_like 'internal event tracking' do
-        let(:event_attribute_overrides) { { additional_properties: { label: expected_label } } }
-      end
-
       context 'with incorrect value being provided in additional_properties.' do
         let(:unexpected_label) { 'BAD label value' }
 
@@ -530,10 +526,6 @@ RSpec.describe 'Internal Events matchers', :clean_gitlab_redis_shared_state, fea
 
         it_behaves_like 'internal event tracking' do
           let(:label) { unexpected_label }
-        end
-
-        it_behaves_like 'internal event tracking' do
-          let(:event_attribute_overrides) { { additional_properties: { label: unexpected_label } } }
         end
       end
     end

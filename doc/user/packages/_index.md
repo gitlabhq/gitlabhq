@@ -24,6 +24,10 @@ The GitLab [Container Registry](container_registry/_index.md) is a secure and pr
 
 The GitLab [Terraform Module Registry](terraform_module_registry/_index.md) is a secure and private registry for Terraform modules. You can use GitLab CI/CD to create and publish modules.
 
+## Virtual Registry
+
+The GitLab [virtual registry](virtual_registry/_index.md) provides advanced caching, proxying, and distribution features to improve package management from external registries in GitLab.
+
 ## Dependency Proxy
 
 The [Dependency Proxy](dependency_proxy/_index.md) is a local proxy for frequently-used upstream images and packages.

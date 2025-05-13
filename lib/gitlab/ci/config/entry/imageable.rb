@@ -12,7 +12,7 @@ module Gitlab
           include ::Gitlab::Config::Entry::Attributable
           include ::Gitlab::Config::Entry::Configurable
 
-          EXECUTOR_OPTS_KEYS = %i[docker].freeze
+          EXECUTOR_OPTS_KEYS = %i[docker kubernetes].freeze
 
           IMAGEABLE_ALLOWED_KEYS = EXECUTOR_OPTS_KEYS + %i[name entrypoint ports pull_policy].freeze
 
@@ -33,7 +33,7 @@ module Gitlab
               }, allow_nil: true
             end
 
-            attributes :docker, :ports, :pull_policy
+            attributes :docker, :kubernetes, :ports, :pull_policy
 
             entry :ports, Entry::Ports,
               description: 'Ports used to expose the image/service'

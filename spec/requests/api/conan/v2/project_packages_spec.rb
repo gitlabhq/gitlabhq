@@ -18,42 +18,7 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
       message: "404 'conan_package_revisions_support' feature flag is disabled Not Found"
   end
 
-  shared_examples 'packages feature check' do
-    before do
-      stub_packages_setting(enabled: false)
-    end
-
-    it_behaves_like 'returning response status', :not_found
-  end
-
-  describe 'GET /api/v4/projects/:id/packages/conan/v2/users/check_credentials' do
-    let(:url) { "/projects/#{project.id}/packages/conan/v2/users/check_credentials" }
-
-    it_behaves_like 'conan check_credentials endpoint'
-  end
-
-  describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/search' do
-    let(:url_suffix) { "search" }
-
-    it_behaves_like 'conan search endpoint'
-
-    it_behaves_like 'conan FIPS mode' do
-      let(:params) { { q: package.conan_recipe } }
-
-      subject { get api(url), params: params }
-    end
-
-    it_behaves_like 'conan search endpoint with access to package registry for everyone'
-  end
-
-  describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/' \
-    ':package_channel/revisions/:recipe_revision/files' do
-    include_context 'for conan file download endpoints'
-
-    let(:recipe_revision) { recipe_file_metadata.recipe_revision_value }
-    let(:url_suffix) { "#{recipe_path}/revisions/#{recipe_revision}/files" }
-    let(:url) { "/projects/#{project_id}/packages/conan/v2/conans/#{url_suffix}" }
-
+  shared_examples 'get file list' do |expected_file_list, not_found_err:|
     subject(:api_request) { get api(url), headers: headers }
 
     it_behaves_like 'enforcing read_packages job token policy' do
@@ -69,7 +34,7 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
       api_request
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response).to eq({ 'files' => { 'conanfile.py' => {}, 'conanmanifest.txt' => {} } })
+      expect(json_response).to eq(expected_file_list)
     end
 
     context 'when the recipe revision files are not found' do
@@ -77,7 +42,7 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
       let(:recipe_revision) { 'da39a3ee5e6b4b0d3255bfef95601890afd80709' }
 
       it_behaves_like 'returning response status with message', status: :not_found,
-        message: '404 Recipe files Not Found'
+        message: not_found_err
     end
 
     context 'when the package is not found' do
@@ -96,9 +61,55 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
         api_request
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to eq("files" => { "conanfile.py" => {} })
+        expect(json_response['files'].size).to eq(1)
       end
     end
+  end
+
+  describe 'GET /api/v4/projects/:id/packages/conan/v2/users/authenticate' do
+    let(:url) { "/projects/#{project.id}/packages/conan/v2/users/authenticate" }
+
+    it_behaves_like 'conan authenticate endpoint'
+  end
+
+  describe 'GET /api/v4/projects/:id/packages/conan/v2/users/check_credentials' do
+    let(:url) { "/projects/#{project.id}/packages/conan/v2/users/check_credentials" }
+
+    it_behaves_like 'conan check_credentials endpoint'
+    it_behaves_like 'conan package revisions feature flag check' do
+      subject { get api(url), headers: headers }
+    end
+  end
+
+  describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/search' do
+    let(:url_suffix) { "search" }
+    let(:params) { { q: package.conan_recipe } }
+
+    subject { get api(url), params: params }
+
+    it_behaves_like 'conan search endpoint'
+    it_behaves_like 'conan FIPS mode'
+    it_behaves_like 'conan search endpoint with access to package registry for everyone'
+    it_behaves_like 'conan package revisions feature flag check'
+  end
+
+  describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/' \
+    ':package_channel/revisions/:recipe_revision/files' do
+    let_it_be(:additional_recipe_revision) { create(:conan_recipe_revision, package: package) }
+
+    let_it_be(:additional_recipe_files) do
+      create(:conan_package_file, :conan_recipe_file, package: package,
+        conan_recipe_revision: additional_recipe_revision, file_name: 'additional_conanfile.py')
+    end
+
+    let(:recipe_revision) { package.conan_recipe_revisions.first.revision }
+    let(:recipe_path) { package.conan_recipe_path }
+    let(:url_suffix) { "#{recipe_path}/revisions/#{recipe_revision}/files" }
+    let(:url) { "/projects/#{project_id}/packages/conan/v2/conans/#{url_suffix}" }
+
+    it_behaves_like 'get file list',
+      { 'files' => { 'conanfile.py' => {}, 'conanmanifest.txt' => {} } },
+      not_found_err: '404 Recipe files Not Found'
   end
 
   describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/' \
@@ -136,6 +147,56 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
         /recipe_revision/  | ref(:recipe_path)                              | 'invalid_revi$ion'                               | ref(:file_name)
         /recipe_revision/  | ref(:recipe_path)                              | Packages::Conan::FileMetadatum::DEFAULT_REVISION | ref(:file_name)
         /file_name/        | ref(:recipe_path)                              | ref(:recipe_revision)                            | 'invalid_file.txt'
+      end
+      # rubocop:enable Layout/LineLength
+
+      with_them do
+        it_behaves_like 'returning response status with error', status: :bad_request, error: params[:error]
+      end
+    end
+  end
+
+  describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/' \
+    ':package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/' \
+    'files/:file_name' do
+    include_context 'for conan file download endpoints'
+
+    let(:file_name) { package_file.file_name }
+    let(:recipe_revision) { package_file_metadata.recipe_revision_value }
+    let(:package_revision) { package_file_metadata.package_revision_value }
+    let(:conan_package_reference) { package_file_metadata.package_reference_value }
+    let(:url_suffix) do
+      "#{recipe_path}/revisions/#{recipe_revision}/packages/#{conan_package_reference}/revisions/#{package_revision}/" \
+        "files/#{file_name}"
+    end
+
+    subject(:request) { get api(url), headers: headers }
+
+    it_behaves_like 'conan package revisions feature flag check'
+    it_behaves_like 'packages feature check'
+    it_behaves_like 'package file download endpoint'
+    it_behaves_like 'accept get request on private project with access to package registry for everyone'
+    it_behaves_like 'project not found by project id'
+
+    it_behaves_like 'enforcing job token policies', :read_packages,
+      allow_public_access_for_enabled_project_features: :package_registry do
+      let(:headers) { job_basic_auth_header(target_job) }
+    end
+
+    describe 'parameter validation for package file endpoints' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:url_suffix) do
+        "#{recipe_path}/revisions/#{recipe_revision}/packages/#{url_package_reference}/revisions/" \
+          "#{url_package_revision}/files/#{url_file_name}"
+      end
+
+      # rubocop:disable Layout/LineLength -- Avoid formatting to keep one-line table syntax
+      where(:error, :url_package_reference, :url_package_revision, :url_file_name) do
+        /conan_package_reference/ | 'invalid_package_reference$' | ref(:package_revision) | ref(:file_name)
+        /package_revision/       | ref(:conan_package_reference)                     | 'invalid_package_revi$ion'                        | ref(:file_name)
+        /package_revision/       | ref(:conan_package_reference)                     | Packages::Conan::FileMetadatum::DEFAULT_REVISION  | ref(:file_name)
+        /file_name/              | ref(:conan_package_reference)                     | ref(:package_revision)                            | 'invalid_file.txt'
       end
       # rubocop:enable Layout/LineLength
 
@@ -212,8 +273,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
   describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username' \
     '/:package_channel/latest' do
-    include_context 'for conan recipe endpoints'
-
     let(:recipe_path) { package.conan_recipe_path }
     let(:url_suffix) { "#{recipe_path}/latest" }
 
@@ -241,6 +300,7 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
       end
     end
 
+    it_behaves_like 'conan package revisions feature flag check'
     it_behaves_like 'enforcing read_packages job token policy'
     it_behaves_like 'accept get request on private project with access to package registry for everyone'
     it_behaves_like 'conan FIPS mode'
@@ -250,8 +310,6 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
 
   describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username' \
     '/:package_channel/revisions' do
-    include_context 'for conan recipe endpoints'
-
     let(:recipe_path) { package.conan_recipe_path }
     let(:url_suffix) { "#{recipe_path}/revisions" }
     let_it_be(:revision1) { package.conan_recipe_revisions.first }
@@ -284,5 +342,97 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     it_behaves_like 'conan FIPS mode'
     it_behaves_like 'package not found'
     it_behaves_like 'project not found by project id'
+  end
+
+  describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username' \
+    '/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/latest' do
+    let(:recipe_path) { package.conan_recipe_path }
+    let(:recipe_revision) { package.conan_recipe_revisions.first.revision }
+    let(:conan_package_reference) { package.conan_package_references.first.reference }
+    let(:url_suffix) { "#{recipe_path}/revisions/#{recipe_revision}/packages/#{conan_package_reference}/latest" }
+
+    subject(:request) { get api(url), headers: headers }
+
+    it 'returns the latest revision' do
+      request
+
+      expect(response).to have_gitlab_http_status(:ok)
+
+      package_revision = package.conan_package_revisions.first
+
+      expect(json_response['revision']).to eq(package_revision.revision)
+      expect(json_response['time']).to eq(package_revision.created_at.iso8601(3))
+    end
+
+    shared_examples 'returns 404 when resource does not exist' do
+      it 'returns 404' do
+        request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 Revision Not Found')
+      end
+    end
+
+    context 'when recipe revision does not exist' do
+      let(:recipe_revision) { OpenSSL::Digest.hexdigest('MD5', 'nonexistent-revision') }
+
+      it_behaves_like 'returns 404 when resource does not exist'
+    end
+
+    context 'when package reference does not exist' do
+      let(:conan_package_reference) { OpenSSL::Digest.hexdigest('SHA1', 'nonexistent-reference') }
+
+      it_behaves_like 'returns 404 when resource does not exist'
+    end
+
+    it_behaves_like 'enforcing read_packages job token policy'
+    it_behaves_like 'accept get request on private project with access to package registry for everyone'
+    it_behaves_like 'conan FIPS mode'
+    it_behaves_like 'package not found'
+    it_behaves_like 'project not found by project id'
+  end
+
+  describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/' \
+    ':package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/' \
+    'files' do
+    let_it_be(:additional_package_reference) { create(:conan_package_reference, package: package) }
+    let_it_be(:additional_package_revision) { create(:conan_package_revision, package: package) }
+
+    let_it_be(:additional_package_file_1) do
+      create(:conan_package_file,  :conan_package, package: package,
+        conan_package_revision: additional_package_revision, file_name: 'additional_conan_package_1.tgz')
+    end
+
+    let_it_be(:additional_package_file_2) do
+      create(:conan_package_file,  :conan_package, package: package,
+        conan_package_reference: additional_package_reference, file_name: 'additional_conan_package_2.tgz')
+    end
+
+    let(:recipe_revision) { package.conan_recipe_revisions.first.revision }
+    let(:recipe_path) { package.conan_recipe_path }
+    let(:package_revision) { package.conan_package_revisions.first.revision }
+    let(:url) { "/projects/#{project_id}/packages/conan/v2/conans/#{url_suffix}" }
+
+    let(:url_suffix) do
+      "#{recipe_path}/revisions/#{recipe_revision}/packages/#{conan_package_reference}/revisions/" \
+        "#{package_revision}/files"
+    end
+
+    it_behaves_like 'get file list',
+      { 'files' => { 'conan_package.tgz' => {}, 'conaninfo.txt' => {}, 'conanmanifest.txt' => {} } },
+      not_found_err: '404 Package files Not Found'
+  end
+
+  describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username' \
+    '/:package_channel/search' do
+    let(:recipe_path) { package.conan_recipe_path }
+    let(:url_suffix) { "#{recipe_path}/search" }
+
+    subject(:request) { get api(url), headers: headers }
+
+    it_behaves_like 'GET package references metadata endpoint'
+    it_behaves_like 'accept get request on private project with access to package registry for everyone'
+    it_behaves_like 'project not found by project id'
+    it_behaves_like 'conan package revisions feature flag check'
   end
 end

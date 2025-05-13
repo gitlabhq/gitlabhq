@@ -1,5 +1,5 @@
 ---
-stage: Systems
+stage: Tenant Scale
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Troubleshooting Geo synchronization and verification errors
@@ -30,7 +30,7 @@ secondary Geo site, you can:
 
 [You can force a resync and reverify individual items](https://gitlab.com/gitlab-org/gitlab/-/issues/364727)
 for all component types managed by the
-[self-service framework](../../../../development/geo/framework.md) using the UI. On the secondary
+self-service framework using the UI. On the secondary
 site, visit **Admin > Geo > Replication**.
 
 However, if this doesn't work, you can perform the same action using the Rails console. The
@@ -361,6 +361,158 @@ component on one **secondary** site from the UI:
 
 ## Errors
 
+### Message: `The file is missing on the Geo primary site`
+
+The sync failure `The file is missing on the Geo primary site` is common when
+setting up a secondary Geo site for the first time, which is caused by data
+inconsistencies on the primary site.
+
+Data inconsistencies and missing files can occur due to system or human errors
+when operating GitLab. For example, an instance administrator manually deletes
+several artifacts on the local file system. Such changes are not properly
+propagated to the database and result in inconsistencies. These inconsistencies
+remain and can cause frictions. Geo secondaries might continue to try
+replicating those files as they are still referenced in the database but no
+longer exist.
+
+{{< alert type="note" >}}
+
+In case of a recent migration from local to object storage, see the dedicated
+[object storage troubleshooting section](../../../object_storage.md#inconsistencies-after-migrating-to-object-storage).
+
+{{< /alert >}}
+
+#### Identify inconsistencies
+
+When missing files or inconsistencies are present, you can encounter entries in `geo.log` such as the following. Take note of the field `"primary_missing_file" : true`:
+
+```json
+{
+   "bytes_downloaded" : 0,
+   "class" : "Geo::BlobDownloadService",
+   "correlation_id" : "01JT69C1ECRBEMZHA60E5SAX8E",
+   "download_success" : false,
+   "download_time_s" : 0.196,
+   "gitlab_host" : "gitlab.example.com",
+   "mark_as_synced" : false,
+   "message" : "Blob download",
+   "model_record_id" : 55,
+   "primary_missing_file" : true,
+   "reason" : "Not Found",
+   "replicable_name" : "upload",
+   "severity" : "WARN",
+   "status_code" : 404,
+   "time" : "2025-05-01T16:02:44.836Z",
+   "url" : "http://gitlab.example.com/api/v4/geo/retrieve/upload/55"
+}
+```
+
+The same errors are also reflected in the UI under **Admin > Geo > Sites** when reviewing the synchronization status of specific replicables. In this scenario, a specific *upload* is missing:
+
+![The Geo Uploads replicable dashboard displaying all failed errors.](../img/geo_uploads_file_missing_v17_11.png)
+
+![The Geo Uploads replicable dashboard displaying missing file error.](../img/geo_uploads_file_missing_details_v17_11.png)
+
+#### Clean up inconsistencies
+
+{{< alert type="warning" >}}
+
+Ensure you have a recent and working backup at hand before issuing any deletion commands.
+
+{{< /alert >}}
+
+To remove those errors, first identify which particular resources are affected. Then, run the appropriate `destroy` commands to ensure the deletion is propagated across all Geo sites and their databases. Based on the previous scenario, an **upload** is causing those errors which is used as an example below.
+
+1. Map the identified inconsistencies to their respective [Geo Model class](#geo-data-type-model-classes) name. The class name is needed in the following steps. In this scenario, for *uploads* it corresponds to `Upload`.
+1. Start a [Rails console](../../../operations/rails_console.md#starting-a-rails-console-session) on the **Geo primary site**.
+1. Query all resources where verification failed due to missing files based on the *Geo Model class* of the previous step. Adjust or remove the `limit(20)` to display more results. Observe how the listed resources should match the failed ones shown in the UI:
+
+   ```ruby
+   Upload.verification_failed.where("verification_failure like '%File is not checksummable%'").limit(20)
+
+   => #<Upload:0x00007b362bb6c4e8
+    id: 55,
+    size: 13346,
+    path: "503d99159e2aa8a3ac23602058cfdf58/openbao.png",
+    checksum: "db29d233de49b25d2085dcd8610bac787070e721baa8dcedba528a292b6e816b",
+    model_id: 1,
+    model_type: "Project",
+    uploader: "FileUploader",
+    created_at: Thu, 01 May 2025 15:54:10.549178000 UTC +00:00,
+    store: 1,
+    mount_point: nil,
+    secret: "[FILTERED]",
+    version: 2,
+    uploaded_by_user_id: 1,
+    organization_id: nil,
+    namespace_id: nil,
+    project_id: 1,
+    verification_checksum: nil>
+   ```
+
+1. Optionally, use the `id` of the affected resources to determine if they are still needed:
+
+   ```ruby
+   Upload.find(55)
+
+   => #<Upload:0x00007b362bb6c4e8
+    id: 55,
+    size: 13346,
+    path: "503d99159e2aa8a3ac23602058cfdf58/openbao.png",
+    checksum: "db29d233de49b25d2085dcd8610bac787070e721baa8dcedba528a292b6e816b",
+    model_id: 1,
+    model_type: "Project",
+    uploader: "FileUploader",
+    created_at: Thu, 01 May 2025 15:54:10.549178000 UTC +00:00,
+    store: 1,
+    mount_point: nil,
+    secret: "[FILTERED]",
+    version: 2,
+    uploaded_by_user_id: 1,
+    organization_id: nil,
+    namespace_id: nil,
+    project_id: 1,
+    verification_checksum: nil>
+   ```
+
+   - If you determine that the affected resources need to be recovered, then you can explore the following options (non-exhaustive) to recover them:
+     - Check if the secondary site has the object and manually copy them to the primary.
+     - Look through old backups and manually copy the object back into the primary site.
+     - Spot check some to try to determine that it's probably fine to destroy the records, for example, if they are all very old artifacts, then maybe they are not critical data.
+
+1. Use the `id` of the identified resources to properly delete them individually or in bulk by using `destroy`. Ensure to use the appropriate *Geo Model class* name.
+   - Delete individual resources:
+
+     ```ruby
+     Upload.find(55).destroy
+     ```
+
+   - Delete all affected resources:
+
+     ```ruby
+     def destroy_uploads_not_checksummable
+       uploads = Upload.verification_failed.where("verification_failure like '%File is not checksummable%'");1
+       puts "Found #{uploads.count} resources that failed verification with 'File is not checksummable'."
+       puts "Enter 'y' to continue: "
+       prompt = STDIN.gets.chomp
+       if prompt != 'y'
+         puts "Exiting without action..."
+         return
+       end
+
+       puts "Destroying all..."
+       uploads.destroy_all
+     end
+
+     destroy_uploads_not_checksummable
+     ```
+
+Repeat the steps for all affected resources and Geo data types.
+
+### Message: `"Error during verification","error":"File is not checksummable"`
+
+The error `"Error during verification","error":"File is not checksummable"` is caused by inconsistencies on the primary site. Follow the instructions provided in [The file is missing on the Geo primary site](#message-the-file-is-missing-on-the-geo-primary-site).
+
 ### Failed verification of Uploads on the primary Geo site
 
 If verification of some uploads is failing on the primary Geo site with `verification_checksum = nil` and with `verification_failure` containing ``Error during verification: undefined method `underscore' for NilClass:Class`` or ``The model which owns this Upload is missing.``, this is due to orphaned Uploads. The parent record owning the Upload (the upload's "model") has somehow been deleted, but the Upload record still exists. This is usually due to a bug in the application, introduced by implementing bulk delete of the "model" while forgetting to bulk delete its associated Upload records. These verification failures are therefore not failures to verify, rather, the errors are a result of bad data in Postgres.
@@ -418,58 +570,11 @@ And to actually delete the orphaned upload rows:
 delete_orphaned_uploads(dry_run: false)
 ```
 
-### Message: `"Error during verification","error":"File is not checksummable"`
-
-If you encounter these errors in your primary site `geo.log`, they're also reflected in the UI under **Admin > Geo > Sites**. To remove those errors, you can identify the particular blob that generates the message so that you can inspect it.
-
-1. In a Puma or Sidekiq node in the primary site, [open a Rails console](../../../operations/rails_console.md#starting-a-rails-console-session).
-1. Run the following snippet to find the affected artifacts containing the `File is not checksummable` message:
-
-{{< alert type="note" >}}
-
-The example provided below uses `JobArtifact` blob type; however, the same solution applies to any blob type that Geo uses.
-
-{{< /alert >}}
-
-```ruby
-
-artifacts = Ci::JobArtifact.verification_failed.where("verification_failure like '%File is not checksummable%'");1
-puts "Found #{artifacts.count} artifacts that failed verification with 'File is not checksummable'. The first one:"
-pp artifacts.first
-```
-
-If you determine that the affected files need to be recovered then you can explore these options (non-exhaustive) to recover the missing files:
-
-- Check if the secondary site has the object and manually copy them to the primary.
-- Look through old backups and manually copy the object back into the primary site.
-- Spot check some to try to determine that it's probably fine to destroy the records, for example, if they are all very old artifacts, then maybe they are not critical data.
-
-Often, these kinds of errors happen when a file is checksummed by Geo, and then goes missing from the primary site. After you identify the affected files, you should check the projects that the files belong to from the UI to decide if it's acceptable to delete the file reference. If so, you can destroy the references with the following irreversible snippet:
-
-```ruby
-def destroy_artifacts_not_checksummable
-  artifacts = Ci::JobArtifact.verification_failed.where("verification_failure like '%File is not checksummable%'");1
-  puts "Found #{artifacts.count} artifacts that failed verification with 'File is not checksummable'."
-  puts "Enter 'y' to continue: "
-  prompt = STDIN.gets.chomp
-  if prompt != 'y'
-    puts "Exiting without action..."
-    return
-  end
-
-  puts "Destroying all..."
-  artifacts.destroy_all
-end
-
-destroy_artifacts_not_checksummable
-```
-
 ### Error: `Error syncing repository: 13:fatal: could not read Username`
 
 The `last_sync_failure` error
 `Error syncing repository: 13:fatal: could not read Username for 'https://gitlab.example.com': terminal prompts disabled`
 indicates that JWT authentication is failing during a Geo clone or fetch request.
-See [Geo (development) > Authentication](../../../../development/geo.md#authentication) for more context.
 
 First, check that system clocks are synced. Run the [Health check Rake task](common.md#health-check-rake-task), or
 manually check that `date`, on all Sidekiq nodes on the secondary site and all Puma nodes on the primary site, are the

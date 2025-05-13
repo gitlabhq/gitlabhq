@@ -238,7 +238,11 @@ export default {
 
 <template>
   <div>
-    <package-title :help-url="$options.links.PACKAGE_HELP_URL" :count="packagesCount">
+    <package-title
+      :help-url="$options.links.PACKAGE_HELP_URL"
+      :count="packagesCount"
+      :is-loading="isLoading"
+    >
       <template v-if="settingsPath" #settings-link>
         <gl-button
           v-gl-tooltip="$options.i18n.settingsText"
@@ -297,7 +301,7 @@ export default {
       <page-size-selector
         v-if="packagesCount"
         :value="pageSize"
-        class="gl-relative gl-right-0 md:gl-absolute"
+        class="gl-relative gl-right-5 md:gl-absolute"
         @input="handlePageSizeChange"
       />
     </div>

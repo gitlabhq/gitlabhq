@@ -33,7 +33,8 @@ const makeGroup = ({ name, fullName, childrenToLoad = [] }) => {
     availableActions: [ACTION_EDIT, ACTION_DELETE],
     children: [],
     childrenToLoad: childrenToLoad.map((child) => ({ ...child, parent: { id } })),
-    hasChildren: childrenToLoad.length,
+    hasChildren: childrenToLoad.length > 0,
+    childrenCount: childrenToLoad.length,
     childrenLoading: false,
   };
 };

@@ -72,22 +72,14 @@ These versions of Oracle Linux are supported.
 | Oracle Linux 8   | GitLab CE / GitLab EE 12.8.1   | `x86_64`     | [Use AlmaLinux installation documentation](https://about.gitlab.com/install/#almalinux) | July 2029            | [Oracle Linux details](https://www.oracle.com/a/ocom/docs/elsp-lifetime-069338.pdf) |
 | Oracle Linux 9   | GitLab CE / GitLab EE 16.2.0   | `x86_64`     | [Use AlmaLinux installation documentation](https://about.gitlab.com/install/#almalinux) | June 2032            | [Oracle Linux details](https://www.oracle.com/a/ocom/docs/elsp-lifetime-069338.pdf) |
 
-## Raspberry Pi OS
-
-These versions of Raspberry Pi OS are supported.
-
-| Operating system version                                     | First supported GitLab version | Architecture | Installation documentation                                                                   | Operating system EOL | Details |
-|:-------------------------------------------------------------|:-------------------------------|:-------------|:---------------------------------------------------------------------------------------------|:---------------------|:--------|
-| Raspberry Pi OS (Bullseye)                                   | GitLab CE 15.5.0               | `armhf`      | [Raspberry Pi installation documentation](https://about.gitlab.com/install/#raspberry-pi-os) | 2026                 | [Raspberry Pi details](https://www.raspberrypi.com/news/raspberry-pi-os-debian-bullseye/) |
-
 ## Red Hat Enterprise Linux
 
 These versions of Red Hat Enterprise Linux are supported.
 
 | Operating system version   | First supported GitLab version | Architecture      | Installation documentation                                                          | Operating system EOL | Details |
 |:---------------------------|:-------------------------------|:------------------|:------------------------------------------------------------------------------------|:---------------------|:--------|
-| Red Hat Enterprise Linux 8 | GitLab CE / GitLab EE 12.8.1   | `x86_64`, `arm64` | [Use CentOS installation documentation](https://about.gitlab.com/install/#centos-7) | May 2029             | [Red Hat Enterprise Linux details](https://access.redhat.com/support/policy/updates/errata/#Life_Cycle_Dates) |
-| Red Hat Enterprise Linux 9 | GitLab CE / GitLab EE 16.0.0   | `x86_64`, `arm64` | [Use CentOS installation documentation](https://about.gitlab.com/install/#centos-7) | May 2032             | [Red Hat Enterprise Linux details](https://access.redhat.com/support/policy/updates/errata/#Life_Cycle_Dates) |
+| Red Hat Enterprise Linux 8 | GitLab CE / GitLab EE 12.8.1   | `x86_64`, `arm64` | [Use AlmaLinux installation documentation](https://about.gitlab.com/install/#almalinux) | May 2029             | [Red Hat Enterprise Linux details](https://access.redhat.com/support/policy/updates/errata/#Life_Cycle_Dates) |
+| Red Hat Enterprise Linux 9 | GitLab CE / GitLab EE 16.0.0   | `x86_64`, `arm64` | [Use AlmaLinux installation documentation](https://about.gitlab.com/install/#almalinux) | May 2032             | [Red Hat Enterprise Linux details](https://access.redhat.com/support/policy/updates/errata/#Life_Cycle_Dates) |
 
 ## Ubuntu
 
@@ -138,7 +130,14 @@ above.
 
 GitLab provides Linux packages for operating systems only until their
 end-of-life (EOL) date. After the EOL date, GitLab stops releasing
-official packages. The list of deprecated operating systems and the final GitLab
+official packages.
+
+However, sometimes, we don't deprecate an OS even after it's EOL,
+because we can't provide packages for a newer version to the users yet.
+The most common reason for this is that our package repository provider, PackageCloud,
+not supporting newer versions, and hence we can't upload packages to it.
+
+The list of deprecated operating systems and the final GitLab
 release for them can be found below:
 
 | OS version       | End of life                                                                         | Last supported GitLab version |
@@ -171,11 +170,12 @@ release for them can be found below:
 | Ubuntu 16.04     | [April 2021](https://ubuntu.com/info/release-end-of-life)                           | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce_13.12&dist=ubuntu%2Fxenial) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=gitlab-ee_13.12&dist=ubuntu%2Fxenial) 13.12 |
 | Ubuntu 18.04     | [June 2023](https://ubuntu.com/info/release-end-of-life)                            | [GitLab CE](https://packages.gitlab.com/app/gitlab/gitlab-ce/search?q=gitlab-ce_16.11&dist=ubuntu%2Fbionic) / [GitLab EE](https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=ggitlab-ee_16.11&dist=ubuntu%2Fbionic) 16.11 |
 
-{{< alert type="note" >}}
+### Raspberry Pi OS (32-bit - Raspbian)
 
-An exception to this deprecation policy is when we are unable to provide
-packages for the next version of the operating system. The most common reason
-for this our package repository provider, PackageCloud, not supporting newer
-versions and hence we can't upload packages to it.
+GitLab dropped support for Raspberry Pi OS (32 bit - Raspbian) with GitLab
+17.11 being the last version available for the 32-bit platform. Starting with
+GitLab 18.0, users should move to Raspberry Pi OS (64 bit) and use the
+[Debian arm64 package](https://about.gitlab.com/install/#debian).
 
-{{< /alert >}}
+For information on backing up data on a 32-bit OS and restoring it to a 64-bit
+OS, see [Upgrading operating systems for PostgreSQL](../postgresql/upgrading_os.md).

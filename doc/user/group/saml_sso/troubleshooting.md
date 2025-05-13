@@ -428,7 +428,7 @@ If the user receives a `404` after signing in successfully, check if you have IP
 
 Because SAML SSO for groups is a paid feature, your subscription expiring can result in a `404` error when you're signing in using SAML SSO on GitLab.com.
 If all users are receiving a `404` when attempting to sign in using SAML, confirm
-[there is an active subscription](../../../subscriptions/gitlab_com/_index.md#view-gitlabcom-subscription) being used in this SAML SSO namespace.
+[there is an active subscription](../../../subscriptions/manage_subscription.md#view-subscription) being used in this SAML SSO namespace.
 
 If you receive a `404` during setup when using "verify configuration", make sure you have used the correct
 [SHA-1 generated fingerprint](../../../integration/saml.md#configure-saml-on-your-idp).

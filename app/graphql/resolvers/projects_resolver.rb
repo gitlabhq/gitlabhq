@@ -39,9 +39,17 @@ module Resolvers
       required: false,
       description: "Return only projects that are trending."
 
+    argument :aimed_for_deletion, GraphQL::Types::Boolean,
+      required: false,
+      description: 'Return only projects marked for deletion.'
+
     argument :not_aimed_for_deletion, GraphQL::Types::Boolean,
       required: false,
       description: "Exclude projects that are marked for deletion."
+
+    argument :marked_for_deletion_on, ::Types::DateType,
+      required: false,
+      description: 'Date when the project was marked for deletion.'
 
     before_connection_authorization do |projects, current_user|
       ::Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects, current_user).execute
@@ -79,7 +87,9 @@ module Resolvers
         min_access_level: args[:min_access_level],
         language_name: args[:programming_language_name],
         trending: args[:trending],
+        aimed_for_deletion: args[:aimed_for_deletion],
         not_aimed_for_deletion: args[:not_aimed_for_deletion],
+        marked_for_deletion_on: args[:marked_for_deletion_on],
         current_organization: ::Current.organization
       }
     end

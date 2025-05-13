@@ -47,6 +47,7 @@ import {
   secondsToMilliseconds,
   totalDaysInMonth,
   daysToSeconds,
+  millisecondsToSeconds,
 } from '~/lib/utils/datetime/date_calculation_utility';
 import { useFakeDate } from 'helpers/fake_date';
 
@@ -443,6 +444,14 @@ describe('secondsToMilliseconds', () => {
     expect(secondsToMilliseconds(0)).toBe(0);
     expect(secondsToMilliseconds(60)).toBe(60000);
     expect(secondsToMilliseconds(123)).toBe(123000);
+  });
+});
+
+describe('millisecondsToSeconds', () => {
+  it('converts milliseconds to seconds correctly', () => {
+    expect(millisecondsToSeconds(0)).toBe(0);
+    expect(millisecondsToSeconds(60000)).toBe(60);
+    expect(millisecondsToSeconds(123000)).toBe(123);
   });
 });
 

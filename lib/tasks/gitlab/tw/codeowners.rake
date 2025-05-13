@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# For information on how to update TW codeowners, see: https://docs.gitlab.com/development/documentation/metadata/#update-the-codeowners-file
+
 namespace :tw do
   desc 'Generates a list of codeowners for documentation pages.'
   task :codeowners do
@@ -85,7 +87,7 @@ namespace :tw do
       # CodeOwnerRule.new('Subscription Management', ''),
       CodeOwnerRule.new('Switchboard', '@emily.sahlani'),
       CodeOwnerRule.new('Testing', '@eread'),
-      CodeOwnerRule.new('Tutorials', '@kpaizee'),
+      CodeOwnerRule.new('Tutorials', '@gl-docsteam'),
       CodeOwnerRule.new('US Public Sector Services', '@emily.sahlani'),
       CodeOwnerRule.new('Utilization', '@lciutacu')
       # CodeOwnerRule.new('Vulnerability Research', '')
@@ -107,7 +109,7 @@ namespace :tw do
       CodeOwnerRule.new('Distribution', '@gitlab-org/distribution'),
       CodeOwnerRule.new('Documentation Guidelines', '@fneill @sselhorn'),
       CodeOwnerRule.new('Duo Workflow', '@gitlab-org/ai-powered'),
-      CodeOwnerRule.new('Engineering Productivity', '@gl-dx/eng-prod'),
+      CodeOwnerRule.new('Engineering Productivity', '@gl-dx/pipeline-maintainers'),
       CodeOwnerRule.new('Personal Productivity', '@gitlab-org/foundations/engineering'),
       CodeOwnerRule.new('Gitaly', '@proglottis @toon'),
       CodeOwnerRule.new('Global Search', '@gitlab-org/search-team/migration-maintainers'),

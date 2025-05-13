@@ -27,7 +27,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       *['internal_ids.project_id', 'internal_ids.namespace_id'], # https://gitlab.com/gitlab-org/gitlab/-/issues/451900
       *['labels.project_id', 'labels.group_id'], # https://gitlab.com/gitlab-org/gitlab/-/issues/434356
       'member_roles.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444161
-      'sprints.group_id',
       *['todos.project_id', 'todos.group_id'],
       *uploads_and_partitions
     ]
@@ -95,6 +94,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'ci_build_pending_states.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'ci_builds_runner_session.project_id', # LFK already present on p_ci_builds and cascade delete all ci resources
       'p_ci_pipelines_config.project_id', # LFK already present on p_ci_pipelines and cascade delete all ci resources
+      'ci_resources.project_id', # LFK already present on ci_resource_groups and cascade delete all ci resources
       'ci_trigger_requests.project_id', # LFK already present on ci_triggers and cascade delete all ci resources
       'ci_unit_test_failures.project_id', # LFK already present on ci_unit_tests and cascade delete all ci resources
       'dast_profiles_pipelines.project_id', # LFK already present on dast_profiles and will cascade delete
@@ -126,7 +126,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       # The table contains references in the object storage and thus can't have cascading delete
       # nor being NULL by the definition of a sharding key.
       'packages_nuget_symbols.project_id',
-      'packages_package_files.project_id'
+      'packages_package_files.project_id',
+      'merge_request_commits_metadata.project_id'
     ]
   end
 
@@ -153,6 +154,16 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
   it 'requires a sharding_key for all cell-local tables, after milestone 16.6', :aggregate_failures do
     tables_missing_sharding_key(starting_from_milestone: starting_from_milestone).each do |table_name|
       expect(allowed_to_be_missing_sharding_key).to include(table_name), error_message(table_name)
+    end
+  end
+
+  it 'requires a sharding_key, sharding_key_issue_url, or desired_sharding_key for all cell-local tables',
+    :aggregate_failures do
+    tables_missing_sharding_key_or_sharding_in_progress.each do |table_name|
+      expect(allowed_to_be_missing_sharding_key).to include(table_name),
+        "This table #{table_name} is missing `sharding_key` in the `db/docs` YML file. " \
+          "Alternatively, set either a `sharding_key_issue_url`, or desired_sharding_key` attribute. " \
+          "Please refer to https://docs.gitlab.com/development/cells/#defining-a-sharding-key-for-all-organizational-tables."
     end
   end
 
@@ -264,6 +275,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       "ai_duo_chat_events" => "https://gitlab.com/gitlab-org/gitlab/-/issues/516140",
       "fork_networks" => "https://gitlab.com/gitlab-org/gitlab/-/issues/522958",
       "merge_request_diff_commit_users" => "https://gitlab.com/gitlab-org/gitlab/-/issues/526725",
+      "bulk_import_configurations" => "https://gitlab.com/gitlab-org/gitlab/-/issues/536521",
       # All the tables below related to uploads are part of the same work to
       # add sharding key to the table
       "uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
@@ -441,6 +453,16 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
         !entry.exempt_from_sharding? &&
         entry.milestone_greater_than_or_equal_to?(starting_from_milestone) &&
         ::Gitlab::Database::GitlabSchema.require_sharding_key?(entry.gitlab_schema)
+    end
+  end
+
+  def tables_missing_sharding_key_or_sharding_in_progress
+    ::Gitlab::Database::Dictionary.entries.filter_map do |entry|
+      entry.table_name if entry.sharding_key.blank? &&
+        !entry.exempt_from_sharding? &&
+        ::Gitlab::Database::GitlabSchema.require_sharding_key?(entry.gitlab_schema) &&
+        entry.sharding_key_issue_url.blank? &&
+        entry.desired_sharding_key.blank?
     end
   end
 

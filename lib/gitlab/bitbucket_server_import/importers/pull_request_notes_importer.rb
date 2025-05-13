@@ -50,7 +50,7 @@ module Gitlab
         end
 
         def import_data_valid?
-          project.import_data&.credentials && project.import_data&.data
+          project.import_data&.credentials && project.import_data.data
         end
 
         # rubocop: disable CodeReuse/ActiveRecord

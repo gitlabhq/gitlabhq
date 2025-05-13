@@ -1,6 +1,5 @@
 import { GlBadge, GlIcon } from '@gitlab/ui';
-
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { TYPE_ISSUE, TYPE_EPIC, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
@@ -10,7 +9,7 @@ const createComponent = ({
   issuableType = TYPE_ISSUE,
   hideTextInSmallScreens = false,
 } = {}) =>
-  shallowMount(ConfidentialityBadge, {
+  shallowMountExtended(ConfidentialityBadge, {
     propsData: {
       workspaceType,
       issuableType,
@@ -25,8 +24,7 @@ describe('ConfidentialityBadge', () => {
     wrapper = createComponent();
   });
 
-  const findConfidentialityBadgeText = () =>
-    wrapper.find('[data-testid="confidential-badge-text"]');
+  const findConfidentialityBadgeText = () => wrapper.findByTestId('confidential-badge-text');
   const findBadge = () => wrapper.findComponent(GlBadge);
   const findBadgeIcon = () => wrapper.findComponent(GlIcon);
 

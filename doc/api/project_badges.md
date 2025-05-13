@@ -14,23 +14,19 @@ title: Project badges API
 
 ## Placeholder tokens
 
-[Badges](../user/project/badges.md) support placeholders that are replaced in real-time in both the link and image URL. The allowed placeholders are:
+[Badges](../user/project/badges.md) support placeholders that are replaced in real-time in both the link and image URL. The allowed placeholders are:>
 
-<!-- vale gitlab_base.Spelling = NO -->
-
-- **%{project_path}**: Replaced by the project path.
-- **%{project_title}**: Replaced by the project title.
-- **%{project_name}**: Replaced by the project name.
-- **%{project_id}**: Replaced by the project ID.
-- **%{project_namespace}**: Replaced by the project's namespace full path.
-- **%{group_name}**: Replaced by the project's top-level group name.
-- **%{gitlab_server}**: Replaced by the project's server name.
-- **%{gitlab_pages_domain}**: Replaced by the domain name hosting GitLab Pages.
-- **%{default_branch}**: Replaced by the project default branch.
-- **%{commit_sha}**: Replaced by the project's last commit SHA.
-- **%{latest_tag}**: Replaced by the project's last tag.
-
-<!-- vale gitlab_base.Spelling = YES -->
+- `%{project_path}`: Replaced by the project path.
+- `%{project_title}`: Replaced by the project title.
+- `%{project_name}`: Replaced by the project name.
+- `%{project_id}`: Replaced by the project ID.
+- `%{project_namespace}`: Replaced by the project's namespace full path.
+- `%{group_name}`: Replaced by the project's top-level group name.
+- `%{gitlab_server}`: Replaced by the project's server name.
+- `%{gitlab_pages_domain}`: Replaced by the domain name hosting GitLab Pages.
+- `%{default_branch}`: Replaced by the project default branch.
+- `%{commit_sha}`: Replaced by the project's last commit SHA.
+- `%{latest_tag}`: Replaced by the project's last tag.
 
 ## List all badges of a project
 

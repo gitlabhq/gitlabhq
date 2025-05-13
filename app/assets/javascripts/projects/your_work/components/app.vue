@@ -3,6 +3,7 @@ import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
+  PAGINATION_TYPE_KEYSET,
 } from '~/groups_projects/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import {
@@ -16,6 +17,7 @@ import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
 } from '~/vue_shared/components/resource_lists/constants';
+import projectCountsQuery from '../graphql/queries/project_counts.query.graphql';
 import { PROJECT_DASHBOARD_TABS, FIRST_TAB_ROUTE_NAMES } from '../constants';
 
 export default {
@@ -43,7 +45,15 @@ export default {
     pagination: 'click_pagination_on_your_work_projects',
     tabs: 'click_tab_on_your_work_projects',
     sort: 'click_sort_on_your_work_projects',
+    clickStat: 'click_stat_on_your_work_projects',
+    hoverStat: 'hover_stat_on_your_work_projects',
+    hoverVisibility: 'hover_visibility_icon_on_your_work_projects',
+    initialLoad: 'initial_load_on_your_work_projects',
+    clickItemAfterFilter: 'click_project_after_filter_on_your_work_projects',
+    clickTopic: 'click_topic_on_your_work_projects',
   },
+  tabCountsQuery: projectCountsQuery,
+  PAGINATION_TYPE_KEYSET,
   name: 'YourWorkProjectsApp',
   components: {
     TabsWithList,
@@ -75,5 +85,8 @@ export default {
     :initial-sort="initialSort"
     :programming-languages="programmingLanguages"
     :event-tracking="$options.eventTracking"
+    :tab-counts-query="$options.tabCountsQuery"
+    :tab-counts-query-error-message="__('An error occurred loading the project counts.')"
+    :pagination-type="$options.PAGINATION_TYPE_KEYSET"
   />
 </template>

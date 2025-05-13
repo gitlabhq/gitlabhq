@@ -4,7 +4,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { visitUrl } from '~/lib/utils/url_utility';
 import WorkItemRelationshipList from '~/work_items/components/work_item_relationships/work_item_relationship_list.vue';
-import WorkItemLinkChildContents from '~/work_items/components/shared/work_item_link_child_contents.vue';
+import WorkItemLinkChildContents from 'ee_else_ce/work_items/components/shared/work_item_link_child_contents.vue';
 
 import removeLinkedItemsMutation from '~/work_items/graphql/remove_linked_items.mutation.graphql';
 import addLinkedItemsMutation from '~/work_items/graphql/add_linked_items.mutation.graphql';
@@ -87,7 +87,6 @@ describe('WorkItemRelationshipList', () => {
       childItem: mockLinkedItems[0].workItem,
       canUpdate: true,
       workItemFullPath,
-      showWeight: true,
     });
   });
 

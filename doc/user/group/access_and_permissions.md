@@ -5,6 +5,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Group access and permissions
 ---
 
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 Configure your groups to control group permissions and access.
 For more information, see also [Sharing projects and groups](../project/members/sharing_projects_groups.md).
 
@@ -359,6 +366,30 @@ LDAP user permissions can be manually overridden by an administrator. To overrid
 1. Select **Edit permissions** in the dialog.
 
 Now you can edit the user's permissions from the **Members** page.
+
+## Set the default role that can use pipeline variables
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513117) in GitLab 17.10.
+
+{{< /history >}}
+
+Set the default [minimum role allowed to run a new pipeline with pipeline variables](../../ci/variables/_index.md#restrict-pipeline-variables)
+for projects in a group. Alternatively, you can prevent all users using pipeline variables.
+
+Prerequisites:
+
+- You must be a maintainer in the group.
+- The group must be the top level group, not a subgroup.
+
+To set the default minimum role:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > CI/CD > Variables**.
+1. Under **Default role to use pipeline variables** select a minimum role, or select
+   **No one allowed** to prevent any user from using pipeline variables.
+1. Select **Save changes**.
 
 ## Troubleshooting
 

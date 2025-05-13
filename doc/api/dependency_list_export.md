@@ -25,8 +25,8 @@ Every call to this endpoint requires authentication.
 
 Create a new CycloneDX JSON export for all the project dependencies detected in a pipeline.
 
-If an authenticated user does not have permission to [read_dependency](../user/custom_roles/_index.md#available-permissions),
-this request returns a `403 Forbidden` status code.
+If an authenticated user does not have the [read_dependency](../user/custom_roles/abilities.md#vulnerability-management)
+permission, this request returns a `403 Forbidden` status code.
 
 SBOM exports can be only accessed by the export's author.
 

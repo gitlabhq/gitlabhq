@@ -121,6 +121,8 @@ class NotesFinder
       SnippetsFinder.new(@current_user, project: @project).execute # rubocop: disable CodeReuse/Finder
     when "personal_snippet"
       SnippetsFinder.new(@current_user, only_personal: true).execute # rubocop: disable CodeReuse/Finder
+    when "wiki_page/meta"
+      WikiPage::Meta.for_project(@project)
     else
       raise "invalid target_type '#{noteable_type}'"
     end
@@ -193,7 +195,6 @@ class NotesFinder
   end
 
   def without_hidden_notes?
-    return false unless Feature.enabled?(:hidden_notes)
     return false if @current_user&.can_admin_all_resources?
 
     true

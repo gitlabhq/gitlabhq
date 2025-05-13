@@ -5,6 +5,8 @@ module API
     include APIGuard
     include Helpers::OpenApi
 
+    use ::Gitlab::Middleware::IpAddress
+
     LOG_FILENAME = Rails.root.join("log", "api_json.log")
 
     NO_SLASH_URL_PART_REGEX = %r{[^/]+}

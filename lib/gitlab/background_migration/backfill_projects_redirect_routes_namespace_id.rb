@@ -6,21 +6,20 @@ module Gitlab
       operation_name :backfill_projects_redirect_routes_namespace_id
       feature_category :groups_and_projects
 
-      scope_to ->(relation) do
-        relation
-          .joins('inner join projects on redirect_routes.source_id = projects.id')
-          .where(source_type: 'Project', namespace_id: nil)
-          .select(:id, 'projects.project_namespace_id')
-      end
+      scope_to ->(relation) { relation.where(source_type: 'Project', namespace_id: nil) }
 
       def perform
         each_sub_batch do |sub_batch|
+          redirect_route_with_source = sub_batch
+            .joins('inner join projects on redirect_routes.source_id = projects.id')
+            .select(:id, 'projects.project_namespace_id as source_namespace_id')
+
           connection.execute(<<~SQL)
-            WITH batched_relation AS (#{sub_batch.to_sql})
+            WITH redirect_route_with_source AS (#{redirect_route_with_source.to_sql})
             UPDATE redirect_routes
-            SET namespace_id = batched_relation.project_namespace_id
-            FROM batched_relation
-            WHERE redirect_routes.id = batched_relation.id
+            SET namespace_id = redirect_route_with_source.source_namespace_id
+            FROM redirect_route_with_source
+            WHERE redirect_routes.id = redirect_route_with_source.id
           SQL
         end
       end

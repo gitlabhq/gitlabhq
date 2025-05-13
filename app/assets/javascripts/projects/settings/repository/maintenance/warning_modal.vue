@@ -93,11 +93,7 @@ export default {
         </h4>
 
         <ul class="mb-0">
-          <li
-            v-for="(item, index) in $options.i18n.warningListItems"
-            :key="index"
-            data-test-id="warning-item"
-          >
+          <li v-for="(item, index) in $options.i18n.warningListItems" :key="index">
             {{ item }}
           </li>
         </ul>

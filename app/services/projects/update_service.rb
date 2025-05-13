@@ -37,6 +37,12 @@ module Projects
       if project.update(params.except(*non_assignable_project_params))
         after_update
 
+        if Feature.enabled?(:destroy_fork_network_on_archive, project) &&
+            project.previous_changes[:archived] == [false, true]
+
+          UnlinkForkService.new(project, current_user).execute
+        end
+
         success
       else
         update_failed!
@@ -131,7 +137,8 @@ module Projects
       end
 
       dry_run = ContainerRegistry::GitlabApiClient.rename_base_repository_path(
-        project.full_path, name: params[:path], dry_run: true)
+        project.full_path, name: params[:path], project: project, dry_run: true
+      )
 
       return if dry_run == :accepted
 

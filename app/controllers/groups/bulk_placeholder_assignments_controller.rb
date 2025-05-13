@@ -11,8 +11,6 @@ module Groups
     feature_category :importers
 
     def show
-      return render_404 unless Feature.enabled?(:importer_user_mapping_reassignment_csv, current_user)
-
       csv_response = Import::SourceUsers::GenerateCsvService.new(group, current_user: current_user).execute
 
       if csv_response.success?
@@ -27,8 +25,6 @@ module Groups
     end
 
     def create
-      return render_404 unless Feature.enabled?(:importer_user_mapping_reassignment_csv, current_user)
-
       unless file_type_is_valid?(file_params[:file])
         render_unprocessable_entity(s_('UserMapping|You must upload a CSV file with a .csv file extension.'))
         return

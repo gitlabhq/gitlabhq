@@ -7,6 +7,7 @@ db:setup pg16:
   extends:
     - .use-pg16
     - .default-before_script
+    - .failure_category_after_script
     - .ruby-cache
     - .rails:rules:setup-test-env
   script:
@@ -144,6 +145,7 @@ db:check-schema:
       function db_check_schema() {
         bundle exec rake db:drop db:create db:migrate
         scripts/validate_migration_timestamps
+        scripts/validate_migration_checksum
       }
 
       run_with_custom_exit_code db_check_schema
@@ -157,7 +159,7 @@ db:check-schema-single-db:
 db:check-migrations:
   extends:
     - .db-job-base
-    - .use-pg14  # Should match the db same version used by GDK
+    - .use-pg16  # Should match the db same version used by GDK
     - .rails:rules:ee-and-foss-mr-with-migration
   script:
     - |

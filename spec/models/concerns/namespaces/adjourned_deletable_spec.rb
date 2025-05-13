@@ -3,37 +3,25 @@
 require 'spec_helper'
 
 RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_projects do
-  let(:project) { build(:project) }
-
-  describe '#adjourned_deletion?' do
-    it 'returns the result of adjourned_deletion_configured?', :aggregate_failures do
-      expect(project).to receive(:adjourned_deletion_configured?).and_return(true)
-      expect(project.adjourned_deletion?).to be true
-
-      expect(project).to receive(:adjourned_deletion_configured?).and_return(false)
-      expect(project.adjourned_deletion?).to be false
-    end
-
-    context 'when downtier_delayed_deletion feature flag is disabled' do
-      before do
-        stub_feature_flags(downtier_delayed_deletion: false)
-      end
-
-      it 'returns false', :aggregate_failures do
-        expect(project).not_to receive(:adjourned_deletion_configured?)
-        expect(project.adjourned_deletion?).to be false
-      end
+  let(:model) do
+    Class.new do
+      include Namespaces::AdjournedDeletable
     end
   end
 
-  describe '#adjourned_deletion_configured?' do
+  let(:record) { model.new }
+
+  describe '#delayed_deletion_ready?' do
     context 'when deletion_adjourned_period is zero' do
       before do
         stub_application_setting(deletion_adjourned_period: 0)
       end
 
       it 'returns false' do
-        expect(project.adjourned_deletion_configured?).to be false
+        expect(record.delayed_deletion_ready?).to be(false)
+        expect(record.adjourned_deletion?).to be(false)
+        expect(record.delayed_deletion_configured?).to be(false)
+        expect(record.adjourned_deletion_configured?).to be(false)
       end
     end
 
@@ -42,141 +30,138 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
         stub_application_setting(deletion_adjourned_period: 7)
       end
 
-      context 'for groups' do
-        let(:group) { build(:group) }
-
-        it 'returns true' do
-          expect(group.adjourned_deletion_configured?).to be true
-        end
-      end
-
-      context 'when it is a personal project' do
-        before do
-          allow(project).to receive(:personal?).and_return(true)
-        end
-
-        it 'returns false' do
-          expect(project.adjourned_deletion_configured?).to be false
-        end
-      end
-
-      context 'when it is not a personal project' do
-        before do
-          allow(project).to receive(:personal?).and_return(false)
-        end
-
-        it 'returns true' do
-          expect(project.adjourned_deletion_configured?).to be true
-        end
-
-        context 'when downtier_delayed_deletion feature flag is disabled' do
-          before do
-            stub_feature_flags(downtier_delayed_deletion: false)
-          end
-
-          it 'returns false' do
-            expect(project.adjourned_deletion_configured?).to be false
-          end
-        end
+      it 'returns true' do
+        expect(record.delayed_deletion_ready?).to be(true)
+        expect(record.adjourned_deletion?).to be(true)
+        expect(record.delayed_deletion_configured?).to be(true)
+        expect(record.adjourned_deletion_configured?).to be(true)
       end
     end
   end
 
-  describe '#marked_for_deletion?' do
-    context 'when marked_for_deletion_at is present' do
+  describe '#self_deletion_scheduled_deletion_created_on', :freeze_time do
+    context 'when record responds to :marked_for_deletion_on' do
+      it 'returns marked_for_deletion_on' do
+        allow(record).to receive(:marked_for_deletion_on).and_return(Time.current)
+
+        expect(record.self_deletion_scheduled_deletion_created_on).to eq(Time.current)
+      end
+    end
+
+    context 'when record does not respond to :marked_for_deletion_on' do
+      it 'returns nil' do
+        expect(record.self_deletion_scheduled_deletion_created_on).to be_nil
+      end
+    end
+  end
+
+  describe '#self_deletion_scheduled?' do
+    context 'when self_deletion_scheduled_deletion_created_on is nil' do
+      it 'returns false' do
+        expect(record.self_deletion_scheduled?).to be(false)
+        expect(record.marked_for_deletion?).to be(false)
+      end
+    end
+
+    context 'when self_deletion_scheduled_deletion_created_on is present' do
       before do
-        project.marked_for_deletion_at = Time.current
+        allow(record).to receive(:self_deletion_scheduled_deletion_created_on).and_return(Time.current)
       end
 
       it 'returns true' do
-        expect(project.marked_for_deletion?).to be true
-      end
-
-      context 'when downtier_delayed_deletion feature flag is disabled' do
-        before do
-          stub_feature_flags(downtier_delayed_deletion: false)
-        end
-
-        it 'returns false' do
-          expect(project.marked_for_deletion?).to be false
-        end
-      end
-    end
-
-    context 'when marked_for_deletion_at is nil' do
-      before do
-        project.marked_for_deletion_at = nil
-      end
-
-      it 'returns false' do
-        expect(project.marked_for_deletion?).to be false
+        expect(record.self_deletion_scheduled?).to be(true)
+        expect(record.marked_for_deletion?).to be(true)
       end
     end
   end
 
-  describe '#self_or_ancestor_marked_for_deletion' do
-    let_it_be(:group) { create(:group) }
-    let_it_be_with_reload(:project) { create(:project, group: group) }
-
-    context 'when the project is marked for deletion' do
-      before do
-        project.update!(marked_for_deletion_on: Time.current)
-      end
-
-      it 'returns self' do
-        expect(project.self_or_ancestor_marked_for_deletion).to eq(project)
-      end
-
-      context 'when downtier_delayed_deletion feature flag is disabled' do
-        before do
-          stub_feature_flags(downtier_delayed_deletion: false)
-        end
-
-        it 'returns nil' do
-          expect(project.self_or_ancestor_marked_for_deletion).to be_nil
-        end
-      end
+  describe '#first_scheduled_for_deletion_in_hierarchy_chain' do
+    it 'returns nil' do
+      expect(record.first_scheduled_for_deletion_in_hierarchy_chain).to be_nil
     end
+  end
 
-    context 'when the project is not marked for deletion' do
-      context 'when an ancestor is marked for deletion' do
-        let_it_be(:group) { create(:group_with_deletion_schedule) }
-        let_it_be(:project) { create(:project, group: group) }
+  describe Group do
+    let_it_be_with_reload(:group) { create(:group) }
 
-        it 'returns the first ancestor marked for deletion' do
-          expect(project.self_or_ancestor_marked_for_deletion).to eq(group)
+    describe '#first_scheduled_for_deletion_in_hierarchy_chain' do
+      context 'when the group has been marked for deletion' do
+        before do
+          create(:group_deletion_schedule, group: group, marked_for_deletion_on: 1.day.ago)
         end
 
-        context 'when downtier_delayed_deletion feature flag is disabled' do
-          before do
-            stub_feature_flags(downtier_delayed_deletion: false)
-          end
-
-          it 'returns nil' do
-            expect(project.self_or_ancestor_marked_for_deletion).to be_nil
-          end
+        it 'returns the group' do
+          expect(group.first_scheduled_for_deletion_in_hierarchy_chain).to eq(group)
         end
       end
 
-      context 'when no ancestor is marked for deletion' do
+      context 'when the parent group has been marked for deletion' do
+        let(:parent_group) { create(:group_with_deletion_schedule, marked_for_deletion_on: 1.day.ago) }
+        let(:group) { create(:group, parent: parent_group) }
+
+        it 'returns the parent group' do
+          expect(group.first_scheduled_for_deletion_in_hierarchy_chain).to eq(parent_group)
+        end
+      end
+
+      context 'when parent group has not been marked for deletion' do
+        let(:parent_group) { create(:group) }
+        let(:group) { create(:group, parent: parent_group) }
+
         it 'returns nil' do
-          expect(project.self_or_ancestor_marked_for_deletion).to be_nil
+          expect(group.first_scheduled_for_deletion_in_hierarchy_chain).to be_nil
+        end
+      end
+
+      describe 'ordering of parents marked for deletion' do
+        let(:group_a) { create(:group_with_deletion_schedule, marked_for_deletion_on: 1.day.ago) }
+        let(:subgroup_a) { create(:group_with_deletion_schedule, marked_for_deletion_on: 1.day.ago, parent: group_a) }
+        let(:group) { create(:group, parent: subgroup_a) }
+
+        it 'returns the ancestors marked for deletion, ordered from closest to farthest' do
+          expect(group.first_scheduled_for_deletion_in_hierarchy_chain).to eq(subgroup_a)
         end
       end
     end
   end
 
-  describe '#permanent_deletion_date' do
-    let(:date) { Time.current }
-    let(:adjourned_period) { 7 }
+  describe Project do
+    let_it_be(:project) { create(:project) }
 
-    before do
-      stub_application_setting(deletion_adjourned_period: adjourned_period)
-    end
+    describe '#first_scheduled_for_deletion_in_hierarchy_chain' do
+      context 'when the parent group has been marked for deletion' do
+        let_it_be(:parent_group) do
+          create(:group_with_deletion_schedule, marked_for_deletion_on: 1.day.ago)
+        end
 
-    it 'returns the date plus the configured adjourned period in days', :freeze_time do
-      expected_date = date + adjourned_period.days
-      expect(project.permanent_deletion_date(date)).to eq(expected_date)
+        let_it_be(:project) { create(:project, namespace: parent_group) }
+
+        it 'returns the parent group' do
+          expect(project.first_scheduled_for_deletion_in_hierarchy_chain).to eq(parent_group)
+        end
+      end
+
+      context 'when parent group has not been marked for deletion' do
+        let_it_be(:parent_group) { create(:group) }
+        let_it_be(:project) { create(:project, namespace: parent_group) }
+
+        it 'returns nil' do
+          expect(project.first_scheduled_for_deletion_in_hierarchy_chain).to be_nil
+        end
+      end
+
+      describe 'ordering of parents marked for deletion' do
+        let_it_be(:group_a) { create(:group_with_deletion_schedule, marked_for_deletion_on: 1.day.ago) }
+        let_it_be(:subgroup_a) do
+          create(:group_with_deletion_schedule, marked_for_deletion_on: 1.day.ago, parent: group_a)
+        end
+
+        let_it_be(:project) { create(:project, namespace: subgroup_a) }
+
+        it 'returns the ancestors marked for deletion, ordered from closest to farthest' do
+          expect(project.first_scheduled_for_deletion_in_hierarchy_chain).to eq(subgroup_a)
+        end
+      end
     end
   end
 end

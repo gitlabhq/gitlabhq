@@ -14,7 +14,7 @@ module Organizations
 
     before_destroy :ensure_user_has_an_organization
 
-    enum access_level: {
+    enum :access_level, {
       # Until we develop more access_levels, we really don't know if the default access_level will be what we think of
       # as a guest. For now, we'll set to same value as guest, but call it default to denote the current ambivalence.
       default: Gitlab::Access::GUEST,

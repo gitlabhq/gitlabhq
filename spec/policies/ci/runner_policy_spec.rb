@@ -5,15 +5,93 @@ require 'spec_helper'
 RSpec.describe Ci::RunnerPolicy, feature_category: :runner do
   let_it_be(:owner) { create(:user) }
 
-  describe 'ability :read_runner' do
-    subject(:policy) { described_class.new(user, runner) }
+  subject(:policy) { described_class.new(user, runner) }
 
-    it_behaves_like 'runner read policy', :read_runner
+  include_context 'with runner policy environment'
+
+  describe 'ability :read_runner' do
+    it_behaves_like 'runner policy not allowed for levels lower than maintainer', :read_runner
+    it_behaves_like 'runner policy', :read_runner
+  end
+
+  describe 'ability :update_runner' do
+    it_behaves_like 'runner policy not allowed for levels lower than maintainer', :update_runner
+
+    context 'with maintainer access' do
+      let(:user) { maintainer }
+
+      it_behaves_like 'a policy disallowing access to instance runner/runner manager', :update_runner
+
+      context 'with group runner' do
+        let(:runner) { group_runner }
+
+        it { expect_disallowed :update_runner }
+      end
+
+      context 'with project runner' do
+        let(:runner) { project_runner }
+
+        it { expect_allowed :update_runner }
+
+        context 'when user is maintainer in an unrelated group' do
+          let_it_be(:maintainers_group_maintainer) { create(:user) }
+          let_it_be_with_reload(:maintainers_group) do
+            create(:group, name: 'maintainers', path: 'maintainers', maintainers: maintainers_group_maintainer)
+          end
+
+          let(:user) { maintainers_group_maintainer }
+
+          it { expect_disallowed :update_runner }
+
+          context 'when maintainers group is invited as maintainer to project' do
+            before do
+              create(:project_group_link, :maintainer, group: maintainers_group, project: project_invited_to)
+            end
+
+            context 'and target project is owner project' do
+              let(:project_invited_to) { owner_project }
+
+              it { expect_allowed :update_runner }
+            end
+
+            context 'and target project is other project' do
+              let(:project_invited_to) { other_project }
+
+              it { expect_disallowed :update_runner }
+            end
+          end
+        end
+      end
+    end
+
+    context 'with owner access' do
+      let(:user) { owner }
+
+      it_behaves_like 'a policy disallowing access to instance runner/runner manager', :update_runner
+
+      context 'with group runner' do
+        let(:runner) { group_runner }
+
+        it { expect_allowed :update_runner }
+
+        context 'with sharing of group runners disabled' do
+          before do
+            owner_project.update!(group_runners_enabled: false)
+          end
+
+          it { expect_allowed :update_runner }
+        end
+      end
+
+      context 'with project runner' do
+        let(:runner) { project_runner }
+
+        it { expect_allowed :update_runner }
+      end
+    end
   end
 
   describe 'ability :read_ephemeral_token' do
-    subject(:policy) { described_class.new(user, runner) }
-
     let_it_be(:runner) { create(:ci_runner, creator: owner) }
 
     let(:creator) { owner }

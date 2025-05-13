@@ -27,7 +27,8 @@ RSpec.describe Gitlab::Orchestrator::Deployment::DefaultValues do
       :@webservice_version,
       :@workhorse_version,
       :@gitlab_shell_version,
-      :@sidekiq_version
+      :@sidekiq_version,
+      :@registry_version
     ]
   end
 
@@ -90,7 +91,9 @@ RSpec.describe Gitlab::Orchestrator::Deployment::DefaultValues do
       "gitlab.webservice.workhorse.image" => "#{image_repository}/gitlab-workhorse-ee",
       "gitlab.webservice.workhorse.tag" => ci_commit_sha,
       "gitlab.kas.image.repository" => "#{image_repository}/gitlab-kas",
-      "gitlab.kas.image.tag" => kas_version
+      "gitlab.kas.image.tag" => kas_version,
+      "gitlab.registry.image.repository" => "#{image_repository}/gitlab-container-registry",
+      "gitlab.registry.image.tag" => ci_commit_sha
     })
   end
 
@@ -113,7 +116,8 @@ RSpec.describe Gitlab::Orchestrator::Deployment::DefaultValues do
         "GITLAB_SIDEKIQ_TAG" => "1088d209ac5dd8d245b00946de0760eb8fc9a181",
         "GITLAB_WEBSERVICE_TAG" => "b0ccc088a766801c8db9e7c564ad28472f33916c",
         "GITLAB_WORKHORSE_TAG" => "4a3990fb621ba6f6b7ddf36089868b24e22bb598",
-        "GITLAB_KAS_TAG" => "03faf0a4227405febb714c4eaa78e4f16f5d0a37"
+        "GITLAB_KAS_TAG" => "03faf0a4227405febb714c4eaa78e4f16f5d0a37",
+        "GITLAB_CONTAINER_REGISTRY_TAG" => "595f6534d8286bf1b9d3b1f527cb3af93a9a63c5"
       }
     end
 
@@ -125,7 +129,8 @@ RSpec.describe Gitlab::Orchestrator::Deployment::DefaultValues do
         "gitlab.sidekiq.image.tag" => image_tags["GITLAB_SIDEKIQ_TAG"],
         "gitlab.webservice.image.tag" => image_tags["GITLAB_WEBSERVICE_TAG"],
         "gitlab.webservice.workhorse.tag" => image_tags["GITLAB_WORKHORSE_TAG"],
-        "gitlab.kas.image.tag" => image_tags["GITLAB_KAS_TAG"]
+        "gitlab.kas.image.tag" => image_tags["GITLAB_KAS_TAG"],
+        "gitlab.registry.image.tag" => image_tags["GITLAB_CONTAINER_REGISTRY_TAG"]
       })
     end
   end

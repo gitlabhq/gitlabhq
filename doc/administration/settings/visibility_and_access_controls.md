@@ -2,14 +2,15 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Control project visibility, creation, retention, and deletion on GitLab Self-Managed.
+gitlab_dedicated: yes
+description: Control project visibility, creation, retention, and deletion.
 title: Control access and visibility
 ---
 
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -59,7 +60,7 @@ is turned on, administrators must enter Admin Mode to create new projects.
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -90,13 +91,6 @@ To disable the restriction:
 
 ## Deletion protection
 
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
-
 {{< history >}}
 
 - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) from default delayed project deletion in GitLab 15.1.
@@ -104,6 +98,7 @@ To disable the restriction:
 - [Disabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95495) in GitLab 15.3.
 - [Removed option to delete immediately](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 15.11 [with a flag](../feature_flags.md) named `always_perform_delayed_deletion`. Disabled by default.
 - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
 
 {{< /history >}}
 
@@ -134,6 +129,7 @@ any application setting, GitLab:
 
 - User interface [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
 - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
 
 {{< /history >}}
 
@@ -180,6 +176,7 @@ To configure delayed project deletion:
 
 - User interface [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
 - [Changed to default behavior](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) on the Premium and Ultimate tier in GitLab 16.0.
+- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
 
 {{< /history >}}
 
@@ -346,6 +343,12 @@ This happens even if you select **Only SSH**, because GitLab Runner and CI/CD jo
 
 ## Customize Git clone URL for HTTP(S)
 
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
 You can customize project Git clone URLs for HTTP(S), which affects the clone
 panel shown to users on a project's page. For example, if:
 
@@ -437,14 +440,25 @@ Prerequisites:
      this list by authorization type.
 1. Select **Save changes**.
 
-<!-- ## Troubleshooting
+## Disable user invitations
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
+{{< history >}}
 
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189954) in GitLab 18.0. Disabled by default.
+
+{{< /history >}}
+
+You can disable the ability for non-administrators to invite users to groups or projects. After
+you configure this setting, only administrators can invite users to groups or projects on the instance.
+
+Prerequisites:
+
+- You must be an administrator.
+
+To disable user invitations:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. Expand **Visibility and access controls**.
+1. Select the **Prevent group member invitations** checkbox.
+1. Select **Save changes**.

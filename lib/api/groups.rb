@@ -21,6 +21,7 @@ module API
 
       params :group_list_params do
         use :statistics_params
+        optional :archived, type: Boolean, desc: 'Limit by archived status'
         optional :skip_groups, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Array of group ids to exclude from list'
         optional :all_available, type: Boolean, desc: 'When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member.'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
@@ -31,6 +32,8 @@ module API
         optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
         optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Minimum access level of authenticated user'
         optional :top_level_only, type: Boolean, desc: 'Only include top-level groups'
+        optional :marked_for_deletion_on, type: Date, desc: 'Return groups that are marked for deletion on this date'
+        optional :active, type: Boolean, desc: 'Limit by groups that are not archived and not marked for deletion'
         use :optional_group_list_params_ee
         use :pagination
       end
@@ -59,7 +62,8 @@ module API
         [:all_available,
           :custom_attributes,
           :owned, :min_access_level,
-          :include_parent_descendants, :search, :visibility]
+          :include_parent_descendants, :search, :visibility, :archived,
+          :active, :marked_for_deletion_on]
       end
 
       # This is a separate method so that EE can extend its behaviour, without
@@ -288,7 +292,7 @@ module API
         requires :name, type: String, desc: 'The name of the group'
         requires :path, type: String, desc: 'The path of the group'
         optional :parent_id, type: Integer, desc: 'The parent group id for creating nested group'
-        optional :organization_id, type: Integer, default: -> { Current.organization&.id },
+        optional :organization_id, type: Integer, default: -> { Current.organization.id },
           desc: 'The organization id for the group'
 
         use :optional_params
@@ -345,6 +349,56 @@ module API
           present_group_details(params, group, with_projects: true)
         else
           render_validation_error!(group)
+        end
+      end
+
+      desc 'Archive a group' do
+        success code: 200, model: Entities::Group
+        failure [
+          { code: 403, message: 'Unauthenticated' }
+        ]
+        tags %w[groups]
+      end
+      post ':id/archive', feature_category: :groups_and_projects do
+        if Feature.enabled?(:rate_limit_groups_and_projects_api, current_user)
+          check_rate_limit_by_user_or_ip!(:group_archive_unarchive_api)
+        end
+
+        group = find_group!(params[:id])
+        authorize!(:archive_group, group)
+
+        response = ::Namespaces::Groups::ArchiveService.new(group, current_user).execute
+
+        if response.success?
+          status 200
+          present_group_details(params, group, with_projects: params[:with_projects])
+        else
+          render_api_error!(response.message, 422)
+        end
+      end
+
+      desc 'Unarchive a group' do
+        success code: 200, model: Entities::Group
+        failure [
+          { code: 403, message: 'Unauthenticated' }
+        ]
+        tags %w[groups]
+      end
+      post ':id/unarchive', feature_category: :groups_and_projects do
+        if Feature.enabled?(:rate_limit_groups_and_projects_api, current_user)
+          check_rate_limit_by_user_or_ip!(:group_archive_unarchive_api)
+        end
+
+        group = find_group!(params[:id])
+        authorize!(:archive_group, group)
+
+        response = ::Namespaces::Groups::UnarchiveService.new(group, current_user).execute
+
+        if response.success?
+          status 200
+          present_group_details(params, group, with_projects: params[:with_projects])
+        else
+          render_api_error!(response.message, 422)
         end
       end
 

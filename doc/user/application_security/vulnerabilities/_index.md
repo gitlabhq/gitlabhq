@@ -21,15 +21,15 @@ including:
 - Available actions
 - Linked issues
 - Actions log
-- Filename and line number of the vulnerability (if available)
+- Location
 - Severity
 
 For vulnerabilities in the [Common Vulnerabilities and Exposures (CVE)](https://www.cve.org/)
 catalog, these details also include:
 
 - CVSS score
-- EPSS score
-- KEV status
+- [EPSS score](risk_assessment_data.md#epss)
+- [KEV status](risk_assessment_data.md#kev)
 - [Reachability status](../dependency_scanning/static_reachability.md) (Beta)
 
 For further details on this additional data, see [vulnerability risk assessment data](risk_assessment_data.md).
@@ -142,7 +142,7 @@ Prerequisites:
 - You must be a member of the project.
 - The vulnerability must be a SAST finding from a supported analyzer:
   - Any [GitLab-supported analyzer](../sast/analyzers.md).
-  - A properly integrated [third-party SAST scanner](../../../development/integrations/secure.md) that reports the [vulnerability location](../../../development/integrations/secure.md#sast) and a [CWE Identifier](../../../development/integrations/secure.md#identifiers) for each vulnerability.
+  - A properly integrated third-party SAST scanner that reports the vulnerability location and a CWE Identifier for each vulnerability.
 - The vulnerability must be of a [supported type](#supported-vulnerabilities-for-vulnerability-resolution).
 
 Learn more about [how to enable all GitLab Duo features](../../ai_features_enable.md).
@@ -157,7 +157,7 @@ To resolve the vulnerability:
 1. Select outside the filter field. The vulnerability severity totals and list of matching vulnerabilities are updated.
 1. Select the SAST vulnerability you want resolved.
    - A blue icon is shown next to vulnerabilities that support Vulnerability Resolution.
-1. In the upper-right corner, select **Resolve with AI**. If this project is a public project be aware that creating an MR will publicly expose the vulnerability and offered resolution. To create the MR privately, please [create a private fork](../../project/merge_requests/confidential.md), and repeat this process.
+1. In the upper-right corner, select **Resolve with AI**. If this project is a public project be aware that creating an MR will publicly expose the vulnerability and offered resolution. To create the MR privately, [create a private fork](../../project/merge_requests/confidential.md), and repeat this process.
 1. Add an additional commit to the MR. This forces a new pipeline to run.
 1. After the pipeline is complete, on the [pipeline security tab](../vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline), confirm that the vulnerability no longer appears.
 1. On the vulnerability report, [manually update the vulnerability](../vulnerability_report/_index.md#change-status-of-vulnerabilities).
@@ -180,7 +180,9 @@ We are actively working to expand coverage to more types of vulnerabilities.
 <ul>
   <li>CWE-23: Relative Path Traversal</li>
   <li>CWE-73: External Control of File Name or Path</li>
+  <li>CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')</li>
   <li>CWE-80: Improper Neutralization of Script-Related HTML Tags in a Web Page (Basic XSS)</li>
+  <li>CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')</li>
   <li>CWE-116: Improper Encoding or Escaping of Output</li>
   <li>CWE-118: Incorrect Access of Indexable Resource ('Range Error')</li>
   <li>CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer</li>
@@ -257,8 +259,13 @@ The following data is shared with third-party AI APIs:
 
 {{< /details >}}
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14862) in GitLab 17.6 with a flag named [`resolve_vulnerability_in_mr`](https://gitlab.com/gitlab-org/gitlab/-/issues/482753). Disabled by default.
-> [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175150) in GitLab 17.7.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14862) in GitLab 17.6.
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175150) in GitLab 17.7.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185452) in GitLab 17.11. Feature flag `resolve_vulnerability_in_mr` removed.
+
+{{< /history >}}
 
 Use GitLab Duo Vulnerability resolution to automatically create a merge request suggestion comment that
 resolves the vulnerability finding. By default, it is powered by the Anthropic [`claude-3.5-sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet) model.
@@ -499,7 +506,8 @@ The following scanners are supported by this feature:
 
 - [Dependency Scanning](../dependency_scanning/_index.md).
   Automatic patch creation is only available for Node.js projects managed with
-  `yarn`. Also, Automatic patch creation is only supported when [FIPS mode](../../../development/fips_gitlab.md#enable-fips-mode) is disabled.
+  `yarn`. Automatic patch creation is only supported when [FIPS mode](../../../development/fips_gitlab.md#enable-fips-mode) is disabled.
+
 - [Container Scanning](../container_scanning/_index.md).
 
 To resolve a vulnerability, you can either:
@@ -560,7 +568,7 @@ Each integration submits the Vulnerability identifier, for example CWE or OWASP,
 
 The vulnerability page may include a training link relevant to the detected vulnerability if security training is enabled.
 The availability of training depends on whether the enabled training vendor has content matching the particular vulnerability.
-Training content is requested based on the [vulnerability identifiers](../../../development/integrations/secure.md#identifiers).
+Training content is requested based on the vulnerability identifiers.
 The identifier given to a vulnerability varies from one vulnerability to the next and the available training
 content varies between vendors. Some vulnerabilities do not display training content.
 Vulnerabilities with a CWE are most likely to return a training result.
@@ -571,3 +579,29 @@ To view the security training for a vulnerability:
 1. Select **Secure > Vulnerability report**.
 1. Select the vulnerability for which you want to view security training.
 1. Select **View training**.
+
+## View the location of a vulnerability in transitive dependencies
+
+{{< history >}}
+
+- View dependency paths option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519965) in GitLab 17.11 [with a flag](../../../administration/feature_flags.md) named `dependency_paths`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+When managing vulnerabilities found in dependencies in the vulnerability details, under **Location**, you can view:
+
+- The location of the direct dependency where the vulnerability was found.
+- If available, the specific line number where the vulnerability occurs.
+
+If the vulnerability occurs in one or more transitive dependencies, knowing only the direct dependency may not be enough. Transitive dependencies are indirect dependencies that have a direct dependent as an ancestor.
+
+If any transitive dependencies exist, you can view the paths to all dependencies, including the transitive dependencies that contain the vulnerability. 
+
+- On the vulnerability details page, under **Location**, select **View dependency paths**. If **View dependency paths** doesn't appear, then there are no transitive dependencies.

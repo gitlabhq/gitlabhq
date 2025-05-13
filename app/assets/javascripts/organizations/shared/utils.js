@@ -1,54 +1,13 @@
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_UPDATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
 import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
+import { formatGraphQLGroups } from '~/vue_shared/components/groups_list/formatter';
 import { SORT_CREATED_AT, SORT_UPDATED_AT } from './constants';
 
-const availableGroupActions = (userPermissions) => {
-  const baseActions = [];
-
-  if (userPermissions.viewEditPage) {
-    baseActions.push(ACTION_EDIT);
-  }
-
-  if (userPermissions.removeGroup) {
-    baseActions.push(ACTION_DELETE);
-  }
-
-  return baseActions;
-};
-
 export const formatGroups = (groups) =>
-  groups.map(
-    ({
-      id,
-      fullName,
-      webUrl,
-      parent,
-      maxAccessLevel: accessLevel,
-      userPermissions,
-      organizationEditPath: editPath,
-      descendantGroupsCount,
-      ...group
-    }) => ({
-      ...group,
-      id: getIdFromGraphQLId(id),
-      avatarLabel: fullName,
-      fullName,
-      webUrl,
-      parent: parent?.id || null,
-      accessLevel,
-      editPath,
-      availableActions: availableGroupActions(userPermissions),
-      descendantGroupsCount,
-      children: [],
-      childrenLoading: false,
-      hasChildren: Boolean(descendantGroupsCount),
-    }),
-  );
+  formatGraphQLGroups(groups, (group) => ({ editPath: group.organizationEditPath }));
 
 export const formatProjects = (projects) =>
   formatGraphQLProjects(projects, (project) => ({ editPath: project.organizationEditPath }));

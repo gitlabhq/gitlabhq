@@ -27,7 +27,7 @@ RSpec.describe 'Container Registry', :js, feature_category: :container_registry 
 
     visit_container_registry
 
-    expect(page).to have_link('next-generation container registry', href: help_page_href)
+    expect(page).to have_link('Learn more', href: help_page_href)
   end
 
   it 'has a page title set' do
@@ -86,7 +86,7 @@ RSpec.describe 'Container Registry', :js, feature_category: :container_registry 
       end
 
       it 'shows the details breadcrumb' do
-        expect(find_by_testid('breadcrumb-links')).to have_link 'my/image'
+        expect(find_by_testid('breadcrumb-links')).to have_link 'Container registry'
       end
 
       it 'shows the image title' do

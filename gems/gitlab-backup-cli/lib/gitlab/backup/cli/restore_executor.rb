@@ -36,6 +36,7 @@ module Gitlab
         end
 
         def execute
+          initialize_database_connection!
           read_metadata!
 
           execute_all_tasks
@@ -51,6 +52,10 @@ module Gitlab
         end
 
         private
+
+        def initialize_database_connection!
+          Models::Base.initialize_connection!(context: context)
+        end
 
         def execute_all_tasks
           tasks = []

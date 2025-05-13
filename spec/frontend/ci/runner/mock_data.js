@@ -8,6 +8,7 @@ import runnersCountData from 'test_fixtures/graphql/ci/runner/list/all_runners_c
 import groupRunnersData from 'test_fixtures/graphql/ci/runner/list/group_runners.query.graphql.json';
 import groupRunnersDataPaginated from 'test_fixtures/graphql/ci/runner/list/group_runners.query.graphql.paginated.json';
 import groupRunnersCountData from 'test_fixtures/graphql/ci/runner/list/group_runners_count.query.graphql.json';
+import projectRunnersData from 'test_fixtures/graphql/ci/runner/list/project_runners.query.graphql.json';
 
 // Register runner queries
 import runnerForRegistration from 'test_fixtures/graphql/ci/runner/register/runner_for_registration.query.graphql.json';
@@ -471,6 +472,7 @@ export {
   groupRunnersData,
   groupRunnersDataPaginated,
   groupRunnersCountData,
+  projectRunnersData,
   emptyPageInfo,
   runnerData,
   runnerJobCountData,

@@ -8,7 +8,7 @@ RSpec.describe Ci::ArchiveTracesCronWorker, feature_category: :continuous_integr
   let(:finished_at) { 1.day.ago }
 
   before do
-    stub_feature_flags(ci_enable_live_trace: true)
+    stub_application_setting(ci_job_live_trace_enabled: true)
   end
 
   shared_examples_for 'archives trace' do

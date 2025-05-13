@@ -1,16 +1,21 @@
 import Vue from 'vue';
-import { GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
+import MockAdapter from 'axios-mock-adapter';
+import { GlLoadingIcon, GlKeysetPagination, GlPagination } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import starredProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/starred_projects.query.graphql.json';
 import inactiveProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/inactive_projects.query.graphql.json';
 import personalProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/personal_projects.query.graphql.json';
 import membershipProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/membership_projects.query.graphql.json';
 import contributedProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/contributed_projects.query.graphql.json';
+import dashboardGroupsResponse from 'test_fixtures/groups/dashboard/index.json';
+import dashboardGroupsWithChildrenResponse from 'test_fixtures/groups/dashboard/index_with_children.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import axios from '~/lib/utils/axios_utils';
 import TabView from '~/groups_projects/components/tab_view.vue';
 import { formatProjects } from '~/projects/your_work/utils';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
-import ProjectsListEmptyState from '~/vue_shared/components/projects_list/projects_list_empty_state.vue';
+import ResourceListsEmptyState from '~/vue_shared/components/resource_lists/empty_state.vue';
+import NestedGroupsProjectsList from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list.vue';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { createAlert } from '~/alert';
 import {
@@ -20,25 +25,35 @@ import {
   STARRED_TAB,
   INACTIVE_TAB,
 } from '~/projects/your_work/constants';
+import { MEMBER_TAB as MEMBER_TAB_GROUPS } from '~/groups/your_work/constants';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
+  PAGINATION_TYPE_KEYSET,
+  PAGINATION_TYPE_OFFSET,
 } from '~/groups_projects/constants';
 import { FILTERED_SEARCH_TERM_KEY } from '~/projects/filtered_search_and_sort/constants';
 import { ACCESS_LEVEL_OWNER_INTEGER, ACCESS_LEVEL_OWNER_STRING } from '~/access_level/constants';
 import { TIMESTAMP_TYPE_CREATED_AT } from '~/vue_shared/components/resource_lists/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { resolvers } from '~/groups/your_work/graphql/resolvers';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { pageInfoMultiplePages, programmingLanguages } from './mock_data';
 
 jest.mock('~/alert');
 
 Vue.use(VueApollo);
 
+const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
 describe('TabView', () => {
   let wrapper;
   let mockApollo;
+  let mockAxios;
   let apolloClient;
+
+  const endpoint = '/dashboard/groups.json';
 
   const defaultPropsData = {
     sort: 'name_desc',
@@ -50,10 +65,18 @@ describe('TabView', () => {
     filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
     timestampType: TIMESTAMP_TYPE_CREATED_AT,
     programmingLanguages,
+    eventTracking: {
+      clickStat: 'click_stat_on_your_work_projects',
+      hoverStat: 'hover_stat_on_your_work_projects',
+      hoverVisibility: 'hover_visibility_icon_on_your_work_projects',
+      clickItemAfterFilter: 'click_project_after_filter_on_your_work_projects',
+      clickTopic: 'click_topic_on_your_work_projects',
+    },
+    paginationType: PAGINATION_TYPE_KEYSET,
   };
 
-  const createComponent = ({ handler, propsData = {} } = {}) => {
-    mockApollo = createMockApollo([handler]);
+  const createComponent = ({ handlers = [], propsData = {} } = {}) => {
+    mockApollo = createMockApollo(handlers, resolvers(endpoint));
 
     wrapper = shallowMountExtended(TabView, {
       apolloProvider: mockApollo,
@@ -61,16 +84,22 @@ describe('TabView', () => {
     });
 
     apolloClient = mockApollo.defaultClient;
-    jest.spyOn(apolloClient, 'resetStore');
+    jest.spyOn(apolloClient, 'clearStore');
   };
 
   const findProjectsList = () => wrapper.findComponent(ProjectsList);
-  const findPagination = () => wrapper.findComponent(GlKeysetPagination);
-  const findEmptyState = () => wrapper.findComponent(ProjectsListEmptyState);
+  const findKeysetPagination = () => wrapper.findComponent(GlKeysetPagination);
+  const findOffsetPagination = () => wrapper.findComponent(GlPagination);
+  const findEmptyState = () => wrapper.findComponent(ResourceListsEmptyState);
+
+  beforeEach(() => {
+    mockAxios = new MockAdapter(axios);
+  });
 
   afterEach(() => {
     mockApollo = null;
     apolloClient = null;
+    mockAxios.restore();
   });
 
   describe.each`
@@ -85,7 +114,7 @@ describe('TabView', () => {
     ({ tab, handler, expectedVariables, expectedProjects }) => {
       describe('when GraphQL request is loading', () => {
         beforeEach(() => {
-          createComponent({ handler, propsData: { tab } });
+          createComponent({ handlers: [handler], propsData: { tab } });
         });
 
         it('shows loading icon', () => {
@@ -95,7 +124,7 @@ describe('TabView', () => {
 
       describe('when GraphQL request is successful', () => {
         beforeEach(async () => {
-          createComponent({ handler, propsData: { tab } });
+          createComponent({ handlers: [handler], propsData: { tab } });
           await waitForPromises();
         });
 
@@ -114,6 +143,10 @@ describe('TabView', () => {
           });
         });
 
+        it('emits query-complete event', () => {
+          expect(wrapper.emitted('query-complete')).toEqual([[]]);
+        });
+
         it('passes items to `ProjectsList` component', () => {
           expect(findProjectsList().props('items')).toEqual(formatProjects(expectedProjects));
         });
@@ -127,9 +160,15 @@ describe('TabView', () => {
             findProjectsList().vm.$emit('refetch');
           });
 
-          it('resets store and refetches list', () => {
-            expect(apolloClient.resetStore).toHaveBeenCalled();
+          it('clears store and refetches list', async () => {
+            expect(apolloClient.clearStore).toHaveBeenCalled();
+            await waitForPromises();
             expect(handler[1]).toHaveBeenCalledTimes(2);
+          });
+
+          it('emits refetch event', async () => {
+            await waitForPromises();
+            expect(wrapper.emitted('refetch')).toEqual([[]]);
           });
         });
       });
@@ -139,7 +178,7 @@ describe('TabView', () => {
 
         beforeEach(async () => {
           createComponent({
-            handler: [handler[0], jest.fn().mockRejectedValue(error)],
+            handlers: [[handler[0], jest.fn().mockRejectedValue(error)]],
             propsData: { tab },
           });
           await waitForPromises();
@@ -157,15 +196,114 @@ describe('TabView', () => {
     },
   );
 
-  describe('pagination', () => {
+  describe('when tab.listComponent is NestedGroupsProjectsList', () => {
+    beforeEach(() => {
+      mockAxios.onGet(endpoint).replyOnce(200, dashboardGroupsResponse);
+    });
+
+    describe('when search is defined', () => {
+      beforeEach(async () => {
+        createComponent({ propsData: { tab: MEMBER_TAB_GROUPS } });
+        await waitForPromises();
+      });
+
+      it('passes initialExpanded prop as true', () => {
+        expect(wrapper.findComponent(NestedGroupsProjectsList).props('initialExpanded')).toBe(true);
+      });
+    });
+
+    describe('when search is empty', () => {
+      beforeEach(async () => {
+        createComponent({ propsData: { tab: MEMBER_TAB_GROUPS, filters: {} } });
+        await waitForPromises();
+      });
+
+      it('passes initialExpanded prop as false', () => {
+        expect(wrapper.findComponent(NestedGroupsProjectsList).props('initialExpanded')).toBe(
+          false,
+        );
+      });
+    });
+
+    describe('when load-children event is fired', () => {
+      const [group] = dashboardGroupsResponse;
+      const [{ children }] = dashboardGroupsWithChildrenResponse;
+
+      describe('when API request is loading', () => {
+        beforeEach(async () => {
+          createComponent({ propsData: { tab: MEMBER_TAB_GROUPS } });
+          await waitForPromises();
+          mockAxios.onGet(endpoint).replyOnce(200, [{ ...group, children }]);
+          wrapper.findComponent(NestedGroupsProjectsList).vm.$emit('load-children', group.id);
+        });
+
+        it('sets item as loading', () => {
+          expect(
+            wrapper.findComponent(NestedGroupsProjectsList).props('items')[0].childrenLoading,
+          ).toBe(true);
+        });
+
+        it('unsets item as loading after API request resolves', async () => {
+          await waitForPromises();
+
+          expect(
+            wrapper.findComponent(NestedGroupsProjectsList).props('items')[0].childrenLoading,
+          ).toBe(false);
+        });
+      });
+
+      describe('when API request is successful', () => {
+        beforeEach(async () => {
+          createComponent({ propsData: { tab: MEMBER_TAB_GROUPS } });
+          await waitForPromises();
+          mockAxios.onGet(endpoint).replyOnce(200, [{ ...group, children }]);
+          wrapper.findComponent(NestedGroupsProjectsList).vm.$emit('load-children', group.id);
+          await waitForPromises();
+        });
+
+        it('calls API with parent_id argument', () => {
+          expect(mockAxios.history.get[1].params.parent_id).toBe(group.id);
+        });
+
+        it('updates children of item', () => {
+          expect(
+            wrapper
+              .findComponent(NestedGroupsProjectsList)
+              .props('items')[0]
+              .children.map((child) => child.id),
+          ).toEqual(children.map((item) => item.id));
+        });
+      });
+
+      describe('when API request is not successful', () => {
+        beforeEach(async () => {
+          createComponent({ propsData: { tab: MEMBER_TAB_GROUPS } });
+          await waitForPromises();
+          mockAxios.onGet(endpoint).networkError();
+          wrapper.findComponent(NestedGroupsProjectsList).vm.$emit('load-children', group.id);
+          await waitForPromises();
+        });
+
+        it('displays error alert', () => {
+          expect(createAlert).toHaveBeenCalledWith({
+            message:
+              'An error occurred loading the projects. Please refresh the page to try again.',
+            error: new Error('Network Error'),
+            captureError: true,
+          });
+        });
+      });
+    });
+  });
+
+  describe('keyset pagination', () => {
     const propsData = { tab: PERSONAL_TAB };
 
     describe('when there is one page of projects', () => {
       beforeEach(async () => {
         createComponent({
-          handler: [
-            PERSONAL_TAB.query,
-            jest.fn().mockResolvedValue(personalProjectsGraphQlResponse),
+          handlers: [
+            [PERSONAL_TAB.query, jest.fn().mockResolvedValue(personalProjectsGraphQlResponse)],
           ],
           propsData,
         });
@@ -173,7 +311,7 @@ describe('TabView', () => {
       });
 
       it('does not render pagination', () => {
-        expect(findPagination().exists()).toBe(false);
+        expect(findKeysetPagination().exists()).toBe(false);
       });
     });
 
@@ -194,23 +332,23 @@ describe('TabView', () => {
 
       beforeEach(async () => {
         createComponent({
-          handler,
+          handlers: [handler],
           propsData,
         });
         await waitForPromises();
       });
 
       it('renders pagination', () => {
-        expect(findPagination().exists()).toBe(true);
+        expect(findKeysetPagination().exists()).toBe(true);
       });
 
       describe('when next button is clicked', () => {
         beforeEach(() => {
-          findPagination().vm.$emit('next', mockEndCursor);
+          findKeysetPagination().vm.$emit('next', mockEndCursor);
         });
 
-        it('emits `page-change` event', () => {
-          expect(wrapper.emitted('page-change')[0]).toEqual([
+        it('emits `keyset-page-change` event', () => {
+          expect(wrapper.emitted('keyset-page-change')[0]).toEqual([
             {
               endCursor: mockEndCursor,
               startCursor: null,
@@ -244,11 +382,11 @@ describe('TabView', () => {
 
       describe('when previous button is clicked', () => {
         beforeEach(() => {
-          findPagination().vm.$emit('prev', mockStartCursor);
+          findKeysetPagination().vm.$emit('prev', mockStartCursor);
         });
 
-        it('emits `page-change` event', () => {
-          expect(wrapper.emitted('page-change')[0]).toEqual([
+        it('emits `keyset-page-change` event', () => {
+          expect(wrapper.emitted('keyset-page-change')[0]).toEqual([
             {
               endCursor: null,
               startCursor: mockStartCursor,
@@ -282,11 +420,89 @@ describe('TabView', () => {
     });
   });
 
+  describe('offset pagination', () => {
+    const propsData = { tab: MEMBER_TAB_GROUPS, paginationType: PAGINATION_TYPE_OFFSET };
+
+    describe('when there is one page', () => {
+      beforeEach(async () => {
+        mockAxios.onGet(endpoint).replyOnce(200, dashboardGroupsResponse, {
+          'x-per-page': 10,
+          'x-page': 1,
+          'x-total': 9,
+          'x-total-pages': 1,
+          'x-next-page': null,
+          'x-prev-page': null,
+        });
+        createComponent({
+          propsData,
+        });
+        await waitForPromises();
+      });
+
+      it('does not render pagination', () => {
+        expect(findOffsetPagination().exists()).toBe(false);
+      });
+    });
+
+    describe('when there are multiple pages', () => {
+      beforeEach(async () => {
+        mockAxios.onGet(endpoint).replyOnce(200, dashboardGroupsResponse, {
+          'x-per-page': 10,
+          'x-page': 2,
+          'x-total': 21,
+          'x-total-pages': 3,
+          'x-next-page': 3,
+          'x-prev-page': 1,
+        });
+
+        createComponent({
+          propsData,
+        });
+        await waitForPromises();
+      });
+
+      it('renders pagination', () => {
+        expect(findOffsetPagination().exists()).toBe(true);
+      });
+
+      describe('when next button is clicked', () => {
+        beforeEach(() => {
+          findOffsetPagination().vm.$emit('input', 3);
+        });
+
+        it('emits `offset-page-change` event', () => {
+          expect(wrapper.emitted('offset-page-change')[0]).toEqual([3]);
+        });
+      });
+
+      describe('when previous button is clicked', () => {
+        beforeEach(() => {
+          findOffsetPagination().vm.$emit('input', 1);
+        });
+
+        it('emits `offset-page-change` event', () => {
+          expect(wrapper.emitted('offset-page-change')[0]).toEqual([1]);
+        });
+      });
+
+      describe('when `page` prop is changed', () => {
+        beforeEach(async () => {
+          wrapper.setProps({ page: 3 });
+          await waitForPromises();
+        });
+
+        it('calls API with page argument', () => {
+          expect(mockAxios.history.get[1].params.page).toBe(3);
+        });
+      });
+    });
+  });
+
   describe('empty state', () => {
     describe('when there are no results', () => {
       beforeEach(async () => {
         createComponent({
-          handler: [CONTRIBUTED_TAB.query, jest.fn().mockResolvedValue({ nodes: [] })],
+          handlers: [[CONTRIBUTED_TAB.query, jest.fn().mockResolvedValue({ nodes: [] })]],
           propsData: { tab: CONTRIBUTED_TAB },
         });
         await waitForPromises();
@@ -305,9 +521,8 @@ describe('TabView', () => {
     describe('when there are results', () => {
       beforeEach(async () => {
         createComponent({
-          handler: [
-            PERSONAL_TAB.query,
-            jest.fn().mockResolvedValue(personalProjectsGraphQlResponse),
+          handlers: [
+            [PERSONAL_TAB.query, jest.fn().mockResolvedValue(personalProjectsGraphQlResponse)],
           ],
           propsData: { tab: PERSONAL_TAB },
         });
@@ -316,6 +531,98 @@ describe('TabView', () => {
 
       it('does not render an empty state', () => {
         expect(findEmptyState().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('event tracking', () => {
+    let trackEventSpy;
+
+    beforeEach(async () => {
+      createComponent({
+        handlers: [
+          [PERSONAL_TAB.query, jest.fn().mockResolvedValue(personalProjectsGraphQlResponse)],
+        ],
+        propsData: { tab: PERSONAL_TAB },
+      });
+      await waitForPromises();
+      trackEventSpy = bindInternalEventDocument(wrapper.element).trackEventSpy;
+    });
+
+    describe('when visibility is hovered', () => {
+      beforeEach(() => {
+        findProjectsList().vm.$emit('hover-visibility', 'private');
+      });
+
+      it('tracks event', () => {
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          defaultPropsData.eventTracking.hoverVisibility,
+          { label: 'private' },
+          undefined,
+        );
+      });
+    });
+
+    describe('when stat is hovered', () => {
+      beforeEach(() => {
+        findProjectsList().vm.$emit('hover-stat', 'stars-count');
+      });
+
+      it('tracks event', () => {
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          defaultPropsData.eventTracking.hoverStat,
+          { label: 'stars-count' },
+          undefined,
+        );
+      });
+    });
+
+    describe('when stat is clicked', () => {
+      beforeEach(() => {
+        findProjectsList().vm.$emit('click-stat', 'stars-count');
+      });
+
+      it('tracks event', () => {
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          defaultPropsData.eventTracking.clickStat,
+          { label: 'stars-count' },
+          undefined,
+        );
+      });
+    });
+
+    describe('when topic is clicked', () => {
+      beforeEach(() => {
+        findProjectsList().vm.$emit('click-topic');
+      });
+
+      it('tracks event', () => {
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          defaultPropsData.eventTracking.clickTopic,
+          {},
+          undefined,
+        );
+      });
+    });
+
+    describe('when avatar is clicked', () => {
+      beforeEach(() => {
+        findProjectsList().vm.$emit('click-avatar');
+      });
+
+      it('tracks event', () => {
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          defaultPropsData.eventTracking.clickItemAfterFilter,
+          {
+            label: PERSONAL_TAB.value,
+            property: JSON.stringify({
+              search: 'user provided value',
+              language: '8',
+              min_access_level: 50,
+            }),
+          },
+          undefined,
+        );
       });
     });
   });

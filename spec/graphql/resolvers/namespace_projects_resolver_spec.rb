@@ -129,6 +129,52 @@ RSpec.describe Resolvers::NamespaceProjectsResolver, feature_category: :groups_a
         end
       end
 
+      context 'full path sorting' do
+        let_it_be(:parent_group) { create(:group) }
+        let_it_be(:nested_group_1) { create(:group, parent: parent_group, path: 'alpha') }
+        let_it_be(:nested_group_2) { create(:group, parent: parent_group, path: 'beta') }
+        let_it_be(:deeply_nested_group) { create(:group, parent: nested_group_1, path: 'gamma') }
+
+        let_it_be(:projects_with_various_paths) do
+          [
+            create(:project, path: 'zebra', namespace: parent_group),
+            create(:project, path: 'apple', namespace: nested_group_1),
+            create(:project, path: 'banana', namespace: nested_group_2),
+            create(:project, path: 'cherry', namespace: deeply_nested_group)
+          ]
+        end
+
+        let(:namespace) { parent_group }
+        let(:args) { default_args.merge(include_subgroups: true, sort: :full_path_asc) }
+        let(:project_full_paths) { subject.map(&:full_path) }
+
+        before_all do
+          projects_with_various_paths.each { |p| p.add_developer(current_user) }
+        end
+
+        it 'returns projects sorted by full path in ascending order' do
+          expect(project_full_paths).to eq([
+            "#{parent_group.path}/alpha/apple",
+            "#{parent_group.path}/alpha/gamma/cherry",
+            "#{parent_group.path}/beta/banana",
+            "#{parent_group.path}/zebra"
+          ])
+        end
+
+        context 'when sorting by full path in descending order' do
+          let(:args) { default_args.merge(include_subgroups: true, sort: :full_path_desc) }
+
+          it 'returns projects sorted by full path in descending order' do
+            expect(project_full_paths).to eq([
+              "#{parent_group.path}/zebra",
+              "#{parent_group.path}/beta/banana",
+              "#{parent_group.path}/alpha/gamma/cherry",
+              "#{parent_group.path}/alpha/apple"
+            ])
+          end
+        end
+      end
+
       context 'ids filtering' do
         let(:args) { default_args.merge(include_subgroups: false) }
 

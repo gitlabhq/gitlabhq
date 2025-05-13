@@ -6,11 +6,6 @@ RSpec.describe UserDetail, feature_category: :system_access do
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:bot_namespace).inverse_of(:bot_user_details) }
 
-  specify do
-    values = [:basics, :move_repository, :code_storage, :exploring, :ci, :other, :joining_team]
-    is_expected.to define_enum_for(:registration_objective).with_values(values).with_suffix
-  end
-
   describe 'validations' do
     context 'for onboarding_status json schema' do
       let(:step_url) { '_some_string_' }

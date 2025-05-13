@@ -6,14 +6,14 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Tracking from '~/tracking';
 import { __ } from '~/locale';
 import { clearDraft } from '~/lib/utils/autosave';
-import { findWidget } from '~/issues/list/utils';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveDiscussionButton from '~/notes/components/discussion_resolve_button.vue';
 import { updateCacheAfterCreatingNote } from '../../graphql/cache_utils';
 import createNoteMutation from '../../graphql/notes/create_work_item_note.mutation.graphql';
 import workItemNotesByIidQuery from '../../graphql/notes/work_item_notes_by_iid.query.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
-import { TRACKING_CATEGORY_SHOW, WIDGET_TYPE_EMAIL_PARTICIPANTS, i18n } from '../../constants';
+import { TRACKING_CATEGORY_SHOW, i18n } from '../../constants';
+import { findEmailParticipantsWidget } from '../../utils';
 import WorkItemNoteSignedOut from './work_item_note_signed_out.vue';
 import WorkItemCommentLocked from './work_item_comment_locked.vue';
 import WorkItemCommentForm from './work_item_comment_form.vue';
@@ -223,7 +223,7 @@ export default {
       return this.isDiscussionResolved ? __('Unresolve thread') : __('Resolve thread');
     },
     hasEmailParticipantsWidget() {
-      return Boolean(findWidget(WIDGET_TYPE_EMAIL_PARTICIPANTS, this.workItem));
+      return Boolean(findEmailParticipantsWidget(this.workItem));
     },
   },
   watch: {
@@ -240,6 +240,12 @@ export default {
     generateUniqueId() {
       // used to rerender work-item-comment-form so the text in the textarea is cleared
       return uniqueId(`work-item-add-note-${this.workItemId}-`);
+    },
+    // This method is called from parent components so we need
+    // ignore linter here.
+    // eslint-disable-next-line vue/no-unused-properties
+    appendText(text) {
+      this.$refs.commentForm.$refs.markdownEditor.append(text);
     },
     async updateWorkItem({ commentText, isNoteInternal = false }) {
       this.isSubmitting = true;
@@ -378,6 +384,7 @@ export default {
           <work-item-comment-form
             v-if="isEditing"
             :key="addNoteKey"
+            ref="commentForm"
             :work-item-type="workItemType"
             :aria-label="__('Add a reply')"
             :is-submitting="isSubmitting"

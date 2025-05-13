@@ -1,6 +1,6 @@
-- page_title _("New User")
-%h1.page-title.gl-text-size-h-display
-  = s_('AdminUsers|New user')
+- page_title s_('AdminUsers|New user')
+
+= render ::Layouts::PageHeadingComponent.new(page_title)
 
 - if show_admin_new_user_organization_field?
   - content_for :organization_section do

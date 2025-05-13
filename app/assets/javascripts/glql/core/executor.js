@@ -1,6 +1,8 @@
 import { gql } from '@apollo/client/core';
 import createDefaultClient from '~/lib/graphql';
 import TaskQueue from '../utils/task_queue';
+import { extractGroupOrProject } from '../utils/common';
+import { joinPaths } from '../../lib/utils/url_utility';
 
 const CONCURRENCY_LIMIT = 1;
 
@@ -8,9 +10,15 @@ export default class Executor {
   #client;
   static taskQueue;
 
-  init(client = createDefaultClient({}, { path: '/api/glql' })) {
+  init(client) {
     Executor.taskQueue = Executor.taskQueue || new TaskQueue(CONCURRENCY_LIMIT);
-    this.#client = client;
+
+    const glqlPath =
+      joinPaths(gon.relative_url_root || '', '/api/glql?') +
+      new URLSearchParams(extractGroupOrProject());
+
+    this.#client = client || createDefaultClient({}, { path: glqlPath });
+
     return this;
   }
 

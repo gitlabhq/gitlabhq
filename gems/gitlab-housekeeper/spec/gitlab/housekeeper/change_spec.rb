@@ -174,4 +174,13 @@ RSpec.describe ::Gitlab::Housekeeper::Change do
       expect(change).not_to be_valid
     end
   end
+
+  describe '#truncated_title' do
+    it 'truncates the title to 72 chars' do
+      change = create_change(title: 'some long title ' * 10)
+
+      expect(change.truncated_title).to eq('some long title some long title some long title some long title some lon')
+      expect(change.truncated_title.length).to eq(72)
+    end
+  end
 end

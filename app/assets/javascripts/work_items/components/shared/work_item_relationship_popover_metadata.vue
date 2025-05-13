@@ -2,9 +2,7 @@
 import { GlTooltipDirective, GlAvatarsInline, GlAvatar, GlAvatarLink } from '@gitlab/ui';
 import ItemMilestone from '~/issuable/components/issue_milestone.vue';
 import { s__, sprintf } from '~/locale';
-import { WIDGET_TYPE_MILESTONE, WIDGET_TYPE_ASSIGNEES } from '~/work_items/constants';
-import { findWidget } from '~/issues/list/utils';
-import { getDisplayReference } from '../../utils';
+import { findAssigneesWidget, findMilestoneWidget, getDisplayReference } from '../../utils';
 
 export default {
   name: 'WorkItemRelationshipPopoverMetadata',
@@ -30,10 +28,10 @@ export default {
   assigneesDisplayLimit: 3,
   computed: {
     workItemAssignees() {
-      return findWidget(WIDGET_TYPE_ASSIGNEES, this.workItem)?.assignees?.nodes || [];
+      return findAssigneesWidget(this.workItem)?.assignees?.nodes || [];
     },
     workItemMilestone() {
-      return findWidget(WIDGET_TYPE_MILESTONE, this.workItem)?.milestone;
+      return findMilestoneWidget(this.workItem)?.milestone;
     },
     fullReference() {
       return getDisplayReference(this.workItemFullPath, this.workItem.reference);

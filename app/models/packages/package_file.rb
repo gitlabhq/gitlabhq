@@ -16,7 +16,7 @@ class Packages::PackageFile < ApplicationRecord
   delegate :file_type, :dsc?, :component, :architecture, :fields, to: :debian_file_metadatum, prefix: :debian
   delegate :channel, :metadata, to: :helm_file_metadatum, prefix: :helm
 
-  enum status: { default: 0, pending_destruction: 1, processing: 2, error: 3 }
+  enum :status, { default: 0, pending_destruction: 1, processing: 2, error: 3 }
 
   belongs_to :package
 
@@ -111,6 +111,16 @@ class Packages::PackageFile < ApplicationRecord
   scope :without_conan_recipe_revision, -> do
     joins(:conan_file_metadatum)
       .where(packages_conan_file_metadata: { recipe_revision_id: nil })
+  end
+
+  scope :with_conan_package_revision, ->(package_revision) do
+    joins(conan_file_metadatum: :package_revision)
+      .where(packages_conan_package_revisions: { revision: package_revision })
+  end
+
+  scope :without_conan_package_revision, -> do
+    joins(:conan_file_metadatum)
+      .where(packages_conan_file_metadata: { package_revision_id: nil })
   end
 
   def self.most_recent!

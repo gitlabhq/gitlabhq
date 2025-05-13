@@ -1,4 +1,4 @@
-- return unless can?(current_user, :archive_project, @project)
+- return unless archiving_available?(@project)
 
 = render Pajamas::CardComponent.new do |c|
   - c.with_header do

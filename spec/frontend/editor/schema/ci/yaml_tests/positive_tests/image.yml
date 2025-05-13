@@ -52,3 +52,25 @@ valid_image_full:
     docker:
       platform: linux/amd64
     pull_policy: if-not-present
+
+valid_image_with_kubernetes_uid:
+  image:
+    name: ubuntu:latest
+    kubernetes:
+      user: "1001"
+
+valid_image_with_kubernetes_uid_and_gid:
+  image:
+    name: ubuntu:latest
+    kubernetes:
+      user: "1001:1001"
+
+valid_image_full_with_kubernetes:
+  image:
+    name: alpine:latest
+    entrypoint:
+      - /bin/sh
+      - -c
+    kubernetes:
+      user: 1001:1001
+    pull_policy: if-not-present

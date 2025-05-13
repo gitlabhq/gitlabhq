@@ -4,7 +4,10 @@ require 'test_prof/before_all/adapters/active_record'
 
 module DbCleaner
   def all_connection_classes
-    ::TestProf::BeforeAll::Adapters::ActiveRecord.all_connections.map(&:connection_class).uniq
+    ::ActiveRecord::Base.connection_handler
+      .connection_pool_list(:writing)
+      .map { |pool| pool.connection.connection_class }
+      .uniq
   end
 
   def delete_from_all_tables!(except: [])
@@ -111,7 +114,7 @@ module DbCleaner
       connection.execute(cmd)
     end
 
-    ActiveRecord::Base.clear_all_connections! # rubocop:disable Database/MultipleDatabases
+    ActiveRecord::Base.connection_handler.clear_all_connections!
   end
 end
 

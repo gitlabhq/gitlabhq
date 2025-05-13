@@ -126,7 +126,7 @@ RSpec.describe Resolvers::Users::ParticipantsResolver do
           query.call
         end
 
-        it 'does not execute N+1 for project relation' do
+        it 'does not execute N+1 for project relation', :request_store do
           control_count = ActiveRecord::QueryRecorder.new { query.call }
 
           create(:award_emoji, :upvote, awardable: issue)
@@ -137,10 +137,9 @@ RSpec.describe Resolvers::Users::ParticipantsResolver do
 
           # 1 extra query per source (3 emojis + 2 notes) to fetch participables collection
           # 2 extra queries to load work item widgets collection
-          # 1 extra query for root_ancestor in custom_fields_feature feature flag check
           # 1 extra query to load the project creator to check if they are banned
           # 1 extra query to load the invited groups to see if the user is banned from any of them
-          expect { query.call }.not_to exceed_query_limit(control_count).with_threshold(10)
+          expect { query.call }.not_to exceed_query_limit(control_count).with_threshold(9)
         end
 
         it 'does not execute N+1 for system note metadata relation' do

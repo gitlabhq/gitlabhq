@@ -83,6 +83,25 @@ does not match, the response code is `409`.
 }
 ```
 
+### Approvals for automated merge requests
+
+If you use the API to create and immediately approve a merge request, your automation
+might approve the merge request before the commit is fully processed. By default, adding
+a new commit to a merge request
+[resets any existing approvals](../user/project/merge_requests/approvals/settings.md#remove-all-approvals-when-commits-are-added-to-the-source-branch).
+When this happens, the **Activity** area of the merge request shows a sequence of
+messages like this:
+
+- `(botname)` approved this merge request 5 minutes ago
+- `(botname)` added 1 commit 5 minutes ago
+- `(botname)` reset approvals from `(botname)` by pushing to the branch 5 minutes ago
+
+To ensure automated approvals are not applied before commit processing is complete,
+your automation should add a wait (or `sleep`) function until:
+
+- The `detailed_merge_status` attribute is not in either the `checking` or `approvals_syncing` states.
+- The merge request diff contains a `patch_id_sha` that is not NULL.
+
 ## Unapprove merge request
 
 If you did approve a merge request, you can unapprove it using the following
@@ -635,7 +654,7 @@ PUT /projects/:id/approval_rules/:approval_rule_id
 {{< alert type="note" >}}
 
 Approvers and groups (except hidden groups not in the `users` or `groups`
-parameters) are **removed**. Hidden groups are private groups the user doesn't
+parameters) are removed. Hidden groups are private groups the user doesn't
 have permission to view. Hidden groups are not removed by default unless the
 `remove_hidden_groups` parameter is `true`. This ensures hidden groups are
 not removed unintentionally when a user updates an approval rule.
@@ -647,9 +666,9 @@ Supported attributes:
 | Attribute                           | Type              | Required | Description |
 |-------------------------------------|-------------------|----------|-------------|
 | `id`                                | integer or string | Yes      | The ID or [URL-encoded path of a project](rest/_index.md#namespaced-paths). |
-| `approvals_required`                | integer           | Yes      | The number of required approvals for this rule. |
+| `approvals_required`                | integer           | No       | The number of required approvals for this rule. |
 | `approval_rule_id`                  | integer           | Yes      | The ID of a approval rule. |
-| `name`                              | string            | Yes      | The name of the approval rule. Limited to 1024 characters. |
+| `name`                              | string            | No       | The name of the approval rule. Limited to 1024 characters. |
 | `applies_to_all_protected_branches` | boolean           | No       | Whether to apply the rule to all protected branches. If set to `true`, it ignores the value of `protected_branch_ids`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3. |
 | `group_ids`                         | Array             | No       | The IDs of groups as approvers. |
 | `protected_branch_ids`              | Array             | No       | The IDs of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches). |
@@ -1180,7 +1199,7 @@ To update merge request approval rules, use this endpoint:
 PUT /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id
 ```
 
-This endpoint **removes** any approvers and groups not in the `users` or `groups` parameters.
+This endpoint removes any approvers and groups not in the `users` or `groups` parameters.
 
 You can't update `report_approver` or `code_owner` rules, as these rules are system-generated.
 

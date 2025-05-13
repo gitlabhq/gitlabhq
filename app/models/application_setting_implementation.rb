@@ -31,6 +31,7 @@ module ApplicationSettingImplementation
   ].freeze
 
   DEFAULT_MINIMUM_PASSWORD_LENGTH = 8
+  DEFAULT_NUMBER_OF_DAYS_BEFORE_REMOVAL = 7
 
   class_methods do
     def defaults # rubocop:disable Metrics/AbcSize
@@ -48,6 +49,8 @@ module ApplicationSettingImplementation
         autocomplete_users_unauthenticated_limit: 100,
         ci_job_live_trace_enabled: false,
         ci_max_total_yaml_size_bytes: 314572800, # max_yaml_size_bytes * ci_max_includes = 2.megabyte * 150
+        ci_partitions_size_limit: 100.gigabytes,
+        ci_delete_pipelines_in_seconds_limit_human_readable: '1 year',
         commit_email_hostname: default_commit_email_hostname,
         container_expiration_policies_enable_historic_entries: false,
         container_registry_features: [],
@@ -68,6 +71,7 @@ module ApplicationSettingImplementation
         default_projects_limit: Settings.gitlab['default_projects_limit'],
         default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         default_syntax_highlighting_theme: 1,
+        deletion_adjourned_period: DEFAULT_NUMBER_OF_DAYS_BEFORE_REMOVAL,
         deny_all_requests_except_allowed: false,
         diff_max_patch_bytes: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
         diff_max_files: Commit::DEFAULT_MAX_DIFF_FILES_SETTING,
@@ -103,7 +107,6 @@ module ApplicationSettingImplementation
         gitaly_timeout_default: 55,
         gitaly_timeout_fast: 10,
         gitaly_timeout_medium: 30,
-        gitlab_product_usage_data_enabled: Settings.gitlab['initial_gitlab_product_usage_data'],
         gitpod_enabled: false,
         gitpod_url: 'https://gitpod.io/',
         gravatar_enabled: Settings.gravatar['enabled'],
@@ -280,6 +283,7 @@ module ApplicationSettingImplementation
         bulk_import_max_download_file_size: 5120,
         silent_admin_exports_enabled: false,
         allow_contribution_mapping_to_admins: false,
+        allow_bypass_placeholder_confirmation: false,
         allow_runner_registration_token: true,
         user_defaults_to_private_profile: false,
         projects_api_rate_limit_unauthenticated: 400,
@@ -297,6 +301,7 @@ module ApplicationSettingImplementation
         asciidoc_max_includes: 32,
         use_clickhouse_for_analytics: false,
         group_api_limit: 400,
+        group_archive_unarchive_api_limit: 60,
         group_invited_groups_api_limit: 60,
         group_projects_api_limit: 600,
         group_shared_groups_api_limit: 60,
@@ -321,14 +326,17 @@ module ApplicationSettingImplementation
         code_suggestions_api_rate_limit: 60,
         require_personal_access_token_expiry: true,
         pages_extra_deployments_default_expiry_seconds: 86400,
-        scan_execution_policies_action_limit: 10,
+        scan_execution_policies_action_limit: 0,
         scan_execution_policies_schedule_limit: 0,
         seat_control: 0,
         show_migrate_from_jenkins_banner: true,
+        top_level_group_creation_enabled: true,
         ropc_without_client_credentials: true,
         vscode_extension_marketplace_enabled: false,
         reindexing_minimum_index_size: 1.gigabyte,
-        reindexing_minimum_relative_bloat_size: 0.2
+        reindexing_minimum_relative_bloat_size: 0.2,
+        git_push_pipeline_limit: 4,
+        disable_invite_members: false
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

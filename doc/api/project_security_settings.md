@@ -56,6 +56,12 @@ Example response:
 
 ## Update `secret_push_protection_enabled` setting
 
+{{< history >}}
+
+- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185310) from `pre_receive_secret_detection_enabled` in GitLab 17.11.
+
+{{< /history >}}
+
 Update the `secret_push_protection_enabled` setting for the project to the provided value.
 
 Set to `true` to enable [secret push protection](../user/application_security/secret_detection/secret_push_protection/_index.md) for the project.

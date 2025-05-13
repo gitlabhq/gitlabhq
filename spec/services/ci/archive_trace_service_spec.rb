@@ -165,8 +165,14 @@ RSpec.describe Ci::ArchiveTraceService, '#execute', feature_category: :continuou
   describe '#batch_execute' do
     subject { described_class.new.batch_execute(worker_name: Ci::ArchiveTraceWorker.name) }
 
-    let_it_be_with_reload(:job) { create(:ci_build, :success, :trace_live, finished_at: 1.day.ago) }
-    let_it_be_with_reload(:job2) { create(:ci_build, :success, :trace_live, finished_at: 1.day.ago) }
+    before do
+      stub_application_setting(ci_job_live_trace_enabled: true)
+      job
+      job2
+    end
+
+    let(:job) { create(:ci_build, :success, :trace_live, finished_at: 1.day.ago) }
+    let(:job2) { create(:ci_build, :success, :trace_live, finished_at: 1.day.ago) }
 
     it 'archives multiple traces' do
       expect { subject }.not_to raise_error

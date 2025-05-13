@@ -43,6 +43,17 @@ RSpec.describe Ci::DestroyOldPipelinesWorker, :clean_gitlab_redis_shared_state, 
         expect { perform }.not_to raise_error
       end
     end
+
+    context 'when protected pipelines are configured' do
+      let_it_be(:old_protected_pipeline) do
+        create(:ci_pipeline, project: project, created_at: 1.month.ago, protected: true)
+      end
+
+      it 'keeps protected pipelines' do
+        expect { perform }.to change { project.all_pipelines.count }.by(-2)
+        expect(old_protected_pipeline.reload).to be_present
+      end
+    end
   end
 
   describe '#remaining_work_count' do

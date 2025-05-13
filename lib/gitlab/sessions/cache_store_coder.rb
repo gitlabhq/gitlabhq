@@ -4,12 +4,7 @@ module Gitlab
   module Sessions
     module CacheStoreCoder
       extend self
-
-      if ::Gitlab.next_rails?
-        include ActiveSupport::Cache::SerializerWithFallback[:marshal_6_1]
-      else
-        include ActiveSupport::Cache::Coders::Rails61Coder
-      end
+      include ActiveSupport::Cache::SerializerWithFallback[:marshal_7_1]
 
       def load(payload)
         unmarshalled = super

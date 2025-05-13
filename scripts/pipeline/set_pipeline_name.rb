@@ -74,13 +74,16 @@ class SetPipelineName
   end
 
   def pipeline_tier
-    return unless ENV['CI_MERGE_REQUEST_LABELS']
     return if expedited_pipeline?
 
-    tier_label = merge_request_labels.find { |label| label.start_with?('pipeline::tier-') }
-    return if tier_label.nil?
+    # the pipeline tier is detected by the `pipeline-tier-<tier>` job name.
+    pipeline_jobs.each do |job|
+      next unless job.name.start_with?('pipeline-tier-')
 
-    tier_label[/\d+\z/]
+      return job.name[/\d+\z/]
+    end
+
+    nil
   end
 
   def merge_request_labels
@@ -96,25 +99,33 @@ class SetPipelineName
   end
 
   def expedited_pipeline?
-    merge_request_labels.any?('pipeline::expedited') ||
-      # TODO: Remove once the label is renamed to be scoped
-      merge_request_labels.any?('pipeline:expedite')
+    merge_request_labels.any?('pipeline::expedited')
   end
 
   def pipeline_types
     return ['expedited'] if expedited_pipeline?
 
-    types = Set.new
-
-    api_client.pipeline_bridges(ENV['CI_PROJECT_ID'], ENV['CI_PIPELINE_ID']).auto_paginate do |job|
-      types.merge(pipeline_types_for(job))
-    end
-
-    api_client.pipeline_jobs(ENV['CI_PROJECT_ID'], ENV['CI_PIPELINE_ID']).auto_paginate do |job|
+    types = pipeline_jobs.each_with_object(Set.new) do |job, types|
       types.merge(pipeline_types_for(job))
     end
 
     types.sort_by { |type| PIPELINE_TYPES_ORDERED.index(type) }
+  end
+
+  def pipeline_jobs
+    @pipeline_jobs ||= []
+
+    return @pipeline_jobs if @pipeline_jobs.any?
+
+    api_client.pipeline_bridges(ENV['CI_PROJECT_ID'], ENV['CI_PIPELINE_ID']).auto_paginate do |job|
+      @pipeline_jobs << job
+    end
+
+    api_client.pipeline_jobs(ENV['CI_PROJECT_ID'], ENV['CI_PIPELINE_ID']).auto_paginate do |job|
+      @pipeline_jobs << job
+    end
+
+    @pipeline_jobs
   end
 
   def pipeline_opts

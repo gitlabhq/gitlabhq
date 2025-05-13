@@ -3,10 +3,8 @@ import { GlSkeletonLoader, GlSprintf } from '@gitlab/ui';
 import autoMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/auto_merge';
 import autoMergeEnabledQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/auto_merge_enabled.query.graphql';
 import { createAlert } from '~/alert';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { fetchPolicies } from '~/lib/graphql';
 import { __ } from '~/locale';
-import { AUTO_MERGE_STRATEGIES } from '../../constants';
 import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import MrWidgetAuthor from '../mr_widget_author.vue';
@@ -45,29 +43,11 @@ export default {
     return {
       state: null,
       isCancellingAutoMerge: false,
-      isRemovingSourceBranch: false,
     };
   },
   computed: {
     loading() {
       return this.$apollo.queries.state.loading || !this.state;
-    },
-    stateRemoveSourceBranch() {
-      if (!this.state.mergeRequest.shouldRemoveSourceBranch) return false;
-
-      return (
-        this.state.mergeRequest.shouldRemoveSourceBranch ||
-        this.state.mergeRequest.forceRemoveSourceBranch
-      );
-    },
-    canRemoveSourceBranch() {
-      const { currentUserId } = this.mr;
-      const mergeUserId = getIdFromGraphQLId(this.state.mergeRequest.mergeUser?.id);
-      const canRemoveSourceBranch = this.state.mergeRequest.userPermissions.removeSourceBranch;
-
-      return (
-        !this.stateRemoveSourceBranch && canRemoveSourceBranch && mergeUserId === currentUserId
-      );
     },
     actions() {
       const actions = [];
@@ -100,32 +80,6 @@ export default {
         })
         .catch(() => {
           this.isCancellingAutoMerge = false;
-          createAlert({
-            message: __('Something went wrong. Please try again.'),
-          });
-        });
-    },
-    removeSourceBranch() {
-      const options = {
-        sha: this.mr.sha,
-        auto_merge_strategy: this.state.mergeRequest.autoMergeStrategy,
-        should_remove_source_branch: true,
-      };
-
-      this.isRemovingSourceBranch = true;
-      this.service
-        .merge(options)
-        .then((res) => res.data)
-        .then((data) => {
-          if (AUTO_MERGE_STRATEGIES.includes(data.status)) {
-            eventHub.$emit('MRWidgetUpdateRequested');
-          }
-        })
-        .then(() => {
-          this.$apollo.queries.state.refetch();
-        })
-        .catch(() => {
-          this.isRemovingSourceBranch = false;
           createAlert({
             message: __('Something went wrong. Please try again.'),
           });

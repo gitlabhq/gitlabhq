@@ -6,7 +6,7 @@ description: Expand your Git branching strategy when you outgrow the basic appro
 title: Branching strategies
 ---
 
-The way you organize and merge Git branches is called a **branching strategy**.
+The way you organize and merge Git branches is called a branching strategy.
 For many teams, the simplest approach is sensible and effective:
 
 1. Make changes in a feature branch.

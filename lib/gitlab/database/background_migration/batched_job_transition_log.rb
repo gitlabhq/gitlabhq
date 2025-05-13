@@ -19,8 +19,10 @@ module Gitlab
         validates :exception_class, length: { maximum: 100 }
         validates :exception_message, length: { maximum: 1000 }
 
-        enum previous_status: Gitlab::Database::BackgroundMigration::BatchedJob.state_machine.states.map(&:name), _prefix: true
-        enum next_status: Gitlab::Database::BackgroundMigration::BatchedJob.state_machine.states.map(&:name), _prefix: true
+        enum :previous_status, Gitlab::Database::BackgroundMigration::BatchedJob.state_machine.states.map(&:name), prefix: true
+        enum :next_status, Gitlab::Database::BackgroundMigration::BatchedJob.state_machine.states.map(&:name), prefix: true
+
+        scope :sidekiq_shutdown_failures, -> { where(next_status: :failed, exception_class: 'Sidekiq::Shutdown') }
       end
     end
   end

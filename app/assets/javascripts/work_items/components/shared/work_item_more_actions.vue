@@ -7,8 +7,8 @@ import {
 } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
+import { WORK_ITEM_TYPE_NAME_EPIC } from '../../constants';
 import { workItemRoadmapPath } from '../../utils';
-import { NAME_TO_ENUM_MAP, WORK_ITEM_TYPE_ENUM_EPIC } from '../../constants';
 
 export default {
   i18n: {
@@ -76,10 +76,7 @@ export default {
       };
     },
     shouldShowViewRoadmapAction() {
-      return (
-        NAME_TO_ENUM_MAP[this.workItemType] === WORK_ITEM_TYPE_ENUM_EPIC &&
-        this.showViewRoadmapAction
-      );
+      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC && this.showViewRoadmapAction;
     },
   },
   methods: {

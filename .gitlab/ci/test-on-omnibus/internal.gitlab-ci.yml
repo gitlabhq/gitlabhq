@@ -18,6 +18,7 @@
     - echo "Running - '$QA_COMMAND'"
     - eval "$QA_COMMAND"
   after_script:
+    - !reference [.failure_category_after_script, after_script]
     - !reference [.merge-junit, after_script]
     - !reference [.gitlab-qa-report, after_script]
   allow_failure: true

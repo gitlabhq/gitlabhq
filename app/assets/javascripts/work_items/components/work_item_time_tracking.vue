@@ -141,46 +141,58 @@ export default {
       />
     </div>
 
-    <div class="gl-flex gl-items-center gl-gap-2" data-testid="time-tracking-body">
+    <div
+      class="time-tracking-body gl-flex gl-flex-wrap gl-items-center gl-gap-2"
+      data-testid="time-tracking-body"
+    >
       <template v-if="totalTimeSpent || timeEstimate">
-        <span class="gl-text-subtle">{{ s__('TimeTracking|Spent') }}</span>
-        <gl-button
-          v-if="canUpdate"
-          v-gl-modal="timeTrackingModalId"
-          v-gl-tooltip="s__('TimeTracking|View time tracking report')"
-          variant="link"
-          data-testid="view-time-spent-button"
+        <div
+          class="time-tracking-spent-and-progress gl-flex gl-grow gl-flex-wrap-reverse gl-items-center gl-justify-between gl-gap-2"
         >
-          {{ humanTotalTimeSpent }}
-        </gl-button>
-        <template v-else>
-          {{ humanTotalTimeSpent }}
-        </template>
-        <template v-if="timeEstimate">
-          <gl-progress-bar
-            v-gl-tooltip="progressBarTooltipText"
-            class="gl-mx-2 gl-grow"
-            :value="timeRemainingPercent"
-            :variant="progressBarVariant"
-          />
-          <span class="gl-text-subtle">{{ s__('TimeTracking|Estimate') }}</span>
-          <gl-button
-            v-if="canUpdate"
-            v-gl-modal="setTimeEstimateModalId"
-            v-gl-tooltip="s__('TimeTracking|Set estimate')"
-            variant="link"
-            data-testid="set-estimate-button"
-          >
-            {{ humanTimeEstimate }}
-          </gl-button>
-          <template v-else>
-            {{ humanTimeEstimate }}
+          <div class="gl-flex gl-items-center gl-gap-2">
+            <span class="gl-text-subtle">{{ s__('TimeTracking|Spent') }}</span>
+            <gl-button
+              v-if="canUpdate"
+              v-gl-modal="timeTrackingModalId"
+              v-gl-tooltip="s__('TimeTracking|View time tracking report')"
+              variant="link"
+              data-testid="view-time-spent-button"
+            >
+              {{ humanTotalTimeSpent }}
+            </gl-button>
+            <template v-else>
+              {{ humanTotalTimeSpent }}
+            </template>
+          </div>
+          <template v-if="timeEstimate">
+            <gl-progress-bar
+              v-gl-tooltip="progressBarTooltipText"
+              class="time-tracking-progress gl-min-w-11 gl-grow"
+              :value="timeRemainingPercent"
+              :variant="progressBarVariant"
+            />
           </template>
+        </div>
+        <template v-if="timeEstimate">
+          <div class="gl-flex gl-items-center gl-gap-2">
+            <span class="gl-text-subtle">{{ s__('TimeTracking|Estimate') }}</span>
+            <gl-button
+              v-if="canUpdate"
+              v-gl-modal="setTimeEstimateModalId"
+              v-gl-tooltip="s__('TimeTracking|Set estimate')"
+              variant="link"
+              data-testid="set-estimate-button"
+            >
+              {{ humanTimeEstimate }}
+            </gl-button>
+            <template v-else>
+              {{ humanTimeEstimate }}
+            </template>
+          </div>
         </template>
         <gl-button
           v-else-if="canUpdate"
           v-gl-modal="setTimeEstimateModalId"
-          class="gl-ml-auto"
           variant="link"
           data-testid="add-estimate-button"
         >

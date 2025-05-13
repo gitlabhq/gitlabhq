@@ -5,15 +5,20 @@ module Gitlab
     class TablesLocker
       GITLAB_SCHEMAS_TO_IGNORE = %i[gitlab_embedding gitlab_geo gitlab_jh].freeze
 
-      def initialize(logger: nil, dry_run: false, include_partitions: true)
+      def initialize(logger: nil, dry_run: false, include_partitions: true, options: {})
         @logger = logger
         @dry_run = dry_run
         @result = []
         @include_partitions = include_partitions
+        @scope_to_database = options[:scope_to_database].to_s
+
+        validate_scopes
       end
 
       def unlock_writes
         Gitlab::Database::EachDatabase.each_connection do |connection, database_name|
+          next if skip_connection?(database_name)
+
           tables_to_lock(connection) do |table_name, schema_name|
             # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/366834
             next if schema_name.in? GITLAB_SCHEMAS_TO_IGNORE
@@ -29,6 +34,8 @@ module Gitlab
       # on the database where they belong
       def lock_writes
         Gitlab::Database::EachDatabase.each_connection(include_shared: false) do |connection, database_name|
+          next if skip_connection?(database_name)
+
           schemas_for_connection = Gitlab::Database.gitlab_schemas_for_connection(connection)
 
           tables_to_lock(connection) do |table_name, schema_name|
@@ -47,6 +54,19 @@ module Gitlab
       end
 
       private
+
+      def skip_connection?(database_name)
+        return false if @scope_to_database.empty? || database_name == @scope_to_database
+
+        true
+      end
+
+      def validate_scopes
+        return if @scope_to_database.blank? ||
+          Gitlab::Database.all_database_connections.key?(@scope_to_database)
+
+        raise "#{@scope_to_database} is not a valid database to scope to."
+      end
 
       # Unlocks the writes on the table and its partitions
       def unlock_writes_on_table(table_name, connection, database_name)

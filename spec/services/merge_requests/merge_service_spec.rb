@@ -692,9 +692,10 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
           )
         end
 
-        context 'when fast-forward merge is not allowed' do
+        context 'when fast-forward merge is not allowed and ff rebase_on_merge_automatic is off' do
           before do
             allow_any_instance_of(Repository).to receive(:ancestor?).and_return(nil)
+            stub_feature_flags(rebase_on_merge_automatic: false)
           end
 
           %w[semi-linear ff].each do |merge_method|

@@ -709,6 +709,65 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       end
     end
 
+    describe '#diffs_for_streaming' do
+      shared_examples 'diffs with generated files check' do
+        it 'checks generated files' do
+          diffs = diff_with_commits.diffs_for_streaming(offset_index: 0)
+
+          expect(diffs.diff_files.first.generated?).not_to be_nil
+        end
+      end
+
+      context 'when no persisted files available' do
+        before do
+          diff_with_commits.clean!
+        end
+
+        it_behaves_like 'diffs with generated files check'
+
+        it 'returns a Gitlab::Diff::FileCollection::Compare' do
+          diffs = diff_with_commits.diffs_for_streaming(offset_index: 5)
+
+          expect(diffs).to be_a(Gitlab::Diff::FileCollection::Compare)
+          expect(diffs.diff_files.size).to eq(15)
+        end
+      end
+
+      context 'when persisted files available' do
+        it_behaves_like 'diffs with generated files check'
+
+        it 'returns paginated diffs' do
+          diffs = diff_with_commits.diffs_for_streaming(offset_index: 5)
+
+          expect(diffs).to be_a(Gitlab::Diff::FileCollection::MergeRequestDiffStream)
+          expect(diffs.diff_files.size).to eq(15)
+        end
+
+        it 'sorts diff files directory first' do
+          diff_with_commits.update!(sorted: false) # Mark as unsorted so it'll re-order
+
+          expect(diff_with_commits.diffs_for_streaming(offset_index: 5).diff_paths).to eq(
+            [
+              'files/lfs/lfs_object.iso',
+              'files/ruby/popen.rb',
+              'files/ruby/regex.rb',
+              'files/.DS_Store',
+              'files/whitespace',
+              'foo/bar/.gitkeep',
+              'with space/README.md',
+              '.DS_Store',
+              '.gitattributes',
+              '.gitignore',
+              '.gitmodules',
+              'CHANGELOG',
+              'README',
+              'gitlab-grack',
+              'gitlab-shell'
+            ])
+        end
+      end
+    end
+
     describe '#diffs' do
       let(:diff_options) { {} }
 
@@ -1278,9 +1337,9 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       expect(diff_with_commits.first_commit.sha).to eq(diff_with_commits.merge_request_diff_commits.last.sha)
     end
 
-    context 'when "more_commits_from_gitaly" feature flag is disabled' do
+    context 'when "commits_from_gitaly" feature flag is disabled' do
       before do
-        stub_feature_flags(more_commits_from_gitaly: false)
+        stub_feature_flags(commits_from_gitaly: false)
       end
 
       it 'returns first commit' do
@@ -1294,9 +1353,9 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       expect(diff_with_commits.last_commit.sha).to eq(diff_with_commits.merge_request_diff_commits.first.sha)
     end
 
-    context 'when "more_commits_from_gitaly" feature flag is disabled' do
+    context 'when "commits_from_gitaly" feature flag is disabled' do
       before do
-        stub_feature_flags(more_commits_from_gitaly: false)
+        stub_feature_flags(commits_from_gitaly: false)
       end
 
       it 'returns last commit' do

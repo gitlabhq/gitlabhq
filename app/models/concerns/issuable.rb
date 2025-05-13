@@ -45,7 +45,7 @@ module Issuable
   }.with_indifferent_access.freeze
 
   included do
-    cache_markdown_field :title, pipeline: :single_line
+    cache_markdown_field :title, pipeline: :single_line_markdown
     cache_markdown_field :description, issuable_reference_expansion_enabled: true
 
     redact_field :description
@@ -153,7 +153,7 @@ module Issuable
       includes(*associations)
     end
 
-    attr_mentionable :title, pipeline: :single_line
+    attr_mentionable :title, pipeline: :single_line_markdown
     attr_mentionable :description
 
     participant :author

@@ -2,14 +2,6 @@
 # Cop supports --autocorrect.
 RSpec/RedundantPredicateMatcher:
   Exclude:
-    - 'ee/spec/lib/gitlab/ci/templates/api_fuzzing_gitlab_ci_yaml_spec.rb'
-    - 'ee/spec/lib/gitlab/ci/templates/api_fuzzing_latest_gitlab_ci_yaml_spec.rb'
-    - 'ee/spec/lib/gitlab/ci/templates/api_security_gitlab_ci_yaml_spec.rb'
-    - 'ee/spec/lib/gitlab/ci/templates/api_security_latest_gitlab_ci_yaml_spec.rb'
-    - 'ee/spec/lib/gitlab/ci/templates/dast_api_gitlab_ci_yaml_spec.rb'
-    - 'ee/spec/lib/gitlab/ci/templates/dast_api_latest_gitlab_ci_yaml_spec.rb'
-    - 'ee/spec/lib/gitlab/ci/templates/dast_gitlab_ci_yaml_spec.rb'
-    - 'ee/spec/lib/gitlab/ci/templates/dast_latest_gitlab_ci_yaml_spec.rb'
     - 'ee/spec/mailers/emails/epics_spec.rb'
     - 'ee/spec/services/geo/container_repository_registry_removal_service_spec.rb'
     - 'spec/controllers/profiles/two_factor_auths_controller_spec.rb'

@@ -439,18 +439,18 @@ RSpec.shared_examples 'work items notifications' do
   end
 end
 
-RSpec.shared_examples 'work items lock discussion' do |type|
+RSpec.shared_examples 'work items lock discussion' do
   it 'locks and unlocks discussion', :aggregate_failures do
     click_button _('More actions'), match: :first
     click_button 'Lock discussion'
     click_button _('More actions'), match: :first # click again to close the dropdown
 
-    expect(page).to have_text "The discussion in this #{type} is locked. Only project members can comment."
+    expect(page).to have_text "Discussion is locked. Only members can comment."
 
     click_button _('More actions'), match: :first
     click_button 'Unlock discussion'
 
-    expect(page).not_to have_text "The discussion in this #{type} is locked. Only project members can comment."
+    expect(page).not_to have_text "Discussion is locked. Only members can comment."
   end
 end
 
@@ -459,12 +459,13 @@ RSpec.shared_examples 'work items confidentiality' do
     click_button _('More actions'), match: :first
     click_button 'Turn on confidentiality'
 
+    expect(page).to have_no_css('[data-testid="confidentiality-toggle-action"]', wait: 5)
     expect(page).to have_css('.gl-badge', text: 'Confidential')
 
     click_button _('More actions'), match: :first
     click_button 'Turn off confidentiality'
 
-    expect(page).not_to have_css('.gl-badge', text: 'Confidential')
+    expect(page).not_to have_css('.gl-badge', text: 'Confidential', wait: 5)
   end
 end
 

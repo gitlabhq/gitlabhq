@@ -18,7 +18,6 @@ import {
   integrationToDeleteDefault,
   typeSet,
 } from '../constants';
-import getCurrentIntegrationQuery from '../graphql/queries/get_current_integration.query.graphql';
 
 export const i18n = {
   deleteIntegration: s__('AlertSettings|Delete integration'),
@@ -102,15 +101,9 @@ export default {
       label: __('Actions'),
     },
   ],
-  apollo: {
-    currentIntegration: {
-      query: getCurrentIntegrationQuery,
-    },
-  },
   data() {
     return {
       integrationToDelete: integrationToDeleteDefault,
-      currentIntegration: null,
     };
   },
   mounted() {

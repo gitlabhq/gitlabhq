@@ -27,7 +27,6 @@ import {
   markdownPreviewPath,
   newWorkItemPath,
   isReference,
-  getWorkItemIcon,
   workItemRoadmapPath,
   saveToggleToLocalStorage,
   getToggleFromLocalStorage,
@@ -37,6 +36,7 @@ import {
   canRouterNav,
   formatSelectOptionForCustomField,
   preserveDetailsState,
+  getEnumFromIssueTypeParameter,
   getParentGroupName,
   createBranchMRApiPathHelper,
 } from '~/work_items/utils';
@@ -185,7 +185,7 @@ describe('newWorkItemPath', () => {
 
   it('returns correct path for workItemType', () => {
     expect(
-      newWorkItemPath({ fullPath: 'group/project', workItemTypeName: WORK_ITEM_TYPE_ENUM_ISSUE }),
+      newWorkItemPath({ fullPath: 'group/project', workItemType: WORK_ITEM_TYPE_NAME_ISSUE }),
     ).toBe('/foobar/group/project/-/issues/new');
   });
 
@@ -194,7 +194,7 @@ describe('newWorkItemPath', () => {
       newWorkItemPath({
         fullPath: 'group',
         isGroup: true,
-        workItemTypeName: WORK_ITEM_TYPE_ENUM_EPIC,
+        workItemType: WORK_ITEM_TYPE_NAME_EPIC,
       }),
     ).toBe('/foobar/groups/group/-/epics/new');
   });
@@ -223,9 +223,18 @@ describe('convertTypeEnumToName', () => {
   });
 });
 
-describe('getWorkItemIcon', () => {
-  it.each(['epic', 'issue-type-epic'])('returns epic icon in case of %s', (icon) => {
-    expect(getWorkItemIcon(icon)).toBe('epic');
+describe('getEnumFromIssueTypeParameter', () => {
+  it.each`
+    param         | enumValue
+    ${'incident'} | ${WORK_ITEM_TYPE_ENUM_INCIDENT}
+    ${'inciden'}  | ${WORK_ITEM_TYPE_ENUM_ISSUE}
+    ${'issue'}    | ${WORK_ITEM_TYPE_ENUM_ISSUE}
+    ${'asdf'}     | ${WORK_ITEM_TYPE_ENUM_ISSUE}
+    ${''}         | ${undefined}
+    ${null}       | ${undefined}
+    ${undefined}  | ${undefined}
+  `('returns %enumValue when given the param %param', ({ param, enumValue }) => {
+    expect(getEnumFromIssueTypeParameter(param)).toBe(enumValue);
   });
 });
 

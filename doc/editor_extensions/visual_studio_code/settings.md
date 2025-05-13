@@ -64,6 +64,7 @@ This extension provides several sets of commands that you can trigger in the
 - `GitLab: View Security Finding Details`
 - `GitLab Workflow: Focus on For current branch View`
 - `GitLab Workflow: Focus on Issues and Merge Requests View`
+- `GitLab: Diagnostics`: Open a detailed settings page for the GitLab Workflow extension.
 
 ## Command integrations
 

@@ -99,7 +99,7 @@ When the conditions are met, the existing Semgrep vulnerability is converted int
 
 In some cases, Semgrep vulnerabilities may still appear as duplicates if the [deduplication conditions](#conditions-for-deduplication) are not met. To resolve this in the [Vulnerability Report](../vulnerability_report/_index.md):
 
-1. [Filter vulnerabilities](../vulnerability_report/_index.md#filtering-vulnerabilities) by Advanced SAST scanner and [export the results in CSV format](../vulnerability_report/_index.md#export-details-in-csv-format).
+1. [Filter vulnerabilities](../vulnerability_report/_index.md#filtering-vulnerabilities) by Advanced SAST scanner and [export the results in CSV format](../vulnerability_report/_index.md#export-details).
 1. [Filter vulnerabilities](../vulnerability_report/_index.md#filtering-vulnerabilities) by Semgrep scanner. These are likely the vulnerabilities that were not deduplicated.
 1. For each Semgrep vulnerability, check if it has a corresponding match in the exported Advanced SAST results.
 1. If a duplicate exists, resolve the Semgrep vulnerability appropriately.
@@ -251,7 +251,7 @@ For details, see [Customize rulesets](customize_rulesets.md#disable-predefined-g
 
 ## Request source code of LGPL-licensed components in GitLab Advanced SAST
 
-To request information about the source code of LGPL-licensed components in GitLab Advanced SAST, please
+To request information about the source code of LGPL-licensed components in GitLab Advanced SAST,
 [contact GitLab Support](https://about.gitlab.com/support/).
 
 To ensure a quick response, include the GitLab Advanced SAST analyzer version in your request.

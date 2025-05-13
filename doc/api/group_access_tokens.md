@@ -144,7 +144,7 @@ POST /groups/:id/access_tokens
 | `name`         | String            | yes      | Name of the token. |
 | `description`  | string            | no       | Description of the group access token. |
 | `scopes`       | `Array[String]`   | yes      | List of [scopes](../user/group/settings/group_access_tokens.md#scopes-for-a-group-access-token) available to the token. |
-| `access_level` | Integer           | no       | [Access level](../development/permissions/predefined_roles.md#members) for the token. Possible values: `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), and `50` (Owner). Default value: `40`. |
+| `access_level` | Integer           | no       | Role for the token. Possible values: `10` (Guest), `15` (Planner), `20` (Reporter), `30` (Developer), `40` (Maintainer), and `50` (Owner). Default value: `40`. |
 | `expires_at`   | date              | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). The date must be one year or less from the rotation date. If undefined, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
 
 ```shell

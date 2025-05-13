@@ -36,6 +36,7 @@ export default {
 <template>
   <gl-disclosure-dropdown-item
     v-if="ideItem.items"
+    :data-testid="ideItem.testId"
     class="gl-mb-3 gl-flex gl-w-full gl-items-center gl-justify-between gl-px-4 gl-py-2"
   >
     <span class="gl-min-w-0">{{ ideItem.text }}</span>
@@ -56,10 +57,11 @@ export default {
   <gl-disclosure-dropdown-item
     v-else-if="ideItem.href"
     :item="ideItem"
+    :data-testid="ideItem.testId"
     @action="trackAndClose(ideItem.tracking)"
   >
     <template #list-item>
-      <span class="gl-mb-2 gl-flex gl-items-center gl-justify-between">
+      <span class="gl-flex gl-items-center gl-justify-between">
         <span>{{ ideItem.text }}</span>
         <kbd v-if="ideItem.shortcut && !shortcutsDisabled" class="flat">{{ ideItem.shortcut }}</kbd>
       </span>

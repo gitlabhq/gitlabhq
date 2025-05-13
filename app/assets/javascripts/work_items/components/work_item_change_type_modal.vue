@@ -5,17 +5,15 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __, s__, sprintf } from '~/locale';
 import { findDesignsWidget, getParentGroupName, isMilestoneWidget } from '~/work_items/utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
-
 import {
-  WIDGET_TYPE_HIERARCHY,
+  NAME_TO_TEXT_LOWERCASE_MAP,
+  NAME_TO_TEXT_MAP,
   ALLOWED_CONVERSION_TYPES,
-  WORK_ITEM_TYPE_ENUM_EPIC,
-  WORK_ITEM_TYPE_NAME_EPIC,
-  sprintfWorkItem,
-  WORK_ITEM_WIDGETS_NAME_MAP,
   WIDGET_TYPE_DESIGNS,
+  WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_MILESTONE,
+  WORK_ITEM_TYPE_NAME_EPIC,
+  WORK_ITEM_WIDGETS_NAME_MAP,
 } from '../constants';
 
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
@@ -30,6 +28,7 @@ export default {
     GlAlert,
   },
   mixins: [glFeatureFlagMixin()],
+  inject: ['hasSubepicsFeature'],
   actionCancel: {
     text: __('Cancel'),
   },
@@ -38,6 +37,8 @@ export default {
       type: String,
       required: true,
     },
+    // Used in EE component
+    // eslint-disable-next-line vue/no-unused-properties
     workItemIid: {
       type: String,
       required: false,
@@ -77,7 +78,7 @@ export default {
       required: false,
       default: '',
     },
-    allowedWorkItemTypesEE: {
+    allowedConversionTypesEE: {
       type: Array,
       required: false,
       default: () => [],
@@ -136,38 +137,36 @@ export default {
     },
   },
   computed: {
-    supportedConversionTypes() {
+    allowedConversionTypes() {
       return (
         this.workItemTypes
-          ?.find((type) => type.name === this.workItemType)
-          ?.supportedConversionTypes?.filter((item) => {
+          .find((type) => type.name === this.workItemType)
+          ?.supportedConversionTypes.filter(({ name }) => {
             // API is returning Incident, Requirement, Test Case, and Ticket in addition to required work items
             // As these types are not migrated, they are filtered out on the frontend
             // They will be added to the list as they are migrated
             // Discussion: https://gitlab.com/gitlab-org/gitlab/-/issues/498656#note_2263177119
-            return ALLOWED_CONVERSION_TYPES.includes(item.name);
+            return ALLOWED_CONVERSION_TYPES.includes(name);
           })
-          ?.map((item) => ({
-            text: item.name,
-            value: item.id,
-          })) || []
+          .concat(this.allowedConversionTypesEE) ?? []
       );
     },
-    allowedConversionWorkItemTypes() {
-      return [
-        {
-          text: __('Select type'),
-          value: null,
-        },
-        ...this.supportedConversionTypes,
-        ...this.allowedWorkItemTypesEE,
-      ];
+    selectOptions() {
+      const selectOptions = this.allowedConversionTypes.map((item) => ({
+        text: item.text || NAME_TO_TEXT_MAP[item.name],
+        value: item.id,
+      }));
+      selectOptions.unshift({
+        text: __('Select type'),
+        value: null,
+      });
+      return selectOptions;
     },
     workItemsAlphaEnabled() {
       return this.glFeatures.workItemsAlpha;
     },
     isSelectedWorkItemTypeEpic() {
-      return this.selectedWorkItemType?.value === WORK_ITEM_TYPE_ENUM_EPIC;
+      return this.selectedWorkItemType?.name === WORK_ITEM_TYPE_NAME_EPIC;
     },
     milestoneWidget() {
       return this.widgets.find(isMilestoneWidget)?.milestone;
@@ -175,7 +174,7 @@ export default {
     selectedWorkItemTypeWidgetDefinitions() {
       return this.isSelectedWorkItemTypeEpic
         ? this.getEpicWidgetDefinitions({ workItemTypes: this.workItemTypes })
-        : this.getWidgetDefinitions(this.selectedWorkItemType?.text);
+        : this.getWidgetDefinitions(this.selectedWorkItemType?.name);
     },
     currentWorkItemTypeWidgetDefinitions() {
       return this.getWidgetDefinitions(this.workItemType);
@@ -275,10 +274,10 @@ export default {
       return this.parentWorkItem?.workItemType?.name;
     },
     workItemTypeId() {
-      return this.workItemTypes.find((type) => type.name === this.selectedWorkItemType?.text).id;
+      return this.workItemTypes.find((type) => type.name === this.selectedWorkItemType?.name).id;
     },
-    selectedWorkItemTypeValue() {
-      return this.selectedWorkItemType?.value || null;
+    selectedWorkItemTypeId() {
+      return this.selectedWorkItemType?.id || null;
     },
     actionPrimary() {
       return {
@@ -334,19 +333,17 @@ export default {
       }
       return this.workItemTypes.find((widget) => widget.name === type)?.widgetDefinitions;
     },
-    updateWorkItemType(value) {
+    updateWorkItemType(id) {
       this.typeFieldNote = '';
 
-      if (!value) {
+      if (!id) {
         this.resetModal();
         return;
       }
 
-      this.selectedWorkItemType = this.allowedConversionWorkItemTypes.find(
-        (item) => item.value === value,
-      );
+      this.selectedWorkItemType = this.allowedConversionTypes.find((item) => item.id === id);
 
-      if (value === WORK_ITEM_TYPE_ENUM_EPIC) {
+      if (this.selectedWorkItemType.name === WORK_ITEM_TYPE_NAME_EPIC) {
         this.typeFieldNote = this.epicFieldNote;
       }
       this.validateWorkItemType();
@@ -356,15 +353,17 @@ export default {
       this.warningMessage = '';
       this.valueNotPresentWarning = '';
 
-      if (this.hasParent) {
-        this.warningMessage = sprintfWorkItem(
+      const isEpicWithSubepicsFeature =
+        this.parentWorkItemType === WORK_ITEM_TYPE_NAME_EPIC && this.hasSubepicsFeature;
+      if (this.hasParent && !isEpicWithSubepicsFeature) {
+        this.warningMessage = sprintf(
           s__(
             'WorkItem|Parent item type %{parentWorkItemType} is not supported on %{workItemType}. Remove the parent item to change type.',
           ),
-          this.isSelectedWorkItemTypeEpic
-            ? WORK_ITEM_TYPE_NAME_EPIC
-            : this.selectedWorkItemType.text,
-          this.parentWorkItemType,
+          {
+            workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.selectedWorkItemType.name],
+            parentWorkItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.parentWorkItemType],
+          },
         );
 
         this.changeTypeDisabled = true;
@@ -377,12 +376,8 @@ export default {
             'WorkItem|%{workItemType} does not support the %{childItemType} child item types. Remove child items to change type.',
           ),
           {
-            workItemType: capitalizeFirstCharacter(
-              this.isSelectedWorkItemTypeEpic
-                ? WORK_ITEM_TYPE_NAME_EPIC.toLocaleLowerCase()
-                : this.selectedWorkItemType.text.toLocaleLowerCase(),
-            ),
-            childItemType: this.allowedChildTypes?.[0]?.name?.toLocaleLowerCase(),
+            workItemType: NAME_TO_TEXT_MAP[this.selectedWorkItemType.name],
+            childItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.allowedChildTypes?.[0]?.name],
           },
         );
 
@@ -401,19 +396,19 @@ export default {
 
       // Compare the widget definitions of both types
       if (this.hasWidgetDifference) {
-        this.warningMessage = sprintfWorkItem(
+        this.warningMessage = sprintf(
           s__(
             'WorkItem|Some fields are not present in %{workItemType}. If you change type now, this information will be lost.',
           ),
-          this.isSelectedWorkItemTypeEpic
-            ? WORK_ITEM_TYPE_NAME_EPIC
-            : this.selectedWorkItemType.text,
+          { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.selectedWorkItemType.name] },
         );
       }
     },
     throwError(message) {
       this.$emit('error', message);
     },
+    // show() is invoked by parent component to show the modal
+    // eslint-disable-next-line vue/no-unused-properties
     show() {
       this.resetModal();
       this.$refs.modal.show();
@@ -453,9 +448,9 @@ export default {
         id="work-item-type-select"
         class="gl-mb-2"
         data-testid="work-item-change-type-select"
-        :value="selectedWorkItemTypeValue"
+        :value="selectedWorkItemTypeId"
         width="md"
-        :options="allowedConversionWorkItemTypes"
+        :options="selectOptions"
         @change="updateWorkItemType"
       />
       <p v-if="typeFieldNote" class="gl-text-subtle">{{ typeFieldNote }}</p>

@@ -10,6 +10,8 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
   let(:commit) { project.commit(sample_commit.id) }
   let(:internal) { false }
   let(:executing_user) { nil }
+  let(:service) { described_class.new(merge_request, user) }
+  let(:todo_service) { instance_double(TodoService) }
 
   let(:position) do
     Gitlab::Diff::Position.new(
@@ -21,8 +23,13 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
     )
   end
 
+  before do
+    allow(service).to receive(:todo_service).and_return(todo_service)
+    allow(todo_service).to receive(:new_review)
+  end
+
   def publish(draft: nil)
-    DraftNotes::PublishService.new(merge_request, user).execute(draft: draft, executing_user: executing_user)
+    service.execute(draft: draft, executing_user: executing_user)
   end
 
   context 'single draft note' do
@@ -143,9 +150,7 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
     end
 
     it 'resolves todos for the MR' do
-      expect_any_instance_of(TodoService) do |todo_service|
-        expect(todo_service).to receive(:new_review).with(kind_of(Review), user)
-      end
+      expect(todo_service).to receive(:new_review).with(merge_request, user)
 
       publish
     end
@@ -252,6 +257,16 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
       recorder = ActiveRecord::QueryRecorder.new(skip_cached: false) { publish }
 
       expect(recorder.count).not_to be > 116
+    end
+  end
+
+  context 'with no draft notes' do
+    let(:merge_request) { create(:merge_request) }
+
+    it 'resolves todos for the merge request' do
+      expect(todo_service).to receive(:new_review).with(merge_request, user)
+
+      publish
     end
   end
 

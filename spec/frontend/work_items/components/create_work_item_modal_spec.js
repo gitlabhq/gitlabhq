@@ -6,9 +6,18 @@ import waitForPromises from 'helpers/wait_for_promises';
 import CreateWorkItem from '~/work_items/components/create_work_item.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import {
+  WORK_ITEM_TYPE_NAME_EPIC,
+  WORK_ITEM_TYPE_NAME_INCIDENT,
+  WORK_ITEM_TYPE_NAME_ISSUE,
   WORK_ITEM_TYPE_NAME_KEY_RESULT,
+  WORK_ITEM_TYPE_NAME_OBJECTIVE,
+  WORK_ITEM_TYPE_NAME_REQUIREMENTS,
+  WORK_ITEM_TYPE_NAME_TASK,
+  WORK_ITEM_TYPE_NAME_TEST_CASE,
+  WORK_ITEM_TYPE_NAME_TICKET,
+  WORK_ITEM_TYPE_ROUTE_EPIC,
+  WORK_ITEM_TYPE_ROUTE_ISSUE,
   WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
-  WORK_ITEMS_TYPE_MAP,
 } from '~/work_items/constants';
 import CreateWorkItemCancelConfirmationModal from '~/work_items/components/create_work_item_cancel_confirmation_modal.vue';
 
@@ -40,7 +49,7 @@ describe('CreateWorkItemModal', () => {
   const createComponent = ({
     asDropdownItem = false,
     hideButton = false,
-    preselectedWorkItemType = 'EPIC',
+    preselectedWorkItemType = WORK_ITEM_TYPE_NAME_EPIC,
     relatedItem = null,
     alwaysShowWorkItemTypeSelect = false,
     namespaceFullName = 'GitLab.org / GitLab',
@@ -151,24 +160,38 @@ describe('CreateWorkItemModal', () => {
     expect(findCreateModal().props('visible')).toBe(false);
   });
 
-  for (const [preselectedWorkItemType, vals] of Object.entries(WORK_ITEMS_TYPE_MAP)) {
-    it(`has link to new work item page in modal header for ${preselectedWorkItemType}`, async () => {
-      createComponent({ preselectedWorkItemType });
-
-      const routeParamName = vals.routeParamName || WORK_ITEM_TYPE_ROUTE_WORK_ITEM;
-
+  it.each`
+    workItemType                        | routeParamName
+    ${WORK_ITEM_TYPE_NAME_EPIC}         | ${WORK_ITEM_TYPE_ROUTE_EPIC}
+    ${WORK_ITEM_TYPE_NAME_ISSUE}        | ${WORK_ITEM_TYPE_ROUTE_ISSUE}
+    ${WORK_ITEM_TYPE_NAME_INCIDENT}     | ${WORK_ITEM_TYPE_ROUTE_WORK_ITEM}
+    ${WORK_ITEM_TYPE_NAME_KEY_RESULT}   | ${WORK_ITEM_TYPE_ROUTE_WORK_ITEM}
+    ${WORK_ITEM_TYPE_NAME_OBJECTIVE}    | ${WORK_ITEM_TYPE_ROUTE_WORK_ITEM}
+    ${WORK_ITEM_TYPE_NAME_REQUIREMENTS} | ${WORK_ITEM_TYPE_ROUTE_WORK_ITEM}
+    ${WORK_ITEM_TYPE_NAME_TASK}         | ${WORK_ITEM_TYPE_ROUTE_WORK_ITEM}
+    ${WORK_ITEM_TYPE_NAME_TEST_CASE}    | ${WORK_ITEM_TYPE_ROUTE_WORK_ITEM}
+    ${WORK_ITEM_TYPE_NAME_TICKET}       | ${WORK_ITEM_TYPE_ROUTE_WORK_ITEM}
+  `(
+    `has link to new work item page in modal header for $workItemType`,
+    async ({ workItemType, routeParamName }) => {
+      createComponent({ preselectedWorkItemType: workItemType });
       await waitForPromises();
 
       expect(findOpenInFullPageButton().attributes().href).toBe(
         `/full-path/-/${routeParamName}/new`,
       );
-    });
-  }
+    },
+  );
 
   describe('when there is a related item', () => {
     beforeEach(async () => {
       createComponent({
-        relatedItem: { id: 'gid://gitlab/WorkItem/843', type: 'Epic', reference: 'flightjs#53' },
+        relatedItem: {
+          id: 'gid://gitlab/WorkItem/843',
+          type: 'Epic',
+          reference: 'flightjs#53',
+          webUrl: 'http://gdk.test:3000/flightjs/Flight',
+        },
       });
       await waitForPromises();
       await nextTick();

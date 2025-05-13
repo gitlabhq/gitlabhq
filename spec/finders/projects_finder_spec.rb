@@ -193,6 +193,31 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
         end
       end
 
+      describe 'filter by aimed for deletion' do
+        let_it_be(:params) { { aimed_for_deletion: true } }
+        let_it_be(:aimed_for_deletion_project) { create(:project, :public, marked_for_deletion_at: 2.days.ago, pending_delete: false) }
+        let_it_be(:pending_deletion_project) { create(:project, :public, marked_for_deletion_at: 1.month.ago, pending_delete: true) }
+
+        it { is_expected.to contain_exactly(aimed_for_deletion_project) }
+      end
+
+      describe 'filter by not aimed for deletion' do
+        let_it_be(:params) { { not_aimed_for_deletion: true } }
+        let_it_be(:aimed_for_deletion_project) { create(:project, :public, marked_for_deletion_at: 2.days.ago, pending_delete: false) }
+        let_it_be(:pending_deletion_project) { create(:project, :public, marked_for_deletion_at: 1.month.ago, pending_delete: true) }
+
+        it { is_expected.to contain_exactly(public_project, internal_project) }
+      end
+
+      describe 'filter by marked for deletion' do
+        let_it_be(:marked_for_deletion_on) { Date.parse('2024-01-01') }
+        let_it_be(:params) { { marked_for_deletion_on: marked_for_deletion_on } }
+        let_it_be(:project1) { create(:project, :public, marked_for_deletion_at: marked_for_deletion_on) }
+        let_it_be(:project2) { create(:project, :public, marked_for_deletion_at: Date.current) }
+
+        it { is_expected.to contain_exactly(project1) }
+      end
+
       describe 'filter by tags (deprecated)' do
         before do
           public_project.reload
@@ -343,14 +368,13 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
       describe 'filter by active' do
         let_it_be(:active_projects) { [public_project, internal_project] }
         let_it_be(:archived_project) { create(:project, :archived, :public) }
-
-        let(:current_user) { user }
+        let_it_be(:for_deletion_project) { create(:project, :public, marked_for_deletion_at: Date.current) }
 
         where :test_params, :expected_projects do
-          {}                | [ref(:active_projects), ref(:archived_project)]
-          { active: nil  }  | [ref(:active_projects), ref(:archived_project)]
+          {}                | [ref(:active_projects), ref(:archived_project), ref(:for_deletion_project)]
+          { active: nil  }  | [ref(:active_projects), ref(:archived_project), ref(:for_deletion_project)]
           { active: true }  | [ref(:active_projects)]
-          { active: false } | [ref(:archived_project)]
+          { active: false } | [ref(:archived_project), ref(:for_deletion_project)]
         end
 
         with_them do

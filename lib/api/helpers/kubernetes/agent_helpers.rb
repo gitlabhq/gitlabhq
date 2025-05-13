@@ -124,9 +124,7 @@ module API
           unauthorized!('Invalid session') unless session
 
           # CSRF check
-          unless ::Gitlab::Kas::UserAccess.valid_authenticity_token?(
-            request, session.symbolize_keys, params[:csrf_token]
-          )
+          unless ::Gitlab::Kas::UserAccess.valid_authenticity_token?(session.symbolize_keys, params[:csrf_token])
             unauthorized!('CSRF token does not match')
           end
 
@@ -174,7 +172,23 @@ module API
 
             additional_properties = {}
             if event_name.to_sym == :register_agent_at_kas
-              additional_properties = { label: event[:agent_version], property: event[:architecture] }
+              additional_properties = {
+                # built-in properties
+                label: event[:agent_version],
+                property: event[:architecture]
+              }
+              additional_properties[:value] = event[:agent_id] if event[:agent_id].present?
+
+              # custom properties
+              installation_method = event.dig(:extra_telemetry_data, :installation_method)
+              helm_chart_version = event.dig(:extra_telemetry_data, :helm_chart_version)
+
+              if event[:kubernetes_version].present?
+                additional_properties[:kubernetes_version] = event[:kubernetes_version]
+              end
+
+              additional_properties[:installation_method] = installation_method if installation_method.present?
+              additional_properties[:helm_chart_version] = helm_chart_version if helm_chart_version.present?
             end
 
             Gitlab::InternalEvents.track_event(event_name, additional_properties: additional_properties, user: user,

@@ -4,7 +4,7 @@ module Ci
   class BuildPolicy < CommitStatusPolicy
     include Ci::DeployablePolicy
 
-    delegate { @subject.project }
+    delegate(:project) { @subject.project }
 
     condition(:protected_ref) do
       access = ::Gitlab::UserAccess.new(@user, container: @subject.project)

@@ -52,7 +52,8 @@ export default {
       this.$refs.modal.show();
     },
     buildEvents(events) {
-      const rawEvents = Object.keys(events).map((key) => ({
+      const eventKeys = Object.keys(events).filter((key) => key in this.$options.i18n.eventNames);
+      const rawEvents = eventKeys.map((key) => ({
         id: key,
         enabled: Boolean(events[key]),
         name: this.$options.i18n.eventNames[key] || '',

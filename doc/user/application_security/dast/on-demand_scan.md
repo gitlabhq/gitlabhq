@@ -296,7 +296,6 @@ Validating a site is required to run an active scan.
 Prerequisites:
 
 - A runner must be available in the project to run a validation job.
-- The GitLab server's certificate must be trusted and must not use a self-signed certificate.
 
 To validate a site profile:
 

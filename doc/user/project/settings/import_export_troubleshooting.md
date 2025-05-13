@@ -152,13 +152,13 @@ Rather than attempting to push all changes at once, this workaround:
    # ASSUMPTIONS:
    # - The GitLab location is "origin"
    # - The default branch is "main"
-   # - This will attempt to push in chunks of 500MB (dividing the total size by 500MB).
+   # - This will attempt to push in chunks of 500 MB (dividing the total size by 500 MB).
    #   Decrease this size to push in smaller chunks if you still receive timeouts.
 
    git gc
    SIZE=$(git count-objects -v 2> /dev/null | grep size-pack | awk '{print $2}')
 
-   # Be conservative and try to push 2GB at a time
+   # Be conservative and try to push 2 GB at a time
    # (given this assumes each commit is the same size - which is wrong)
    BATCHES=$(($SIZE / 500000))
    TOTAL_COMMITS=$(git rev-list --count HEAD)

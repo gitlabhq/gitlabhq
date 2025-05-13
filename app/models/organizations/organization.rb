@@ -5,6 +5,7 @@ module Organizations
     include Gitlab::Utils::StrongMemoize
     include Gitlab::SQL::Pattern
     include Gitlab::VisibilityLevel
+    include FeatureGate
 
     DEFAULT_ORGANIZATION_ID = 1
 
@@ -25,11 +26,13 @@ module Organizations
     has_many :projects
     has_many :snippets
     has_many :topics, class_name: "Projects::Topic"
+    has_many :integrations
 
     has_one :settings, class_name: "OrganizationSetting"
     has_one :organization_detail, inverse_of: :organization, autosave: true
 
     has_many :organization_users, inverse_of: :organization
+    has_many :organization_user_aliases, inverse_of: :organization
     # if considering disable_joins on the below see:
     # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140343#note_1705047949
     has_many :users, through: :organization_users, inverse_of: :organizations

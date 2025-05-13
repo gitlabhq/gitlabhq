@@ -26,7 +26,7 @@ module Ci
 
     # rubocop:disable Cop/ActiveRecordSerialize
     serialize :options
-    serialize :yaml_variables, ::Gitlab::Serializer::Ci::Variables
+    serialize :yaml_variables, coder: ::Gitlab::Serializer::Ci::Variables
     # rubocop:enable Cop/ActiveRecordSerialize
 
     state_machine :status do
@@ -34,6 +34,10 @@ module Ci
         bridge.run_after_commit do
           Ci::TriggerDownstreamPipelineService.new(bridge).execute # rubocop: disable CodeReuse/ServiceClass
         end
+      end
+
+      event :created do
+        transition all => :created
       end
 
       event :pending do

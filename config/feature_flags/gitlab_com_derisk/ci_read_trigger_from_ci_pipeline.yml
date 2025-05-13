@@ -1,9 +1,0 @@
----
-name: ci_read_trigger_from_ci_pipeline
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/502767
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180728
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/508601
-milestone: '17.10'
-group: group::ci platform
-type: gitlab_com_derisk
-default_enabled: false

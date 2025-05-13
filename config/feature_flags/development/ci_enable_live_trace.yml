@@ -1,8 +1,0 @@
----
-name: ci_enable_live_trace
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5255
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350883
-milestone: '10.8'
-type: development
-group: group::pipeline execution
-default_enabled: false

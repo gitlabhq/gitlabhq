@@ -46,7 +46,7 @@ offer a way for customers to enable or disable features for themselves on
 GitLab.com or self-managed and can remain in the codebase as long as needed. In
 contrast users have no way to enable or disable feature flags for themselves on
 GitLab.com and only self-managed admins can change the feature flags.
-Also note that
+Also,
 [feature flags are not supported in GitLab Dedicated](../enabling_features_on_dedicated.md#feature-flags)
 which is another reason you should not use them as a replacement for settings.
 
@@ -295,6 +295,7 @@ Each feature flag is defined in a separate YAML file consisting of a number of f
 | Field               | Required | Description                                                    |
 |---------------------|----------|----------------------------------------------------------------|
 | `name`              | yes      | Name of the feature flag.                                      |
+| `description`       | yes      | A short description of the reason for the feature flag.        |
 | `type`              | yes      | Type of feature flag.                                          |
 | `default_enabled`   | yes      | The default state of the feature flag.                         |
 | `introduced_by_url` | yes      | The URL to the merge request that introduced the feature flag. |
@@ -385,7 +386,9 @@ To create a feature flag that is only used in EE, add the `--ee` flag: `bin/feat
 
 When choosing a name for a new feature flag, consider the following guidelines:
 
-- A long, descriptive name is better than a short but confusing one.
+- Describe the feature the feature flag is holding
+  - A long, **descriptive** name is better than a short but confusing one.
+- Avoid names that indicates state/phase of the feature like `_mvc`, `_alpha`, `_beta`, etc
 - Write the name in snake case (`my_cool_feature_flag`).
 - Avoid using `disable` in the name to avoid having to think (or [document](../documentation/feature_flags.md))
   with double negatives. Consider starting the name with `hide_`, `remove_`, or `disallow_`.
@@ -449,16 +452,19 @@ deleting feature flags.
 To migrate an `ops` feature flag to an application setting:
 
 1. In application settings, create or identify an existing `JSONB` column to store the setting.
-1. Write a migration to backfill the column.
-   For an example, see [merge request 148014](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148014).
+1. Write a migration to backfill the column. Avoid using `Feature.enabled?` in the migration. Use the `feature_flag_enabled?` migration helper method.
 1. Optional. In application settings, update the documentation for the setting.
 1. In the **Admin** area, create a setting to enable or disable the feature.
 1. Replace the feature flag everywhere with the application setting.
 1. Update all the relevant documentation pages.
-1. Mark the backfill migration as a `NOOP` and remove the feature flag after the mandatory upgrade path is crossed.
-   For an example, see [merge request 151080](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151080).
+1. To remove a feature flag from an existing migration, replace `Feature.enabled?` with migration helper method `feature_flag_enabled?`.
+
+{{< alert type="warning" >}}
 
 The changes to backfill application settings and use the settings in the code must be merged in the same milestone.
+
+{{< /alert >}}
+
 If frontend changes are merged in a later milestone, you should add documentation about how to update the settings
 by using the [application settings API](../../api/settings.md) or the Rails console.
 

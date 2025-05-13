@@ -5,7 +5,7 @@ import { s__ } from '~/locale';
 import getProtectableBranches from '../graphql/queries/protectable_branches.query.graphql';
 
 const wildcardsHelpDocLink = helpPagePath('user/project/repository/branches/protected', {
-  anchor: 'protect-multiple-branches-with-wildcard-rules',
+  anchor: 'use-wildcard-rules',
 });
 export default {
   name: 'BranchRuleModal',

@@ -14,5 +14,4 @@
 
 = render 'projects/settings/merge_requests/merge_request_squash_commit_template', project: @project, form: form
 
-- if @project.forked?
-  = render 'projects/settings/merge_requests/merge_request_target_project_settings', project: @project, form: form
+= render 'projects/settings/merge_requests/merge_request_target_project_settings', project: @project, form: form

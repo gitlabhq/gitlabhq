@@ -3,7 +3,7 @@ import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import { packageData } from 'jest/packages_and_registries/package_registry/mock_data';
-import InstallationTitle from '~/packages_and_registries/package_registry/components/details/installation_title.vue';
+import InstallationMethod from '~/packages_and_registries/package_registry/components/details/installation_method.vue';
 import NpmInstallation from '~/packages_and_registries/package_registry/components/details/npm_installation.vue';
 import {
   TRACKING_ACTION_COPY_NPM_INSTALL_COMMAND,
@@ -14,6 +14,7 @@ import {
   NPM_PACKAGE_MANAGER,
   YARN_PACKAGE_MANAGER,
   PROJECT_PACKAGE_ENDPOINT_TYPE,
+  GROUP_PACKAGE_ENDPOINT_TYPE,
   INSTANCE_PACKAGE_ENDPOINT_TYPE,
   NPM_HELP_PATH,
 } from '~/packages_and_registries/package_registry/constants';
@@ -28,7 +29,7 @@ describe('NpmInstallation', () => {
   const yarnInstallationCommandLabel = 'yarn add @gitlab-org/package-15';
 
   const findCodeInstructions = () => wrapper.findAllComponents(CodeInstructions);
-  const findInstallationTitle = () => wrapper.findComponent(InstallationTitle);
+  const findInstallationMethod = () => wrapper.findComponent(InstallationMethod);
   const findEndPointTypeSector = () => wrapper.findComponent(GlFormRadioGroup);
   const findSetupDocsLink = () => wrapper.findComponent(GlLink);
 
@@ -36,6 +37,7 @@ describe('NpmInstallation', () => {
     wrapper = shallowMountExtended(NpmInstallation, {
       provide: {
         npmInstanceUrl: 'npmInstanceUrl',
+        npmGroupUrl: 'npmGroupUrl',
       },
       propsData: {
         packageEntity,
@@ -69,6 +71,7 @@ describe('NpmInstallation', () => {
       expect(findEndPointTypeSector().props()).toMatchObject({
         options: [
           { value: INSTANCE_PACKAGE_ENDPOINT_TYPE, text: 'Instance-level' },
+          { value: GROUP_PACKAGE_ENDPOINT_TYPE, text: 'Group-level' },
           { value: PROJECT_PACKAGE_ENDPOINT_TYPE, text: 'Project-level' },
         ],
       });
@@ -77,12 +80,12 @@ describe('NpmInstallation', () => {
 
   describe('install command switch', () => {
     it('has the installation title component', () => {
-      expect(findInstallationTitle().exists()).toBe(true);
-      expect(findInstallationTitle().props()).toMatchObject({
+      expect(findInstallationMethod().exists()).toBe(true);
+      expect(findInstallationMethod().props()).toMatchObject({
         packageType: NPM_PACKAGE_MANAGER,
         options: [
-          { value: NPM_PACKAGE_MANAGER, label: 'Show NPM commands' },
-          { value: YARN_PACKAGE_MANAGER, label: 'Show Yarn commands' },
+          { value: NPM_PACKAGE_MANAGER, label: 'npm' },
+          { value: YARN_PACKAGE_MANAGER, label: 'Yarn' },
         ],
       });
     });
@@ -91,7 +94,7 @@ describe('NpmInstallation', () => {
       createComponent();
 
       expect(findCodeInstructions().at(0).props('instruction')).toBe(npmInstallationCommandLabel);
-      findInstallationTitle().vm.$emit('change', YARN_PACKAGE_MANAGER);
+      findInstallationMethod().vm.$emit('change', YARN_PACKAGE_MANAGER);
 
       await nextTick();
 
@@ -130,12 +133,22 @@ describe('NpmInstallation', () => {
         trackingAction: TRACKING_ACTION_COPY_NPM_SETUP_COMMAND,
       });
 
+      findEndPointTypeSector().vm.$emit('change', GROUP_PACKAGE_ENDPOINT_TYPE);
+
+      await nextTick();
+
+      expect(findCodeInstructions().at(1).props()).toMatchObject({
+        instruction: 'echo @gitlab-org:registry=npmGroupUrl/ >> .npmrc',
+        multiline: false,
+        trackingAction: TRACKING_ACTION_COPY_NPM_SETUP_COMMAND,
+      });
+
       findEndPointTypeSector().vm.$emit('change', INSTANCE_PACKAGE_ENDPOINT_TYPE);
 
       await nextTick();
 
       expect(findCodeInstructions().at(1).props()).toMatchObject({
-        instruction: `echo @gitlab-org:registry=npmInstanceUrl/ >> .npmrc`,
+        instruction: 'echo @gitlab-org:registry=npmInstanceUrl/ >> .npmrc',
         multiline: false,
         trackingAction: TRACKING_ACTION_COPY_NPM_SETUP_COMMAND,
       });
@@ -157,7 +170,7 @@ describe('NpmInstallation', () => {
 
     it('renders the correct registry command', () => {
       expect(findCodeInstructions().at(1).props()).toMatchObject({
-        instruction: 'echo \\"@gitlab-org:registry\\" \\"npmInstanceUrl/\\" >> .yarnrc',
+        instruction: 'echo @gitlab-org:registry npmInstanceUrl/ >> .yarnrc',
         multiline: false,
         trackingAction: TRACKING_ACTION_COPY_YARN_SETUP_COMMAND,
       });
@@ -169,17 +182,21 @@ describe('NpmInstallation', () => {
       await nextTick();
 
       expect(findCodeInstructions().at(1).props()).toMatchObject({
-        instruction: `echo \\"@gitlab-org:registry\\" \\"${packageEntity.npmUrl}/\\" >> .yarnrc`,
+        instruction: `echo @gitlab-org:registry ${packageEntity.npmUrl}/ >> .yarnrc`,
         multiline: false,
         trackingAction: TRACKING_ACTION_COPY_YARN_SETUP_COMMAND,
       });
+
+      findEndPointTypeSector().vm.$emit('change', GROUP_PACKAGE_ENDPOINT_TYPE);
+
+      await nextTick();
 
       findEndPointTypeSector().vm.$emit('change', INSTANCE_PACKAGE_ENDPOINT_TYPE);
 
       await nextTick();
 
       expect(findCodeInstructions().at(1).props()).toMatchObject({
-        instruction: 'echo \\"@gitlab-org:registry\\" \\"npmInstanceUrl/\\" >> .yarnrc',
+        instruction: 'echo @gitlab-org:registry npmInstanceUrl/ >> .yarnrc',
         multiline: false,
         trackingAction: TRACKING_ACTION_COPY_YARN_SETUP_COMMAND,
       });

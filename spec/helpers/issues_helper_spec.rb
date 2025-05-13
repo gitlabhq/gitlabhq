@@ -10,6 +10,13 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
   let_it_be(:project) { create(:project) }
   let_it_be_with_reload(:issue) { create(:issue, project: project) }
 
+  before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+  end
+
   describe '#award_user_list' do
     it 'returns a comma-separated list of the first X users' do
       user = build_stubbed(:user, name: 'Joe')
@@ -282,6 +289,7 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
       allow(helper).to receive(:can?).with(current_user, :read_crm_organization, group.crm_group).and_return(false)
       allow(helper).to receive(:image_path).and_return('#')
       allow(helper).to receive(:url_for).and_return('#')
+      allow(helper).to receive(:licensed_feature_available?).with(:subepics).and_return(false)
 
       assign(:has_issues, false)
       assign(:has_projects, true)
@@ -300,7 +308,8 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
         rss_path: '#',
         sign_in_path: new_user_session_path,
         group_id: group.id,
-        time_tracking_limit_to_hours: "false"
+        time_tracking_limit_to_hours: "false",
+        has_subepics_feature: "false"
       }
 
       expect(helper.group_issues_list_data(group, current_user)).to include(expected)
@@ -489,6 +498,61 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
 
         it { is_expected.to be_truthy }
       end
+    end
+  end
+
+  describe '#has_subepics_feature?' do
+    subject(:has_subepics_feature) { helper.has_subepics_feature?(namespace) }
+
+    context 'when namespace is a group project' do
+      let_it_be(:namespace) { create(:project, namespace: group) }
+
+      context 'when subepics feature is licensed and available for group' do
+        before do
+          allow(namespace.group).to receive(:licensed_feature_available?).with(:subepics).and_return(true)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when subepics feature is not licensed for group' do
+        before do
+          allow(namespace.group).to receive(:licensed_feature_available?).with(:subepics).and_return(false)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when namespace is a group' do
+      let_it_be(:namespace) { group }
+
+      context 'when subepics feature is licensed and available' do
+        before do
+          allow(namespace).to receive(:licensed_feature_available?).with(:subepics).and_return(true)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when subepics feature is not licensed' do
+        before do
+          allow(namespace).to receive(:licensed_feature_available?).with(:subepics).and_return(false)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when namespace is neither a group nor has a group' do
+      let_it_be(:namespace) { create(:namespace) }
+
+      before do
+        allow(namespace).to receive(:is_a?).with(Group).and_return(false)
+        allow(namespace).to receive(:respond_to?).with(:group).and_return(false)
+      end
+
+      it { is_expected.to be_falsey }
     end
   end
 end

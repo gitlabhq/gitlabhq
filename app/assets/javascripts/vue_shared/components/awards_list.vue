@@ -24,6 +24,11 @@ export default {
     SafeHtml,
   },
   props: {
+    customEmojiPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
     awards: {
       type: Array,
       required: true,
@@ -194,6 +199,7 @@ export default {
     <div v-if="canAwardEmoji" class="award-menu-holder gl-my-2">
       <emoji-picker
         :right="false"
+        :custom-emoji-path="customEmojiPath"
         data-testid="emoji-picker"
         @click="handleAward"
         @shown="setIsMenuOpen(true)"

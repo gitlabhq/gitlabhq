@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import dashboardGroupsResponse from 'test_fixtures/groups/dashboard/index.json';
+import dashboardGroupsWithChildrenResponse from 'test_fixtures/groups/dashboard/index_with_children.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { resolvers } from '~/groups/your_work/graphql/resolvers';
 import memberGroupsQuery from '~/groups/your_work/graphql/queries/member_groups.query.graphql';
@@ -16,7 +16,7 @@ describe('your work groups resolver', () => {
   const makeQuery = () => {
     return mockApollo.clients.defaultClient.query({
       query: memberGroupsQuery,
-      variables: { search: 'foo', sort: 'created_desc' },
+      variables: { search: 'foo', sort: 'created_desc', page: 2 },
     });
   };
 
@@ -24,7 +24,14 @@ describe('your work groups resolver', () => {
     mockApollo = createMockApollo([], resolvers(endpoint));
 
     mockAxios = new MockAdapter(axios);
-    mockAxios.onGet(endpoint).reply(200, dashboardGroupsResponse);
+    mockAxios.onGet(endpoint).reply(200, dashboardGroupsWithChildrenResponse, {
+      'x-per-page': 10,
+      'x-page': 2,
+      'x-total': 21,
+      'x-total-pages': 3,
+      'x-next-page': 3,
+      'x-prev-page': 1,
+    });
   });
 
   afterEach(() => {
@@ -34,37 +41,71 @@ describe('your work groups resolver', () => {
   it(`makes API call to ${endpoint} with correct params`, async () => {
     await makeQuery();
 
-    expect(mockAxios.history.get[0].params).toEqual({ filter: 'foo', sort: 'created_desc' });
+    expect(mockAxios.history.get[0].params).toEqual({
+      filter: 'foo',
+      sort: 'created_desc',
+      page: 2,
+    });
   });
 
   it('returns API call response correctly formatted for GraphQL', async () => {
     const {
       data: {
-        groups: { nodes },
+        groups: { nodes, pageInfo },
       },
     } = await makeQuery();
 
-    const mockGroup = dashboardGroupsResponse[1];
+    const [mockGroup] = dashboardGroupsWithChildrenResponse;
 
-    expect(nodes[1]).toMatchObject({
+    expect(nodes[0]).toMatchObject({
       __typename: TYPENAME_GROUP,
       id: convertToGraphQLId(TYPENAME_GROUP, mockGroup.id),
       fullPath: '/frontend-fixtures-group',
       fullName: 'frontend-fixtures-group',
       parent: { id: null },
-      webUrl: '/frontend-fixtures-group',
+      webUrl: mockGroup.web_url,
       organizationEditPath: '',
       descriptionHtml: '',
       avatarUrl: null,
-      descendantGroupsCount: 0,
+      descendantGroupsCount: 1,
       projectsCount: 2,
-      groupMembersCount: 0,
+      groupMembersCount: mockGroup.group_members_count,
       visibility: 'public',
       createdAt: mockGroup.created_at,
       updatedAt: mockGroup.updated_at,
-      userPermissions: { removeGroup: true, viewEditPage: true },
+      markedForDeletionOn: mockGroup.marked_for_deletion_on,
+      isLinkedToSubscription: mockGroup.is_linked_to_subscription,
+      isAdjournedDeletionEnabled: mockGroup.is_adjourned_deletion_enabled,
+      permanentDeletionDate: mockGroup.permanent_deletion_date,
+      userPermissions: {
+        canLeave: false,
+        removeGroup: true,
+        viewEditPage: true,
+      },
       maxAccessLevel: { integerValue: 50 },
-      isLinkedToSubscription: false,
+      children: [
+        {
+          id: convertToGraphQLId(TYPENAME_GROUP, mockGroup.children[0].id),
+          avatarUrl: null,
+          descendantGroupsCount: 1,
+          children: [
+            {
+              id: convertToGraphQLId(TYPENAME_GROUP, mockGroup.children[0].children[0].id),
+              avatarUrl: null,
+              descendantGroupsCount: 0,
+            },
+          ],
+        },
+      ],
+      childrenCount: 1,
+    });
+
+    expect(pageInfo).toEqual({
+      __typename: 'LocalPageInfo',
+      total: 21,
+      perPage: 10,
+      nextPage: 3,
+      previousPage: 1,
     });
   });
 });

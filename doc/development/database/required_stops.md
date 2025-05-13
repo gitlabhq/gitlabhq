@@ -69,4 +69,4 @@ to prevent these in testing, sometimes they happen.
 ## Adding a required stop
 
 If you plan to introduce a change the falls into one of the above scenarios,
-please refer to [adding required stops](../avoiding_required_stops.md#adding-required-stops).
+see [adding required stops](../avoiding_required_stops.md#adding-required-stops).

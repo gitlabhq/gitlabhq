@@ -2,13 +2,14 @@
 stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+gitlab_dedicated: yes
 title: Import and export settings
 ---
 
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -166,7 +167,7 @@ To modify this setting:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Import and export settings**.
-1. Increase or decrease by changing the value in **Maximum import remote file size (MiB)**. Set to `0` to set no file size limit.
+1. In **Maximum import remote file size (MiB)**, enter a value. Set to `0` for no file size limit.
 
 ## Maximum download file size for imports by direct transfer
 
@@ -183,7 +184,7 @@ To modify this setting:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Import and export settings**.
-1. Increase or decrease by changing the value in **Direct transfer maximum download file size (MiB)**. Set to `0` to set no download file size limit.
+1. In **Maximum download file size (MiB)**, enter a value. Set to `0` for no file size limit.
 
 ## Maximum decompressed file size for imported archives
 

@@ -2,7 +2,7 @@
 
 - title: "Increased default security for use of pipeline variables"
   # The milestones for the deprecation announcement, and the removal.
-  removal_milestone: "18.0"
+  removal_milestone: "Pending"
   announcement_milestone: "17.7"
   # Change breaking_change to false if needed.
   breaking_change: true
@@ -19,12 +19,9 @@
   body: |  # (required) Don't change this line.
     GitLab believes in secure-by-default practices. To honor this, we are making some changes to support least privilege principles relating to the use of CI/CD variables.
     Today, users with the Developer role or higher are able to use [pipeline variables](https://docs.gitlab.com/ci/variables/#use-pipeline-variables) by default, without any verification or opt-in.
-    In 18.0, GitLab is updating the [pipeline variable restrictions](https://docs.gitlab.com/ci/variables/#restrict-pipeline-variables) to default enabled.
-    As a result of this change, the ability to use pipeline CI/CD variables will be restricted for all users by default.
-    If necessary, you can manually update this setting with a minimum role that is allowed to use pipeline variables, though it's recommended to keep this as restricted as possible.
 
     You can already start using a more secure-by-default experience for pipeline variables by raising the minimum role to the recommended [Owner only, or no one](https://docs.gitlab.com/ci/variables/#restrict-pipeline-variables).
-    Starting in 17.7, this is the default for all new projects in new namespaces on GitLab.com.
+    Starting in 17.7, `no one allowed` is the default for all new projects in new namespaces on GitLab.com.
 
 # ==============================
 # OPTIONAL END-OF-SUPPORT FIELDS

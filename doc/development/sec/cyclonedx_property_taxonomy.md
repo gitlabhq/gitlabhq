@@ -10,7 +10,7 @@ in the [CycloneDX Property Taxonomy](https://github.com/CycloneDX/cyclonedx-prop
 
 {{< alert type="note" >}}
 
-Before making changes to this file, please reach out to the threat insights engineering team,
+Before making changes to this file, reach out to the threat insights engineering team,
 `@gitlab-org/govern/threat-insights`.
 
 {{< /alert >}}

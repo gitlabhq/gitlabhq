@@ -70,7 +70,7 @@ except-pull-requests:
     - when: on_success
 ```
 
-### How it works
+### Pipeline execution for external pull requests
 
 When a repository is imported from GitHub, GitLab subscribes to webhooks
 for `push` and `pull_request` events. Once a `pull_request` event is received,

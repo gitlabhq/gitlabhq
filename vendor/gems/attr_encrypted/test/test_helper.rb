@@ -31,7 +31,12 @@ end
 require 'active_record'
 require 'digest/sha2'
 require 'sequel'
-ActiveSupport::Deprecation.behavior = :raise
+
+if ActiveRecord.respond_to?(:deprecator)
+  ActiveRecord.deprecator.behavior = :raise
+else
+  ActiveSupport::Deprecation.behavior = :raise
+end
 
 $:.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $:.unshift(File.dirname(__FILE__))
@@ -49,7 +54,6 @@ end
 # This plugin re-enables it.
 Sequel::Model.plugin :after_initialize
 
-OLD_SECRET_KEY = SecureRandom.random_bytes(32)
 SECRET_KEY = SecureRandom.random_bytes(32)
 
 def base64_encoding_regex

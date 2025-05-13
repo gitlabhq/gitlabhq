@@ -5,6 +5,7 @@ module Clusters
     class Prometheus < ApplicationRecord
       include ::Clusters::Concerns::PrometheusClient
       include AfterCommitQueue
+      include Gitlab::EncryptedAttribute
 
       self.table_name = 'clusters_integration_prometheus'
       self.primary_key = :cluster_id
@@ -15,7 +16,7 @@ module Clusters
       validates :enabled, inclusion: { in: [true, false] }
 
       # Periodically checked and kept up to date for Monitor demo projects
-      enum health_status: {
+      enum :health_status, {
         unknown: 0,
         healthy: 1,
         unhealthy: 2
@@ -23,7 +24,7 @@ module Clusters
 
       attr_encrypted :alert_manager_token,
         mode: :per_attribute_iv,
-        key: Settings.attr_encrypted_db_key_base_32,
+        key: :db_key_base_32,
         algorithm: 'aes-256-gcm'
 
       after_initialize :set_alert_manager_token, if: :new_record?

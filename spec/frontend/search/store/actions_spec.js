@@ -174,7 +174,7 @@ describe('Global Search Store Actions', () => {
   });
 
   describe('setQuery', () => {
-    describe('when search type is zoekt and scope is blob with zoektMultimatchFrontend feature enabled', () => {
+    describe('when search type is zoekt and scope is blob', () => {
       const payload = { key: 'some-key', value: 'some-value' };
       let originalGon;
       let commit;
@@ -188,7 +188,7 @@ describe('Global Search Store Actions', () => {
           .spyOn(actions, 'fetchSidebarCount')
           .mockImplementation(() => Promise.resolve());
 
-        window.gon = { features: { zoektMultimatchFrontend: true } };
+        window.gon = { features: {} };
         storeUtils.isSidebarDirty = jest.fn().mockReturnValue(false);
 
         state = createState({
@@ -247,19 +247,6 @@ describe('Global Search Store Actions', () => {
         expect(setUrlParams).not.toHaveBeenCalled();
         expect(updateHistory).not.toHaveBeenCalled();
         expect(fetchSidebarCountSpy).not.toHaveBeenCalled();
-
-        setUrlParams.mockClear();
-        updateHistory.mockClear();
-        fetchSidebarCountSpy.mockClear();
-
-        getters = { currentScope: 'blobs' };
-        window.gon.features.zoektMultimatchFrontend = false;
-
-        await actions.setQuery({ state, commit, getters }, payload);
-
-        expect(setUrlParams).not.toHaveBeenCalled();
-        expect(updateHistory).not.toHaveBeenCalled();
-        expect(fetchSidebarCountSpy).not.toHaveBeenCalled();
       });
     });
 
@@ -271,7 +258,7 @@ describe('Global Search Store Actions', () => {
       describe(`when query param is ${payload.key}`, () => {
         beforeEach(() => {
           storeUtils.setDataToLS = jest.fn();
-          window.gon = { features: { zoektMultimatchFrontend: false } };
+          window.gon = { features: {} };
           const getters = { currentScope: 'not-blobs' };
           actions.setQuery({ state, commit: jest.fn(), getters }, payload);
         });

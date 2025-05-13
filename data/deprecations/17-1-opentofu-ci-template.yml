@@ -1,6 +1,6 @@
 - title: "OpenTofu CI/CD template"
   # The milestones for the deprecation announcement, and the removal.
-  removal_milestone: "18.0"
+  removal_milestone: "Pending"
   announcement_milestone: "17.1"
   # Change breaking_change to false if needed.
   breaking_change: true
@@ -13,7 +13,6 @@
   scope: project
   resolution_role: Maintainer
   manual_task: true
-  window: 1
   body: |  # (required) Don't change this line.
     We introduced the OpenTofu CI/CD template in 16.8 as CI/CD components were not available for GitLab Self-Managed yet.
     With the introduction of [GitLab CI/CD components for GitLab Self-Managed](https://docs.gitlab.com/ci/components/#use-a-gitlabcom-component-in-a-self-managed-instance)

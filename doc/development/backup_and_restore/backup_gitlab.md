@@ -1,5 +1,5 @@
 ---
-stage: Systems
+stage: Tenant Scale
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: How GitLab backups work?
@@ -54,7 +54,7 @@ When a user executes the backup creation Rake task, the following sequence of hi
 
 1. Create a temporary directory to store all application backup data and metadata.
 1. Dump each PostgreSQL database used by the application in a SQL file in the `db` subdirectory of the archive. This is generally done by invoking `pg_dump` on each significant database. Each `.sql` file created is further compressed with `gzip`.
-1. Request a bundle export of each Git repository in the application through Gitaly. All of this data is retained in the `repositories` directory of the archive. Note that this includes any "wiki" or "design" data associated with projects, as those features are stored as associated Git repositories.
+1. Request a bundle export of each Git repository in the application through Gitaly. All of this data is retained in the `repositories` directory of the archive. This includes any "wiki" or "design" data associated with projects, as those features are stored as associated Git repositories.
 1. For each remaining "blob"-oriented data feature, each blob corresponds to a file in a directory. So, for each binary data feature, copy each of its blob entries to a named file in a temporary directory in the archive. Once all data has been copied over, compress and serialize the directory into a `.tar.gz` file that is itself embedded in the archive. This is done for each of the following features:
 
    - `artifacts`
@@ -72,7 +72,7 @@ When a user executes the backup creation Rake task, the following sequence of hi
 1. Serialize the temporary archive directory into a single `.tar` tarball file.
 1. Move the tarball file to its final storage place. Depending on system configuration and parameters, this may be a directory on the machine running the creation task, or this may be a storage bucket on a cloud storage service like S3 or Google Storage.
 
-Take note that there are a number of configuration and environmental parameters that may alter this general procedure. These parameters are covered in the next sections.
+A number of configuration and environmental parameters may alter this general procedure. These parameters are covered in the next sections.
 
 #### Customizing Backup Creation
 

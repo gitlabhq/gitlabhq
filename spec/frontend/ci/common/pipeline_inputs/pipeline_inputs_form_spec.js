@@ -139,15 +139,21 @@ describe('PipelineInputsForm', () => {
     });
 
     describe('with empty ref (error case)', () => {
-      beforeEach(() => {
-        pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsErrorResponse);
-      });
-
       it('handles GraphQL error', async () => {
+        pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsErrorResponse);
         await createComponent();
 
         expect(createAlert).toHaveBeenCalledWith({
-          message: 'There was a problem fetching the pipeline inputs.',
+          message: 'ref can only be an existing branch or tag',
+        });
+      });
+
+      it('handles generic error', async () => {
+        pipelineInputsHandler = jest.fn().mockRejectedValue('Error');
+        await createComponent();
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'There was a problem fetching the pipeline inputs. Please try again.',
         });
       });
     });
@@ -196,6 +202,22 @@ describe('PipelineInputsForm', () => {
         value: input.default,
       }));
       expect(wrapper.emitted()['update-inputs'][0][0]).toEqual(expectedEmittedValue);
+    });
+
+    it('only emits modified inputs when emitModifiedOnly is true', async () => {
+      pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
+      await createComponent({ props: { emitModifiedOnly: true } });
+
+      const inputs = findInputsTable().props('inputs');
+      const totalInputsCount = inputs.length;
+      const inputToModify = { ...inputs[0], default: 'modified-value' };
+
+      findInputsTable().vm.$emit('update', inputToModify);
+
+      const emittedNameValuePairs = wrapper.emitted()['update-inputs'][0][0];
+
+      expect(emittedNameValuePairs).toHaveLength(1);
+      expect(emittedNameValuePairs.length).toBeLessThan(totalInputsCount);
     });
 
     it('converts string values to arrays for ARRAY type inputs', async () => {

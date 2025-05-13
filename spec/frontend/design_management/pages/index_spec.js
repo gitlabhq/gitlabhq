@@ -1,4 +1,4 @@
-import { GlEmptyState, GlLoadingIcon, GlAlert, GlFormCheckbox } from '@gitlab/ui';
+import { GlEmptyState, GlAlert, GlFormCheckbox } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 
 import VueApollo, { ApolloMutation } from 'vue-apollo';
@@ -118,7 +118,7 @@ describe('Design management index page', () => {
   const findDesignUploadButton = () => wrapper.findByTestId('design-upload-button');
   const findDesignToolbarWrapper = () => wrapper.findByTestId('design-toolbar-wrapper');
   const findDesignUpdateAlert = () => wrapper.findByTestId('design-update-alert');
-  const findLoadinIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findCrudComponent = () => wrapper.findComponent(CrudComponent);
   const findAlert = () => wrapper.findComponent(GlAlert);
 
   async function moveDesigns(localWrapper) {
@@ -211,14 +211,14 @@ describe('Design management index page', () => {
   }
 
   describe('designs', () => {
-    it('renders loading icon', () => {
+    it('sets loading prop', () => {
       createComponent({ loading: true });
-      expect(findLoadinIcon().exists()).toBe(true);
+      expect(findCrudComponent().props('isLoading')).toBe(true);
     });
 
     it('renders a toolbar with buttons when there are designs', () => {
       createComponent({ allVersions: [mockVersion] });
-      expect(findLoadinIcon().exists()).toBe(false);
+      expect(findCrudComponent().props('isLoading')).toBe(false);
       expect(findToolbar().exists()).toBe(true);
     });
 

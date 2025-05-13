@@ -1,6 +1,6 @@
 - title: "Amazon S3 Signature Version 2"
   announcement_milestone: "17.8"
-  removal_milestone: "18.0"
+  removal_milestone: "19.0"
   breaking_change: true
   reporter: trizzi
   stage: Package

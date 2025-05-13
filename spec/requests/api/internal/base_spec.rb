@@ -448,15 +448,9 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
       let(:actor) { key }
       let(:rate_limiter) { double(:rate_limiter, ip: "127.0.0.1", trusted_ip?: false) }
 
-      before do
-        allow(::Gitlab::Auth::IpRateLimiter).to receive(:new).with("127.0.0.1").and_return(rate_limiter)
-      end
-
       it 'is throttled by rate limiter' do
         allow(::Gitlab::ApplicationRateLimiter).to receive(:threshold).and_return(1)
-
         expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:gitlab_shell_operation, scope: [action, project.full_path, actor]).twice.and_call_original
-        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:gitlab_shell_operation, scope: [action, project.full_path, "127.0.0.1"]).and_call_original
 
         request
 
@@ -465,6 +459,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
         request
 
         expect(response).to have_gitlab_http_status(:too_many_requests)
+
         expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
       end
 

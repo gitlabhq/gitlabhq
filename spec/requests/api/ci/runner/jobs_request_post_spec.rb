@@ -8,7 +8,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
   include WorkhorseHelpers
 
   before do
-    stub_feature_flags(ci_enable_live_trace: true)
+    stub_application_setting(ci_job_live_trace_enabled: true)
     stub_gitlab_calls
     allow_any_instance_of(::Ci::Runner).to receive(:cache_attributes)
     allow(Ci::Build).to receive(:find_by!).and_call_original
@@ -827,7 +827,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
             let(:trigger) { create(:ci_trigger, project: project) }
             let(:pipeline) { create(:ci_pipeline, trigger: trigger, project: project, ref: 'master') }
-            let!(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, builds: [job], trigger: trigger) }
 
             before do
               project.variables << ::Ci::Variable.new(key: 'SECRET_KEY', value: 'secret_value')
@@ -1067,6 +1066,41 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                              'docker' => {
                                'platform' => 'amd64',
                                'user' => 'dave'
+                             }
+                           },
+                           'pull_policy' => nil,
+                           'entrypoint' => nil,
+                           'ports' => [] }
+            )
+          end
+        end
+
+        context 'when image has kubernetes options' do
+          let(:job) { create(:ci_build, :pending, :queued, pipeline: pipeline, options: options) }
+
+          let(:options) do
+            {
+              image: {
+                name: 'ruby',
+                executor_opts: {
+                  kubernetes: {
+                    user: '1001'
+                  }
+                }
+              }
+            }
+          end
+
+          it 'returns the image with docker options' do
+            request_job
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response).to include(
+              'id' => job.id,
+              'image' => { 'name' => 'ruby',
+                           'executor_opts' => {
+                             'kubernetes' => {
+                               'user' => '1001'
                              }
                            },
                            'pull_policy' => nil,

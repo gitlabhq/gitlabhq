@@ -10,8 +10,8 @@ import ClickhouseHelpPopover from '~/projects/pipelines/charts/components/clickh
 import StatisticsList from '~/projects/pipelines/charts/components/statistics_list.vue';
 import getPipelineCountByStatus from '~/projects/pipelines/charts/graphql/queries/get_pipeline_count_by_status.query.graphql';
 import getProjectPipelineStatistics from '~/projects/pipelines/charts/graphql/queries/get_project_pipeline_statistics.query.graphql';
-import CiCdAnalyticsCharts from '~/vue_shared/components/ci_cd_analytics/ci_cd_analytics_charts.vue';
-import { mockPipelineCount, mockPipelineStatistics } from '../mock_data';
+import CiCdAnalyticsCharts from '~/analytics/ci_cd/components/ci_cd_analytics_charts.vue';
+import { mockPipelineCount, mockPipelineStatistics } from 'jest/analytics/ci_cd/mock_data';
 
 const projectPath = 'gitlab-org/gitlab';
 Vue.use(VueApollo);

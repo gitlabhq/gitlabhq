@@ -23,10 +23,26 @@ query groupWorkItems(
         iid
         title
         confidential
+        namespace {
+          id
+          fullPath
+        }
         workItemType {
           id
           name
           iconName
+        }
+        widgets {
+          type
+          ... on WorkItemWidgetMilestone {
+            milestone {
+              id
+              dueDate
+              startDate
+              title
+              webPath
+            }
+          }
         }
       }
     }
@@ -41,6 +57,10 @@ query groupWorkItems(
         iid
         title
         confidential
+        namespace {
+          id
+          fullPath
+        }
         workItemType {
           id
           name

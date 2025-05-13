@@ -2,14 +2,15 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Configure rate limits for the repository files API on GitLab Self-Managed.
+gitlab_dedicated: yes
+description: Configure rate limits for the repository files API.
 title: Rate limits on Repository files API
 ---
 
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 

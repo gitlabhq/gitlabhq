@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management do
+  before do
+    allow(::Gitlab::CurrentSettings).to receive(:enforce_ci_inbound_job_token_scope_enabled?).and_return(false)
+  end
+
   describe 'GET /projects/:id/job_token_scope' do
     let_it_be(:project) { create(:project, :public) }
     let_it_be(:user) { create(:user) }

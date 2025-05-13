@@ -21,13 +21,14 @@ class Todo < ApplicationRecord
   MERGE_TRAIN_REMOVED = 8 # This is an EE-only feature
   REVIEW_REQUESTED    = 9
   MEMBER_ACCESS_REQUESTED = 10
-  REVIEW_SUBMITTED = 11 # This is an EE-only feature
+  REVIEW_SUBMITTED = 11
   OKR_CHECKIN_REQUESTED = 12 # This is an EE-only feature
   ADDED_APPROVER = 13 # This is an EE-only feature,
   SSH_KEY_EXPIRED = 14
   SSH_KEY_EXPIRING_SOON = 15
-  DUO_PRO_ACCESS_GRANTED = 16 # This is an EE-only feature,
-  DUO_ENTERPRISE_ACCESS_GRANTED = 17 # This is an EE-only feature,
+  DUO_PRO_ACCESS_GRANTED = 16 # This is an EE-only feature
+  DUO_ENTERPRISE_ACCESS_GRANTED = 17 # This is an EE-only feature
+  DUO_CORE_ACCESS_GRANTED = 18 # This is an EE-only feature
 
   ACTION_NAMES = {
     ASSIGNED => :assigned,
@@ -46,7 +47,8 @@ class Todo < ApplicationRecord
     SSH_KEY_EXPIRED => :ssh_key_expired,
     SSH_KEY_EXPIRING_SOON => :ssh_key_expiring_soon,
     DUO_PRO_ACCESS_GRANTED => :duo_pro_access_granted,
-    DUO_ENTERPRISE_ACCESS_GRANTED => :duo_enterprise_access_granted
+    DUO_ENTERPRISE_ACCESS_GRANTED => :duo_enterprise_access_granted,
+    DUO_CORE_ACCESS_GRANTED => :duo_core_access_granted
   }.freeze
 
   ACTIONS_MULTIPLE_ALLOWED = [Todo::MENTIONED, Todo::DIRECTLY_ADDRESSED, Todo::MEMBER_ACCESS_REQUESTED].freeze
@@ -54,9 +56,12 @@ class Todo < ApplicationRecord
   PARENTLESS_ACTION_TYPES = [
     DUO_PRO_ACCESS_GRANTED,
     DUO_ENTERPRISE_ACCESS_GRANTED,
+    DUO_CORE_ACCESS_GRANTED,
     SSH_KEY_EXPIRED,
     SSH_KEY_EXPIRING_SOON
   ].freeze
+
+  BATCH_DELETE_SIZE = 100
 
   belongs_to :author, class_name: "User"
   belongs_to :note
@@ -358,7 +363,7 @@ class Todo < ApplicationRecord
   end
 
   def for_duo_access_granted?
-    action == DUO_PRO_ACCESS_GRANTED || action == DUO_ENTERPRISE_ACCESS_GRANTED
+    [DUO_PRO_ACCESS_GRANTED, DUO_ENTERPRISE_ACCESS_GRANTED, DUO_CORE_ACCESS_GRANTED].include?(action)
   end
 
   def parentless_type?

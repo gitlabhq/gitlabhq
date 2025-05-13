@@ -27,6 +27,10 @@
     "AbuseReportNote",
     "Note"
   ],
+  "CiJobInterface": [
+    "CiJob",
+    "CiJobMinimalAccess"
+  ],
   "CiJobTokenScopeTarget": [
     "CiJobTokenAccessibleGroup",
     "CiJobTokenAccessibleProject"
@@ -55,6 +59,10 @@
     "Issue",
     "MergeRequest",
     "WorkItemWidgetCurrentUserTodos"
+  ],
+  "DependencyInterface": [
+    "Dependency",
+    "DependencyAggregation"
   ],
   "DependencyLinkMetadata": [
     "NugetDependencyLinkMetadata"
@@ -131,9 +139,14 @@
     "PendingProjectMember",
     "ProjectMember"
   ],
+  "NamespaceUnion": [
+    "CiDeletedNamespace",
+    "Namespace"
+  ],
   "NoteableInterface": [
     "AlertManagementAlert",
     "BoardEpic",
+    "CountableVulnerability",
     "Design",
     "Epic",
     "EpicIssue",
@@ -151,6 +164,7 @@
   "OrchestrationPolicy": [
     "ApprovalPolicy",
     "PipelineExecutionPolicy",
+    "PipelineExecutionSchedulePolicy",
     "ScanExecutionPolicy",
     "ScanResultPolicy",
     "VulnerabilityManagementPolicy"
@@ -231,6 +245,7 @@
     "AutocompletedUser",
     "BoardEpic",
     "Commit",
+    "CountableVulnerability",
     "CurrentUser",
     "Design",
     "Epic",
@@ -286,6 +301,10 @@
     "VulnerabilityLocationGeneric",
     "VulnerabilityLocationSast",
     "VulnerabilityLocationSecretDetection"
+  ],
+  "VulnerabilityStatisticInterface": [
+    "VulnerabilityNamespaceStatisticType",
+    "VulnerabilityStatisticType"
   ],
   "WorkItemCustomFieldValue": [
     "WorkItemNumberFieldValue",

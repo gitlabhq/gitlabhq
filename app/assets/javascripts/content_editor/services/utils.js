@@ -1,5 +1,5 @@
-import axios from 'axios';
 import { memoize } from 'lodash';
+import axios from '~/lib/utils/axios_utils';
 
 export const hasSelection = (tiptapEditor) => {
   const { from, to } = tiptapEditor.state.selection;

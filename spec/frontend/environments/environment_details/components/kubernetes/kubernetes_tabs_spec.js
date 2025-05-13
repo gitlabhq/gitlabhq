@@ -131,18 +131,12 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ta
       createWrapper();
     });
 
-    it('emits loading event when gets it from the component', () => {
-      findKubernetesPods().vm.$emit('loading', true);
-      expect(wrapper.emitted('loading')[0]).toEqual([true]);
+    it('emits cluster state event when gets it from the component', () => {
+      findKubernetesPods().vm.$emit('update-cluster-state', 'needs-attention');
+      expect(wrapper.emitted('update-cluster-state')[0]).toEqual(['needs-attention']);
 
-      findKubernetesPods().vm.$emit('loading', false);
-      expect(wrapper.emitted('loading')[1]).toEqual([false]);
-    });
-
-    it('emits a state update event when gets it from the component', () => {
-      const eventData = { pods: true };
-      findKubernetesPods().vm.$emit('update-failed-state', eventData);
-      expect(wrapper.emitted('update-failed-state')).toEqual([[eventData]]);
+      findKubernetesPods().vm.$emit('update-cluster-state', 'success');
+      expect(wrapper.emitted('update-cluster-state')[1]).toEqual(['success']);
     });
 
     it('emits select-item event when gets it from the component', () => {

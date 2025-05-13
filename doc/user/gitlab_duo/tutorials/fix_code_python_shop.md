@@ -39,9 +39,7 @@ to help you:
 
 - [Install the latest version of Python](https://www.python.org/downloads/) on your system.
   You can ask Chat how to do that for your operating system.
-- Make sure your organization has purchased a
-  [GitLab Duo add-on subscription (either GitLab Duo Pro or Duo Enterprise)](https://about.gitlab.com/gitlab-duo/#pricing),
-  and your administrator has [assigned you a seat](../../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
+- Confirm with an administrator, group owner, or project owner that you have access to GitLab Duo.
 - Install an extension in your preferred IDE:
   - [Web IDE](../../project/web_ide/_index.md): Access through your GitLab instance
   - [VS Code](../../../editor_extensions/visual_studio_code/setup.md)
@@ -59,7 +57,7 @@ web application. Multiple ways exist to use these features.
 
 ### Use GitLab Duo Chat
 
-You can use Chat in the GitLab UI, the Web IDE, or in your IDE.
+Depending on your subscription add-on, you can use Chat in the GitLab UI, the Web IDE, or your IDE.
 
 #### Use Chat in the GitLab UI
 
@@ -1411,4 +1409,7 @@ exists to create this tutorial.
 - <i class="fa-youtube-play" aria-hidden="true"></i>
   [GitLab Duo Code Suggestions](https://youtu.be/ds7SG1wgcVM?si=MfbzPIDpikGhoPh7)
 <!-- Video published on 2024-01-24 -->
+- <i class="fa-youtube-play" aria-hidden="true"></i>
+  [Application modernization with GitLab Duo (C++ to Java)](https://youtu.be/FjoAmt5eeXA?si=SLv9Mv8eSUAVwW5Z)
+<!-- Video published on 2025-03-18 -->
 <!-- markdownlint-enable -->

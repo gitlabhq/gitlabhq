@@ -85,8 +85,6 @@ RSpec/SubjectDeclaration:
     - 'spec/serializers/pipeline_details_entity_spec.rb'
     - 'spec/services/concerns/exclusive_lease_guard_spec.rb'
     - 'spec/services/concerns/rate_limited_service_spec.rb'
-    - 'spec/services/issues/clone_service_spec.rb'
-    - 'spec/services/issues/move_service_spec.rb'
     - 'spec/services/issues/prepare_import_csv_service_spec.rb'
     - 'spec/services/merge_requests/delete_non_latest_diffs_service_spec.rb'
     - 'spec/services/merge_requests/reload_diffs_service_spec.rb'

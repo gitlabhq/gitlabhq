@@ -162,9 +162,7 @@ export default {
       <template #description>
         <gl-sprintf
           :message="
-            s__(
-              'CICD|Authentication events from the last 30 days. %{linkStart}Learn more.%{linkEnd}',
-            )
+            s__('CICD|Authentication events using the job token. %{linkStart}Learn more.%{linkEnd}')
           "
         >
           <template #link="{ content }">
@@ -214,7 +212,7 @@ export default {
         class="gl-text-center"
         data-testid="auth-logs-no-events"
       >
-        {{ s__('CICD|No authentication events in the last 30 days.') }}
+        {{ s__('CICD|No authentication events to display.') }}
       </div>
     </crud-component>
     <gl-keyset-pagination

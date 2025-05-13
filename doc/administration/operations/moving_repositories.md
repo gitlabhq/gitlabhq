@@ -1,5 +1,5 @@
 ---
-stage: Systems
+stage: Data Access
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Moving repositories managed by GitLab
@@ -19,7 +19,7 @@ You can move all repositories managed by GitLab to another file system or anothe
 The GitLab API is the recommended way to move Git repositories:
 
 - Between servers.
-- Between different storage.
+- Between different storages.
 - From single-node Gitaly to Gitaly Cluster.
 
 For more information, see:

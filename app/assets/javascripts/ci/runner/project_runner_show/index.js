@@ -14,7 +14,7 @@ export const initProjectRunnerShow = (selector = '#js-project-runner-show') => {
     return null;
   }
 
-  const { runnerId } = el.dataset;
+  const { runnerId, runnersPath, editPath } = el.dataset;
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
@@ -27,6 +27,8 @@ export const initProjectRunnerShow = (selector = '#js-project-runner-show') => {
       return h(ProjectRunnerShowApp, {
         props: {
           runnerId,
+          runnersPath,
+          editPath,
         },
       });
     },

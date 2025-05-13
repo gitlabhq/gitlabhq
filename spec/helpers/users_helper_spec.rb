@@ -6,6 +6,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
   include TermsHelper
 
   let_it_be(:user) { create(:user, timezone: ActiveSupport::TimeZone::MAPPING['UTC']) }
+  let_it_be(:admin) { create(:admin) }
 
   def filter_ee_badges(badges)
     badges.reject { |badge| badge[:text] == 'Is using seat' }
@@ -271,94 +272,70 @@ RSpec.describe UsersHelper, feature_category: :user_management do
 
   describe '#user_badges_in_admin_section' do
     before do
-      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive(:current_user).and_return(admin)
     end
 
+    subject(:badges) { filter_ee_badges(helper.user_badges_in_admin_section(user)) }
+
     context 'with a blocked user' do
-      it "returns the blocked badge" do
-        blocked_user = create(:user, state: 'blocked')
+      let(:user) { create(:user, state: 'blocked') }
 
-        badges = helper.user_badges_in_admin_section(blocked_user)
-
-        expect(filter_ee_badges(badges)).to match_array([text: s_("AdminUsers|Blocked"), variant: "danger"])
-      end
+      it { is_expected.to match_array([{ text: s_("AdminUsers|Blocked"), variant: "danger" }]) }
     end
 
     context 'with a pending approval user' do
-      it 'returns the pending approval badge' do
-        blocked_pending_approval_user = create(:user, :blocked_pending_approval)
+      let(:user) { create(:user, :blocked_pending_approval) }
 
-        badges = helper.user_badges_in_admin_section(blocked_pending_approval_user)
-
-        expect(filter_ee_badges(badges)).to match_array([text: s_('AdminUsers|Pending approval'), variant: 'info'])
-      end
+      it { is_expected.to match_array([{ text: s_('AdminUsers|Pending approval'), variant: 'info' }]) }
     end
 
     context 'with a banned user' do
-      it 'returns the banned badge' do
-        banned_user = create(:user, :banned)
+      let(:user) { create(:user, :banned) }
 
-        badges = helper.user_badges_in_admin_section(banned_user)
-
-        expect(filter_ee_badges(badges)).to match_array([text: s_('AdminUsers|Banned'), variant: 'danger'])
-      end
+      it { is_expected.to match_array([{ text: s_('AdminUsers|Banned'), variant: 'danger' }]) }
     end
 
     context 'with an admin user' do
-      it "returns the admin badge" do
-        admin_user = create(:admin)
+      let(:user) { create(:admin) }
 
-        badges = helper.user_badges_in_admin_section(admin_user)
-
-        expect(filter_ee_badges(badges)).to match_array([text: s_("AdminUsers|Admin"), variant: "success"])
-      end
+      it { is_expected.to match_array([{ text: s_("AdminUsers|Admin"), variant: "success" }]) }
     end
 
     context 'with a bot' do
-      it "returns the bot badge" do
-        bot = create(:user, :bot)
+      let(:user) { create(:user, :bot) }
 
-        badges = helper.user_badges_in_admin_section(bot)
-
-        expect(filter_ee_badges(badges)).to match_array([text: s_('AdminUsers|Bot'), variant: "muted"])
-      end
+      it { is_expected.to match_array([{ text: s_('AdminUsers|Bot'), variant: "muted" }]) }
     end
 
     context 'with a deactivated user' do
-      it "returns the deactivated badge" do
-        deactivated = create(:user, :deactivated)
+      let(:user) { create(:user, :deactivated) }
 
-        badges = helper.user_badges_in_admin_section(deactivated)
-
-        expect(filter_ee_badges(badges)).to match_array([text: s_('AdminUsers|Deactivated'), variant: "danger"])
-      end
+      it { is_expected.to match_array([{ text: s_('AdminUsers|Deactivated'), variant: "danger" }]) }
     end
 
     context 'with an external user' do
-      it 'returns the external badge' do
-        external_user = create(:user, external: true)
+      let(:user) { create(:user, external: true) }
 
-        badges = helper.user_badges_in_admin_section(external_user)
-
-        expect(filter_ee_badges(badges)).to match_array([text: s_("AdminUsers|External"), variant: "secondary"])
-      end
+      it { is_expected.to match_array([{ text: s_("AdminUsers|External"), variant: "secondary" }]) }
     end
 
     context 'with the current user' do
-      it 'returns the "It\'s You" badge' do
-        badges = helper.user_badges_in_admin_section(user)
+      let(:user) { admin }
 
-        expect(filter_ee_badges(badges)).to match_array([text: s_("AdminUsers|It's you!"), variant: "muted"])
+      it "returns admin and it's you badges" do
+        is_expected.to match_array(
+          [
+            { text: s_("AdminUsers|Admin"), variant: "success" },
+            { text: s_("AdminUsers|It's you!"), variant: "muted" }
+          ])
       end
     end
 
     context 'with an external blocked admin' do
+      let(:user) { create(:admin, state: 'blocked', external: true) }
+
       it 'returns the blocked, admin and external badges' do
-        user = create(:admin, state: 'blocked', external: true)
-
-        badges = helper.user_badges_in_admin_section(user)
-
-        expect(badges).to match_array(
+        is_expected.to match_array(
           [
             { text: s_("AdminUsers|Blocked"), variant: "danger" },
             { text: s_("AdminUsers|Admin"), variant: "success" },
@@ -368,33 +345,27 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     end
 
     context 'with a locked user', time_travel_to: '2020-02-25 10:30:45 -0700' do
-      it 'returns the "Locked" badge' do
-        locked_user = create(:user, locked_at: DateTime.parse('2020-02-25 10:30:00 -0700'))
+      let(:user) { create(:user, locked_at: DateTime.parse('2020-02-25 10:30:00 -0700')) }
 
-        badges = helper.user_badges_in_admin_section(locked_user)
-
-        expect(filter_ee_badges(badges)).to match_array([text: s_("AdminUsers|Locked"), variant: "warning"])
-      end
+      it { is_expected.to match_array([{ text: s_("AdminUsers|Locked"), variant: "warning" }]) }
     end
 
     context 'with a placeholder user' do
-      it 'returns the "Placeholder" badge' do
-        placeholder_user = create(:user, :placeholder)
+      let(:user) { create(:user, :placeholder) }
 
-        badges = helper.user_badges_in_admin_section(placeholder_user)
+      it { is_expected.to match_array([{ text: s_("UserMapping|Placeholder"), variant: "muted" }]) }
+    end
 
-        expect(filter_ee_badges(badges)).to match_array([text: s_("UserMapping|Placeholder"), variant: "muted"])
-      end
+    context 'with an LDAP user' do
+      let(:user) { create(:omniauth_user, provider: "ldapmain") }
+
+      it { is_expected.to match_array([{ text: 'LDAP', variant: 'info' }]) }
     end
 
     context 'get badges for normal user' do
-      it 'returns no badges' do
-        user = create(:user)
+      let(:user) { create(:user) }
 
-        badges = helper.user_badges_in_admin_section(user)
-
-        expect(filter_ee_badges(badges)).to be_empty
-      end
+      it { is_expected.to be_empty }
     end
   end
 

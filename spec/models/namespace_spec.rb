@@ -35,6 +35,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to have_one :namespace_route }
     it { is_expected.to have_many :namespace_members }
     it { is_expected.to have_one :cluster_enabled_grant }
+    it { is_expected.to have_one :placeholder_user_detail }
     it { is_expected.to have_many(:work_items) }
     it { is_expected.to have_many(:work_items_dates_source) }
     it { is_expected.to have_many :achievements }
@@ -644,6 +645,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to delegate_method(:math_rendering_limits_enabled).to(:namespace_settings) }
     it { is_expected.to delegate_method(:math_rendering_limits_enabled?).to(:namespace_settings) }
     it { is_expected.to delegate_method(:lock_math_rendering_limits_enabled?).to(:namespace_settings) }
+    it { is_expected.to delegate_method(:archived).to(:namespace_settings).allow_nil }
     it { is_expected.to delegate_method(:add_creator).to(:namespace_details) }
     it { is_expected.to delegate_method(:deleted_at).to(:namespace_details) }
     it { is_expected.to delegate_method(:deleted_at=).to(:namespace_details).with_arguments(:args) }
@@ -651,6 +653,10 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to delegate_method(:resource_access_token_notify_inherited_locked?).to(:namespace_settings) }
     it { is_expected.to delegate_method(:resource_access_token_notify_inherited_locked_by_ancestor?).to(:namespace_settings) }
     it { is_expected.to delegate_method(:resource_access_token_notify_inherited_locked_by_application_setting?).to(:namespace_settings) }
+    it { is_expected.to delegate_method(:web_based_commit_signing_enabled).to(:namespace_settings) }
+    it { is_expected.to delegate_method(:web_based_commit_signing_enabled?).to(:namespace_settings) }
+    it { is_expected.to delegate_method(:lock_web_based_commit_signing_enabled).to(:namespace_settings) }
+    it { is_expected.to delegate_method(:lock_web_based_commit_signing_enabled?).to(:namespace_settings) }
 
     it do
       is_expected.to delegate_method(:prevent_sharing_groups_outside_hierarchy=).to(:namespace_settings)
@@ -781,6 +787,56 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to include_module(Namespaces::Traversal::Linear) }
     it { is_expected.to include_module(Namespaces::Traversal::RecursiveScopes) }
     it { is_expected.to include_module(Namespaces::Traversal::LinearScopes) }
+  end
+
+  describe 'archive and unarchive' do
+    let_it_be(:namespace) { create(:group) }
+
+    describe '#archive' do
+      context 'when namespace is not archived' do
+        before do
+          namespace.namespace_settings.update!(archived: false)
+        end
+
+        it 'archives the namespace' do
+          expect(namespace.archive).to be true
+          expect(namespace.namespace_settings.reload.archived).to eq(true)
+        end
+      end
+
+      context 'when namespace is already archived' do
+        before do
+          namespace.namespace_settings.update!(archived: true)
+        end
+
+        it 'returns false' do
+          expect(namespace.archive).to be false
+        end
+      end
+    end
+
+    describe '#unarchive' do
+      context 'when namespace is archived' do
+        before do
+          namespace.namespace_settings.update!(archived: true)
+        end
+
+        it 'unarchives the namespace' do
+          expect(namespace.unarchive).to be true
+          expect(namespace.namespace_settings.reload.archived).to eq(false)
+        end
+      end
+
+      context 'when namespace is not archived' do
+        before do
+          namespace.namespace_settings.update!(archived: false)
+        end
+
+        it 'returns false' do
+          expect(namespace.unarchive).to be false
+        end
+      end
+    end
   end
 
   describe '#traversal_ids' do
@@ -941,6 +997,26 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it 'calls schedule_sync_event_worker on the updated namespace' do
       expect(namespace1).to receive(:schedule_sync_event_worker)
       namespace1.update!(parent: namespace2)
+    end
+  end
+
+  describe 'traversal_path' do
+    it 'formats the traversal ids with slashes' do
+      expect(namespace.traversal_path).to eq("#{namespace.id}/")
+    end
+
+    context 'for subgroup' do
+      let(:subgroup) { Group.new(traversal_ids: [1, 2, 3], organization_id: 1111) }
+
+      it 'formats the traversal ids with slashes' do
+        expect(subgroup.traversal_path).to eq("1/2/3/")
+      end
+
+      context 'when with_organization option is enabled' do
+        it 'prepends the organization id' do
+          expect(subgroup.traversal_path(with_organization: true)).to eq("1111/1/2/3/")
+        end
+      end
     end
   end
 

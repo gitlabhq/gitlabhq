@@ -183,6 +183,35 @@ RSpec.describe Resolvers::TodosResolver, feature_category: :notifications do
         expect(todos).to contain_exactly(issue_todo_pending)
       end
     end
+
+    context 'when user is a human' do
+      it 'does not trigger the tracking events' do
+        expect do
+          resolve_todos
+        end
+          .not_to trigger_internal_events('request_todos_by_bot_user')
+      end
+    end
+
+    context 'when user is a bot' do
+      let(:current_user) { create(:user, :service_account) }
+
+      it 'triggers the tracking events' do
+        expect do
+          resolve_todos
+        end
+          .to trigger_internal_events('request_todos_by_bot_user')
+                .with(
+                  user: current_user,
+                  additional_properties: {
+                    label: 'user_type', property: current_user.user_type
+                  }
+                ).exactly(:once)
+                .and increment_usage_metrics(
+                  'redis_hll_counters.count_distinct_user_id_from_request_todos_by_bot_user_weekly'
+                ).by(1)
+      end
+    end
   end
 
   def resolve_todos(args: {}, context: { current_user: current_user })

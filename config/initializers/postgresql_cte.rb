@@ -99,7 +99,7 @@ module ActiveRecord
       end
     end
 
-    def build_arel(aliases = nil)
+    def build_arel(*)
       arel = super
 
       build_with(arel) if @values[:with_values]

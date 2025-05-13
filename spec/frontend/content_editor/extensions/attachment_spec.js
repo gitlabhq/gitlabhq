@@ -1,7 +1,7 @@
 import fs from 'fs';
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { builders } from 'prosemirror-test-builder';
+import axios from '~/lib/utils/axios_utils';
 import Attachment from '~/content_editor/extensions/attachment';
 import DrawioDiagram from '~/content_editor/extensions/drawio_diagram';
 import Image from '~/content_editor/extensions/image';

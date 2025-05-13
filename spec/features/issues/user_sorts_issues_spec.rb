@@ -17,6 +17,11 @@ RSpec.describe "User sorts issues", feature_category: :team_planning do
   let_it_be(:later_due_milestone) { create(:milestone, project: project, due_date: '2013-12-12') }
 
   before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+
     create_list(:award_emoji, 2, :upvote, awardable: issue1)
     create_list(:award_emoji, 2, :downvote, awardable: issue2)
     create(:award_emoji, :downvote, awardable: issue1)

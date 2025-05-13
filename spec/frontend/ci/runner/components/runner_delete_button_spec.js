@@ -75,8 +75,9 @@ describe('RunnerDeleteButton', () => {
   });
 
   it('Passes other attributes to the button', () => {
-    createComponent({ props: { category: 'secondary' } });
+    createComponent({ props: { category: 'secondary', size: 'small' } });
 
+    expect(findBtn().props('size')).toBe('small');
     expect(findBtn().props('category')).toBe('secondary');
   });
 
@@ -113,8 +114,8 @@ describe('RunnerDeleteButton', () => {
       expect(findBtn().text()).toBe('');
     });
 
-    it('Displays "x" icon', () => {
-      expect(findBtn().props('icon')).toBe('close');
+    it('Displays remove icon', () => {
+      expect(findBtn().props('icon')).toBe('remove');
       expect(findBtn().classes('btn-icon')).toBe(true);
     });
 
@@ -129,6 +130,11 @@ describe('RunnerDeleteButton', () => {
           props: { compact: true },
           loading: true,
         });
+      });
+
+      it('displays the "loading" icon', () => {
+        expect(findBtn().props('loading')).toBe(true);
+        expect(findBtn().props('icon')).toBe('');
       });
 
       it('The stale tooltip is removed', () => {

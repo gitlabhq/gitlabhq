@@ -27,6 +27,7 @@ RSpec.describe 'Admin Broadcast Messages', :js, feature_category: :notifications
       end
 
       click_button 'Add broadcast message'
+      click_button 'I understand and confirm'
 
       wait_for_requests
 
@@ -52,6 +53,7 @@ RSpec.describe 'Admin Broadcast Messages', :js, feature_category: :notifications
       end
 
       click_button 'Update broadcast message'
+      click_button 'I understand and confirm'
 
       wait_for_requests
 

@@ -79,6 +79,17 @@ module API
             options[type] = { issuable_metadata: Gitlab::IssuableMetadata.new(current_user, targets).data, include_subscribed: false }
           end
         end
+
+        def track_bot_user
+          track_event(
+            "request_todos_by_bot_user",
+            user: current_user,
+            additional_properties: {
+              label: 'user_type',
+              property: current_user.user_type
+            }
+          )
+        end
       end
 
       desc 'Get a list of to-do items' do
@@ -90,6 +101,7 @@ module API
       get do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/408576')
 
+        track_bot_user if current_user.bot?
         todos = paginate(find_todos.with_entity_associations)
         todos = ::Todos::AllowedTargetFilterService.new(todos, current_user).execute
         options = { with: Entities::Todo, current_user: current_user }

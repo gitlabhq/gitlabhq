@@ -14,6 +14,9 @@ module Types
       value 'PATH_ASC', 'Sort by path, ascending order.', value: :path_asc
       value 'PATH_DESC', 'Sort by path, descending order.', value: :path_desc
 
+      value 'FULL_PATH_ASC', 'Sort by full path, ascending order.', value: :full_path_asc
+      value 'FULL_PATH_DESC', 'Sort by full path, descending order.', value: :full_path_desc
+
       value 'REPOSITORY_SIZE_ASC',  'Sort by total repository size, ascending order.', value: :repository_size_asc
       value 'REPOSITORY_SIZE_DESC', 'Sort by total repository size, descending order.', value: :repository_size_desc
 

@@ -107,6 +107,10 @@ module Gitlab
         !!@collapsed_safe_bytes
       end
 
+      def collapsed_safe_limits?
+        !!@collapsed_safe_limits
+      end
+
       def size
         @size ||= count # forces a loop using each method
       end
@@ -175,6 +179,10 @@ module Gitlab
           options[:generated] = @generated_files.include?(raw.from_path) if @generated_files
 
           diff = Gitlab::Git::Diff.new(raw, **options)
+
+          if raw.collapsed
+            @collapsed_safe_limits = true
+          end
 
           if raw.overflow_marker
             @overflow = true

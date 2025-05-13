@@ -29,24 +29,16 @@ module Gitlab
           return Gitlab::SlashCommands::Presenters::Access.new.not_found
         end
 
-        new_issue = if project.work_item_move_and_clone_flag_enabled?
-                      response = ::WorkItems::DataSync::MoveService.new(
-                        work_item: old_issue, current_user: current_user,
-                        target_namespace: target_project.project_namespace
-                      ).execute
+        response = ::WorkItems::DataSync::MoveService.new(
+          work_item: old_issue, current_user: current_user,
+          target_namespace: target_project.project_namespace
+        ).execute
 
-                      return presenter(old_issue).display_move_error(response.message) if response.error?
+        return presenter(old_issue).display_move_error(response.message) if response.error?
 
-                      response[:work_item]
-                    else
-                      ::Issues::MoveService.new(
-                        container: project, current_user: current_user
-                      ).execute(old_issue, target_project)
-                    end
+        new_issue = response[:work_item]
 
         presenter(new_issue).present(old_issue)
-      rescue ::Issues::MoveService::MoveError => e
-        presenter(old_issue).display_move_error(e.message)
       end
 
       private

@@ -15,9 +15,9 @@ Merge requests containing changes to Markdown (`.md`) files run these CI/CD jobs
 - `docs-lint markdown`: Runs several types of tests, including:
   - [Vale](vale.md): Checks documentation content.
   - [markdownlint](markdownlint.md): Checks Markdown structure.
-  - [`lint-docs.sh`](#tests-in-lint-docsh) script: Miscellaneous tests, including
-    [`mermaidlint`](#mermaid-chart-linting) to check for invalid Mermaid charts.
+  - [`lint-docs.sh`](#tests-in-lint-docsh) script: Miscellaneous tests
 - `docs-lint links`: Checks the validity of [relative links](links.md#run-the-relative-link-test-locally) in the documentation suite.
+- `docs-lint mermaid`: Runs [`mermaidlint`](#mermaid-chart-linting) to check for invalid Mermaid charts.
 - `rubocop-docs`: Checks links to documentation [from `.rb` files](links.md#run-rubocop-tests).
 - `eslint-docs`: Checks links to documentation [from `.js` and `.vue` files](links.md#run-eslint-tests).
 - `docs-lint redirects`: Checks for deleted or renamed documentation files without [redirects](../redirects.md).
@@ -50,7 +50,7 @@ The `docs-lint markdown` job fails if any of these `lint-doc.sh` tests fail:
 - [Filenames and directories must](../site_architecture/folder_structure.md#work-with-directories-and-files):
   - Use `_index.md` instead of `README.md`
   - Use underscores instead of dashes.
-  - Be lower case.
+  - Be lowercase.
 - Image filenames must [specify the version they were added in](../styleguide/_index.md#image-requirements).
 - Mermaid charts must render without errors.
 
@@ -64,7 +64,7 @@ The `docs-lint markdown` job fails if any of these `lint-doc.sh` tests fail:
 
 [Mermaid](https://mermaid.js.org/) builds charts and diagrams from code.
 
-The script (`scripts/lint/check_mermaid.mjs`) runs during `lint-doc.sh` checks on
+The script (`scripts/lint/check_mermaid.mjs`) runs in the `docs-lint mermaid` job for
 all merge requests that contain changes to Markdown files. The script returns an
 error if any Markdown files return a Mermaid syntax error.
 
@@ -86,6 +86,20 @@ pipelines:
 
 These jobs check links, including anchor links, and report any problems. Any link that requires a network
 connection is skipped.
+
+## Tests for translated documentation
+
+To ensure quality across all our translated content, we've implemented testing for our documentation in
+multiple languages. These tests mirror those used for the English version, but run on internationalized
+content in the `/doc-locale/` or `/docs-locale/` directories.
+
+| Project | English Dir | Translation Dir | Linting Jobs |
+| ----- | ----- | ----- | ----- |
+| GitLab | [`/doc`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc) | [`/doc-locale`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc-locale) | `docs-i18n-lint markdown` |
+| GitLab Runner | [`/docs`](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main/docs) | [`/docs-locale`](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main/docs-locale?ref_type=heads) | `docs:lint i18n markdown` |
+| Linux package | [`/doc`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/tree/master/doc) | [`/doc-locale`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/tree/master/doc-locale) | `docs-lint-i18n markdown` <br/> `docs-lint-i18n content` |
+| Charts | [`/doc`](https://gitlab.com/gitlab-org/charts/gitlab/-/tree/master/doc) | [`/doc-locale`](https://gitlab.com/gitlab-org/charts/gitlab/-/tree/master/doc-locale) | `check_docs_i18n_content` <br/> `check_docs_i18n_markdown` |
+| Operator | [`/doc`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/tree/master/doc) | [`/doc-locale`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/tree/master/doc-locale) | `docs-i18n-lint content` <br/> `docs-i18n-lint markdown` |
 
 ## Install documentation linters
 
@@ -245,15 +259,25 @@ To update the linting images:
    ([Example job output](https://gitlab.com/gitlab-org/gitlab-docs/-/jobs/2335033884#L334))
 1. Verify that the new image was added to the container registry.
 1. Open merge requests to update each of these configuration files to point to the new image.
-   In each merge request, include a small doc update to trigger the job that uses the image.
-   - <https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/docs.gitlab-ci.yml> ([Example MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85177))
-   - <https://gitlab.com/gitlab-org/gitlab-runner/-/blob/main/.gitlab/ci/docs.gitlab-ci.yml> ([Example MR](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3408))
-   - <https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/gitlab-ci-config/gitlab-com.yml> ([Example MR](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6037))
-   - <https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/.gitlab-ci.yml> ([Example MR](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/2511))
-   - <https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/blob/master/.gitlab-ci.yml> ([Example MR](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/merge_requests/462))
-   - <https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/.gitlab/ci/test.gitlab-ci.yml> ([Example MR](https://gitlab.com/gitlab-org/gitlab-development-kit/-/merge_requests/2417))
-1. In each merge request, check the relevant job output to confirm the updated image was
-   used for the test. ([Example job output](https://gitlab.com/gitlab-org/charts/gitlab/-/jobs/2335470260#L24))
+   For jobs that use `markdownlint`, `vale`, or `lychee`:
+   - `gitlab`:
+     - [`.gitlab/ci/docs.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/docs.gitlab-ci.yml),
+       update the `image` in the `.docs-markdown-lint-image:` section.
+     - [`scripts/lint-doc.sh`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/lint-doc.sh),
+       update the `registry_url` value in the `run_locally_or_in_container()` section.
+   - `gitlab-runner`: [`.gitlab/ci/_common.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab-runner/-/blob/main/.gitlab/ci/_common.gitlab-ci.yml),
+     update the value of the `DOCS_LINT_IMAGE` variable.
+   - `omnibus-gitlab`: [`gitlab-ci-config/variables.yml`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/gitlab-ci-config/variables.yml),
+     update the value of the `DOCS_LINT_IMAGE` variable.
+   - `charts/gitlab`: [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/.gitlab-ci.yml),
+     update the value of the `DOCS_LINT_IMAGE` variable.
+   - `cloud-native/gitlab-operator`: [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/blob/master/.gitlab-ci.yml)
+     update the value of the `DOCS_LINT_IMAGE` variable.
+   - `gitlab-development-kit`: [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/.gitlab-ci.yml)
+     update the value of the `DOCS_LINT_IMAGE` variable.
+1. In each merge request:
+   1. Include a small doc update to trigger the job that uses the image.
+   1. Check the relevant job output to confirm the updated image was used for the test.
 1. Assign the merge requests to any technical writer to review and merge.
 
 ## Configure pre-push hooks
@@ -326,3 +350,4 @@ We also run some documentation tests in these projects:
 - GitLab Extension for Visual Studio: <https://gitlab.com/gitlab-org/editor-extensions/gitlab-visual-studio-extension/-/blob/main/.gitlab-ci.yml>
 - AI gateway: <https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/.gitlab/ci/lint.gitlab-ci.yml>
 - Prompt Library: <https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/.gitlab-ci.yml>
+- GitLab Container Registry: <https://gitlab.com/gitlab-org/container-registry/-/blob/master/.gitlab/ci/validate.yml>

@@ -28,6 +28,13 @@ Make your changes in your fork, then submit them through a merge request to the 
 To create a [confidential merge request](../merge_requests/confidential.md),
 use a personal fork of a public repository.
 
+{{< alert type="note" >}}
+
+If the upstream project is archived, the fork relationship is automatically removed.
+For more information, see [Archive a project](../working_with_projects.md#archive-a-project)
+
+{{< /alert >}}
+
 ## Create a fork
 
 {{< history >}}
@@ -134,7 +141,7 @@ To update your fork from the command line, follow the instruction in
 
 A fork can be configured as a mirror of the upstream if all these conditions are met:
 
-1. Your subscription is **Premium** or **Ultimate**.
+1. Your subscription is GitLab Premium or GitLab Ultimate.
 1. You create all changes in branches (not `main`).
 1. You do not work on [merge requests for confidential issues](../merge_requests/confidential.md),
    which requires changes to `main`.
@@ -166,7 +173,8 @@ Prerequisites:
 
 {{< alert type="warning" >}}
 
-If you remove a fork relationship, you can't send merge requests to the source.
+If you remove a fork relationship, you can't send new merge requests to the source.
+Any existing open merge requests from the fork to the source are also closed.
 If anyone has forked your repository, their fork also loses the relationship.
 To restore the fork relationship, [use the API](../../../api/project_forks.md#create-a-fork-relationship-between-projects).
 
@@ -189,7 +197,7 @@ to share objects with another repository:
 
 ## Check a fork's storage usage
 
-Your fork uses a [deduplication strategy](../../../development/git_object_deduplication.md)
+Your fork uses a deduplication strategy
 to reduce the storage space it needs. Your fork can access the object pool connected to the source repository.
 
 For more information and to check the storage use, see [View project fork storage usage](../../storage_usage_quotas.md#view-project-fork-storage-usage).

@@ -46,6 +46,20 @@ RSpec.describe WorkItems::Callbacks::Assignees, :freeze_time, feature_category: 
       end
     end
 
+    context 'when user has permission on parent' do
+      let(:public_project) { create(:project, :public, reporters: reporter) }
+      let(:confidential_wi) { create(:work_item, :confidential, project: public_project, updated_at: 1.day.ago) }
+
+      let(:params) { { assignee_ids: [new_assignee.id] } }
+      let(:service) { described_class.new(issuable: confidential_wi, current_user: current_user, params: params) }
+
+      it 'updates the assignees' do
+        assignees_callback
+
+        expect(confidential_wi.assignee_ids).to contain_exactly(new_assignee.id)
+      end
+    end
+
     context 'when multiple assignees are given' do
       let(:params) { { assignee_ids: [new_assignee.id, reporter.id] } }
 

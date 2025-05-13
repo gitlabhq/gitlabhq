@@ -115,14 +115,13 @@ module Groups
     # rubocop:enable CodeReuse/ActiveRecord
 
     def publish_event
-      event = Groups::GroupDeletedEvent.new(
-        data: {
-          group_id: group.id,
-          root_namespace_id: group.root_ancestor&.id.to_i # remove safe navigation and `.to_i` with https://gitlab.com/gitlab-org/gitlab/-/issues/508611
-        }
-      )
+      event_data = {
+        group_id: group.id,
+        root_namespace_id: group.root_ancestor&.id.to_i # remove safe navigation and `.to_i` with https://gitlab.com/gitlab-org/gitlab/-/issues/508611
+      }
+      event_data[:parent_namespace_id] = group.parent_id if group.parent_id.present?
 
-      Gitlab::EventStore.publish(event)
+      Gitlab::EventStore.publish(Groups::GroupDeletedEvent.new(data: event_data))
     end
   end
 end

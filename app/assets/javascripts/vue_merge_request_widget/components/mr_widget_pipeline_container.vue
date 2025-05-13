@@ -1,7 +1,5 @@
 <script>
 import { sanitize } from '~/lib/dompurify';
-import { n__ } from '~/locale';
-import MergeRequestStore from '../stores/mr_widget_store';
 import ArtifactsApp from './artifacts_list_app.vue';
 import DeploymentList from './deployment/deployment_list.vue';
 import MrWidgetContainer from './mr_widget_container.vue';
@@ -55,19 +53,6 @@ export default {
     pipeline() {
       return this.isPostMerge ? this.mr.mergePipeline : this.mr.pipeline;
     },
-    showCollapsedDeployments() {
-      return this.deployments.length > 3;
-    },
-    multipleDeploymentsTitle() {
-      return n__(
-        'Deployments|%{deployments} environment impacted.',
-        'Deployments|%{deployments} environments impacted.',
-        this.deployments.length,
-      );
-    },
-    preferredAutoMergeStrategy() {
-      return MergeRequestStore.getPreferredAutoMergeStrategy(this.mr.availableAutoMergeStrategies);
-    },
     ciStatus() {
       return this.isPostMerge ? this.mr?.mergePipeline?.details?.status?.text : this.mr.ciStatus;
     },
@@ -82,13 +67,10 @@ export default {
       :pipeline-etag="mr.pipelineEtag"
       :builds-with-coverage="mr.buildsWithCoverage"
       :ci-status="ciStatus"
-      :has-ci="mr.hasCI"
-      :pipeline-must-succeed="mr.onlyAllowMergeIfPipelineSucceeds"
       :source-branch="branch"
       :source-branch-link="branchLink"
       :mr-troubleshooting-docs-path="mr.mrTroubleshootingDocsPath"
       :ci-troubleshooting-docs-path="mr.ciTroubleshootingDocsPath"
-      :merge-strategy="preferredAutoMergeStrategy"
       :retargeted="mr.retargeted"
       :target-project-id="mr.targetProjectId"
       :iid="mr.iid"

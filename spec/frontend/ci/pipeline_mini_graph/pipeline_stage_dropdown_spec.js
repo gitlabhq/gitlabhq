@@ -1,6 +1,6 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlButton, GlDisclosureDropdown, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlDisclosureDropdown, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
 
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { createAlert } from '~/alert';
@@ -13,7 +13,12 @@ import JobDropdownItem from '~/ci/common/private/job_dropdown_item.vue';
 import PipelineStageDropdown from '~/ci/pipeline_mini_graph/pipeline_stage_dropdown.vue';
 
 import getPipelineStageJobsQuery from '~/ci/pipeline_mini_graph/graphql/queries/get_pipeline_stage_jobs.query.graphql';
-import { mockPipelineStageJobs, pipelineStage, pipelineStageJobsFetchError } from './mock_data';
+import {
+  createMockPipelineStageJobs,
+  mockPipelineStageJobs,
+  pipelineStage,
+  pipelineStageJobsFetchError,
+} from './mock_data';
 
 Vue.use(VueApollo);
 jest.mock('~/alert');
@@ -57,15 +62,19 @@ describe('PipelineStageDropdown', () => {
 
   const clickStageDropdown = async () => {
     await findDropdownButton().trigger('click');
-    await waitForPromises;
+    await waitForPromises();
+    await nextTick();
   };
 
   beforeEach(() => {
-    pipelineStageResponse = jest.fn();
-    createComponent();
+    pipelineStageResponse = jest.fn().mockResolvedValue(mockPipelineStageJobs);
   });
 
   describe('when mounted', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
     it('renders the dropdown', () => {
       expect(findStageDropdown().exists()).toBe(true);
     });
@@ -76,6 +85,10 @@ describe('PipelineStageDropdown', () => {
   });
 
   describe('dropdown appearance', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
     it('renders the icon', () => {
       expect(findCiIcon().exists()).toBe(true);
     });
@@ -94,24 +107,22 @@ describe('PipelineStageDropdown', () => {
   });
 
   describe('when dropdown is clicked', () => {
-    beforeEach(async () => {
-      await createComponent();
-      pipelineStageResponse.mockResolvedValue(mockPipelineStageJobs);
-    });
-
     it('has the correct header title', async () => {
+      await createComponent();
       await clickStageDropdown();
 
       expect(findDropdownHeader().text()).toBe('Stage: build');
     });
 
     it('emits miniGraphStageClick', async () => {
+      await createComponent();
       await clickStageDropdown();
 
       expect(wrapper.emitted('miniGraphStageClick')).toHaveLength(1);
     });
 
     it('has fired the stage query', async () => {
+      await createComponent();
       await clickStageDropdown();
       const { stage } = defaultProps;
 
@@ -120,16 +131,25 @@ describe('PipelineStageDropdown', () => {
 
     describe('and query is loading', () => {
       it('renders a loading icon and no list', async () => {
+        let res;
+        pipelineStageResponse.mockImplementationOnce(
+          () =>
+            new Promise((resolve) => {
+              res = resolve;
+            }),
+        );
         createComponent();
         await clickStageDropdown();
 
         expect(findLoadingIcon().exists()).toBe(true);
         expect(findJobList().exists()).toBe(false);
+        res();
       });
     });
 
     describe('and query is successful', () => {
       beforeEach(async () => {
+        await createComponent();
         await clickStageDropdown();
       });
 
@@ -147,6 +167,34 @@ describe('PipelineStageDropdown', () => {
         findJobDropdownItems().at(0).vm.$emit('jobActionExecuted');
         expect(wrapper.emitted('jobActionExecuted')).toHaveLength(1);
       });
+
+      it('does not show search', () => {
+        expect(wrapper.findComponent(GlSearchBoxByType).exists()).toBe(false);
+      });
+    });
+
+    describe('with too many items', () => {
+      let jobs;
+
+      beforeEach(async () => {
+        jobs = createMockPipelineStageJobs();
+        jobs.data.ciPipelineStage.jobs.nodes = new Array(13)
+          .fill(jobs.data.ciPipelineStage.jobs.nodes[0])
+          .map((node, i) => ({ ...node, name: node.name + i, id: node.id + i }));
+        await createComponent({ pipelineStageHandler: jest.fn().mockResolvedValue(jobs) });
+        await clickStageDropdown();
+      });
+
+      it('displays search', () => {
+        expect(wrapper.findComponent(GlSearchBoxByType).exists()).toBe(true);
+      });
+
+      it('searches items', async () => {
+        const { name } = jobs.data.ciPipelineStage.jobs.nodes[5];
+        wrapper.findComponent(GlSearchBoxByType).vm.$emit('input', name);
+        await nextTick();
+        expect(findJobDropdownItems().length).toBe(1);
+      });
     });
 
     describe('and query is not successful', () => {
@@ -155,8 +203,6 @@ describe('PipelineStageDropdown', () => {
       it('throws an error for the pipeline query', async () => {
         await createComponent({ pipelineStageHandler: failedHandler });
         await clickStageDropdown();
-        await waitForPromises();
-
         expect(createAlert).toHaveBeenCalledWith({ message: pipelineStageJobsFetchError });
       });
     });
@@ -164,10 +210,8 @@ describe('PipelineStageDropdown', () => {
 
   describe('when there are failed jobs', () => {
     beforeEach(async () => {
-      pipelineStageResponse.mockResolvedValue(mockPipelineStageJobs);
       await createComponent();
       await clickStageDropdown();
-      await waitForPromises();
     });
 
     it('renders failed jobs title', () => {
@@ -189,7 +233,6 @@ describe('PipelineStageDropdown', () => {
       pipelineStageResponse.mockResolvedValue(withoutFailedJob);
       await createComponent();
       await clickStageDropdown();
-      await waitForPromises();
     });
 
     it('does not render failed jobs title', () => {
@@ -206,7 +249,6 @@ describe('PipelineStageDropdown', () => {
       pipelineStageResponse.mockResolvedValue(mockPipelineStageJobs);
       await createComponent();
       await clickStageDropdown();
-      await waitForPromises();
     });
 
     it('starts polling when dropdown is open', () => {
@@ -225,7 +267,6 @@ describe('PipelineStageDropdown', () => {
       expect(pipelineStageResponse).toHaveBeenCalledTimes(2);
 
       await clickStageDropdown();
-      await waitForPromises();
 
       jest.advanceTimersByTime(8000);
 
@@ -246,7 +287,6 @@ describe('PipelineStageDropdown', () => {
         props: { isMergeTrain: true },
       });
       await clickStageDropdown();
-      await waitForPromises();
 
       expect(findMergeTrainMessage().exists()).toBe(true);
     });

@@ -275,11 +275,11 @@ registry.
 
 Let's also assume that these are the sign-in credentials:
 
-| Key      | Value                       |
-|:---------|:----------------------------|
+| Key      | Value |
+|:---------|:------|
 | registry | `registry.example.com:5000` |
-| username | `my_username`               |
-| password | `my_password`               |
+| username | `my_username` |
+| password | `my_password` |
 
 Use one of the following methods to determine the value for `DOCKER_AUTH_CONFIG`:
 
@@ -314,7 +314,7 @@ Use one of the following methods to determine the value for `DOCKER_AUTH_CONFIG`
 
   {{< alert type="note" >}}
 
-  If your username includes special characters like `@`, you must escape them with a backslash (<code>&#92;</code>) to prevent authentication problems.
+  If your username includes special characters like `@`, you must escape them with a backslash (` \ `) to prevent authentication problems.
 
   {{< /alert >}}
 

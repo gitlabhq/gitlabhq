@@ -2,11 +2,12 @@
 
 class JiraConnectInstallation < ApplicationRecord
   include Gitlab::Routing
+  include Gitlab::EncryptedAttribute
 
   attr_encrypted :shared_secret,
     mode: :per_attribute_iv,
     algorithm: 'aes-256-gcm',
-    key: Settings.attr_encrypted_db_key_base_32
+    key: :db_key_base_32
 
   has_many :subscriptions, class_name: 'JiraConnectSubscription'
 

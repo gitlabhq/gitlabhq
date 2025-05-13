@@ -39,13 +39,14 @@ module WebpackHelper
     raise unless Gitlab.dev_or_test_env?
   end
 
-  def webpack_controller_bundle_tags
+  def webpack_controller_bundle_tags(custom_action_name = nil)
     chunks = []
 
-    action = case controller.action_name
+    action_name = custom_action_name || controller.action_name
+    action = case action_name
              when 'create' then 'new'
              when 'update' then 'edit'
-             else controller.action_name
+             else action_name
              end
 
     route = [*controller.controller_path.split('/'), action].compact

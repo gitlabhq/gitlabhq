@@ -141,6 +141,21 @@ RSpec.describe 'getting group information', :with_license, feature_category: :gr
       end
     end
 
+    context 'when marked_for_deletion_on filter is applied' do
+      let(:marked_for_deletion_on) { Date.parse('2024-01-01') }
+      let(:group) do
+        create(:group_with_deletion_schedule, marked_for_deletion_on: marked_for_deletion_on, owners: user2)
+      end
+
+      it 'returns groups with marked_for_deletion_on' do
+        post_graphql(group_query(group), current_user: user2)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(graphql_data['group']['id']).to eq(group.to_global_id.to_s)
+        expect(graphql_data['group']['markedForDeletionOn']).to eq(marked_for_deletion_on.iso8601)
+      end
+    end
+
     context 'with timelog categories' do
       let_it_be(:group) { create(:group) }
       let_it_be(:timelog_category) { create(:timelog_category, namespace: group, name: 'TimelogCategoryTest') }

@@ -2,13 +2,14 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+gitlab_dedicated: yes
 title: Protected packages
 ---
 
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -18,9 +19,11 @@ title: Protected packages
 - The protection rule setting **Push protected up to access level** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/416382) to **Minimum access level for push** in GitLab 17.1.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/472655) in GitLab 17.5.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/472655) in GitLab 17.6. Feature flag `packages_protected_packages` removed.
+- Conan protected packages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323975) in GitLab 17.6 [with a flag](../../../administration/feature_flags.md) named `packages_protected_packages_conan`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
 - Maven protected packages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323969) in GitLab 17.9 [with a flag](../../../administration/feature_flags.md) named `packages_protected_packages_maven`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/516215) in GitLab 17.10 [with a flag](../../../administration/feature_flags.md) named `packages_protected_packages_delete`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/497082) in GitLab 17.11. Feature flag `packages_protected_packages_maven` removed.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/497811) in GitLab 17.11. Feature flag `packages_protected_packages_conan` removed.
 
 {{< /history >}}
 
@@ -28,11 +31,11 @@ By default, any user with at least the Developer role can create,
 edit, and delete packages. Add a package protection rule to restrict
 which users can make changes to your packages.
 
-GitLab supports package protection for npm, PyPI, and maven packages, but [epic 5574](https://gitlab.com/groups/gitlab-org/-/epics/5574) proposes to add additional features and package formats.
+GitLab supports package protection for npm, PyPI, Maven, and Conan packages, but [epic 5574](https://gitlab.com/groups/gitlab-org/-/epics/5574) proposes to add additional features and package formats.
 
 When a package is protected, the default behavior enforces these restrictions on the package:
 
-| Action                                 | Who can do it                                                                     |
+| Action                                 | Minimum role or token                                                                     |
 |:---------------------------------------|:----------------------------------------------------------------------------------|
 | Protect a package                      | At least the Maintainer role.                                                     |
 | Push a new package                     | At least the role set in [**Minimum access level for push**](#protect-a-package). |

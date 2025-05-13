@@ -2,8 +2,8 @@ query getBlobSearchCountQuery(
   $search: String!
   $groupId: GroupID
   $projectId: ProjectID
-  $regex: Boolean
   $chunkCount: Int
+  $regex: Boolean
   $includeArchived: Boolean
   $includeForked: Boolean
 ) {
@@ -11,8 +11,8 @@ query getBlobSearchCountQuery(
     search: $search
     groupId: $groupId
     projectId: $projectId
-    regex: $regex
     chunkCount: $chunkCount
+    regex: $regex
     includeArchived: $includeArchived
     includeForked: $includeForked
   ) {

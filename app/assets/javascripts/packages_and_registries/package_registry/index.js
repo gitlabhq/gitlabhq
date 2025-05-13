@@ -17,6 +17,7 @@ export default () => {
     pageType,
     emptyListIllustration,
     npmInstanceUrl,
+    npmGroupUrl,
     projectListUrl,
     groupListUrl,
     settingsPath,
@@ -25,15 +26,7 @@ export default () => {
 
   const isGroupPage = pageType === 'groups';
 
-  // This is a mini state to help the breadcrumb have the correct name in the details page
-  const breadCrumbState = Vue.observable({
-    name: '',
-    updateName(value) {
-      this.name = value;
-    },
-  });
-
-  const router = createRouter(endpoint, breadCrumbState);
+  const router = createRouter(endpoint);
 
   const attachMainComponent = () =>
     new Vue({
@@ -46,9 +39,9 @@ export default () => {
         emptyListIllustration,
         isGroupPage,
         npmInstanceUrl,
+        npmGroupUrl,
         projectListUrl,
         groupListUrl,
-        breadCrumbState,
         settingsPath,
         canDeletePackages: parseBoolean(canDeletePackages),
       },

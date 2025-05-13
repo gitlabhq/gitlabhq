@@ -5,6 +5,7 @@ module Gitlab
     module Router
       class Graphql
         extend EtagCaching::Router::Helpers
+
         GRAPHQL_ETAG_RESOURCE_HEADER = 'X-GITLAB-GRAPHQL-RESOURCE-ETAG'
 
         ROUTES = [

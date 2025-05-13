@@ -1,0 +1,8 @@
+---
+migration_job_name: UpdateRequireDpopForManageApiEndpointsToFalse
+description: Batched migration to update all the existing values in the require_dpop_for_manage_api_endpoints column from true to false
+feature_category: system_access
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188396
+milestone: '18.0'
+queued_migration_version: 20250415203448
+finalized_by: # version of the migration that finalized this BBM

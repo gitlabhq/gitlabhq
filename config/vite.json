@@ -14,7 +14,7 @@
       "ee/images/*",
       "jh/images/*"
     ],
-    "port": 3038,
+    "skipProxy": true,
     "publicOutputDir": "vite-dev",
     "devServerConnectTimeout": 3
   }

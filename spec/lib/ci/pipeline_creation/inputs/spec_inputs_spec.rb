@@ -56,6 +56,32 @@ RSpec.describe Ci::PipelineCreation::Inputs::SpecInputs, feature_category: :pipe
         expect(spec_inputs.errors).to be_empty
       end
     end
+
+    context 'with spec is not a hash' do
+      let(:specs) { 'this is a string' }
+
+      before do
+        stub_const('TranslationStub', Module.new do
+          def s_(message, *_args)
+            message
+          end
+        end)
+
+        described_class.include(TranslationStub)
+      end
+
+      it 'adds error message about invalid input specification' do
+        spec_inputs = described_class.new(specs)
+        expect(spec_inputs.errors).to include(
+          a_string_matching(/Invalid input specification: expected a hash-like object/)
+        )
+      end
+
+      it 'returns empty inputs' do
+        spec_inputs = described_class.new(specs)
+        expect(spec_inputs.all_inputs).to be_empty
+      end
+    end
   end
 
   describe '#all_inputs' do

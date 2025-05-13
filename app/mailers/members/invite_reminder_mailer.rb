@@ -21,7 +21,10 @@ module Members
 
       subject_line = format(email_instance.subject, inviter: member.created_by.name)
 
-      mail_with_locale(to: member.invite_email, subject: EmailsHelper.subject_with_suffix([subject_line]))
+      mail_with_locale(
+        to: member.invite_email,
+        subject: EmailsHelper.subject_with_prefix_and_suffix([subject_line])
+      )
     end
 
     private

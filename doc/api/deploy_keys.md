@@ -88,7 +88,7 @@ Example response:
   {
     "id": 3,
     "title": "Another Public key",
-    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDIJFwIL6YNcCgVBLTHgM6hzmoL5vf0ThDKQMWT3HrwCjUCGPwR63vBwn6+/Gx+kx+VTo9FuojzR0O4XfwD3LrYA+oT3ETbn9U4e/VS4AH/G4SDMzgSLwu0YuPe517FfGWhWGQhjiXphkaQ+6bXPmcASWb0RCO5+pYlGIfxv4eFGQ=="
+    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDIJFwIL6YNcCgVBLTHgM6hzmoL5vf0ThDKQMWT3HrwCjUCGPwR63vBwn6+/Gx+kx+VTo9FuojzR0O4XfwD3LrYA+oT3ETbn9U4e/VS4AH/G4SDMzgSLwu0YuPe517FfGWhWGQhjiXphkaQ+6bXPmcASWb0RCO5+pYlGIfxv4eFGQ==",
     "fingerprint": "0b:cf:58:40:b9:23:96:c7:ba:44:df:0e:9e:87:5e:75",
     "fingerprint_sha256": "SHA256:lGI/Ys/Wx7PfMhUO1iuBH92JQKYN+3mhJZvWO4Q5ims",
     "created_at": "2013-10-02T11:12:29Z",
@@ -142,17 +142,18 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
-     --data '{"title": "My deploy key", "key": "ssh-rsa AAAA...", "expired_at": "2024-12-31T08:00:00Z"}' \
-     "https://gitlab.example.com/api/v4/deploy_keys/"
+curl --request POST \ --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --data "{"title": "My deploy key", "key": "ssh-rsa AAAA...", "expired_at": "2024-12-31T08:00:00Z"}" \
+     --url "https://gitlab.example.com/api/v4/deploy_keys/"
 ```
 
 Example response:
 
 ```json
 {
-  "id" : 5,
-  "title" : "My deploy key",
+  "id": 5,
+  "title": "My deploy key",
   "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDNJAkI3Wdf0r13c8a5pEExB2YowPWCSVzfZV22pNBc1CuEbyYLHpUyaD0GwpGvFdx2aP7lMEk35k6Rz3ccBF6jRaVJyhsn5VNnW92PMpBJ/P1UebhXwsFHdQf5rTt082cSxWuk61kGWRQtk4ozt/J2DF/dIUVaLvc+z4HomT41fQ==",
   "fingerprint": "4a:9d:64:15:ed:3a:e6:07:6e:89:36:b3:3b:03:05:d9",
   "fingerprint_sha256": "SHA256:Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU",
@@ -195,7 +196,7 @@ Example response:
   {
     "id": 3,
     "title": "Another Public key",
-    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDIJFwIL6YNcCgVBLTHgM6hzmoL5vf0ThDKQMWT3HrwCjUCGPwR63vBwn6+/Gx+kx+VTo9FuojzR0O4XfwD3LrYA+oT3ETbn9U4e/VS4AH/G4SDMzgSLwu0YuPe517FfGWhWGQhjiXphkaQ+6bXPmcASWb0RCO5+pYlGIfxv4eFGQ=="
+    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDIJFwIL6YNcCgVBLTHgM6hzmoL5vf0ThDKQMWT3HrwCjUCGPwR63vBwn6+/Gx+kx+VTo9FuojzR0O4XfwD3LrYA+oT3ETbn9U4e/VS4AH/G4SDMzgSLwu0YuPe517FfGWhWGQhjiXphkaQ+6bXPmcASWb0RCO5+pYlGIfxv4eFGQ==",
     "fingerprint": "0b:cf:58:40:b9:23:96:c7:ba:44:df:0e:9e:87:5e:75",
     "fingerprint_sha256": "SHA256:lGI/Ys/Wx7PfMhUO1iuBH92JQKYN+3mhJZvWO4Q5ims",
     "created_at": "2013-10-02T11:12:29Z",
@@ -227,24 +228,24 @@ Parameters:
 
 ```json
 [
-    {
-        "id": 1,
-        "title": "Key A",
-        "created_at": "2022-05-30T12:28:27.855Z",
-        "expires_at": null,
-        "key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILkYXU2fVeO4/0rDCSsswP5iIX2+B6tv15YT3KObgyDl Key",
-        "fingerprint": "40:8e:fa:df:70:f7:a7:06:1e:0d:6f:ae:f2:27:92:01",
-        "fingerprint_sha256": "SHA256:Ojq2LZW43BFK/AMP81jBkDGn9YpPWYRNcViKBB44LPU"
-    },
-    {
-        "id": 2,
-        "title": "Key B",
-        "created_at": "2022-05-30T13:34:56.219Z",
-        "expires_at": null,
-        "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDNJAkI3Wdf0r13c8a5pEExB2YowPWCSVzfZV22pNBc1CuEbyYLHpUyaD0GwpGvFdx2aP7lMEk35k6Rz3ccBF6jRaVJyhsn5VNnW92PMpBJ/P1UebhXwsFHdQf5rTt082cSxWuk61kGWRQtk4ozt/J2DF/dIUVaLvc+z4HomT41fQ==",
-        "fingerprint": "4a:9d:64:15:ed:3a:e6:07:6e:89:36:b3:3b:03:05:d9",
-        "fingerprint_sha256": "SHA256:Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU",
-    }
+  {
+    "id": 1,
+    "title": "Key A",
+    "created_at": "2022-05-30T12:28:27.855Z",
+    "expires_at": null,
+    "key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILkYXU2fVeO4/0rDCSsswP5iIX2+B6tv15YT3KObgyDl Key",
+    "fingerprint": "40:8e:fa:df:70:f7:a7:06:1e:0d:6f:ae:f2:27:92:01",
+    "fingerprint_sha256": "SHA256:Ojq2LZW43BFK/AMP81jBkDGn9YpPWYRNcViKBB44LPU"
+  },
+  {
+    "id": 2,
+    "title": "Key B",
+    "created_at": "2022-05-30T13:34:56.219Z",
+    "expires_at": null,
+    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDNJAkI3Wdf0r13c8a5pEExB2YowPWCSVzfZV22pNBc1CuEbyYLHpUyaD0GwpGvFdx2aP7lMEk35k6Rz3ccBF6jRaVJyhsn5VNnW92PMpBJ/P1UebhXwsFHdQf5rTt082cSxWuk61kGWRQtk4ozt/J2DF/dIUVaLvc+z4HomT41fQ==",
+    "fingerprint": "4a:9d:64:15:ed:3a:e6:07:6e:89:36:b3:3b:03:05:d9",
+    "fingerprint_sha256": "SHA256:Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU"
+  }
 ]
 ```
 
@@ -322,21 +323,22 @@ POST /projects/:id/deploy_keys
 | `expires_at` | datetime | no | Expiration date for the deploy key. Does not expire if no value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`) |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
-     --data '{"title": "My deploy key", "key": "ssh-rsa AAAA...", "can_push": "true"}' \
-     "https://gitlab.example.com/api/v4/projects/5/deploy_keys/"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --data "{"title": "My deploy key", "key": "ssh-rsa AAAA...", "can_push": "true"}" \
+     --url "https://gitlab.example.com/api/v4/projects/5/deploy_keys/"
 ```
 
 Example response:
 
 ```json
 {
-   "key" : "ssh-rsa AAAA...",
-   "id" : 12,
-   "title" : "My deploy key",
-   "can_push": true,
-   "created_at" : "2015-08-29T12:44:31.550Z",
-   "expires_at": null
+  "key": "ssh-rsa AAAA...",
+  "id": 12,
+  "title": "My deploy key",
+  "can_push": true,
+  "created_at": "2015-08-29T12:44:31.550Z",
+  "expires_at": null
 }
 ```
 
@@ -355,20 +357,22 @@ PUT /projects/:id/deploy_keys/:key_id
 | `title`    | string  | no | New deploy key's title |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" \
-     --data '{"title": "New deploy key", "can_push": true}' "https://gitlab.example.com/api/v4/projects/5/deploy_keys/11"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --data "{"title": "New deploy key", "can_push": true}" \
+     --url "https://gitlab.example.com/api/v4/projects/5/deploy_keys/11"
 ```
 
 Example response:
 
 ```json
 {
-   "id": 11,
-   "title": "New deploy key",
-   "key": "ssh-rsa AAAA...",
-   "created_at": "2015-08-29T12:44:31.550Z",
-   "expires_at": null,
-   "can_push": true
+  "id": 11,
+  "title": "New deploy key",
+  "key": "ssh-rsa AAAA...",
+  "created_at": "2015-08-29T12:44:31.550Z",
+  "expires_at": null,
+  "can_push": true
 }
 ```
 
@@ -386,7 +390,9 @@ DELETE /projects/:id/deploy_keys/:key_id
 | `key_id`  | integer | yes | The ID of the deploy key |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/deploy_keys/13"
+curl --request DELETE \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/5/deploy_keys/13"
 ```
 
 ## Enable a deploy key
@@ -410,11 +416,11 @@ Example response:
 
 ```json
 {
-   "key" : "ssh-rsa AAAA...",
-   "id" : 12,
-   "title" : "My deploy key",
-   "created_at" : "2015-08-29T12:44:31.550Z",
-   "expires_at": null
+  "key": "ssh-rsa AAAA...",
+  "id": 12,
+  "title": "My deploy key",
+  "created_at": "2015-08-29T12:44:31.550Z",
+  "expires_at": null
 }
 ```
 
@@ -448,7 +454,7 @@ With those IDs, add the same deploy key to all:
 for project_id in 321 456 987; do
     curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
          --header "Content-Type: application/json" \
-         --data '{"title": "my key", "key": "ssh-rsa AAAA..."}' \
+         --data "{"title": "my key", "key": "ssh-rsa AAAA..."}" \
          "https://gitlab.example.com/api/v4/projects/${project_id}/deploy_keys"
 done
 ```

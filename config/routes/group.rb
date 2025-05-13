@@ -12,7 +12,6 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       get :issues, as: :issues_group_calendar, action: :issues_calendar, constraints: ->(req) { req.format == :ics }
       get :issues, as: :issues_group
       get :merge_requests, as: :merge_requests_group
-      get :projects, as: :projects_group, to: redirect('%{id}')
       get :details, as: :details_group
       get :activity, as: :activity_group
       put :transfer, as: :transfer_group
@@ -28,6 +27,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     end
 
     get '/', action: :show, as: :group_canonical
+    delete '/', action: :destroy, as: :destroy_group_canonical
   end
 
   scope(
@@ -180,6 +180,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     resources :achievements, only: [:index, :new, :edit]
 
     resources :work_items, only: [:index, :show], param: :iid
+
+    resource :import_history, only: [:show]
 
     post :preview_markdown
 

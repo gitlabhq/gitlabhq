@@ -51,38 +51,16 @@ RSpec.describe Gitlab::SidekiqMiddleware, feature_category: :shared do
     it_behaves_like "a middleware chain"
   end
 
-  describe '.server_configurator' do
-    let(:configurator) { described_class.server_configurator }
+  describe 'Server.configurator' do
+    let(:configurator) { described_class::Server.configurator }
     let(:worker_args) { [worker_class.new, { 'args' => job_args }, queue] }
     let(:middleware_expected_args) { [a_kind_of(worker_class), hash_including({ 'args' => job_args }), queue] }
-    let(:all_sidekiq_middlewares) do
-      [
-        ::Gitlab::SidekiqMiddleware::ShardAwarenessValidator,
-        ::Gitlab::SidekiqMiddleware::Monitor,
-        ::Labkit::Middleware::Sidekiq::Server,
-        ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware,
-        ::Gitlab::SidekiqMiddleware::ServerMetrics,
-        ::Gitlab::SidekiqMiddleware::ArgumentsLogger,
-        ::Gitlab::SidekiqMiddleware::ExtraDoneLogMetadata,
-        ::Gitlab::SidekiqMiddleware::BatchLoader,
-        ::Gitlab::SidekiqMiddleware::InstrumentationLogger,
-        ::Gitlab::SidekiqMiddleware::SetIpAddress,
-        ::Gitlab::SidekiqMiddleware::AdminMode::Server,
-        ::Gitlab::SidekiqVersioning::Middleware,
-        ::Gitlab::SidekiqStatus::ServerMiddleware,
-        ::Gitlab::SidekiqMiddleware::WorkerContext::Server,
-        ::ClickHouse::MigrationSupport::SidekiqMiddleware,
-        ::Gitlab::SidekiqMiddleware::DuplicateJobs::Server,
-        ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server,
-        ::Gitlab::Database::LoadBalancing::SidekiqServerMiddleware,
-        ::Gitlab::SidekiqMiddleware::SkipJobs
-      ]
-    end
+    let(:all_sidekiq_middlewares) { ::Gitlab::SidekiqMiddleware::Server.middlewares }
 
     describe "server metrics" do
       around do |example|
         with_sidekiq_server_middleware do |chain|
-          described_class.server_configurator(
+          described_class::Server.configurator(
             metrics: true,
             arguments_logger: true,
             skip_jobs: false
@@ -116,7 +94,7 @@ RSpec.describe Gitlab::SidekiqMiddleware, feature_category: :shared do
 
     context "all optional middlewares off" do
       let(:configurator) do
-        described_class.server_configurator(
+        described_class::Server.configurator(
           metrics: false,
           arguments_logger: false,
           skip_jobs: false
@@ -136,11 +114,13 @@ RSpec.describe Gitlab::SidekiqMiddleware, feature_category: :shared do
     end
 
     context 'when a job is concurrency limited' do
+      let(:concurrency_limit_middleware_index) do
+        all_sidekiq_middlewares.index(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server)
+      end
+
       let(:disabled_sidekiq_middlewares) do
-        [
-          ::Gitlab::Database::LoadBalancing::SidekiqServerMiddleware,
-          ::Gitlab::SidekiqMiddleware::SkipJobs
-        ]
+        # all middlewares after ConcurrencyLimit::Server
+        all_sidekiq_middlewares[(concurrency_limit_middleware_index + 1)..]
       end
 
       before do
@@ -171,25 +151,179 @@ RSpec.describe Gitlab::SidekiqMiddleware, feature_category: :shared do
     end
   end
 
-  describe '.client_configurator' do
-    let(:configurator) { described_class.client_configurator }
+  describe 'Client.configurator' do
+    let(:configurator) { described_class::Client.configurator }
     let(:redis_pool) { Sidekiq.redis_pool }
     let(:middleware_expected_args) { [worker_class, hash_including({ 'args' => job_args }), queue, redis_pool] }
     let(:worker_args) { [worker_class, { 'args' => job_args }, queue, redis_pool] }
-    let(:all_sidekiq_middlewares) do
-      [
-        ::Gitlab::SidekiqMiddleware::WorkerContext::Client,
-        ::Labkit::Middleware::Sidekiq::Client,
-        ::Gitlab::Database::LoadBalancing::SidekiqClientMiddleware,
-        ::Gitlab::SidekiqMiddleware::DuplicateJobs::Client,
-        ::Gitlab::SidekiqStatus::ClientMiddleware,
-        ::Gitlab::SidekiqMiddleware::AdminMode::Client,
-        ::Gitlab::SidekiqMiddleware::SizeLimiter::Client,
-        ::Gitlab::SidekiqMiddleware::ClientMetrics
-      ]
-    end
+    let(:all_sidekiq_middlewares) { ::Gitlab::SidekiqMiddleware::Client.middlewares }
 
     it_behaves_like "a middleware chain"
     it_behaves_like "a middleware chain for mailer"
+  end
+
+  context 'in between DuplicateJobs::Client and DuplicateJobs::Server' do
+    # Everything from DuplicateJobs::Client to DuplicateJobs::Server must yield
+    # no returning or job interception as it will leave the duplicate job redis key
+    # dangling and erroneously deduplicating future jobs until key expires.
+    #
+    # If a new middleware is added in between
+    # DuplicateJobs::Client and DuplicateJobs::Server, please adjust
+    # allowed_middlewares below accordingly.
+    let(:allowed_middlewares_after_duplicate_jobs_client) do
+      [
+        ::Gitlab::SidekiqStatus::ClientMiddleware,
+        ::Gitlab::SidekiqMiddleware::AdminMode::Client,
+        ::Gitlab::SidekiqMiddleware::SizeLimiter::Client,
+        ::Gitlab::SidekiqMiddleware::ClientMetrics,
+        ::Gitlab::SidekiqMiddleware::Identity::Passthrough
+      ]
+    end
+
+    let(:allowed_middlewares_before_duplicate_jobs_server) do
+      [
+        ::Gitlab::SidekiqMiddleware::SizeLimiter::Server,
+        ::Gitlab::SidekiqMiddleware::ShardAwarenessValidator,
+        ::Gitlab::SidekiqMiddleware::Monitor,
+        ::Labkit::Middleware::Sidekiq::Server,
+        ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware,
+        ::Gitlab::QueryLimiting::SidekiqMiddleware,
+        ::Gitlab::SidekiqMiddleware::ServerMetrics,
+        ::Gitlab::SidekiqMiddleware::ArgumentsLogger,
+        ::Gitlab::SidekiqMiddleware::ExtraDoneLogMetadata,
+        ::Gitlab::SidekiqMiddleware::BatchLoader,
+        ::Gitlab::SidekiqMiddleware::InstrumentationLogger,
+        ::Gitlab::SidekiqMiddleware::SetIpAddress,
+        ::Gitlab::SidekiqMiddleware::AdminMode::Server,
+        ::Gitlab::SidekiqMiddleware::QueryAnalyzer,
+        ::Gitlab::SidekiqVersioning::Middleware,
+        ::Gitlab::SidekiqStatus::ServerMiddleware,
+        ::Gitlab::SidekiqMiddleware::WorkerContext::Server,
+        ::ClickHouse::MigrationSupport::SidekiqMiddleware
+      ]
+    end
+
+    shared_examples 'a middleware chain not intercepting job' do
+      it 'must not have any middleware intercepting job' do
+        expect { |b| chain.invoke(*worker_args, &b) }.to yield_control.once
+      end
+    end
+
+    context 'after DuplicateJobs::Client' do
+      before do
+        allow(described_class::Client).to receive(:middlewares).and_return(middlewares_after_duplicate_jobs_client)
+        configurator.call(chain)
+      end
+
+      let(:configurator) { described_class::Client.configurator }
+      let(:redis_pool) { Sidekiq.redis_pool }
+      let(:worker_args) { [worker_class, { 'args' => job_args }, queue, redis_pool] }
+      let(:client_middlewares) { described_class::Client.middlewares }
+      let(:duplicate_jobs_client_middleware_index) do
+        client_middlewares.index(::Gitlab::SidekiqMiddleware::DuplicateJobs::Client)
+      end
+
+      let(:middlewares_after_duplicate_jobs_client) do
+        client_middlewares[(duplicate_jobs_client_middleware_index + 1)..]
+      end
+
+      it_behaves_like 'a middleware chain not intercepting job'
+      it 'only contains allowed middlewares' do
+        expect(middlewares_after_duplicate_jobs_client).to contain_sidekiq_middlewares_exactly(
+          allowed_middlewares_after_duplicate_jobs_client)
+      end
+    end
+
+    context 'before DuplicateJobs::Server' do
+      before do
+        allow(described_class::Server).to receive(:middlewares).and_return(middlewares_before_duplicate_jobs_server)
+        configurator.call(chain)
+      end
+
+      let(:configurator) { described_class::Server.configurator }
+      let(:worker_args) { [worker_class.new, { 'args' => job_args }, queue] }
+      let(:server_middlewares) { described_class::Server.middlewares }
+      let(:duplicate_jobs_server_middleware_index) do
+        server_middlewares.index(::Gitlab::SidekiqMiddleware::DuplicateJobs::Server)
+      end
+
+      let(:middlewares_before_duplicate_jobs_server) do
+        server_middlewares[0..(duplicate_jobs_server_middleware_index - 1)]
+      end
+
+      it_behaves_like 'a middleware chain not intercepting job'
+      it 'only contains allowed middlewares' do
+        expect(middlewares_before_duplicate_jobs_server).to contain_sidekiq_middlewares_exactly(
+          allowed_middlewares_before_duplicate_jobs_server)
+      end
+    end
+  end
+
+  describe 'Client.middlewares' do
+    let(:middlewares) { described_class::Client.middlewares }
+
+    context 'ConcurrencyLimit::Resume' do
+      it 'is placed first' do
+        expect(middlewares.first).to eq(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::Resume)
+      end
+    end
+
+    context 'WorkerContext::Client' do
+      it 'comes before Labkit middleware' do
+        expect(::Gitlab::SidekiqMiddleware::WorkerContext::Client)
+          .to come_before(::Labkit::Middleware::Sidekiq::Client)
+          .in(middlewares)
+      end
+    end
+
+    context 'Gitlab::Database::LoadBalancing::SidekiqClientMiddleware' do
+      it 'comes before DuplicateJobs::Client' do
+        expect(::Gitlab::Database::LoadBalancing::SidekiqClientMiddleware)
+          .to come_before(::Gitlab::SidekiqMiddleware::DuplicateJobs::Client)
+          .in(middlewares)
+      end
+    end
+
+    context 'SizeLimiter::Client' do
+      it 'comes before ClientMetrics' do
+        expect(::Gitlab::SidekiqMiddleware::SizeLimiter::Client)
+          .to come_before(::Gitlab::SidekiqMiddleware::ClientMetrics)
+          .in(middlewares)
+      end
+    end
+  end
+
+  describe 'Server.middlewares' do
+    let(:middlewares) { described_class::Server.middlewares }
+
+    context 'SizeLimiter::Server' do
+      it 'is placed first' do
+        expect(middlewares.first).to eq(::Gitlab::SidekiqMiddleware::SizeLimiter::Server)
+      end
+    end
+
+    context 'Labkit::Middleware::Sidekiq::Server' do
+      it 'comes before ServerMetrics' do
+        expect(::Labkit::Middleware::Sidekiq::Server)
+          .to come_before(::Gitlab::SidekiqMiddleware::ServerMetrics)
+          .in(middlewares)
+      end
+    end
+
+    context 'DuplicateJobs::Server' do
+      it 'comes before Gitlab::Database::LoadBalancing::SidekiqServerMiddleware' do
+        expect(::Gitlab::SidekiqMiddleware::DuplicateJobs::Server)
+          .to come_before(::Gitlab::Database::LoadBalancing::SidekiqServerMiddleware)
+          .in(middlewares)
+      end
+    end
+
+    context 'PauseControl::Server' do
+      it 'does not come before DuplicateJobs::Server' do
+        expect(::Gitlab::SidekiqMiddleware::PauseControl::Server)
+          .not_to come_before(::Gitlab::SidekiqMiddleware::DuplicateJobs::Server)
+                .in(middlewares)
+      end
+    end
   end
 end

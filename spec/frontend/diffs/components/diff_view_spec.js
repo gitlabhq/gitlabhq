@@ -1,8 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
 import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import { throttle } from 'lodash';
 import { PiniaVuePlugin } from 'pinia';
 import DiffView from '~/diffs/components/diff_view.vue';
@@ -12,7 +10,6 @@ import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { createCustomGetters } from 'helpers/pinia_helpers';
 
-Vue.use(Vuex);
 Vue.use(PiniaVuePlugin);
 
 jest.mock('lodash/throttle', () => jest.fn((fn) => fn));
@@ -24,19 +21,9 @@ describe('DiffView', () => {
   const DiffExpansionCell = { template: `<div/>` };
   const DiffRow = { template: `<div/>` };
   const DiffCommentCell = { template: `<div/>` };
-  const setSelectedCommentPosition = jest.fn();
   const getDiffRow = (wrapper) => wrapper.findComponent(DiffRow).vm;
 
   const createWrapper = ({ props } = {}) => {
-    const notes = {
-      actions: { setSelectedCommentPosition },
-      state: { selectedCommentPosition: null, selectedCommentPositionHover: null },
-    };
-
-    const store = new Vuex.Store({
-      modules: { notes },
-    });
-
     const propsData = {
       diffFile: { file_hash: '123' },
       diffLines: [],
@@ -45,7 +32,7 @@ describe('DiffView', () => {
     };
 
     const stubs = { DiffExpansionCell, DiffRow, DiffCommentCell };
-    return shallowMount(DiffView, { propsData, pinia, store, stubs });
+    return shallowMount(DiffView, { propsData, pinia, stubs });
   };
 
   beforeEach(() => {
@@ -118,14 +105,14 @@ describe('DiffView', () => {
       diffRow.$emit('startdragging', { line: { chunk: 0 } });
       diffRow.$emit('enterdragging', { chunk: 1 });
 
-      expect(setSelectedCommentPosition).not.toHaveBeenCalled();
+      expect(useNotes().setSelectedCommentPosition).not.toHaveBeenCalled();
     });
 
     it.each`
       start | end  | expectation
-      ${1}  | ${2} | ${{ start: { index: 1 }, end: { index: 2 } }}
-      ${2}  | ${1} | ${{ start: { index: 1 }, end: { index: 2 } }}
-      ${1}  | ${1} | ${{ start: { index: 1 }, end: { index: 1 } }}
+      ${1}  | ${2} | ${{ start: { chunk: 1, index: 1 }, end: { chunk: 1, index: 2 } }}
+      ${2}  | ${1} | ${{ start: { chunk: 1, index: 1 }, end: { chunk: 1, index: 2 } }}
+      ${1}  | ${1} | ${{ start: { chunk: 1, index: 1 }, end: { chunk: 1, index: 1 } }}
     `(
       'calls `setSelectedCommentPosition` with correct `updatedLineRange`',
       ({ start, end, expectation }) => {
@@ -135,9 +122,7 @@ describe('DiffView', () => {
         diffRow.$emit('startdragging', { line: { chunk: 1, index: start } });
         diffRow.$emit('enterdragging', { chunk: 1, index: end });
 
-        const arg = setSelectedCommentPosition.mock.calls[0][1];
-
-        expect(arg).toMatchObject(expectation);
+        expect(useNotes().setSelectedCommentPosition).toHaveBeenCalledWith(expectation);
       },
     );
 
@@ -164,7 +149,7 @@ describe('DiffView', () => {
 
       jest.runOnlyPendingTimers();
 
-      expect(setSelectedCommentPosition).toHaveBeenCalledTimes(1);
+      expect(useNotes().setSelectedCommentPosition).toHaveBeenCalledTimes(1);
     });
   });
 });

@@ -8,14 +8,6 @@ description: Join table between DAST Site Profiles and CI Builds
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63362
 milestone: '14.1'
 gitlab_schema: gitlab_sec
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: dast_site_profile_id
-        table: dast_site_profiles
-        sharding_key: project_id
-        belongs_to: dast_site_profile
-desired_sharding_key_migration_job_name: BackfillDastSiteProfilesBuildsProjectId
+sharding_key:
+  project_id: projects
 table_size: small

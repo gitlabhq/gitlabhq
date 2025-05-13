@@ -267,8 +267,7 @@ RSpec.shared_examples 'common trace features' do
     context 'when live trace chunks exists' do
       before do
         # Build a trace_chunk manually
-        # It is possible to do so with trace.set but only if ci_enable_live_trace FF is enabled
-        #
+        # It is possible to do so with trace.set but only if application setting ci_job_live_trace_enabled is true
         # We need the job to have a trace_chunk because we only use #stick in
         # the case where trace_chunks exist.
         stream = Gitlab::Ci::Trace::Stream.new do

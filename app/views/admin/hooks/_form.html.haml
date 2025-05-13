@@ -1,15 +1,15 @@
 = form_errors(hook)
 
 .form-group
-  = form.label :url, _('URL'), class: 'label-bold'
-  = form.text_field :url, class: 'form-control gl-form-input'
-  %p.form-text.gl-text-subtle= _('URL must be percent-encoded if necessary.')
-.form-group
   = form.label :name, s_('Webhooks|Name (optional)'), class: 'label-bold'
   = form.text_field :name, value: hook.name, class: 'form-control gl-form-input gl-form-input-xl'
 .form-group
   = form.label :description, s_('Webhooks|Description (optional)'), class: 'label-bold'
   = form.text_area :description, value: hook.description, class: 'form-control gl-form-input gl-form-input-xl', rows: 4, maxlength: 2048
+.form-group
+  = form.label :url, _('URL'), class: 'label-bold'
+  = form.text_field :url, class: 'form-control gl-form-input'
+  %p.form-text.gl-text-subtle= _('URL must be percent-encoded if necessary.')
 .form-group
   = form.label :token, _('Secret token'), class: 'label-bold'
   = form.password_field :token, value: hook.masked_token, autocomplete: 'new-password', class: 'form-control gl-form-input gl-max-w-48'

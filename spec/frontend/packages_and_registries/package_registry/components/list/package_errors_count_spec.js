@@ -155,6 +155,35 @@ describe('PackageErrorsCount', () => {
           'custom error message. Delete this package and try again.',
         );
       });
+
+      describe('when statusMessage contains escapable characters', () => {
+        const packageWithEscapableCharacters = {
+          __typename: 'Package',
+          id: 'gid://gitlab/Packages::Package/3',
+          name: '@gitlab-org/package-17',
+          statusMessage: "Package 'Awesome.Package' with version '1' is protected",
+          version: '3.0.0',
+        };
+
+        beforeEach(async () => {
+          const withEscapableCharacters = errorPackagesListQuery({
+            extend: {
+              count: 1,
+              nodes: [packageWithEscapableCharacters],
+            },
+          });
+          mountComponent({
+            resolver: jest.fn().mockResolvedValue(withEscapableCharacters),
+          });
+          await waitForPromises();
+        });
+
+        it('should display the statusMessage in the alert body with unescaped characters', () => {
+          expect(findErrorPackageAlert().text()).toBe(
+            "Package 'Awesome.Package' with version '1' is protected. Delete this package and try again.",
+          );
+        });
+      });
     });
 
     describe('when no statusMessage is returned', () => {

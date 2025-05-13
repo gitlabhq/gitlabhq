@@ -25,6 +25,7 @@ If this does not work, you can also check the following troubleshooting document
 - [Microsoft Visual Studio](../../editor_extensions/visual_studio/visual_studio_troubleshooting.md).
 - [JetBrains IDEs](../../editor_extensions/jetbrains_ide/jetbrains_troubleshooting.md).
 - [Neovim](../../editor_extensions/neovim/neovim_troubleshooting.md).
+- [Eclipse](../../editor_extensions/eclipse/troubleshooting.md).
 - [Troubleshooting GitLab Duo](../gitlab_duo/troubleshooting.md).
 - [Troubleshooting GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/troubleshooting.md).
 

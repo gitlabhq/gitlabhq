@@ -384,5 +384,35 @@ RSpec.describe Gitlab::Kas::Client, feature_category: :deployment_management do
 
       it { expect(subject).to eq(response) }
     end
+
+    describe '#delete_environment' do
+      let_it_be(:managed_resource) { create(:managed_resource) }
+
+      let(:stub) { instance_double(Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub) }
+      let(:request) { instance_double(Gitlab::Agent::ManagedResources::Rpc::DeleteEnvironmentRequest) }
+      let(:response) { double(Gitlab::Agent::ManagedResources::Rpc::DeleteEnvironmentResponse) }
+
+      subject { client.delete_environment(managed_resource: managed_resource) }
+
+      before do
+        expect(Gitlab::Agent::ManagedResources::Rpc::Provisioner::Stub).to receive(:new)
+          .with('example.kas.internal', :this_channel_is_insecure, timeout: client.send(:timeout))
+          .and_return(stub)
+
+        expect(Gitlab::Agent::ManagedResources::Rpc::DeleteEnvironmentRequest).to receive(:new)
+          .with(
+            agent_id: managed_resource.cluster_agent_id,
+            project_id: managed_resource.project_id,
+            environment_slug: managed_resource.environment.slug,
+            objects: managed_resource.tracked_objects
+          ).and_return(request)
+
+        expect(stub).to receive(:delete_environment)
+          .with(request, metadata: { 'authorization' => 'bearer test-token' })
+          .and_return(response)
+      end
+
+      it { expect(subject).to eq(response) }
+    end
   end
 end

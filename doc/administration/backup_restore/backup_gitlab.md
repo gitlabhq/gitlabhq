@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Geo
+stage: Data Access
+group: Durability
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Back up GitLab
 ---
@@ -74,7 +74,7 @@ However, merge request diffs can also be configured to be offloaded to the file 
 
 Gitaly Cluster's Praefect service uses a PostgreSQL database as a single source of truth to manage its Gitaly nodes.
 
-A common PostgreSQL utility, [`pg_dump`](https://www.postgresql.org/docs/current/app-pgdump.html), produces a backup file which can be used to restore a PostgreSQL database. The [backup command](#backup-command) uses this utility under the hood.
+A common PostgreSQL utility, [`pg_dump`](https://www.postgresql.org/docs/16/app-pgdump.html), produces a backup file which can be used to restore a PostgreSQL database. The [backup command](#backup-command) uses this utility under the hood.
 
 Unfortunately, the larger the database, the longer it takes `pg_dump` to execute. Depending on your situation, the duration becomes impractical at some point (days, for example). If your database is over 100 GB, `pg_dump`, and by extension the [backup command](#backup-command), is likely not usable. For more information, see [alternative backup strategies](#alternative-backup-strategies).
 
@@ -883,7 +883,7 @@ For Linux package (Omnibus):
      'aws_secret_access_key' => 'secret123'
    }
    gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
-   # Consider using multipart uploads when file size reaches 100MB. Enter a number in bytes.
+   # Consider using multipart uploads when file size reaches 100 MB. Enter a number in bytes.
    # gitlab_rails['backup_multipart_chunk_size'] = 104857600
    ```
 
@@ -1119,7 +1119,7 @@ For self-compiled installations:
    If you are using [a managed identity](../object_storage.md#azure-workload-and-managed-identities), omit `azure_storage_access_key`:
 
    ```ruby
-   gitlab_rails['object_store']['connection'] = {
+   gitlab_rails['backup_upload_connection'] = {
      'provider' => 'AzureRM',
      'azure_storage_account_name' => '<AZURE STORAGE ACCOUNT NAME>',
      'azure_storage_domain' => '<AZURE STORAGE DOMAIN>' # Optional
@@ -1490,7 +1490,7 @@ leaving the `PG*` names as is:
 sudo GITLAB_BACKUP_MAIN_PGHOST=192.168.1.10 GITLAB_BACKUP_CI_PGHOST=192.168.1.12 /opt/gitlab/bin/gitlab-backup create
 ```
 
-See the [PostgreSQL documentation](https://www.postgresql.org/docs/12/libpq-envars.html)
+See the [PostgreSQL documentation](https://www.postgresql.org/docs/16/libpq-envars.html)
 for more details on what these parameters do.
 
 #### `gitaly-backup` for repository backup and restore

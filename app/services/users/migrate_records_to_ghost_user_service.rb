@@ -46,6 +46,7 @@ module Users
       migrate_snippets
       migrate_reviews
       migrate_releases
+      migrate_timelogs
     end
 
     def post_migrate_records
@@ -111,6 +112,10 @@ module Users
     def migrate_user_achievements
       batched_migrate(Achievements::UserAchievement, :awarded_by_user_id)
       batched_migrate(Achievements::UserAchievement, :revoked_by_user_id)
+    end
+
+    def migrate_timelogs
+      batched_migrate(Timelog, :user_id)
     end
 
     # rubocop:disable CodeReuse/ActiveRecord

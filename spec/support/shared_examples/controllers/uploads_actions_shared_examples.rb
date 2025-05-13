@@ -112,6 +112,32 @@ RSpec.shared_examples 'handle uploads' do
 
         expect(response.headers['Content-Type']).to eq('application/octet-stream')
       end
+
+      it 'sets the :html request format' do
+        get :show, params: params.merge(secret: secret, filename: filename)
+
+        expect(response.request.format.symbol).to eq(:html)
+      end
+    end
+
+    context 'when the upload has a MIME type that Rails knows' do
+      let(:filename) { 'image.png' }
+
+      it 'sets the correct request format' do
+        get :show, params: params.merge(secret: secret, filename: filename)
+
+        expect(response.request.format.symbol).to eq(:png)
+      end
+
+      context 'when the upload is a JS file' do
+        let(:filename) { 'axios.min.js' }
+
+        it 'sets the :text request format' do
+          get :show, params: params.merge(secret: secret, filename: filename)
+
+          expect(response.request.format.symbol).to eq(:text)
+        end
+      end
     end
 
     context "when the model is public" do

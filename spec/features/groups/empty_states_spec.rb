@@ -7,6 +7,11 @@ RSpec.describe 'Group empty states', feature_category: :groups_and_projects do
   let(:user) { create(:group_member, :developer, user: create(:user), group: group).user }
 
   before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+
     sign_in(user)
   end
 

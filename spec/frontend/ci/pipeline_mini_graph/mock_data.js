@@ -177,7 +177,7 @@ export const mockPipelineJob = {
 };
 
 // for `pipeline_stage_spec.js`
-export const mockPipelineStageJobs = {
+export const createMockPipelineStageJobs = () => ({
   data: {
     ciPipelineStage: {
       __typename: 'CiStage',
@@ -200,6 +200,7 @@ export const mockPipelineStageJobs = {
                 title: 'Retry',
               },
               detailsPath: '/flightjs/Flight/-/pipelines/1176',
+              deploymentDetailsPath: '',
               group: 'success',
               hasDetails: true,
               icon: 'status_success',
@@ -224,6 +225,7 @@ export const mockPipelineStageJobs = {
                 title: 'Retry',
               },
               detailsPath: '/flightjs/Flight/-/pipelines/1176',
+              deploymentDetailsPath: '',
               group: 'failed',
               hasDetails: true,
               icon: 'status_failed',
@@ -237,7 +239,9 @@ export const mockPipelineStageJobs = {
       },
     },
   },
-};
+});
+
+export const mockPipelineStageJobs = createMockPipelineStageJobs();
 
 export const singlePipeline = {
   id: 'gid://gitlab/Ci::Pipeline/610',
@@ -245,6 +249,7 @@ export const singlePipeline = {
   detailedStatus: {
     id: 'success-610-610',
     detailsPath: '/root/trigger-downstream/-/pipelines/610',
+    deploymentDetailsPath: '',
     icon: 'status_success',
     label: 'passed',
     __typename: 'DetailedStatus',

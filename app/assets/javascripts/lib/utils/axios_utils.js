@@ -1,3 +1,5 @@
+// This is the only file allowed to import directly from the package.
+// eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
 import { registerCaptchaModalInterceptor } from '~/captcha/captcha_modal_axios_interceptor';
 import setupAxiosStartupCalls from './axios_startup_calls';

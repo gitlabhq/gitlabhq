@@ -31,6 +31,10 @@ module GroupsHelper
     Ability.allowed?(current_user, :admin_group_member, group)
   end
 
+  def can_invite_group_member?(group)
+    Ability.allowed?(current_user, :invite_group_members, group)
+  end
+
   def show_prevent_inviting_groups_outside_hierarchy_setting?(group)
     group.root?
   end
@@ -93,8 +97,11 @@ module GroupsHelper
 
     date = permanent_deletion_date_formatted(Date.current)
 
-    _("The contents of this group, its subgroups and projects will be permanently deleted after %{deletion_adjourned_period} days on %{date}. After this point, your data cannot be recovered.") %
-      { date: date, deletion_adjourned_period: group.deletion_adjourned_period }
+    message = _("The contents of this group, its subgroups and projects will be permanently deleted after " \
+      "%{deletion_adjourned_period} days on %{date}. After this point, your data cannot be recovered.")
+    ERB::Util.html_escape(message) % {
+      date: tag.strong(date), deletion_adjourned_period: group.deletion_adjourned_period
+    }
   end
 
   def permanently_delete_group_message(group)

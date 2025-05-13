@@ -55,8 +55,6 @@ RSpec.describe API::Conan::V1::ProjectPackages, feature_category: :package_regis
   end
 
   context 'with recipe endpoints' do
-    include_context 'for conan recipe endpoints'
-
     let(:url_prefix) { "#{Settings.gitlab.base_url}/api/v4/projects/#{project_id}" }
     let(:recipe_path) { package.conan_recipe_path }
 
@@ -146,6 +144,15 @@ RSpec.describe API::Conan::V1::ProjectPackages, feature_category: :package_regis
       end
 
       it_behaves_like 'delete package endpoint'
+    end
+
+    describe 'GET /api/v4/projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username' \
+      '/:package_channel/search' do
+      let(:url) { "/projects/#{project_id}/packages/conan/v1/conans/#{recipe_path}/search" }
+
+      it_behaves_like 'GET package references metadata endpoint'
+      it_behaves_like 'accept get request on private project with access to package registry for everyone'
+      it_behaves_like 'project not found by project id'
     end
   end
 

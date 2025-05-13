@@ -2,13 +2,15 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: GitLab Appearance
+gitlab_dedicated: yes
+description: Customize your GitLab instance appearance, including logos, favicons, sign-in pages, Progressive Web App settings, system messages, and color themes.
+title: GitLab appearance
 ---
 
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -102,6 +104,12 @@ You can add also add a [customized help message](settings/help_page.md) below th
 
 ### Disable cookie-based language selector
 
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144484) in GitLab 16.10.
@@ -194,6 +202,12 @@ GitLab supports [Libravatar](https://www.libravatar.org) is for avatar images, b
 
 ## Change the color theme for all new users
 
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
 To [change the default color theme](../user/profile/preferences.md#change-the-color-theme) for all new users:
 
 1. Add `gitlab_rails['gitlab_default_theme']` to your GitLab configuration file at `/etc/gitlab/gitlab.rb`:
@@ -218,15 +232,3 @@ As of GitLab 17.8, `gitlab_default_theme` can specify [a value from 1 to 10](htt
 | 8       |Light Green|
 | 9       |Red|
 | 10       |Light Red|
-
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->

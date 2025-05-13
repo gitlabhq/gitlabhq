@@ -68,7 +68,7 @@ module Projects
       attr_reader :current_user, :params
 
       def user_permitted?
-        Ability.allowed?(current_user, :admin_project, project)
+        current_user.can?(:import_projects, project.namespace) || current_user.can?(:admin_project, project)
       end
 
       def relation_valid?

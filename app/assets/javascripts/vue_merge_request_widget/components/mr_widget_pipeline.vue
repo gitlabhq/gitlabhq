@@ -74,27 +74,13 @@ export default {
       type: String,
       required: false,
     },
-    pipelineEtag: {
-      type: String,
-      required: false,
-    },
     buildsWithCoverage: {
       type: Array,
       required: false,
       default: () => [],
     },
-    // This prop needs to be camelCase, html attributes are case insensive
-    // https://vuejs.org/v2/guide/components.html#camelCase-vs-kebab-case
-    hasCi: {
-      type: Boolean,
-      required: false,
-    },
     ciStatus: {
       type: String,
-      required: false,
-    },
-    pipelineMustSucceed: {
-      type: Boolean,
       required: false,
     },
     sourceBranchLink: {
@@ -112,11 +98,6 @@ export default {
     ciTroubleshootingDocsPath: {
       type: String,
       required: true,
-    },
-    mergeStrategy: {
-      type: String,
-      required: false,
-      default: '',
     },
     retargeted: {
       type: Boolean,
@@ -159,14 +140,8 @@ export default {
     hasArtifacts() {
       return Boolean(this.pipeline?.details?.artifacts?.length);
     },
-    hasStages() {
-      return this.pipeline?.details?.stages?.length > 0;
-    },
     hasCommitInfo() {
       return this.pipeline.commit && Object.keys(this.pipeline.commit).length > 0;
-    },
-    isMergeRequestPipeline() {
-      return Boolean(this.pipeline.flags && this.pipeline.flags.merge_request_pipeline);
     },
     showSourceBranch() {
       return Boolean(this.pipeline.ref.branch);

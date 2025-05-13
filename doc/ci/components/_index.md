@@ -94,7 +94,7 @@ The repository must contain:
 - A top level `templates/` directory that contains all the component configurations.
   You can define components in this directory:
   - In single files ending in `.yml` for each component, like `templates/secret-detection.yml`.
-  - In sub-directories containing `template.yml` files as entry points, for components
+  - In subdirectories containing `template.yml` files as entry points, for components
     that bundle together multiple related files. For example, `templates/secret-detection/template.yml`.
 
 {{< alert type="note" >}}
@@ -143,6 +143,12 @@ For example:
   - The `my-complex-component` component's configuration contains multiple files in a directory.
 
 ## Use a component
+
+Prerequisites:
+
+If you are a member of a parent group that contains the current group or project:
+
+- You must have the minimum role set by the visibility level of the project's parent group. For example, you must have at least the Reporter role if a parent project is set to **Private**.
 
 To add a component to a project's CI/CD configuration, use the [`include: component`](../yaml/_index.md#includecomponent)
 keyword. The component reference is formatted as `<fully-qualified-domain-name>/<project-path>/<component-name>@<specific-version>`,
@@ -612,7 +618,7 @@ in your project, you can select **CI/CD Catalog**.
 Visibility of components in the CI/CD catalog follows the component source project's
 [visibility setting](../../user/public_access.md). Components with source projects set to:
 
-- Private are visible only to users assigned at least the Guest role for the source component project.
+- Private are visible only to users assigned at least the Guest role for the source component project. To use a component, you must have at least the Reporter role.
 - Internal are visible only to users logged into the GitLab instance.
 - Public are visible to anyone with access to the GitLab instance.
 
@@ -836,7 +842,7 @@ you deliver to users, follow these best practices:
 - **Use protected branches**:
   - Use [protected branches](../../user/project/repository/branches/protected.md)
     for component project releases.
-  - Protect the default branch, and protect all release branches [using wildcard rules](../../user/project/repository/branches/protected.md#protect-multiple-branches-with-wildcard-rules).
+  - Protect the default branch, and protect all release branches [using wildcard rules](../../user/project/repository/branches/protected.md#use-wildcard-rules).
   - Require everyone submit merge requests for changes to protected branches. Set the
     **Allowed to push and merge** option to `No one` for protected branches.
   - Block force pushes to protected branches.

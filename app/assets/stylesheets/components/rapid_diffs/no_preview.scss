@@ -3,8 +3,9 @@
 }
 
 .rd-no-preview-important {
-  background-color: $gl-feedback-warning-background-color;
-  color: $gl-feedback-warning-text-color;
+  // warning feedback background color looks over saturated in dark mode, we need to force a muted palette
+  background-color: light-dark(var(--gl-feedback-warning-background-color), #453522);
+  color: var(--gl-feedback-warning-text-color);
 }
 
 .rd-no-preview-paragraph {

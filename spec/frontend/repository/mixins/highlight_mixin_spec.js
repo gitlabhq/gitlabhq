@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
+import axios from '~/lib/utils/axios_utils';
 import { splitIntoChunks } from '~/vue_shared/components/source_viewer/workers/highlight_utils';
 import highlightMixin from '~/repository/mixins/highlight_mixin';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -177,6 +177,38 @@ describe('HighlightMixin', () => {
 
       expect(workerMock.postMessage.mock.calls[0][0]).toMatchObject({
         language: 'gleam',
+      });
+    });
+  });
+
+  describe('Glimmer language handling', () => {
+    beforeEach(() => workerMock.postMessage.mockClear());
+
+    it('sets language to glimmer for .glimmer files regardless of passed language', () => {
+      createComponent({ language: 'plaintext', name: 'test.glimmer' });
+
+      expect(workerMock.postMessage.mock.calls[0][0]).toMatchObject({
+        language: 'glimmer',
+      });
+    });
+  });
+
+  describe('Glimmer javascript language handling', () => {
+    beforeEach(() => workerMock.postMessage.mockClear());
+
+    it('sets language to glimmer-javascript for .gjs files regardless of passed language', () => {
+      createComponent({ language: 'plaintext', name: 'test.gjs' });
+
+      expect(workerMock.postMessage.mock.calls[0][0]).toMatchObject({
+        language: 'glimmer-javascript',
+      });
+    });
+
+    it('sets language to glimmer-javascript for .gts files regardless of passed language', () => {
+      createComponent({ language: 'plaintext', name: 'test.gts' });
+
+      expect(workerMock.postMessage.mock.calls[0][0]).toMatchObject({
+        language: 'glimmer-javascript',
       });
     });
   });

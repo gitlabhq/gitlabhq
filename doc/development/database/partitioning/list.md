@@ -28,8 +28,6 @@ Add the partitioning key column. For example, in a rails migration:
 
 ```ruby
 class AddPartitionNumberForPartitioning < Gitlab::Database::Migration[2.1]
-  enable_lock_retries!
-
   TABLE_NAME = :table_name
   COLUMN_NAME = :partition_id
   DEFAULT_VALUE = 100
@@ -214,6 +212,14 @@ class PrepareTableConstraintsForListPartitioning < Gitlab::Database::Migration[2
 end
 ```
 
+{{< alert type="note" >}}
+
+`initial_partitioning_value` could be an array of values. It must contain all of the
+values for the existing partitions. See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/465859)
+for more details.
+
+{{< /alert >}}
+
 ```ruby
 class ConvertTableToListPartitioning < Gitlab::Database::Migration[2.1]
   include Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers
@@ -332,8 +338,6 @@ For example:
 ```ruby
 class EnsureIdUniquenessForPCiBuilds < Gitlab::Database::Migration[2.1]
   include Gitlab::Database::PartitioningMigrationHelpers::UniquenessHelpers
-
-  enable_lock_retries!
 
   TABLE_NAME = :p_ci_builds
   SEQ_NAME = :ci_builds_id_seq

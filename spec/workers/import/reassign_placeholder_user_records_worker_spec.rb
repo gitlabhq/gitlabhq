@@ -51,9 +51,9 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsWorker, feature_category: :
         it_behaves_like 'an invalid source user'
       end
 
-      it 'queues a DeletePlaceholderUserWorker with the source user ID' do
+      it 'queues a DeletePlaceholderUserWorker with the placeholder user ID' do
         expect(Import::DeletePlaceholderUserWorker)
-          .to receive(:perform_async).with(import_source_user.id)
+          .to receive(:perform_async).with(import_source_user.placeholder_user_id, { type: 'placeholder_user' })
 
         perform_multiple(job_args)
       end

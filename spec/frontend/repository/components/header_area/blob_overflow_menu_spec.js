@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlDisclosureDropdown } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -6,6 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { createAlert } from '~/alert';
+import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constants';
 import projectInfoQuery from 'ee_else_ce/repository/queries/project_info.query.graphql';
 import BlobOverflowMenu from '~/repository/components/header_area/blob_overflow_menu.vue';
 import BlobDefaultActionsGroup from '~/repository/components/header_area/blob_default_actions_group.vue';
@@ -22,13 +23,11 @@ jest.mock('~/lib/utils/common_utils', () => ({
 }));
 
 describe('Blob Overflow Menu', () => {
+  let router;
   let wrapper;
   let fakeApollo;
 
   const projectPath = '/some/project';
-  const router = createRouter(projectPath, refMock);
-
-  router.replace({ name: 'blobPath', params: { path: '/some/file.js' } });
 
   const projectInfoQuerySuccessResolver = jest
     .fn()
@@ -39,8 +38,16 @@ describe('Blob Overflow Menu', () => {
     propsData = {},
     projectInfoResolver = projectInfoQuerySuccessResolver,
     provide = {},
+    routerOverride = {},
   } = {}) => {
     fakeApollo = createMockApollo([[projectInfoQuery, projectInfoResolver]]);
+    router = createRouter(projectPath, refMock);
+
+    await router.push({
+      name: 'blobPathDecoded',
+      params: { path: '/some/file.js' },
+      ...routerOverride,
+    });
 
     wrapper = shallowMountExtended(BlobOverflowMenu, {
       router,
@@ -91,14 +98,43 @@ describe('Blob Overflow Menu', () => {
     });
   });
 
+  describe('active viewer based on plain attribute and blob.richViewer', () => {
+    const { richViewer } = blobControlsDataMock.repository.blobs.nodes[0];
+
+    it.each`
+      plain  | richViewerValue | activeViewerType
+      ${'0'} | ${richViewer}   | ${RICH_BLOB_VIEWER}
+      ${'1'} | ${richViewer}   | ${SIMPLE_BLOB_VIEWER}
+      ${'0'} | ${null}         | ${SIMPLE_BLOB_VIEWER}
+      ${'1'} | ${null}         | ${SIMPLE_BLOB_VIEWER}
+    `(
+      'activeViewerType is `$activeViewerType` when plain is $plain and richViewer is $richViewerValue',
+      async ({ plain, richViewerValue, activeViewerType }) => {
+        await createComponent({
+          provide: {
+            blobInfo: {
+              ...blobControlsDataMock.repository.blobs.nodes[0],
+              richViewer: richViewerValue,
+            },
+          },
+        });
+
+        await router.replace({ query: { plain } });
+        await nextTick();
+
+        expect(findBlobDefaultActionsGroup().props('activeViewerType')).toBe(activeViewerType);
+      },
+    );
+  });
+
   describe('Default blob actions', () => {
     it('renders BlobDefaultActionsGroup component', () => {
       expect(findBlobDefaultActionsGroup().exists()).toBe(true);
     });
 
     describe('events', () => {
-      it('proxy copy event when overrideCopy is true', () => {
-        createComponent({
+      it('proxy copy event when overrideCopy is true', async () => {
+        await createComponent({
           propsData: {
             overrideCopy: true,
           },
@@ -136,8 +172,8 @@ describe('Blob Overflow Menu', () => {
       expect(findBlobButtonGroup().exists()).toBe(true);
     });
 
-    it('does not render when blob is archived', () => {
-      createComponent({
+    it('does not render when blob is archived', async () => {
+      await createComponent({
         provide: {
           blobInfo: {
             ...blobControlsDataMock.repository.blobs.nodes[0],
@@ -149,9 +185,9 @@ describe('Blob Overflow Menu', () => {
       expect(findBlobButtonGroup().exists()).toBe(false);
     });
 
-    it('does not render when user is not logged in', () => {
+    it('does not render when user is not logged in', async () => {
       isLoggedIn.mockImplementationOnce(() => false);
-      createComponent();
+      await createComponent();
 
       expect(findBlobButtonGroup().exists()).toBe(false);
     });
@@ -162,8 +198,8 @@ describe('Blob Overflow Menu', () => {
       expect(findBlobDeleteFileGroup().exists()).toBe(true);
     });
 
-    it('does not render when blob is archived', () => {
-      createComponent({
+    it('does not render when blob is archived', async () => {
+      await createComponent({
         provide: {
           blobInfo: {
             ...blobControlsDataMock.repository.blobs.nodes[0],
@@ -175,9 +211,9 @@ describe('Blob Overflow Menu', () => {
       expect(findBlobDeleteFileGroup().exists()).toBe(false);
     });
 
-    it('does not render when user is not logged in', () => {
+    it('does not render when user is not logged in', async () => {
       isLoggedIn.mockImplementationOnce(() => false);
-      createComponent();
+      await createComponent();
 
       expect(findBlobDeleteFileGroup().exists()).toBe(false);
     });

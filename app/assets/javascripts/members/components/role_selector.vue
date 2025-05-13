@@ -67,13 +67,13 @@ export default {
   >
     <template #list-item="{ item }">
       <div
-        class="gl-line-clamp-2 gl-flex gl-justify-between"
+        class="gl-line-clamp-2"
         :class="{ 'gl-font-bold': item.memberRoleId }"
         data-testid="role-data"
       >
         <span data-testid="role-name">{{ item.text }}</span>
         <template v-if="$options.plannerRole === item.value">
-          <gl-badge :id="$options.badgeId" variant="info" class="gl-ml-2">
+          <gl-badge :id="$options.badgeId" variant="info" class="gl-float-right gl-ml-2">
             {{ __('New') }}
           </gl-badge>
           <gl-popover :target="$options.badgeId">

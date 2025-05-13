@@ -1,7 +1,8 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import InstallationTitle from '~/packages_and_registries/package_registry/components/details/installation_title.vue';
+import InstallationMethod from '~/packages_and_registries/package_registry/components/details/installation_method.vue';
+
 import {
   TRACKING_ACTION_COPY_MAVEN_XML,
   TRACKING_ACTION_COPY_MAVEN_COMMAND,
@@ -20,7 +21,7 @@ import CodeInstruction from '~/vue_shared/components/registry/code_instruction.v
 export default {
   name: 'MavenInstallation',
   components: {
-    InstallationTitle,
+    InstallationMethod,
     CodeInstruction,
     GlLink,
     GlSprintf,
@@ -108,7 +109,7 @@ export default {
       `PackageRegistry|Copy and paste this inside your %{codeStart}pom.xml%{codeEnd} %{codeStart}dependencies%{codeEnd} block.`,
     ),
     setupText: s__(
-      `PackageRegistry|If you haven't already done so, you will need to add the below to your %{codeStart}pom.xml%{codeEnd} file.`,
+      `PackageRegistry|If you haven't already, add the configuration below to your %{codeStart}pom.xml%{codeEnd} file.`,
     ),
     helpText: s__(
       'PackageRegistry|For more information on the Maven registry, %{linkStart}see the documentation%{linkEnd}.',
@@ -137,12 +138,11 @@ export default {
 
 <template>
   <div>
-    <installation-title
+    <installation-method
       package-type="maven"
       :options="$options.installOptions"
       @change="instructionType = $event"
     />
-
     <template v-if="showMaven">
       <p>
         <gl-sprintf :message="$options.i18n.xmlText">
@@ -169,7 +169,7 @@ export default {
         :tracking-label="$options.tracking.TRACKING_LABEL_CODE_INSTRUCTION"
       />
 
-      <h3 class="gl-text-lg">{{ s__('PackageRegistry|Registry setup') }}</h3>
+      <h3 class="gl-heading-3 gl-mt-5">{{ s__('PackageRegistry|Registry setup') }}</h3>
       <p>
         <gl-sprintf :message="$options.i18n.setupText">
           <template #code="{ content }">

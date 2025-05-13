@@ -14,16 +14,14 @@ This guide describes how to set up Amazon Q in a GitLab Linux package running in
 
 ## Install and configure a GitLab Linux package on a virtual machine
 
-1. Create a VM in either GCP or AWS
+1. Create a VM in AWS
 
-   - Follow this [guide](../../install/google_cloud_platform/_index.md) on how to create a VM in GCP
-   - Create a VM in AWS
-      1. Go to [cloud sandbox](https://gitlabsandbox.cloud/cloud), and login with OKTA
-      1. Click "Create Individual Account", and choose `aws-***` (not `aws-services-***` or `aws-dedicated-***`). This will create a AWS sandbox and display login credentials
-      1. Configure an EC2 machine of similar spec as GCP VM
+   1. Go to [cloud sandbox](https://gitlabsandbox.cloud/cloud), and login with OKTA
+   1. Click "Create Individual Account", and choose `aws-***` (not `aws-services-***` or `aws-dedicated-***`). This will create a AWS sandbox and display login credentials
+   1. Configure an EC2 machine
 
    A few things to note:
-   - Need to enable both http and https traffic under firewall setting.
+   - Need to enable both HTTP and HTTPS traffic under firewall setting.
    - Copy the external IP of the VM instance created.
 
 1. Install GitLab
@@ -68,5 +66,4 @@ This guide describes how to set up Amazon Q in a GitLab Linux package running in
 ## Add Amazon Q to GitLab
 
 1. Follow [Enter the ARN in GitLab and enable Amazon Q](../../user/duo_amazon_q/setup.md#enter-the-arn-in-gitlab-and-enable-amazon-q) exactly
-1. [Invite Amazon Q user to your project](../../user/duo_amazon_q/setup.md#add-the-amazon-q-user-to-your-project). For this step, we do not need to configure AI Gateway again, because we've already done it when configuring our GitLab instance.
 1. Now Q should be working. We can test it like [this](https://gitlab.com/gitlab-com/ops-sub-department/aws-gitlab-ai-integration/integration-motion-planning/-/wikis/integration-docs#testing-q)

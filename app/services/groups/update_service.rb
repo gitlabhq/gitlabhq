@@ -27,7 +27,6 @@ module Groups
 
       handle_changes
       handle_namespace_settings
-      handle_hierarchy_cache_update
       group.assign_attributes(params.except(*non_assignable_group_params))
 
       return false if group.errors.present?
@@ -46,29 +45,6 @@ module Groups
     end
 
     private
-
-    def handle_hierarchy_cache_update
-      return unless params.key?(:enable_namespace_descendants_cache)
-
-      enabled = Gitlab::Utils.to_boolean(params.delete(:enable_namespace_descendants_cache))
-
-      return unless Feature.enabled?(:group_hierarchy_optimization, group, type: :beta)
-
-      if enabled
-        return if group.namespace_descendants
-
-        params[:namespace_descendants_attributes] = {
-          traversal_ids: group.traversal_ids,
-          all_project_ids: [],
-          self_and_descendant_group_ids: [],
-          outdated_at: Time.current
-        }
-      else
-        return unless group.namespace_descendants
-
-        params[:namespace_descendants_attributes] = { id: group.id, _destroy: true }
-      end
-    end
 
     def valid_path_change?
       return true unless group.packages_feature_enabled?
@@ -168,7 +144,7 @@ module Groups
 
       crm_enabled = params.delete(:crm_enabled)
       crm_enabled = true if crm_enabled.nil?
-      crm_source_group_id = params.delete(:crm_source_group_id)
+      crm_source_group_id = params.delete(:crm_source_group_id).presence
       return if group.crm_enabled? == crm_enabled && group.crm_settings&.source_group_id == crm_source_group_id
 
       if group.crm_settings&.source_group_id != crm_source_group_id && group.has_issues_with_contacts?
@@ -178,7 +154,7 @@ module Groups
 
       crm_settings = group.crm_settings || group.build_crm_settings
       crm_settings.enabled = crm_enabled
-      crm_settings.source_group_id = crm_source_group_id.presence
+      crm_settings.source_group_id = crm_source_group_id
       crm_settings.save
     end
 

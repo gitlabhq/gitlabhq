@@ -9,8 +9,14 @@ import {
   STATUS_LABELS,
   PODS_TABLE_FIELDS,
 } from '~/kubernetes_dashboard/constants';
-import { DELETE_POD_ACTION } from '~/environments/constants';
-import { getAge } from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
+import {
+  DELETE_POD_ACTION,
+  CLUSTER_HEALTH_SUCCESS,
+  CLUSTER_HEALTH_ERROR,
+  CLUSTER_HEALTH_NEEDS_ATTENTION,
+  CLUSTER_HEALTH_UNKNOWN,
+} from '~/environments/constants';
+import { getAge, getPodStatusText } from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
 import WorkloadStats from '~/kubernetes_dashboard/components/workload_stats.vue';
 import WorkloadTable from '~/kubernetes_dashboard/components/workload_table.vue';
 import k8sPodsQuery from '~/environments/graphql/queries/k8s_pods.query.graphql';
@@ -47,6 +53,8 @@ export default {
               kind: s__('KubernetesDashboard|Pod'),
               spec: pod.spec,
               fullStatus: pod.status,
+              statusText: getPodStatusText(pod.status),
+              statusTooltip: pod.status.message,
               containers: pod.spec.containers,
               actions: [DELETE_POD_ACTION],
             };
@@ -56,9 +64,6 @@ export default {
       error(error) {
         this.error = error.message;
         this.$emit('cluster-error', this.error);
-      },
-      watchLoading(isLoading) {
-        this.$emit('loading', isLoading);
       },
     },
   },
@@ -86,25 +91,37 @@ export default {
 
       return [
         {
-          value: this.countPodsByPhase(STATUS_RUNNING),
+          value: this.podsRunning,
           title: STATUS_LABELS[STATUS_RUNNING],
         },
         {
-          value: this.countPodsByPhase(STATUS_PENDING),
+          value: this.podsPending,
           title: STATUS_LABELS[STATUS_PENDING],
         },
         {
-          value: this.countPodsByPhase(STATUS_SUCCEEDED),
+          value: this.podsSucceeded,
           title: STATUS_LABELS[STATUS_SUCCEEDED],
         },
         {
-          value: this.countPodsByPhase(STATUS_FAILED),
+          value: this.podsFailed,
           title: STATUS_LABELS[STATUS_FAILED],
         },
       ];
     },
     loading() {
       return this.$apollo?.queries?.k8sPods?.loading;
+    },
+    podsRunning() {
+      return this.countPodsByPhase(STATUS_RUNNING);
+    },
+    podsPending() {
+      return this.countPodsByPhase(STATUS_PENDING);
+    },
+    podsFailed() {
+      return this.countPodsByPhase(STATUS_FAILED);
+    },
+    podsSucceeded() {
+      return this.countPodsByPhase(STATUS_SUCCEEDED);
     },
     podsCount() {
       return this.k8sPods?.length || 0;
@@ -116,6 +133,30 @@ export default {
         return matchesStatus && matchesSearch;
       });
     },
+    podsHealthStatus() {
+      if (this.loading) {
+        return '';
+      }
+
+      if (!this.k8sPods.length) {
+        return CLUSTER_HEALTH_UNKNOWN;
+      }
+
+      if (this.podsFailed > 0) {
+        return CLUSTER_HEALTH_ERROR;
+      }
+
+      if (this.podsPending > 0) {
+        return CLUSTER_HEALTH_NEEDS_ATTENTION;
+      }
+
+      return CLUSTER_HEALTH_SUCCESS;
+    },
+  },
+  watch: {
+    k8sPods() {
+      this.$emit('update-cluster-state', this.podsHealthStatus);
+    },
   },
   methods: {
     search(searchTerm, podName) {
@@ -123,14 +164,12 @@ export default {
     },
     countPodsByPhase(phase) {
       const pods = this.k8sPods || [];
+
       const filteredPods = pods.filter((item) => {
         const matchesPhase = item.status === phase;
         if (!this.podsSearch) return matchesPhase;
         return matchesPhase && this.search(this.podsSearch, item.name);
       });
-
-      const hasFailedState = Boolean(phase === STATUS_FAILED && filteredPods.length);
-      this.$emit('update-failed-state', { pods: hasFailedState });
 
       return filteredPods.length;
     },

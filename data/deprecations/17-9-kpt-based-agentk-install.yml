@@ -1,8 +1,7 @@
 - title: "`kpt`-based `agentk` is deprecated"
-  removal_milestone: "18.0"
+  removal_milestone: "Pending"
   announcement_milestone: "17.9"
   breaking_change: true
-  window: 2
   reporter: nagyv-gitlab
   stage: deploy
   issue_url: https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues/656
@@ -13,7 +12,7 @@
   resolution_role: Maintainer
   manual_task: true
   body: |  # (required) Don't change this line.
-    In GitLab 18.0, we'll remove support for the `kpt`-based installation of the agent for Kubernetes.
+    We'll remove support for the `kpt`-based installation of the agent for Kubernetes.
     Instead, you should install the agent with one of the supported installation methods:
 
     - Helm (recommended)

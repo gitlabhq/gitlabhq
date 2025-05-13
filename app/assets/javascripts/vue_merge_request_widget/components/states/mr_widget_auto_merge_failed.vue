@@ -21,6 +21,7 @@ export default {
     },
   },
   props: {
+    // eslint-disable-next-line vue/no-unused-properties -- `mr` is used in the `mergeRequestQueryVariables` computed property
     mr: {
       type: Object,
       required: true,

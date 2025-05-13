@@ -51,17 +51,25 @@ variables:
       - gl-api-discovery-openapi.json
       - gl-*.log
   rules:
-    - if: $API_DISCOVERY_DISABLED
+    - if: $API_DISCOVERY_DISABLED == 'true' || $API_DISCOVERY_DISABLED == '1'
       when: never
-    - if: $API_DISCOVERY_DISABLED_FOR_DEFAULT_BRANCH &&
+    - if: $API_DISCOVERY_DISABLED_FOR_DEFAULT_BRANCH == 'true' &&
           $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
       when: never
-    # Add the job to merge request pipelines if there's an open merge request.
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-
-    # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
-    - if: $CI_OPEN_MERGE_REQUESTS
+    - if: $API_DISCOVERY_DISABLED_FOR_DEFAULT_BRANCH == '1' &&
+          $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
       when: never
 
-    # Add the job to branch pipelines.
+    # The following 3 blocks of rules define whether the job runs in a an *MR pipeline* or a *branch pipeline*
+    # when an MR exists. If the job has additional rules to observe they should be added in the blocks 1 and 3
+    # to cover both the *MR pipeline* and the *branch pipeline* workflows.
+
+    # 1. Run the job in an *MR* pipeline if MR pipelines for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event"
+    # 2. Don't run the job in a *branch pipeline* if *MR pipelines* for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_OPEN_MERGE_REQUESTS
+      when: never
+    # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
     - if: $CI_COMMIT_BRANCH

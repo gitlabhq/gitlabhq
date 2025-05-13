@@ -37,6 +37,7 @@ export const i18n = {
     ),
   },
   eventNames: {
+    approver: s__("NotificationEvent|Merge request you're eligible to approve is created"),
     change_reviewer_merge_request: s__('NotificationEvent|Merge request reviewers are changed'),
     close_issue: s__('NotificationEvent|Issue is closed'),
     close_merge_request: s__('NotificationEvent|Merge request is closed'),
@@ -44,6 +45,7 @@ export const i18n = {
     fixed_pipeline: s__('NotificationEvent|Pipeline is fixed'),
     issue_due: s__('NotificationEvent|Issue is due tomorrow'),
     merge_merge_request: s__('NotificationEvent|Merge request is merged'),
+    merge_when_pipeline_succeeds: s__('NotificationEvent|Merge request is set to auto-merge'),
     moved_project: s__('NotificationEvent|Project is moved'),
     new_epic: s__('NotificationEvent|Epic is created'),
     new_issue: s__('NotificationEvent|Issue is created'),
@@ -56,6 +58,5 @@ export const i18n = {
     reopen_issue: s__('NotificationEvent|Issue is reopened'),
     reopen_merge_request: s__('NotificationEvent|Merge request is reopened'),
     success_pipeline: s__('NotificationEvent|Pipeline is successful'),
-    approver: s__('NotificationEvent|You are added as an approver on a merge request'),
   },
 };

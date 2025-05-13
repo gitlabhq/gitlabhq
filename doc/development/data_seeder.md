@@ -77,8 +77,7 @@ docker exec gitlab cat /etc/gitlab/initial_root_password
 
 {{< alert type="note" >}}
 
-If you receive `cat: /etc/gitlab/initialize_root_password: No such file or directory`,
-please wait for a bit for GitLab to boot and try again.
+If you receive `cat: /etc/gitlab/initialize_root_password: No such file or directory`, wait for a bit for GitLab to boot and try again.
 
 {{< /alert >}}
 

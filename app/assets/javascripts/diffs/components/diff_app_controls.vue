@@ -55,6 +55,11 @@ export default {
       required: false,
       default: false,
     },
+    fileByFileSupported: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   computed: {
     expandButtonInfo() {
@@ -130,6 +135,7 @@ export default {
       :show-whitespace="showWhitespace"
       :view-diffs-file-by-file="viewDiffsFileByFile"
       :diff-view-type="diffViewType"
+      :file-by-file-supported="fileByFileSupported"
       @updateDiffViewType="$emit('updateDiffViewType', $event)"
       @toggleWhitespace="$emit('toggleWhitespace', $event)"
       @toggleFileByFile="$emit('toggleFileByFile', $event)"

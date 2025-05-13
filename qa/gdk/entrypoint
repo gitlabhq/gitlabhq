@@ -23,7 +23,7 @@ if [ -z "$CI" ]; then
 
   exec "$@" | tee -a ${HOME}/gitlab-development-kit/gitlab/log/gdk-container.log
 else
-  logs=("gitaly" "gitlab-workhorse" "postgresql" "rails-background-jobs" "redis" "sshd" "vite" "rails-web" "sidekiq-cron" "webpack" "gitlab-http-router")
+  logs=("gitaly" "gitlab-workhorse" "postgresql" "rails-background-jobs" "redis" "sshd" "vite" "rails-web" "sidekiq-cron" "webpack" "gitlab-http-router" "gitlab-topology-service")
   for log in "${logs[@]}"; do
     gdk tail $log &>${CI_BUILDS_DIR}/gdk.${log}.log &
   done

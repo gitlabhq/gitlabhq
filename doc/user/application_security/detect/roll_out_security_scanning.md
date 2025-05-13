@@ -86,14 +86,19 @@ the instructions for
 
 By default, the application security jobs are configured to run for branch pipelines only.
 To use them with [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md),
-you must reference their [`latest` edition template](#template-editions).
+you must set the CI/CD variable `AST_ENABLE_MR_PIPELINES` to `"true"` ([introduced in 18.0](https://gitlab.com/gitlab-org/gitlab/-/issues/410880)).
 
-For example, to run both SAST and Dependency Scanning, the following template is used:
+Alternatively, you can use the [`latest` edition template](#template-editions) which enables merge request pipelines by default.
+
+For example, to run both SAST and Dependency Scanning with merge request pipelines enabled, the following configuration is used:
 
 ```yaml
 include:
-  - template: Jobs/Dependency-Scanning.latest.gitlab-ci.yml
-  - template: Jobs/SAST.latest.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
+
+variables:
+  AST_ENABLE_MR_PIPELINES: "true"
 ```
 
 ### Use a custom scanning stage

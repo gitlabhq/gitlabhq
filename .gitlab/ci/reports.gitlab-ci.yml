@@ -109,26 +109,6 @@ package_hunter-bundler:
   variables:
     PACKAGE_MANAGER: bundler
 
-xray_scan:
-  extends:
-    - .default-retry
-    - .reports:rules:x-ray
-  stage: lint
-  needs: []
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/code-creation/repository-x-ray:rc
-  variables:
-    OUTPUT_DIR: reports
-  allow_failure: true
-  script:
-    - x-ray-scan -p "$CI_PROJECT_DIR" -o "$OUTPUT_DIR"
-  artifacts:
-    # this line uses xray_scan job output as source for GitLab Rails code gen feature
-    reports:
-      repository_xray: "$OUTPUT_DIR/*/*.json"
-    # this line saves xray_scan job output in raw form for inspection for testing purposes
-    paths:
-      - "$OUTPUT_DIR/*/*.json"
-
 pajamas_adoption:
   extends:
     - .default-retry

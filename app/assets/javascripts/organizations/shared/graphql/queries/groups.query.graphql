@@ -1,5 +1,5 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
-#import "ee_else_ce/organizations/shared/graphql/fragments/group.fragment.graphql"
+#import "~/organizations/shared/graphql/fragments/group.fragment.graphql"
 
 query getOrganizationGroups(
   $id: OrganizationsOrganizationID!

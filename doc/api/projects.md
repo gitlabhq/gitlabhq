@@ -369,39 +369,40 @@ GET /projects
 
 Supported attributes:
 
-| Attribute                     | Type     | Required | Description |
-|:------------------------------|:---------|:---------|:------------|
-| `archived`                    | boolean  | No       | Limit by archived status. |
-| `id_after`                    | integer  | No       | Limit results to projects with IDs greater than the specified ID. |
-| `id_before`                   | integer  | No       | Limit results to projects with IDs less than the specified ID. |
-| `imported`                    | boolean  | No       | Limit results to projects which were imported from external systems by current user. |
-| `include_hidden`              | boolean  | No       | Include hidden projects. _(administrators only)_ Premium and Ultimate only. |
-| `include_pending_delete`      | boolean  | No       | Include projects pending deletion. _(administrators only)_ |
-| `last_activity_after`         | datetime | No       | Limit results to projects with last activity after specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
-| `last_activity_before`        | datetime | No       | Limit results to projects with last activity before specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
-| `membership`                  | boolean  | No       | Limit by projects that the current user is a member of. |
-| `min_access_level`            | integer  | No       | Limit by current user minimal [role (`access_level`)](members.md#roles). |
+| Attribute                     | Type     | Required | Description                                                                                                                                                                                                                                                                                                                                                                                  |
+|:------------------------------|:---------|:---------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `archived`                    | boolean  | No       | Limit by archived status.                                                                                                                                                                                                                                                                                                                                                                    |
+| `id_after`                    | integer  | No       | Limit results to projects with IDs greater than the specified ID.                                                                                                                                                                                                                                                                                                                            |
+| `id_before`                   | integer  | No       | Limit results to projects with IDs less than the specified ID.                                                                                                                                                                                                                                                                                                                               |
+| `imported`                    | boolean  | No       | Limit results to projects which were imported from external systems by current user.                                                                                                                                                                                                                                                                                                         |
+| `include_hidden`              | boolean  | No       | Include hidden projects. _(administrators only)_ Premium and Ultimate only.                                                                                                                                                                                                                                                                                                                  |
+| `include_pending_delete`      | boolean  | No       | Include projects pending deletion. _(administrators only)_                                                                                                                                                                                                                                                                                                                                   |
+| `last_activity_after`         | datetime | No       | Limit results to projects with last activity after specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`)                                                                                                                                                                                                                                                                                 |
+| `last_activity_before`        | datetime | No       | Limit results to projects with last activity before specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`)                                                                                                                                                                                                                                                                                |
+| `membership`                  | boolean  | No       | Limit by projects that the current user is a member of.                                                                                                                                                                                                                                                                                                                                      |
+| `min_access_level`            | integer  | No       | Limit by current user minimal [role (`access_level`)](members.md#roles).                                                                                                                                                                                                                                                                                                                     |
 | `order_by`                    | string   | No       | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `star_count`, `last_activity_at`, or `similarity` fields. `repository_size`, `storage_size`, `packages_size` or `wiki_size` fields are only allowed for administrators. `similarity` is only available when searching and is limited to projects that the current user is a member of. Default is `created_at`. |
-| `owned`                       | boolean  | No       | Limit by projects explicitly owned by the current user. |
-| `repository_checksum_failed`  | boolean  | No       | Limit projects where the repository checksum calculation has failed. Premium and Ultimate only. |
-| `repository_storage`          | string   | No       | Limit results to projects stored on `repository_storage`. _(administrators only)_ |
-| `search_namespaces`           | boolean  | No       | Include ancestor namespaces when matching search criteria. Default is `false`. |
-| `search`                      | string   | No       | Return list of projects with a `path`, `name`, or `description` matching the search criteria (case-insensitive, substring match). Multiple terms can be provided, separated by an escaped space, either `+` or `%20`, and will be ANDed together. Example: `one+two` will match substrings `one` and `two` (in any order). |
-| `simple`                      | boolean  | No       | Return only limited fields for each project. This operation is a no-op without authentication where only simple fields are returned. |
-| `sort`                        | string   | No       | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
-| `starred`                     | boolean  | No       | Limit by projects starred by the current user. |
-| `statistics`                  | boolean  | No       | Include project statistics. Available only to users with at least the Reporter role. |
-| `topic_id`                    | integer  | No       | Limit results to projects with the assigned topic given by the topic ID. |
-| `topic`                       | string   | No       | Comma-separated topic names. Limit results to projects that match all of given topics. See `topics` attribute. |
-| `updated_after`               | datetime | No       | Limit results to projects last updated after the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393979) in GitLab 15.10. For this filter to work, you must also provide `updated_at` as the `order_by` attribute. |
-| `updated_before`              | datetime | No       | Limit results to projects last updated before the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393979) in GitLab 15.10. For this filter to work, you must also provide `updated_at` as the `order_by` attribute. |
-| `visibility`                  | string   | No       | Limit by visibility `public`, `internal`, or `private`. |
-| `wiki_checksum_failed`        | boolean  | No       | Limit projects where the wiki checksum calculation has failed. Premium and Ultimate only. |
-| `with_custom_attributes`      | boolean  | No       | Include [custom attributes](custom_attributes.md) in response. _(administrator only)_ |
-| `with_issues_enabled`         | boolean  | No       | Limit by enabled issues feature. |
-| `with_merge_requests_enabled` | boolean  | No       | Limit by enabled merge requests feature. |
-| `with_programming_language`   | string   | No       | Limit by projects which use the given programming language. |
-| `marked_for_deletion_on`      | date     | No       | Filter by date when project was marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463939) in GitLab 17.1. Premium and Ultimate only. |
+| `owned`                       | boolean  | No       | Limit by projects explicitly owned by the current user.                                                                                                                                                                                                                                                                                                                                      |
+| `repository_checksum_failed`  | boolean  | No       | Limit projects where the repository checksum calculation has failed. Premium and Ultimate only.                                                                                                                                                                                                                                                                                              |
+| `repository_storage`          | string   | No       | Limit results to projects stored on `repository_storage`. _(administrators only)_                                                                                                                                                                                                                                                                                                            |
+| `search_namespaces`           | boolean  | No       | Include ancestor namespaces when matching search criteria. Default is `false`.                                                                                                                                                                                                                                                                                                               |
+| `search`                      | string   | No       | Return list of projects with a `path`, `name`, or `description` matching the search criteria (case-insensitive, substring match). Multiple terms can be provided, separated by an escaped space, either `+` or `%20`, and will be ANDed together. Example: `one+two` will match substrings `one` and `two` (in any order).                                                                   |
+| `simple`                      | boolean  | No       | Return only limited fields for each project. This operation is a no-op without authentication where only simple fields are returned.                                                                                                                                                                                                                                                         |
+| `sort`                        | string   | No       | Return projects sorted in `asc` or `desc` order. Default is `desc`.                                                                                                                                                                                                                                                                                                                          |
+| `starred`                     | boolean  | No       | Limit by projects starred by the current user.                                                                                                                                                                                                                                                                                                                                               |
+| `statistics`                  | boolean  | No       | Include project statistics. Available only to users with at least the Reporter role.                                                                                                                                                                                                                                                                                                         |
+| `topic_id`                    | integer  | No       | Limit results to projects with the assigned topic given by the topic ID.                                                                                                                                                                                                                                                                                                                     |
+| `topic`                       | string   | No       | Comma-separated topic names. Limit results to projects that match all of given topics. See `topics` attribute.                                                                                                                                                                                                                                                                               |
+| `updated_after`               | datetime | No       | Limit results to projects last updated after the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393979) in GitLab 15.10. For this filter to work, you must also provide `updated_at` as the `order_by` attribute.                                                                                                     |
+| `updated_before`              | datetime | No       | Limit results to projects last updated before the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393979) in GitLab 15.10. For this filter to work, you must also provide `updated_at` as the `order_by` attribute.                                                                                                    |
+| `visibility`                  | string   | No       | Limit by visibility `public`, `internal`, or `private`.                                                                                                                                                                                                                                                                                                                                      |
+| `wiki_checksum_failed`        | boolean  | No       | Limit projects where the wiki checksum calculation has failed. Premium and Ultimate only.                                                                                                                                                                                                                                                                                                    |
+| `with_custom_attributes`      | boolean  | No       | Include [custom attributes](custom_attributes.md) in response. _(administrator only)_                                                                                                                                                                                                                                                                                                        |
+| `with_issues_enabled`         | boolean  | No       | Limit by enabled issues feature.                                                                                                                                                                                                                                                                                                                                                             |
+| `with_merge_requests_enabled` | boolean  | No       | Limit by enabled merge requests feature.                                                                                                                                                                                                                                                                                                                                                     |
+| `with_programming_language`   | string   | No       | Limit by projects which use the given programming language.                                                                                                                                                                                                                                                                                                                                  |
+| `marked_for_deletion_on`      | date     | No       | Filter by date when project was marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463939) in GitLab 17.1. Premium and Ultimate only.                                                                                                                                                                                                                           |
+| `active`                      | boolean  | No       | Limit by projects that are not archived and not marked for deletion.                                                                                                                                                                                                                                                                                                                         |
 
 This endpoint supports [keyset pagination](rest/_index.md#keyset-based-pagination) for selected `order_by` options.
 
@@ -1680,6 +1681,7 @@ Supported general project attributes:
 | `auto_cancel_pending_pipelines`                    | string            | No       | Auto-cancel pending pipelines. This action toggles between an enabled state and a disabled state; it is not a boolean. |
 | `auto_devops_deploy_strategy`                      | string            | No       | Auto Deploy strategy (`continuous`, `manual`, or `timed_incremental`). |
 | `auto_devops_enabled`                              | boolean           | No       | Enable Auto DevOps for this project. |
+| `auto_duo_code_review_enabled`                     | boolean           | No       | Enable automatic reviews by GitLab Duo on merge requests. See [Duo in merge requests](../user/project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code). Ultimate only. |
 | `autoclose_referenced_issues`                      | boolean           | No       | Set whether auto-closing referenced issues on default branch. |
 | `avatar`                                           | mixed             | No       | Image file for avatar of the project. |
 | `build_git_strategy`                               | string            | No       | The Git strategy. Defaults to `fetch`. |
@@ -2143,20 +2145,18 @@ Example response:
 
 ### Delete a project
 
+{{< history >}}
+
+- Immediately deleting projects was [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11.
+- [Marking project for deletion was moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
+
+{{< /history >}}
+
 Delete a project. This endpoint:
 
 - Deletes a project including all associated resources, including issues and merge requests.
-- On [Premium or Ultimate](https://about.gitlab.com/pricing/) tiers,
-  [delayed project deletion](../user/project/working_with_projects.md#delayed-project-deletion)
-  is applied if enabled.
-- From [GitLab 15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) on
-  [Premium or Ultimate](https://about.gitlab.com/pricing/) tiers, deletes a project immediately if:
-  - The project is already marked for deletion.
-  - The `permanently_remove` and `full_path` parameters are passed.
-- From [GitLab 16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/220382) on
-  [Premium or Ultimate](https://about.gitlab.com/pricing/) tiers, delayed project deletion is enabled by default.
-  The deletion happens after the number of days specified in the
-  [default deletion delay](../administration/settings/visibility_and_access_controls.md#deletion-protection).
+- Marks the project for deletion. The deletion happens 7 days later by default, but you can change the retention period in the [instance settings](../administration/settings/visibility_and_access_controls.md#deletion-protection).
+- Deletes project immediately if the project is marked for deletion (GitLab 15.11 and later).
 
 {{< alert type="warning" >}}
 
@@ -2174,17 +2174,10 @@ Supported attributes:
 | Attribute            | Type              | Required | Description |
 |:---------------------|:------------------|:---------|:------------|
 | `id`                 | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `full_path`          | string            | no       | Full path of project to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11. To find the project path, use `path_with_namespace` from [get single project](projects.md#get-a-single-project). Premium and Ultimate only. |
-| `permanently_remove` | boolean/string    | no       | Immediately deletes a project if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11. Premium and Ultimate only. |
+| `full_path`          | string            | no       | Full path of project to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11 for Premium and Ultimate only and moved to GitLab Free in 18.0. To find the project path, use `path_with_namespace` from [get single project](projects.md#get-a-single-project). Premium and Ultimate only. |
+| `permanently_remove` | boolean/string    | no       | Immediately deletes a project if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11 for Premium and Ultimate only and moved to GitLab Free in 18.0. |
 
 ### Restore a project marked for deletion
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
 
 Restore a project that is marked for deletion.
 
@@ -2644,13 +2637,14 @@ Supported attributes:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160960) in GitLab 17.3.
+- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186602) from `setPreReceiveSecretDetection` in GitLab 17.11.
 
 {{< /history >}}
 
 If you have at least the Developer role, the following requests could also return the `secret_push_protection_enabled` value.
 Note that some of these requests have stricter requirements about roles. Refer to the endpoints above for clarification.
 Use this information to determine whether secret push protection is enabled for a project.
-To modify the `secret_push_protection_enabled` value, please use the [Project Security Settings API](project_security_settings.md).
+To modify the `secret_push_protection_enabled` value, use the [Project Security Settings API](project_security_settings.md).
 
 - `GET /projects`
 - `GET /projects/:id`
@@ -2673,3 +2667,20 @@ Example response:
   ...
 }
 ```
+
+## Troubleshooting
+
+### Unexpected `restrict_user_defined_variables` value in response
+
+If you set conflicting values for `restrict_user_defined_variables` and `ci_pipeline_variables_minimum_override_role`,
+the response values might differ from what you expect because the `pipeline_variables_minimum_override_role`
+setting has higher priority.
+
+For example, if you:
+
+- Set `restrict_user_defined_variables` to `true` and `ci_pipeline_variables_minimum_override_role` to `developer`,
+  the response returns `restrict_user_defined_variables: false`. Setting `ci_pipeline_variables_minimum_override_role`
+  to `developer` takes precedence and variables are not restricted.
+- Set `restrict_user_defined_variables` to `false` and `ci_pipeline_variables_minimum_override_role` to `maintainer`,
+  The response returns `restrict_user_defined_variables: true` because setting `ci_pipeline_variables_minimum_override_role`
+  to `maintainer` takes precedence and variables are restricted.

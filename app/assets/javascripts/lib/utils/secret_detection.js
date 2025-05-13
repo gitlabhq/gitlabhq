@@ -35,22 +35,11 @@ const i18n = {
   helpString: __('Why am I seeing this warning?'),
 };
 
-const redactString = (inputString) => {
-  if (inputString.length <= 9) return inputString;
-
-  const prefix = inputString.substring(0, 5); // Keep the first 5 characters
-  const suffix = inputString.substring(inputString.length - 4); // Keep the last 4 characters
-  const redactLength = Math.min(inputString.length - prefix.length - suffix.length, 22);
-
-  return `${prefix}${'*'.repeat(redactLength)}${suffix}`;
-};
-
 const formatMessage = (findings, contentType) => {
   const header = sprintf(i18n.promptMessage(findings.length), { contentType });
 
   const matchedPatterns = findings.map(({ patternName, matchedString }) => {
-    const redactedString = redactString(matchedString);
-    return `<li>${escape(patternName)}: ${escape(redactedString)}</li>`;
+    return `<li>${escape(patternName)}: ${escape(matchedString)}</li>`;
   });
 
   const message = `
@@ -74,10 +63,10 @@ const containsSensitiveToken = (message) => {
 
   for (const rule of sensitiveDataPatterns()) {
     const regex = new RegExp(rule.regex, 'gi');
-    const matches = message.match(regex);
+    const uniqueMatches = new Set(message.match(regex));
 
-    if (matches) {
-      matches.forEach((match) => {
+    if (uniqueMatches) {
+      uniqueMatches.forEach((match) => {
         findings.push({
           patternName: rule.name,
           matchedString: match,

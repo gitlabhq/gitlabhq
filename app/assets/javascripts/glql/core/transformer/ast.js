@@ -22,7 +22,11 @@ export const transformAstToDisplayFields = (astNode) => {
   if (astNode.type === ast.Types.COLLECTION) return astNode.value.map(transformAstToDisplayFields);
   if (astNode.type === ast.Types.FIELD_NAME) {
     const fieldName = getValue(astNode);
-    const displayField = { key: fieldName, label: toSentenceCase(astNode.value), name: fieldName };
+    const displayField = {
+      key: fieldName,
+      label: astNode.alias?.value || toSentenceCase(astNode.value),
+      name: fieldName,
+    };
     if (derivedFields[fieldName]) displayField.transform = derivedFields[fieldName];
     return displayField;
   }
@@ -32,7 +36,7 @@ export const transformAstToDisplayFields = (astNode) => {
     const fn = getFunction(astNode.name);
     return {
       key,
-      label: fn.getFieldLabel(...args),
+      label: astNode.alias?.value || fn.getFieldLabel(...args),
       name: getValue(astNode),
       transform: fn.getTransformer(key, ...args),
     };

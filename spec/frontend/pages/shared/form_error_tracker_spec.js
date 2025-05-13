@@ -86,7 +86,6 @@ describe('FormErrorTracker', () => {
       ${'new_user_email'}      | ${'is_invalid'}
       ${'new_user_password'}   | ${'is_invalid'}
       ${'company_name'}        | ${'is_invalid'}
-      ${'company_size'}        | ${convertedValidationMessage}
     `('returns input validation message for $elementId', ({ elementId, result }) => {
       expect(FormErrorTracker.errorMessage({ validationMessage, id: elementId })).toBe(result);
     });

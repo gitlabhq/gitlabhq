@@ -11,6 +11,13 @@ RSpec.describe Projects::AlertManagementHelper do
   let(:project_path) { project.full_path }
   let(:project_id) { project.id }
 
+  before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+  end
+
   describe '#alert_management_data' do
     let(:user_can_enable_alert_management) { true }
     let(:setting_path) { project_settings_operations_path(project, anchor: 'js-alert-management-settings') }

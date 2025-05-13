@@ -3,6 +3,7 @@
 module API
   class Discussions < ::API::Base
     include PaginationParams
+
     helpers ::API::Helpers::NotesHelpers
     helpers ::RendersNotes
 

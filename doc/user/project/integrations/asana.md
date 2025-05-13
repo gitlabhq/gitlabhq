@@ -47,5 +47,3 @@ Complete these steps in GitLab:
    field, separated with commas.
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.
-
-<!-- ## Troubleshooting -->

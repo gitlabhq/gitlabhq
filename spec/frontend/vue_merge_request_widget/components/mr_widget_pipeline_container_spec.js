@@ -67,9 +67,7 @@ describe('MrWidgetPipelineContainer', () => {
       expect(findMrWidgetPipeline().props()).toMatchObject({
         pipeline: mockStore.pipeline,
         pipelineCoverageDelta: mockStore.pipelineCoverageDelta,
-        pipelineEtag: mockStore.pipelineEtag,
         ciStatus: mockStore.ciStatus,
-        hasCi: mockStore.hasCI,
         sourceBranch: mockStore.sourceBranch,
         sourceBranchLink: mockStore.sourceBranchLink,
         retargeted: false,
@@ -120,10 +118,8 @@ describe('MrWidgetPipelineContainer', () => {
     it('sends correct props to the pipeline widget', () => {
       expect(findMrWidgetPipeline().props()).toMatchObject({
         ciStatus: mockStore.mergePipeline.details.status.text,
-        hasCi: mockStore.hasCI,
         pipeline: mockStore.mergePipeline,
         pipelineCoverageDelta: mockStore.pipelineCoverageDelta,
-        pipelineEtag: mockStore.pipelineEtag,
         sourceBranch: mockStore.targetBranch,
         sourceBranchLink: mockStore.targetBranch,
       });

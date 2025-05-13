@@ -11,6 +11,7 @@
 module Projects
   class TransferService < BaseService
     include Gitlab::ShellAdapter
+
     TransferError = Class.new(StandardError)
 
     def log_project_transfer_success(project, new_namespace)
@@ -123,7 +124,7 @@ module Projects
     end
 
     def raise_error_due_to_tags_if_transfer_dry_run_fails(project)
-      dry_run = transfer_project_path_in_registry(project.full_path, new_namespace.full_path, dry_run: true)
+      dry_run = transfer_project_path_in_registry(project.full_path, new_namespace.full_path, project: project, dry_run: true)
       return if dry_run == :accepted
 
       raise TransferError, format(s_('TransferProject|Project cannot be transferred because of a container registry error: %{error}'), error: dry_run.to_s.titleize)
@@ -155,7 +156,7 @@ module Projects
 
           # Update Container Registry
           if project.has_container_registry_tags?
-            transfer_project_path_in_registry(@old_path, @new_namespace.full_path, dry_run: false)
+            transfer_project_path_in_registry(@old_path, @new_namespace.full_path, project: project, dry_run: false)
           end
 
           update_integrations
@@ -181,10 +182,11 @@ module Projects
       refresh_permissions
     end
 
-    def transfer_project_path_in_registry(old_project_path, new_namespace_path, dry_run:)
+    def transfer_project_path_in_registry(old_project_path, new_namespace_path, project:, dry_run:)
       ContainerRegistry::GitlabApiClient.move_repository_to_namespace(
         old_project_path,
         namespace: new_namespace_path,
+        project: project,
         dry_run: dry_run
       )
     end

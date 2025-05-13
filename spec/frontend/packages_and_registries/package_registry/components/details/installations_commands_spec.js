@@ -29,7 +29,10 @@ describe('InstallationCommands', () => {
 
   function createComponent(propsData) {
     wrapper = shallowMount(InstallationCommands, {
-      propsData,
+      propsData: {
+        ...propsData,
+        hasInstallationCommands: true,
+      },
     });
   }
 

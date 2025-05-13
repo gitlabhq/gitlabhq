@@ -9,6 +9,7 @@ module Issuables
     # rubocop: disable CodeReuse/ActiveRecord
     def by_crm_organization(issuables)
       return issuables if params[:crm_organization_id].blank?
+      return issuables unless current_user&.can?(:read_crm_organization, parent&.crm_group)
 
       condition = CustomerRelations::IssueContact
         .joins(:contact)

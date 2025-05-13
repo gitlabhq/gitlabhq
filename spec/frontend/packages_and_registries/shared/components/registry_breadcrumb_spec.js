@@ -53,16 +53,13 @@ describe('Registry Breadcrumb', () => {
     });
 
     it('passes root and details to `items` prop', () => {
-      expect(wrapper.findComponent(GlBreadcrumb).props('items')).toEqual([
-        {
-          text: 'mock name',
-          to: '/',
-        },
-        {
-          text: 'mock name',
-          href: '/details',
-        },
-      ]);
+      const breadcrumbItems = wrapper.findComponent(GlBreadcrumb).props('items');
+      expect(breadcrumbItems).toHaveLength(2);
+      expect(breadcrumbItems[0]).toEqual({
+        text: 'mock name',
+        to: '/',
+      });
+      expect(breadcrumbItems[1].href).toBe('/:id');
     });
   });
 });

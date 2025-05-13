@@ -5,22 +5,25 @@ class NamespaceSetting < ApplicationRecord
   include Sanitizable
   include ChronicDurationAttribute
   include EachBatch
+  include SafelyChangeColumnDefault
+
+  columns_changing_default :require_dpop_for_manage_api_endpoints
 
   ignore_column :token_expiry_notify_inherited, remove_with: '17.9', remove_after: '2025-01-11'
-  enum pipeline_variables_default_role: ProjectCiCdSetting::PIPELINE_VARIABLES_OVERRIDE_ROLES, _prefix: true
+  enum :pipeline_variables_default_role, ProjectCiCdSetting::PIPELINE_VARIABLES_OVERRIDE_ROLES, prefix: true
 
   ignore_column :third_party_ai_features_enabled, remove_with: '16.11', remove_after: '2024-04-18'
   ignore_column :code_suggestions, remove_with: '17.8', remove_after: '2024-05-16'
 
-  cascading_attr :math_rendering_limits_enabled, :resource_access_token_notify_inherited
+  cascading_attr :math_rendering_limits_enabled, :resource_access_token_notify_inherited, :web_based_commit_signing_enabled
 
   scope :for_namespaces, ->(namespaces) { where(namespace: namespaces) }
 
   belongs_to :namespace, inverse_of: :namespace_settings
 
-  enum jobs_to_be_done: { basics: 0, move_repository: 1, code_storage: 2, exploring: 3, ci: 4, other: 5 }, _suffix: true
-  enum enabled_git_access_protocol: { all: 0, ssh: 1, http: 2 }, _suffix: true
-  enum seat_control: { off: 0, user_cap: 1, block_overages: 2 }, _prefix: true
+  enum :jobs_to_be_done, { basics: 0, move_repository: 1, code_storage: 2, exploring: 3, ci: 4, other: 5 }, suffix: true
+  enum :enabled_git_access_protocol, { all: 0, ssh: 1, http: 2 }, suffix: true
+  enum :seat_control, { off: 0, user_cap: 1, block_overages: 2 }, prefix: true
 
   attribute :default_branch_protection_defaults, default: -> { {} }
 

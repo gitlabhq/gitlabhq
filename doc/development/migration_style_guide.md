@@ -374,7 +374,7 @@ You should always read `disable_ddl_transaction!` as meaning:
 
 Even if you don't use an explicit PostgreSQL transaction `.transaction` (or `BEGIN; COMMIT;`),
 every SQL statement is still executed as a transaction.
-See [the PostgreSQL documentation on transactions](https://www.postgresql.org/docs/current/tutorial-transactions.html).
+See [the PostgreSQL documentation on transactions](https://www.postgresql.org/docs/16/tutorial-transactions.html).
 
 {{< /alert >}}
 
@@ -417,7 +417,7 @@ because they require a precise control on when and how to open transactions.
 
 - A foreign key _can_ be added inside a transaction, unlike `CREATE INDEX CONCURRENTLY`.
   However, PostgreSQL does not provide an option similar to `CREATE INDEX CONCURRENTLY`.
-  The helper [`add_concurrent_foreign_key`](database/foreign_keys.md#adding-foreign-keys-in-migrations)
+  The helper [`add_concurrent_foreign_key`](database/foreign_keys.md#adding-the-fk-constraint-not-valid)
   instead opens its own transactions to lock the source and target table
   in a manner that minimizes locking while adding and validating the foreign key.
 - As advised earlier, skip `disable_ddl_transaction!` if you are unsure
@@ -444,7 +444,7 @@ Custom index and constraint names should follow the [constraint naming conventio
 
 ### Truncate long index names
 
-PostgreSQL [limits the length of identifiers](https://www.postgresql.org/docs/current/limits.html),
+PostgreSQL [limits the length of identifiers](https://www.postgresql.org/docs/16/limits.html),
 like column or index names. Column names are not usually a problem, but index names tend
 to be longer. Some methods for shortening a name that's too long:
 
@@ -551,7 +551,7 @@ is concurrently accessed and modified by other processes, acquiring the lock may
 a while. The lock request is waiting in a queue and it may also block other queries
 on the `users` table once it has been enqueued.
 
-More information about PostgreSQL locks: [Explicit Locking](https://www.postgresql.org/docs/current/explicit-locking.html)
+More information about PostgreSQL locks: [Explicit Locking](https://www.postgresql.org/docs/16/explicit-locking.html)
 
 For stability reasons, GitLab.com has a short `statement_timeout`
 set. When the migration is invoked, any database query has
@@ -618,7 +618,7 @@ end
 
 #### Creating a new table when we have two foreign keys
 
-Only one foreign key should be created per transaction. This is because [the addition of a foreign key constraint requires a `SHARE ROW EXCLUSIVE` lock on the referenced table](https://www.postgresql.org/docs/12/sql-createtable.html#:~:text=The%20addition%20of%20a%20foreign%20key%20constraint%20requires%20a%20SHARE%20ROW%20EXCLUSIVE%20lock%20on%20the%20referenced%20table), and locking multiple tables in the same transaction should be avoided.
+Only one foreign key should be created per transaction. This is because [the addition of a foreign key constraint requires a `SHARE ROW EXCLUSIVE` lock on the referenced table](https://www.postgresql.org/docs/16/sql-createtable.html#:~:text=The%20addition%20of%20a%20foreign%20key%20constraint%20requires%20a%20SHARE%20ROW%20EXCLUSIVE%20lock%20on%20the%20referenced%20table), and locking multiple tables in the same transaction should be avoided.
 
 For this, we need three migrations:
 
@@ -790,7 +790,7 @@ as Transaction 1 is still executing and holding the `RowExclusiveLock`
 on `my_notes`.
 
 A more pernicious effect is blocking the transactions that would
-normally not conflict with Transaction 1 because Transaction 2
+usually not conflict with Transaction 1 because Transaction 2
 is queueing to acquire `AccessExclusiveLock`.
 In a normal situation, if another transaction attempted to read from and write
 to the same table `my_notes` at the same time as Transaction 1,
@@ -870,40 +870,6 @@ If a migration requires conditional logic based on the absence or presence of an
 
 For more details, review the [Adding Database Indexes](database/adding_database_indexes.md#testing-for-existence-of-indexes)
 guide.
-
-## Adding foreign-key constraints
-
-When adding a foreign-key constraint to either an existing or a new column also
-remember to add an index on the column.
-
-This is **required** for all foreign-keys, for example, to support efficient cascading
-deleting: when a lot of rows in a table get deleted, the referenced records need
-to be deleted too. The database has to look for corresponding records in the
-referenced table. Without an index, this results in a sequential scan on the
-table, which can take a long time.
-
-Here's an example where we add a new column with a foreign key
-constraint. Note it includes `index: true` to create an index for it.
-
-```ruby
-class Migration < Gitlab::Database::Migration[2.1]
-
-  def change
-    add_reference :model, :other_model, index: true, foreign_key: { on_delete: :cascade }
-  end
-end
-```
-
-When adding a foreign-key constraint to an existing column in a non-empty table,
-we have to employ `add_concurrent_foreign_key` and `add_concurrent_index`
-instead of `add_reference`.
-
-If you have a new or empty table that doesn't reference a
-[high-traffic table](#high-traffic-tables),
-we recommend that you use `add_reference` in a single-transaction migration. You can
-combine it with other operations that don't require `disable_ddl_transaction!`.
-
-You can read more about adding [foreign key constraints to an existing column](database/add_foreign_key_to_existing_column.md).
 
 ## `NOT NULL` constraints
 
@@ -1239,7 +1205,7 @@ to swap the primary key.
 By default, an integer column can hold up to a 4-byte (32-bit) number. That is
 a max value of 2,147,483,647. Be aware of this when creating a column that
 holds file sizes in byte units. If you are tracking file size in bytes, this
-restricts the maximum file size to just over 2GB.
+restricts the maximum file size to just over 2 GB.
 
 To allow an integer column to hold up to an 8-byte (64-bit) number, explicitly
 set the limit to 8-bytes. This allows the column to hold a value up to

@@ -5,6 +5,7 @@ module Ci
     include ApplicationWorker
 
     data_consistency :always
+    urgency :high
 
     sidekiq_options retry: 3
     include PipelineBackgroundQueue

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CleanupBackfillProjectIdForProjectsWithPipelineVariables < Gitlab::Database::Migration[2.2]
+class CleanupBackfillProjectIdForProjectsWithPipelineVariables < Gitlab::Database::Migration[2.3]
   milestone '18.0'
 
   restrict_gitlab_migration gitlab_schema: :gitlab_ci

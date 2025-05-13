@@ -1,0 +1,9 @@
+---
+name: rebase_on_merge_automatic
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/519381
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183928
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/524048
+milestone: '18.0'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

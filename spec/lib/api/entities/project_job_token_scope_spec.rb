@@ -19,20 +19,48 @@ RSpec.describe ::API::Entities::ProjectJobTokenScope, feature_category: :secrets
   describe "#as_json" do
     subject { entity.as_json }
 
-    it 'includes basic fields' do
-      expect(subject).to eq(
-        inbound_enabled: true,
-        outbound_enabled: true
-      )
+    context 'when instance_level_token_scope_enabled is false' do
+      before do
+        Gitlab::CurrentSettings.update!(enforce_ci_inbound_job_token_scope_enabled: false)
+      end
+
+      it 'inbound_enabled and outbound_enabled default to true' do
+        expect(subject).to eq(
+          inbound_enabled: true,
+          outbound_enabled: true
+        )
+      end
+
+      it 'inbound_enabled can be changed at the project level' do
+        project.update!(ci_inbound_job_token_scope_enabled: false)
+
+        expect(subject).to eq(
+          inbound_enabled: false,
+          outbound_enabled: true
+        )
+      end
     end
 
-    it 'includes basic fields' do
-      project.update!(ci_inbound_job_token_scope_enabled: false)
+    context 'when instance_level_token_scope_enabled is true' do
+      before do
+        Gitlab::CurrentSettings.update!(enforce_ci_inbound_job_token_scope_enabled: true)
+      end
 
-      expect(subject).to eq(
-        inbound_enabled: false,
-        outbound_enabled: true
-      )
+      it 'inbound_enabled and outbound_enabled default to true' do
+        expect(subject).to eq(
+          inbound_enabled: true,
+          outbound_enabled: true
+        )
+      end
+
+      it 'inbound_enabled can not be changed at the project level' do
+        project.update!(ci_inbound_job_token_scope_enabled: false)
+
+        expect(subject).to eq(
+          inbound_enabled: true,
+          outbound_enabled: true
+        )
+      end
     end
   end
 end

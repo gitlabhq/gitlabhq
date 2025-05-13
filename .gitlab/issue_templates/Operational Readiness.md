@@ -105,7 +105,7 @@ Complete common and the appropriate checklists per the type of new component men
 ### New data store, third party dependency
 
 - [ ] Legal and Security
-  - [ ] What is the [classification](https://about.gitlab.com/handbook/security/data-classification-standard.html#data-classification-levels) of data stored in the data store?
+  - [ ] What is the [classification](https://handbook.gitlab.com/handbook/security/data-classification-standard/#data-classification-levels) of data stored in the data store?
   - [ ] Have they got any security standards to meet our and/or our customers' requirements? (i.e. FIPS and/or Fed-RAMP) If not, what needs to be done?
 - [ ] Development, Testing, Deployment, and Operation
   - [ ] What integration types do they provide, e.g. SaaS and/or self-hosting?

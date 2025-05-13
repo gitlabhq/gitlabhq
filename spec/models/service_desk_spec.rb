@@ -10,11 +10,23 @@ RSpec.describe ServiceDesk, feature_category: :service_desk do
   end
 
   describe 'enabled?' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:parameter) { create(:project) }
 
-    subject { described_class.enabled?(project) }
+    subject { described_class.enabled?(parameter) }
 
     it { is_expected.to be_truthy }
+
+    context 'when parameter is group' do
+      let(:parameter) { create(:group) }
+
+      it { is_expected.to be_falsy }
+    end
+
+    context 'when parameter is namespace' do
+      let(:parameter) { create(:namespace) }
+
+      it { is_expected.to be_falsy }
+    end
 
     context 'when service desk is not supported' do
       before do
@@ -26,7 +38,7 @@ RSpec.describe ServiceDesk, feature_category: :service_desk do
 
     context 'when service desk is disabled for project' do
       before do
-        project.update!(service_desk_enabled: false)
+        parameter.update!(service_desk_enabled: false)
       end
 
       it { is_expected.to be_falsy }

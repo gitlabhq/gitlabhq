@@ -21,6 +21,8 @@ module Gitlab
           validations do
             validates :config, allowed_keys: Gitlab::Ci::Config::Entry::Job.allowed_keys + PROCESSABLE_ALLOWED_KEYS
             validates :config, mutually_exclusive_keys: %i[script run]
+            validates :config, mutually_exclusive_keys: %i[before_script run]
+            validates :config, mutually_exclusive_keys: %i[after_script run]
             validates :script, presence: true, if: -> { config.is_a?(Hash) && !config.key?(:run) }
 
             with_options allow_nil: true do

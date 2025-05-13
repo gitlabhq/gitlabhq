@@ -64,7 +64,7 @@ To avoid a broken workflow, you must:
 
 In GitLab 17.0 and later, runner registration tokens are disabled.
 To use stored runner registration tokens to register new runners,
-you must [enable the tokens](../../administration/settings/continuous_integration.md#allow-runner-registration-tokens).
+you must [enable the tokens](../../administration/settings/continuous_integration.md#control-runner-registration).
 
 {{< /alert >}}
 
@@ -74,7 +74,7 @@ To continue using registration tokens after GitLab 17.0:
 
 - On GitLab.com, you can manually [enable the legacy runner registration process](runners_scope.md#enable-use-of-runner-registration-tokens-in-projects-and-groups)
   in the top-level group settings.
-- On GitLab Self-Managed, you can manually [enable the legacy runner registration process](../../administration/settings/continuous_integration.md#allow-runner-registration-tokens)
+- On GitLab Self-Managed, you can manually [enable the legacy runner registration process](../../administration/settings/continuous_integration.md#control-runner-registration)
   in the **Admin** area settings.
 
 ## Impact on existing runners
@@ -83,7 +83,7 @@ Existing runners will continue to work as usual after upgrading to GitLab 17.0. 
 
 The [GitLab Runner Helm chart](https://docs.gitlab.com/runner/install/kubernetes.html) generates new runner pods every time a job is executed.
 For these runners, [enable legacy runner registration](#using-registration-tokens-after-gitlab-170) to use registration tokens.
-In GitLab 18.0 and later, you must migrate to the [new runner registration workflow](#the-new-runner-registration-workflow).
+In GitLab 20.0 and later, you must migrate to the [new runner registration workflow](#the-new-runner-registration-workflow).
 
 ## Changes to the `gitlab-runner register` command syntax
 
@@ -100,9 +100,9 @@ If you specify a runner authentication token with:
 - the `--token` command-line option, the `gitlab-runner register` command does not accept the configuration values.
 - the `--registration-token` command-line option, the `gitlab-runner register` command ignores the configuration values.
 
-| Token                                  | Registration command                                                                                      |
-|----------------------------------------|-----------------------------------------------------------------------------------------------------------|
-| Runner authentication token            | `gitlab-runner register --token $RUNNER_AUTHENTICATION_TOKEN`                                             |
+| Token                                  | Registration command |
+|----------------------------------------|----------------------|
+| Runner authentication token            | `gitlab-runner register --token $RUNNER_AUTHENTICATION_TOKEN` |
 | Runner registration token (deprecated) | `gitlab-runner register --registration-token $RUNNER_REGISTRATION_TOKEN <runner configuration arguments>` |
 
 Authentication tokens have the prefix, `glrt-`.
@@ -168,7 +168,7 @@ Several runner configuration options cannot be set during runner registration. T
 The following configuration options are no longer supported in [`values.yaml`](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/main/values.yaml):
 
 ```yaml
-## All these fields are DEPRECATED and the runner WILL FAIL TO START with GitLab Runner 18.0 and later if you specify them.
+## All these fields are DEPRECATED and the runner WILL FAIL TO START with GitLab Runner 20.0 and later if you specify them.
 ## If a runner authentication token is specified in runnerRegistrationToken, the registration will succeed, however the
 ## other values will be ignored.
 runnerRegistrationToken: ""
@@ -179,9 +179,10 @@ runUntagged: true
 protected: true
 ```
 
-The `runnerRegistrationToken` field replaces the `runnerToken` field. For GitLab Runner on Kubernetes, Helm deploy passes the runner `authentication token` to the runner worker pod and creates the runner configuration. In GitLab 17.0, if Kubernetes hosted runners attached to GitLab.com use `runnerRegistrationToken`, the runner worker pod uses an unsupported Registration API method at creation.
+For GitLab Runner on Kubernetes, Helm deploy passes the runner authentication token to the runner worker pod and creates the runner configuration.
+In GitLab 17.0 and later, if you use the `runnerRegistrationToken` token field on Kubernetes hosted runners attached to GitLab.com, the runner worker pod tries to use the unsupported Registration API method during creation.
 
-If you store the runner authentication token in `secrets`, you must also modify them.
+Replace the invalid `runnerRegistrationToken` field with the `runnerToken` field. You must also modify the runner authentication token stored in `secrets`.
 
 In the legacy runner registration workflow, fields were specified with:
 

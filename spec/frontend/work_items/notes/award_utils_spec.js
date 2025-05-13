@@ -1,13 +1,19 @@
-import { getMutation, optimisticAwardUpdate } from '~/work_items/notes/award_utils';
+import {
+  getMutation,
+  optimisticAwardUpdate,
+  getNewCustomEmojiPath,
+} from '~/work_items/notes/award_utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import mockApollo from 'helpers/mock_apollo_helper';
 import workItemNotesByIidQuery from '~/work_items/graphql/notes/work_item_notes_by_iid.query.graphql';
+import workItemAwardEmojiQuery from '~/work_items/graphql/award_emoji.query.graphql';
 import addAwardEmojiMutation from '~/work_items/graphql/notes/work_item_note_add_award_emoji.mutation.graphql';
 import removeAwardEmojiMutation from '~/work_items/graphql/notes/work_item_note_remove_award_emoji.mutation.graphql';
 import {
   mockAwardEmojiThumbsUp,
   mockAwardEmojiThumbsDown,
   mockWorkItemNotesResponseWithComments,
+  workItemResponseFactory,
 } from '../mock_data';
 
 function getWorkItem(data) {
@@ -140,6 +146,32 @@ describe('Work item note award utils', () => {
         { query: workItemNotesByIidQuery, variables: { fullPath, iid: workItemIid } },
         expect.any(Function),
       );
+    });
+  });
+
+  describe('getNewCustomEmojiPath', () => {
+    const newCustomEmojiPath = '/groups/gitlab-org/-/custom_emoji/new';
+    const cacheData = workItemResponseFactory({ newCustomEmojiPath });
+    const mockCache = {
+      readQuery: jest.fn().mockReturnValue({
+        workspace: {
+          workItem: cacheData.data.workItem,
+        },
+      }),
+    };
+
+    it('returns newCustomEmojiPath when it exists', () => {
+      const result = getNewCustomEmojiPath({
+        cache: mockCache,
+        fullPath,
+        workItemIid,
+      });
+
+      expect(mockCache.readQuery).toHaveBeenCalledWith({
+        query: workItemAwardEmojiQuery,
+        variables: { fullPath, iid: workItemIid, pageSize: 1 },
+      });
+      expect(result).toBe(newCustomEmojiPath);
     });
   });
 });

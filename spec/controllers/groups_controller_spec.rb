@@ -106,6 +106,61 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
         )
       end
     end
+
+    context 'adjourned deletion' do
+      render_views
+
+      let_it_be(:subgroup) { create(:group, :private, parent: group) }
+      let(:ancestor_notice_regex) do
+        /The parent group of this group is pending deletion, so this group will also be deleted on .*./
+      end
+
+      subject(:get_show) { get :show, params: { id: subgroup.to_param } }
+
+      context 'when the parent group has not been scheduled for deletion' do
+        it 'does not show the notice' do
+          subject
+
+          expect(response.body).not_to match(ancestor_notice_regex)
+        end
+      end
+
+      context 'when the parent group has been scheduled for deletion' do
+        before do
+          create(:group_deletion_schedule,
+            group: subgroup.parent,
+            marked_for_deletion_on: Date.current,
+            deleting_user: user
+          )
+        end
+
+        it 'shows the notice that the parent group has been scheduled for deletion' do
+          subject
+
+          expect(response.body).to match(ancestor_notice_regex)
+        end
+
+        context 'when the group itself has also been scheduled for deletion' do
+          before do
+            create(:group_deletion_schedule,
+              group: subgroup,
+              marked_for_deletion_on: Date.current,
+              deleting_user: user
+            )
+          end
+
+          it 'does not show the notice that the parent group has been scheduled for deletion' do
+            subject
+
+            expect(response.body).not_to match(ancestor_notice_regex)
+            # However, shows the notice that the project has been marked for deletion.
+            expect(response.body).to match(
+              /This group and its subgroups and projects are pending deletion, and will be deleted on .*./
+            )
+          end
+        end
+      end
+    end
   end
 
   describe 'GET #details' do
@@ -435,37 +490,6 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
       end
     end
 
-    context 'when creating a group with the `setup_for_company` attribute present' do
-      before do
-        sign_in(user)
-      end
-
-      subject do
-        post :create, params: { group: { name: 'new_group', path: 'new_group', setup_for_company: 'false' } }
-      end
-
-      it 'sets the groups `setup_for_company` value' do
-        subject
-        expect(Group.last.setup_for_company).to be(false)
-      end
-
-      context 'when the user already has a value for `setup_for_company`' do
-        let_it_be(:user) { create(:user, setup_for_company: true) }
-
-        it 'does not change the users `setup_for_company` value' do
-          expect(Users::UpdateService).not_to receive(:new)
-          expect { subject }.not_to change { user.reload.setup_for_company }.from(true)
-        end
-      end
-
-      context 'when the user has no value for `setup_for_company`' do
-        it 'changes the users `setup_for_company` value' do
-          expect(Users::UpdateService).to receive(:new).and_call_original
-          expect { subject }.to change { user.reload.setup_for_company }.to(false)
-        end
-      end
-    end
-
     context 'when creating a group with the `jobs_to_be_done` attribute present' do
       it 'sets the groups `jobs_to_be_done` value' do
         sign_in(user)
@@ -539,56 +563,108 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
         sign_in(user)
       end
 
-      context 'delayed deletion feature is available' do
-        context 'success' do
-          it 'marks the group for delayed deletion' do
-            expect { subject }.to change { group.reload.marked_for_deletion? }.from(false).to(true)
-          end
+      context 'success' do
+        it 'marks the group for delayed deletion' do
+          expect { subject }.to change { group.reload.marked_for_deletion? }.from(false).to(true)
+        end
 
-          it 'does not immediately delete the group' do
-            Sidekiq::Testing.fake! do
-              expect { subject }.not_to change { GroupDestroyWorker.jobs.size }
-            end
+        it 'does not immediately delete the group' do
+          Sidekiq::Testing.fake! do
+            expect { subject }.not_to change { GroupDestroyWorker.jobs.size }
           end
+        end
+
+        context 'for a html request' do
+          it 'redirects to group path' do
+            subject
+
+            expect(response).to redirect_to(group_path(group))
+          end
+        end
+
+        context 'for a json request', :freeze_time do
+          let(:format) { :json }
+
+          it 'returns json with message' do
+            subject
+
+            # FIXME: Replace `group.marked_for_deletion_on` with `group` after https://gitlab.com/gitlab-org/gitlab/-/work_items/527085
+            expect(json_response['message'])
+            .to eq(
+              "'#{group.name}' has been scheduled for deletion and will be deleted on " \
+                "#{permanent_deletion_date_formatted(group.marked_for_deletion_on)}.")
+          end
+        end
+      end
+
+      context 'failure' do
+        before do
+          allow(::Groups::MarkForDeletionService).to receive_message_chain(:new, :execute).and_return({ status: :error, message: 'error' })
+        end
+
+        it 'does not mark the group for deletion' do
+          expect { subject }.not_to change { group.reload.marked_for_deletion? }.from(false)
+        end
+
+        context 'for a html request' do
+          it 'redirects to group edit page' do
+            subject
+
+            expect(response).to redirect_to(edit_group_path(group))
+            expect(flash[:alert]).to include 'error'
+          end
+        end
+
+        context 'for a json request' do
+          let(:format) { :json }
+
+          it 'returns json with message' do
+            subject
+
+            expect(json_response['message']).to eq("error")
+          end
+        end
+      end
+
+      context 'when group is already marked for deletion' do
+        before do
+          create(:group_deletion_schedule, group: group, marked_for_deletion_on: Date.current)
+        end
+
+        context 'when permanently_remove param is set' do
+          let(:params) { { permanently_remove: true } }
 
           context 'for a html request' do
-            it 'redirects to group path' do
+            it 'deletes the group immediately and redirects to root path' do
+              expect(GroupDestroyWorker).to receive(:perform_async)
+
               subject
 
-              expect(response).to redirect_to(group_path(group))
+              expect(response).to redirect_to(root_path)
+              expect(flash[:toast]).to include "Group '#{group.name}' is being deleted."
             end
           end
 
-          context 'for a json request', :freeze_time do
+          context 'for a json request' do
             let(:format) { :json }
 
-            it 'returns json with message' do
+            it 'deletes the group immediately and returns json with message' do
+              expect(GroupDestroyWorker).to receive(:perform_async)
+
               subject
 
-              # FIXME: Replace `group.marked_for_deletion_on` with `group` after https://gitlab.com/gitlab-org/gitlab/-/work_items/527085
-              expect(json_response['message'])
-              .to eq(
-                "'#{group.name}' has been scheduled for deletion and will be deleted on " \
-                  "#{permanent_deletion_date_formatted(group.marked_for_deletion_on)}.")
+              expect(json_response['message']).to eq("Group '#{group.name}' is being deleted.")
             end
           end
         end
 
-        context 'failure' do
-          before do
-            allow(::Groups::MarkForDeletionService).to receive_message_chain(:new, :execute).and_return({ status: :error, message: 'error' })
-          end
-
-          it 'does not mark the group for deletion' do
-            expect { subject }.not_to change { group.reload.marked_for_deletion? }.from(false)
-          end
-
+        context 'when permanently_remove param is not set' do
           context 'for a html request' do
-            it 'redirects to group edit page' do
+            it 'redirects to edit path with error' do
               subject
 
               expect(response).to redirect_to(edit_group_path(group))
-              expect(flash[:alert]).to include 'error'
+              expect(flash[:alert]).to include "Group has been already marked for deletion"
             end
           end
 
@@ -598,91 +674,8 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
             it 'returns json with message' do
               subject
 
-              expect(json_response['message']).to eq("error")
+              expect(json_response['message']).to eq("Group has been already marked for deletion")
             end
-          end
-        end
-
-        context 'when group is already marked for deletion' do
-          before do
-            create(:group_deletion_schedule, group: group, marked_for_deletion_on: Date.current)
-          end
-
-          context 'when permanently_remove param is set' do
-            let(:params) { { permanently_remove: true } }
-
-            context 'for a html request' do
-              it 'deletes the group immediately and redirects to root path' do
-                expect(GroupDestroyWorker).to receive(:perform_async)
-
-                subject
-
-                expect(response).to redirect_to(root_path)
-                expect(flash[:toast]).to include "Group '#{group.name}' is being deleted."
-              end
-            end
-
-            context 'for a json request' do
-              let(:format) { :json }
-
-              it 'deletes the group immediately and returns json with message' do
-                expect(GroupDestroyWorker).to receive(:perform_async)
-
-                subject
-
-                expect(json_response['message']).to eq("Group '#{group.name}' is being deleted.")
-              end
-            end
-          end
-
-          context 'when permanently_remove param is not set' do
-            context 'for a html request' do
-              it 'redirects to edit path with error' do
-                subject
-
-                expect(response).to redirect_to(edit_group_path(group))
-                expect(flash[:alert]).to include "Group has been already marked for deletion"
-              end
-            end
-
-            context 'for a json request' do
-              let(:format) { :json }
-
-              it 'returns json with message' do
-                subject
-
-                expect(json_response['message']).to eq("Group has been already marked for deletion")
-              end
-            end
-          end
-        end
-      end
-
-      context 'delayed deletion feature is not available', :sidekiq_inline do
-        before do
-          stub_feature_flags(downtier_delayed_deletion: false)
-        end
-
-        context 'for a html request' do
-          it 'immediately schedules a group destroy and redirects to root page with alert about immediate deletion' do
-            Sidekiq::Testing.fake! do
-              expect { subject }.to change { GroupDestroyWorker.jobs.size }.by(1)
-            end
-
-            expect(response).to redirect_to(root_path)
-            expect(flash[:toast]).to include "Group '#{group.name}' is being deleted."
-          end
-        end
-
-        context 'for a json request' do
-          let(:format) { :json }
-
-          it 'immediately schedules a group destroy and returns json with message' do
-            Sidekiq::Testing.fake! do
-              expect { subject }.to change { GroupDestroyWorker.jobs.size }.by(1)
-            end
-
-            expect(json_response['message']).to eq("Group '#{group.name}' is being deleted.")
           end
         end
       end
@@ -716,47 +709,33 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
         sign_in(user)
       end
 
-      context 'when the delayed deletion feature is available' do
-        context 'when the restore succeeds' do
-          it 'restores the group' do
-            expect { subject }.to change { group.reload.marked_for_deletion? }.from(true).to(false)
-          end
-
-          it 'renders success notice upon restoring' do
-            subject
-
-            expect(response).to redirect_to(edit_group_path(group))
-            expect(flash[:notice]).to include "Group '#{group.name}' has been successfully restored."
-          end
+      context 'when the restore succeeds' do
+        it 'restores the group' do
+          expect { subject }.to change { group.reload.marked_for_deletion? }.from(true).to(false)
         end
 
-        context 'when the restore fails' do
-          before do
-            allow(::Groups::RestoreService).to receive_message_chain(:new, :execute).and_return({ status: :error, message: 'error' })
-          end
+        it 'renders success notice upon restoring' do
+          subject
 
-          it 'does not restore the group' do
-            expect { subject }.not_to change { group.reload.marked_for_deletion? }.from(true)
-          end
-
-          it 'redirects to group edit page' do
-            subject
-
-            expect(response).to redirect_to(edit_group_path(group))
-            expect(flash[:alert]).to include 'error'
-          end
+          expect(response).to redirect_to(edit_group_path(group))
+          expect(flash[:notice]).to include "Group '#{group.name}' has been successfully restored."
         end
       end
 
-      context 'when delayed deletion feature is not available' do
+      context 'when the restore fails' do
         before do
-          stub_feature_flags(downtier_delayed_deletion: false)
+          allow(::Groups::RestoreService).to receive_message_chain(:new, :execute).and_return({ status: :error, message: 'error' })
         end
 
-        it 'returns 404' do
+        it 'does not restore the group' do
+          expect { subject }.not_to change { group.reload.marked_for_deletion? }.from(true)
+        end
+
+        it 'redirects to group edit page' do
           subject
 
-          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response).to redirect_to(edit_group_path(group))
+          expect(flash[:alert]).to include 'error'
         end
       end
     end

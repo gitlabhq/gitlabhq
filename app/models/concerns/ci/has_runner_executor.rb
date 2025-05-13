@@ -5,7 +5,7 @@ module Ci
     extend ActiveSupport::Concern
 
     included do
-      enum executor_type: {
+      enum :executor_type, {
         unknown: 0,
         custom: 1,
         shell: 2,
@@ -20,7 +20,7 @@ module Ci
         kubernetes: 11,
         docker_autoscaler: 12,
         instance: 13
-      }, _suffix: true
+      }, suffix: true
     end
   end
 end

@@ -1,5 +1,5 @@
 ---
-stage: AI-Powered
+stage: AI-powered
 group: Custom Models
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Get started with GitLab Duo Self-Hosted.
@@ -8,7 +8,7 @@ title: GitLab Duo Self-Hosted
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
 - Offering: GitLab Self-Managed
 
@@ -19,8 +19,9 @@ title: GitLab Duo Self-Hosted
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../feature_flags.md) named `ai_custom_model`. Disabled by default.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
-- Feature flag `ai_custom_model` removed in GitLab 17.8
-- Generally available in GitLab 17.9
+- Feature flag `ai_custom_model` removed in GitLab 17.8.
+- Generally available in GitLab 17.9.
+- Changed to include Premium in GitLab 18.0.
 
 {{< /history >}}
 
@@ -100,7 +101,7 @@ Before setting up the GitLab Duo Self-Hosted infrastructure, you must have:
 
 ## Decide on your configuration type
 
-GitLab Self-Managed customers can implement AI-powered features using either of the following options:
+GitLab Self-Managed customers can implement AI-native features using either of the following options:
 
 - [**Self-hosted AI gateway and LLMs**](#self-hosted-ai-gateway-and-llms): Full control over your AI infrastructure.
 - [**GitLab.com AI gateway with default GitLab external vendor LLMs**](#gitlabcom-ai-gateway-with-default-gitlab-external-vendor-llms): Use GitLab managed AI infrastructure.
@@ -142,7 +143,7 @@ integrates with external vendor LLM providers, including:
 - [Fireworks AI](https://fireworks.ai/)
 - [Google Vertex](https://cloud.google.com/vertex-ai/)
 
-These LLMs communicate through the [GitLab Cloud Connector](../../development/cloud_connector/_index.md),
+These LLMs communicate through the GitLab Cloud Connector,
 offering a ready-to-use AI solution without the need for on-premise infrastructure.
 
 For licensing, you must have a GitLab Ultimate subscription, and [GitLab Duo Enterprise](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial). To get access to your purchased subscription, request a license through the [Customers Portal](../../subscriptions/customers_portal.md)

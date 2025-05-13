@@ -58,7 +58,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_one(:slack_integration) }
     it { is_expected.to have_one(:catalog_resource) }
     it { is_expected.to have_many(:ci_components).class_name('Ci::Catalog::Resources::Component') }
-    it { is_expected.to have_many(:ci_component_usages).class_name('Ci::Catalog::Resources::Components::Usage') }
     it { is_expected.to have_many(:ci_component_last_usages).class_name('Ci::Catalog::Resources::Components::LastUsage').inverse_of(:component_project) }
     it { is_expected.to have_many(:catalog_resource_versions).class_name('Ci::Catalog::Resources::Version') }
     it { is_expected.to have_many(:catalog_resource_sync_events).class_name('Ci::Catalog::Resources::SyncEvent') }
@@ -1302,6 +1301,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         warn_about_potentially_unwanted_characters?
         enforce_auth_checks_on_uploads
         enforce_auth_checks_on_uploads?
+        merge_request_title_regex
       ].each do |method|
         it { is_expected.to delegate_method(method).to(:project_setting).allow_nil }
       end
@@ -1312,6 +1312,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         show_default_award_emojis=
         warn_about_potentially_unwanted_characters=
         enforce_auth_checks_on_uploads=
+        merge_request_title_regex=
       ].each do |method|
         it { is_expected.to delegate_method(method).to(:project_setting).with_arguments(:args).allow_nil }
       end
@@ -1376,8 +1377,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     describe '#ci_inbound_job_token_scope_enabled?' do
-      it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_', default: true do
-        let(:delegated_method) { :inbound_job_token_scope_enabled? }
+      context 'when instance_level_token_scope_enabled is false' do
+        before do
+          allow(::Gitlab::CurrentSettings).to receive(:enforce_ci_inbound_job_token_scope_enabled?).and_return(false)
+        end
+
+        it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_', default: true do
+          let(:delegated_method) { :inbound_job_token_scope_enabled? }
+        end
       end
 
       where(:ci_cd_settings_attrs, :instance_enabled, :expectation) do
@@ -2353,6 +2360,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       projects = described_class.sort_by_attribute(:path_desc)
 
       expect(projects).to eq([project1, project2, project3].sort_by(&:path).reverse)
+    end
+
+    it 'reorders the input relation by full path asc' do
+      projects = described_class.sort_by_attribute(:full_path_asc)
+
+      expect(projects).to eq([project1, project2, project3].sort_by(&:full_path))
+    end
+
+    it 'reorders the input relation by full path desc' do
+      projects = described_class.sort_by_attribute(:full_path_desc)
+
+      expect(projects).to eq([project1, project2, project3].sort_by(&:full_path).reverse)
     end
 
     context 'with project_statistics' do
@@ -3777,6 +3796,22 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         subject { project.latest_pipeline(project.default_branch, project.commit.parent.id) }
 
         it { is_expected.to eq(other_pipeline_for_default_branch) }
+      end
+
+      context 'with provided source' do
+        before do
+          stub_feature_flags(source_filter_pipelines: true)
+        end
+
+        subject { project.latest_pipeline(project.default_branch, project.commit.parent.id, :push) }
+
+        it { is_expected.to eq(other_pipeline_for_default_branch) }
+      end
+
+      context 'with provided source that does not contain any pipelines' do
+        subject { project.latest_pipeline(project.default_branch, project.commit.parent.id, :schedule) }
+
+        it { is_expected.to be_nil }
       end
     end
 
@@ -9060,7 +9095,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  it_behaves_like 'it has loose foreign keys' do
+  it_behaves_like 'it has loose foreign keys', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/526190' do
     let(:factory_name) { :project }
   end
 
@@ -9484,9 +9519,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it_behaves_like 'cascading settings', :only_allow_merge_if_all_discussions_are_resolved
   end
 
-  describe '#archived' do
+  describe '#archived & #archived?' do
     it { expect(subject.archived).to be_falsey }
+    it { expect(subject.archived?).to be_falsey }
     it { expect(described_class.new(archived: true).archived).to be_truthy }
+    it { expect(described_class.new(archived: true).archived?).to be_truthy }
+
+    context 'when project is marked for deletion' do
+      subject(:project) { described_class.new(archived: true, marked_for_deletion_at: Time.current) }
+
+      it { expect(project.archived).to be_falsey }
+      it { expect(project.archived?).to be_falsey }
+    end
   end
 
   describe '#resolve_outdated_diff_discussions' do

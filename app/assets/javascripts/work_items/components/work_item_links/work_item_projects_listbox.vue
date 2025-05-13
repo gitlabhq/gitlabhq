@@ -202,11 +202,6 @@ export default {
         return { ...item, avatar_url: item.avatarUrl, web_url: item.webUrl };
       });
     },
-    handleFrequentProjectSelection(selectedProject) {
-      this.project = this.projects.find((proj) => {
-        return `/${proj.fullPath}` === selectedProject.webUrl;
-      });
-    },
   },
 };
 </script>

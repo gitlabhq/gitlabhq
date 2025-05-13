@@ -1,0 +1,10 @@
+---
+name: duo_code_review_full_file
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/510266
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189314
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/537556
+milestone: '18.0'
+group: group::code review
+type: beta
+default_enabled: true

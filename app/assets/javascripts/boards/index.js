@@ -1,6 +1,7 @@
 import PortalVue from 'portal-vue';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import VueRouter from 'vue-router';
 import BoardApp from '~/boards/components/board_app.vue';
 import { TYPE_ISSUE, WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import {
@@ -12,9 +13,23 @@ import {
 import { queryToObject } from '~/lib/utils/url_utility';
 import { defaultClient } from '~/graphql_shared/issuable_client';
 import { fullBoardId } from './boards_util';
+import { BOARDS_ROUTE_NAME } from './constants';
+
+export const createRouter = () => {
+  const routes = [{ name: BOARDS_ROUTE_NAME, path: '/boards' }];
+
+  const router = new VueRouter({
+    routes,
+    mode: 'history',
+    base: gon.relative_url_root || '/',
+  });
+
+  return router;
+};
 
 Vue.use(VueApollo);
 Vue.use(PortalVue);
+Vue.use(VueRouter);
 
 defaultClient.cache.policies.addTypePolicies({
   BoardList: {
@@ -73,6 +88,7 @@ function mountBoardApp(el) {
   } = el.dataset;
 
   const rawFilterParams = queryToObject(window.location.search, { gatherArrays: true });
+  const router = createRouter();
 
   const initialFilterParams = {
     ...convertObjectPropsToCamelCase(rawFilterParams, {}),
@@ -84,6 +100,7 @@ function mountBoardApp(el) {
   new Vue({
     el,
     name: 'BoardAppRoot',
+    router,
     apolloProvider,
     provide: {
       initialBoardId: fullBoardId(boardId),

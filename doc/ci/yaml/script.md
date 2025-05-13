@@ -209,7 +209,7 @@ lines to form the command. Make sure the lines can run when concatenated.
 <!-- vale gitlab_base.MeaningfulLinkWords = NO -->
 
 [Shell here documents](https://en.wikipedia.org/wiki/Here_document) work with the
-`|` and `>` operators as well. The example below transliterates lower case letters
+`|` and `>` operators as well. The example below transliterates lowercase letters
 to upper case:
 
 <!-- vale gitlab_base.MeaningfulLinkWords = YES -->

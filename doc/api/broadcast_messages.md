@@ -115,6 +115,12 @@ Example response:
 
 ## Create a broadcast message
 
+{{< alert type="warning" >}}
+
+Broadcast messages are publicly accessible through the API regardless of targeting settings. Do not include sensitive or confidential information, and do not use broadcast messages to communicate private information to specific groups or projects.
+
+{{< /alert >}}
+
 Create a new broadcast message.
 
 ```plaintext
@@ -185,6 +191,12 @@ Example response:
 ```
 
 ## Update a broadcast message
+
+{{< alert type="warning" >}}
+
+Broadcast messages are publicly accessible through the API regardless of targeting settings. Do not include sensitive or confidential information, and do not use broadcast messages to communicate private information to specific groups or projects.
+
+{{< /alert >}}
 
 Update an existing broadcast message.
 

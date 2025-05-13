@@ -41,6 +41,12 @@ describe('RunnerDetails', () => {
     });
   };
 
+  it('shows no content if no runner is provided', () => {
+    createComponent();
+
+    expect(wrapper.text()).toBe('');
+  });
+
   describe('Details tab', () => {
     describe.each`
       field                    | runner                                                             | expectedValue
@@ -58,7 +64,6 @@ describe('RunnerDetails', () => {
       ${'Maximum job timeout'} | ${{ maximumTimeout: 10 * 60 + 5 }}                                 | ${'10 minutes 5 seconds'}
       ${'Token expiry'}        | ${{ tokenExpiresAt: mockOneHourAgo }}                              | ${'1 hour ago'}
       ${'Token expiry'}        | ${{ tokenExpiresAt: null }}                                        | ${'Never expires'}
-      ${'Runners'}             | ${{ managers: { count: 2 } }}                                      | ${`2 ${'Show details'}`}
     `('"$field" field', ({ field, runner, expectedValue }) => {
       beforeEach(() => {
         createComponent({
@@ -72,7 +77,6 @@ describe('RunnerDetails', () => {
             GlIntersperse,
             GlSprintf,
             TimeAgo,
-            RunnerManagersDetail,
           },
         });
       });

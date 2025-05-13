@@ -85,6 +85,16 @@ RSpec.describe VsCode::Settings::CreateOrUpdateService, feature_category: :web_i
 
         expect(result.status).to eq(:error)
       end
+
+      it 'removes duplicate settings if it exists' do
+        setting = create(:vscode_setting, user: user, setting_type: 'settings')
+        dupe_setting = build(:vscode_setting, user: user, setting_type: 'settings')
+        # disabling validation to test duplicate case
+        dupe_setting.save!(validate: false)
+
+        expect { subject }.to change { User.find(user.id).vscode_settings.count }.from(2).to(1)
+        expect(setting.reload.content).to eq('{ "editor.fontSize": 12 }')
+      end
     end
   end
 end

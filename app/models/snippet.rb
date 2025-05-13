@@ -20,6 +20,7 @@ class Snippet < ApplicationRecord
   include CreatedAtFilterable
   include EachBatch
   include Import::HasImportSource
+  include Gitlab::EncryptedAttribute
 
   MAX_FILE_COUNT = 10
 
@@ -94,7 +95,7 @@ class Snippet < ApplicationRecord
   attr_spammable :description, spam_description: true
 
   attr_encrypted :secret_token,
-    key: Settings.attr_encrypted_db_key_base_truncated,
+    key: :db_key_base_truncated,
     mode: :per_attribute_iv,
     algorithm: 'aes-256-cbc'
 
@@ -386,7 +387,7 @@ class Snippet < ApplicationRecord
   end
 
   def hidden_due_to_author_ban?
-    Feature.enabled?(:hide_snippets_of_banned_users) && author.banned?
+    author.banned?
   end
 end
 

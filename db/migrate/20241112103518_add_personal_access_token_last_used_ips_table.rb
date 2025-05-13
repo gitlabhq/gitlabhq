@@ -6,6 +6,7 @@ class AddPersonalAccessTokenLastUsedIpsTable < Gitlab::Database::Migration[2.2]
   milestone '17.8'
 
   def up
+    # rubocop:disable Migration/CreateTableWithForeignKeys -- Legacy migration
     create_table :personal_access_token_last_used_ips do |t|
       t.references :personal_access_token,
         foreign_key: { on_delete: :cascade },
@@ -15,6 +16,7 @@ class AddPersonalAccessTokenLastUsedIpsTable < Gitlab::Database::Migration[2.2]
       t.timestamps_with_timezone
       t.inet :ip_address
     end
+    # rubocop:enable Migration/CreateTableWithForeignKeys -- Legacy migration
   end
 
   def down

@@ -1,4 +1,10 @@
-import { handleClusterError } from '~/kubernetes_dashboard/graphql/helpers/resolver_helpers';
+import {
+  handleClusterError,
+  subscribeToSocket,
+} from '~/kubernetes_dashboard/graphql/helpers/resolver_helpers';
+import { getWatchManager } from '~/environments/services/websocket_connection_service';
+
+jest.mock('~/environments/services/websocket_connection_service');
 
 describe('handleClusterError', () => {
   describe('helper argument includes a response data', () => {
@@ -44,5 +50,59 @@ describe('handleClusterError', () => {
 
       await expect(handleClusterError(error)).rejects.toThrow('Test error message');
     });
+  });
+});
+
+describe('subscribeToSocket', () => {
+  const config = { apiUrl: 'test-url' };
+  const watchParams = { resource: 'pods', namespace: 'default' };
+  const watchId = 'test-watch-id';
+  let mockWatcher;
+  let mockCacheParams;
+
+  beforeEach(() => {
+    mockWatcher = {
+      on: jest.fn(),
+      initConnection: jest.fn(),
+    };
+
+    mockCacheParams = {
+      updateQueryCache: jest.fn(),
+      updateConnectionStatusFn: jest.fn(),
+    };
+
+    getWatchManager.mockReturnValue(mockWatcher);
+    mockWatcher.initConnection.mockResolvedValue(mockWatcher);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('initializes websocket connection with correct parameters', async () => {
+    await subscribeToSocket({
+      watchId,
+      watchParams,
+      cacheParams: mockCacheParams,
+      config,
+    });
+
+    expect(getWatchManager).toHaveBeenCalledWith(config);
+    expect(mockWatcher.initConnection).toHaveBeenCalledWith({
+      message: { watchId, watchParams },
+    });
+  });
+
+  it('handles connection initialization failure', async () => {
+    mockWatcher.initConnection.mockRejectedValue(new Error('Connection failed'));
+
+    await expect(
+      subscribeToSocket({
+        watchId,
+        watchParams,
+        cacheParams: mockCacheParams,
+        config,
+      }),
+    ).rejects.toThrow('Failed to establish WebSocket connection');
   });
 });

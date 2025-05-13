@@ -1,7 +1,7 @@
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 
-describe('Settings Block', () => {
+describe('Settings section', () => {
   let wrapper;
 
   const mountComponent = (propsData) => {
@@ -15,6 +15,7 @@ describe('Settings Block', () => {
     });
   };
 
+  const findSection = () => wrapper.findByTestId('settings-section');
   const findDefaultSlot = () => wrapper.findByTestId('default-slot');
   const findHeadingSlot = () => wrapper.findByTestId('heading-slot');
   const findHeading = () => wrapper.findByTestId('settings-section-heading');
@@ -37,7 +38,7 @@ describe('Settings Block', () => {
     mountComponent();
 
     expect(findHeading().text()).toBe('Heading');
-    expect(findHeading().classes()).toEqual(['gl-heading-2', '!gl-mb-3']);
+    expect(findHeading().classes()).toEqual(['gl-heading-2', 'gl-mb-0']);
   });
 
   it('has a description slot', () => {
@@ -51,7 +52,13 @@ describe('Settings Block', () => {
 
     expect(findDescription().text()).toBe('Description');
     expect(findDescription().classes()).toEqual(
-      expect.arrayContaining(['gl-text-subtle', 'gl-mb-3']),
+      expect.arrayContaining(['gl-text-subtle', 'gl-mb-0']),
     );
+  });
+
+  it('option "noBottomBorder" has been set', () => {
+    mountComponent({ noBottomBorder: true });
+
+    expect(findSection().classes()).toContain('settings-section-no-bottom');
   });
 });

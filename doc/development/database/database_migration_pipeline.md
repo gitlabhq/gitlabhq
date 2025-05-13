@@ -99,7 +99,7 @@ SHA="fed6dd8a58d75a0e053a4972765b4fc08c5814a3"  # The commit SHA of the HEAD of 
 # The following should not be changed between invocations:
 CI_JOB_URL='https://gitlab.com/gitlab-org/database-team/gitlab-com-database-testing/-/jobs/1590162939'
 # It doesn't appear that CI_JOB_URL has to be set to anything in particular for the pipeline to run
-# successfully, but this would normally be the URL to the upstream job that invokes the DB testing pipeline.
+# successfully, but this would usually be the URL to the upstream job that invokes the DB testing pipeline.
 CI_MERGE_REQUEST_PROJECT_ID='278964'    # gitlab-org/gitlab numeric ID. Shouldn't change.
 CI_PROJECT_ID="gitlab-org/gitlab"       # The slug identifying gitlab-org/gitlab.
 

@@ -60,7 +60,7 @@ end
 ### Higher level code comments and class/module level documentation
 
 The GitLab codebase has many libraries which are re-used in many places.
-Some of these libraries (e.g. [`ExclusiveLeaseHelpers`](https://gitlab.com/gitlab-org/gitlab/-/blob/d1d70895986065115414f6463fb82aa931c26858/lib/gitlab/exclusive_lease_helpers.rb#L31))
+Some of these libraries (for example, [`ExclusiveLeaseHelpers`](https://gitlab.com/gitlab-org/gitlab/-/blob/d1d70895986065115414f6463fb82aa931c26858/lib/gitlab/exclusive_lease_helpers.rb#L31))
 have complicated internal implementations which are time-consuming to read through and understand the implications of using the library.
 Similarly, some of these libraries have multiple options which have important outcomes
 that are difficult to understand by simply reading the name of the parameter.

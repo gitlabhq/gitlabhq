@@ -54,7 +54,7 @@ sequenceDiagram
     Background Job-->>Background Job: Complete
 ```
 
-### Configure Duo add-on seat management
+## Configure Duo add-on seat management
 
 To turn on add-on seat management with LDAP:
 
@@ -72,7 +72,3 @@ gitlab_rails['ldap_servers'] = {
   }
 }
 ```
-
-## Troubleshooting
-
-See [LDAP troubleshooting](auth/ldap/ldap-troubleshooting.md).

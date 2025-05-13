@@ -4,7 +4,7 @@ import { GlAvatar, GlAvatarLink, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { avatarI18n } from '~/profile/edit/constants';
 import { loadCSSFile } from '~/lib/utils/css_utils';
-
+import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 import UserAvatar from '~/profile/edit/components/user_avatar.vue';
 
 const glCropDataMock = jest.fn().mockImplementation(() => ({
@@ -45,6 +45,9 @@ describe('Edit User Avatar', () => {
       provide: {
         ...defaultProvides,
         ...provides,
+      },
+      stubs: {
+        SettingsSection,
       },
       attachTo: document.body,
     });

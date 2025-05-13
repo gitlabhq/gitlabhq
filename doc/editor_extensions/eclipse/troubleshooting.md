@@ -14,6 +14,12 @@ title: Eclipse troubleshooting
 
 {{< /details >}}
 
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/editor-extensions/gitlab-eclipse-plugin/-/issues/163) from experiment to beta in GitLab 17.11.
+
+{{< /history >}}
+
 {{< alert type="disclaimer" />}}
 
 If the steps on this page don't solve your problem, check the
@@ -47,22 +53,22 @@ The debug logs are available in the `language_server.log` file. To view this fil
 
 ## Required information for support
 
-When creating a support request, provide this information:
+When creating a support request, provide the following information:
 
 1. Your current GitLab for Eclipse plugin version.
-   1. Open the `About Eclipse IDE` popup window.
+   1. Open the `About Eclipse IDE` dialog.
       - On Windows, in your IDE, select **Help > About Eclipse IDE**.
       - On MacOS, in your IDE, select **Eclipse > About Eclipse IDE**.
    1. On the dialog, select **Installation details**.
    1. Locate **GitLab for Eclipse** and copy the **Version** value.
 
 1. Your Eclipse version.
-   1. Open the `About Eclipse IDE` popup window.
+   1. Open the `About Eclipse IDE` dialog.
       - On Windows, in your IDE, select **Help > About Eclipse IDE**.
       - On MacOS, in your IDE, select **Eclipse > About Eclipse IDE**.
 
 1. Your operating system.
-1. Are you using `gitlab.com` or a self-managed instance?
+1. Are you using a GitLab.com, GitLab Self-Managed, or GitLab Dedicated instance?
 1. Are you using a proxy?
 1. Are you using a self-signed certificate?
 1. The [workspace logs](#locate-the-workspace-log-file).

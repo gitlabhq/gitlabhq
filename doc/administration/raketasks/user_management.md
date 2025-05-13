@@ -184,7 +184,20 @@ sudo /etc/init.d/gitlab start
 
 ```
 
-## Bulk assign users to GitLab Duo Pro
+## Bulk assign users to GitLab Duo
+
+You can assign users in bulk to GitLab Duo using a CSV file with the names of the users.
+The CSV file must have a header named `username`, followed by the usernames on each subsequent row.
+
+```plaintext
+username
+user1
+user2
+user3
+user4
+```
+
+### GitLab Duo Pro
 
 {{< details >}}
 
@@ -199,8 +212,6 @@ sudo /etc/init.d/gitlab start
 
 {{< /history >}}
 
-The Rake task for bulk user assignment is available in GitLab 16.9 and later. For GitLab 16.8, use the script [`bulk_user_assignment.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/duo_pro/bulk_user_assignment.rb) instead.
-
 To perform bulk user assignment for GitLab Duo Pro, you can use the following Rake task:
 
 ```shell
@@ -212,27 +223,71 @@ If you prefer to use square brackets in the file path, you can escape them or us
 ```shell
 bundle exec rake duo_pro:bulk_user_assignment\['path/to/your/file.csv'\]
 # or
-bundle exec rake "duo_pro:bulk_user_assignment['path/to/your/file.csv']"
+bundle exec rake "duo_pro:bulk_user_assignment[path/to/your/file.csv]"
 ```
 
-The CSV file should have the following format:
+### GitLab Duo Pro and Enterprise
 
-```plaintext
-username
-user1
-user2
-user3
-user4
-etc..
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187230) in GitLab 18.0.
+
+{{< /history >}}
+
+#### GitLab Self-Managed
+
+This Rake task bulk assigns GitLab Duo Pro or Enterprise seats at the instance level to a list of users from a
+CSV file, based on the available purchased add-on.
+
+To perform bulk user assignment for a GitLab Self-Managed instance:
+
+```shell
+bundle exec rake gitlab_subscriptions:duo:bulk_user_assignment DUO_BULK_USER_FILE_PATH=path/to/your/file.csv
 ```
 
-Ensure that the file contains a header named `username`, and each subsequent row represents a username for user assignment.
+If you prefer to use square brackets in the file path, you can escape them or use double quotes:
 
-The task might raise the following error messages:
+```shell
+bundle exec rake gitlab_subscriptions:duo:bulk_user_assignment\['path/to/your/file.csv'\]
+# or
+bundle exec rake "gitlab_subscriptions:duo:bulk_user_assignment[path/to/your/file.csv]"
+```
 
-- `User is not found`: The specified user was not found.
-- `ERROR_NO_SEATS_AVAILABLE`: No more seats are available for user assignment.
-- `ERROR_INVALID_USER_MEMBERSHIP`: The user is not eligible for assignment due to being inactive, a bot, or a ghost.
+#### GitLab.com
+
+GitLab.com administrators can also use this Rake task to bulk assign GitLab Duo Pro or Enterprise seats for GitLab.com
+groups, based on the available purchased add-on for that group.
+
+To perform bulk user assignment for a GitLab.com group:
+
+```shell
+bundle exec rake gitlab_subscriptions:duo:bulk_user_assignment DUO_BULK_USER_FILE_PATH=path/to/your/file.csv NAMESPACE_ID=<namespace_id>
+```
+
+If you prefer to use square brackets in the file path, you can escape them or use double quotes:
+
+```shell
+bundle exec rake gitlab_subscriptions:duo:bulk_user_assignment\['path/to/your/file.csv','<namespace_id>'\]
+# or
+bundle exec rake "gitlab_subscriptions:duo:bulk_user_assignment[path/to/your/file.csv,<namespace_id>]"
+```
+
+## Troubleshooting
+
+### Errors during bulk user assignment
+
+When using the Rake task for bulk user assignment, you might encounter the following errors:
+
+- `User is not found`: The specified user was not found. Please ensure the provided username matches an existing user.
+- `ERROR_NO_SEATS_AVAILABLE`: No more seats are available for user assignment. Please see how to [view assigned GitLab Duo users](../../subscriptions/subscription-add-ons.md#view-assigned-gitlab-duo-users) to check current seat assignments.
+- `ERROR_INVALID_USER_MEMBERSHIP`: The user is not eligible for assignment due to being inactive, a bot, or a ghost. Please ensure the user is active and, if on GitLab.com, a member of the provided namespace.
 
 ## Related topics
 

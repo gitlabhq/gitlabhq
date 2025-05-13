@@ -18,7 +18,8 @@ import getContainerProtectionTagRulesQuery from '~/packages_and_registries/setti
 import deleteContainerProtectionTagRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_tag_rule.mutation.graphql';
 import { __, s__ } from '~/locale';
 import { getAccessLevelLabel } from '~/packages_and_registries/settings/project/utils';
-import { InternalEvents } from '~/tracking';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 const MAX_LIMIT = 5;
@@ -43,7 +44,7 @@ export default {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [InternalEvents.mixin()],
+  mixins: [glFeatureFlagsMixin()],
   inject: ['projectPath'],
   apollo: {
     protectionRulesQueryPayload: {
@@ -84,6 +85,15 @@ export default {
     containsTableItems() {
       return this.tagProtectionRulesCount > 0;
     },
+    description() {
+      return this.isFeatureFlagEnabled
+        ? s__(
+            'ContainerRegistry|Set up rules to protect container image tags from unauthorized changes or make them permanently immutable. Protection rules are checked first, followed by immutable rules. You can add up to 5 protection rules per project.',
+          )
+        : s__(
+            'ContainerRegistry|When a container image tag is protected, only certain user roles can create, update, and delete the protected tag, which helps to prevent unauthorized changes. You can add up to 5 protection rules per project.',
+          );
+    },
     drawerTitle() {
       return this.protectionRuleMutationItem
         ? s__('ContainerRegistry|Edit protection rule')
@@ -91,6 +101,9 @@ export default {
     },
     isLoadingProtectionRules() {
       return this.$apollo.queries.protectionRulesQueryPayload.loading;
+    },
+    isFeatureFlagEnabled() {
+      return this.glFeatures.containerRegistryImmutableTags;
     },
     protectionRulesQueryResult() {
       return this.protectionRulesQueryPayload.nodes;
@@ -111,6 +124,8 @@ export default {
           minimumAccessLevelForPush: protectionRule.minimumAccessLevelForPush,
           minimumAccessLevelForDelete: protectionRule.minimumAccessLevelForDelete,
           tagNamePattern: protectionRule.tagNamePattern,
+          immutable: protectionRule.immutable,
+          userPermissions: protectionRule.userPermissions,
         };
       });
     },
@@ -153,7 +168,6 @@ export default {
         }
         this.refetchProtectionRules();
         this.$toast.show(s__('ContainerRegistry|Container protection rule deleted.'));
-        this.trackEvent('container_protection_tag_rule_deleted');
       } catch (error) {
         this.alertErrorMessage = error.message;
         Sentry.captureException(error);
@@ -165,6 +179,12 @@ export default {
       this.$toast.show(this.toastMessage);
       this.closeDrawer();
       this.refetchProtectionRules();
+    },
+    getBadgeText({ immutable }) {
+      return immutable ? s__('ContainerRegistry|immutable') : s__('ContainerRegistry|protected');
+    },
+    isEditable({ immutable }) {
+      return !immutable;
     },
     openEditFormDrawer(item) {
       this.protectionRuleMutationItem = item;
@@ -239,6 +259,7 @@ export default {
   <crud-component
     :collapsed="false"
     :title="$options.i18n.title"
+    :description="description"
     :toggle-text="toggleText"
     data-testid="project-container-protection-tag-rules-settings"
     @showForm="openNewFormDrawer"
@@ -269,18 +290,6 @@ export default {
     </template>
 
     <template #default>
-      <p
-        class="gl-pb-0 gl-text-subtle"
-        :class="{ 'gl-px-5 gl-pt-4': containsTableItems }"
-        data-testid="description"
-      >
-        {{
-          s__(
-            'ContainerRegistry|When a container image tag is protected, only certain user roles can create, update, and delete the protected tag, which helps to prevent unauthorized changes. You can add up to 5 protection rules per project.',
-          )
-        }}
-      </p>
-
       <gl-alert
         v-if="alertErrorMessage"
         class="gl-mb-5"
@@ -304,6 +313,21 @@ export default {
           <gl-loading-icon size="sm" class="gl-my-5" data-testid="table-loading-icon" />
         </template>
 
+        <template #cell(tagNamePattern)="{ item }">
+          <span
+            class="gl-flex gl-flex-nowrap gl-items-center gl-justify-end gl-gap-2 md:gl-justify-start"
+          >
+            <span data-testid="tag-name-pattern" class="gl-break-all">
+              {{ item.tagNamePattern }}
+            </span>
+            <span v-if="isFeatureFlagEnabled">
+              <gl-badge data-testid="tag-rule-type-badge">
+                {{ getBadgeText(item) }}
+              </gl-badge>
+            </span>
+          </span>
+        </template>
+
         <template #cell(minimumAccessLevelForPush)="{ item }">
           <span data-testid="minimum-access-level-push-value">
             {{ $options.getAccessLevelLabel(item.minimumAccessLevelForPush) }}
@@ -319,6 +343,7 @@ export default {
         <template #cell(rowActions)="{ item }">
           <div class="gl-flex gl-justify-end">
             <gl-button
+              v-if="isEditable(item)"
               v-gl-tooltip
               category="tertiary"
               icon="pencil"
@@ -327,6 +352,7 @@ export default {
               @click="openEditFormDrawer(item)"
             />
             <gl-button
+              v-if="item.userPermissions.destroyContainerRegistryProtectionTagRule"
               v-gl-tooltip
               v-gl-modal="$options.modal.id"
               category="tertiary"

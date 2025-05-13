@@ -1,5 +1,6 @@
 <script>
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
+import { PAGINATION_TYPE_OFFSET } from '~/groups_projects/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_GROUPS } from '~/filtered_search/recent_searches_storage_keys';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
@@ -25,6 +26,7 @@ export default {
     [SORT_OPTION_CREATED.value]: TIMESTAMP_TYPE_CREATED_AT,
     [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_UPDATED_AT,
   },
+  PAGINATION_TYPE_OFFSET,
   name: 'YourWorkGroupsApp',
   components: { TabsWithList },
   props: {
@@ -46,5 +48,6 @@ export default {
     :default-sort-option="$options.SORT_OPTION_UPDATED"
     :timestamp-type-map="$options.timestampTypeMap"
     :initial-sort="initialSort"
+    :pagination-type="$options.PAGINATION_TYPE_OFFSET"
   />
 </template>

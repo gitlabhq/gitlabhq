@@ -6,6 +6,10 @@ class Groups::MilestonesController < Groups::ApplicationController
   before_action :milestone, only: [:edit, :show, :update, :issues, :merge_requests, :participants, :labels, :destroy]
   before_action :authorize_admin_milestones!, only: [:edit, :new, :create, :update, :destroy]
 
+  before_action do
+    push_force_frontend_feature_flag(:work_items_alpha, !!group&.work_items_alpha_feature_flag_enabled?)
+  end
+
   feature_category :team_planning
   urgency :low
 

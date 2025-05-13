@@ -241,7 +241,7 @@ For information about writing attribute descriptions, see the [GraphQL API descr
 - Declare URLs with the `--url` parameter, and wrap the URL in double quotes (`"`).
 - Prefer to use examples using the personal access token and don't pass data of
   username and password.
-- For legibility, use the <code>&#92;</code> character and indentation to break long single-line
+- For legibility, use the ` \ ` character and indentation to break long single-line
   commands apart into multiple lines.
 
 | Methods                                         | Description                                            |

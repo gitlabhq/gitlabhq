@@ -23,10 +23,6 @@ export default {
   },
   mixins: [trackingMixin],
   props: {
-    humanAccess: {
-      type: String,
-      required: true,
-    },
     path: {
       type: String,
       required: true,

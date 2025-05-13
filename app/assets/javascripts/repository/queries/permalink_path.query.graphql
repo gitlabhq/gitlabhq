@@ -1,0 +1,13 @@
+query getPermalinkPath($fullPath: ID!, $path: String!, $ref: String!) {
+  project(fullPath: $fullPath) {
+    id
+    repository {
+      paginatedTree(path: $path, ref: $ref) {
+        nodes {
+          __typename
+          permalinkPath
+        }
+      }
+    }
+  }
+}

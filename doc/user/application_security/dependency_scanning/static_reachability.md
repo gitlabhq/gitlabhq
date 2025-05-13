@@ -56,10 +56,13 @@ Prerequisites:
 
 To enable static reachability analysis:
 
-- Edit the project `.gitlab-ci.yml` file and set `DS_STATIC_REACHABILITY_ENABLED` to `true`.
+- Set the CI/CD variable DS_STATIC_REACHABILITY_ENABLED to `true`
+
+<details><summary>If you are using GitLab release `17.11.x` continue with these instructions</summary>
+
 - Make sure you extend `dependency-scanning-with-reachability` needs section to depend on the build job that creates the artifact required by the DS analyzer.
 
-Enabling static reachability:
+Enabling static reachability for non SaaS users using `17.11.x` release:
 
 ```yaml
 stages:
@@ -110,6 +113,10 @@ allow failures. In such cases, the `dependency-scanning-with-reachability` job w
 dependency scanning without adding reachability data to the SBOM.
 
 {{< /alert >}}
+
+</details>
+
+Static reachability is currently integrated into the `dependency-scanning` job of the latest dependency scanning template for GitLab.com users, and will be available to all GitLab users with the 18.0 release.
 
 Static reachability analysis functionality is supported in [Dependency Scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning) version `0.23.0` and all subsequent versions.
 

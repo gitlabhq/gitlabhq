@@ -54,7 +54,7 @@ class BulkImports::Entity < ApplicationRecord
   validate :validate_source_full_path_format
   validate :validate_bulk_import_organization_matches
 
-  enum source_type: { group_entity: 0, project_entity: 1 }
+  enum :source_type, { group_entity: 0, project_entity: 1 }
 
   scope :by_user_id, ->(user_id) { joins(:bulk_import).where(bulk_imports: { user_id: user_id }) }
   scope :stale, -> { where('updated_at < ?', 24.hours.ago).where(status: [0, 1]) }
@@ -242,25 +242,25 @@ class BulkImports::Entity < ApplicationRecord
   def validate_only_one_sharding_key_present
     return if [group, project, organization].compact.one?
 
-    errors.add(:base, s_("BulkImport|Import failed: Must have exactly one of organization, group or project."))
+    errors.add(:base, s_("BulkImport|Import failed. The bulk import entity must belong to only one organization, group, or project."))
   end
 
   def validate_parent_is_a_group
-    errors.add(:parent, s_('BulkImport|must be a group')) unless parent.group_entity?
+    errors.add(:parent, s_('BulkImport|must be a group.')) unless parent.group_entity?
   end
 
   def validate_imported_entity_type
     if group.present? && project_entity?
       errors.add(
         :group,
-        s_('BulkImport|expected an associated Project but has an associated Group')
+        s_('BulkImport|must belong to a project.')
       )
     end
 
     if project.present? && group_entity?
       errors.add(
         :project,
-        s_('BulkImport|expected an associated Group but has an associated Project')
+        s_('BulkImport|must belong to a group.')
       )
     end
   end
@@ -275,7 +275,7 @@ class BulkImports::Entity < ApplicationRecord
     if source.self_and_descendants.any? { |namespace| namespace.full_path == destination_namespace }
       errors.add(
         :base,
-        s_('BulkImport|Import failed: Destination cannot be a subgroup of the source group. Change the destination and try again.')
+        s_('BulkImport|Import failed. The destination cannot be a subgroup of the source group. Change the destination and try again.')
       )
     end
   end
@@ -287,9 +287,9 @@ class BulkImports::Entity < ApplicationRecord
 
     errors.add(
       :source_full_path,
-      s_('BulkImport|must have a relative path structure with no HTTP ' \
-         'protocol characters, or leading or trailing forward slashes. Path segments must not start or ' \
-         'end with a special character, and must not contain consecutive special characters')
+      s_('BulkImport|must have a relative path with no HTTP ' \
+         'protocol characters or leading or trailing forward slashes. Path segments must not start or ' \
+         'end with a special character or contain consecutive special characters.')
     )
   end
 

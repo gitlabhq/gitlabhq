@@ -2,6 +2,15 @@
 
 RSpec.describe ActiveContext::Query do
   describe 'class methods' do
+    describe '.all' do
+      it 'creates an all query' do
+        query = described_class.all
+        expect(query.type).to eq(:all)
+        expect(query.value).to be_nil
+        expect(query.children).to be_empty
+      end
+    end
+
     describe '.filter' do
       it 'creates a filter query with valid conditions' do
         query = described_class.filter(project_id: 1)
@@ -136,11 +145,24 @@ RSpec.describe ActiveContext::Query do
         expect(knn_query.children).to contain_exactly(base_query)
       end
 
-      it 'raises an error for nil target' do
+      it 'passes content when specified' do
+        content = 'something'
+        base_query = described_class.filter(project_id: 1)
+        knn_query = base_query.knn(content: content, limit: 5)
+
+        expect(knn_query.type).to eq(:knn)
+        expect(knn_query.value).to eq(
+          content: content,
+          limit: 5
+        )
+        expect(knn_query.children).to contain_exactly(base_query)
+      end
+
+      it 'raises an error for nil target and content' do
         base_query = described_class.filter(project_id: 1)
         vector = [0.1, 0.2, 0.3]
         expect { base_query.knn(target: nil, vector: vector, limit: 5) }
-          .to raise_error(ArgumentError, "Target cannot be nil")
+          .to raise_error(ArgumentError, /:content must be provided OR both :target AND :vector must be provided/)
       end
 
       it 'raises an error for nil limit' do
@@ -172,6 +194,18 @@ RSpec.describe ActiveContext::Query do
     end
 
     describe '#inspect_ast' do
+      it 'generates a readable AST representation for a simple all query' do
+        query = described_class.all
+        ast = query.inspect_ast
+        expect(ast).to eq('all')
+      end
+
+      it 'generates a readable AST representation for an all query with limit' do
+        query = described_class.all.limit(10)
+        ast = query.inspect_ast
+        expect(ast).to eq("limit(10)\n  all")
+      end
+
       it 'generates a readable AST representation for a simple filter query' do
         query = described_class.filter(project_id: 1)
         ast = query.inspect_ast
@@ -202,6 +236,14 @@ RSpec.describe ActiveContext::Query do
         expect(ast).to eq("knn(target: similarity, vector: [0.1, 0.2, 0.3], limit: 5)\n  filter(project_id: 1)")
       end
 
+      it 'generates a readable AST representation for a KNN query with content' do
+        base_query = described_class.filter(project_id: 1)
+        knn_query = base_query.knn(content: 'something', limit: 5)
+
+        ast = knn_query.inspect_ast
+        expect(ast).to eq("knn(content: something, limit: 5)\n  filter(project_id: 1)")
+      end
+
       it 'generates a readable AST representation for a KNN query without a base query' do
         vector = [0.1, 0.2, 0.3]
         knn_query = described_class.knn(target: 'similarity', vector: vector, limit: 5)
@@ -215,7 +257,7 @@ RSpec.describe ActiveContext::Query do
       it 'raises an error for invalid query type' do
         expect { described_class.new(type: :invalid) }.to raise_error(
           ArgumentError,
-          /Invalid type: invalid\. Allowed types are: filter, prefix, limit, knn, and, or/
+          /Invalid type: invalid\. Allowed types are: all, filter, prefix, limit, knn, and, or/
         )
       end
     end

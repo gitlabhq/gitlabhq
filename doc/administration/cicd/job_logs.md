@@ -167,7 +167,7 @@ For more details, see [Maximum file size for job logs](../instance_limits.md#max
 If you want to avoid any local disk usage for job logs,
 you can do so using one of the following options:
 
-- Turn on [incremental logging](#incremental-logging).
+- Turn on [incremental logging](#configure-incremental-logging).
 - Set the [job logs location](#changing-the-job-logs-local-location)
   to an NFS drive.
 
@@ -267,4 +267,4 @@ When you turn off incremental logging, running jobs continue to use incremental 
 
 To configure incremental logging:
 
-- Use the setting in the [Admin area](../settings/continuous_integration.md#incremental-logging) or the [Settings API](../../api/settings.md).
+- Use the setting in the [Admin area](../settings/continuous_integration.md#access-job-log-settings) or the [Settings API](../../api/settings.md).

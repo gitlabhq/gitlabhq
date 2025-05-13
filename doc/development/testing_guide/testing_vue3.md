@@ -312,7 +312,7 @@ await waitForPromises()
 
 Navigation guards must call their third argument `next` exactly once in any given pass through the navigation guard. This is necessary in both `vue-router@3` and `vue-router@4`, but is more important in `vue-router@4` as all navigations are asynchronous and must be awaited.
 
-Failing to call `next` can produce [hard to debug errors](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181946#note_2355522500), e.g.:
+Failing to call `next` can produce [hard to debug errors](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181946#note_2355522500). For example:
 
 ```shell
 Timeout - Async callback was not invoked within the 5000 ms timeout specified by jest.setTimeout

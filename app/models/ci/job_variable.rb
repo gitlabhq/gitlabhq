@@ -19,7 +19,7 @@ module Ci
     validates :key, uniqueness: { scope: :job_id }, unless: :dotenv_source?
     validates :project_id, presence: true, on: :create
 
-    enum source: { internal: 0, dotenv: 1 }, _suffix: true
+    enum :source, { internal: 0, dotenv: 1 }, suffix: true
 
     def set_project_id
       self.project_id ||= job&.project_id

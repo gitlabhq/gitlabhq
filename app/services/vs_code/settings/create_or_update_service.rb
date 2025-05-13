@@ -16,20 +16,29 @@ module VsCode
         # machines.
         return ServiceResponse.success(payload: DEFAULT_MACHINE) if params[:setting_type] == 'machines'
 
-        setting = VsCodeSetting.by_user(current_user)
+        settings = VsCodeSetting.by_user(current_user)
         additional_params = { uuid: SecureRandom.uuid }
 
         if params[:setting_type] == EXTENSIONS
-          setting = setting.by_setting_types([EXTENSIONS], settings_context_hash).first
+          settings = settings.by_setting_types([EXTENSIONS], settings_context_hash)
           additional_params[:settings_context_hash] = settings_context_hash
         else
-          setting = setting.by_setting_types([params[:setting_type]]).first
+          settings = settings.by_setting_types([params[:setting_type]])
         end
 
-        create_or_update(setting: setting, additional_params: additional_params)
+        ApplicationRecord.transaction do
+          remove_duplicate_settings(settings: settings)
+          create_or_update(setting: settings.first, additional_params: additional_params)
+        end
       end
 
       private
+
+      def remove_duplicate_settings(settings:)
+        return unless settings && settings.length > 1
+
+        settings[1...].each(&:destroy)
+      end
 
       def create_or_update(setting:, additional_params: {})
         if setting.nil?

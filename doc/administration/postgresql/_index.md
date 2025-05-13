@@ -63,6 +63,6 @@ Read how to [set up PostgreSQL replication and failover](replication_and_failove
 - [Database load balancing](database_load_balancing.md)
 - [Moving GitLab databases to a different PostgreSQL instance](moving.md)
 - [Multiple databases](multiple_databases.md)
-- [Database guides for GitLab development](../../development/database/_index.md)
+- Database guides for GitLab development
 - [Upgrade external database](external_upgrade.md)
 - [Upgrading operating systems for PostgreSQL](upgrading_os.md)

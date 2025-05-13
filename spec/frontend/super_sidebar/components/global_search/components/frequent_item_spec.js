@@ -3,7 +3,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import FrequentItem from '~/super_sidebar/components/global_search/components/frequent_item.vue';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import { stubComponent } from 'helpers/stub_component';
-import SearchResultHoverLayover from '~/super_sidebar/components/global_search/components/global_search_hover_overlay.vue';
+import SearchResultFocusLayover from '~/super_sidebar/components/global_search/components/global_search_focus_overlay.vue';
 
 describe('FrequentlyVisitedItem', () => {
   let wrapper;
@@ -30,7 +30,7 @@ describe('FrequentlyVisitedItem', () => {
 
   const findProjectAvatar = () => wrapper.findComponent(ProjectAvatar);
   const findSubtitle = () => wrapper.findByTestId('subtitle');
-  const findLayover = () => wrapper.findComponent(SearchResultHoverLayover);
+  const findLayover = () => wrapper.findComponent(SearchResultFocusLayover);
 
   beforeEach(() => {
     createComponent();

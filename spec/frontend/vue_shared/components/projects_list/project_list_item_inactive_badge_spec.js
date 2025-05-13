@@ -55,4 +55,32 @@ describe('ProjectListItemInactiveBadgeCE', () => {
       expect(findGlBadge().exists()).toBe(false);
     });
   });
+
+  describe.each`
+    archived | markedForDeletionOn | variant      | text
+    ${false} | ${null}             | ${false}     | ${false}
+    ${true}  | ${null}             | ${'info'}    | ${'Archived'}
+    ${false} | ${'2024-01-01'}     | ${'warning'} | ${'Pending deletion'}
+    ${true}  | ${'2024-01-01'}     | ${'warning'} | ${'Pending deletion'}
+  `(
+    'when project.archived is $archived and project.markedForDeletionOn is $markedForDeletionOn',
+    ({ archived, markedForDeletionOn, variant, text }) => {
+      beforeEach(() => {
+        createComponent({
+          props: {
+            project: {
+              ...project,
+              archived,
+              markedForDeletionOn,
+            },
+          },
+        });
+      });
+
+      it('renders the badge correctly', () => {
+        expect(findGlBadge().exists() && findGlBadge().props('variant')).toBe(variant);
+        expect(findGlBadge().exists() && findGlBadge().text()).toBe(text);
+      });
+    },
+  );
 });

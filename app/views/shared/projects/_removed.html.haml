@@ -1,0 +1,11 @@
+- return unless project.adjourned_deletion_configured? && scheduled_for_deletion?(project)
+
+.gl-flex.gl-items-center.gl-flex-wrap.project-title
+  %span.small
+    - marked_for_deletion_at = project.marked_for_deletion_at.strftime(Date::DATE_FORMATS[:medium])
+    = _("Marked For Deletion At - %{deletion_time}") % { deletion_time: marked_for_deletion_at }
+.gl-flex.gl-items-center.gl-flex-wrap.project-title
+  %p.small
+    -# FIXME: Replace `project.marked_for_deletion_at` with `project` after https://gitlab.com/gitlab-org/gitlab/-/work_items/527085
+    - permanent_deletion_time = permanent_deletion_date_formatted(project.marked_for_deletion_at, format: Date::DATE_FORMATS[:medium])
+    = _("Scheduled Deletion At - %{permanent_deletion_time}") % { permanent_deletion_time: permanent_deletion_time }

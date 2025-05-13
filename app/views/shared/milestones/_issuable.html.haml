@@ -1,5 +1,6 @@
 -# @project is present when viewing Project's milestone
 - project = @project || issuable.project
+- group = milestone_issuable_group(issuable)
 - container = project || milestone_issuable_group(issuable)
 - labels = issuable.labels
 - assignees = issuable.assignees
@@ -8,11 +9,16 @@
 - base_url_args = [container]
 - issuable_type = is_merge_request ? :merge_requests : (is_epic ? :epics : :issues)
 - issuable_type_args = base_url_args + [issuable_type]
+- issuable_icon = is_epic ? 'epic' : "issue-type-#{issuable.respond_to?(:work_item_type) ? issuable.work_item_type.name.downcase : 'issue'}"
+
 
 %li{ class: '!gl-border-b-section' }
   %span
+    = sprite_icon(issuable_icon)
     - if show_project_name && project
       %strong #{project.name} &middot;
+    - if group
+      %strong #{group.name} &middot;
     - if issuable.is_a?(Issue)
       = confidential_icon(issuable)
     = link_to issuable.title, ::Gitlab::UrlBuilder.build(issuable), title: issuable.title, class: "gl-text-default gl-break-words"

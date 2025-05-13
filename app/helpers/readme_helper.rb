@@ -6,5 +6,3 @@ module ReadmeHelper
     {}
   end
 end
-
-ReadmeHelper.prepend_mod_with("ReadmeHelper")

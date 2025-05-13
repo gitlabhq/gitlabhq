@@ -4,6 +4,7 @@ module API
   class Notes < ::API::Base
     include PaginationParams
     include APIGuard
+
     helpers ::API::Helpers::NotesHelpers
 
     before { authenticate! }
@@ -17,9 +18,11 @@ module API
       '/projects/:id/merge_requests/:noteable_id/notes/:note_id'
     ]
 
-    Helpers::NotesHelpers.feature_category_per_noteable_type.each do |noteable_type, feature_category|
-      parent_type = noteable_type.parent_class.to_s.underscore
-      noteables_str = noteable_type.to_s.underscore.pluralize
+    Helpers::NotesHelpers.noteable_types.each do |noteable_type|
+      parent_type = noteable_type.parent_type
+      noteables_str = noteable_type.noteables_str
+      feature_category = noteable_type.feature_category
+      noteable_type = noteable_type.noteable_class
 
       params do
         requires :id, type: String, desc: "The ID of a #{parent_type}"
@@ -40,7 +43,7 @@ module API
         end
         # rubocop: disable CodeReuse/ActiveRecord
         get ":id/#{noteables_str}/:noteable_id/notes", feature_category: feature_category do
-          noteable = find_noteable(noteable_type, params[:noteable_id])
+          noteable = find_noteable(noteable_type, params[:noteable_id], parent_type)
 
           # We exclude notes that are cross-references and that cannot be viewed
           # by the current user. By doing this exclusion at this level and not
@@ -68,7 +71,7 @@ module API
           requires :noteable_id, type: Integer, desc: 'The ID of the noteable'
         end
         get ":id/#{noteables_str}/:noteable_id/notes/:note_id", feature_category: feature_category do
-          noteable = find_noteable(noteable_type, params[:noteable_id])
+          noteable = find_noteable(noteable_type, params[:noteable_id], parent_type)
           get_note(noteable, params[:note_id])
         end
 
@@ -87,11 +90,11 @@ module API
           allowlist =
             Gitlab::CurrentSettings.current_application_settings.notes_create_limit_allowlist
           check_rate_limit! :notes_create, scope: current_user, users_allowlist: allowlist
-          noteable = find_noteable(noteable_type, params[:noteable_id])
+          noteable = find_noteable(noteable_type, params[:noteable_id], parent_type)
 
           opts = {
             note: params[:body],
-            noteable_type: noteables_str.classify,
+            noteable_type: noteable.class.name,
             noteable_id: noteable.id,
             internal: params[:internal] || params[:confidential],
             created_at: params[:created_at],
@@ -115,7 +118,7 @@ module API
           optional :confidential, type: Boolean, desc: '[Deprecated in 14.10] No longer allowed to update confidentiality of notes'
         end
         put ":id/#{noteables_str}/:noteable_id/notes/:note_id", feature_category: feature_category do
-          noteable = find_noteable(noteable_type, params[:noteable_id])
+          noteable = find_noteable(noteable_type, params[:noteable_id], parent_type)
 
           update_note(noteable, params[:note_id])
         end
@@ -128,7 +131,7 @@ module API
           requires :note_id, type: Integer, desc: 'The ID of a note'
         end
         delete ":id/#{noteables_str}/:noteable_id/notes/:note_id" do
-          noteable = find_noteable(noteable_type, params[:noteable_id])
+          noteable = find_noteable(noteable_type, params[:noteable_id], parent_type)
 
           delete_note(noteable, params[:note_id])
         end

@@ -181,7 +181,7 @@ export default {
     </workload-details-item>
     <workload-details-item v-if="item.status && !hasFullStatus" :label="$options.i18n.status">
       <gl-badge :variant="$options.WORKLOAD_STATUS_BADGE_VARIANTS[item.status]">{{
-        $options.STATUS_LABELS[item.status]
+        item.statusText || $options.STATUS_LABELS[item.status]
       }}</gl-badge>
     </workload-details-item>
     <workload-details-item
@@ -193,7 +193,7 @@ export default {
       <template v-if="item.status" #label>
         <span class="gl-mr-2 gl-font-bold">{{ $options.i18n.status }}</span>
         <gl-badge :variant="$options.WORKLOAD_STATUS_BADGE_VARIANTS[item.status]">{{
-          $options.STATUS_LABELS[item.status]
+          item.statusText || $options.STATUS_LABELS[item.status]
         }}</gl-badge>
       </template>
       <pre>{{ statusYaml }}</pre>

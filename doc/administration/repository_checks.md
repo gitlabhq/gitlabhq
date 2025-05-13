@@ -1,14 +1,15 @@
 ---
-stage: Systems
+stage: Data Access
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+gitlab_dedicated: yes
 title: Repository checks
 ---
 
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -50,7 +51,7 @@ Instead of checking repositories manually, GitLab can be configured to run the c
 When enabled, GitLab periodically runs a repository check on all project repositories and wiki
 repositories to detect possible data corruption. A project is checked no more than once per month, and new projects aren't checked for at least 24 hours.
 
-Administrators can configure the frequency of repository checks. To edit the frequency:
+GitLab Self-Managed administrators can configure the frequency of repository checks. To edit the frequency:
 
 - For Linux package installations, edit `gitlab_rails['repository_check_worker_cron']` in
   `/etc/gitlab/gitlab.rb`.
@@ -65,6 +66,12 @@ Repositories with known check failures can be found at
 `/admin/projects?last_repository_check_failed=1`.
 
 ## Run a check using the command line
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 You can run [`git fsck`](https://git-scm.com/docs/git-fsck) using the command line on repositories on
 [Gitaly servers](gitaly/_index.md). To locate the repositories:
@@ -88,6 +95,12 @@ You can run [`git fsck`](https://git-scm.com/docs/git-fsck) using the command li
 
 ## What to do if a check failed
 
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
 If a repository check fails, locate the error in the [`repocheck.log` file](logs/_index.md#repochecklog) on disk at:
 
 - `/var/log/gitlab/gitlab-rails` for Linux package installations.
@@ -102,6 +115,12 @@ If periodic repository checks cause false alarms, you can clear all repository c
 1. Select **Clear all repository checks**.
 
 ## Troubleshooting
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
 
 When working with repository checks, you might encounter the following issues.
 

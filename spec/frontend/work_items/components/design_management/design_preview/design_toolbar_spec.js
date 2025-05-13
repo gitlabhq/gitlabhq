@@ -18,6 +18,7 @@ describe('DesignToolbar', () => {
     isLoading = false,
     design = mockDesign,
     isLatestVersion = true,
+    canUpdateDesign = true,
   } = {}) {
     wrapper = shallowMountExtended(DesignToolbar, {
       propsData: {
@@ -26,6 +27,7 @@ describe('DesignToolbar', () => {
         isSidebarOpen: true,
         designFilename: design.filename,
         isLatestVersion,
+        canUpdateDesign,
       },
       isLoggedIn: isLoggedIn(),
     });
@@ -71,17 +73,18 @@ describe('DesignToolbar', () => {
     expect(wrapper.findComponent(CloseButton).exists()).toBe(true);
   });
 
-  it('renders archive design button', () => {
-    createComponent();
+  it.each`
+    canUpdateDesign | shouldRender
+    ${true}         | ${true}
+    ${false}        | ${false}
+  `(
+    'renders archive design button based on canUpdateDesign=$canUpdateDesign',
+    ({ canUpdateDesign, shouldRender }) => {
+      createComponent({ canUpdateDesign });
 
-    expect(wrapper.findComponent(ArchiveDesignButton).exists()).toBe(true);
-  });
-
-  it('does not render archive design button if the version is not the latest', () => {
-    createComponent({ isLatestVersion: false });
-
-    expect(wrapper.findComponent(ArchiveDesignButton).exists()).toBe(false);
-  });
+      expect(wrapper.findComponent(ArchiveDesignButton).exists()).toBe(shouldRender);
+    },
+  );
 
   it('renders imported badge when design is imported', () => {
     createComponent();

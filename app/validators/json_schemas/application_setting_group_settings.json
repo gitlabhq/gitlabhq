@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Application settings for the group_setting JsonB column",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "top_level_group_creation_enabled": {
+      "type": "boolean",
+      "description": "Allows a user to create top-level-groups"
+    },
+    "disable_invite_members": {
+      "type": "boolean",
+      "description": "When enabled, prevents group owners and members from inviting new users to the group"
+    }
+  }
+}

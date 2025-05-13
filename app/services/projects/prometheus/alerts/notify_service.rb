@@ -93,7 +93,7 @@ module Projects
                             .any?
 
           prometheus = project.find_or_initialize_integration('prometheus')
-          return false unless prometheus.manual_configuration?
+          return false unless prometheus&.manual_configuration?
 
           if setting = project.alerting_setting
             compare_token(token, setting.token)

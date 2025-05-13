@@ -8,7 +8,6 @@ import projectInfoQuery from 'ee_else_ce/repository/queries/project_info.query.g
 import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constants';
 import { DEFAULT_BLOB_INFO } from '~/repository/constants';
 import BlobButtonGroup from 'ee_else_ce/repository/components/header_area/blob_button_group.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import BlobDefaultActionsGroup from './blob_default_actions_group.vue';
 import BlobDeleteFileGroup from './blob_delete_file_group.vue';
 import BlobRepositoryActionsGroup from './blob_repository_actions_group.vue';
@@ -32,7 +31,6 @@ export default {
   directives: {
     GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   inject: ['blobInfo', 'currentRef'],
   provide() {
     return {
@@ -69,7 +67,12 @@ export default {
       required: false,
       default: undefined,
     },
-    eeCanLock: {
+    eeCanCreateLock: {
+      type: Boolean,
+      required: false,
+      default: undefined,
+    },
+    eeCanDestroyLock: {
       type: Boolean,
       required: false,
       default: undefined,
@@ -100,21 +103,13 @@ export default {
   data() {
     return {
       userPermissions: DEFAULT_BLOB_INFO.userPermissions,
+      activeViewerType: SIMPLE_BLOB_VIEWER,
       isLoggedIn: isLoggedIn(),
     };
   },
   computed: {
     isLoading() {
       return this.$apollo?.queries.projectInfo.loading;
-    },
-    activeViewerType() {
-      if (this.$route?.query?.plain !== '1') {
-        const richViewer = document.querySelector('.blob-viewer[data-type="rich"]');
-        if (richViewer) {
-          return RICH_BLOB_VIEWER;
-        }
-      }
-      return SIMPLE_BLOB_VIEWER;
     },
     viewer() {
       return this.activeViewerType === RICH_BLOB_VIEWER
@@ -127,14 +122,31 @@ export default {
     canModifyFile() {
       return this.eeCanModifyFile !== undefined ? this.eeCanModifyFile : true;
     },
-    canLock() {
-      return this.eeCanLock !== undefined ? this.eeCanLock : false;
-    },
     isLocked() {
       return this.eeIsLocked !== undefined ? this.eeIsLocked : false;
     },
   },
+  watch: {
+    // Watch the URL 'plain' query value to know if the viewer needs changing.
+    // This is the case when the user switches the viewer and then goes back through the history
+    '$route.query.plain': {
+      handler(plainValue) {
+        this.updateViewerFromQueryParam(plainValue);
+      },
+    },
+  },
+  mounted() {
+    this.updateViewerFromQueryParam(this.$route?.query?.plain);
+  },
   methods: {
+    updateViewerFromQueryParam(plainValue) {
+      const hasRichViewer = Boolean(this.blobInfo.richViewer);
+      const useSimpleViewer = plainValue === '1' || !hasRichViewer;
+      this.switchViewer(useSimpleViewer ? SIMPLE_BLOB_VIEWER : RICH_BLOB_VIEWER);
+    },
+    switchViewer(newViewer) {
+      this.activeViewerType = newViewer || SIMPLE_BLOB_VIEWER;
+    },
     onCopy() {
       if (this.overrideCopy) {
         this.$emit('copy');
@@ -165,7 +177,8 @@ export default {
       :is-using-lfs="isUsingLfs"
       :user-permissions="userPermissions"
       :is-loading="isLoading"
-      :can-lock="canLock"
+      :can-create-lock="eeCanCreateLock"
+      :can-destroy-lock="eeCanDestroyLock"
       :is-replace-disabled="!canModifyFile && isLocked"
       :is-locked="isLocked"
       @showForkSuggestion="onShowForkSuggestion"

@@ -75,12 +75,16 @@ which makes it possible to create commits on behalf of other users.
 When commit signing is enabled, commits created using the REST API that have different `author_name`
 and `author_email` than the user who sends the API request are rejected.
 
-## Rebasing from UI
+## Troubleshooting
 
-When signing commits made in the UI is enabled and you rebase a merge request from the UI, the commits aren't signed.
+### Web commits become unsigned after rebase
 
-In this case, new commits aren't created.
-The merge request commits are modified and added on top of the target branch, so GitLab cannot sign them.
+Previously-signed commits in a branch become unsigned when:
 
-To have rebased commits signed, a workaround is to rebase locally and push the changes to the merge
-request branch.
+- Commit signing is configured for commits created from the GitLab UI.
+- The merge request is rebased from the GitLab UI.
+
+This happens because the previous commits are modified, and added on top of the target branch. GitLab
+can't sign these commits.
+
+To work around this problem, rebase the branch locally, and push the changes back up to GitLab.

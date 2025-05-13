@@ -5,7 +5,6 @@ import { isEmpty, debounce } from 'lodash';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { InternalEvents } from '~/tracking';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__ } from '~/locale';
 import MarkdownDrawer from '~/vue_shared/components/markdown_drawer/markdown_drawer.vue';
 import {
@@ -38,7 +37,7 @@ export default {
     MarkdownDrawer,
     SearchTypeIndicator,
   },
-  mixins: [glFeatureFlagsMixin(), trackingMixin],
+  mixins: [trackingMixin],
   data() {
     return {
       regexEnabled: false,
@@ -81,11 +80,7 @@ export default {
       return this.searchType === ZOEKT_SEARCH_TYPE && this.isDefaultBranch;
     },
     isMultiMatch() {
-      return (
-        this.glFeatures.zoektMultimatchFrontend &&
-        this.searchType === ZOEKT_SEARCH_TYPE &&
-        this.currentScope === SCOPE_BLOB
-      );
+      return this.searchType === ZOEKT_SEARCH_TYPE && this.currentScope === SCOPE_BLOB;
     },
   },
   created() {

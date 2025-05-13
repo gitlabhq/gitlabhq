@@ -31,7 +31,8 @@ class CiEnsureApplicationSettingsHaveDefinitionFile
     return if as_missing_definition_file.empty?
 
     as_missing_definition_file.each do |as|
-      stderr.puts "Attribute `#{as.attr}` is missing a definition file at `#{as.definition_file_path}`!"
+      stderr.puts "Attribute `#{as.attr}` is missing a definition file at `#{as.definition_file_path}`! " \
+        "Please run `scripts/cells/application-settings-analysis.rb`."
     end
 
     raise MISSING_DEFINITION_FILES
@@ -42,7 +43,8 @@ class CiEnsureApplicationSettingsHaveDefinitionFile
     return if extra_definition_files.empty?
 
     extra_definition_files.each do |definition_file|
-      stderr.puts "Definition file `#{definition_file.path}` doesn't have a corresponding attribute!"
+      stderr.puts "Definition file `#{definition_file.path}` doesn't have a corresponding attribute! " \
+        "Please run `scripts/cells/application-settings-analysis.rb`."
     end
 
     raise EXTRA_DEFINITION_FILES

@@ -138,7 +138,7 @@ GitLab also supports the following user types for unique use cases:
   to projects by default and assisting administrators in identifying
   which users are not employed by the organization.
 
-- [Service Accounts](../user/profile/service_accounts.md#administrators-in-gitlab-self-managed) -
+- [Service Accounts](../user/profile/service_accounts.md) -
   Service accounts may be added to accommodate automated tasks.
   Service accounts do not use a seat under the license.
 
@@ -224,7 +224,7 @@ requirements:
 are provided in the documentation. Customers pursuing FedRAMP must consider
 two-factor providers that are FedRAMP authorized and support FIPS
 requirements. FedRAMP authorized providers can be found on the [FedRAMP Marketplace](https://marketplace.fedramp.gov/products).
-When selecting a second factor, it is important to note that NIST and
+When selecting a second factor, NIST and
 FedRAMP are now indicating that phishing resistant authentication, such
 as WebAuthn, must be used (IA-2).
 
@@ -614,7 +614,7 @@ application code include:
 #### Patch Management
 
 GitLab documents its [Release and Maintenance Policy](../policy/maintenance.md)
-in the documentation. Prior to upgrading a GitLab instance, please review the
+in the documentation. Prior to upgrading a GitLab instance, review the
 available guidance, which can assist with [planning an upgrade](../update/plan_your_upgrade.md),
 [upgrading without downtime](../update/zero_downtime.md),
 and other [upgrade paths](../update/upgrade_paths.md).
@@ -640,9 +640,8 @@ scanners [support CycloneDX formatted reports](../ci/yaml/artifacts_reports.md#a
 Compliance programs based on NIST 800-53, such as FedRAMP, require FIPS
 compliance for all applicable cryptographic modules. GitLab has released
 FIPS versions of its container images and provides guidance on
-[how to configure GitLab to meet FIPS compliance standards](../development/fips_gitlab.md).
-It is important to note that
-[certain features are not available or supported in FIPS mode](../development/fips_gitlab.md#unsupported-features-in-fips-mode).
+how to configure GitLab to meet FIPS compliance standards.
+Certain features are not available or supported in FIPS mode.
 
 While GitLab provides FIPS-compliant images, it is the responsibility of
 the customer to configure underlying infrastructure and evaluate the

@@ -56,7 +56,7 @@ module Gitlab
             @user = User.find_by_username(username)
             @registration_prefix = options[:registration_prefix] || DEFAULT_PREFIX
             @runner_count = options[:runner_count] || DEFAULT_RUNNER_COUNT
-            @organization = nil
+            @organization_id = nil
             @groups = {}
             @projects = {}
           end
@@ -72,7 +72,7 @@ module Gitlab
               runner_count: @runner_count
             )
 
-            @organization = create_organization
+            @organization_id = ensure_organization_id
             groups_and_projects = create_groups_and_projects
             runner_ids = create_runners(groups_and_projects)
 
@@ -113,23 +113,28 @@ module Gitlab
             true
           end
 
-          def create_organization
+          def ensure_organization_id
             args = {
               name: 'GitLab',
               path: 'gitlab'
             }
 
-            organization = ::Organizations::Organization.find_by_path(args[:path])
+            organization_id = ::Organizations::Organization.find_by_path(args[:path])&.id
 
-            return organization if organization
+            return organization_id if organization_id
 
-            logger.info(message: 'Creating organization', **args)
-            execute_service!(::Organizations::CreateService.new(current_user: @user, params: args), :organization)
+            if Feature.enabled?(:allow_organization_creation, @user)
+              logger.info(message: 'Creating organization', **args)
+              service = ::Organizations::CreateService.new(current_user: @user, params: args)
+              return execute_service!(service, :organization)&.id
+            end
+
+            ::Organizations::Organization::DEFAULT_ORGANIZATION_ID
           end
 
           def create_groups_and_projects
-            root_group_1 = ensure_group(name: 'top-level group 1', organization_id: @organization.id)
-            root_group_2 = ensure_group(name: 'top-level group 2', organization_id: @organization.id)
+            root_group_1 = ensure_group(name: 'top-level group 1', organization_id: @organization_id)
+            root_group_2 = ensure_group(name: 'top-level group 2', organization_id: @organization_id)
             group_1_1 = ensure_group(name: 'group 1.1', parent_id: root_group_1.id)
             group_1_1_1 = ensure_group(name: 'group 1.1.1', parent_id: group_1_1.id)
             group_1_1_2 = ensure_group(name: 'group 1.1.2', parent_id: group_1_1.id)
@@ -142,12 +147,12 @@ module Gitlab
               group_1_1_1: group_1_1_1,
               group_1_1_2: group_1_1_2,
               project_1_1_1_1: ensure_project(
-                name: 'project 1.1.1.1', namespace_id: group_1_1_1.id, organization_id: @organization.id),
+                name: 'project 1.1.1.1', namespace_id: group_1_1_1.id, organization_id: @organization_id),
               project_1_1_2_1: ensure_project(
-                name: 'project 1.1.2.1', namespace_id: group_1_1_2.id, organization_id: @organization.id),
+                name: 'project 1.1.2.1', namespace_id: group_1_1_2.id, organization_id: @organization_id),
               group_2_1: group_2_1,
               project_2_1_1: ensure_project(
-                name: 'project 2.1.1', namespace_id: group_2_1.id, organization_id: @organization.id)
+                name: 'project 2.1.1', namespace_id: group_2_1.id, organization_id: @organization_id)
             }
           end
 

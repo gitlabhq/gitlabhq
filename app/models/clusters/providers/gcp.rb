@@ -4,6 +4,7 @@ module Clusters
   module Providers
     class Gcp < ApplicationRecord
       include Clusters::Concerns::ProviderStatus
+      include Gitlab::EncryptedAttribute
 
       self.table_name = 'cluster_providers_gcp'
 
@@ -18,7 +19,7 @@ module Clusters
 
       attr_encrypted :access_token,
         mode: :per_attribute_iv,
-        key: Settings.attr_encrypted_db_key_base_truncated,
+        key: :db_key_base_truncated,
         algorithm: 'aes-256-cbc'
 
       validates :gcp_project_id,

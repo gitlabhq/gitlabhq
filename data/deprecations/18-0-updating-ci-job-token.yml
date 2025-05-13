@@ -1,6 +1,6 @@
 - title: "Updating CI/CD job tokens to JWT standard"
   announcement_milestone: "17.9"
-  removal_milestone: "18.0"
+  removal_milestone: "19.0"
   breaking_change: true
   impact: low
   scope: project
@@ -8,12 +8,9 @@
   stage: Software Supply Chain Security
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/509578
   body: |  # (required) Do not modify this line, instead modify the lines below.
-    In GitLab 18.0, CI/CD job tokens will switch from a string token format to the JWT token format. This changes impacts new and existing CI/CD job tokens in all projects. If you experience issues, you can still [use the legacy format for your CI/CD tokens](https://docs.gitlab.com/ci/jobs/ci_job_token#use-legacy-format-for-cicd-tokens) until the GitLab 19.0 release.
-
-    In GitLab 19.0, all CI/CD job tokens must use the JWT standard. Before this release, you can temporarily revert your tokens back to the legacy job token format.
+    In GitLab 19.0, CI/CD job tokens will switch from a string token format to the JWT token format. This changes impacts new and existing CI/CD job tokens in all projects. If you experience issues, you can still [use the legacy format for your CI/CD tokens](https://docs.gitlab.com/ci/jobs/ci_job_token#use-legacy-format-for-cicd-tokens) until the GitLab 20.0 release.
 
     Known issues:
 
     1. GitLab Runner's AWS Fargate Drive 0.5.0 and earlier is incompatible with the JWT standard. Jobs will fail with a `file name too long` error. Users of the [AWS Fargate custom executor driver](https://docs.gitlab.com/runner/configuration/runner_autoscale_aws_fargate/) must upgrade to 0.5.1 or later. For migration instructions, see [the documentation](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/fargate/-/tree/master/docs).
     1. The much longer JWT standard breaks the `echo $CI_JOB_TOKEN | base64` command used in some CI/CD configuration files. You can use the `echo $CI_JOB_TOKEN | base64 -w0` command instead.
-  window: 2

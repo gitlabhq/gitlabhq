@@ -1,7 +1,6 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import InstallationTitle from '~/packages_and_registries/package_registry/components/details/installation_title.vue';
 import {
   TRACKING_ACTION_COPY_NUGET_INSTALL_COMMAND,
   TRACKING_ACTION_COPY_NUGET_SETUP_COMMAND,
@@ -13,7 +12,6 @@ import CodeInstruction from '~/vue_shared/components/registry/code_instruction.v
 export default {
   name: 'NugetInstallation',
   components: {
-    InstallationTitle,
     CodeInstruction,
     GlLink,
     GlSprintf,
@@ -43,14 +41,11 @@ export default {
     ),
   },
   links: { NUGET_HELP_PATH },
-  installOptions: [{ value: 'nuget', label: s__('PackageRegistry|Show Nuget commands') }],
 };
 </script>
 
 <template>
   <div>
-    <installation-title package-type="nuget" :options="$options.installOptions" />
-
     <code-instruction
       :label="s__('PackageRegistry|NuGet Command')"
       :instruction="nugetInstallationCommand"
@@ -58,7 +53,7 @@ export default {
       :tracking-action="$options.tracking.TRACKING_ACTION_COPY_NUGET_INSTALL_COMMAND"
       :tracking-label="$options.tracking.TRACKING_LABEL_CODE_INSTRUCTION"
     />
-    <h3 class="gl-text-lg">{{ __('Registry setup') }}</h3>
+    <h3 class="gl-heading-3 gl-mt-5">{{ s__('PackageRegistry|Registry setup') }}</h3>
 
     <code-instruction
       :label="s__('PackageRegistry|Add NuGet Source')"

@@ -14,6 +14,7 @@ import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_UPDATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
+import { PAGINATION_TYPE_OFFSET } from '~/groups_projects/constants';
 
 describe('YourWorkGroupsApp', () => {
   let wrapper;
@@ -47,6 +48,9 @@ describe('YourWorkGroupsApp', () => {
       initialSort: defaultPropsData.initialSort,
       programmingLanguages: [],
       eventTracking: {},
+      tabCountsQuery: {},
+      tabCountsQueryErrorMessage: 'An error occurred loading the tab counts.',
+      paginationType: PAGINATION_TYPE_OFFSET,
     });
   });
 });

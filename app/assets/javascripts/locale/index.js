@@ -125,6 +125,19 @@ const createDateTimeFormat = (formatOptions) =>
   Intl.DateTimeFormat(getPreferredLocales(), formatOptions);
 
 /**
+ * Creates an instance of Intl.ListFormat for the current locale.
+ *
+ * For example, for a list `['Motorcycle', 'Bus', 'Car']`:
+ * - This returns `Motorcycle, Bus, and Car` for locale `en`
+ * - This returns `Motorcycle, Bus oder Car` for locale `de`
+ *
+ * @param {Intl.ListFormatOptions} [formatOptions] - for available options, please see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ListFormat
+ * @returns {Intl.ListFormat}
+ */
+const createListFormat = (formatOptions) =>
+  new Intl.ListFormat(getPreferredLocales(), formatOptions);
+
+/**
  * Formats a number as a string using `toLocaleString`.
  * @param {number} value - number to be converted
  * @param {Intl.NumberFormatOptions} [options] - options to be passed to
@@ -149,5 +162,6 @@ export { getPluralFormIndex };
 export { pgettext as s__ };
 export { sprintf };
 export { createDateTimeFormat };
+export { createListFormat };
 export { formatNumber };
 export default locale;

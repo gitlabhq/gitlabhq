@@ -7,7 +7,8 @@ module Groups
         'type' => 'object',
         'properties' => {
           'group_id' => { 'type' => 'integer' },
-          'root_namespace_id' => { 'type' => 'integer' }
+          'root_namespace_id' => { 'type' => 'integer' },
+          'parent_namespace_id' => { 'type' => 'integer' }
         },
         'required' => %w[group_id root_namespace_id]
       }

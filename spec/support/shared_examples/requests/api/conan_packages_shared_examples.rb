@@ -146,6 +146,11 @@ RSpec.shared_examples 'conan search endpoint with access to package registry for
 end
 
 RSpec.shared_examples 'conan authenticate endpoint' do
+  let(:auth_token) { personal_access_token.token }
+  let(:headers) do
+    { 'HTTP_AUTHORIZATION' => ActionController::HttpAuthentication::Basic.encode_credentials('foo', auth_token) }
+  end
+
   subject { get api(url), headers: headers }
 
   it_behaves_like 'conan FIPS mode'
@@ -886,23 +891,6 @@ RSpec.shared_examples 'protected package main example' do
     with_them do
       it_behaves_like params[:shared_examples_name]
     end
-
-    context 'when feature flag :packages_protected_packages_conan is disabled' do
-      before do
-        stub_feature_flags(packages_protected_packages_conan: false)
-      end
-
-      where(:package_name_pattern, :minimum_access_level_for_push, :personal_access_token, :shared_examples_name) do
-        ref(:conan_package_name)          | :maintainer | ref(:pat_project_developer) | 'uploads a package file'
-        ref(:conan_package_name)          | :admin      | ref(:pat_project_owner)     | 'uploads a package file'
-        ref(:conan_package_name_no_match) | :maintainer | ref(:pat_project_developer) | 'uploads a package file'
-        ref(:conan_package_name_no_match) | :admin      | ref(:pat_project_owner)     | 'uploads a package file'
-      end
-
-      with_them do
-        it_behaves_like params[:shared_examples_name]
-      end
-    end
   end
 end
 
@@ -1234,6 +1222,79 @@ RSpec.shared_examples 'package not found' do
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 Package Not Found')
+    end
+  end
+end
+
+RSpec.shared_examples 'packages feature check' do
+  before do
+    stub_packages_setting(enabled: false)
+  end
+
+  it_behaves_like 'returning response status', :not_found
+end
+
+RSpec.shared_examples 'GET package references metadata endpoint' do
+  subject(:request) { get api(url), headers: headers }
+
+  let_it_be(:reference1) { package.conan_package_references.first }
+
+  let_it_be(:reference2) do
+    create(:conan_package_reference, package: package, info: { 'settings' => { 'os' => 'Linux' } })
+  end
+
+  it_behaves_like 'conan FIPS mode'
+  it_behaves_like 'packages feature check'
+  it_behaves_like 'handling empty values for username and channel'
+  it_behaves_like 'package not found'
+  it_behaves_like 'enforcing read_packages job token policy'
+
+  context 'When the project is public' do
+    before do
+      project.update_column(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
+    end
+
+    it_behaves_like 'allows download with no token'
+  end
+
+  context 'When the project is internal' do
+    before do
+      project.team.truncate
+      project.update_column(:visibility_level, Gitlab::VisibilityLevel::INTERNAL)
+    end
+
+    it_behaves_like 'denies download with no token'
+  end
+
+  context 'When the project is private' do
+    before do
+      project.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+    end
+
+    it 'returns success with package references metadata', :aggregate_failures do
+      subject
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to include(
+        reference1.reference => reference1.info,
+        reference2.reference => reference2.info
+      )
+    end
+
+    it_behaves_like 'denies download with no token'
+
+    context 'when allow_guest_plus_roles_to_pull_packages is disabled' do
+      before do
+        stub_feature_flags(allow_guest_plus_roles_to_pull_packages: false)
+      end
+
+      it 'denies download when not enough permissions' do
+        project.add_guest(user)
+
+        subject
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
     end
   end
 end

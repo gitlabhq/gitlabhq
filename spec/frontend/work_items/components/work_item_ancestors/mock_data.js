@@ -75,6 +75,11 @@ export const workItemAncestorsQueryResponse = {
             iid: '5',
             title: 'Test parent',
             confidential: false,
+            namespace: {
+              id: 'gid://gitlab/Group/1',
+              fullPath: 'test-project-path',
+              __typename: 'Namespace',
+            },
             webUrl: '/gitlab-org/gitlab-test/-/work_items/5',
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/2',
@@ -153,6 +158,11 @@ export const workItemMultipleInaccessibleAncestorsQueryResponse = {
             iid: '5',
             title: 'Test parent',
             confidential: false,
+            namespace: {
+              id: 'gid://gitlab/Group/1',
+              fullPath: 'test-project-path',
+              __typename: 'Namespace',
+            },
             webUrl: '/gitlab-org/gitlab-test/-/work_items/5',
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/2',
@@ -242,6 +252,11 @@ export const workItemThreeAncestorsQueryResponse = {
             iid: '5',
             title: 'Test parent',
             confidential: false,
+            namespace: {
+              id: 'gid://gitlab/Group/1',
+              fullPath: 'test-project-path',
+              __typename: 'Namespace',
+            },
             webUrl: '/gitlab-org/gitlab-test/-/work_items/5',
             workItemType: {
               id: 'gid://gitlab/WorkItems::Type/2',

@@ -2,7 +2,7 @@
 import { GlBreadcrumb } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { ROUTES, WORK_ITEM_TYPE_ENUM_EPIC } from '../constants';
+import { ROUTES, WORK_ITEM_TYPE_NAME_EPIC } from '../constants';
 
 const BREADCRUMB_LABELS = {
   workItemList: s__('WorkItem|Work items'),
@@ -25,12 +25,19 @@ export default {
       default: false,
     },
   },
+  props: {
+    staticBreadcrumbs: {
+      type: Object,
+      required: false,
+      default: () => ({ items: [] }),
+    },
+  },
   computed: {
     isWorkItemOnly() {
       return this.glFeatures.workItemPlanningView;
     },
     isEpicsList() {
-      return this.workItemType === WORK_ITEM_TYPE_ENUM_EPIC;
+      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
     },
     listName() {
       if (this.isWorkItemOnly) {
@@ -62,7 +69,9 @@ export default {
         indexCrumb.href = this.listPath;
       }
 
-      const crumbs = [indexCrumb];
+      const staticCrumbs = this.staticBreadcrumbs.items;
+
+      const crumbs = [...staticCrumbs, indexCrumb];
 
       if (this.$route.name === ROUTES.new) {
         crumbs.push({

@@ -54,6 +54,17 @@ var privateNetworks = []net.IPNet{
 	parseCIDR("2001:20::/28"),  /* ORCHIDv2 - RFC7343 */
 }
 
+// AllowedIPError represents an error that occurs when an IP address
+// is not allowed according to the security policy.
+type AllowedIPError struct {
+	IP      net.IP
+	Message string
+}
+
+func (e *AllowedIPError) Error() string {
+	return fmt.Sprintf("IP %s is not allowed: %s", e.IP.String(), e.Message)
+}
+
 // NewDefaultTransport creates a new default transport that has Workhorse's User-Agent header set.
 func NewDefaultTransport() http.RoundTripper {
 	return &DefaultTransport{Next: http.DefaultTransport}
@@ -153,31 +164,31 @@ func validateIPAddress(allowLocalhost bool, allowedURIs []string) func(network, 
 		}
 
 		if ipAddress.Equal(net.IPv4bcast) {
-			return fmt.Errorf("requests to the limited broadcast address are not allowed")
+			return &AllowedIPError{IP: ipAddress, Message: "limited broadcast IPs are not allowed"}
 		}
 
 		for _, network := range privateNetworks {
 			if network.Contains(ipAddress) {
-				return fmt.Errorf("requests to the private network are not allowed")
+				return &AllowedIPError{IP: ipAddress, Message: "private IPs are not allowed"}
 			}
 		}
 
 		if !allowLocalhost {
 			for _, network := range loopbackNetworks {
 				if network.Contains(ipAddress) {
-					return fmt.Errorf("requests to loopback addresses are not allowed")
+					return &AllowedIPError{IP: ipAddress, Message: "loopback IPs are not allowed"}
 				}
 			}
 
 			for _, network := range unspecifiedNetworks {
 				if network.Contains(ipAddress) {
-					return fmt.Errorf("requests to the localhost are not allowed")
+					return &AllowedIPError{IP: ipAddress, Message: "unspecified IPs are not allowed"}
 				}
 			}
 		}
 
 		if ipAddress.IsLinkLocalMulticast() || ipAddress.IsLinkLocalUnicast() {
-			return fmt.Errorf("requests to the link local network are not allowed")
+			return &AllowedIPError{IP: ipAddress, Message: "link-local unicast and multicast IPs are not allowed"}
 		}
 
 		return nil

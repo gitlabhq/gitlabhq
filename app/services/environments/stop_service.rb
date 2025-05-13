@@ -28,14 +28,16 @@ module Environments
         actions = environment.stop_with_actions!
       end
 
-      unless environment.saved_change_to_attribute?(:state)
-        return ServiceResponse.error(
+      if environment.stopped? || environment.stopping?
+        delete_managed_resources(environment)
+
+        ServiceResponse.success(payload: { environment: environment, actions: actions })
+      else
+        ServiceResponse.error(
           message: 'Attempted to stop the environment but failed to change the status',
           payload: { environment: environment }
         )
       end
-
-      ServiceResponse.success(payload: { environment: environment, actions: actions })
     end
 
     def execute_for_branch(branch_name)
@@ -73,6 +75,10 @@ module Environments
       @environments ||= Environments::EnvironmentsByDeploymentsFinder
         .new(project, current_user, ref: @ref, recently_updated: true)
         .execute
+    end
+
+    def delete_managed_resources(environment)
+      Environments::DeleteManagedResourcesService.new(environment, current_user:).execute
     end
   end
 end

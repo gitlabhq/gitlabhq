@@ -80,7 +80,6 @@ Rails/FilePath:
     - 'spec/features/projects/settings/repository_settings_spec.rb'
     - 'spec/features/projects/settings/user_changes_avatar_spec.rb'
     - 'spec/features/projects/snippets/create_snippet_spec.rb'
-    - 'spec/features/projects/tree/upload_file_spec.rb'
     - 'spec/features/snippets/user_creates_snippet_spec.rb'
     - 'spec/features/snippets/user_edits_snippet_spec.rb'
     - 'spec/features/uploads/user_uploads_avatar_to_group_spec.rb'

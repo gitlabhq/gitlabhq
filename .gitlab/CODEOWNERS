@@ -7,10 +7,10 @@
 .gitlab/CODEOWNERS @gitlab-org/development-leaders @gitlab-org/tw-leadership
 
 ## Allows release tooling and Gitaly team members to update the Gitaly Version
-/GITALY_SERVER_VERSION @project_278964_bot_77e28085fcec07f14dfd31c689824b5b @gitlab-org/maintainers/rails-backend @gitlab-org/delivery @gl-gitaly
+/GITALY_SERVER_VERSION @project_278964_bot_e2e6cca5e3b0076fdecec369cccb9e18 @gitlab-org/maintainers/rails-backend @gitlab-org/delivery @gl-gitaly
 
 ## Allows release tooling, KAS version maintainers and the delivery team to update the KAS version
-/GITLAB_KAS_VERSION @project_278964_bot_77e28085fcec07f14dfd31c689824b5b @gitlab-org/maintainers/kas-version-maintainers @gitlab-org/maintainers/rails-backend @gitlab-org/delivery
+/GITLAB_KAS_VERSION @project_278964_bot_e2e6cca5e3b0076fdecec369cccb9e18 @gitlab-org/maintainers/kas-version-maintainers @gitlab-org/maintainers/rails-backend @gitlab-org/delivery
 
 ## Allows automated updates to E2E test knapsack reports
 /qa/knapsack/**/*.json @project_278964_bot_bd38289efeb650826d995b5f830ca9cb @gl-dx
@@ -57,6 +57,10 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tku
 /ee/spec/frontend/
 /spec/frontend_integration/
 /ee/spec/frontend_integration/
+
+[Data Seeder] @gl-dx
+/ee/db/seeds/data_seeder/
+/scripts/data_seeder/
 
 [Clickhouse] @gitlab-org/maintainers/clickhouse
 /db/click_house/
@@ -119,17 +123,17 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tku
 /.gitlab/ci/test-on-gdk/ @gl-dx/pipeline-maintainers @gl-dx/maintainers
 /gems/gem.gitlab-ci.yml
 
-[Tooling] @gl-dx/eng-prod
+[Tooling] @gl-dx/tooling-maintainers
 Dangerfile
 /danger/
 /tooling/
 /spec/tooling/
 /scripts/
-/scripts/**/*.rb @gl-dx/eng-prod @gitlab-org/maintainers/rails-backend
-/scripts/**/*.js @gl-dx/eng-prod @gitlab-org/maintainers/frontend
-/scripts/frontend/ @gl-dx/eng-prod @gitlab-org/maintainers/frontend
-/scripts/remote_development/ @gitlab-org/maintainers/workspaces/backend
-/scripts/review_apps/seed-dast-test-data.sh @gl-dx/eng-prod @dappelt @ngeorge1
+/scripts/**/*.rb @gl-dx/tooling-maintainers @gitlab-org/maintainers/rails-backend
+/scripts/**/*.js @gl-dx/tooling-maintainers @gitlab-org/maintainers/frontend
+/scripts/frontend/ @gl-dx/tooling-maintainers @gitlab-org/maintainers/frontend
+/scripts/remote_development/ @gl-dx/tooling-maintainers @gitlab-org/maintainers/workspaces/backend @gitlab-org/maintainers/workspaces/frontend
+/scripts/review_apps/seed-dast-test-data.sh @gl-dx/tooling-maintainers @dappelt @ngeorge1
 /.dockerignore
 /.editorconfig
 /.gitpod.yml
@@ -141,7 +145,7 @@ Dangerfile
 /lefthook.yml
 /tests.yml
 
-^[Backend Static Code Analysis] @gl-dx/eng-prod @dstull
+^[Backend Static Code Analysis] @gl-dx/tooling-maintainers @dstull
 .rubocop*.yml
 /gems/config/rubocop.yml
 /rubocop/
@@ -578,7 +582,6 @@ lib/gitlab/checks/**
 /doc/administration/application_settings_cache.md @jglassman1
 /doc/administration/auditor_users.md @idurham
 /doc/administration/auth/ @idurham
-/doc/administration/backup_restore/ @axil
 /doc/administration/broadcast_messages.md @sselhorn
 /doc/administration/cells.md @emily.sahlani
 /doc/administration/cicd/ @lyspin
@@ -602,7 +605,7 @@ lib/gitlab/checks/**
 /doc/administration/file_hooks.md @ashrafkhamis
 /doc/administration/geo/ @axil
 /doc/administration/geo_sites.md @axil
-/doc/administration/get_started.md @kpaizee
+/doc/administration/get_started.md @gl-docsteam
 /doc/administration/git_protocol.md @brendan777
 /doc/administration/gitaly/ @eread
 /doc/administration/gitlab_duo_self_hosted/ @jglassman1
@@ -628,7 +631,7 @@ lib/gitlab/checks/**
 /doc/administration/logs/ @axil
 /doc/administration/logs/_index.md @lciutacu
 /doc/administration/maintenance_mode/ @axil
-/doc/administration/merge_request_diffs.md @brendan777
+/doc/administration/merge_request_diffs.md @aqualls
 /doc/administration/merge_requests_approvals.md @brendan777
 /doc/administration/moderate_users.md @lciutacu
 /doc/administration/monitoring/_index.md @lciutacu
@@ -651,7 +654,6 @@ lib/gitlab/checks/**
 /doc/administration/packages/_index.md @z_painter
 /doc/administration/pages/ @msedlakjakubowski
 /doc/administration/polling.md @axil
-/doc/administration/postgresql/ @emily.sahlani
 /doc/administration/raketasks/ @axil
 /doc/administration/raketasks/ldap.md @idurham
 /doc/administration/raketasks/praefect.md @eread
@@ -706,6 +708,7 @@ lib/gitlab/checks/**
 /doc/administration/settings/terraform_limits.md @z_painter
 /doc/administration/settings/third_party_offers.md @emily.sahlani
 /doc/administration/settings/visibility_and_access_controls.md @brendan777
+/doc/administration/settings/vscode_extension_marketplace.md @brendan777
 /doc/administration/sidekiq/ @axil
 /doc/administration/sidekiq/sidekiq_memory_killer.md @jglassman1
 /doc/administration/silent_mode/ @axil
@@ -791,6 +794,7 @@ lib/gitlab/checks/**
 /doc/api/group_level_variables.md @marcel.amirault
 /doc/api/group_markdown_uploads.md @msedlakjakubowski
 /doc/api/group_milestones.md @msedlakjakubowski
+/doc/api/group_placeholder_reassignments.md @ashrafkhamis
 /doc/api/group_protected_branches.md @brendan777
 /doc/api/group_protected_environments.md @z_painter
 /doc/api/group_push_rules.md @brendan777
@@ -827,7 +831,7 @@ lib/gitlab/checks/**
 /doc/api/merge_trains.md @lyspin
 /doc/api/metadata.md @z_painter
 /doc/api/milestones.md @msedlakjakubowski
-/doc/api/namespaces.md @idurham
+/doc/api/namespaces.md @emily.sahlani
 /doc/api/notes.md @msedlakjakubowski
 /doc/api/notification_settings.md @sselhorn
 /doc/api/oauth2.md @idurham
@@ -930,6 +934,7 @@ lib/gitlab/checks/**
 /doc/ci/examples/deployment/ @z_painter
 /doc/ci/examples/semantic-release.md @z_painter
 /doc/ci/gitlab_google_cloud_integration/ @lyspin
+/doc/ci/inputs/ @marcel.amirault
 /doc/ci/interactive_web_terminal/ @rsarangadharan
 /doc/ci/jobs/ @marcel.amirault
 /doc/ci/jobs/fine_grained_permissions.md @idurham
@@ -986,7 +991,7 @@ lib/gitlab/checks/**
 /doc/development/fe_guide/keyboard_shortcuts.md @gitlab-org/foundations/engineering
 /doc/development/git_object_deduplication.md @proglottis @toon
 /doc/development/gitaly.md @proglottis @toon
-/doc/development/gitpod_internals.md @gl-dx/eng-prod
+/doc/development/gitpod_internals.md @gl-dx/tooling-maintainers
 /doc/development/identity_verification.md @gitlab-org/software-supply-chain-security/authorization/approvers
 /doc/development/image_scaling.md @abdwdd @alexpooley
 /doc/development/internal_analytics/ @gitlab-org/analytics-section/product-analytics/engineers/frontend @gitlab-org/analytics-section/analytics-instrumentation/engineers
@@ -1000,12 +1005,12 @@ lib/gitlab/checks/**
 /doc/development/organization/ @abdwdd @alexpooley
 /doc/development/permissions.md @gitlab-org/software-supply-chain-security/authorization/approvers
 /doc/development/permissions/ @gitlab-org/software-supply-chain-security/authorization/approvers
-/doc/development/pipelines/ @gl-dx/eng-prod
+/doc/development/pipelines/ @gl-dx/pipeline-maintainers
 /doc/development/policies.md @gitlab-org/software-supply-chain-security/authentication/approvers
 /doc/development/prometheus_metrics.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/search/ @gitlab-org/search-team/migration-maintainers
 /doc/development/sec/ @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/static-analysis
-/doc/development/software_design.md @gl-dx/eng-prod
+/doc/development/software_design.md @gl-dx/pipeline-maintainers
 /doc/development/spam_protection_and_captcha/ @gitlab-org/software-supply-chain-security/authorization/approvers
 /doc/development/stage_group_observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/tracing.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
@@ -1035,6 +1040,7 @@ lib/gitlab/checks/**
 /doc/operations/feature_flags.md @z_painter
 /doc/policy/ @axil
 /doc/security/ @idurham
+/doc/security/asset_proxy.md @msedlakjakubowski
 /doc/security/hardening_nist_800_53.md @emily.sahlani
 /doc/solutions/ @jfullam @Darwinjs @sbrightwell
 /doc/solutions/integrations/servicenow.md @ashrafkhamis
@@ -1048,7 +1054,7 @@ lib/gitlab/checks/**
 /doc/topics/git/project.md @emily.sahlani
 /doc/topics/offline/ @axil
 /doc/topics/runner_fleet_design_guides/ @rsarangadharan
-/doc/tutorials/ @kpaizee
+/doc/tutorials/ @gl-docsteam
 /doc/tutorials/boards_for_standups/ @msedlakjakubowski
 /doc/tutorials/boards_for_teams/ @msedlakjakubowski
 /doc/tutorials/compliance_pipeline/ @eread
@@ -1063,6 +1069,7 @@ lib/gitlab/checks/**
 /doc/tutorials/idea_management/ @msedlakjakubowski
 /doc/tutorials/install_gitlab_single_node/ @axil
 /doc/tutorials/issue_triage/ @msedlakjakubowski
+/doc/tutorials/issue_triage_group/ @msedlakjakubowski
 /doc/tutorials/kanban/ @msedlakjakubowski
 /doc/tutorials/left_sidebar/ @sselhorn
 /doc/tutorials/merge_requests/ @aqualls
@@ -1094,6 +1101,7 @@ lib/gitlab/checks/**
 /doc/user/application_security/security_dashboard/ @rlehmann1
 /doc/user/application_security/vulnerabilities/ @rlehmann1
 /doc/user/application_security/vulnerabilities/risk_assessment_data.md @rdickenson
+/doc/user/application_security/vulnerability_archival/ @rlehmann1
 /doc/user/application_security/vulnerability_report/ @rlehmann1
 /doc/user/asciidoc.md @brendan777
 /doc/user/clusters/ @z_painter
@@ -1101,7 +1109,6 @@ lib/gitlab/checks/**
 /doc/user/compliance/license_approval_policies.md @rlehmann1
 /doc/user/compliance/license_scanning_of_cyclonedx_files/ @rdickenson
 /doc/user/crm/ @msedlakjakubowski
-/doc/user/custom_roles.md @idurham
 /doc/user/custom_roles/ @idurham
 /doc/user/discussions/ @aqualls
 /doc/user/duo_amazon_q/ @sselhorn
@@ -1115,6 +1122,7 @@ lib/gitlab/checks/**
 /doc/user/get_started/get_started_projects.md @emily.sahlani
 /doc/user/get_started/getting_started_gitlab_duo.md @sselhorn
 /doc/user/gitlab_duo/ @sselhorn
+/doc/user/gitlab_duo/tutorials/ @gl-docsteam
 /doc/user/gitlab_duo_chat/ @jglassman1
 /doc/user/glql/ @msedlakjakubowski
 /doc/user/group/_index.md @emily.sahlani
@@ -1196,7 +1204,6 @@ lib/gitlab/checks/**
 /doc/user/project/merge_requests/ @aqualls
 /doc/user/project/merge_requests/approvals/ @brendan777
 /doc/user/project/merge_requests/cherry_pick_changes.md @brendan777
-/doc/user/project/merge_requests/csv_export.md @eread
 /doc/user/project/merge_requests/methods/ @brendan777
 /doc/user/project/merge_requests/squash_and_merge.md @brendan777
 /doc/user/project/merge_requests/status_checks.md @rlehmann1
@@ -1241,8 +1248,15 @@ lib/gitlab/checks/**
 /doc/user/storage_usage_quotas.md @lciutacu
 /doc/user/tasks.md @msedlakjakubowski
 /doc/user/todos.md @sselhorn
+/doc/user/work_items/ @msedlakjakubowski
 /doc/user/workspace/ @brendan777
 # End rake-managed-docs-block
+
+# i18n Docs
+[Localization Team] @gitlab-com/localization/maintainers
+/doc-locale/**
+/doc/development/i18n/proofreader.md
+/argo_translation.yml
 
 [Authorization] @gitlab-org/software-supply-chain-security/authorization/approvers
 /config/initializers/declarative_policy.rb
@@ -1672,22 +1686,37 @@ lib/gitlab/checks/**
 
 # CI/CD templates require approval from specific owners.
 /lib/gitlab/ci/templates/ @gitlab-org/maintainers/cicd-templates
-/lib/gitlab/ci/templates/Security/ @gonzoyumo @twoodham @amarpatel @theoretick @thiagocsf @agroleau
-/lib/gitlab/ci/templates/Security/API-Fuzzing.*.yml @gitlab-org/secure/dynamic-analysis
-/lib/gitlab/ci/templates/Security/Container-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Security/Coverage-Fuzzing.*.yml @gitlab-org/secure/dynamic-analysis
-/lib/gitlab/ci/templates/Security/DAST*.yml @gitlab-org/secure/dynamic-analysis
-/lib/gitlab/ci/templates/Security/Dependency-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Security/License-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Security/SAST.*.yml @gitlab-org/secure/static-analysis
-/lib/gitlab/ci/templates/Security/Secret-Detection.*.yml @gitlab-org/secure/static-analysis
-/lib/gitlab/ci/templates/Security/Secure-Binaries.*.yml @gitlab-org/secure/static-analysis @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/dynamic-analysis
+
+# AST shared CI/CD templates
+[AST] @gitlab-org/secure/static-analysis @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/dynamic-analysis @gitlab-org/secure/secret-detection @mbenayoun
+/lib/gitlab/ci/templates/Security/Secure-Binaries.*.yml
+
+[AST:Composition Analysis] @gitlab-org/secure/composition-analysis-be @mbenayoun
+/lib/gitlab/ci/templates/Jobs/Container-Scanning.*.yml
+/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.*.yml
+/lib/gitlab/ci/templates/Jobs/License-Scanning.*.yml
+/lib/gitlab/ci/templates/Security/Container-Scanning.*.yml
+/lib/gitlab/ci/templates/Security/Dependency-Scanning.*.yml
+/lib/gitlab/ci/templates/Security/License-Scanning.*.yml
+
+[AST:Dynamic Analysis] @gitlab-org/secure/dynamic-analysis @mbenayoun
+/lib/gitlab/ci/templates/Jobs/DAST*.yml
+/lib/gitlab/ci/templates/Security/API-Discovery.*.yml
+/lib/gitlab/ci/templates/Security/API-Fuzzing.*.yml
+/lib/gitlab/ci/templates/Security/API-Security.*.yml
+/lib/gitlab/ci/templates/Security/BAS.*.yml
+/lib/gitlab/ci/templates/Security/Coverage-Fuzzing.*.yml
+/lib/gitlab/ci/templates/Security/DAST*.yml
+
+[AST:Secret Detection] @gitlab-org/secure/secret-detection @mbenayoun
+/lib/gitlab/ci/templates/Jobs/Secret-Detection.*.yml
+/lib/gitlab/ci/templates/Security/Secret-Detection.*.yml
+
+[AST:Static Analysis] @gitlab-org/secure/static-analysis @mbenayoun
+/lib/gitlab/ci/templates/Jobs/SAST*.yml
+/lib/gitlab/ci/templates/Security/SAST*.yml
+
 # Note: The `Fortify-FoD-sast.gitlab-ci.yml` template is provided and maintained by Fortify, an official Technology Partner with GitLab.
-/lib/gitlab/ci/templates/Jobs/Container-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Jobs/License-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
-/lib/gitlab/ci/templates/Jobs/SAST.*.yml @gitlab-org/secure/static-analysis
-/lib/gitlab/ci/templates/Jobs/Secret-Detection.*.yml @gitlab-org/secure/static-analysis
 
 # Verify Frontend, optional approvals
 ^[Verify frontend] @gitlab-org/ci-cd/verify/frontend
@@ -1809,12 +1838,13 @@ ee/app/workers/ai/repository_xray/
 /ee/spec/models/namespaces/free_user_cap/
 # END Fulfillment::Utilization
 
-^[Manage::Foundations] @gitlab-org/manage/foundations/engineering
+^[Foundations::Personal Productivity] @gitlab-org/foundations/personal-productivity/engineering
 /lib/sidebars/
 /ee/lib/sidebars/
 /ee/lib/ee/sidebars/
 
-^[Foundations::Design System] @gitlab-org/foundations/design-system/engineering
+# Necessary to keep the design system in-sync
+[Foundations::Design System] @gitlab-org/foundations/design-system/engineering
 /app/components/pajamas/
 
 # Necessary for availability, similar to DB migrations
@@ -1825,7 +1855,7 @@ ee/app/workers/ai/repository_xray/
 ^[Global Search] @gitlab-org/search-team/migration-maintainers
 /ee/spec/elastic/migrate/
 
-^[Create::IDE - Remote Development Backend] @gitlab-org/maintainers/workspaces/backend
+^[Workspaces Backend] @gitlab-org/maintainers/workspaces/backend
 /ee/app/models/remote_development/
 /ee/app/policies/remote_development/
 /ee/app/finders/remote_development/
@@ -1835,7 +1865,6 @@ ee/app/workers/ai/repository_xray/
 /ee/app/controllers/remote_development/
 /ee/app/services/remote_development/
 /ee/lib/remote_development/
-/ee/spec/features/remote_development/
 /ee/spec/models/remote_development/
 /ee/spec/policies/remote_development/
 /ee/spec/requests/api/graphql/mutations/remote_development/
@@ -1851,8 +1880,7 @@ ee/app/workers/ai/repository_xray/
 /ee/spec/services/remote_development/
 /qa/qa/specs/features/**/remote_development/ @gitlab-org/maintainers/workspaces/backend @gl-dx/maintainers
 
-^[Create::IDE - Remote Development Frontend] @gitlab-org/maintainers/workspaces/frontend
-/app/assets/javascripts/ide/components/shared/tokened_input.vue
+^[Workspaces Frontend] @gitlab-org/maintainers/workspaces/frontend
 /ee/app/assets/remote_development/
 /ee/app/assets/**/remote_development/
 /ee/app/views/remote_development/

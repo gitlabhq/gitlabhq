@@ -25,9 +25,10 @@ The GitLab documentation is the SSoT for all product information related to impl
 use, and troubleshooting. The documentation evolves continuously. It is updated with
 new products and features, and with improvements for clarity, accuracy, and completeness.
 
-This policy prevents information silos, making it easier to find information
-about GitLab products. It also informs decisions about the kinds of content
-included in the documentation.
+This policy:
+
+- Prevents information silos and makes it easier to find information about GitLab products.
+- Does not mean that content cannot be duplicated in multiple places in the documentation.
 
 ## Topic types
 
@@ -96,7 +97,7 @@ Also, keep the following guidance in mind:
 - For [UI text](#ui-text), allow for up to 30% expansion and contraction in translation.
   To see how much a string expands or contracts in another language, paste the string
   into [Google Translate](https://translate.google.com/) and review the results.
-  You can ask a colleague who speaks the language to verify if the translation is clear.
+  Ask a colleague who speaks the language to verify if the translation is clear.
 
 ## Markdown
 
@@ -179,7 +180,7 @@ Instead of:
 - Application code is written by the developer.
 
 Sometimes, using `GitLab` as the subject can be awkward. For example, `GitLab exports the report`.
-In this case, you can use passive voice instead. For example, `The report is exported`.
+In this case, use passive voice instead. For example, `The report is exported`.
 
 ### Customer perspective
 
@@ -211,7 +212,7 @@ without the addition of sales or marketing text.
 Instead, focus on facts and achievable goals. Be specific. For example:
 
 - The build time can decrease when you use this feature.
-- You can use this feature to save time when you create a project. The API creates the file and you
+- Use this feature to save time when you create a project. The API creates the file and you
   do not need to manually intervene.
 
 ### Self-referential writing
@@ -303,8 +304,8 @@ For screenshots:
   1. Close the dialog. All of the user data in the web page should now be replaced with the example data you entered.
   1. Take the screenshot.
 
-- Alternatively, you can create example accounts in a test environment, and take the screenshot there.
-- If you can't easily reproduce the environment, you can blur the user data by using an image editing tool like Preview on macOS.
+- Alternatively, create example accounts in a test environment, and take the screenshot there.
+- If you can't easily reproduce the environment, blur the user data by using an image editing tool like Preview on macOS.
 
 ### Fake URLs
 
@@ -320,7 +321,7 @@ There may be times where a token is needed to demonstrate an API call using
 cURL or a variable used in CI. It is strongly advised not to use real tokens in
 documentation even if the probability of a token being exploited is low.
 
-You can use these fake tokens as examples:
+Use these fake tokens as examples:
 
 | Token type            | Token value                                                        |
 |:----------------------|:-------------------------------------------------------------------|
@@ -409,7 +410,7 @@ For numbers in text, spell out zero through nine and use numbers for 10 and grea
 To make the source content easy to read, and to more easily compare diffs,
 follow these best practices when possible.
 
-- Split long lines at approximately 100 characters.
+- Split long lines at approximately 100 characters. (Exception: Do not split links.)
 - Start each new sentence on a new line.
 
 ### Comments
@@ -436,7 +437,7 @@ When spacing content:
 
 - Use one space between sentences. (Use of more than one space is tested in [`SentenceSpacing.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/SentenceSpacing.yml).)
 - Do not use non-breaking spaces. Use standard spaces instead. (Tested in [`lint-doc.sh`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/lint-doc.sh).)
-- Do not use tabs for indentation. Use spaces instead. You can configure your code editor to output spaces instead of tabs when pressing the <kbd>Tab</kbd> key.
+- Do not use tabs for indentation. Use spaces instead. Consider configuring your code editor to output spaces instead of tabs when pressing the <kbd>Tab</kbd> key.
 
 Do not use these punctuation characters:
 
@@ -612,7 +613,7 @@ Use lists to present information in a format that is easier to scan.
   For example:
 
   ```markdown
-  You can:
+  To complete a task:
 
   - Do this thing.
   - Do this other thing.
@@ -650,8 +651,8 @@ These things are imported:
 
 ### Nesting inside a list item
 
-You can nest items under a list item, so they render with the same
-indentation as the list item. You can do this with:
+The following items can be nested under a list item, so they render with the same
+indentation as the list item:
 
 - [Code blocks](#code-blocks)
 - [Blockquotes](#blockquotes)
@@ -721,7 +722,7 @@ To keep tables accessible and scannable, tables should not have any
 empty cells. If there is no otherwise meaningful value for a cell, consider entering
 **N/A** for 'not applicable' or **None**.
 
-To help keep tables easier to maintain, you can:
+To make tables easier to maintain:
 
 - Add additional spaces to make the column widths consistent. For example:
 
@@ -767,7 +768,8 @@ To enable the setting:
 To format a table with this extension, select the entire table, right-click the selection,
 and select **Format Selection With**. Select **Markdown Table Formatter** in the VS Code Command Palette.
 
-Alternatively, if you use Sublime Text you can try the [Markdown Table Formatter](https://packagecontrol.io/packages/Markdown%20Table%20Formatter)
+If you use Sublime Text, try the
+[Markdown Table Formatter](https://packagecontrol.io/packages/Markdown%20Table%20Formatter)
 plugin, but it does not have a **Follow header row length** setting.
 
 ### Updates to existing tables
@@ -848,7 +850,7 @@ The table and footnotes would render as follows:
 ##### Five or more footnotes
 
 If you have five or more footnotes that you cannot include in the table itself,
-you can use consecutive numbers for the list items.
+use consecutive numbers for the list items.
 If you use consecutive numbers, you must disable Markdown rule `029`:
 
 ```markdown
@@ -868,13 +870,14 @@ If you use consecutive numbers, you must disable Markdown rule `029`:
 
 ## Links
 
-Links help the docs adhere to the
-[single source of truth](#documentation-is-the-single-source-of-truth-ssot) principle.
+Links are an important way to help readers find what they need.
 
-However, you should avoid putting too many links on any page. Too many links can hinder readability.
+However, most content is found by searching, and you should avoid putting too many links on any page.
+Too many links can hinder readability.
 
 - Do not duplicate links on the same page. For example, on **Page A**, do not link to **Page B** multiple times.
 - Do not use links in headings. Headings that contain links cause errors.
+- Do not use a hard line wrap between any words in a link.
 - Avoid multiple links in a single paragraph.
 - Avoid multiple links in a single task.
 - On any one page, try not to use more than 15 links to other pages.
@@ -908,11 +911,17 @@ To link to another documentation (`.md`) file in the same repository:
 - Use an inline link with a relative file path. For example, `[GitLab.com settings](../user/gitlab_com/_index.md)`.
 - Put the entire link on a single line, even if the link is very long. ([Vale](../testing/vale.md) rule: [`MultiLineLinks.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/MultiLineLinks.yml)).
 
+{{< alert type="note" >}}
+
+In the GitLab repository, do not link to the `/development` directory from any other directory.
+
+{{< /alert >}}
+
 To link to a file outside of the documentation files, for example to link from development
-documentation to a specific code file, you can:
+documentation to a specific code file:
 
 - Use a full URL. For example: ``[`app/views/help/show.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/views/help/show.html.haml)``
-- (Optional) Use a full URL with a specific ref. For example: ``[`app/views/help/show.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/6d01aa9f1cfcbdfa88edf9d003bd073f1a6fff1d/app/views/help/show.html.haml)``
+- Optional. Use a full URL with a specific ref. For example: ``[`app/views/help/show.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/6d01aa9f1cfcbdfa88edf9d003bd073f1a6fff1d/app/views/help/show.html.haml)``
 
 ### Links in separate repositories
 
@@ -954,7 +963,7 @@ For example:
 - `For more information, see [merge requests](link.md).`
 - `To create a review app, see [review apps](link.md).`
 
-You can expand on this text by using phrases like
+To expand on this text, use phrases like
 `For more information about this feature, see...`
 
 Do not use the following constructions:
@@ -1330,7 +1339,7 @@ If you use macOS and want all screenshots to be compressed automatically, read
 [One simple trick to make your screenshots 80% smaller](https://about.gitlab.com/blog/2020/01/30/simple-trick-for-smaller-screenshots/).
 
 GitLab has a [Ruby script](https://gitlab.com/gitlab-org/gitlab/-/blob/master/bin/pngquant)
-that you can use to simplify the manual process. In the root directory of your local
+to simplify the manual process. In the root directory of your local
 copy of `https://gitlab.com/gitlab-org/gitlab`, run in a terminal:
 
 - Before compressing, if you want, check that all documentation PNG images have
@@ -1386,7 +1395,7 @@ if you were helping someone read and interact with the page and they couldn't se
 
 Do:
 
-`![A runner sending a request to the Docker API](img/document_image_title_vX_Y.png)`
+`![A runner sending a request to the Docker API.](img/document_image_title_vX_Y.png)`
 
 Do not:
 
@@ -1398,9 +1407,7 @@ When writing alt text:
   Screen readers typically stop reading after this many characters.
 - If the image has complex information like a workflow diagram, use short alt text
   to identify the image and include detailed information in the text.
-- Use punctuation.
-- Do not use a period if the text is not a full sentence.
-- Use a period after every full sentence.
+- Use a period at the end of the string, whether it's a sentence or not.
 - Use sentence case and avoid using all caps.
   Some screen readers read capitals as individual letters.
 - Do not use phrases like **Image of** or **Graphic of**.
@@ -1556,8 +1563,8 @@ flowchart TD
 
 Use either the [Draw.io](https://draw.io) web application or the (unofficial)
 VS Code [Draw.io Integration](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio)
-extension to create the diagram. Each tool provides the same diagram editing experience, however the web
-application provides example diagrams that you can edit to suit your needs.
+extension to create the diagram. Each tool provides the same diagram editing experience, but the web
+application provides editable example diagrams.
 
 ##### Use the web application
 
@@ -1623,7 +1630,7 @@ You can use icons from the [GitLab SVG library](https://gitlab-org.gitlab.io/git
 directly in the documentation. For example, `{{</* icon name="tanuki" */>}}` renders as: {{< icon name="tanuki" >}}.
 
 In most cases, you should avoid using the icons in text.
-However, you can use an icon when hover text is the only
+However, use the icon when hover text is the only
 available way to describe a UI element. For example, **Delete** or **Edit** buttons
 often have hover text only.
 
@@ -1637,7 +1644,7 @@ Do not use words to describe the icon:
 - Avoid: `Select **Erase job log** (the trash icon).`
 - Use instead: `Select **Erase job log** ({{</* icon name="remove" */>}}).` This generates as: Select **Erase job log** ({{< icon name="remove" >}}).
 
-When the button doesn't have any hover text, you can describe the icon.
+When the button doesn't have any hover text, describe the icon.
 Follow up by creating a
 [UX bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Bug)
 to add hover text to the button to improve accessibility.
@@ -1848,7 +1855,7 @@ It renders on the GitLab documentation site as:
 
 > This is a blockquote.
 
-If the text spans multiple lines, you can split them.
+If the text spans multiple lines, split them.
 
 For multiple paragraphs, use the symbol `>` before every line:
 
@@ -1872,7 +1879,7 @@ It renders on the GitLab documentation site as:
 
 ## Tabs
 
-On the documentation site, you can format text so it's displayed as tabs.
+On the documentation site, you can format text to display as tabs.
 
 {{< alert type="warning" >}}
 
@@ -2041,8 +2048,7 @@ GitLab, or restart GitLab. In this case:
 - The final step to reconfigure or restart GitLab can be used verbatim since it's
   the same every time.
 
-When describing a configuration edit, you can use and edit to your liking the
-following snippet:
+When describing a configuration edit, use this snippet, editing it as needed:
 
 ````markdown
 {{</* tabs */>}}

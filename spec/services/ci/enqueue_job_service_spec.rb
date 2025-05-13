@@ -63,22 +63,6 @@ RSpec.describe Ci::EnqueueJobService, '#execute', feature_category: :continuous_
     end
   end
 
-  context 'when a transition block is supplied' do
-    let(:bridge) { create(:ci_bridge, :playable, pipeline: pipeline) }
-
-    let(:service) do
-      described_class.new(bridge, current_user: user)
-    end
-
-    subject(:execute) { service.execute(&:pending!) }
-
-    it 'calls the transition block instead of enqueue!' do
-      expect(bridge).to receive(:pending!)
-      expect(bridge).not_to receive(:enqueue!)
-      execute
-    end
-  end
-
   context 'when the job is manually triggered another user' do
     let(:job_variables) do
       [{ key: 'third', secret_value: 'third' },
@@ -90,19 +74,10 @@ RSpec.describe Ci::EnqueueJobService, '#execute', feature_category: :continuous_
     end
 
     it 'assigns the user and variables to the job', :aggregate_failures do
-      called = false
-      service.execute do
-        unless called
-          called = true
-          raise ActiveRecord::StaleObjectError
-        end
-
-        build.enqueue!
-      end
+      service.execute
 
       build.reload
 
-      expect(called).to be true # ensure we actually entered the failure path
       expect(build.user).to eq(user)
       expect(build.job_variables.map(&:key)).to contain_exactly('third', 'fourth')
     end

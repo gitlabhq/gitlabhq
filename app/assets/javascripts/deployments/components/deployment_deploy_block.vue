@@ -28,8 +28,8 @@ export default {
     },
     icon() {
       return this.canPlay
-        ? { name: 'check-circle-filled', class: 'gl-fill-green-500' }
-        : { name: 'timer', class: 'gl-fill-current' };
+        ? { name: 'check-circle-filled', variant: 'success' }
+        : { name: 'timer', variant: 'current' };
     },
     text() {
       return this.canPlay ? this.$options.i18n.ready : this.$options.i18n.waiting;

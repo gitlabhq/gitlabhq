@@ -86,6 +86,42 @@ RSpec.describe WorkItems::Widgets::Hierarchy, feature_category: :team_planning d
           is_expected.to eq(parent_links_ordered.map(&:work_item))
         end
       end
+
+      context 'when filtered by state' do
+        let_it_be(:open_child) { create(:work_item, :task, state: :opened, project: project) }
+        let_it_be(:closed_child) { create(:work_item, :task, state: :closed, project: project) }
+
+        let_it_be_with_reload(:link_to_open_child) do
+          create(:parent_link, work_item_parent: work_item_parent, work_item: open_child)
+        end
+
+        let_it_be_with_reload(:link_to_closed_child) do
+          create(:parent_link, work_item_parent: work_item_parent, work_item: closed_child)
+        end
+
+        it 'returns only opened items' do
+          result = described_class.new(work_item_parent).children(state: :opened)
+
+          expect(result).to include(open_child)
+          expect(result).not_to include(closed_child)
+        end
+
+        it 'returns only closed items' do
+          result = described_class.new(work_item_parent).children(state: :closed)
+
+          expect(result).to include(closed_child)
+          expect(result).not_to include(open_child)
+        end
+
+        it 'returns all items' do
+          result = described_class.new(work_item_parent).children
+
+          expect(result).to include(
+            open_child,
+            closed_child
+          )
+        end
+      end
     end
   end
 

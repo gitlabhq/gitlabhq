@@ -966,12 +966,12 @@ variables:
 You can set the number of attempts that the running job tries to execute
 the following stages:
 
-| Variable                        | Description                                            |
-|---------------------------------|--------------------------------------------------------|
+| Variable                        | Description |
+|---------------------------------|-------------|
 | `ARTIFACT_DOWNLOAD_ATTEMPTS`    | Number of attempts to download artifacts running a job |
 | `EXECUTOR_JOB_SECTION_ATTEMPTS` | The number of attempts to run a section in a job after a [`No Such Container`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/4450) error ([Docker executor](https://docs.gitlab.com/runner/executors/docker.html) only). |
-| `GET_SOURCES_ATTEMPTS`          | Number of attempts to fetch sources running a job      |
-| `RESTORE_CACHE_ATTEMPTS`        | Number of attempts to restore the cache running a job  |
+| `GET_SOURCES_ATTEMPTS`          | Number of attempts to fetch sources running a job |
+| `RESTORE_CACHE_ATTEMPTS`        | Number of attempts to restore the cache running a job |
 
 The default is one single attempt.
 
@@ -1021,12 +1021,12 @@ variables:
   CACHE_REQUEST_TIMEOUT: 5
 ```
 
-| Variable                        | Description                                            |
-|---------------------------------|--------------------------------------------------------|
-| `TRANSFER_METER_FREQUENCY`      | Specify how often to print the meter's transfer rate. It can be set to a duration (for example, `1s` or `1m30s`). A duration of `0` disables the meter (default). When a value is set, the pipeline shows a progress meter for artifact and cache uploads and downloads. |
-| `ARTIFACT_COMPRESSION_LEVEL`    | To adjust compression ratio, set to `fastest`, `fast`, `default`, `slow`, or `slowest`. This setting works with the Fastzip archiver only, so the GitLab Runner feature flag [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) must also be enabled. |
-| `CACHE_COMPRESSION_LEVEL`       | To adjust compression ratio, set to `fastest`, `fast`, `default`, `slow`, or `slowest`. This setting works with the Fastzip archiver only, so the GitLab Runner feature flag [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) must also be enabled. |
-| `CACHE_REQUEST_TIMEOUT`         | Configure the maximum duration of cache upload and download operations for a single job in minutes. Default is `10` minutes. |
+| Variable                     | Description |
+|------------------------------|-------------|
+| `TRANSFER_METER_FREQUENCY`   | Specify how often to print the meter's transfer rate. It can be set to a duration (for example, `1s` or `1m30s`). A duration of `0` disables the meter (default). When a value is set, the pipeline shows a progress meter for artifact and cache uploads and downloads. |
+| `ARTIFACT_COMPRESSION_LEVEL` | To adjust compression ratio, set to `fastest`, `fast`, `default`, `slow`, or `slowest`. This setting works with the Fastzip archiver only, so the GitLab Runner feature flag [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) must also be enabled. |
+| `CACHE_COMPRESSION_LEVEL`    | To adjust compression ratio, set to `fastest`, `fast`, `default`, `slow`, or `slowest`. This setting works with the Fastzip archiver only, so the GitLab Runner feature flag [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) must also be enabled. |
+| `CACHE_REQUEST_TIMEOUT`      | Configure the maximum duration of cache upload and download operations for a single job in minutes. Default is `10` minutes. |
 
 ## Artifact provenance metadata
 
@@ -1067,26 +1067,26 @@ It contains a provenance predicate generated in the [SLSA 1.0 Provenance](https:
 
 The following fields are populated by default:
 
-| Field  | Value  |
-| ------ | ------ |
-| `_type` | `https://in-toto.io/Statement/v0.1` |
-| `subject.name` | The filename of the artifact. |
-| `subject.digest.sha256` | The artifact's `sha256` checksum. |
-| `predicateType` | `https://slsa.dev/provenance/v1` |
-| `predicate.buildDefinition.buildType` | `https://gitlab.com/gitlab-org/gitlab-runner/-/blob/{GITLAB_RUNNER_VERSION}/PROVENANCE.md`. For example, v15.0.0 |
-| `predicate.runDetails.builder.id` | A URI pointing to the runner details page, for example, `https://gitlab.com/gitlab-com/www-gitlab-com/-/runners/3785264`. |
-| `predicate.buildDefinition.externalParameters` | The names of any CI/CD or environment variables available during the build command execution. The value is always represented as an empty string to protect secrets. |
-| `predicate.buildDefinition.externalParameters.source` | The URL of the project. |
-| `predicate.buildDefinition.externalParameters.entryPoint` | The name of the CI/CD job that triggered the build. |
-| `predicate.buildDefinition.internalParameters.name` | The name of the runner. |
-| `predicate.buildDefinition.internalParameters.executor` | The runner executor. |
-| `predicate.buildDefinition.internalParameters.architecture` | The architecture on which the CI/CD job is run. |
-| `predicate.buildDefinition.internalParameters.job` | The ID of the CI/CD job that triggered the build. |
-| `predicate.buildDefinition.resolvedDependencies[0].uri` | The URL of the project. |
+| Field                                                             | Value |
+|-------------------------------------------------------------------|-------|
+| `_type`                                                           | `https://in-toto.io/Statement/v0.1` |
+| `subject.name`                                                    | The filename of the artifact. |
+| `subject.digest.sha256`                                           | The artifact's `sha256` checksum. |
+| `predicateType`                                                   | `https://slsa.dev/provenance/v1` |
+| `predicate.buildDefinition.buildType`                             | `https://gitlab.com/gitlab-org/gitlab-runner/-/blob/{GITLAB_RUNNER_VERSION}/PROVENANCE.md`. For example, v15.0.0 |
+| `predicate.runDetails.builder.id`                                 | A URI pointing to the runner details page, for example, `https://gitlab.com/gitlab-com/www-gitlab-com/-/runners/3785264`. |
+| `predicate.buildDefinition.externalParameters`                    | The names of any CI/CD or environment variables available during the build command execution. The value is always represented as an empty string to protect secrets. |
+| `predicate.buildDefinition.externalParameters.source`             | The URL of the project. |
+| `predicate.buildDefinition.externalParameters.entryPoint`         | The name of the CI/CD job that triggered the build. |
+| `predicate.buildDefinition.internalParameters.name`               | The name of the runner. |
+| `predicate.buildDefinition.internalParameters.executor`           | The runner executor. |
+| `predicate.buildDefinition.internalParameters.architecture`       | The architecture on which the CI/CD job is run. |
+| `predicate.buildDefinition.internalParameters.job`                | The ID of the CI/CD job that triggered the build. |
+| `predicate.buildDefinition.resolvedDependencies[0].uri`           | The URL of the project. |
 | `predicate.buildDefinition.resolvedDependencies[0].digest.sha256` | The commit revision of the project. |
-| `predicate.runDetails.metadata.invocationID` | The ID of the CI/CD job that triggered the build. |
-| `predicate.runDetails.metadata.startedOn` | The time when the build was started. This field is `RFC3339` formatted. |
-| `predicate.runDetails.metadata.finishedOn` | The time when the build ended. Because metadata generation happens during the build, this time is slightly earlier than the one reported in GitLab. This field is `RFC3339` formatted. |
+| `predicate.runDetails.metadata.invocationID`                      | The ID of the CI/CD job that triggered the build. |
+| `predicate.runDetails.metadata.startedOn`                         | The time when the build was started. This field is `RFC3339` formatted. |
+| `predicate.runDetails.metadata.finishedOn`                        | The time when the build ended. Because metadata generation happens during the build, this time is slightly earlier than the one reported in GitLab. This field is `RFC3339` formatted. |
 
 ## Staging directory
 
@@ -1117,10 +1117,10 @@ used, this location is also used as scratch space when archiving.
 To tune `fastzip`, ensure the [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) flag is enabled.
 Then use any of the following environment variables.
 
-| Variable                        | Description                                            |
-|---------------------------------|--------------------------------------------------------|
+| Variable                        | Description |
+|---------------------------------|-------------|
 | `FASTZIP_ARCHIVER_CONCURRENCY`  | The number of files to be concurrently compressed. Default is the number of CPUs available. |
-| `FASTZIP_ARCHIVER_BUFFER_SIZE`  | The buffer size allocated per concurrency for each file. Data exceeding this number moves to scratch space. Default is 2 MiB.  |
+| `FASTZIP_ARCHIVER_BUFFER_SIZE`  | The buffer size allocated per concurrency for each file. Data exceeding this number moves to scratch space. Default is 2 MiB. |
 | `FASTZIP_EXTRACTOR_CONCURRENCY` | The number of files to be concurrency decompressed. Default is the number of CPUs available. |
 
 Files in a zip archive are appended sequentially. This makes concurrent compression challenging. `fastzip` works around

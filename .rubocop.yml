@@ -1004,6 +1004,13 @@ Migration/AsyncPostMigrateOnly:
     - db/**/*.rb
   EnforcedSince: 20240115115029
 
+Migration/PreventEnablingLockRetriesForTransactionalMigrations:
+  Enabled: true
+  Include:
+    - '{,ee/,jh/}db/**/*.rb'
+  Exclude:
+    - '{,ee/,jh/}db/click_house/**/*.rb'
+
 Gitlab/RailsLogger:
   Exclude:
     - 'spec/**/*.rb'
@@ -1203,6 +1210,12 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'app/workers/**/*'
     - 'ee/app/workers/**/*'
 
+Sidekiq/EnforceDatabaseHealthSignalDeferral:
+  Enabled: true
+  Include:
+    - 'app/workers/**/*'
+    - 'ee/app/workers/**/*'
+
 Graphql/ResourceNotAvailableError:
   Exclude:
     # Definition of `raise_resource_not_available_error!`
@@ -1274,6 +1287,7 @@ Gitlab/TokenWithoutPrefix:
 Rake/TopLevelMethodDefinition:
   Enabled: true
   Include:
+    - '**/Rakefile'
     - 'lib/tasks/**/*.rake'
     - 'ee/lib/tasks/**/*.rake'
 
@@ -1317,3 +1331,20 @@ Migration/PreventAddingAttrEncryptedColumns:
   Include:
     - 'db/migrate/*.rb'
   EnforcedSince: 20250311000000
+
+Scalability/RandomCronSchedule:
+  Enabled: true
+  Include:
+    - 'config/initializers/1_settings.rb'
+
+Migration/PreventFeatureFlagsUsage:
+  Enabled: true
+  EnforcedSince: 20250505000000
+
+Rails/EnumSyntax:
+  Enabled: true
+  Include:
+    - 'app/models/**/*.rb'
+    - 'ee/app/models/**/*.rb'
+    - 'lib/**/*.rb'
+    - 'ee/lib/**/*.rb'

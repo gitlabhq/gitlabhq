@@ -56,7 +56,7 @@ If you want to enter Markdown source in the text box, return to using the plain 
 To switch to the plain text editor: In a text box, in the lower-left corner, select
 **Switch to plain text editing**.
 
-![Rich text editor in GitLab](img/rich_text_editor_01_v16_2.png)
+![A text editor in rich text editing mode with the "Switch to plain text editing" text box in the lower-left](img/rich_text_editor_01_v16_2.png)
 
 ## Compatibility with GitLab Flavored Markdown
 
@@ -78,7 +78,7 @@ Supported input rules:
 | `~~strike~~`                                              | Strikethrough        |
 | `[link](https://example.com)`                             | Hyperlink            |
 | `code`                                                    | Inline code          |
-| <code>&#96;&#96;&#96;rb</code> + <kbd>Enter</kbd> <br> <code>&#96;&#96;&#96;js</code> + <kbd>Enter</kbd> | Code block           |
+| ` ```rb ` + <kbd>Enter</kbd> <br> ` ```js ` + <kbd>Enter</kbd> | Code block      |
 | `* List item`, or<br> `- List item`, or<br> `+ List item` | Unordered list       |
 | `1. List item`                                            | Numbered list        |
 | `<details>`                                               | Collapsible section  |
@@ -126,7 +126,7 @@ To insert a diagram:
 1. On the top bar of a text box, select {{< icon name="plus" >}} **More options** and then **Mermaid diagram** or **PlantUML diagram**.
 1. Enter the code for your diagram. The diagram preview appears in the text box.
 
-![Mermaid diagrams in rich text editor](img/rich_text_editor_04_v16_2.png)
+![A mermaid diagram preview in rich text editor with LR syntax creating a left to right flowchart](img/rich_text_editor_04_v16_2.png)
 
 ## Related topics
 

@@ -9,7 +9,7 @@ FIPS is short for "Federal Information Processing Standard", which defines certa
 module is set of hardware, software, and/or firmware that implements approved security functions (including cryptographic algorithms and key generation)
 and is contained within a cryptographic boundary.
 
-At GitLab, a cryptographic module almost always referrs to an embedded software component of another product or package release and is specific to a particular
+At GitLab, a cryptographic module almost always refers to an embedded software component of another product or package release and is specific to a particular
 version of a binary. For example, a particular version of Ubuntu Kernel Crypto API cryptographic module or the OpenSSL project's FIPS Provider.
 
 A module is validated after it completes testing by a NIST-certified laboratory and has an active certificate listed in the

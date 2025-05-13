@@ -1,5 +1,5 @@
 ---
-stage: Systems
+stage: Tenant Scale
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Secondary runners
@@ -50,7 +50,7 @@ When failing over to a new primary:
 
 - While the old primary is still in the DNS record, any runners previously connected to your old primary still attempt to pick up jobs from the old primary. If it is unreachable, the runners [detect this](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#how-unhealthy_requests_limit-and-unhealthy_interval-works), and stop requesting for an extended period of time after the instance returns.
 - If you have [multiple secondary nodes](../disaster_recovery/_index.md#promoting-secondary-geo-replica-in-multi-secondary-configurations), after the initial failover the remaining secondaries are in an unhealthy state until they are [replicated](../disaster_recovery/_index.md#step-2-initiate-the-replication-process) with the new primary. The runners attached to them are then unable to check in, and their health check also kicks in.
-- If you remove any of the unhealthy nodes from the Geo DNS entry, the runners pick the next closest instance. Depending on your architecture, this may not be what you want, as you could overwhelm your site in its reduced state.
+- If you remove any of the unhealthy nodes from the Geo DNS entry, the runners pick the next closest instance. Depending on your architecture, this may not be what you want because you could overwhelm your site in its reduced state.
 
 To alleviate any of these issues, you can [pause](#pausing-runners) or shutdown some of the runners until the site is back up to 100%.
 

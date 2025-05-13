@@ -25,11 +25,8 @@ your GitLab agent.
 Before starting this tutorial, you must have:
 
 - Administrator access to your GitLab instance or the Owner role for your group.
-- An installed Ingress controller.
 - A running Kubernetes cluster.
 - `helm` 3.11.0 or later and `kubectl` on your local machine.
-- The GitLab agent installed in your cluster.
-  For installation instructions, see [set up workspace infrastructure](configuration.md#set-up-workspace-infrastructure).
 - Access to configure a wildcard domain in your DNS provider.
   For example, `*.workspaces.example.dev` is required for workspace access.
 
@@ -55,7 +52,46 @@ graph TD;
     class workspaceProject active;
 ```
 
-## Configure the GitLab agent for workspaces
+## Install an Ingress controller
+
+Install an [Ingress controller](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/) of your choice in your Kubernetes cluster to route external traffic to your workspaces. The Ingress controller must support WebSockets. The following example uses the [Ingress NGINX controller](https://github.com/kubernetes/ingress-nginx).
+
+1. In your Kubernetes cluster, install the Ingress controller.
+
+   ```shell
+   helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+   helm repo update
+   helm install ingress-nginx ingress-nginx/ingress-nginx \
+     --namespace gitlab-ingress-controller \
+     --create-namespace
+   ```
+
+1. Get the External IP address of the Load Balancer. You will need this when updating the
+   [DNS records](#update-your-dns-records).
+
+   ```shell
+   kubectl get svc -n gitlab-ingress-controller ingress-nginx-controller
+   ```
+
+## Install the GitLab agent
+
+Install the [GitLab agent](../clusters/agent/_index.md#kubernetes-integration-glossary) in your
+Kubernetes cluster to connect your cluster to GitLab:
+
+1. Complete one of the installation options in [Installing the agent for Kubernetes](../clusters/agent/install/_index.md).
+1. Note the `agentName` you configured. It's required when you configure the GitLab agent
+   for workspaces.
+
+## Install the GitLab agent server on your GitLab instance
+
+The GitLab agent server (KAS) is the component that communicates with the agent in your cluster.
+
+- On GitLab.com, the agent server is available at `wss://kas.gitlab.com` by default.
+- On GitLab Self-Managed, an administrator must
+  [set up the Kubernetes agent server (KAS)](../../administration/clusters/kas.md).
+  It's then available at `wss://gitlab.example.com/-/kubernetes-agent/`.
+
+## Configure the GitLab agent
 
 To configure the `remote_development` module in the agent project:
 
@@ -172,11 +208,15 @@ To automatically renew certificates, see [`cert-manager`](https://cert-manager.i
 
 ## Register a GitLab OAuth application
 
-To register an application on your GitLab instance:
+To register an OAuth application on your GitLab instance:
 
-1. [Configure GitLab as an OAuth 2.0 identity provider](../../integration/oauth_provider.md).
+1. [Create an OAuth application](../../integration/oauth_provider.md) in GitLab. You can create a:
+   - User-owned application
+   - Group-owned application
+   - Instance-wide application from the Admin area
 1. Set the redirect URI to `https://${GITLAB_WORKSPACES_PROXY_DOMAIN}/auth/callback`.
-1. Select the **Trusted** checkbox.
+1. Ensure the **Confidential** checkbox is selected. It should be selected by default.
+1. If you create an instance-wide application, also select the **Trusted** checkbox.
 1. Set the scopes to `api`, `read_user`, `openid`, and `profile`.
 1. Export your configuration values:
 
@@ -188,7 +228,7 @@ To register an application on your GitLab instance:
    export SIGNING_KEY="make_up_a_random_key_consisting_of_letters_numbers_and_special_chars"
    ```
 
-1. Store the client ID and generated secret securely. For examples, in 1Password.
+1. Store the client ID and generated secret securely, for example, in 1Password.
 
 ## Generate an SSH host key
 
@@ -228,9 +268,9 @@ kubectl create secret tls gitlab-workspace-proxy-wildcard-tls \
   --key="${WILDCARD_DOMAIN_KEY}"
 ```
 
-## Install the proxy Helm chart
+## Install the GitLab workspaces proxy Helm chart
 
-To install the Helm chart for the proxy:
+To install the Helm chart for the GitLab workspaces proxy:
 
 1. Add the `helm` repository:
 
@@ -253,7 +293,7 @@ To install the Helm chart for the proxy:
 
    helm upgrade --install gitlab-workspaces-proxy \
      gitlab-workspaces-proxy/gitlab-workspaces-proxy \
-     --version=0.1.16 \
+     --version=0.1.18 \
      --namespace="gitlab-workspaces" \
      --set="ingress.enabled=true" \
      --set="ingress.hosts[0].host=${GITLAB_WORKSPACES_PROXY_DOMAIN}" \
@@ -290,7 +330,7 @@ To install the Helm chart for the proxy:
 To update your DNS records:
 
 1. Point `${GITLAB_WORKSPACES_PROXY_DOMAIN}` and `${GITLAB_WORKSPACES_WILDCARD_DOMAIN}`
-   to the load balancer exposed by the Ingress controller.
+   to the load balancer external IP address exposed by the [Ingress controller](#install-an-ingress-controller).
 1. Check if `gitlab-workspaces-proxy` is accessible:
 
    ```shell

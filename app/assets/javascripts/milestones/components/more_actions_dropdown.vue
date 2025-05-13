@@ -43,7 +43,6 @@ export default {
   data() {
     return {
       isDropdownVisible: false,
-      isPromotionModalVisible: false,
       isDeleteModalVisible: false,
       isPromoteModalVisible: false,
     };
@@ -51,9 +50,6 @@ export default {
   computed: {
     widthClasses() {
       return this.size === 'small' ? 'gl-min-w-6' : 'gl-min-w-7';
-    },
-    hasUrl() {
-      return this.editUrl || this.closeUrl || this.reopenUrl || this.promoteUrl;
     },
     copiedToClipboard() {
       return this.$options.i18n.copiedToClipboard;
@@ -239,7 +235,6 @@ export default {
       :visible="isDeleteModalVisible"
       :issue-count="issueCount"
       :merge-request-count="mergeRequestCount"
-      :milestone-id="id"
       :milestone-title="title"
       :milestone-url="milestoneUrl"
       @deleteModalVisible="setDeleteModalVisibility"

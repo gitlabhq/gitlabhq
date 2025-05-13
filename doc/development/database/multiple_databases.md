@@ -7,7 +7,7 @@ title: Multiple Databases
 
 To allow GitLab to scale further we
 [decomposed the GitLab application database into multiple databases](https://gitlab.com/groups/gitlab-org/-/epics/6168).
-The main databases are `main`, `ci`, and (optionally) `sec`. GitLab supports being run with one, two, or three databases.
+The main databases are `main`, `ci`, and `sec`. GitLab supports being run with one, two, or three databases.
 On GitLab.com we are using separate `main` `ci`, and `sec` databases.
 
 For the purpose of building the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture, we are decomposing
@@ -19,7 +19,7 @@ For properly discovering allowed patterns between different databases
 the GitLab application implements the [database dictionary](database_dictionary.md).
 
 The database dictionary provides a virtual classification of tables into a `gitlab_schema`
-which conceptually is similar to [PostgreSQL Schema](https://www.postgresql.org/docs/current/ddl-schemas.html).
+which conceptually is similar to [PostgreSQL Schema](https://www.postgresql.org/docs/16/ddl-schemas.html).
 We decided as part of [using database schemas to better isolated CI decomposed features](https://gitlab.com/gitlab-org/gitlab/-/issues/333415)
 that we cannot use PostgreSQL schema due to complex migration procedures. Instead we implemented
 the concept of application-level classification.
@@ -49,7 +49,7 @@ The usage of schema enforces the base class to be used:
 - `Geo::TrackingBase` for `gitlab_geo`
 - `Gitlab::Database::SharedModel` for `gitlab_shared`
 - `PackageMetadata::ApplicationRecord` for `gitlab_pm`
-- `Gitlab::Database::SecApplicationRecord` for `gitlab_sec`
+- `SecApplicationRecord` for `gitlab_sec`
 
 ### Choose either the `gitlab_main_cell` or `gitlab_main_clusterwide` schema
 
@@ -68,7 +68,7 @@ The `gitlab_schema` primary purpose is to introduce a barrier between different 
 
 This is used as a primary source of classification for:
 
-- [Discovering cross-joins across tables from different schemas](#removing-joins-between-ci-and-non-ci-tables)
+- [Discovering cross-joins across tables from different schemas](#removing-joins-between-main-and-non-main-tables)
 - [Discovering cross-database transactions across tables from different schemas](#removing-cross-database-transactions)
 
 ### The special purpose of `gitlab_shared`
@@ -102,7 +102,7 @@ might be missing some of those application-defined `gitlab_shared` tables (like 
 
 Read [Migrations for Multiple Databases](migrations_for_multiple_databases.md).
 
-## CI/CD Database
+## CI and Sec Databases
 
 ### Configure single database
 
@@ -111,7 +111,7 @@ By default, GDK is configured to run with multiple databases.
 {{< alert type="warning" >}}
 
 Switching back-and-forth between single and multiple databases in
-the same development instance is discouraged. Any data in the `ci`
+the same development instance is discouraged. Any data in the `ci` or `sec`
 database will not be accessible in single database mode. For single database, you should use a separate development instance.
 
 {{< /alert >}}
@@ -122,6 +122,7 @@ To configure GDK to use a single database:
 
    ```shell
    gdk config set gitlab.rails.databases.ci.enabled false
+   gdk config set gitlab.rails.databases.sec.enabled false
    ```
 
 1. Reconfigure GDK:
@@ -130,7 +131,7 @@ To configure GDK to use a single database:
    gdk reconfigure
    ```
 
-To switch back to using multiple databases, set `gitlab.rails.databases.ci.enabled` to `true` and run `gdk reconfigure`.
+To switch back to using multiple databases, set `gitlab.rails.databases.<db_name>.enabled` to `true` and run `gdk reconfigure`.
 
 <!--
 The `validate_cross_joins!` method in `spec/support/database/prevent_cross_joins.rb` references
@@ -138,13 +139,13 @@ the following heading in the code, so if you make a change to this heading, make
 the corresponding documentation URL used in `spec/support/database/prevent_cross_joins.rb`.
 -->
 
-### Removing joins between `ci` and non `ci` tables
+### Removing joins between `main` and non `main` tables
 
 Queries that join across databases raise an error. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68620)
 in GitLab 14.3, for new queries only. Pre-existing queries do not raise an error.
 
-Because GitLab can be run with multiple separate databases, referencing `ci`
-tables with non `ci` tables in a single query is not possible. Therefore,
+Because GitLab can be run with multiple separate databases, referencing `main`
+tables with non `main` tables in a single query is not possible. Therefore,
 using any kind of `JOIN` in SQL queries will not work.
 
 #### Suggestions for removing cross-database joins
@@ -296,13 +297,13 @@ met:
 1. The data does not update often (for example, the `project_id` column is almost
    never updated for most tables).
 
-One example we found was the `security_scans` table. This table has a foreign
-key `security_scans.build_id` which allows you to join to the build. Therefore
+One example we found was the `terraform_state_versions` table. This table has a foreign
+key `terraform_state_versions.ci_build_id` which allows you to join to the build. Therefore
 you could join to the project like so:
 
 ```sql
-select projects.* from security_scans
-inner join ci_builds on security_scans.build_id = ci_builds.id
+select projects.* from terraform_state_versions
+inner join ci_builds on terraform_state_versions.ci_build_id = ci_builds.id
 inner join projects on ci_builds.project_id = projects.id
 ```
 
@@ -310,14 +311,14 @@ The problem with this query is that `ci_builds` is in a different database
 from the other two tables.
 
 The solution in this case is to add the `project_id` column to
-`security_scans`. This doesn't use much extra storage, and due to the way
+`terraform_state_versions`. This doesn't use much extra storage, and due to the way
 these features work, it's never updated (a build never moves projects).
 
 This simplified the query to:
 
 ```sql
-select projects.* from security_scans
-inner join projects on security_scans.project_id = projects.id
+select projects.* from terraform_state_versions
+inner join projects on terraform_state_versions.project_id = projects.id
 ```
 
 This also improves performance because you don't need to join through an extra
@@ -682,7 +683,7 @@ end
 ```
 
 Don't hesitate to reach out to the
-[Pods group](https://handbook.gitlab.com/handbook/engineering/infrastructure/core-platform/data_stores/tenant-scale/)
+[Tenant Scale group](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/tenant-scale/)
 for advice.
 
 ##### Avoid `dependent: :nullify` and `dependent: :destroy` across databases
@@ -754,12 +755,13 @@ to limit the modes where tests can run, and skip them on any other modes.
 
 ## Locking writes on the tables that don't belong to the database schemas
 
-When the CI database is promoted and the two databases are fully split,
+When a separate database is promoted and the split from main,
 as an extra safeguard against creating a split brain situation,
 run the Rake task `gitlab:db:lock_writes`. This command locks writes on:
 
-- The `gitlab_main` tables on the CI Database.
-- The `gitlab_ci` tables on the Main Database.
+- Legacy tables on `gitlab_ci` belonging to the Main or Sec Databases.
+- Legacy tables on `gitlab_main` belonging to the CI or Sec Databases.
+- Legacy tables on `gitlab_sec` belonging to the CI or Main Databases.
 
 This Rake task adds triggers to all the tables, to prevent any
 `INSERT`, `UPDATE`, `DELETE`, or `TRUNCATE` statements from running
@@ -832,7 +834,7 @@ end
 
 ## Truncating tables
 
-When the databases `main` and `ci` are fully split, we can free up disk
+When separate databases from `main` are fully split, we can free up disk
 space by truncating tables. This results in a smaller data set: For example,
 the data in `users` table on CI database is no longer read and also no
 longer updated. So this data can be removed by truncating the tables.

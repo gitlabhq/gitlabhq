@@ -63,7 +63,12 @@ export default {
       required: false,
       default: true,
     },
-    showGitpodButton: {
+    isGitpodEnabledForInstance: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isGitpodEnabledForUser: {
       type: Boolean,
       required: false,
       default: false,
@@ -91,11 +96,15 @@ export default {
           action: 'click_consolidated_edit',
           label: 'web_ide',
         },
+        testId: 'webide-menu-item',
         href: this.webIdeUrl,
         extraAttrs: {
           target: '_blank',
         },
       };
+    },
+    showGitpodButton() {
+      return this.isGitpodEnabledForInstance && this.isGitpodEnabledForUser && this.gitpodUrl;
     },
     gitPodAction() {
       return {
@@ -147,6 +156,30 @@ export default {
         },
       }));
     },
+    groups() {
+      let firstVisibleGroup = null;
+
+      return [
+        // Important: the order of this array must match the order of the
+        // GlDisclosureDropdownGroups in the template.
+        ['sshUrl', this.sshUrl],
+        ['httpUrl', this.httpUrl],
+        ['kerberosUrl', this.kerberosUrl],
+        ['ideGroup', this.ideGroup.length > 0],
+        ['downloadSourceCode', this.directoryDownloadLinks.length > 0],
+        ['downloadDirectory', this.currentPath && this.directoryDownloadLinks.length > 0],
+      ].reduce((acc, [groupName, shouldShowGroup]) => {
+        let bordered = Boolean(shouldShowGroup);
+
+        if (!firstVisibleGroup && shouldShowGroup) {
+          firstVisibleGroup = groupName;
+          bordered = false;
+        }
+
+        acc[groupName] = { show: shouldShowGroup, bordered };
+        return acc;
+      }, {});
+    },
   },
   methods: {
     closeDropdown() {
@@ -189,7 +222,7 @@ export default {
     :auto-close="false"
     data-testid="code-dropdown"
   >
-    <gl-disclosure-dropdown-group v-if="sshUrl">
+    <gl-disclosure-dropdown-group v-if="groups.sshUrl.show" :bordered="groups.sshUrl.bordered">
       <code-dropdown-clone-item
         :label="__('Clone with SSH')"
         :link="sshUrl"
@@ -199,7 +232,7 @@ export default {
       />
     </gl-disclosure-dropdown-group>
 
-    <gl-disclosure-dropdown-group v-if="httpUrl">
+    <gl-disclosure-dropdown-group v-if="groups.httpUrl.show" :bordered="groups.httpUrl.bordered">
       <code-dropdown-clone-item
         :label="httpLabel"
         :link="httpUrl"
@@ -209,7 +242,10 @@ export default {
       />
     </gl-disclosure-dropdown-group>
 
-    <gl-disclosure-dropdown-group v-if="kerberosUrl">
+    <gl-disclosure-dropdown-group
+      v-if="groups.kerberosUrl.show"
+      :bordered="groups.kerberosUrl.bordered"
+    >
       <code-dropdown-clone-item
         :label="__('Clone with KRB5')"
         :link="kerberosUrl"
@@ -219,7 +255,7 @@ export default {
       />
     </gl-disclosure-dropdown-group>
 
-    <gl-disclosure-dropdown-group v-if="ideGroup.length" bordered>
+    <gl-disclosure-dropdown-group v-if="groups.ideGroup.show" :bordered="groups.ideGroup.bordered">
       <template #group-label>{{ __('Open with') }}</template>
       <code-dropdown-ide-item
         v-for="(item, index) in ideGroup"
@@ -230,12 +266,18 @@ export default {
       />
     </gl-disclosure-dropdown-group>
 
-    <gl-disclosure-dropdown-group v-if="directoryDownloadLinks.length" bordered>
+    <gl-disclosure-dropdown-group
+      v-if="groups.downloadSourceCode.show"
+      :bordered="groups.downloadSourceCode.bordered"
+    >
       <template #group-label>{{ __('Download source code') }}</template>
       <code-dropdown-download-items :items="sourceCodeGroup" @close-dropdown="closeDropdown" />
     </gl-disclosure-dropdown-group>
 
-    <gl-disclosure-dropdown-group v-if="currentPath && directoryDownloadLinks.length" bordered>
+    <gl-disclosure-dropdown-group
+      v-if="groups.downloadDirectory.show"
+      :bordered="groups.downloadDirectory.bordered"
+    >
       <template #group-label>{{ __('Download directory') }}</template>
       <code-dropdown-download-items
         :items="directoryDownloadGroup"

@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Status::Build::Common do
-  let(:user) { create(:user) }
-  let(:build) { create(:ci_build) }
+RSpec.describe Gitlab::Ci::Status::Build::Common, feature_category: :continuous_integration do
+  let_it_be(:user) { create(:user) }
+  let_it_be(:build) { create(:ci_build) }
   let(:project) { build.project }
 
   subject do

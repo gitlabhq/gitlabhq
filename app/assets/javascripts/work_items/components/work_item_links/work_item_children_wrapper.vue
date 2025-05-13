@@ -43,11 +43,6 @@ export default {
       type: String,
       required: true,
     },
-    workItemIid: {
-      type: String,
-      required: false,
-      default: null,
-    },
     children: {
       type: Array,
       required: true,
@@ -114,7 +109,6 @@ export default {
   },
   data() {
     return {
-      prefetchedWorkItem: null,
       updateInProgress: false,
       currentClientX: 0,
       currentClientY: 0,

@@ -15,7 +15,7 @@ RSpec.describe Security::CiConfiguration::ContainerScanningBuildAction do
         <<-CI_YML.strip_heredoc
           # You can override the included template(s) by including variable overrides
           # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-          # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/pipeline/#customization
+          # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure
           # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
           # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
           # Note that environment variables can be set in several places
@@ -69,7 +69,7 @@ RSpec.describe Security::CiConfiguration::ContainerScanningBuildAction do
         <<-CI_YML.strip_heredoc
           # You can override the included template(s) by including variable overrides
           # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-          # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/pipeline/#customization
+          # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure
           # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
           # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
           # Note that environment variables can be set in several places
@@ -126,7 +126,7 @@ RSpec.describe Security::CiConfiguration::ContainerScanningBuildAction do
         <<-CI_YML.strip_heredoc
           # You can override the included template(s) by including variable overrides
           # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-          # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/pipeline/#customization
+          # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure
           # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
           # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
           # Note that environment variables can be set in several places
@@ -154,7 +154,7 @@ RSpec.describe Security::CiConfiguration::ContainerScanningBuildAction do
         <<-CI_YML.strip_heredoc
           # You can override the included template(s) by including variable overrides
           # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-          # Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/pipeline/#customization
+          # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure
           # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
           # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
           # Note that environment variables can be set in several places

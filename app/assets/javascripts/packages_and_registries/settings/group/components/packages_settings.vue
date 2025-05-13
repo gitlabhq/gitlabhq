@@ -8,12 +8,14 @@ import {
   PACKAGE_FORMATS_TABLE_HEADER,
   PACKAGE_SETTINGS_HEADER,
   PACKAGE_SETTINGS_DESCRIPTION,
+  PACKAGE_CRUD_HEADER,
   DUPLICATES_SETTING_EXCEPTION_TITLE,
   DUPLICATES_TOGGLE_LABEL,
 } from '~/packages_and_registries/settings/group/constants';
 import updateNamespacePackageSettings from '~/packages_and_registries/settings/group/graphql/mutations/update_group_packages_settings.mutation.graphql';
 import { updateGroupPackageSettings } from '~/packages_and_registries/settings/group/graphql/utils/cache_update';
 import { updateGroupPackagesSettingsOptimisticResponse } from '~/packages_and_registries/settings/group/graphql/utils/optimistic_responses';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 import ExceptionsInput from '~/packages_and_registries/settings/group/components/exceptions_input.vue';
 
@@ -22,6 +24,7 @@ export default {
   i18n: {
     PACKAGE_SETTINGS_HEADER,
     PACKAGE_SETTINGS_DESCRIPTION,
+    PACKAGE_CRUD_HEADER,
     DUPLICATES_SETTING_EXCEPTION_TITLE,
     DUPLICATES_TOGGLE_LABEL,
   },
@@ -47,6 +50,7 @@ export default {
     GlTableLite,
     GlToggle,
     ExceptionsInput,
+    CrudComponent,
   },
   inject: ['groupPath'],
   props: {
@@ -169,9 +173,10 @@ export default {
   <settings-section
     :heading="$options.i18n.PACKAGE_SETTINGS_HEADER"
     :description="$options.i18n.PACKAGE_SETTINGS_DESCRIPTION"
+    no-bottom-border
     data-testid="package-registry-settings-content"
   >
-    <form>
+    <crud-component :title="$options.i18n.PACKAGE_CRUD_HEADER">
       <gl-table-lite
         :fields="$options.tableHeaderFields"
         :items="tableRows"
@@ -203,6 +208,6 @@ export default {
           />
         </template>
       </gl-table-lite>
-    </form>
+    </crud-component>
   </settings-section>
 </template>

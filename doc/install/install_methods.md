@@ -81,6 +81,16 @@ Use to deploy a [reference architecture](../administration/reference_architectur
 
 This installation methods has some [limitations](https://gitlab.com/gitlab-org/gitlab-environment-toolkit#missing-features-to-be-aware-of), and requires manual setup for production environments.
 
+## Unofficial and community-supported distributions
+
+- [Debian Native](https://wiki.debian.org/gitlab/)
+- [FreeBSD](http://www.freshports.org/www/gitlab-ce)
+- [Arch Linux](https://archlinux.org/packages/extra/x86_64/gitlab/)
+- [Puppet Module](https://forge.puppet.com/puppet/gitlab)
+- [Ansible Playbook](https://github.com/geerlingguy/ansible-role-gitlab)
+- [GitLab Virtual Appliance (KVM)](https://marketplace.opennebula.io/appliance/6b54a412-03a5-11e9-8652-f0def1753696)
+- [GitLab on Cloudron](https://cloudron.io/store/com.gitlab.cloudronapp.html)
+
 ## Unsupported Linux distributions and Unix-like operating systems
 
 - Arch Linux

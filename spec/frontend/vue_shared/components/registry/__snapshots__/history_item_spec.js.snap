@@ -2,10 +2,10 @@
 
 exports[`History Item renders the correct markup 1`] = `
 <li
-  class="note-container-query-wrapper note-wrapper system-note timeline-entry"
+  class="js-timeline-entry note-container-query-wrapper note-wrapper system-note timeline-entry"
 >
   <div
-    class="timeline-entry-inner"
+    class="gl-clearfix timeline-entry-inner"
   >
     <div
       class="-gl-mt-1 gl-bg-strong gl-flex gl-float-left gl-h-6 gl-items-center gl-justify-center gl-ml-2 gl-rounded-full gl-text-subtle gl-w-6"
@@ -23,7 +23,7 @@ exports[`History Item renders the correct markup 1`] = `
         class="note-header"
       >
         <div
-          class="note-header-info"
+          class="gl-mt-1 note-header-info"
         >
           <div
             data-testid="default-slot"

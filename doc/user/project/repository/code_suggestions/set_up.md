@@ -6,6 +6,12 @@ description: Set up Code Suggestions.
 title: Set up Code Suggestions
 ---
 
+{{< history >}}
+
+- Changed to include GitLab Duo Core in GitLab 18.0.
+
+{{< /history >}}
+
 You can use Code Suggestions in several different IDEs.
 To set up Code Suggestions, follow the instructions for your IDE.
 
@@ -13,7 +19,10 @@ To set up Code Suggestions, follow the instructions for your IDE.
 
 To use Code Suggestions, you need:
 
-- A GitLab Duo add-on subscription and an assigned seat.
+- A GitLab Duo Core, Pro, or Enterprise add-on.
+- A Premium or Ultimate subscription.
+- If you have GitLab Duo Pro or Enterprise, an assigned seat.
+- If you have GitLab Duo Core, [IDE features turned on](../../../gitlab_duo/turn_on_off.md#change-gitlab-duo-core-availability).
 - To confirm that Code Suggestions [supports your preferred language](supported_extensions.md#supported-languages-by-ide).
   Different IDEs support different languages.
 
@@ -34,8 +43,8 @@ Follow these steps for your IDE:
 
 ## Turn on Code Suggestions
 
-If you are assigned a seat, GitLab Duo AI-powered features are turned on by default.
-However, you can confirm that Code Suggestions is turned on.
+Code Suggestions is turned on [if you meet the prerequisites](#prerequisites).
+To confirm, open your IDE and verify if Code Suggestions works.
 
 ### VS Code
 
@@ -175,4 +184,4 @@ For more information, see the [JetBrains product documentation](https://www.jetb
 
 ### Turn off GitLab Duo
 
-Alternatively, you can [turn off GitLab Duo](../../../gitlab_duo/turn_on_off.md#turn-off-gitlab-duo-features) (which includes Code Suggestions) completely for a group, project, or instance.
+Alternatively, you can [turn off GitLab Duo](../../../gitlab_duo/turn_on_off.md) (which includes Code Suggestions) completely for a group, project, or instance.

@@ -84,6 +84,8 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
         let(:whitespace) { 1 }
 
         it 'shows some diffs with ignore whitespace change option' do
+          allow(controller.current_user).to receive(:show_whitespace_in_diffs).and_return(false)
+
           show_request
 
           expect(response).to be_successful

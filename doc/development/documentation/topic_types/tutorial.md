@@ -20,9 +20,7 @@ In general, you might consider using a tutorial when:
   tutorial describes. If they can't replicate it exactly, they should be able
   to replicate something similar.
 - Tutorials do not introduce new features.
-- Tutorials do not need to adhere to the Single Source of Truth tenet. While it's not
-  ideal to duplicate content that is available elsewhere, it's worse to force the reader to
-  leave the page to find what they need.
+- Tutorials can include information that's also available elsewhere on the docs site.
 
 ## Tutorial filename and location
 

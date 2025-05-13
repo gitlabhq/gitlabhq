@@ -111,9 +111,7 @@ module Gitlab
             protected
 
             def content_inputs
-              # TODO: remove support for `with` syntax in 16.1, see https://gitlab.com/gitlab-org/gitlab/-/issues/408369
-              # In the interim prefer `inputs` over `with` while allow either syntax.
-              params.to_h.slice(:inputs, :with).each_value.first
+              params.to_h.slice(:inputs).each_value.first
             end
 
             def content_result

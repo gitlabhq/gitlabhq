@@ -120,6 +120,38 @@ RSpec.describe 'groups/edit.html.haml', feature_category: :groups_and_projects d
     end
   end
 
+  context 'when restoring a group' do
+    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:group) { create(:group, owners: user) }
+
+    before do
+      assign(:group, group)
+      allow(view).to receive(:current_user) { user }
+    end
+
+    context 'when group is pending deletion' do
+      before do
+        create(:group_deletion_schedule, group: group, deleting_user: user)
+      end
+
+      it 'renders restore group card and action' do
+        render
+
+        expect(rendered).to render_template('shared/groups_projects/settings/_restore')
+        expect(rendered).to have_link('Restore group')
+      end
+    end
+
+    context 'when group is not pending deletion' do
+      it 'does not render restore group card and action' do
+        render
+
+        expect(rendered).to render_template('shared/groups_projects/settings/_restore')
+        expect(rendered).not_to have_link('Restore group')
+      end
+    end
+  end
+
   context 'ip_restriction' do
     let(:group) { create(:group) }
     let(:user) { create(:user) }

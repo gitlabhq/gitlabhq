@@ -4,7 +4,9 @@ module Packages
   module Conan
     class CreatePackageService < ::Packages::CreatePackageService
       def execute
-        return ERROR_RESPONSE_PACKAGE_PROTECTED if package_protected?
+        if package_protected?(package_name: params[:package_name], package_type: :conan)
+          return ERROR_RESPONSE_PACKAGE_PROTECTED
+        end
 
         created_package = create_package!(:conan,
           name: params[:package_name],
@@ -20,14 +22,6 @@ module Packages
         ServiceResponse.error(message: e.message, reason: :record_invalid)
       rescue ArgumentError => e
         ServiceResponse.error(message: e.message, reason: :invalid_parameter)
-      end
-
-      private
-
-      def package_protected?
-        return false if Feature.disabled?(:packages_protected_packages_conan, project)
-
-        super(package_name: params[:package_name], package_type: :conan)
       end
     end
   end

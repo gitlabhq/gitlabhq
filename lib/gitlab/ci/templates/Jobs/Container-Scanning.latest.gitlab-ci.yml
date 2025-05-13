@@ -26,7 +26,11 @@
 # List of available variables: https://docs.gitlab.com/ee/user/application_security/container_scanning/#available-variables
 
 variables:
-  CS_ANALYZER_IMAGE: "$CI_TEMPLATE_REGISTRY_HOST/security-products/container-scanning:7"
+  # Setting this variable affects all Security templates
+  # (SAST, Dependency Scanning, ...)
+  AST_ENABLE_MR_PIPELINES: "true"
+  #
+  CS_ANALYZER_IMAGE: "$CI_TEMPLATE_REGISTRY_HOST/security-products/container-scanning:8"
   CS_SCHEMA_MODEL: 15
 
 # Provide a base job for extensibility until delivery of https://gitlab.com/gitlab-org/gitlab/-/issues/215470
@@ -54,24 +58,35 @@ variables:
     - if: $CONTAINER_SCANNING_DISABLED == 'true' || $CONTAINER_SCANNING_DISABLED == '1'
       when: never
 
-    # Add the job to merge request pipelines if there's an open merge request.
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+    # The following 3 blocks of rules define whether the job runs in a an *MR pipeline* or a *branch pipeline*
+    # when an MR exists. If the job has additional rules to observe they should be added in the blocks 1 and 3
+    # to cover both the *MR pipeline* and the *branch pipeline* workflows.
+
+    # 1. Run the job in an *MR pipeline* if MR pipelines for AST are enabled and there's an open merge request.
+    ## When FIPS mode is enabled, use the FIPS compatible image
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $CI_GITLAB_FIPS_MODE == "true" &&
           $CS_ANALYZER_IMAGE !~ /-(fips|ubi)\z/
       variables:
         CS_IMAGE_SUFFIX: -fips
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    ## When FIPS mode is not enabled, use the regular image
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event"
 
-    # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
-    - if: $CI_OPEN_MERGE_REQUESTS
+    # 2. Don't run the job in a *branch pipeline* if *MR pipelines* for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_OPEN_MERGE_REQUESTS
       when: never
 
-    # Add the job to branch pipelines.
+    # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
+    ## When FIPS mode is enabled, use the FIPS compatible image
     - if: $CI_COMMIT_BRANCH &&
           $CI_GITLAB_FIPS_MODE == "true" &&
           $CS_ANALYZER_IMAGE !~ /-(fips|ubi)\z/
       variables:
         CS_IMAGE_SUFFIX: -fips
+    ## When FIPS mode is not enabled, use the regular image
     - if: $CI_COMMIT_BRANCH
 
 container_scanning:

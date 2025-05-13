@@ -1,0 +1,25 @@
+---
+description: Tracks when a placeholder is reassigned without assignee user confirmation
+internal_events: true
+action: reassign_placeholder_user_without_confirmation
+identifiers:
+- namespace
+- user
+additional_properties:
+  label:
+    description: id of the placeholder user
+  property:
+    description: id of the user that is replacing the placeholder
+  import_type:
+    description: the import source e.g. gitlab_migration, github, bitbucket
+  reassign_to_user_state:
+    description: the state of the user that is replacing the placeholder e.g. active, blocked
+product_group: import_and_integrate
+product_categories:
+- importers
+milestone: '18.0'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190272
+tiers:
+- free
+- premium
+- ultimate

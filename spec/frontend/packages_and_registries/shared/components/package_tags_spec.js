@@ -1,24 +1,22 @@
-import { mount } from '@vue/test-utils';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
 import { mockTags } from 'jest/packages_and_registries/infrastructure_registry/components/mock_data';
 
 describe('PackageTags', () => {
   let wrapper;
 
-  function createComponent(tags = [], props = {}) {
-    const propsData = {
-      tags,
-      ...props,
-    };
-
-    wrapper = mount(PackageTags, {
-      propsData,
+  const createComponent = (tags = [], props = {}) => {
+    wrapper = mountExtended(PackageTags, {
+      propsData: {
+        tags,
+        ...props,
+      },
     });
-  }
+  };
 
-  const tagLabel = () => wrapper.find('[data-testid="tagLabel"]');
-  const tagBadges = () => wrapper.findAll('[data-testid="tagBadge"]');
-  const moreBadge = () => wrapper.find('[data-testid="moreBadge"]');
+  const tagLabel = () => wrapper.findByTestId('tagLabel');
+  const tagBadges = () => wrapper.findAllByTestId('tagBadge');
+  const moreBadge = () => wrapper.findByTestId('moreBadge');
 
   describe('tag label', () => {
     it('shows the tag label by default', () => {

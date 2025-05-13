@@ -6,6 +6,7 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
   include Features::SourceEditorSpecHelpers
   include ProjectForksHelper
   include Features::BlobSpecHelpers
+  include Features::WebIdeSpecHelpers
   include TreeHelper
 
   let_it_be(:json_text) { '{"name":"Best package ever!"}' }
@@ -23,7 +24,6 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
   let_it_be(:project_with_crlf) { create(:project, :custom_repo, name: 'Project with crlf', files: { 'crlf_file.txt' => crlf_text }) }
 
   before do
-    stub_feature_flags(vscode_web_ide: false)
     stub_feature_flags(blob_overflow_menu: false)
 
     sign_in(user)
@@ -210,10 +210,10 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
 
       click_link_or_button('Fork')
 
-      expect_fork_status
-
-      expect(page).to have_css('.ide-sidebar-project-title', text: "#{project2.name} #{user.namespace.full_path}/#{project2.path}")
-      expect(page).to have_css('.ide .multi-file-tab', text: '.gitignore')
+      within_web_ide do
+        expect(page).to have_text(project2.path.upcase)
+        expect(page).to have_text('.gitignore')
+      end
     end
 
     it 'commits an edited file in a forked project', :sidekiq_might_not_need_inline do

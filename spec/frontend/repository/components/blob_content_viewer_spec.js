@@ -3,14 +3,14 @@ import { mount, shallowMount } from '@vue/test-utils';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import Vue, { nextTick } from 'vue';
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import VueApollo from 'vue-apollo';
+import axios from '~/lib/utils/axios_utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import BlobContent from '~/blob/components/blob_content.vue';
-import BlobHeader from '~/blob/components/blob_header.vue';
+import BlobHeader from 'ee_else_ce/blob/components/blob_header.vue';
 import BlobButtonGroup from '~/repository/components/blob_button_group.vue';
 import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
 import ForkSuggestion from '~/repository/components/fork_suggestion.vue';
@@ -43,6 +43,7 @@ import {
   projectMock,
   getProjectMockWithOverrides,
 } from 'ee_else_ce_jest/repository/mock_data';
+import { mockTracking } from 'helpers/tracking_helper';
 
 jest.mock('~/repository/components/blob_viewers');
 jest.mock('~/lib/utils/url_utility');
@@ -53,6 +54,7 @@ jest.mock('~/alert');
 let wrapper;
 let blobInfoMockResolver;
 let projectInfoMockResolver;
+let trackingSpy;
 
 Vue.use(Vuex);
 
@@ -135,6 +137,7 @@ const createComponent = async (mockData = {}, mountFn = shallowMount, mockRoute 
       },
     }),
   );
+  trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
 
   await waitForPromises();
 };
@@ -420,7 +423,7 @@ describe('Blob content viewer component', () => {
       language  | size             | tooLarge | renderError    | expectedTooLarge
       ${'ruby'} | ${100}           | ${false} | ${null}        | ${false}
       ${'ruby'} | ${FILE_SIZE_3MB} | ${false} | ${null}        | ${true}
-      ${'nyan'} | ${null}          | ${true}  | ${null}        | ${true}
+      ${'nyan'} | ${FILE_SIZE_3MB} | ${true}  | ${null}        | ${true}
       ${'nyan'} | ${null}          | ${false} | ${'collapsed'} | ${true}
     `(
       'correctly handles file size limits when language=$language, size=$size, tooLarge=$tooLarge, renderError=$renderError',
@@ -437,6 +440,13 @@ describe('Blob content viewer component', () => {
             },
           },
         });
+
+        if (tooLarge) {
+          expect(trackingSpy).toHaveBeenCalledWith(undefined, 'view_source', {
+            label: 'repository_file_size_limit_exceeded',
+            property: { label: language, property: size },
+          });
+        }
 
         await waitForPromises();
         expect(loadViewer).toHaveBeenCalledWith('text', false, expectedTooLarge);

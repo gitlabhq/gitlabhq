@@ -3,14 +3,14 @@ import { GlButton, GlModal, GlDisclosureDropdownItem, GlTooltipDirective } from 
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import { isMetaClick } from '~/lib/utils/common_utils';
-import { convertTypeEnumToName, newWorkItemPath } from '~/work_items/utils';
+import { newWorkItemPath, canRouterNav } from '~/work_items/utils';
 import {
+  NAME_TO_TEXT_LOWERCASE_MAP,
   sprintfWorkItem,
   ROUTES,
   RELATED_ITEM_ID_URL_QUERY_PARAM,
-  WORK_ITEM_TYPE_NAME_LOWERCASE_MAP,
-  WORK_ITEM_TYPE_ENUM_INCIDENT,
   NAME_TO_ENUM_MAP,
+  WORK_ITEM_TYPE_NAME_INCIDENT,
 } from '../constants';
 import CreateWorkItem from './create_work_item.vue';
 import CreateWorkItemCancelConfirmationModal from './create_work_item_cancel_confirmation_modal.vue';
@@ -99,7 +99,7 @@ export default {
     return {
       isCreateModalVisible: false,
       isConfirmationModalVisible: false,
-      selectedWorkItemTypeName: convertTypeEnumToName(this.preselectedWorkItemType),
+      selectedWorkItemTypeName: this.preselectedWorkItemType,
       shouldDiscardDraft: false,
     };
   },
@@ -131,12 +131,12 @@ export default {
       return newWorkItemPath({
         fullPath: this.fullPath,
         isGroup: this.isGroup,
-        workItemTypeName: NAME_TO_ENUM_MAP[this.selectedWorkItemTypeName],
+        workItemType: this.selectedWorkItemTypeName,
         query: this.newWorkItemPathQuery,
       });
     },
     selectedWorkItemTypeLowercase() {
-      return WORK_ITEM_TYPE_NAME_LOWERCASE_MAP[this.selectedWorkItemTypeName];
+      return NAME_TO_TEXT_LOWERCASE_MAP[this.selectedWorkItemTypeName];
     },
     newWorkItemButtonText() {
       return this.alwaysShowWorkItemTypeSelect && this.selectedWorkItemTypeName
@@ -171,7 +171,7 @@ export default {
       this.resetSelectedWorkItemType();
     },
     resetSelectedWorkItemType() {
-      this.selectedWorkItemTypeName = convertTypeEnumToName(this.preselectedWorkItemType);
+      this.selectedWorkItemTypeName = this.preselectedWorkItemType;
     },
     showCreateModal(event) {
       if (Boolean(event) && isMetaClick(event)) {
@@ -231,8 +231,14 @@ export default {
             // Take incidents to the legacy detail view with a full page load
             if (
               this.useVueRouter &&
-              NAME_TO_ENUM_MAP[workItem?.workItemType?.name] !== WORK_ITEM_TYPE_ENUM_INCIDENT &&
-              this.$router.getRoutes().some((route) => route.name === 'workItem')
+              workItem?.workItemType?.name !== WORK_ITEM_TYPE_NAME_INCIDENT &&
+              this.$router.getRoutes().some((route) => route.name === 'workItem') &&
+              canRouterNav({
+                fullPath: this.fullPath,
+                isGroup: this.isGroup,
+                webUrl: workItem.webUrl,
+                issueAsWorkItem: true,
+              })
             ) {
               this.$router.push({ name: 'workItem', params: { iid: workItem.iid } });
             } else {

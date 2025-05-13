@@ -30,6 +30,10 @@ module ContainerRegistry
       with_dummy_client(return_value_if_disabled: false, &:supports_gitlab_api?)
     end
 
+    def self.statistics
+      with_dummy_client(return_value_if_disabled: {}, &:statistics)
+    end
+
     def self.deduplicated_size(path)
       downcased_path = path&.downcase
       with_dummy_client(token_config: { type: :nested_repositories_token, path: downcased_path }) do |client|
@@ -53,17 +57,23 @@ module ContainerRegistry
       end
     end
 
-    def self.rename_base_repository_path(path, name:, dry_run: false)
+    def self.rename_base_repository_path(path, name:, project:, dry_run: false)
       raise ArgumentError, 'incomplete parameters given' unless path.present? && name.present?
 
       downcased_path = path.downcase
 
-      with_dummy_client(token_config: { type: :push_pull_nested_repositories_token, path: downcased_path }) do |client|
+      token_config = {
+        type: :push_pull_nested_repositories_token,
+        path: downcased_path,
+        project: project
+      }
+
+      with_dummy_client(token_config:) do |client|
         client.rename_base_repository_path(downcased_path, name: name.downcase, dry_run: dry_run)
       end
     end
 
-    def self.move_repository_to_namespace(path, namespace:, dry_run: false)
+    def self.move_repository_to_namespace(path, namespace:, project:, dry_run: false)
       raise ArgumentError, 'incomplete parameters given' unless path.present? && namespace.present?
 
       downcased_path = path.downcase
@@ -72,10 +82,11 @@ module ContainerRegistry
       token_config = {
         type: :push_pull_move_repositories_access_token,
         path: downcased_path,
-        new_path: downcased_namespace
+        new_path: downcased_namespace,
+        project: project
       }
 
-      with_dummy_client(token_config: token_config) do |client|
+      with_dummy_client(token_config:) do |client|
         client.move_repository_to_namespace(downcased_path, namespace: downcased_namespace, dry_run: dry_run)
       end
     end
@@ -214,6 +225,23 @@ module ContainerRegistry
     # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/gitlab/api.md#renamemove-origin-repository
     def move_repository_to_namespace(path, namespace:, dry_run: false)
       patch_repository(path, { namespace: namespace }, dry_run: dry_run)
+    end
+
+    # https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/gitlab/api.md?ref_type=heads#get-registry-statistics
+    # example output: {"release"=>{"ext_features"=>"tag_delete", "version"=>"v4.20"}, "database"=>{"enabled"=>true}}
+    def statistics
+      with_token_faraday do |faraday_client|
+        req = faraday_client.get('/gitlab/v1/statistics/')
+        result = response_body(req)
+
+        break {} unless result.present?
+
+        {
+          features: result.dig('release', 'ext_features')&.split(',') || [],
+          version: result.dig('release', 'version'),
+          db_enabled: result.dig('database', 'enabled')
+        }
+      end
     end
 
     private

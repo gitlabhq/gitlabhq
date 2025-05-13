@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ProjectSnippets, :aggregate_failures, feature_category: :source_code_management do
+RSpec.describe API::ProjectSnippets, :with_current_organization, :aggregate_failures, feature_category: :source_code_management do
   include SnippetHelpers
 
   let_it_be(:project) { create(:project, :public) }
@@ -398,7 +398,12 @@ RSpec.describe API::ProjectSnippets, :aggregate_failures, feature_category: :sou
 
     context "when destruction fails" do
       let(:error_message) { "some service error message" }
-      let(:error_response) { ServiceResponse.error(message: error_message, reason: :bad_request) }
+      let(:error_response) do
+        ServiceResponse.error(
+          message: error_message,
+          reason: ::Snippets::DestroyService::FAILED_TO_DELETE_ERROR
+        )
+      end
 
       before do
         allow_next_instance_of(::Snippets::DestroyService) do |service|

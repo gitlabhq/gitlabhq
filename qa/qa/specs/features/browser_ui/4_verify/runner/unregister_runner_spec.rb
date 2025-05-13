@@ -11,10 +11,6 @@ module QA
       end
 
       it 'user unregisters a runner with authentication token',
-        quarantine: {
-          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/513860',
-          type: :stale
-        },
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/510652' do
         Flow::Login.sign_in
 
@@ -28,16 +24,8 @@ module QA
           end
         end
 
+        # The output of the unregister command is verified inside the GitlabRunner class
         runner.unregister!
-
-        page.refresh
-
-        Page::Project::Settings::CiCd.perform do |settings|
-          settings.expand_runners_settings do |page|
-            expect(page).to have_content(executor)
-            expect(page).to have_offline_runner
-          end
-        end
       end
     end
   end

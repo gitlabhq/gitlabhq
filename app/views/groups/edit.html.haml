@@ -62,5 +62,5 @@
 
 - elsif can?(current_user, :remove_group, @group)
   = render 'groups/settings/remove', group: @group, remove_form_id: 'js-remove-group-form'
-  = render_if_exists 'shared/groups_projects/settings/restore', context: @group
+  = render 'shared/groups_projects/settings/restore', context: @group
   = render_if_exists 'groups/settings/immediately_remove', group: @group, remove_form_id: 'js-remove-group-form'

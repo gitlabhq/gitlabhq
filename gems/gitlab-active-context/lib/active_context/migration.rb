@@ -3,6 +3,8 @@
 module ActiveContext
   class Migration
     class V1_0
+      MigrationError = Class.new(StandardError)
+
       class << self
         def milestone(version)
           @milestone = version
@@ -22,9 +24,8 @@ module ActiveContext
       end
 
       def create_collection(name, **options, &block)
-        operation = @operations[:"create_#{name}"] ||= OperationResult.new("create_#{name}")
+        operation = initialize_operation("create_#{name}")
 
-        # Only execute if not already completed
         unless operation.completed?
           ActiveContext.adapter.executor.create_collection(name, **options, &block)
           operation.complete!
@@ -33,8 +34,27 @@ module ActiveContext
         operation.completed?
       end
 
+      def update_collection_metadata(collection:, metadata:)
+        raise MigrationError, 'Metadata should be a hash' unless metadata.is_a?(::Hash)
+
+        operation = initialize_operation("update_collection_metadata_#{metadata.to_json}")
+
+        unless operation.completed?
+          collection.collection_record.update_metadata!(metadata.merge(collection_class: collection.name))
+          operation.complete!
+        end
+
+        operation.completed?
+      end
+
       def all_operations_completed?
         @operations.values.all?(&:completed?)
+      end
+
+      private
+
+      def initialize_operation(key)
+        @operations[key] ||= OperationResult.new(key)
       end
     end
 

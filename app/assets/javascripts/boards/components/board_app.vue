@@ -210,6 +210,7 @@ export default {
     class="boards-app gl-relative"
     :class="{ 'is-compact': isAnySidebarOpen && !issuesDrawerEnabled }"
   >
+    <router-view />
     <board-top-bar
       :board-id="boardId"
       :is-swimlanes-on="isSwimlanesOn"

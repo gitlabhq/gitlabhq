@@ -25,17 +25,18 @@ RSpec.describe ForkNamespaceEntity do
     is_expected.not_to be_nil
   end
 
-  %w[id
+  %i[id
      name
      description
      markdown_description
+     marked_for_deletion
      visibility
      full_name
      created_at
      updated_at
      avatar_url].each do |attribute|
     it "includes #{attribute}" do
-      expect(json[attribute.to_sym]).to be_present
+      expect(json).to have_key(attribute)
     end
   end
 
@@ -53,5 +54,9 @@ RSpec.describe ForkNamespaceEntity do
 
   it 'exposes human readable permission level' do
     expect(json[:permission]).to eql 'Developer'
+  end
+
+  it 'exposes marked_for_deletion state' do
+    expect(json[:marked_for_deletion]).to be false
   end
 end

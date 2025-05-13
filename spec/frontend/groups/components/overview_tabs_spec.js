@@ -332,25 +332,6 @@ describe('OverviewTabs', () => {
         sharedAssertions({ searchTerm, sort: defaultProvide.initialSort });
       });
 
-      describe('when search is less than 3 characters', () => {
-        const searchTerm = 'Fo';
-
-        beforeEach(async () => {
-          await setup();
-          emitFilter(searchTerm);
-        });
-
-        it('does not emit `fetchFilteredAndSortedGroups` event from `eventHub`', () => {
-          expect(eventHub.$emit).not.toHaveBeenCalledWith(
-            `${ACTIVE_TAB_SUBGROUPS_AND_PROJECTS}fetchFilteredAndSortedGroups`,
-            {
-              filterGroupsBy: searchTerm,
-              sortBy: defaultProvide.initialSort,
-            },
-          );
-        });
-      });
-
       describe('when search is the same', () => {
         const searchTerm = 'Foo';
 

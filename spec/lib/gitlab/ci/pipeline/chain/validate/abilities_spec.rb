@@ -16,8 +16,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities, feature_categor
       project: project,
       current_user: user,
       origin_ref: origin_ref,
-      merge_request: merge_request,
-      trigger_request: trigger_request)
+      merge_request: merge_request
+    )
   end
 
   let(:step) { described_class.new(pipeline, command) }
@@ -25,7 +25,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities, feature_categor
   let(:ref) { 'master' }
   let(:origin_ref) { ref }
   let(:merge_request) { nil }
-  let(:trigger_request) { nil }
 
   shared_context 'detached merge request pipeline' do
     let(:merge_request) do

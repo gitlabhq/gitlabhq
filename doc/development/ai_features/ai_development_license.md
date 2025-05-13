@@ -101,7 +101,7 @@ gdk restart
 - If you need to set up a Duo Pro add-on instead, run this Rake task:
 
 ```shell
-GITLAB_SIMULATE_SAAS=1 bundle exec 'rake gitlab:duo:setup[pro]'
+GITLAB_SIMULATE_SAAS=1 bundle exec 'rake gitlab:duo:setup[duo_pro]'
 ```
 
 ### Pros
@@ -195,6 +195,7 @@ This approach uses a real cloud license through CustomersDot, providing the most
       ```shell
       export GITLAB_LICENSE_MODE=test
       export CUSTOMER_PORTAL_URL=https://customers.staging.gitlab.com
+      export GITLAB_SIMULATE_SAAS=0
       ```
 
   - **Note on GDK and AI Gateway:** While GDK can include AI Gateway as part of its distribution, developers may run AI Gateway with different configurations or ports. Currently, GitLab instances need explicit configuration of the AI Gateway URL, even in development environments.
@@ -234,7 +235,7 @@ This approach uses a real cloud license through CustomersDot, providing the most
 
 ### Future improvements
 
-> **Note:** There are ongoing plans to streamline the configuration of AI Gateway in development environments to reduce manual setup steps. In the future, we aim to automate this process as part of the GDK setup. For now, please follow the manual configuration steps described above.
+> **Note:** There are ongoing plans to streamline the configuration of AI Gateway in development environments to reduce manual setup steps. In the future, we aim to automate this process as part of the GDK setup. For now, follow the manual configuration steps described above.
 
 ## Setting up Duo on your GitLab.com staging account
 

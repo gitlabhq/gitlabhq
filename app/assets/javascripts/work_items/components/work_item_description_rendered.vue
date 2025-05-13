@@ -18,9 +18,9 @@ import { handleLocationHash } from '~/lib/utils/common_utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import {
-  WORK_ITEM_TYPE_ENUM_ISSUE,
-  WORK_ITEM_TYPE_ENUM_TASK,
   WORK_ITEM_TYPE_NAME_EPIC,
+  WORK_ITEM_TYPE_NAME_ISSUE,
+  WORK_ITEM_TYPE_NAME_TASK,
 } from '../constants';
 
 const trackingMixin = InternalEvents.mixin();
@@ -91,8 +91,8 @@ export default {
   computed: {
     childItemType() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC
-        ? WORK_ITEM_TYPE_ENUM_ISSUE
-        : WORK_ITEM_TYPE_ENUM_TASK;
+        ? WORK_ITEM_TYPE_NAME_ISSUE
+        : WORK_ITEM_TYPE_NAME_TASK;
     },
     descriptionText() {
       return this.workItemDescription?.description;
@@ -127,12 +127,15 @@ export default {
   async mounted() {
     eventHub.$on('convert-task-list-item', this.convertTaskListItem);
     eventHub.$on('delete-task-list-item', this.deleteTaskListItem);
+    window.addEventListener('hashchange', (e) => this.truncateOrScrollToAnchor(e));
+
     await this.$nextTick();
     this.truncateOrScrollToAnchor();
   },
   beforeDestroy() {
     eventHub.$off('convert-task-list-item', this.convertTaskListItem);
     eventHub.$off('delete-task-list-item', this.deleteTaskListItem);
+    window.removeEventListener('hashchange', this.truncateOrScrollToAnchor);
     this.removeAllPointerEventListeners();
   },
   methods: {
@@ -158,13 +161,18 @@ export default {
      * If yes, it will prevent description from truncating and will scroll the page to the anchor.
      * If no, it will truncate the description as per default behaviour.
      */
-    truncateOrScrollToAnchor() {
+    truncateOrScrollToAnchor({ type } = {}) {
       const hash = getLocationHash();
       const hashSelector = `href="#${hash}"`;
       const isLocationHashAnchoredInDescription =
         hash && this.descriptionHtml?.includes(hashSelector);
 
       if (isLocationHashAnchoredInDescription) {
+        // Link was referred from current page itself,
+        // so we expand the description and then scroll to it.
+        if (type === 'hashchange') {
+          this.showAll();
+        }
         handleLocationHash();
       } else {
         this.truncateLongDescription();
@@ -330,7 +338,7 @@ export default {
     showAll() {
       this.truncated = false;
       this.trackEvent('expand_description_on_workitem', {
-        label: this.workItemTypeName,
+        label: this.workItemType,
       });
     },
     stripHeadingAnchors(htmlString) {
@@ -347,7 +355,7 @@ export default {
     <div
       v-else
       ref="description"
-      class="work-item-description description md gl-relative gl-clearfix"
+      class="js-work-item-description work-item-description description md gl-relative gl-clearfix"
     >
       <div
         ref="gfm-content"
@@ -356,11 +364,7 @@ export default {
         :class="{ truncated: isTruncated, 'has-task-list-item-actions': hasTaskListItemActions }"
         @change="toggleCheckboxes"
       ></div>
-      <div
-        v-if="isTruncated"
-        class="description-more gl-block gl-w-full"
-        data-test-id="description-read-more"
-      >
+      <div v-if="isTruncated" class="description-more gl-block gl-w-full">
         <div class="show-all-btn gl-flex gl-w-full gl-items-center gl-justify-center">
           <gl-button
             ref="show-all-btn"

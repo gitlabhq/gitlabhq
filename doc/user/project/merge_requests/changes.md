@@ -39,10 +39,10 @@ The header for each file in the diff contains:
 
 The diff also includes navigation and comment aids to the left of the file, in the gutter:
 
-- **Show more context**: Select **Previous 20 lines** ({{< icon name="expand-up" >}}) to display
+- Show more context: Select **Previous 20 lines** ({{< icon name="expand-up" >}}) to display
   the previous 20 unchanged lines, or **Next 20 lines** ({{< icon name="expand-down" >}}) to
   show the next 20 unchanged lines.
-- **Line numbers** are shown in two columns. Previous line numbers are shown on
+- Line numbers are shown in two columns. Previous line numbers are shown on
   the left, and proposed line numbers on the right. To interact with a line:
   - To show [comment options](#add-a-comment-to-a-merge-request-file), hover over a line number.
   - To copy a link to the line, press <kbd>Command</kbd> and select (or right-click)
@@ -51,7 +51,7 @@ The diff also includes navigation and comment aids to the left of the file, in t
 
 ## Show a list of changed files
 
-Use the **file browser** to view a list of files changed in a merge request:
+Use the file browser to view a list of files changed in a merge request:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and find your merge request.
@@ -205,7 +205,7 @@ To select another file to view when this setting is enabled, either:
 
 - Scroll to the end of the file and select either **Prev** or **Next**.
 - If [keyboard shortcuts are enabled](../../shortcuts.md#enable-keyboard-shortcuts),
-  press <kbd>&#91;</kbd>, <kbd>]</kbd>, <kbd>k</kbd>, or <kbd>j</kbd>.
+  press <kbd>\[</kbd>, <kbd>]</kbd>, <kbd>k</kbd>, or <kbd>j</kbd>.
 - Select **Show file browser** ({{< icon name="file-tree" >}}) and select another file to view.
 
 ## Compare changes
@@ -405,8 +405,3 @@ This comment can also be a thread.
 1. Select the location where you want to comment.
 
 GitLab shows an icon and a comment field on the image.
-
-## Resources
-
-- For technical details on how GitLab calculates the diff between the two revisions,
-  see [Working with diffs](../../../development/merge_request_concepts/diffs/_index.md).

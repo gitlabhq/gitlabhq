@@ -21,7 +21,6 @@ import RunnerListEmptyState from '~/ci/runner/components/runner_list_empty_state
 
 describe('RunnerListEmptyState', () => {
   let wrapper;
-  let glFeatures;
 
   const findEmptySearchResult = () => wrapper.findComponent(EmptyResult);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
@@ -48,13 +47,8 @@ describe('RunnerListEmptyState', () => {
         GlEmptyState,
         GlSprintf,
       },
-      provide: { glFeatures },
     });
   };
-
-  beforeEach(() => {
-    glFeatures = null;
-  });
 
   describe('when search is not filtered', () => {
     describe.each`

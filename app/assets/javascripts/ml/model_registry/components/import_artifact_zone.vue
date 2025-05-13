@@ -231,7 +231,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-p-5">
+  <div>
     <gl-form-group
       label-for="subfolderId"
       data-testid="subfolderGroup"
@@ -282,20 +282,20 @@ export default {
             <div
               v-if="upload.loading()"
               :data-testid="`formatted-progress-${index}`"
-              class="col-md-2 text-right"
+              class="col-md-2 gl-text-right"
             >
               {{ upload.formattedProgressLoaded() }}
             </div>
             <div v-else :data-testid="`formatted-file-size-${index}`" class="col-md-2 text-right">
               {{ upload.formattedFileSize }}
             </div>
-            <div class="col-md-2 text-right">
+            <div class="col-md-2 gl-text-right">
               <gl-button
                 v-if="upload.isCancelable()"
                 :data-testid="`cancel-button-${index}`"
                 category="secondary"
                 variant="danger"
-                class="mb-2"
+                class="gl-mb-1"
                 @click="upload.cancelUpload"
                 >{{ $options.i18n.cancelButtonText }}
               </gl-button>
@@ -304,7 +304,7 @@ export default {
               <gl-icon v-if="upload.canceled()" name="status_canceled" variant="warning" />
             </div>
           </div>
-          <p v-if="errors[index]" :data-testid="`fb-${index}`" class="row m-0 p-0 gl-text-subtle">
+          <p v-if="errors[index]" :data-testid="`fb-${index}`" class="row m-0 p-0 gl-text-danger">
             {{ errors[index] }}
           </p>
         </div>

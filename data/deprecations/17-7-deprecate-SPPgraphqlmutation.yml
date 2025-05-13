@@ -12,9 +12,8 @@
   manual_task: true
   body: |
     The `setPreReceiveSecretDetection` GraphQL mutation has been renamed to `setSecretPushProtection`. We are also renaming some fields in the mutation's response to reflect the name change of the feature `pre_receive_secret_detection` to `secret_push_protection`.
-    To avoid breaking workflows that use the old name, before GitLab 18.0 you should:
 
-    - Stop using the old mutation name `setPreReceiveSecretDetection`. Instead, use the name `setSecretPushProtection`.
-    - Change any references to the field `pre_receive_secret_detection_enabled` to `secret_push_protection_enabled`.
+    We have added the new mutation name, but will no longer remove the old mutation name in GitLab 18.0 as originally announced.
 
+    We will still update the database to [remove](https://gitlab.com/gitlab-org/gitlab/-/issues/512996) the old `pre_receive_secret_detection_enabled` database column, but you'll be able to use either mutation name. Both will reflect the value of the new `secret_push_protection_enabled` database column.
   documentation_url: https://docs.gitlab.com/api/graphql/reference/#mutationsetsecretpushprotection

@@ -15,8 +15,8 @@ module Gitlab
             @ctx = ctx
             @errors = []
 
-            if objects.count <= 1 # rubocop:disable Style/IfUnlessModifier
-              @errors.push('invalid interpolation access pattern')
+            if objects.count <= 1
+              @errors.push('invalid pattern used for interpolation. valid pattern is $[[ inputs.input ]]')
             end
 
             if access.bytesize > MAX_ACCESS_BYTESIZE # rubocop:disable Style/IfUnlessModifier
@@ -48,7 +48,7 @@ module Gitlab
             @value ||= objects.inject(@ctx) do |memo, value|
               key = value.to_sym
 
-              break @errors.push("unknown interpolation key: `#{key}`") unless memo.key?(key)
+              break @errors.push("unknown input name provided: `#{key}`") unless memo.key?(key)
 
               memo.fetch(key)
             end

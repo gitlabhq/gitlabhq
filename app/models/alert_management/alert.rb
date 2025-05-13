@@ -60,7 +60,7 @@ module AlertManagement
     }, unless: :resolved?
     validate :hosts_format
 
-    enum severity: {
+    enum :severity, {
       critical: 0,
       high: 1,
       medium: 2,
@@ -69,7 +69,7 @@ module AlertManagement
       unknown: 5
     }
 
-    enum domain: {
+    enum :domain, {
       operations: 0,
       threat_monitoring: 1
     }

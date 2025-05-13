@@ -1,0 +1,87 @@
+# Important: These patterns match across multiple lines in the job logs.
+#
+# Each pattern uses a comma to separate the different parts that must appear in the log, but not necessarily on the same line.
+failure_categories:
+  rspec_valid_rspec_errors_or_flaky_tests:
+    description: |
+      Legitimate RSpec test failures that indicate actual code issues or flaky tests, as opposed to infrastructure problems.
+
+      These include expectation failures (expected vs. got), assertion failures, and other test-specific errors. The patterns
+      match logs that contain both the 'Failed examples:' section and either expectation outputs or general failure messages.
+
+      When you see this failure category, it likely means there's an actual issue with the code or tests that needs to be
+      addressed, rather than a CI infrastructure problem.
+    patterns:
+      - "Failed examples:,expected( :| #| \\[ | \\`)"
+      - "Failed examples:,Failure/Error:"
+    causes:
+      - "Actual test failures due to code not meeting expectations"
+      - "Flaky tests that pass locally but fail intermittently in CI"
+      - "Race conditions in tests"
+      - "Time-dependent tests that are sensitive to execution speed"
+      - "Tests affected by state from other tests"
+    solutions:
+      - "Review the failure message to understand the specific expectation that's failing"
+      - "Run the specific failing test locally: `bin/rspec <file_path>:<line_number>`"
+      - "Check if the test is flaky by running it multiple times: `bin/rspec <file_path>:<line_number> --repeat 10`"
+      - "If the test is flaky, consider adding it to quarantine with the :quarantine tag"
+      - "For race conditions, ensure proper test isolation and avoid relying on execution order"
+      - "For consistent failures, fix the underlying code to match expectations or update the test if expectations have changed"
+
+  jest:
+    description: |
+      JavaScript test failures in Jest framework, which is used for testing GitLab's frontend components.
+
+      These failures indicate issues in the JavaScript/Vue code rather than infrastructure problems. The patterns match
+      logs showing Jest test suite completion followed by a non-zero exit code, typically from assertion failures,
+      timeouts, or errors in the test code itself.
+    patterns:
+      - "Ran all test suites,Command failed with exit code 1"
+      - "Ran all test suites,exited with status 1"
+    causes:
+      - "JavaScript component doesn't match test expectations"
+      - "Snapshot tests are outdated after UI changes"
+      - "JavaScript syntax errors or runtime errors"
+      - "Mocked services or components not properly set up"
+      - "Tests timeout due to asynchronous operations not resolving"
+      - "Vue component lifecycle issues (especially with Vue 3 compatibility)"
+    solutions:
+      - "Run the specific failing test locally: `yarn jest <test_file> -t '<test_name>'`"
+      - "Update snapshots if UI has intentionally changed: `yarn jest -u <test_file>`"
+      - "Check for JavaScript syntax errors or missing dependencies"
+      - "Ensure mocks are properly set up and cleaned up between tests"
+      - "Add proper async/await handling for asynchronous operations"
+      - "For Vue 3 compatibility issues, check the Vue migration guide for breaking changes"
+
+  danger:
+    description: |
+      Failures in the Danger code review tool, which automatically checks merge requests for common issues.
+
+      These failures typically indicate that the MR doesn't meet GitLab's contribution guidelines in some way. The pattern
+      matches logs containing both authentication token references and error outputs from Danger's validation checks.
+
+      Common Danger failures include:
+      - Commit message formatting issues
+      - Missing documentation updates
+      - Missing changelog entries
+      - Large merge requests that should be split
+      - Missing test coverage
+
+      Danger failures should be addressed before merging as they help maintain code quality standards.
+    patterns:
+      - "DANGER_GITLAB_API_TOKEN,Errors:"
+    causes:
+      - "Commit message format doesn't follow guidelines (too long, missing reference, etc.)"
+      - "Missing changelog entry when one is required"
+      - "Documentation updates required but missing"
+      - "Database migration rules not followed"
+      - "Merge request is too large (exceeds recommended changes)"
+      - "Missing labels required for certain types of changes"
+    solutions:
+      - "Review specific errors in the Danger output to identify what needs to be fixed"
+      - "Fix commit messages to follow guidelines: https://docs.gitlab.com/ee/development/contributing/merge_request_workflow.html#commit-messages-guidelines"
+      - "Add a changelog entry in the correct format and location"
+      - "Update documentation to reflect code changes"
+      - "Consider splitting large merge requests into smaller, focused changes"
+      - "Add required labels based on the type of change being made"
+      - "Run the danger-review job again after making changes"

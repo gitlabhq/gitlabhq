@@ -68,7 +68,7 @@ Six repositories are maintained:
   [Enterprise Edition](https://about.gitlab.com/pricing/) ones.
 - [`gitlab/gitlab-ce`](https://packages.gitlab.com/gitlab/gitlab-ce): A stripped
   down package that contains only the Community Edition features.
-- [`gitlab/gitlab-fips`](https://packages.gitlab.com/gitlab/gitlab-fips): [FIPS-compliant](../../development/fips_gitlab.md) builds.
+- [`gitlab/gitlab-fips`](https://packages.gitlab.com/gitlab/gitlab-fips): FIPS-compliant builds.
 - [`gitlab/unstable`](https://packages.gitlab.com/gitlab/unstable): Release candidates and other unstable versions.
 - [`gitlab/nightly-builds`](https://packages.gitlab.com/gitlab/nightly-builds): Nightly builds.
 - [`gitlab/raspberry-pi2`](https://packages.gitlab.com/gitlab/raspberry-pi2): Official Community Edition releases built for [Raspberry Pi](https://www.raspberrypi.org) packages.

@@ -25,6 +25,8 @@ title: Zoekt
 
 This feature is in [beta](../../policy/development_stages_support.md#beta) and subject to change without notice.
 For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epics/9404).
+To provide feedback on this feature, leave a comment on
+[issue 420920](https://gitlab.com/gitlab-org/gitlab/-/issues/420920).
 
 {{< /alert >}}
 
@@ -70,6 +72,20 @@ To enable [exact code search](../../user/search/exact_code_search.md) in GitLab:
 
 ## Check indexing status
 
+{{< history >}}
+
+- Stopping indexing when Zoekt node storage exceeds the critical watermark [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/504945) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `zoekt_critical_watermark_stop_indexing`. Disabled by default.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/505334) in GitLab 18.0.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
 Prerequisites:
 
 - You must have administrator access to the instance.
@@ -109,24 +125,30 @@ To check indexing status:
 
    {{< /tabs >}}
 
-## Delete offline nodes automatically
+## Pause indexing
 
 Prerequisites:
 
 - You must have administrator access to the instance.
 
-You can automatically delete Zoekt nodes that are offline for more than 12 hours
-and their related indices, repositories, and tasks.
-
-To delete offline nodes automatically:
+To pause indexing for [exact code search](../../user/search/exact_code_search.md):
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Expand **Exact code search configuration**.
-1. Select the **Delete offline nodes after 12 hours** checkbox.
+1. Select the **Pause indexing** checkbox.
 1. Select **Save changes**.
 
+When you pause indexing for exact code search, all changes in your repository are queued.
+To resume indexing, clear the **Pause indexing for exact code search** checkbox.
+
 ## Index root namespaces automatically
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455533) in GitLab 17.1.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -153,24 +175,58 @@ When you disable this setting:
 - Existing root namespaces remain indexed.
 - New root namespaces are no longer indexed.
 
-## Pause indexing
+## Delete offline nodes automatically
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/487162) in GitLab 17.5.
+
+{{< /history >}}
 
 Prerequisites:
 
 - You must have administrator access to the instance.
 
-To pause indexing for [exact code search](../../user/search/exact_code_search.md):
+You can automatically delete Zoekt nodes that are offline for more than 12 hours
+and their related indices, repositories, and tasks.
+To delete offline nodes automatically:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Expand **Exact code search configuration**.
-1. Select the **Pause indexing** checkbox.
+1. Select the **Delete offline nodes after 12 hours** checkbox.
 1. Select **Save changes**.
 
-When you pause indexing for exact code search, all changes in your repository are queued.
-To resume indexing, clear the **Pause indexing for exact code search** checkbox.
+## Cache search results
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/523213) in GitLab 18.0.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+You can cache search results for better performance.
+This feature is enabled by default and caches results for five minutes.
+
+To cache search results:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Search**.
+1. Expand **Exact code search configuration**.
+1. Select the **Cache search results for five minutes** checkbox.
+1. Select **Save changes**.
 
 ## Set concurrent indexing tasks
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481725) in GitLab 17.4.
+
+{{< /history >}}
 
 Prerequisites:
 
@@ -195,6 +251,56 @@ To set the number of concurrent indexing tasks:
 
 1. Select **Save changes**.
 
+## Set the number of namespaces per indexing rollout
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/536175) in GitLab 18.0.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+You can set the number of namespaces per `RolloutWorker` job for initial indexing.
+The default value is `32`.
+You can adjust this value based on the node's performance and workload.
+
+To set the number of namespaces per indexing rollout:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Search**.
+1. Expand **Exact code search configuration**.
+1. In the **Number of namespaces per indexing rollout** text box,
+   enter a number greater than zero.
+1. Select **Save changes**.
+
+## Define the retry interval for failed namespaces
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182581) in GitLab 17.10.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+You can define the retry interval for namespaces that previously failed.
+The default value is `1d` (one day).
+A value of `0` means failed namespaces never retry.
+
+To define the retry interval for failed namespaces:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Search**.
+1. Expand **Exact code search configuration**.
+1. In the **Retry interval for failed namespaces** text box, enter a value
+   (for example, `30m` (30 minutes), `2h` (two hours), or `1d` (one day)).
+1. Select **Save changes**.
+
 ## Run Zoekt on a separate server
 
 Prerequisites:
@@ -208,7 +314,7 @@ To run Zoekt on a different server than GitLab:
 
 Zoekt does not support any authentication, so ensure:
 
-- The zoekt instance is not publicly accessible.
+- The Zoekt instance is not publicly accessible.
 - Only the GitLab server has access to the Zoekt server through firewall policies or IP rules.
 
 ## Troubleshooting

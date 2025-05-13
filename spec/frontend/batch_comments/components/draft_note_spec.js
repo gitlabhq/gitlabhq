@@ -37,15 +37,12 @@ describe('Batch comments draft note component', () => {
     },
   };
 
-  const createComponent = (propsData = { draft }, glFeatures = {}) => {
+  const createComponent = (propsData = { draft }) => {
     wrapper = shallowMount(DraftNote, {
       store,
       propsData,
       stubs: {
         NoteableNote: NoteableNoteStub,
-      },
-      provide: {
-        glFeatures,
       },
     });
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class AbuseReportMailer < ApplicationMailer
-  layout 'empty_mailer'
+  layout 'mailer'
 
   helper EmailsHelper
 

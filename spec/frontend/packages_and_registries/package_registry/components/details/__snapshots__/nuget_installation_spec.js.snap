@@ -2,10 +2,6 @@
 
 exports[`NugetInstallation renders all the messages 1`] = `
 <div>
-  <installation-title-stub
-    options="[object Object]"
-    packagetype="nuget"
-  />
   <code-instruction-stub
     copytext="Copy NuGet Command"
     instruction="nuget install @gitlab-org/package-15 -Source "GitLab""
@@ -14,7 +10,7 @@ exports[`NugetInstallation renders all the messages 1`] = `
     trackinglabel="code_instruction"
   />
   <h3
-    class="gl-text-lg"
+    class="gl-heading-3 gl-mt-5"
   >
     Registry setup
   </h3>

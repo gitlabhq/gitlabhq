@@ -5,29 +5,82 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Control GitLab Duo availability
 ---
 
+GitLab Duo availability depends on your subscription add-on:
+
+- [GitLab Duo Core](../../subscriptions/subscription-add-ons.md#gitlab-duo-core), or
+- [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md#gitlab-duo-pro-and-enterprise).
+
+Depending on your add-on, you can turn GitLab Duo on and off for a group, project, or instance.
+
+## Change GitLab Duo Core availability
+
 {{< history >}}
 
-- [Settings to turn off AI features introduced](https://gitlab.com/groups/gitlab-org/-/epics/12404) in GitLab 16.10.
-- [Settings to turn off AI features added to the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/441489) in GitLab 16.11.
+- [Introduced](https://link-to-issue) in GitLab 18.0.
 
 {{< /history >}}
 
-GitLab Duo features that are generally available are automatically turned on for all users that have access.
+If you have the GitLab Duo Core add-on, which is included with Premium and Ultimate subscriptions,
+GitLab Duo Chat and Code Suggestions are available in your IDEs, and are turned on by default.
 
-- You must have an [GitLab Duo Pro or Enterprise add-on subscription](../../subscriptions/subscription-add-ons.md).
-- For some generally available features, like [Code Suggestions](../project/repository/code_suggestions/_index.md),
-  [you must also assign seats](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats)
-  to the users you want to have access.
+If you were an existing user with a Premium or Ultimate subscription before May 15, 2025,
+Chat and Code Suggestions in your IDEs are turned off by default. To turn on these
+features:
 
-{{< alert type="note" >}}
+1. Upgrade to GitLab 18.0 or later.
+1. Turn on the IDE features for your group or instance.
 
-To turn on GitLab Duo Self-Hosted, see [Configure GitLab to access GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/configure_duo_features.md).
+It may take up to 10 minutes for the change to take effect.
 
-{{< /alert >}}
+### For a group
 
-## Turn off GitLab Duo features
+On GitLab.com, you can turn GitLab Duo Core on or off for a top-level group, but not for a subgroup or project.
 
-You can turn off GitLab Duo for a group, project, or instance.
+Prerequisites:
+
+- You must have the Owner role for the top-level group.
+
+To turn GitLab Duo Core on or off for a top-level group on GitLab.com:
+
+1. On the left sidebar, select **Search or go to** and find your top-level group.
+1. Select **Settings > GitLab Duo**.
+1. Select **Change configuration**.
+1. Below **GitLab Duo Core**, select or clear the **Turn on IDE features** checkbox.
+1. Select **Save changes**.
+
+It may take up to 10 minutes for the change to take effect.
+
+### For an instance
+
+On GitLab Self-Managed, you can turn GitLab Duo Core on or off for an instance.
+
+Prerequisites:
+
+- You must be an administrator.
+
+To turn GitLab Duo Core on or off for an instance:
+
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **GitLab Duo**.
+1. Select **Change configuration**.
+1. Below **GitLab Duo Core**, select or clear the **Turn on IDE features** checkbox.
+1. Select **Save changes**.
+
+## Change GitLab Duo Pro and Enterprise availability
+
+{{< history >}}
+
+- [Settings to turn AI features on and off introduced](https://gitlab.com/groups/gitlab-org/-/epics/12404) in GitLab 16.10.
+- [Settings to turn AI features on and off added to the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/441489) in GitLab 16.11.
+
+{{< /history >}}
+
+For GitLab Duo Pro or Enterprise, GitLab Duo is turned on by default.
+For some generally available features, like Code Suggestions,
+[you must also assign seats](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats)
+to the users you want to have access.
+
+You can turn GitLab Duo on or off for a group, project, or instance.
 
 When GitLab Duo is turned off for a group, project, or instance:
 
@@ -35,36 +88,34 @@ When GitLab Duo is turned off for a group, project, or instance:
 - Code Suggestions is not available.
 - GitLab Duo Chat is not available.
 
-### Turn off for a group or subgroup
+### For a group or subgroup
 
 {{< tabs >}}
 
 {{< tab title="In 17.8 and later" >}}
 
-In GitLab 17.8 and later, follow these instructions to turn off GitLab Duo
+In GitLab 17.8 and later, follow these instructions to turn GitLab Duo on or off
 for a group, including its subgroups and projects.
 
 Prerequisites:
 
 - You must have the Owner role for the group.
 
-To turn off GitLab Duo for a group or subgroup:
+To turn GitLab Duo on or off for a group or subgroup:
 
 1. On the left sidebar, select **Search or go to** and find your group or subgroup.
 1. Go to the settings, based on your deployment type and group level:
    - For GitLab.com top-level groups: Select **Settings > GitLab Duo** and select **Change configuration**.
    - For GitLab.com subgroups: Select **Settings > General** and expand **GitLab Duo features**.
    - For GitLab Self-Managed (all groups and subgroups): Select **Settings > General** and expand **GitLab Duo features**.
-1. Choose an option:
-   - To turn off GitLab Duo for the group, but let other groups or projects turn it on, select **Off by default**.
-   - To turn off GitLab Duo for the group, and to prevent other groups or projects from turning it on, select **Always off**.
+1. Choose an option.
 1. Select **Save changes**.
 
 {{< /tab >}}
 
 {{< tab title="In 17.7" >}}
 
-In GitLab 17.7, follow these instructions to turn off GitLab Duo
+In GitLab 17.7, follow these instructions to turn GitLab Duo on or off
 for a group, including its subgroups and projects.
 
 {{< alert type="note" >}}
@@ -81,21 +132,19 @@ Prerequisites:
 
 - You must have the Owner role for the group.
 
-To turn off GitLab Duo for a top-level group:
+To turn GitLab Duo on or off for a top-level group:
 
 1. On the left sidebar, select **Search or go to** and find your top-level group.
 1. Select **Settings > GitLab Duo**.
 1. Select **Change configuration**.
-1. Choose an option:
-   - To turn off GitLab Duo for the group, but let other projects turn it on, select **Off by default**.
-   - To turn off GitLab Duo for the group, and to prevent projects from turning it on, select **Always off**.
+1. Choose an option.
 1. Select **Save changes**.
 
 {{< /tab >}}
 
 {{< tab title="In 17.4 to 17.6" >}}
 
-In GitLab 17.4 to 17.6, follow these instructions to turn off GitLab Duo
+In GitLab 17.4 to 17.6, follow these instructions to turn GitLab Duo on or off
 for a group and its subgroups and projects.
 
 {{< alert type="note" >}}
@@ -112,33 +161,31 @@ Prerequisites:
 
 - You must have the Owner role for the group.
 
-To turn off GitLab Duo for a top-level group:
+To turn GitLab Duo on or off for a top-level group:
 
 1. On the left sidebar, select **Search or go to** and find your top-level group.
 1. Select **Settings > GitLab Duo**.
 1. Select **Change configuration**.
-1. Choose an option:
-   - To turn off GitLab Duo for the group, but let other groups or projects turn it on, select **Off by default**.
-   - To turn off GitLab Duo for the group, and to prevent other groups or projects from turning it on, select **Never on**.
+1. Choose an option.
 1. Select **Save changes**.
 
 {{< /tab >}}
 
 {{< tab title="In 17.3 and earlier" >}}
 
-In GitLab 17.3 and earlier, follow these instructions to turn off GitLab Duo for a group
+In GitLab 17.3 and earlier, follow these instructions to turn GitLab Duo on or off for a group
 and its subgroups and projects.
 
 Prerequisites:
 
 - You must have the Owner role for the group.
 
-To turn off GitLab Duo for a group or subgroup:
+To turn GitLab Duo on or off for a group or subgroup:
 
 1. On the left sidebar, select **Search or go to** and find your group or subgroup.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
-1. Clear the **Use GitLab Duo features** checkbox.
+1. Select or clear the **Use GitLab Duo features** checkbox.
 1. Optional. Select the **Enforce for all subgroups** checkbox to cascade the setting to
    all subgroups.
 
@@ -148,44 +195,44 @@ To turn off GitLab Duo for a group or subgroup:
 
 {{< /tabs >}}
 
-### Turn off for a project
+### For a project
 
 {{< tabs >}}
 
 {{< tab title="In 17.4 and later" >}}
 
-In GitLab 17.4 and later, follow these instructions to turn off GitLab Duo for a project.
+In GitLab 17.4 and later, follow these instructions to turn GitLab Duo on or off for a project.
 
 Prerequisites:
 
 - You must have the Owner role for the project.
 
-To turn off GitLab Duo for a project:
+To turn GitLab Duo on or off for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.
 1. Expand **Visibility, project features, permissions**.
-1. Under **GitLab Duo**, turn the toggle off.
+1. Under **GitLab Duo**, turn the toggle on or off.
 1. Select **Save changes**.
 
 {{< /tab >}}
 
 {{< tab title="In 17.3 and earlier" >}}
 
-In GitLab 17.3 and earlier, follow these instructions to turn off GitLab Duo for a project.
+In GitLab 17.3 and earlier, follow these instructions to turn GitLab Duo on or off for a project.
 
 1. Use the GitLab GraphQL API
    [`projectSettingsUpdate`](../../api/graphql/reference/_index.md#mutationprojectsettingsupdate)
    mutation.
 1. Set the
    [`duo_features_enabled`](../../api/graphql/getting_started.md#update-project-settings)
-   setting to `false`. (The default is `true`.)
+   setting to `true` or `false`.
 
 {{< /tab >}}
 
 {{< /tabs >}}
 
-### Turn off for an instance
+### For an instance
 
 {{< details >}}
 
@@ -197,58 +244,54 @@ In GitLab 17.3 and earlier, follow these instructions to turn off GitLab Duo for
 
 {{< tab title="In 17.7 and later" >}}
 
-In GitLab 17.7 and later, follow these instructions to turn off GitLab Duo for the instance.
+In GitLab 17.7 and later, follow these instructions to turn GitLab Duo on or off for an instance.
 
 Prerequisites:
 
 - You must be an administrator.
 
-To turn off GitLab Duo for an instance:
+To turn GitLab Duo on or off for an instance:
 
 1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **GitLab Duo**.
 1. Select **Change configuration**.
-1. Choose an option:
-   - To turn off GitLab Duo for the instance, but let groups and projects turn it on, select **Off by default**.
-   - To turn off GitLab Duo for the instance, and to prevent groups or projects from ever turning it on, select **Always off**.
+1. Choose an option.
 1. Select **Save changes**.
 
 {{< /tab >}}
 
 {{< tab title="In 17.4 to 17.6" >}}
 
-In GitLab 17.4 to 17.6, follow these instructions to turn off GitLab Duo for the instance.
+In GitLab 17.4 to 17.6, follow these instructions to turn GitLab Duo on or off for the instance.
 
 Prerequisites:
 
 - You must be an administrator.
 
-To turn off GitLab Duo for an instance:
+To turn GitLab Duo on or off for an instance:
 
 1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **GitLab Duo features**.
-1. Choose an option:
-   - To turn off GitLab Duo for the instance, but let groups and projects turn it on, select **Off by default**.
-   - To turn off GitLab Duo for the instance, and to prevent groups or projects from ever turning it on, select **Never on**.
+1. Choose an option.
 1. Select **Save changes**.
 
 {{< /tab >}}
 
 {{< tab title="In 17.3 and earlier" >}}
 
-In GitLab 17.3 and earlier, follow these instructions to turn off GitLab Duo for an instance.
+In GitLab 17.3 and earlier, follow these instructions to turn GitLab Duo on or off for an instance.
 
 Prerequisites:
 
 - You must be an administrator.
 
-To turn off GitLab Duo for an instance:
+To turn GitLab Duo on or off for an instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **AI-powered features**.
-1. Clear the **Use Duo features** checkbox.
+1. Select or clear the **Use Duo features** checkbox.
 1. Optional. Select the **Enforce for all subgroups** checkbox to cascade
    the setting to all groups in the instance.
 
@@ -298,9 +341,9 @@ Prerequisites:
 To turn on GitLab Duo experiment and beta features for a top-level group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
-1. Expand **GitLab Duo features**.
-1. Under **GitLab Duo preview features**, select **Use experiment and beta GitLab Duo features**.
+1. Select **Settings > GitLab Duo**.
+1. Under **GitLab Duo** section, select **Change configuration**.
+1. Select **Turn on experiment and beta GitLab Duo features**.
 1. Select **Save changes**.
 
 {{< /tab >}}
@@ -323,7 +366,7 @@ turn on GitLab Duo experimental and beta features for your group on GitLab.com.
 This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#cascade-settings-from-the-instance-or-top-level-group)
 that belong to the group.
 
-### On self-managed
+### On GitLab Self-Managed
 
 {{< tabs >}}
 

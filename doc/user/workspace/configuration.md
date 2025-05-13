@@ -28,7 +28,7 @@ which you can customize to meet the specific needs of each project.
 ## Set up workspace infrastructure
 
 Before you [create a workspace](#create-a-workspace), you must set up your infrastructure only once.
-To set up infrastructure for workspaces:
+To set up infrastructure for workspaces, regardless of cloud provider, you must:
 
 1. Set up a Kubernetes cluster that the GitLab agent supports.
    See the [supported Kubernetes versions](../clusters/agent/_index.md#supported-kubernetes-versions-for-gitlab-features).
@@ -36,25 +36,25 @@ To set up infrastructure for workspaces:
 1. In the Kubernetes cluster:
    1. Verify that a [default storage class](https://kubernetes.io/docs/concepts/storage/storage-classes/)
       is defined so that volumes can be dynamically provisioned for each workspace.
-   1. Install an Ingress controller of your choice (for example, `ingress-nginx`).
-   1. [Install](../clusters/agent/install/_index.md) and [configure](gitlab_agent_configuration.md) the GitLab agent.
-   1. Point [`dns_zone`](settings.md#dns_zone) and `*.<dns_zone>`
-      to the load balancer exposed by the Ingress controller.
-      This load balancer must support WebSockets.
-   1. [Set up the GitLab workspaces proxy](set_up_gitlab_agent_and_proxies.md).
+1. Complete all steps in the [Tutorial: Set up GitLab agent and proxies](set_up_gitlab_agent_and_proxies.md).
 1. Optional. [Configure sudo access for a workspace](#configure-sudo-access-for-a-workspace).
 1. Optional. [Build and run containers in a workspace](#build-and-run-containers-in-a-workspace).
 1. Optional. [Configure support for private container registries](#configure-support-for-private-container-registries).
+
+If you use AWS, you can use our OpenTofu tutorial. For more information, see
+[Tutorial: Set up workspaces infrastructure on AWS](set_up_infrastructure.md).
 
 ## Create a workspace
 
 {{< history >}}
 
+- **Time before automatic termination** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120168) in GitLab 16.0
 - Support for private projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124273) in GitLab 16.4.
 - **Git reference** and **Devfile location** [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/392382) in GitLab 16.10.
 - **Time before automatic termination** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/392382) to **Workspace automatically terminates after** in GitLab 16.10.
 - **Variables** [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463514) in GitLab 17.1.
 - **Workspace automatically terminates after** [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166065) in GitLab 17.6.
+- **Workspace can be created from Merge Request page** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187320) in GitLab 18.0.
 
 {{< /history >}}
 
@@ -69,7 +69,9 @@ Prerequisites:
 - You must [set up workspace infrastructure](#set-up-workspace-infrastructure).
 - You must have at least the Developer role for the workspace and agent projects.
 
-To create a workspace:
+{{< tabs >}}
+
+{{< tab title="From a project" >}}
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Edit > New workspace**.
@@ -77,13 +79,32 @@ To create a workspace:
 1. From the **Git reference** dropdown list, select the branch, tag, or commit hash
    GitLab uses to create the workspace.
 1. From the **Devfile** dropdown list, select one of the following:
-
    - [GitLab default devfile](_index.md#gitlab-default-devfile).
    - [Custom devfile](_index.md#custom-devfile).
-
 1. In **Variables**, enter the keys and values of the environment variables you want to inject into the workspace.
    To add a new variable, select **Add variable**.
 1. Select **Create workspace**.
+
+{{< /tab >}}
+
+{{< tab title="From a merge request" >}}
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, Select **Code > Merge requests**.
+1. Select **Code > Open in Workspace**.
+1. From the **Cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.
+1. From the **Git reference** dropdown list, select the branch, tag, or commit hash
+   GitLab uses to create the workspace. By default this is the source branch of the merge request.
+1. From the **Devfile** dropdown list, select one of the following:
+   - [GitLab default devfile](_index.md#gitlab-default-devfile).
+   - [Custom devfile](_index.md#custom-devfile).
+1. In **Variables**, enter the keys and values of the environment variables you want to inject into the workspace.
+   To add a new variable, select **Add variable**.
+1. Select **Create workspace**.
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 The workspace might take a few minutes to start.
 To open the workspace, under **Preview**, select the workspace.

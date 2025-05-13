@@ -14,13 +14,19 @@ title: Install and set up GitLab for Eclipse
 
 {{< /details >}}
 
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/editor-extensions/gitlab-eclipse-plugin/-/issues/163) from experiment to beta in GitLab 17.11.
+
+{{< /history >}}
+
 {{< alert type="disclaimer" />}}
 
 ## Install the GitLab for Eclipse plugin
 
 Prerequisites:
 
-- Eclipse **4.33** and later.
+- Eclipse 4.33 and later.
 - GitLab version 16.8 or later.
 
 To install GitLab for Eclipse:

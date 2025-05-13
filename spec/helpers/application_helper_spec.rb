@@ -768,22 +768,8 @@ RSpec.describe ApplicationHelper do
   end
 
   describe '#body_scroll_classes' do
-    before do
-      stub_feature_flags(force_scrollbar: true)
-    end
-
     it 'fixes body scroll by default' do
       expect(helper.body_scroll_classes).to eq('body-fixed-scrollbar')
-    end
-
-    context 'with feature disabled' do
-      before do
-        stub_feature_flags(force_scrollbar: false)
-      end
-
-      it 'does nothing' do
-        expect(helper.body_scroll_classes).to eq('')
-      end
     end
   end
 

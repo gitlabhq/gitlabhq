@@ -1,48 +1,49 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Issue Warning Component when issue is locked but not confidential renders information about locked issue 1`] = `
+exports[`Noteable Warning Component when item is locked but not confidential renders information about locked item 1`] = `
 <span>
-  The discussion in this issue is locked. Only project members can comment.
+  Discussion is
   <gl-link-stub
-    href="locked-path"
+    href="/help/user/discussions/_index#prevent-comments-by-locking-the-discussion"
     target="_blank"
   >
-    Learn more.
+    locked
   </gl-link-stub>
+  . Only members can comment.
 </span>
 `;
 
-exports[`Issue Warning Component when noteable is confidential but not locked renders information about confidential issue 1`] = `
+exports[`Noteable Warning Component when noteable is confidential but not locked renders information about confidential item 1`] = `
 <span>
-  This is a confidential issue. People without permission will never get a notification.
+  Marked as
   <gl-link-stub
-    href="confidential-path"
+    href="/help/user/discussions/_index#comments-on-confidential-items"
     target="_blank"
   >
-    Learn more.
+    confidential
   </gl-link-stub>
+  . People without permission will never get a notification.
 </span>
 `;
 
-exports[`Issue Warning Component when noteable is locked and confidential renders information about locked and confidential noteable 1`] = `
+exports[`Noteable Warning Component when noteable is locked and confidential renders information about locked and confidential noteable 1`] = `
 <span>
   <span>
-    This issue is
+    Marked as
     <gl-link-stub
-      href=""
+      href="/help/user/discussions/_index#comments-on-confidential-items"
       target="_blank"
     >
       confidential
     </gl-link-stub>
-    and its
+    and discussion is
     <gl-link-stub
-      href=""
+      href="/help/user/discussions/_index#prevent-comments-by-locking-the-discussion"
       target="_blank"
     >
-      discussion is locked
+      locked
     </gl-link-stub>
-    .
+    . People without permission will never get a notification and won't be able to comment.
   </span>
-  People without permission will never get a notification and won't be able to comment.
 </span>
 `;

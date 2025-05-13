@@ -158,7 +158,7 @@ differ based on the kind of configuration you're making.
 | `[[$analyzer.ruleset]]` | Predefined rules | Defines modifications to an existing rule. |
 | `interpolate` | All | If set to `true`, you can use `$VAR` in the configuration to evaluate environment variables. Use this feature with caution, so you don't leak secrets or tokens. (Default: `false`) |
 | `description` | Passthroughs | Description of the custom ruleset. |
-| `targetdir`   | Passthroughs | The directory where the final configuration should be persisted. If empty, a directory with a random name is created. The directory can contain up to 100 MB of files. In case the SAST job is running with non-root user privileges, ensure that the [active user](../../../development/integrations/secure.md#permissions) has read and write permissions for this directory. |
+| `targetdir`   | Passthroughs | The directory where the final configuration should be persisted. If empty, a directory with a random name is created. The directory can contain up to 100 MB of files. In case the SAST job is running with non-root user privileges, ensure that the active user has read and write permissions for this directory. |
 | `validate`    | Passthroughs | If set to `true`, the content of each passthrough is validated. The validation works for `yaml`, `xml`, `json` and `toml` content. The proper validator is identified based on the extension used in the `target` parameter of the `[[$analyzer.passthrough]]` section. (Default: `false`) |
 | `timeout`     | Passthroughs | The maximum time to spend to evaluate the passthrough chain, before timing out. The timeout cannot exceed 300 seconds. (Default: 60) |
 

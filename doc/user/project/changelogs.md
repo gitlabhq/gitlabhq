@@ -60,6 +60,20 @@ string `Changelog: feature` to your commit message, like this:
 Changelog: feature
 ```
 
+If your merge request has multiple commits, add the `Changelog` entry to the first commit.
+This ensures the correct entry is generated when you squash commits.
+
+The `Changelog` trailer accepts these values:
+
+- `added`: New feature
+- `fixed`: Bug fix
+- `changed`: Feature change
+- `deprecated`: New deprecation
+- `removed`: Feature removal
+- `security`: Security fix
+- `performance`: Performance improvement
+- `other`: Other
+
 ## Create a changelog
 
 Changelogs are generated from the command line, using either the API or the

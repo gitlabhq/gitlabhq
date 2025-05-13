@@ -53,7 +53,7 @@ module Gitlab
       end
 
       def uploads_prefix
-        project&.full_path || ''
+        project&.id ? "-/project/#{project.id}" : ''
       end
 
       def project

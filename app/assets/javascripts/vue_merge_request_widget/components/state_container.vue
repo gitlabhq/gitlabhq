@@ -30,11 +30,6 @@ export default {
       required: false,
       default: false,
     },
-    mr: {
-      type: Object,
-      required: false,
-      default: null,
-    },
     isLoading: {
       type: Boolean,
       required: false,

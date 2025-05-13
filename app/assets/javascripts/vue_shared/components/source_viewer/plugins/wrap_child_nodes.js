@@ -17,10 +17,10 @@ const generateHLJSTag = (scope, content = '', includeClose) =>
 const format = (node, scope = '') => {
   let buffer = '';
 
-  if (typeof node === 'string') {
+  if (typeof node === 'string' && node.length) {
     buffer += node
       .split(newlineRegex)
-      .map((newline) => generateHLJSTag(scope, newline, true))
+      .map((newline) => (newline.length ? generateHLJSTag(scope, newline, true) : ''))
       .join('\n');
   } else if (node.children) {
     const { children } = node;

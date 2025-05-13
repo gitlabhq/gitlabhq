@@ -2,13 +2,8 @@
 import { GlIcon, GlTooltip, GlPopover } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
-import { findWidget } from '~/issues/list/utils';
-import {
-  i18n,
-  WIDGET_TYPE_WEIGHT,
-  WORK_ITEM_TYPE_NAME_EPIC,
-  WIDGET_TYPE_HEALTH_STATUS,
-} from '../../constants';
+import { i18n, WORK_ITEM_TYPE_NAME_EPIC } from '../../constants';
+import { findHealthStatusWidget, findWeightWidget } from '../../utils';
 
 export default {
   components: {
@@ -30,10 +25,6 @@ export default {
       required: true,
     },
     workItemType: {
-      type: String,
-      required: true,
-    },
-    workItemId: {
       type: String,
       required: true,
     },
@@ -72,10 +63,10 @@ export default {
   },
   computed: {
     workItemWeight() {
-      return findWidget(WIDGET_TYPE_WEIGHT, this.workItem);
+      return findWeightWidget(this.workItem);
     },
     workItemHealthStatus() {
-      return findWidget(WIDGET_TYPE_HEALTH_STATUS, this.workItem);
+      return findHealthStatusWidget(this.workItem);
     },
     shouldRolledUpWeightBeVisible() {
       return this.showRolledUpWeight && this.rolledUpWeight !== null;

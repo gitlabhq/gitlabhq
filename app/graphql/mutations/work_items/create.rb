@@ -144,7 +144,7 @@ module Mutations
 
       def params_with_work_item_type(attributes)
         work_item_type_id = attributes.delete(:work_item_type_id)&.model_id
-        work_item_type = ::WorkItems::Type.find_by_id_with_fallback(work_item_type_id)
+        work_item_type = ::WorkItems::Type.find_by_id(work_item_type_id)
 
         attributes[:work_item_type] = work_item_type
 

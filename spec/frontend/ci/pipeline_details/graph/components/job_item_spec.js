@@ -11,6 +11,7 @@ import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_help
 import { stubComponent } from 'helpers/stub_component';
 import {
   delayedJob,
+  bridgeJob,
   mockJob,
   mockJobWithoutDetails,
   mockJobWithUnauthorizedAction,
@@ -83,6 +84,12 @@ describe('pipeline graph job item', () => {
       );
 
       expect(wrapper.text()).toBe(mockJob.name);
+    });
+
+    it('should use deployment details path as the details path for manual bridge jobs', () => {
+      createWrapper({ props: { job: bridgeJob } });
+
+      expect(findJobItemContent().attributes('href')).toBe(bridgeJob.status.deploymentDetailsPath);
     });
   });
 

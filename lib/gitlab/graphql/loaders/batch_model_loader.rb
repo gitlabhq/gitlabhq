@@ -4,12 +4,13 @@ module Gitlab
   module Graphql
     module Loaders
       class BatchModelLoader
-        attr_reader :model_class, :model_id, :preloads
+        attr_reader :model_class, :model_id, :preloads, :default_value
 
-        def initialize(model_class, model_id, preloads = nil)
+        def initialize(model_class, model_id, preloads = nil, default_value: nil)
           @model_class = model_class
           @model_id = model_id
           @preloads = preloads || []
+          @default_value = default_value
         end
 
         # rubocop: disable CodeReuse/ActiveRecord
@@ -21,9 +22,10 @@ module Gitlab
             preloads = for_params.flat_map(&:second).uniq
             results = model.where(id: ids)
             results = results.preload(*preloads) unless preloads.empty?
+            results = results.index_by(&:id)
 
-            results.each do |record|
-              keys_by_id.fetch(record.id, []).each { |k| loader.call(k, record) }
+            keys_by_id.each do |id, keys|
+              keys.each { |k| loader.call(k, results[id] || default_value) }
             end
           end
         end

@@ -1,0 +1,9 @@
+---
+name: allow_organization_creation
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/441531
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147930
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/452062
+milestone: '16.11'
+type: wip
+group: group::organizations
+default_enabled: false

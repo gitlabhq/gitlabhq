@@ -98,8 +98,5 @@ InternalAffairs/ExampleHeredocDelimiter:
     - 'spec/rubocop/cop/sidekiq_load_balancing/worker_data_consistency_spec.rb'
     - 'spec/rubocop/cop/sidekiq_options_queue_spec.rb'
     - 'spec/rubocop/cop/sidekiq_redis_call_spec.rb'
-    - 'spec/rubocop/cop/usage_data/distinct_count_by_large_foreign_key_spec.rb'
     - 'spec/rubocop/cop/usage_data/histogram_with_large_table_spec.rb'
-    - 'spec/rubocop/cop/usage_data/instrumentation_superclass_spec.rb'
-    - 'spec/rubocop/cop/usage_data/large_table_spec.rb'
     - 'spec/rubocop/cop/user_admin_spec.rb'

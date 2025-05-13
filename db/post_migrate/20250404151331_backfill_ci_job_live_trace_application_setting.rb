@@ -6,8 +6,7 @@ class BackfillCiJobLiveTraceApplicationSetting < Gitlab::Database::Migration[2.2
   milestone '17.11'
 
   def up
-    ci_enable_live_trace = Feature.enabled?(:ci_enable_live_trace,
-      :instance) && Gitlab.config.artifacts.object_store.enabled
+    ci_enable_live_trace = feature_flag_enabled? && Gitlab.config.artifacts.object_store.enabled
 
     sql = <<~SQL
       UPDATE application_settings
@@ -22,4 +21,20 @@ class BackfillCiJobLiveTraceApplicationSetting < Gitlab::Database::Migration[2.2
   end
 
   def down; end
+
+  def feature_flag_enabled?
+    sql = <<~SQL
+    SELECT 1
+    FROM feature_gates
+    WHERE feature_key = 'ci_enable_live_trace'
+    AND value = 'true'
+    LIMIT 1;
+    SQL
+
+    result = execute(sql)
+
+    # avoiding ActiveRecord::Base.connection and using a sql query
+    # PG::Result responds to #ntuples, which is the number of rows returned
+    result.ntuples > 0
+  end
 end

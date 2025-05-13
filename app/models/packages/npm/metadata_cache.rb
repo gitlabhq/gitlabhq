@@ -7,7 +7,7 @@ module Packages
       include Packages::Downloadable
       include Packages::Destructible
 
-      enum status: { default: 0, processing: 1, pending_destruction: 2, error: 3 }
+      enum :status, { default: 0, processing: 1, pending_destruction: 2, error: 3 }
 
       belongs_to :project, inverse_of: :npm_metadata_caches
 

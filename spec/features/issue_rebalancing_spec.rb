@@ -19,6 +19,11 @@ RSpec.describe 'Issue rebalancing', feature_category: :team_planning do
     before do
       sign_in(user)
 
+      # TODO: When removing the feature flag,
+      # we won't need the tests for the issues listing page, since we'll be using
+      # the work items listing page.
+      stub_feature_flags(work_item_planning_view: false)
+
       stub_feature_flags(block_issue_repositioning: true)
     end
 

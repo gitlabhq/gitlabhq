@@ -19,7 +19,7 @@ replying to notification emails.
 
 Make sure [incoming email](incoming_email.md) is set up.
 
-## How it works
+## How replying by email works
 
 Replying by email happens in three steps:
 

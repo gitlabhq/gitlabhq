@@ -98,6 +98,7 @@ export default {
         [constants.ISSUE_NOTEABLE_TYPE]: this.$options.i18n.issue,
         [constants.EPIC_NOTEABLE_TYPE]: this.$options.i18n.epic,
         [constants.MERGE_REQUEST_NOTEABLE_TYPE]: this.$options.i18n.mergeRequest,
+        [constants.INCIDENT_NOTEABLE_TYPE]: this.$options.i18n.incident,
       };
 
       const noteableTypeKey =
@@ -398,7 +399,6 @@ export default {
               :is-internal-note="noteIsInternal"
               :note="note"
               :noteable-data="getNoteableData"
-              :noteable-type="noteableType"
             >
               <markdown-editor
                 ref="markdownEditor"

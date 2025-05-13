@@ -47,7 +47,7 @@ describe('FilteredSearchAndSort', () => {
       initialFilterValue: [TOKEN_EMPTY_SEARCH_TERM],
       syncFilterAndSort: true,
       recentSearchesStorageKey: defaultPropsData.filteredSearchRecentSearchesStorageKey,
-      searchInputPlaceholder: 'Search or filter results…',
+      searchInputPlaceholder: 'Filter or search (3 character minimum)',
     });
   });
 

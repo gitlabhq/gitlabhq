@@ -1643,6 +1643,30 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         it { is_expected.to match_array([subgroup, subsubgroup]) }
       end
     end
+
+    describe '.active' do
+      let_it_be(:active_group) { create(:group) }
+      let_it_be(:archived_group) { create(:group, namespace_settings: create(:namespace_settings, archived: true)) }
+      let_it_be(:marked_for_deletion_group) { create(:group_with_deletion_schedule) }
+
+      subject { described_class.active }
+
+      it { is_expected.to include(active_group) }
+      it { is_expected.not_to include(marked_for_deletion_group) }
+      it { is_expected.not_to include(archived_group) }
+    end
+
+    describe '.inactive' do
+      let_it_be(:active_group) { create(:group) }
+      let_it_be(:archived_group) { create(:group, namespace_settings: create(:namespace_settings, archived: true)) }
+      let_it_be(:marked_for_deletion_group) { create(:group_with_deletion_schedule) }
+
+      subject { described_class.inactive }
+
+      it { is_expected.to include(archived_group) }
+      it { is_expected.to include(marked_for_deletion_group) }
+      it { is_expected.not_to include(active_group) }
+    end
   end
 
   describe '.project_creation_levels_for_user' do
@@ -3029,6 +3053,36 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
           expect(group.update(path: new_path)).to be_falsey
           expect(group.errors.full_messages.to_sentence).to eq('Group URL has already been taken')
+        end
+      end
+    end
+  end
+
+  describe '#pending_delete?' do
+    context 'when deletion_schedule is not present' do
+      it 'returns false' do
+        expect(group).not_to be_pending_delete
+      end
+    end
+
+    context 'when deletion_schedule is present' do
+      context 'when marked_for_deletion_on is from past' do
+        before do
+          create(:group_deletion_schedule, group: group, marked_for_deletion_on: 1.day.ago)
+        end
+
+        it 'returns false' do
+          expect(group).not_to be_pending_delete
+        end
+      end
+
+      context 'when marked_for_deletion_on is in future' do
+        before do
+          create(:group_deletion_schedule, group: group, marked_for_deletion_on: 2.days.from_now)
+        end
+
+        it 'returns true' do
+          expect(group).to be_pending_delete
         end
       end
     end

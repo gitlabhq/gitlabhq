@@ -17,7 +17,7 @@ Vue.use(VueApollo);
 export default () => {
   const store = createStore();
   const el = document.querySelector('#js-cycle-analytics');
-  const { noAccessSvgPath, noDataSvgPath, hasScopedLabelsFeature } = el.dataset;
+  const { noDataSvgPath, hasScopedLabelsFeature } = el.dataset;
   const initialData = buildCycleAnalyticsInitialData({ ...el.dataset, gon });
 
   const pagination = extractPaginationQueryParameters(window.location.search);
@@ -46,7 +46,6 @@ export default () => {
       createElement(CycleAnalytics, {
         props: {
           noDataSvgPath,
-          noAccessSvgPath,
         },
       }),
   });

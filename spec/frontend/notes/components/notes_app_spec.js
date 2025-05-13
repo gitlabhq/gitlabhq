@@ -610,4 +610,43 @@ describe('note_app', () => {
       expect(replySpy).toHaveBeenCalledWith('foo');
     });
   });
+
+  describe('noteableType computed property', () => {
+    const createComponent = (noteableType, type) => {
+      store = createStore();
+      return shallowMount(NotesApp, {
+        propsData: {
+          ...propsData,
+          noteableData: {
+            ...propsData.noteableData,
+            noteableType,
+            type,
+          },
+        },
+        store,
+      });
+    };
+
+    it('returns the noteableType as is for regular types', () => {
+      wrapper = createComponent('Issue', 'issue');
+      expect(wrapper.findComponent(NotesActivityHeader).props('noteableType')).toBe('Issue');
+
+      wrapper = createComponent('MergeRequest', 'merge_request');
+      expect(wrapper.findComponent(NotesActivityHeader).props('noteableType')).toBe('MergeRequest');
+    });
+
+    it('capitalizes the first letter for incident type & does not return noteableType', () => {
+      wrapper = createComponent('Incident', 'incident');
+      expect(wrapper.findComponent(NotesActivityHeader).props('noteableType')).toBe('Incident');
+
+      wrapper = createComponent('Issue', 'incident');
+      expect(wrapper.findComponent(NotesActivityHeader).props('noteableType')).toBe('Incident');
+    });
+
+    it('handles empty values gracefully', () => {
+      wrapper = createComponent('', '');
+      expect(wrapper.findComponent(NotesActivityHeader).props('noteableType')).toBe('');
+      expect(wrapper.vm.noteableType).toBe('');
+    });
+  });
 });

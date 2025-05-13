@@ -558,9 +558,9 @@ EOS
 
       it { expect(commit.cherry_pick_message(user)).to include("\n\n(cherry picked from commit 88790590ed1337ab189bccaa355f068481c90bec)") }
 
-      context 'when "more_commits_from_gitaly" feature flag is disabled' do
+      context 'when "commits_from_gitaly" feature flag is disabled' do
         before do
-          stub_feature_flags(more_commits_from_gitaly: false)
+          stub_feature_flags(commits_from_gitaly: false)
         end
 
         it { expect(commit.cherry_pick_message(user)).to include("\n\n(cherry picked from commit 88790590ed1337ab189bccaa355f068481c90bec)") }

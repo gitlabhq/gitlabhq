@@ -348,7 +348,7 @@ RSpec.describe API::BulkImports, feature_category: :importers do
 
         request
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
-        expect(json_response['message']).to eq("Import failed. Destination 'invalid-destination-namespace' is invalid, or you don't have permission.")
+        expect(json_response['message']).to eq("Import failed. 'invalid-destination-namespace' is invalid, or you do not have permission.")
       end
     end
 
@@ -411,7 +411,7 @@ RSpec.describe API::BulkImports, feature_category: :importers do
 
         request
 
-        expect(json_response['message']).to eq("Import failed. You don't have permission to export 'full_path'.")
+        expect(json_response['message']).to eq("Import failed. You do not have permission to export 'full_path'.")
       end
     end
 
@@ -466,8 +466,8 @@ RSpec.describe API::BulkImports, feature_category: :importers do
 
         request
 
-        expect(json_response['message']).to include("Migration by direct transfer disabled on source or destination instance. " \
-                                                    "Ask an administrator to enable it on both instances and try again.")
+        expect(json_response['message']).to include("Migration by direct transfer is disabled on the source or destination instance. " \
+                                                    "Ask an administrator to enable this feature on both instances and try again.")
       end
     end
 

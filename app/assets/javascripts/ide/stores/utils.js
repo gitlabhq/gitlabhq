@@ -1,11 +1,3 @@
-import {
-  relativePathToAbsolute,
-  isAbsolute,
-  isRootRelative,
-  isBlobUrl,
-} from '~/lib/utils/url_utility';
-import { commitActionTypes } from '../constants';
-
 export const dataStructure = () => ({
   id: '',
   // Key will contain a mixture of ID and path
@@ -69,67 +61,6 @@ export const decorateData = (entity) => {
   });
 };
 
-export const setPageTitle = (title) => {
-  document.title = title;
-};
-
-export const setPageTitleForFile = (state, file) => {
-  const title = [file.path, state.currentBranchId, state.currentProjectId, 'GitLab'].join(' · ');
-  setPageTitle(title);
-};
-
-export const commitActionForFile = (file) => {
-  if (file.prevPath) {
-    return commitActionTypes.move;
-  }
-  if (file.deleted) {
-    return commitActionTypes.delete;
-  }
-  if (file.tempFile) {
-    return commitActionTypes.create;
-  }
-
-  return commitActionTypes.update;
-};
-
-export const getCommitFiles = (stagedFiles) =>
-  stagedFiles.reduce((acc, file) => {
-    if (file.type === 'tree') return acc;
-
-    return acc.concat({
-      ...file,
-    });
-  }, []);
-
-export const createCommitPayload = ({
-  branch,
-  getters,
-  newBranch,
-  state,
-  rootState,
-  rootGetters,
-}) => ({
-  branch,
-  commit_message: state.commitMessage || getters.preBuiltCommitMessage,
-  actions: getCommitFiles(rootState.stagedFiles).map((f) => {
-    const isBlob = isBlobUrl(f.rawPath);
-    const content = isBlob ? btoa(f.content) : f.content;
-
-    return {
-      action: commitActionForFile(f),
-      file_path: f.path,
-      previous_path: f.prevPath || undefined,
-      content: content || undefined,
-      encoding: isBlob ? 'base64' : 'text',
-      last_commit_id: newBranch || f.deleted || f.prevPath ? undefined : f.lastCommitSha,
-    };
-  }),
-  start_sha: newBranch ? rootGetters.lastCommit.id : undefined,
-});
-
-export const createNewMergeRequestUrl = (projectUrl, source, target) =>
-  `${projectUrl}/-/merge_requests/new?merge_request[source_branch]=${source}&merge_request[target_branch]=${target}&nav_source=webide`;
-
 const sortTreesByTypeAndName = (a, b) => {
   if (a.type === 'tree' && b.type === 'blob') {
     return -1;
@@ -142,6 +73,14 @@ const sortTreesByTypeAndName = (a, b) => {
   return 0;
 };
 
+export const linkTreeNodes = (tree) => {
+  return tree.map((entity) =>
+    Object.assign(entity, {
+      tree: entity.tree.length ? linkTreeNodes(entity.tree) : [],
+    }),
+  );
+};
+
 export const sortTree = (sortedTree) =>
   sortedTree
     .map((entity) =>
@@ -150,125 +89,3 @@ export const sortTree = (sortedTree) =>
       }),
     )
     .sort(sortTreesByTypeAndName);
-
-export const filePathMatches = (filePath, path) => filePath.indexOf(`${path}/`) === 0;
-
-export const getChangesCountForFiles = (files, path) =>
-  files.filter((f) => filePathMatches(f.path, path)).length;
-
-export const mergeTrees = (fromTree, toTree) => {
-  if (!fromTree || !fromTree.length) {
-    return toTree;
-  }
-
-  const recurseTree = (n, t) => {
-    if (!n) {
-      return t;
-    }
-    const existingTreeNode = t.find((el) => el.path === n.path);
-
-    if (existingTreeNode && n.tree.length > 0) {
-      existingTreeNode.opened = true;
-      recurseTree(n.tree[0], existingTreeNode.tree);
-    } else if (!existingTreeNode) {
-      const sorted = sortTree(t.concat(n));
-      t.splice(0, t.length + 1, ...sorted);
-    }
-    return t;
-  };
-
-  for (let i = 0, l = fromTree.length; i < l; i += 1) {
-    recurseTree(fromTree[i], toTree);
-  }
-
-  return toTree;
-};
-
-// eslint-disable-next-line max-params
-export const swapInStateArray = (state, arr, key, entryPath) =>
-  Object.assign(state, {
-    [arr]: state[arr].map((f) => (f.key === key ? state.entries[entryPath] : f)),
-  });
-
-export const getEntryOrRoot = (state, path) =>
-  path ? state.entries[path] : state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
-
-// eslint-disable-next-line max-params
-export const swapInParentTreeWithSorting = (state, oldKey, newPath, parentPath) => {
-  if (!newPath) {
-    return;
-  }
-
-  const parent = getEntryOrRoot(state, parentPath);
-
-  if (parent) {
-    const tree = parent.tree
-      // filter out old entry && new entry
-      .filter(({ key, path }) => key !== oldKey && path !== newPath)
-      // concat new entry
-      .concat(state.entries[newPath]);
-
-    parent.tree = sortTree(tree);
-  }
-};
-
-export const removeFromParentTree = (state, oldKey, parentPath) => {
-  const parent = getEntryOrRoot(state, parentPath);
-
-  if (parent) {
-    parent.tree = sortTree(parent.tree.filter(({ key }) => key !== oldKey));
-  }
-};
-
-export const updateFileCollections = (state, key, entryPath) => {
-  ['openFiles', 'changedFiles', 'stagedFiles'].forEach((fileCollection) => {
-    swapInStateArray(state, fileCollection, key, entryPath);
-  });
-};
-
-export const cleanTrailingSlash = (path) => path.replace(/\/$/, '');
-
-export const pathsAreEqual = (a, b) => {
-  const cleanA = a ? cleanTrailingSlash(a) : '';
-  const cleanB = b ? cleanTrailingSlash(b) : '';
-
-  return cleanA === cleanB;
-};
-
-export function extractMarkdownImagesFromEntries(mdFile, entries) {
-  /**
-   * Regex to identify an image tag in markdown, like:
-   *
-   * ![img alt goes here](/img.png)
-   * ![img alt](../img 1/img.png "my image title")
-   * ![img alt](https://gitlab.com/assets/logo.svg "title here")
-   *
-   */
-  const reMdImage = /!\[([^\]]*)\]\((.*?)(?:(?="|\))"([^"]*)")?\)/gi;
-  const prefix = 'gl_md_img_';
-  const images = {};
-
-  let content = mdFile.content || mdFile.raw;
-  let i = 0;
-
-  // eslint-disable-next-line max-params
-  content = content.replace(reMdImage, (_, alt, path, title) => {
-    const imagePath = (isRootRelative(path) ? path : relativePathToAbsolute(path, mdFile.path))
-      .substr(1)
-      .trim();
-
-    const imageContent = entries[imagePath]?.content || entries[imagePath]?.raw;
-    const imageRawPath = entries[imagePath]?.rawPath;
-
-    if (!isAbsolute(path) && imageContent) {
-      const src = imageRawPath;
-      i += 1;
-      const key = `{{${prefix}${i}}}`;
-      images[key] = { alt, src, title };
-      return key;
-    }
-    return title ? `![${alt}](${path}"${title}")` : `![${alt}](${path})`;
-  });
-
-  return { content, images };
-}

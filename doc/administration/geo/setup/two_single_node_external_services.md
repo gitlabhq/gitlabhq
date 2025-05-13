@@ -1,5 +1,5 @@
 ---
-stage: Systems
+stage: Tenant Scale
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Set up Geo for two single-node sites (with external PostgreSQL services)
@@ -29,7 +29,7 @@ Prerequisites:
 Prerequisites:
 
 - You use PostgreSQL 12 or later,
-  which includes the [`pg_basebackup` tool](https://www.postgresql.org/docs/12/app-pgbasebackup.html).
+  which includes the [`pg_basebackup` tool](https://www.postgresql.org/docs/16/app-pgbasebackup.html).
 
 ### Configure the primary site
 
@@ -67,7 +67,7 @@ Prerequisites:
 
 To set up an external database, you can either:
 
-- Set up [streaming replication](https://www.postgresql.org/docs/12/warm-standby.html#STREAMING-REPLICATION-SLOTS) yourself (for example Amazon RDS, or bare metal not managed by the Linux package).
+- Set up [streaming replication](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION-SLOTS) yourself (for example Amazon RDS, or bare metal not managed by the Linux package).
 - Manually perform the configuration of your Linux package installations as follows.
 
 #### Leverage your cloud provider's tools to replicate the primary database

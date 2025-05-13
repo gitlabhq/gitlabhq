@@ -1,7 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import { GlSprintf } from '@gitlab/ui';
 import { PiniaVuePlugin } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
@@ -26,7 +24,6 @@ import axios from '~/lib/utils/axios_utils';
 import { clearDraft } from '~/lib/utils/autosave';
 import { scrollToElement, isElementStuck } from '~/lib/utils/common_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
-import createNotesStore from '~/notes/stores/modules';
 import { SOMETHING_WENT_WRONG, SAVING_THE_COMMENT_FAILED } from '~/diffs/i18n';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import notesEventHub from '~/notes/event_hub';
@@ -47,7 +44,6 @@ jest.mock('~/notes/mixins/diff_line_note_form', () => ({
   },
 }));
 
-Vue.use(Vuex);
 Vue.use(PiniaVuePlugin);
 
 const findDiffHeader = (wrapper) => wrapper.findComponent(DiffFileHeaderComponent);
@@ -70,7 +66,6 @@ const triggerSaveDraftNote = (wrapper, note, parent, error) =>
 
 describe('DiffFile', () => {
   let wrapper;
-  let store;
   let pinia;
   let axiosMock;
 
@@ -128,26 +123,8 @@ describe('DiffFile', () => {
     useLegacyDiffs().diffFiles[index].renderIt = true;
   }
 
-  function createComponent({
-    first = false,
-    last = false,
-    options = {},
-    props = {},
-    getters = {},
-  } = {}) {
-    const notes = createNotesStore();
-
-    notes.getters = {
-      ...notes.getters,
-      ...getters.notes,
-    };
-
-    store = new Vuex.Store({
-      ...notes,
-    });
-
+  function createComponent({ first = false, last = false, options = {}, props = {} } = {}) {
     wrapper = shallowMountExtended(DiffFileComponent, {
-      store,
       pinia,
       propsData: {
         file: useLegacyDiffs().diffFiles[0],
@@ -475,8 +452,6 @@ describe('DiffFile', () => {
     describe('toggle', () => {
       it('should update store state', () => {
         createComponent();
-        jest.spyOn(wrapper.vm.$store, 'dispatch').mockImplementation(() => {});
-
         toggleFile(wrapper);
 
         expect(useLegacyDiffs().setFileCollapsedByUser).toHaveBeenCalledWith({
@@ -487,7 +462,6 @@ describe('DiffFile', () => {
 
       describe('scoll-to-top of file after collapse', () => {
         beforeEach(() => {
-          jest.spyOn(wrapper.vm.$store, 'dispatch').mockImplementation(() => {});
           isElementStuck.mockReturnValueOnce(true);
         });
 
@@ -829,7 +803,7 @@ describe('DiffFile', () => {
             noteableData: expect.any(Object),
             diffFile: file,
             positionType: FILE_DIFF_POSITION_TYPE,
-            noteableType: store.getters.noteableType,
+            noteableType: useNotes().noteableType,
           },
         });
       });

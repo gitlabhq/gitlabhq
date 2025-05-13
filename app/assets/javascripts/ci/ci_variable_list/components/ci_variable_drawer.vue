@@ -1,5 +1,5 @@
 <script>
-import { isEqual, omit } from 'lodash';
+import { isEqual, omit, isEmpty } from 'lodash';
 import {
   GlAlert,
   GlButton,
@@ -323,6 +323,9 @@ export default {
       }
       return this.variable;
     },
+    defaultVariableState() {
+      return { ...defaultVariableState, protected: this.isProtectedByDefault };
+    },
   },
   watch: {
     mutationResponse: {
@@ -338,11 +341,28 @@ export default {
       handler(variable) {
         this.trackVariableValidationErrors();
 
-        if (this.isMutationAlertVisible && !isEqual(variable, { ...defaultVariableState })) {
+        if (this.isMutationAlertVisible && !isEqual(variable, { ...this.defaultVariableState })) {
           this.hideMutationAlert();
         }
       },
       deep: true,
+    },
+    selectedVariable: {
+      handler(variable) {
+        if (!isEmpty(variable)) {
+          this.variable = { ...variable };
+
+          // translate masked and hidden flags to visibility options
+          let visibility = VISIBILITY_VISIBLE;
+          if (this.variable.hidden) visibility = VISIBILITY_HIDDEN;
+          else if (this.variable.masked) visibility = VISIBILITY_MASKED;
+
+          this.visibility = visibility;
+        } else {
+          this.resetForm();
+        }
+      },
+      immediate: true,
     },
   },
   beforeMount() {
@@ -354,13 +374,6 @@ export default {
     if (this.isProtectedByDefault && !this.isEditing) {
       this.variable = { ...this.variable, protected: true };
     }
-
-    // translate masked and hidden flags to visibility options
-    let visibility = VISIBILITY_VISIBLE;
-    if (this.variable.hidden) visibility = VISIBILITY_HIDDEN;
-    else if (this.variable.masked) visibility = VISIBILITY_MASKED;
-
-    this.visibility = visibility;
   },
   methods: {
     close() {
@@ -388,7 +401,7 @@ export default {
       this.isMutationAlertVisible = false;
     },
     resetForm() {
-      this.variable = { ...defaultVariableState };
+      this.variable = { ...this.defaultVariableState };
 
       this.visibility = VISIBILITY_VISIBLE;
     },

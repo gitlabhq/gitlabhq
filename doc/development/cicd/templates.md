@@ -46,7 +46,7 @@ in this directory, but certain template types have a specific directory reserved
 them. The ability to [select a template in new file UI](#make-sure-the-new-template-can-be-selected-in-ui)
 is determined by the directory it is in:
 
-| Sub-directory  | Selectable in UI | Template type |
+| Subdirectory  | Selectable in UI | Template type |
 |----------------|------------------|---------------|
 | `/*` (root)    | Yes              | General templates. |
 | `/AWS/*`       | No               | Templates related to Cloud Deployment (AWS). |
@@ -246,7 +246,7 @@ separating words.
     - echo "$SECRET_TOKEN" | docker login -u my-user --password-stdin my-registry
 ```
 
-Lower-case naming can optionally be used for variables which are defined locally in
+Lowercase naming can optionally be used for variables which are defined locally in
 one of the `script` keywords:
 
 ```yaml

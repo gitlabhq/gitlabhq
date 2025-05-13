@@ -79,6 +79,17 @@ $white-gc-bg: #eaf2f5;
 }
 
 @mixin white-base {
+  --code-light-theme: 1;
+  --diff-expansion-background-color: #{$gl-color-neutral-100};
+
+  --code-background: #{$gl-color-neutral-0};
+  --code-old-diff-line-number-background-color: #{$line-number-old};
+  --code-old-diff-background-color: #{$line-removed};
+  --code-new-diff-line-number-background-color: #{$line-number-new};
+  --code-new-diff-background-color: #{$line-added};
+  --code-old-inline-diff-background-color: #fac5cd;
+  --code-new-inline-diff-background-color: #c7f0d2;
+
   // Line numbers
   .file-line-blame {
     @include line-link($gl-color-neutral-1000, 'git');
@@ -137,8 +148,6 @@ $white-gc-bg: #eaf2f5;
     }
 
     &.diff-grid-row {
-      --diff-expansion-background-color: #{$gl-color-neutral-100};
-
       &.expansion {
         &.match .diff-td {
           color: $gl-color-neutral-400;

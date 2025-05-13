@@ -38,6 +38,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['default_project_visibility']).to be_a String
       expect(json_response['default_snippet_visibility']).to be_a String
       expect(json_response['default_group_visibility']).to be_a String
+      expect(json_response['deletion_adjourned_period']).to be_a(Integer)
       expect(json_response['rsa_key_restriction']).to eq(0)
       expect(json_response['dsa_key_restriction']).to eq(0)
       expect(json_response['ecdsa_key_restriction']).to eq(0)

@@ -29,7 +29,7 @@ On GitLab Self-Managed:
 - Compute quotas are disabled by default.
 - Administrators can [assign more compute minutes](#set-the-compute-quota-for-a-group)
   if a namespace uses all its monthly quota.
-- The [cost factor](../../ci/pipelines/compute_minutes.md#cost-factor) is `1` for all projects.
+- The [cost factor](../../ci/pipelines/compute_minutes.md#compute-usage-calculation) is `1` for all projects.
 
 On GitLab.com:
 

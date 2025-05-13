@@ -36,6 +36,7 @@ The following policy types are available:
 - [Merge request approval policy](merge_request_approval_policies.md). Enforce project-level settings and
   approval rules based on scan results.
 - [Pipeline execution policy](pipeline_execution_policies.md). Enforce CI/CD jobs as part of project pipelines.
+  - [Scheduled pipeline execution policy (experiment)](scheduled_pipeline_execution_policies.md). Enforce custom CI/CD jobs on a scheduled cadence across projects, independent of commit activity.
 - [Vulnerability management policy](vulnerability_management_policy.md). Automatically resolve
   vulnerabilities that are no longer detected in the default branch.
 
@@ -445,6 +446,29 @@ occurs:
 
 In [GitLab 17.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/463064), security policy
 projects are excluded from push rules that enforce branch name validation.
+
+### Security policy projects
+
+To prevent the exposure of sensitive information that was intended to remain private in your security policy project, when you link security policy projects to other projects:
+
+- Don't include sensitive content in your security policy projects.
+- Before linking a private security policy project, review the member list of the target project to ensure all members should have access to your policy content.
+- Evaluate the visibility settings of target projects.
+- Use [security policy management](../../compliance/audit_event_types.md#security-policy-management) audit logs to monitor project linking.
+
+These recommendations prevent sensitive information exposure for the following reasons:
+
+- Shared visibility: When a private security project is linked to another project, users with access to the **Security Policies** page of the linked project can view the contents of the `.gitlab/security-policies/policy.yml` file. This includes linking a private security policy project to a public project, which can expose the policy contents to anyone who can access the public project.
+- Access control: All members of the project to which a private security project is linked can view the policy file on the **Policy** page, even if they don't have access to the original private repository.
+
+### Security and compliance controls
+
+Project maintainers can create policies for projects that interfere with the execution of policies for groups. To limit who can modify policies for groups and ensure that compliance requirements are being met, when you implement critical security or compliance controls:
+
+- Use custom roles to restrict who can create or modify pipeline execution policies at the project level.
+- Configure protected branches for the default branch in your security policy projects to prevent direct pushes.
+- Set up merge request approval rules in your security policy projects that require review from designated approvers.
+- Monitor and review all policy changes in policies for both groups and projects.
 
 ## Policy management
 

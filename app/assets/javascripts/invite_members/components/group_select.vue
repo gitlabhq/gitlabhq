@@ -1,7 +1,7 @@
 <script>
 import { GlAvatarLabeled, GlCollapsibleListbox } from '@gitlab/ui';
-import axios from 'axios';
 import { debounce } from 'lodash';
+import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
 import { getGroups, getDescendentGroups, getProjectShareLocations } from '~/rest_api';
 import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';

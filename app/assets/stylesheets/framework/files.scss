@@ -439,27 +439,37 @@ span.idiff {
   display: none;
 }
 
-.mr-tree-list:not(.tree-list-blobs) {
-  overflow: hidden;
+.mr-tree-list {
+  --file-row-level-padding: 16px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: var(--tree-list-max-height);
 
-  .tree-list-parent::before {
-    content: '';
-    position: absolute;
-    z-index: 1;
-    pointer-events: none;
-
-    top: -4px;
-    left: 0;
-    width: 100%;
-    bottom: -4px;
-    // The virtual scroller has a flat HTML structure so instead of the ::before
-    // element stretching over multiple rows we instead create a repeating background image
-    // for the line
-    background: repeating-linear-gradient(to right, var(--gl-border-color-default), var(--gl-border-color-default) 1px, transparent 1px, transparent 14px);
-    background-size: calc(var(--level) * 14px) 100%;
-    background-repeat: no-repeat;
-    background-position: 14px;
+  .vue-recycle-scroller {
+    // make virtual scroller a scroll container
+    height: 100%;
+    min-height: 0;
+    flex: 1;
   }
+}
+
+.mr-tree-list:not(.tree-list-blobs) .tree-list-parent::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  top: -4px;
+  left: 14px;
+  width: calc(var(--level) * var(--file-row-level-padding));
+  bottom: 4px;
+  // The virtual scroller has a flat HTML structure so instead of the ::before
+  // element stretching over multiple rows we instead create a repeating background image
+  // for the line
+  background:
+    linear-gradient(to right, var(--gl-border-color-default) 1px, transparent 1px)
+    repeat-x
+    0 / var(--file-row-level-padding) 100%;
 }
 
 .blame-table {
@@ -486,7 +496,7 @@ span.idiff {
   .blame-commit {
     width: 400px;
     flex: none;
-    background: $gray-10;
+    @apply gl-bg-subtle;
     border-left: 3px solid;
 
     .commit-row-title {

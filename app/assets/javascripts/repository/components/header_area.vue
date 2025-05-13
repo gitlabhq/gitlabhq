@@ -43,6 +43,8 @@ export default {
     WebIdeLink: () => import('ee_else_ce/vue_shared/components/web_ide_link.vue'),
     LockDirectoryButton: () =>
       import('ee_component/repository/components/lock_directory_button.vue'),
+    HeaderLockIcon: () =>
+      import('ee_component/repository/components/header_area/header_lock_icon.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -114,6 +116,13 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      directoryLocked: false,
+      fileLocked: false,
+      lockAuthor: undefined,
+    };
+  },
   computed: {
     isTreeView() {
       return this.$route.name !== 'blobPathDecoded';
@@ -131,6 +140,9 @@ export default {
     },
     fileIconName() {
       return this.isTreeView ? 'folder-open' : this.directoryName;
+    },
+    isLocked() {
+      return this.isTreeView ? this.directoryLocked : this.fileLocked;
     },
     getRefType() {
       return this.$route.query.ref_type;
@@ -187,6 +199,14 @@ export default {
       InternalEvents.trackEvent(FIND_FILE_BUTTON_CLICK);
       Shortcuts.focusSearchFile();
     },
+    onLockedDirectory({ isLocked, lockAuthor }) {
+      this.directoryLocked = isLocked;
+      this.lockAuthor = lockAuthor;
+    },
+    onLockedFile({ isLocked, lockAuthor }) {
+      this.fileLocked = isLocked;
+      this.lockAuthor = lockAuthor;
+    },
   },
 };
 </script>
@@ -232,7 +252,7 @@ export default {
     >
       <h1
         v-if="!isReadmeView && !isProjectOverview"
-        class="gl-mt-0 gl-flex-1 gl-break-words gl-text-size-h1 sm:gl-my-0"
+        class="gl-mt-0 gl-inline-flex gl-flex-1 gl-items-center gl-gap-3 gl-break-words gl-text-size-h1 sm:gl-my-0"
         data-testid="repository-heading"
       >
         <file-icon
@@ -240,9 +260,15 @@ export default {
           :folder="isTreeView"
           opened
           aria-hidden="true"
-          class="gl-mr-3 gl-inline-flex"
+          class="gl-inline-flex"
           :class="{ 'gl-text-subtle': isTreeView }"
         />{{ directoryName }}
+        <header-lock-icon
+          v-if="!isRoot"
+          :is-tree-view="isTreeView"
+          :is-locked="isLocked"
+          :lock-author="lockAuthor"
+        />
       </h1>
 
       <!-- Tree controls -->
@@ -267,7 +293,12 @@ export default {
           :new-dir-path="newDirPath"
         />
         <!-- EE: = render_if_exists 'projects/tree/lock_link' -->
-        <lock-directory-button v-if="!isRoot" :project-path="projectPath" :path="currentPath" />
+        <lock-directory-button
+          v-if="!isRoot"
+          :project-path="projectPath"
+          :path="currentPath"
+          @lockedDirectory="onLockedDirectory"
+        />
         <gl-button
           v-gl-tooltip.html="findFileTooltip"
           :aria-keyshortcuts="findFileShortcutKey"
@@ -302,7 +333,7 @@ export default {
           v-on="$listeners"
         />
         <!-- code + mobile panel -->
-        <div v-if="!isReadmeView" class="project-code-holder gl-w-full sm:gl-w-auto">
+        <div class="project-code-holder gl-w-full sm:gl-w-auto">
           <div v-if="showCompactCodeDropdown" class="gl-flex gl-justify-end gl-gap-3">
             <add-to-tree
               v-if="!isReadmeView"
@@ -336,11 +367,16 @@ export default {
               :project-id="projectId"
               :project-path="projectPath"
               :show-web-ide-button="showWebIdeButton"
-              :show-gitpod-button="isGitpodEnabledForInstance"
+              :is-gitpod-enabled-for-instance="isGitpodEnabledForInstance"
+              :is-gitpod-enabled-for-user="isGitpodEnabledForUser"
             />
-            <repository-overflow-menu v-if="comparePath" />
+            <repository-overflow-menu
+              :full-path="projectPath"
+              :path="currentPath"
+              :current-ref="currentRef"
+            />
           </div>
-          <template v-else>
+          <template v-else-if="!isReadmeView">
             <code-dropdown
               class="git-clone-holder js-git-clone-holder gl-hidden sm:gl-inline-block"
               :ssh-url="sshUrl"
@@ -350,25 +386,27 @@ export default {
               :current-path="currentPath"
               :directory-download-links="downloadLinks"
             />
-            <div class="gl-flex gl-items-stretch gl-gap-3 sm:gl-hidden">
-              <source-code-download-dropdown
-                :download-links="downloadLinks"
-                :download-artifacts="downloadArtifacts"
+            <div class="gl-flex gl-w-full gl-gap-3 sm:gl-inline-block sm:gl-w-auto">
+              <div class="gl-flex gl-w-full gl-items-stretch gl-gap-3 sm:gl-hidden">
+                <source-code-download-dropdown
+                  :download-links="downloadLinks"
+                  :download-artifacts="downloadArtifacts"
+                />
+                <clone-code-dropdown
+                  class="mobile-git-clone js-git-clone-holder !gl-w-full"
+                  :ssh-url="sshUrl"
+                  :http-url="httpUrl"
+                  :kerberos-url="kerberosUrl"
+                />
+              </div>
+              <repository-overflow-menu
+                :full-path="projectPath"
+                :path="currentPath"
+                :current-ref="currentRef"
               />
-              <clone-code-dropdown
-                class="mobile-git-clone js-git-clone-holder !gl-w-full"
-                :ssh-url="sshUrl"
-                :http-url="httpUrl"
-                :kerberos-url="kerberosUrl"
-              />
-              <repository-overflow-menu v-if="comparePath" />
             </div>
           </template>
         </div>
-        <repository-overflow-menu
-          v-if="comparePath && !showCompactCodeDropdown"
-          class="gl-hidden sm:gl-inline-flex"
-        />
       </div>
 
       <!-- Blob controls -->
@@ -377,6 +415,7 @@ export default {
         :project-id-as-number="projectIdAsNumber"
         :ref-type="getRefType"
         :is-binary="isBinary"
+        @lockedFile="onLockedFile"
       />
     </div>
   </section>

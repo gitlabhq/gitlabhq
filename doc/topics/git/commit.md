@@ -44,6 +44,24 @@ To stage and commit your changes:
 
 The changes are committed to the branch.
 
+### Write a good commit message
+
+The guidelines published by Chris Beams in [How to Write a Git Commit Message](https://cbea.ms/git-commit/)
+help you write a good commit message:
+
+- The commit subject and body must be separated by a blank line.
+- The commit subject must start with a capital letter.
+- The commit subject must not be longer than 72 characters.
+- The commit subject must not end with a period.
+- The commit body must not contain more than 72 characters per line.
+- The commit subject or body must not contain emojis.
+- Commits that change 30 or more lines across at least 3 files should
+  describe these changes in the commit body.
+- Use the full URLs for issues, milestones, and merge requests instead of short references,
+  as they are displayed as plain text outside of GitLab.
+- The merge request should not contain more than 10 commit messages.
+- The commit subject should contain at least 3 words.
+
 ## Commit all changes
 
 You can stage all your changes and commit them with one command:
@@ -135,8 +153,8 @@ Git push options can perform actions for merge requests while pushing changes:
 
 | Push option                                  | Description |
 |----------------------------------------------|-------------|
-| `merge_request.create`                       | Create a new merge request for the pushed branch. |
-| `merge_request.target=<branch_name>`         | Set the target of the merge request to a particular branch, such as: `git push -o merge_request.target=branch_name`. |
+| `merge_request.create`                       | Create a new merge request for the pushed branch. When pushing from the default branch, you must specify a target branch using the `merge_request.target` option to create a merge request. |
+| `merge_request.target=<branch_name>`         | Set the target of the merge request to a particular branch, such as: `git push -o merge_request.target=branch_name`. Required when creating a merge request from the default branch. |
 | `merge_request.target_project=<project>`     | Set the target of the merge request to a particular upstream project, such as: `git push -o merge_request.target_project=path/to/project`. Introduced in [GitLab 16.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132475). |
 | `merge_request.merge_when_pipeline_succeeds` | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185368) in GitLab 17.11 favor of the `auto_merge` option. |
 | `merge_request.auto_merge` | Set the merge request to [auto merge](../../user/project/merge_requests/auto_merge.md). |
@@ -184,6 +202,12 @@ new merge request, targets a branch (`my-target-branch`), and sets auto-merge:
 
 ```shell
 git push -o merge_request.create -o merge_request.target=my-target-branch -o merge_request.auto_merge
+```
+
+To create a new merge request from the default branch targeting a different branch:
+
+```shell
+git push -o merge_request.create -o merge_request.target=feature-branch
 ```
 
 ### Create Git aliases for pushing

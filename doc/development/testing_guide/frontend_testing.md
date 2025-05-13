@@ -240,7 +240,7 @@ it('exists', () => {
   wrapper.findComponent(FooComponent);
   wrapper.find('input[name=foo]');
   wrapper.find('[data-testid="my-foo-id"]');
-  wrapper.findByTestId('my-foo-id'); // with shallowMountExtended or mountExtended – check below
+  wrapper.findByTestId('my-foo-id'); // with shallowMountExtended or mountExtended, check below
 
   // Bad
   wrapper.find({ ref: 'foo'});
@@ -494,9 +494,9 @@ describe('Cleanup before destroy', () => {
 })
 ```
 
-The above example does not explicitly check for the function that is called on the `keydown` listener as it will normally be an implementation detail. The same happens with the `clearTimeout` call, as the parameter will be a pointer to a timer created internally in the component.
+The above example does not explicitly check for the function that is called on the `keydown` listener as it will usually be an implementation detail. The same happens with the `clearTimeout` call, as the parameter will be a pointer to a timer created internally in the component.
 
-Due to this, it is normally sufficient to check that the spies have been called, with the recommended addition of checking the _times_ that they have been called.
+Due to this, it is usually sufficient to check that the spies have been called, with the recommended addition of checking the _times_ that they have been called.
 
 ### Waiting in tests
 
@@ -1616,7 +1616,7 @@ You should use a unit test if:
 - You can simulate other components' behavior to trigger the desired effect.
 - You can already select UI elements in the virtual DOM to trigger the desired effects.
 
-Also, if a behavior in your new code needs multiple components to work together, you should consider testing your behavior higher in the component tree. For example, let's say that we have a component called `ParentComponent` with the code:
+Also, if a behavior in your new code needs multiple components to work together, you should consider testing your behavior higher in the component tree. For example, consider a component called `ParentComponent` with the code:
 
 ```vue
   <script>
@@ -1736,7 +1736,7 @@ end
 
 #### Seeding data
 
-Each test is in its own environment and so you must use a factory to seed the required data. To continue on with the pipeline example, let's say that you want a test that takes you to the main pipeline page, which is at the route `/namespace/project/-/pipelines/:id/`.
+Each test is in its own environment and so you must use a factory to seed the required data. For example, to create a test that takes you to the main pipeline page at the route `/namespace/project/-/pipelines/:id/`.
 
 Most feature tests at least require you to create a user, because you want to be signed in. You can skip this step if you don't have to be signed in, but as a general rule, you should **always create a user unless you are specifically testing a feature looked at by an anonymous user**. This makes sure that you explicitly set a level of permission that you can edit in the test as needed to change or test a new level of permission as the section changes. To create a user:
 
@@ -1944,7 +1944,7 @@ Inside the terminal, where capybara is running, you can also execute `next` whic
 
 ### Improving execution time on the GDK
 
-Running the Jest test suite, the number of workers is set to use 60% of the available cores of your machine; this results in faster execution times but higher memory consumption. For more benchmarks on how this works please refer to this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/456885).
+Running the Jest test suite, the number of workers is set to use 60% of the available cores of your machine; this results in faster execution times but higher memory consumption. For more benchmarks on how this works, see [issue 456885](https://gitlab.com/gitlab-org/gitlab/-/issues/456885).
 
 ### Updating ChromeDriver
 

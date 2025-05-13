@@ -61,7 +61,7 @@ Data is encrypted at rest and in transit using the latest encryption standards.
 
 Optionally, you can use your own AWS Key Management Service (KMS) encryption key for data at rest. This option gives you full control over the data you store in GitLab.
 
-For more information, see [Encrypted data at rest (BYOK)](../../administration/dedicated/create_instance.md#encrypted-data-at-rest-byok).
+For more information, see [encrypted data at rest (BYOK)](../../administration/dedicated/encryption.md#encrypted-data-at-rest).
 
 #### Email service
 
@@ -118,7 +118,7 @@ When you add a custom hostname:
 - The hostname is included in the external URL used to access your instance.
 - Any connections to your instance using the previous domain names are no longer available.
 
-To add a custom hostname after your instance is created, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+For more information about using a custom hostname for your GitLab Dedicated instance, see [bring your own domain (BYOD)](../../administration/dedicated/configure_instance/network_security.md#bring-your-own-domain-byod).
 
 {{< alert type="note" >}}
 
@@ -274,4 +274,4 @@ To migrate your data to GitLab Dedicated:
 
 For more information about GitLab Dedicated or to request a demo, see [GitLab Dedicated](https://about.gitlab.com/dedicated/).
 
-For more information on setting up your GitLab Dedicated instance, see [Create your GitLab Dedicated instance](../../administration/dedicated/create_instance.md).
+For more information on setting up your GitLab Dedicated instance, see [Create your GitLab Dedicated instance](../../administration/dedicated/create_instance/_index.md).

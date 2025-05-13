@@ -91,7 +91,7 @@ The Repository X-Ray searches a maximum of two directory levels from the reposit
 | Python     | Poetry             | `poetry.lock`, `pyproject.toml`     | 17.5 or later  |
 | Ruby       | RubyGems           | `Gemfile.lock`                      | 17.4 or later  |
 
-**Footnotes**:
+Footnotes:
 
 1. For Python Pip, all configuration files matching the `*requirements*.txt` glob pattern are processed.
 

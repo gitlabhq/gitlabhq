@@ -47,7 +47,7 @@ To edit an issue:
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com
 - Status: Experiment
@@ -58,6 +58,7 @@ To edit an issue:
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10762) in GitLab 16.3 as an [experiment](../../../policy/development_stages_support.md#experiment).
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+- Changed to include Premium in GitLab 18.0.
 
 {{< /history >}}
 
@@ -760,7 +761,7 @@ To filter the list issues for text in a title or description:
 1. In the dropdown list that appears, select **Search within**, and then either **Titles** or **Descriptions**.
 1. Press <kbd>Enter</kbd> or select the search icon ({{< icon name="search" >}}).
 
-Filtering issues uses [PostgreSQL full text search](https://www.postgresql.org/docs/current/textsearch-intro.html)
+Filtering issues uses [PostgreSQL full text search](https://www.postgresql.org/docs/16/textsearch-intro.html)
 to match meaningful and significant words to answer a query.
 
 For example, if you search for `I am securing information for M&A`,

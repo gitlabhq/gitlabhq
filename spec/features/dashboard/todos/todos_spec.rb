@@ -136,7 +136,7 @@ RSpec.describe 'Dashboard Todos', :js, feature_category: :notifications do
       it 'shows you set yourself as an approver message' do
         within_testid('todo-item-list-container') do
           expect(page).to have_content("Fixes issue · #{project.namespace.owner_name} / #{project.name} #{merge_request.to_reference}")
-          expect(page).to have_content("You set yourself as an approver.")
+          expect(page).to have_content("You created a merge request you can approve.")
         end
       end
     end

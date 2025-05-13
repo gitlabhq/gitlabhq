@@ -2,9 +2,6 @@
 
 module Ci
   class Partition < Ci::ApplicationRecord
-    MAX_PARTITION_SIZE = 100.gigabytes
-    GSTG_PARTITION_SIZE = 4.gigabytes
-
     INITIAL_PARTITION_VALUE = 100
     LATEST_PARTITION_VALUE = 102
     DEFAULT_PARTITION_VALUES = (INITIAL_PARTITION_VALUE..LATEST_PARTITION_VALUE).to_a.freeze
@@ -63,7 +60,7 @@ module Ci
       end
     end
 
-    def above_threshold?(threshold)
+    def above_threshold?(threshold = ::Gitlab::CurrentSettings.ci_partitions_size_limit)
       with_ci_connection do
         Gitlab::Database::PostgresPartition
           .with_parent_tables(parent_table_names)

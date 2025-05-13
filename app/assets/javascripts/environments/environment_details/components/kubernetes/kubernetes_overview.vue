@@ -25,8 +25,6 @@ import {
 import fluxKustomizationQuery from '~/environments/graphql/queries/flux_kustomization.query.graphql';
 import fluxHelmReleaseQueryStatus from '~/environments/graphql/queries/flux_helm_release.query.graphql';
 import {
-  CLUSTER_HEALTH_SUCCESS,
-  CLUSTER_HEALTH_ERROR,
   HELM_RELEASES_RESOURCE_TYPE,
   KUSTOMIZATIONS_RESOURCE_TYPE,
   FLUX_RECONCILE_ACTION,
@@ -128,9 +126,8 @@ export default {
   data() {
     return {
       error: null,
-      failedState: {},
-      podsLoading: false,
       activeTab: k8sResourceType.k8sPods,
+      clusterHealthStatus: '',
       fluxApiError: '',
       podToDelete: {},
       fluxHelmRelease: {},
@@ -146,15 +143,6 @@ export default {
         kasTunnelUrl: this.kasTunnelUrl,
         gitlabAgentId: this.gitlabAgentId,
       });
-    },
-    clusterHealthStatus() {
-      if (this.podsLoading) {
-        return '';
-      }
-      return this.hasFailedState ? CLUSTER_HEALTH_ERROR : CLUSTER_HEALTH_SUCCESS;
-    },
-    hasFailedState() {
-      return Object.values(this.failedState).some((item) => item);
     },
     fluxResourceStatus() {
       const conditions = this.fluxKustomization.conditions || this.fluxHelmRelease.conditions || [];
@@ -185,12 +173,6 @@ export default {
         },
       });
       this.error = message;
-    },
-    handleFailedState(event) {
-      this.failedState = {
-        ...this.failedState,
-        ...event,
-      };
     },
     transformFluxResourceData(item) {
       return {
@@ -347,8 +329,7 @@ export default {
       :flux-kustomization="fluxKustomization"
       class="gl-mb-5"
       @cluster-error="handleError"
-      @loading="podsLoading = $event"
-      @update-failed-state="handleFailedState"
+      @update-cluster-state="clusterHealthStatus = $event"
       @select-item="toggleDetailsDrawer"
       @remove-selection="closeDetailsDrawer"
       @delete-pod="onDeletePod"

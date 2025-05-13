@@ -13,8 +13,16 @@ module ActiveContext
         fields << Field::Bigint.new(name, index: index)
       end
 
-      def prefix(name)
-        fields << Field::Prefix.new(name, index: true)
+      def boolean(name, index: true)
+        fields << Field::Boolean.new(name, index: index)
+      end
+
+      def keyword(name)
+        fields << Field::Keyword.new(name, index: true)
+      end
+
+      def text(name)
+        fields << Field::Text.new(name, index: false)
       end
 
       def vector(name, dimensions:, index: true)
@@ -31,7 +39,9 @@ module ActiveContext
       end
 
       class Bigint < Field; end
-      class Prefix < Field; end
+      class Boolean < Field; end
+      class Keyword < Field; end
+      class Text < Field; end
       class Vector < Field; end
     end
   end

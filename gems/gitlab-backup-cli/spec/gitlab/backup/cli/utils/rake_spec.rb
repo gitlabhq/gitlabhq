@@ -52,6 +52,24 @@ RSpec.describe Gitlab::Backup::Cli::Utils::Rake do
     end
   end
 
+  describe '#capture_each' do
+    it 'allows processing captured streams using blocks' do
+      expect_next_instance_of(Gitlab::Backup::Cli::Shell::Command) do |shell|
+        expect(shell.cmd_args).to end_with(%w[version])
+      end
+
+      output_streams = []
+
+      rake.capture_each do |stream, output|
+        output_streams << [stream, output]
+      end
+
+      expect(output_streams).to eq([[:stdout, Gitlab::Backup::Cli::VERSION]])
+
+      expect(rake.success?).to eq(true)
+    end
+  end
+
   describe '#success?' do
     subject(:rake) { described_class.new('--version') } # valid command that has no side-effect
 

@@ -152,7 +152,7 @@ module Gitlab
         target_project_id:
       )
         request(:post, "/projects/#{source_project_id}/merge_requests", body: {
-          title: change.title,
+          title: change.truncated_title,
           description: change.mr_description,
           labels: Array(change.labels).join(','),
           source_branch: source_branch,

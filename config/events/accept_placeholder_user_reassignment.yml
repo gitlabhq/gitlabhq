@@ -12,6 +12,8 @@ additional_properties:
     description: id of the user that is replacing the placeholder
   import_type:
     description: the import source e.g. gitlab_migration, github, bitbucket
+  reassign_to_user_state:
+    description: the state of the user that is replacing the placeholder e.g. active, blocked
 product_group: import_and_integrate
 product_categories:
 - importers

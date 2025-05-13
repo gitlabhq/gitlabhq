@@ -14,11 +14,6 @@ export default {
       type: Object,
       required: true,
     },
-    mr: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
   },
   computed: {
     iconName() {

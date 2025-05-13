@@ -39,12 +39,12 @@ module Ci
 
     belongs_to :runner, class_name: 'Ci::Runner', inverse_of: :runner_managers
 
-    enum creation_state: {
+    enum :creation_state, {
       started: 0,
       finished: 100
-    }, _suffix: true
+    }, suffix: true
 
-    enum runner_type: Runner.runner_types
+    enum :runner_type, Runner.runner_types
 
     has_many :runner_manager_builds, inverse_of: :runner_manager, foreign_key: :runner_machine_id,
       class_name: 'Ci::RunnerManagerBuild'

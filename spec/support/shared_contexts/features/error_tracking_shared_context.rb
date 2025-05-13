@@ -16,6 +16,11 @@ RSpec.shared_context 'sentry error tracking context feature' do
   let(:date_received) { 32.days.ago.utc }
 
   before do
+    # rubocop:disable RSpec/AnyInstanceOf -- Temporarily disable this cop due to timing issues in test setup
+    allow_any_instance_of(ErrorTracking::ProjectErrorTrackingSetting)
+      .to receive(:ensure_issue_belongs_to_project!)
+      .and_return(true)
+    # rubocop:enable RSpec/AnyInstanceOf
     request_headers = { 'Authorization' => 'Bearer access_token_123', 'Content-Type' => 'application/json' }
     response_headers = { 'Content-Type' => 'application/json' }
 

@@ -140,7 +140,6 @@ RSpec.shared_context 'group navbar structure' do
         _('Integrations'),
         _('Webhooks'),
         _('Access tokens'),
-        _('Projects'),
         _('Repository'),
         _('CI/CD'),
         _('Applications'),

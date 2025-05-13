@@ -17,7 +17,6 @@ export default {
     value: {
       type: String,
       required: true,
-      default: '',
     },
     name: {
       type: String,
@@ -33,6 +32,11 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    required: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -94,13 +98,15 @@ export default {
 };
 </script>
 <template>
-  <div>
+  <div class="gl-relative">
     <input
       v-if="name"
       id="user_timezone"
       :name="name"
       :value="timezoneIdentifier || value"
-      type="hidden"
+      :required="required"
+      tabindex="-1"
+      class="gl-sr-only gl-absolute -gl-z-1 gl-h-full gl-w-full"
     />
     <gl-collapsible-listbox
       :header-text="headerText"

@@ -5,12 +5,12 @@
 }
 
 .rd-app {
-  --rd-app-sticky-top-with-padding: calc(var(--rd-app-sticky-top, 0) + #{constants.$app-sticky-top-padding});
+  --rd-app-sticky-top-with-padding: calc(var(--rd-app-sticky-top, 0) + #{constants.$app-header-vertical-padding});
 }
 
 .rd-app-header {
   display: flex;
-  padding: $gl-spacing-scale-3 0;
+  padding: constants.$app-header-vertical-padding 0;
   min-height: 3rem;
 }
 
@@ -21,6 +21,8 @@
 
 .rd-app-body {
   display: flex;
+  // allow for the file browser to consume more height even when the diff list is very small
+  min-height: 50dvh;
 
   @include media-breakpoint-down(constants.$app-vertical-breakpoint) {
     flex-direction: column;
@@ -29,15 +31,38 @@
 
 .rd-app-content {
   flex: 1 0;
+  min-width: 0;
+}
+
+// override .code styles because we can't apply .code directly on the diff file code class
+// because diff files are unaware of the current user
+.rd-app-code-theme.code {
+  background: transparent !important;
 }
 
 .rd-app-diffs-list {
-  transition: opacity 0.2s;
+  position: relative;
 }
 
-.rd-app-diffs-list[data-loading] {
-  opacity: 0.5;
+.rd-app-diffs-list-loading-overlay {
+  position: absolute;
+  inset: 0;
+  transition: opacity 0.2s;
   pointer-events: none;
+  background: light-dark($white, $black);
+  opacity: 0;
+  z-index: 100;
+}
+
+.rd-app-diffs-list-loading-overlay[data-loading] {
+  opacity: 0.5;
+  pointer-events: all;
+}
+
+.rd-app-diffs-loading {
+  display: flex;
+  justify-content: center;
+  padding: $gl-spacing-scale-10 0;
 }
 
 .rd-app-sidebar {
@@ -53,6 +78,7 @@
   }
 
   @include media-breakpoint-down(constants.$app-vertical-breakpoint) {
+    --tree-list-max-height: calc(var(--file-row-height) * 8);
     flex: 1;
     margin: 0;
     // override .diff-tree-list, remove when fully switched to Rapid Diffs

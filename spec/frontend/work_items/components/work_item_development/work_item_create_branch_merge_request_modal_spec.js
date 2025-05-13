@@ -1,11 +1,12 @@
 import Vue, { nextTick } from 'vue';
 import { GlForm, GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import axios from 'axios';
 import VueApollo from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
 import { HTTP_STATUS_OK, HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import WorkItemCreateBranchMergeRequestModal from '~/work_items/components/work_item_development/work_item_create_branch_merge_request_modal.vue';
 import getProjectRootRef from '~/work_items/graphql/get_project_root_ref.query.graphql';
@@ -48,10 +49,8 @@ describe('CreateBranchMergeRequestModal', () => {
   });
 
   const createWrapper = ({
-    workItemId = 'gid://gitlab/WorkItem/1',
     workItemIid = '1',
     showBranchFlow = true,
-    showMergeRequestFlow = false,
     showModal = true,
     workItemType = 'Issue',
     workItemFullPath = 'fullPath',
@@ -64,11 +63,9 @@ describe('CreateBranchMergeRequestModal', () => {
     wrapper = shallowMount(WorkItemCreateBranchMergeRequestModal, {
       apolloProvider: mockApollo,
       propsData: {
-        workItemId,
         workItemIid,
         workItemType,
         showBranchFlow,
-        showMergeRequestFlow,
         showModal,
         workItemFullPath,
         projectId,
@@ -92,6 +89,7 @@ describe('CreateBranchMergeRequestModal', () => {
   const findPrivateForksSelector = () => wrapper.findComponent(ProjectFormGroup);
   const findSourceBranch = () => wrapper.find('[data-testid="source-name"]');
   const findTargetBranch = () => wrapper.find('[data-testid="target-name"]');
+  const findCopyToClipboardButton = () => wrapper.findComponent(ModalCopyButton);
 
   describe('when hosted at the root', () => {
     beforeEach(() => {
@@ -159,6 +157,20 @@ describe('CreateBranchMergeRequestModal', () => {
         });
       });
 
+      describe('Copy to clipboard', () => {
+        it('shows a button that copies the branch name to the clipboard', async () => {
+          findTargetBranch().vm.$emit('input', 'target');
+
+          await nextTick();
+
+          expect(findCopyToClipboardButton().exists()).toBe(true);
+          expect(findCopyToClipboardButton().props()).toMatchObject({
+            text: `target`,
+            title: 'Copy to clipboard',
+          });
+        });
+      });
+
       it('shows a success toast message when branch is created', async () => {
         createWrapper();
         await waitForPromises();
@@ -197,7 +209,7 @@ describe('CreateBranchMergeRequestModal', () => {
 
     describe('Merge request creation', () => {
       it('redirects to the the create merge branch request url with the correct parameters', async () => {
-        createWrapper({ showBranchFlow: false, showMergeRequestFlow: true });
+        createWrapper({ showBranchFlow: false });
         await waitForPromises();
 
         jest.spyOn(axios, 'post');
@@ -230,11 +242,7 @@ describe('CreateBranchMergeRequestModal', () => {
 
       describe('confidential merge request', () => {
         beforeEach(() => {
-          createWrapper({
-            showBranchFlow: false,
-            showMergeRequestFlow: true,
-            isConfidentialWorkItem: true,
-          });
+          createWrapper({ showBranchFlow: false, isConfidentialWorkItem: true });
           return waitForPromises();
         });
 

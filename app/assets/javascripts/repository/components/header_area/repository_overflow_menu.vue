@@ -1,6 +1,10 @@
 <script>
 import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
+import permalinkPathQuery from '~/repository/queries/permalink_path.query.graphql';
+import { logError } from '~/lib/logger';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import PermalinkDropdownItem from './permalink_dropdown_item.vue';
 
 export const i18n = {
   dropdownLabel: __('Actions'),
@@ -12,11 +16,48 @@ export default {
   components: {
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
+    PermalinkDropdownItem,
   },
   directives: {
     GlTooltipDirective,
   },
   inject: ['comparePath'],
+  props: {
+    fullPath: {
+      type: String,
+      required: true,
+    },
+    path: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    currentRef: {
+      type: String,
+      required: true,
+    },
+  },
+  apollo: {
+    permalinkPath: {
+      query: permalinkPathQuery,
+      variables() {
+        return this.queryVariables;
+      },
+      update(data) {
+        const result = data?.project?.repository?.paginatedTree?.nodes[0]?.permalinkPath;
+        return result;
+      },
+      error(error) {
+        logError(`Failed to fetch permalink. See exception details for more information.`, error);
+        Sentry.captureException(error);
+      },
+    },
+  },
+  data() {
+    return {
+      permalinkPath: '',
+    };
+  },
   computed: {
     compareItem() {
       return {
@@ -27,6 +68,21 @@ export default {
           rel: 'nofollow',
         },
       };
+    },
+    queryVariables() {
+      return {
+        fullPath: this.fullPath,
+        path: this.path,
+        ref: this.currentRef,
+      };
+    },
+  },
+  watch: {
+    queryVariables: {
+      handler() {
+        this.$apollo.queries.permalinkPath.refetch();
+      },
+      deep: true,
     },
   },
 };
@@ -42,6 +98,7 @@ export default {
     :toggle-text="$options.i18n.dropdownLabel"
     text-sr-only
   >
+    <permalink-dropdown-item v-if="permalinkPath" :permalink-path="permalinkPath" />
     <gl-disclosure-dropdown-item v-if="comparePath" :item="compareItem" class="shortcuts-compare" />
   </gl-disclosure-dropdown>
 </template>

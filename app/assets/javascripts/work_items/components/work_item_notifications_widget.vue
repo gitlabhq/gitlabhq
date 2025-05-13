@@ -26,33 +26,17 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  isLoggedIn: isLoggedIn(),
   props: {
-    fullPath: {
-      type: String,
-      required: true,
-    },
     workItemId: {
       type: String,
       required: false,
       default: null,
-    },
-    canUpdate: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     subscribedToNotifications: {
       type: Boolean,
       required: false,
       default: false,
     },
-  },
-  data() {
-    return {
-      isLockDiscussionUpdating: false,
-      emailsDisabled: false,
-    };
   },
   computed: {
     notificationTooltip() {
@@ -62,6 +46,9 @@ export default {
     },
     notificationIcon() {
       return this.subscribedToNotifications ? ICON_ON : ICON_OFF;
+    },
+    isLoggedIn() {
+      return isLoggedIn();
     },
   },
   methods: {
@@ -97,6 +84,7 @@ export default {
 
 <template>
   <gl-button
+    v-if="isLoggedIn"
     ref="tooltip"
     v-gl-tooltip.hover
     category="secondary"

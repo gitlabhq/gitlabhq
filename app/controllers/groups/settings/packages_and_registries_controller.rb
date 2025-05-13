@@ -9,6 +9,7 @@ module Groups
 
       before_action do
         push_frontend_feature_flag(:maven_central_request_forwarding, group)
+        push_frontend_ability(ability: :admin_dependency_proxy, resource: group, user: current_user)
       end
 
       feature_category :package_registry

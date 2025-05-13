@@ -3,12 +3,13 @@
 
 include:
   - project: gitlab-org/quality/pipeline-common
-    ref: 10.0.0
+    ref: 10.1.0
     file:
       - /ci/base.gitlab-ci.yml
 
 variables:
   RUN_WITH_BUNDLE: "false"
+  EXTERNAL_TRIGGER: "true"
 
 # Populate runner cache with preinstalled version of gitlab-qa gem
 cache-gitlab-qa:

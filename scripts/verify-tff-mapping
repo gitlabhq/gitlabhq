@@ -91,6 +91,17 @@ tests = [
   },
 
   {
+    explanation: 'Trigger GLCI tooling specs when anything changes in the folder',
+    changed_file: 'tooling/lib/tooling/glci/failure_categories/patterns/single_line_patterns.yml',
+    expected: %w[
+      spec/tooling/lib/tooling/glci/failure_analyzer_spec.rb
+      spec/tooling/lib/tooling/glci/failure_categories/download_job_trace_spec.rb
+      spec/tooling/lib/tooling/glci/failure_categories/job_trace_to_failure_category_spec.rb
+      spec/tooling/lib/tooling/glci/failure_categories/report_job_failure_spec.rb
+    ]
+  },
+
+  {
     explanation: 'Map RuboCop related files to respective specs',
     changed_file: 'rubocop/cop/gettext/static_identifier.rb',
     expected: ['spec/rubocop/cop/gettext/static_identifier_spec.rb']
@@ -749,73 +760,41 @@ tests = [
     ]
   },
 
-  # Why is it commented out?
-  #
-  # We cannot uncomment this, as this "spec" would fail as soon as we add/remove a file in
-  # the "spec/features" folder hierarchy that would contain the word navbar/sidebar.
-  #
-  # {
-  #   explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_1988359861',
-  #   changed_file: 'lib/sidebars/projects/menus/issues_menu.rb',
-  #   expected: %w[
-  #     spec/features/boards/sidebar_spec.rb
-  #     spec/features/dashboard/navbar_spec.rb
-  #     spec/features/explore/navbar_spec.rb
-  #     spec/features/groups/navbar_spec.rb
-  #     spec/features/projects/navbar_spec.rb
-  #     spec/lib/sidebars/projects/menus/issues_menu_spec.rb
-  #   ]
-  # },
+  {
+    explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_1988359861',
+    changed_file: 'lib/sidebars/projects/menus/issues_menu.rb',
+    expected: %w[
+      spec/features/**/{navbar,sidebar}_spec.rb
+      spec/lib/sidebars/projects/menus/issues_menu_spec.rb
+    ]
+  },
 
-  # Why is it commented out?
-  #
-  # We cannot uncomment this, as this "spec" would fail as soon as we add/remove a file in
-  # the "spec/features" folder hierarchy that would contain the word navbar/sidebar.
-  #
-  # {
-  #   explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_1988359861',
-  #   changed_file: 'ee/lib/sidebars/groups/menus/epics_menu.rb',
-  #   expected: %w[
-  #     ee/spec/features/boards/sidebar_spec.rb
-  #     ee/spec/features/dashboard/navbar_spec.rb
-  #     ee/spec/features/groups/navbar_spec.rb
-  #     ee/spec/features/merge_request/sidebar_spec.rb
-  #     ee/spec/features/projects/navbar_spec.rb
-  #     ee/spec/lib/sidebars/groups/menus/epics_menu_spec.rb
-  #   ]
-  # },
+  {
+    explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_1988359861',
+    changed_file: 'ee/lib/sidebars/groups/menus/epics_menu.rb',
+    expected: %w[
+      ee/spec/features/**/{navbar,sidebar}_spec.rb
+      ee/spec/lib/sidebars/groups/menus/epics_menu_spec.rb
+    ]
+  },
 
-  # Why is it commented out?
-  #
-  # We cannot uncomment this, as this "spec" would fail as soon as we add/remove a file in
-  # the "spec/features" folder hierarchy that would contain the word navbar/sidebar.
-  #
-  # {
-  #   explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_1939569462',
-  #   changed_file: 'lib/api/hooks/events.rb',
-  #   expected: %w[
-  #     ee/spec/requests/api/group_hooks_spec.rb
-  #     ee/spec/requests/api/project_hooks_spec.rb
-  #     spec/requests/api/project_hooks_spec.rb
-  #     spec/requests/api/system_hooks_spec.rb
-  #   ]
-  # }
+  {
+    explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_1939569462',
+    changed_file: 'lib/api/hooks/events.rb',
+    expected: %w[
+      spec/requests/api/**/*hook*_spec.rb
+      ee/spec/requests/api/**/*hook*_spec.rb
+    ]
+  },
 
-  # Why is it commented out?
-  #
-  # We cannot uncomment this, as this "spec" would fail as soon as we add/remove a file in
-  # the "spec/features" folder hierarchy that would contain the word navbar/sidebar.
-  #
-  # {
-  #   explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_1939569462',
-  #   changed_file: 'ee/lib/api/group_hooks.rb',
-  #   expected: %w[
-  #     ee/spec/requests/api/group_hooks_spec.rb
-  #     ee/spec/requests/api/project_hooks_spec.rb
-  #     spec/requests/api/project_hooks_spec.rb
-  #     spec/requests/api/system_hooks_spec.rb
-  #   ]
-  # },
+  {
+    explanation: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466068#note_1939569462',
+    changed_file: 'ee/lib/api/group_hooks.rb',
+    expected: %w[
+      spec/requests/api/**/*hook*_spec.rb
+      ee/spec/requests/api/**/*hook*_spec.rb
+    ]
+  },
 
   {
     explanation: 'Run database dictionary related specs on db/docs changes.',
@@ -846,7 +825,7 @@ class MappingTest
     @explanation = explanation
     @changed_file = changed_file
     @strategy = strategy
-    @expected_set = Set.new(expected)
+    @expected_set = Set.new(Dir[*expected])
     @actual_set = Set.new(actual)
   end
 

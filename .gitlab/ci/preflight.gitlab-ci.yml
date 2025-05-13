@@ -10,8 +10,9 @@
     - .default-before_script
     - .production
     - .ruby-cache
-    - .preflight:rules:rails-production-server-boot
     - .use-pg16
+    - .failure_category_after_script
+    - .preflight:rules:rails-production-server-boot
   artifacts:
     expire_in: 7d
     when: always
@@ -59,6 +60,7 @@ rails-production-server-boot-puma-cng:
 ruby_syntax:
   extends:
     - .preflight-job-base
+    - .failure_category_after_script
     - .preflight:rules:ruby_syntax
   before_script:
     - source scripts/utils.sh

@@ -13,14 +13,13 @@ module Ci
         belongs_to :project, inverse_of: :ci_components
         belongs_to :catalog_resource, class_name: 'Ci::Catalog::Resource', inverse_of: :components
         belongs_to :version, class_name: 'Ci::Catalog::Resources::Version', inverse_of: :components
-        has_many :usages, class_name: 'Ci::Catalog::Resources::Components::Usage', inverse_of: :component
         has_many :last_usages, class_name: 'Ci::Catalog::Resources::Components::LastUsage', inverse_of: :component
 
         # BulkInsertSafe must be included after the `has_many` declaration, otherwise it raises
         # an error about the save callback that is auto generated for this association.
         include BulkInsertSafe
 
-        enum component_type: { template: 1 }
+        enum :component_type, { template: 1 }
 
         validates :spec, json_schema: { filename: 'catalog_resource_component_spec' }
         validates :version, :catalog_resource, :project, :name, presence: true

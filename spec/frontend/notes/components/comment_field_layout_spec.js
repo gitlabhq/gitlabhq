@@ -7,8 +7,6 @@ import NoteableWarning from '~/vue_shared/components/notes/noteable_warning.vue'
 describe('Comment Field Layout Component', () => {
   let wrapper;
 
-  const lockedDiscussionDocsPath = 'docs/locked/path';
-  const confidentialIssuesDocsPath = 'docs/confidential/path';
   const noteWithAttachment =
     'Have a look at this! ![image](/uploads/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/image.jpg)';
   const attachmentMessage =
@@ -19,8 +17,6 @@ describe('Comment Field Layout Component', () => {
   const noteableDataMock = {
     confidential: false,
     discussion_locked: false,
-    locked_discussion_docs_path: lockedDiscussionDocsPath,
-    confidential_issues_docs_path: confidentialIssuesDocsPath,
   };
 
   const findIssuableNoteWarning = () => wrapper.findComponent(NoteableWarning);
@@ -75,8 +71,6 @@ describe('Comment Field Layout Component', () => {
       expect(findIssuableNoteWarning().props()).toMatchObject({
         isLocked: false,
         isConfidential: true,
-        lockedNoteableDocsPath: lockedDiscussionDocsPath,
-        confidentialNoteableDocsPath: confidentialIssuesDocsPath,
       });
     });
   });
@@ -96,8 +90,6 @@ describe('Comment Field Layout Component', () => {
       expect(findIssuableNoteWarning().props()).toMatchObject({
         isConfidential: false,
         isLocked: true,
-        lockedNoteableDocsPath: lockedDiscussionDocsPath,
-        confidentialNoteableDocsPath: confidentialIssuesDocsPath,
       });
     });
   });

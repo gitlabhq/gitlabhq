@@ -22,6 +22,11 @@ RSpec.describe 'Incident details', :js, feature_category: :incident_management d
   end
 
   before do
+    # TODO: When removing the feature flag,
+    # we won't need the tests for the issues listing page, since we'll be using
+    # the work items listing page.
+    stub_feature_flags(work_item_planning_view: false)
+
     sign_in(developer)
   end
 

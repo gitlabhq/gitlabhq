@@ -259,27 +259,27 @@ GitLab CI/CD jobs now include a source attribute that indicates the action that 
 
 The source attribute can have the following values:
 
-– `api`: Job initiated by a REST call to the Jobs API.
-– `chat`: Job initiated by a chat command using GitLab ChatOps.
-– `container_registry_push`: Job initiated by container registry push.
-– `duo_workflow`: Job initiated by GitLab Duo Workflow.
-– `external`: Job initiated by an event in an external repository integrated with GitLab. This does not include pull request events.
-– `external_pull_request_event`: Job initiated by a pull request event in an external repository.
-– `merge_request_event`: Job initiated by a merge request event.
-– `ondemand_dast_scan`:Job initiated by an on-demand DAST scan.
-– `ondemand_dast_validation`: Job initiated by an on-demand DAST validation.
-– `parent_pipeline`: Job initiated by a parent pipeline
-– `pipeline`: Job initiated by a user manually running a pipeline.
-– `pipeline_execution_policy`: Job initiated by a triggered pipeline execution policy.
-– `pipeline_execution_policy_schedule`: Job initiated by a scheduled pipeline execution policy.
-– `push`: Job initiated by a code push.
-– `scan_execution_policy`: Job initiated by a scan execution policy.
-– `schedule`: Job initiated by a scheduled pipeline.
-– `security_orchestration_policy`: Job initiated by a security orchestration policy.
-– `trigger`: Job initiated by another job or pipeline.
-– `unknown` – Job initiated by an unknown source.
-– `web` – Job initiated by a user from the GitLab UI.
-– `webide` – Job initiated by a user from the Web IDE.
+- `api`: Job initiated by a REST call to the Jobs API.
+- `chat`: Job initiated by a chat command using GitLab ChatOps.
+- `container_registry_push`: Job initiated by container registry push.
+- `duo_workflow`: Job initiated by GitLab Duo Workflow.
+- `external`: Job initiated by an event in an external repository integrated with GitLab. This does not include pull request events.
+- `external_pull_request_event`: Job initiated by a pull request event in an external repository.
+- `merge_request_event`: Job initiated by a merge request event.
+- `ondemand_dast_scan`:Job initiated by an on-demand DAST scan.
+- `ondemand_dast_validation`: Job initiated by an on-demand DAST validation.
+- `parent_pipeline`: Job initiated by a parent pipeline
+- `pipeline`: Job initiated by a user manually running a pipeline.
+- `pipeline_execution_policy`: Job initiated by a triggered pipeline execution policy.
+- `pipeline_execution_policy_schedule`: Job initiated by a scheduled pipeline execution policy.
+- `push`: Job initiated by a code push.
+- `scan_execution_policy`: Job initiated by a scan execution policy.
+- `schedule`: Job initiated by a scheduled pipeline.
+- `security_orchestration_policy`: Job initiated by a scheduled scan execution policy.
+- `trigger`: Job initiated by another job or pipeline.
+- `unknown`: Job initiated by an unknown source.
+- `web`: Job initiated by a user from the GitLab UI.
+- `webide`: Job initiated by a user from the Web IDE.
 
 ### Group similar jobs together in pipeline views
 

@@ -52,6 +52,9 @@ include:
     - gem install bundler --version "$bundle_version" --no-document # Bundler is not installed with the image
     - bundle config                             # Show bundler configuration
     - bundle install --jobs=$(nproc) --retry=3
+  after_script:
+    - source $CI_PROJECT_DIR/scripts/utils.sh
+    - execute_failure_analyzer
 
 default:
   <<: *default

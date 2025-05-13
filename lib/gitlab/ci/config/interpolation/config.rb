@@ -9,6 +9,7 @@ module Gitlab
         #
         class Config
           include Gitlab::Utils::StrongMemoize
+
           ##
           # Loading the YAML below would result in a hash having 12 nodes instead of 9,
           # because hash values are being counted before we recursively traverse them.

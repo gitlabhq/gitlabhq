@@ -59,17 +59,15 @@ export default {
 </script>
 
 <template>
-  <div class="issue-details issuable-details">
-    <div
-      v-if="model.descriptionHtml"
-      class="detail-page-description js-detail-page-description gl-pt-4"
-    >
+  <div class="issue-details issuable-details gl-mt-5">
+    <div v-if="model.descriptionHtml" class="detail-page-description js-detail-page-description">
       <issuable-description
         :issuable="issuable"
         :enable-task-list="enableTaskList"
         :can-edit="canEditRequirement"
         :data-update-url="dataUpdateUrl"
         :task-list-update-path="taskListUpdatePath"
+        class="gl-leading-20"
       />
     </div>
     <div v-else class="gl-text-subtle" data-testid="empty-description-state">

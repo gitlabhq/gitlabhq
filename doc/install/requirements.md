@@ -66,7 +66,7 @@ For the following versions of GitLab, use these PostgreSQL versions:
 
 | GitLab version | Minimum PostgreSQL version | Maximum PostgreSQL version |
 | -------------- | -------------------------- | -------------------------- |
-| 18.x           | 16.x (proposed in [epic 12172](https://gitlab.com/groups/gitlab-org/-/epics/12172)) | To be determined |
+| 18.x           | 16.x                       | To be determined           |
 | 17.x           | 14.x                       | 16.x ([tested against GitLab 16.10 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145298)) |
 | 16.x           | 13.6                       | 15.x ([tested against GitLab 16.1 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119344)) |
 | 15.x           | 12.10                      | 14.x ([tested against GitLab 15.11 only](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114624)), 13.x |
@@ -129,9 +129,9 @@ Here are some required settings for externally managed PostgreSQL instances.
 
 | Tunable setting        | Required value | More information |
 |:-----------------------|:---------------|:-----------------|
-| `work_mem`             | minimum `8MB`  | This value is the Linux package default. In large deployments, if queries create temporary files, you should increase this setting. |
-| `maintenance_work_mem` | minimum `64MB` | You require [more for larger database servers](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8377#note_1728173087). |
-| `shared_buffers`       | minimum `2GB`  | You require more for larger database servers. The Linux package default is set to 25% of server RAM. |
+| `work_mem`             | minimum `8 MB`  | This value is the Linux package default. In large deployments, if queries create temporary files, you should increase this setting. |
+| `maintenance_work_mem` | minimum `64 MB` | You require [more for larger database servers](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8377#note_1728173087). |
+| `shared_buffers`       | minimum `2 GB`  | You require more for larger database servers. The Linux package default is set to 25% of server RAM. |
 | `statement_timeout`    | maximum 1 min  | A statement timeout prevents runaway issues with locks and the database rejecting new clients. One minute matches the Puma rack timeout setting. |
 
 ## Puma

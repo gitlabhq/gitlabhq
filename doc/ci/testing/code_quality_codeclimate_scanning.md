@@ -1,5 +1,5 @@
 ---
-stage: Secure
+stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Configure CodeClimate-based Code Quality scanning (deprecated)
@@ -16,7 +16,7 @@ title: Configure CodeClimate-based Code Quality scanning (deprecated)
 
 {{< alert type="warning" >}}
 
-This feature was [deprecated](../../update/deprecations.md#codeclimate-based-code-quality-scanning-will-be-removed) in GitLab 17.3 and is planned for removal in 18.0.
+This feature was [deprecated](../../update/deprecations.md#codeclimate-based-code-quality-scanning-will-be-removed) in GitLab 17.3 and is planned for removal in 19.0.
 [Integrate the results from a supported tool directly](code_quality.md#import-code-quality-results-from-a-cicd-job) instead. This change is a breaking change.
 
 {{< /alert >}}

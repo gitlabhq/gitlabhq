@@ -4,12 +4,12 @@ class DiffNotePosition < ApplicationRecord
   belongs_to :note
   attr_accessor :line_range
 
-  enum diff_content_type: {
+  enum :diff_content_type, {
     text: 0,
     image: 1
   }
 
-  enum diff_type: {
+  enum :diff_type, {
     head: 0
   }
 

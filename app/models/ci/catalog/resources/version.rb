@@ -92,7 +92,7 @@ module Ci
         end
 
         # We require the published_by to be the same as the release author because
-        # creating a release and publishing a version must be done in a single session via release-cli.
+        # creating a release and publishing a version must be done in a single session via CLI tools.
         def validate_published_by_is_release_author
           return if published_by == release.author
 

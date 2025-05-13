@@ -89,7 +89,7 @@ The variables are defined directly in the `.gitlab/workflows/java-style-workflow
 
 The prompt must be configured to point to your organization's style guide repository. In the `java-style-prompt.md` file, replace the following variables:
 
-- `{{GITLAB_INSTANCE}}`: Your GitLab instance URL (e.g., `https://gitlab.example.com`)
+- `{{GITLAB_INSTANCE}}`: Your GitLab instance URL (for example, `https://gitlab.example.com`)
 - `{{STYLE_GUIDE_PROJECT_ID}}`: The GitLab project ID containing your Java style guide
 - `{{STYLE_GUIDE_PROJECT_NAME}}`: The display name for your style guide project
 - `{{STYLE_GUIDE_BRANCH}}`: The branch containing the most up-to-date style guide (default: main)
@@ -110,7 +110,7 @@ STYLE_GUIDE_PATH=coding-style/java/guidelines/java-coding-standards.md
 In the same `java-style-prompt.md` file, configure which files to apply the style guide to:
 
 - `{{TARGET_PROJECT_ID}}`: Your Java project's GitLab ID
-- `{{TARGET_FILES}}`: Specific files or patterns to target (e.g., "src/main/java/**/*.java")
+- `{{TARGET_FILES}}`: Specific files or patterns to target (for example, "src/main/java/**/*.java")
 
 Example:
 
@@ -143,7 +143,7 @@ Remember that this tool is meant to assist developers, not replace human judgmen
 
 1. **Create a Style Guide Issue**
 
-   - Create a new issue in your project (e.g., Issue #3)
+   - Create a new issue in your project (for example, Issue #3)
    - Include detailed information about the style guidelines to apply
    - Reference the external style guide repository if applicable
    - Specify requirements like:

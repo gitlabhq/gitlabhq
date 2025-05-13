@@ -28,7 +28,7 @@ module AuditEvents
 
       partitioned_by :created_at, strategy: :monthly
 
-      serialize :details, Hash # rubocop:disable Cop/ActiveRecordSerialize -- We need this to serialize details stored in audit event.
+      serialize :details, type: Hash # rubocop:disable Cop/ActiveRecordSerialize -- We need this to serialize details stored in audit event.
 
       belongs_to :user, foreign_key: :author_id, inverse_of: :audit_events
 

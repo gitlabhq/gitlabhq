@@ -18,6 +18,7 @@ describe('Diffs list store', () => {
 
   const findStreamContainer = () => document.querySelector('#js-stream-container');
   const findDiffsList = () => document.querySelector('[data-diffs-list]');
+  const findDiffsOverlay = () => document.querySelector('[data-diffs-overlay]');
 
   const itCancelsRunningRequest = (action) => {
     it('cancels running request', async () => {
@@ -58,7 +59,11 @@ describe('Diffs list store', () => {
     const pinia = createTestingPinia({ stubActions: false });
     setActivePinia(pinia);
     store = useDiffsList();
-    setHTMLFixture(`<div id="js-stream-container"></div><div data-diffs-list>Existing data</div>`);
+    setHTMLFixture(`
+      <div id="js-stream-container"></div>
+      <div data-diffs-overlay></div>
+      <div data-diffs-list>Existing data</div>
+    `);
     global.fetch = jest.fn();
     toPolyfillReadable.mockImplementation((obj) => obj);
     streamResponse = { body: {} };
@@ -68,7 +73,7 @@ describe('Diffs list store', () => {
   describe('#streamRemainingDiffs', () => {
     it('streams request', async () => {
       const url = '/stream';
-      store.streamRemainingDiffs(url);
+      store.streamRemainingDiffs(url, findStreamContainer());
       const { signal } = store.loadingController;
       await waitForPromises();
       expect(global.fetch).toHaveBeenCalledWith(url, { signal });
@@ -81,15 +86,14 @@ describe('Diffs list store', () => {
       const body = {};
       const signal = {};
       const streamRequest = Promise.resolve({ body });
-      window.gl.rapidDiffsPreload = { controller: { signal }, streamRequest };
+      const preload = { controller: { signal }, streamRequest };
       const url = '/stream';
-      store.streamRemainingDiffs(url);
+      store.streamRemainingDiffs(url, findStreamContainer(), preload);
       await waitForPromises();
       expect(global.fetch).not.toHaveBeenCalled();
       expect(renderHtmlStreams).toHaveBeenCalledWith([body], findStreamContainer(), {
         signal,
       });
-      window.gl.rapidDiffsPreload = undefined;
     });
 
     it('measures performance', async () => {
@@ -128,14 +132,19 @@ describe('Diffs list store', () => {
 
     it('sets loading state', () => {
       store.reloadDiffs('/stream');
-      expect(findDiffsList().dataset.loading).toBe('true');
+      expect(findDiffsOverlay().dataset.loading).toBe('true');
+    });
+
+    it('does not set loading state when loading initial diffs', () => {
+      store.reloadDiffs('/stream', true);
+      expect(findDiffsOverlay().dataset.loading).toBe(undefined);
     });
 
     it('clears existing state', async () => {
       store.reloadDiffs('/stream');
       await waitForPromises();
       expect(findDiffsList().innerHTML).toBe('');
-      expect(findDiffsList().dataset.loading).toBe(undefined);
+      expect(findDiffsOverlay().dataset.loading).toBe(undefined);
     });
   });
 

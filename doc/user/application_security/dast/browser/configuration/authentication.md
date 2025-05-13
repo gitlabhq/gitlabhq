@@ -275,7 +275,7 @@ This variable sets the following Chromium policies needed to allow integrated au
 The settings for this variable are the DNS domains associated with your Windows domain or Kerberos realm.
 You should provide them:
 
-- In both lower case and also upper case.
+- In both lowercase and also upper case.
 - With a wildcard pattern and just the domain name.
 
 For our example the Windows domain is `EXAMPLE.COM` and the DNS domain is `example.com`.

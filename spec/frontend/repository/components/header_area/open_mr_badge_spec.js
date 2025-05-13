@@ -30,6 +30,8 @@ describe('OpenMrBadge', () => {
     blobPath: 'path/to/file.js',
   };
 
+  useFakeDate('2020-04-15 09:00:00 GMT+2');
+
   function createComponent(
     props = {},
     mockResolver = openMRQueryResult,
@@ -81,8 +83,6 @@ describe('OpenMrBadge', () => {
   });
 
   describe('computed properties', () => {
-    useFakeDate();
-
     beforeEach(() => {
       createComponent({});
     });
@@ -90,7 +90,7 @@ describe('OpenMrBadge', () => {
     it('computes queryVariables correctly', () => {
       expect(openMrsCountQueryHandler).toHaveBeenCalledWith({
         blobPath: 'path/to/file.js',
-        createdAfter: '2020-06-07',
+        createdAfter: '2020-03-17 07:00:00 UTC',
         projectPath: 'group/project',
         targetBranch: ['main'],
       });
@@ -107,6 +107,7 @@ describe('OpenMrBadge', () => {
         expect(badge.exists()).toBe(true);
         expect(badge.props('variant')).toBe('success');
         expect(badge.props('icon')).toBe('merge-request');
+        expect(badge.props('tag')).toBe('a');
         expect(badge.attributes('title')).toBe(
           'Open merge requests created in the past 30 days that target this branch and modify this file.',
         );
@@ -136,7 +137,7 @@ describe('OpenMrBadge', () => {
 
         expect(openMrsQueryHandler).toHaveBeenCalledWith({
           blobPath: 'path/to/file.js',
-          createdAfter: '2020-06-07',
+          createdAfter: '2020-03-17 07:00:00 UTC',
           projectPath: 'group/project',
           targetBranch: ['main'],
         });

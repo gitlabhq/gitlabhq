@@ -2,13 +2,14 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+gitlab_dedicated: yes
 title: Sign-up restrictions
 ---
 
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -23,7 +24,8 @@ You can enforce the following restrictions on sign ups:
 
 By default, any user visiting your GitLab domain can sign up for an account. For customers running
 public-facing GitLab instances, we **highly** recommend that you consider disabling new sign ups if
-you do not expect public users to sign up for an account.
+you do not expect public users to sign up for an account. For GitLab Dedicated, new sign ups are
+disabled by default when your instance is provisioned.
 
 To disable sign ups:
 
@@ -95,13 +97,13 @@ The following settings are available:
 
 - Tier: Premium, Ultimate
 - Offering: GitLab Self-Managed
-- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/501717) in GitLab 17.8.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/523464) in GitLab 18.0.
 
 {{< /history >}}
 
@@ -140,7 +142,7 @@ you will be charged overages for the five additional users.
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -210,7 +212,7 @@ the minimum number of characters a user must have in their password using the Gi
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -282,7 +284,6 @@ See the [documentation on setting up an LDAP user filter](../auth/ldap/_index.md
 
 - Tier: Ultimate
 - Offering: GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
 
 {{< /details >}}
 
@@ -290,14 +291,9 @@ See the [documentation on setting up an LDAP user filter](../auth/ldap/_index.md
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433166) in GitLab 16.9 [with a flag](../feature_flags.md) named `member_promotion_management`.
 - Feature flag `member_promotion_management` [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167757/) from `wip` to `beta` and enabled by default in GitLab 17.5.
+- Feature flag `member_promotion_management` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187888) in GitLab 18.0.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-
-{{< /alert >}}
 
 To prevent existing users from being promoted into a billable role in a project or group,
 turn on administrator approval for role promotions. You can then approve or reject promotion requests
@@ -324,21 +320,3 @@ To turn on approvals for role promotions:
 1. Select **Settings > General**.
 1. Expand **Sign-up restrictions**.
 1. In the **Seat control** section, select **Approve role promotions**.
-
-### Known issues
-
-When a user [requests access to a group](../../user/group/_index.md), the initial role assigned is Developer.
-If this access is approved by a user with the Owner role for the group and the user becomes a member of the group, the billable count
-increases if this user did not have a billable role previously.
-
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->

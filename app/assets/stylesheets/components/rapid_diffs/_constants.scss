@@ -1,3 +1,5 @@
+@import 'page_bundles/mixins_and_variables_and_functions';
+
 $base-font-size: 16px;
 $code-row-height-target: 20px;
 $code-font-size-target: 12.5px;
@@ -6,5 +8,8 @@ $code-row-height: calc($code-row-height-target / $base-font-size * 1rem);
 $code-font-size: calc($code-font-size-target / $base-font-size * 1rem);
 $code-line-height: calc($code-row-height-target / $code-font-size-target);
 
-$app-sticky-top-padding: 11px;
+$app-header-vertical-padding: $gl-spacing-scale-3;
 $app-vertical-breakpoint: md;
+
+$diff-file-border-width: 1px;
+$diff-file-header-padding-y: $gl-spacing-scale-3;

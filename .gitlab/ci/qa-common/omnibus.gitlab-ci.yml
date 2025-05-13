@@ -91,7 +91,6 @@ trigger-omnibus:
     USE_SPECIFIED_RUBY_VERSION: "true"
     RUBY_VERSION: $FULL_RUBY_VERSION
     BUILD_ON_ALL_OS: $OMNIBUS_GITLAB_BUILD_ON_ALL_OS
-    SKIP_QA_TEST: "true" # Deprecated: It'll be removed once rolling out `inputs.skip_qa_test`.
     ee: $EE
   trigger:
     project: gitlab-org/build/omnibus-gitlab-mirror

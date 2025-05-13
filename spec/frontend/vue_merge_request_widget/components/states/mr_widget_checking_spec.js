@@ -6,7 +6,7 @@ describe('MRWidgetChecking', () => {
   let wrapper;
 
   beforeEach(() => {
-    wrapper = shallowMount(CheckingComponent, { propsData: { mr: {} } });
+    wrapper = shallowMount(CheckingComponent);
   });
 
   it('renders loading icon', () => {

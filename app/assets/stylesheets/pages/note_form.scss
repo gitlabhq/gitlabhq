@@ -231,7 +231,7 @@ table {
 }
 
 .discussion-notes .disabled-comment {
-  padding: 6px 0;
+  @apply gl-p-0;
 }
 
 .notes.notes-form > li.timeline-entry {

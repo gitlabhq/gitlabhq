@@ -341,5 +341,80 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
 
       it_behaves_like 'raising an', described_class::ZipError, with_message: 'Could not open the .nupkg file'
     end
+
+    context 'with package protection rule for different roles and package_name_patterns', :enable_admin_mode do
+      let!(:package) { create(:nuget_package, :processing, :with_symbol_package, :with_build) }
+
+      let(:package_protection_rule) do
+        create(:package_protection_rule, package_type: :nuget, project: package.project)
+      end
+
+      let(:project_developer) { create(:user, developer_of: package.project) }
+      let(:project_maintainer) { create(:user, maintainer_of: package.project) }
+      let(:project_owner) { package.project.owner }
+      let(:instance_admin) { create(:admin) }
+
+      before do
+        package_protection_rule.update!(
+          package_name_pattern: package_name_pattern,
+          minimum_access_level_for_push: minimum_access_level_for_push
+        )
+        package.update!(creator: package_creator)
+      end
+
+      shared_examples 'updates package and package file and creates metadatum' do
+        it 'updates package and package file and creates metadatum', :aggregate_failures do
+          expect { subject }
+            .to not_change { ::Packages::Package.count }
+            .and change { Packages::Dependency.count }.by(1)
+            .and change { Packages::DependencyLink.count }.by(1)
+            .and change { ::Packages::Nuget::Metadatum.count }.by(1)
+
+          expect(package.reload.name).to eq(package_name)
+          expect(package.version).to eq(package_version)
+          expect(package).to be_default
+          expect(package_file.reload.file_name).to eq(package_file_name)
+          # hard reset needed to properly reload package_file.file
+          expect(Packages::PackageFile.find(package_file.id).file.size).not_to eq 0
+        end
+      end
+
+      shared_examples 'protected package' do
+        it_behaves_like 'raising an', described_class::ProtectedPackageError, with_message: "Package 'DummyProject.DummyPackage' with version '1.0.0' is protected"
+
+        context 'when feature flag :packages_protected_packages_nuget is disabled' do
+          before do
+            stub_feature_flags(packages_protected_packages_nuget: false)
+          end
+
+          it_behaves_like 'updates package and package file and creates metadatum'
+        end
+      end
+
+      where(:package_name_pattern, :minimum_access_level_for_push, :package_creator, :shared_examples_name) do
+        ref(:package_name)               | :maintainer | ref(:project_developer)  | 'protected package'
+        ref(:package_name)               | :maintainer | ref(:project_maintainer) | 'updates package and package file and creates metadatum'
+        ref(:package_name)               | :maintainer | ref(:project_owner)      | 'updates package and package file and creates metadatum'
+        ref(:package_name)               | :maintainer | ref(:instance_admin)     | 'updates package and package file and creates metadatum'
+        ref(:package_name)               | :maintainer | nil                      | 'protected package'
+
+        ref(:package_name)               | :owner      | ref(:project_maintainer) | 'protected package'
+        ref(:package_name)               | :owner      | ref(:project_owner)      | 'updates package and package file and creates metadatum'
+        ref(:package_name)               | :owner      | ref(:instance_admin)     | 'updates package and package file and creates metadatum'
+        ref(:package_name)               | :owner      | nil                      | 'protected package'
+
+        ref(:package_name)               | :admin      | ref(:project_owner)      | 'protected package'
+        ref(:package_name)               | :admin      | ref(:instance_admin)     | 'updates package and package file and creates metadatum'
+        ref(:package_name)               | :admin      | nil                      | 'protected package'
+
+        lazy { "Other.#{package_name}" } | :maintainer | ref(:project_owner)      | 'updates package and package file and creates metadatum'
+        lazy { "Other.#{package_name}" } | :admin      | ref(:project_owner)      | 'updates package and package file and creates metadatum'
+        lazy { "Other.#{package_name}" } | :admin      | nil                      | 'updates package and package file and creates metadatum'
+      end
+
+      with_them do
+        it_behaves_like params[:shared_examples_name]
+      end
+    end
   end
 end

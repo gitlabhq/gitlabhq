@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.executables = "orchestrator"
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "activesupport", ">= 7"
+  spec.add_dependency "activesupport", ">= 7.1.5.1"
   spec.add_dependency "rainbow", "~> 3.1"
   spec.add_dependency "require_all", "~> 3.0"
   spec.add_dependency "thor", "~> 1.3"

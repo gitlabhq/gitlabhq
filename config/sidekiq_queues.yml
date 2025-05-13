@@ -75,6 +75,8 @@
   - 1
 - - authn_sync_group_scim_token_record
   - 1
+- - authn_sync_scim_group_members
+  - 1
 - - authn_sync_scim_identity_record
   - 1
 - - authn_sync_scim_token_record
@@ -359,8 +361,6 @@
   - 1
 - - elastic_association_indexer
   - 1
-- - elastic_commit_indexer
-  - 1
 - - elastic_delete_project
   - 1
 - - elastic_full_index
@@ -433,6 +433,8 @@
   - 1
 - - gitlab_subscriptions_add_on_purchases_refresh_user_assignments
   - 1
+- - gitlab_subscriptions_gitlab_com_duo_core_todo_notification
+  - 1
 - - gitlab_subscriptions_member_management_apply_pending_member_approvals
   - 1
 - - gitlab_subscriptions_members_added
@@ -442,6 +444,8 @@
 - - gitlab_subscriptions_members_record_last_activity
   - 1
 - - gitlab_subscriptions_refresh_seats
+  - 1
+- - gitlab_subscriptions_self_managed_duo_core_todo_notification
   - 1
 - - gitlab_subscriptions_trials_apply_trial
   - 1
@@ -851,8 +855,6 @@
   - 1
 - - search_zoekt_lost_node_event
   - 1
-- - search_zoekt_namespace_indexer
-  - 1
 - - search_zoekt_node_with_negative_unclaimed_storage_event
   - 1
 - - search_zoekt_orphaned_index_event
@@ -872,6 +874,8 @@
 - - search_zoekt_update_index_used_storage_bytes_event
   - 1
 - - secrets_management_provision_project_secrets_manager
+  - 1
+- - security_analyzers_status_process_archived_events
   - 1
 - - security_configuration_set_group_secret_push_protection
   - 1
@@ -896,6 +900,8 @@
 - - security_orchestration_policy_rule_schedule_namespace
   - 1
 - - security_persist_security_policies
+  - 1
+- - security_pipeline_analyzers_status_update
   - 1
 - - security_pipeline_execution_policies_run_schedule
   - 1
@@ -1011,9 +1017,17 @@
   - 1
 - - vulnerabilities_namespace_statistics_adjustment
   - 1
+- - vulnerabilities_namespace_statistics_process_group_transfer_events
+  - 1
+- - vulnerabilities_namespace_statistics_process_project_delete_events
+  - 1
+- - vulnerabilities_namespace_statistics_process_project_transfer_events
+  - 1
 - - vulnerabilities_process_archived_events
   - 1
 - - vulnerabilities_process_bulk_dismissed_events
+  - 1
+- - vulnerabilities_process_bulk_redetected_events
   - 1
 - - vulnerabilities_process_transfer_events
   - 1

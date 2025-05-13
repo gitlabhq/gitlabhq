@@ -1,6 +1,6 @@
 - title: "Replace `threshold` with `maxretries` for container registry notifications"
   announcement_milestone: "17.1"
-  removal_milestone: "18.0"
+  removal_milestone: "19.0"
   breaking_change: true
   reporter: trizzi
   stage: Package

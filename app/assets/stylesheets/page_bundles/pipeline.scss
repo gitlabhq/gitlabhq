@@ -310,8 +310,8 @@
     outline: none;
 
     .menu-item {
-      background-color: var(--gray-50, $gray-50);
-      border-radius: $gl-border-radius-base;
+      @apply gl-bg-strong;
+      @apply gl-rounded-base;
       box-shadow: inset 0 0 0 2px $blue-400,
         inset 0 0 0 3px var(--white, $white);
       outline: none;

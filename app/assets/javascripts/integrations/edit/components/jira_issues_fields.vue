@@ -2,7 +2,6 @@
 import { GlFormGroup, GlFormCheckbox, GlFormInput } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'JiraIssuesFields',
@@ -13,7 +12,6 @@ export default {
     JiraIssueCreationVulnerabilities: () =>
       import('ee_component/integrations/edit/components/jira_issue_creation_vulnerabilities.vue'),
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     showJiraIssuesIntegration: {
       type: Boolean,

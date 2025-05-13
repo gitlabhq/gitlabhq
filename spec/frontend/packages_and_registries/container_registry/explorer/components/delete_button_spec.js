@@ -63,9 +63,9 @@ describe('delete_button', () => {
         'aria-label': 'Foo title',
         icon: 'remove',
         title: 'Foo title',
-        variant: 'danger',
+        variant: 'default',
         disabled: 'true',
-        category: 'secondary',
+        category: 'tertiary',
       });
     });
 

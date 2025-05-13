@@ -9,6 +9,8 @@ module Projects
       before_action :packages_and_registries_settings_enabled!
       before_action :set_feature_flag_packages_protected_packages, only: :show
       before_action :set_feature_flag_container_registry_protected_containers_delete, only: :show
+      before_action :set_feature_flag_container_registry_immutable_tags, only: :show
+      before_action :push_create_container_registry_protection_immutable_tag_rule_ability, only: :show
 
       feature_category :package_registry
       urgency :low
@@ -33,12 +35,21 @@ module Projects
       end
 
       def set_feature_flag_packages_protected_packages
-        push_frontend_feature_flag(:packages_protected_packages_conan, project)
+        push_frontend_feature_flag(:packages_protected_packages_nuget, project)
         push_frontend_feature_flag(:packages_protected_packages_delete, project)
       end
 
       def set_feature_flag_container_registry_protected_containers_delete
         push_frontend_feature_flag(:container_registry_protected_containers_delete, project)
+      end
+
+      def set_feature_flag_container_registry_immutable_tags
+        push_frontend_feature_flag(:container_registry_immutable_tags, project)
+      end
+
+      def push_create_container_registry_protection_immutable_tag_rule_ability
+        push_frontend_ability(ability: :create_container_registry_protection_immutable_tag_rule,
+          resource: project, user: current_user)
       end
     end
   end

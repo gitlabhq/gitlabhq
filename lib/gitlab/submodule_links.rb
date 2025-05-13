@@ -35,7 +35,7 @@ module Gitlab
     end
 
     def old_submodule_id(submodule_url, diff_file)
-      return unless diff_file&.old_blob && diff_file&.old_content_sha
+      return unless diff_file&.old_blob && diff_file.old_content_sha
 
       # if the submodule url has changed from old_sha to sha, a compare link does not make sense
       #

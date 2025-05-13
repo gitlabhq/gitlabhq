@@ -15,7 +15,6 @@ module Ci
     belongs_to :project
     belongs_to :owner, class_name: "User"
 
-    has_many :trigger_requests
     has_many :pipelines, class_name: 'Ci::Pipeline'
 
     validates :token, presence: true, uniqueness: true
@@ -39,11 +38,7 @@ module Ci
     end
 
     def last_used
-      if ::Feature.enabled?(:ci_read_trigger_from_ci_pipeline, project)
-        pipelines.last&.created_at
-      else
-        trigger_requests.last&.created_at
-      end
+      pipelines.last&.created_at
     end
 
     def short_token

@@ -19,14 +19,13 @@ describe('Branch rule', () => {
   let wrapper;
   const squashOptionMockRequestHandler = jest.fn().mockResolvedValue(squashOptionMockResponse);
 
-  const createComponent = async (props = {}, features = { branchRuleSquashSettings: false }) => {
+  const createComponent = async (props = {}) => {
     const fakeApollo = createMockApollo([[squashOptionQuery, squashOptionMockRequestHandler]]);
 
     wrapper = shallowMountExtended(BranchRule, {
       apolloProvider: fakeApollo,
       provide: {
         ...branchRuleProvideMock,
-        glFeatures: features,
       },
       stubs: {
         ProtectedBadge,
@@ -92,12 +91,12 @@ describe('Branch rule', () => {
   });
 
   describe('squash settings', () => {
-    it('renders squash settings when branchRuleSquashSettings is true', async () => {
+    it('renders squash settings', async () => {
       const branchRuleProps = {
         ...branchRulePropsMock,
       };
 
-      await createComponent(branchRuleProps, { branchRuleSquashSettings: true });
+      await createComponent(branchRuleProps);
       expect(findProtectionDetailsListItems().at(2).text()).toBe('Squash commits: Encourage');
     });
   });

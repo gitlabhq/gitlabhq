@@ -1,14 +1,15 @@
 import { nextTick } from 'vue';
-import { GlAvatarLabeled, GlIcon } from '@gitlab/ui';
+import { GlAvatarLabeled, GlIcon, GlTooltip } from '@gitlab/ui';
 import projects from 'test_fixtures/api/users/projects/get.json';
+import { stubComponent } from 'helpers/stub_component';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import ProjectListItemDescription from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_description.vue';
-import ProjectListItemActions from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_actions.vue';
-import ProjectListItemInactiveBadge from 'ee_else_ce/vue_shared/components/projects_list/project_list_item_inactive_badge.vue';
+import ProjectListItemDescription from '~/vue_shared/components/projects_list/project_list_item_description.vue';
+import ProjectListItemActions from '~/vue_shared/components/projects_list/project_list_item_actions.vue';
+import ProjectListItemInactiveBadge from '~/vue_shared/components/projects_list/project_list_item_inactive_badge.vue';
 import ProjectsListItem from '~/vue_shared/components/projects_list/projects_list_item.vue';
+import ProjectListItemDelayedDeletionModalFooter from '~/vue_shared/components/projects_list/project_list_item_delayed_deletion_modal_footer.vue';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
   VISIBILITY_TYPE_ICON,
@@ -27,17 +28,18 @@ import {
 import {
   renderDeleteSuccessToast,
   deleteParams,
-} from 'ee_else_ce/vue_shared/components/projects_list/utils';
+} from '~/vue_shared/components/projects_list/utils';
 import { deleteProject } from '~/api/projects_api';
 import { createAlert } from '~/alert';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
+import ListItem from '~/vue_shared/components/resource_lists/list_item.vue';
 
 const MOCK_DELETE_PARAMS = {
   testParam: true,
 };
 
-jest.mock('ee_else_ce/vue_shared/components/projects_list/utils', () => ({
-  ...jest.requireActual('ee_else_ce/vue_shared/components/projects_list/utils'),
+jest.mock('~/vue_shared/components/projects_list/utils', () => ({
+  ...jest.requireActual('~/vue_shared/components/projects_list/utils'),
   renderDeleteSuccessToast: jest.fn(),
   deleteParams: jest.fn(() => MOCK_DELETE_PARAMS),
 }));
@@ -66,13 +68,12 @@ describe('ProjectsListItem', () => {
   const createComponent = ({ propsData = {} } = {}) => {
     wrapper = mountExtended(ProjectsListItem, {
       propsData: { ...defaultPropsData, ...propsData },
-      directives: {
-        GlTooltip: createMockDirective('gl-tooltip'),
-      },
+      stubs: { GlTooltip: stubComponent(GlTooltip) },
     });
   };
 
   const findAvatarLabeled = () => wrapper.findComponent(GlAvatarLabeled);
+  const findStarsStat = () => wrapper.findByTestId('stars-btn');
   const findMergeRequestsStat = () => wrapper.findByTestId('mrs-btn');
   const findIssuesStat = () => wrapper.findByTestId('issues-btn');
   const findForksStat = () => wrapper.findByTestId('forks-btn');
@@ -85,10 +86,27 @@ describe('ProjectsListItem', () => {
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
   const findTopicBadges = () => wrapper.findComponent(TopicBadges);
   const findDeleteModal = () => wrapper.findComponent(DeleteModal);
+  const findDelayedDeletionModalFooter = () =>
+    wrapper.findComponent(ProjectListItemDelayedDeletionModalFooter);
   const deleteModalFirePrimaryEvent = async () => {
     findDeleteModal().vm.$emit('primary');
     await nextTick();
   };
+  const findTooltipByTarget = (target) =>
+    wrapper
+      .findAllComponents(GlTooltip)
+      .wrappers.find((tooltip) => tooltip.props('target')() === target.element);
+
+  describe('when ListItem component emits click-avatar event', () => {
+    beforeEach(() => {
+      createComponent();
+      wrapper.findComponent(ListItem).vm.$emit('click-avatar');
+    });
+
+    it('emits click-avatar event', () => {
+      expect(wrapper.emitted('click-avatar')).toEqual([[]]);
+    });
+  });
 
   it('renders project avatar', () => {
     createComponent();
@@ -112,10 +130,19 @@ describe('ProjectsListItem', () => {
     createComponent();
 
     const icon = findAvatarLabeled().findComponent(GlIcon);
-    const tooltip = getBinding(icon.element, 'gl-tooltip');
+    const tooltip = findTooltipByTarget(icon);
 
     expect(icon.props('name')).toBe(VISIBILITY_TYPE_ICON[VISIBILITY_LEVEL_PRIVATE_STRING]);
-    expect(tooltip.value).toBe(PROJECT_VISIBILITY_TYPE[VISIBILITY_LEVEL_PRIVATE_STRING]);
+    expect(tooltip.text()).toBe(PROJECT_VISIBILITY_TYPE[VISIBILITY_LEVEL_PRIVATE_STRING]);
+  });
+
+  it('emits hover-visibility event when visibility icon tooltip is shown', () => {
+    createComponent();
+
+    const icon = findAvatarLabeled().findComponent(GlIcon);
+    findTooltipByTarget(icon).vm.$emit('shown');
+
+    expect(wrapper.emitted('hover-visibility')).toEqual([[project.visibility]]);
   });
 
   describe('when visibility is not provided', () => {
@@ -174,12 +201,29 @@ describe('ProjectsListItem', () => {
   it('renders stars count', () => {
     createComponent();
 
-    expect(wrapper.findByTestId('stars-btn').props()).toEqual({
+    expect(findStarsStat().props()).toEqual({
       href: `${project.webUrl}/-/starrers`,
       tooltipText: 'Stars',
       a11yText: `${project.avatarLabel} has ${project.starCount} stars`,
       iconName: 'star-o',
       stat: project.starCount.toString(),
+    });
+  });
+
+  describe('when stars count stat emits hover and click events', () => {
+    beforeEach(async () => {
+      createComponent();
+      findStarsStat().vm.$emit('hover');
+      findStarsStat().vm.$emit('click');
+
+      await nextTick();
+    });
+
+    it('emits hover-stat and click-stat events', () => {
+      expect(wrapper.emitted()).toEqual({
+        'click-stat': [['stars-count']],
+        'hover-stat': [['stars-count']],
+      });
     });
   });
 
@@ -222,7 +266,7 @@ describe('ProjectsListItem', () => {
   });
 
   describe('when merge requests are enabled', () => {
-    it('renders merge requests count', () => {
+    beforeEach(() => {
       createComponent({
         propsData: {
           project: {
@@ -231,13 +275,29 @@ describe('ProjectsListItem', () => {
           },
         },
       });
+    });
 
+    it('renders merge requests count', () => {
       expect(findMergeRequestsStat().props()).toEqual({
         href: `${project.webUrl}/-/merge_requests`,
         tooltipText: 'Merge requests',
         a11yText: `${project.avatarLabel} has 5 open merge requests`,
         iconName: 'merge-request',
         stat: '5',
+      });
+    });
+
+    describe('when merge request stat emits hover and click events', () => {
+      beforeEach(() => {
+        findMergeRequestsStat().vm.$emit('hover');
+        findMergeRequestsStat().vm.$emit('click');
+      });
+
+      it('emits hover-stat and click-stat events', () => {
+        expect(wrapper.emitted()).toEqual({
+          'click-stat': [['mrs-count']],
+          'hover-stat': [['mrs-count']],
+        });
       });
     });
   });
@@ -258,15 +318,31 @@ describe('ProjectsListItem', () => {
   });
 
   describe('when issues are enabled', () => {
-    it('renders issues count', () => {
+    beforeEach(() => {
       createComponent();
+    });
 
+    it('renders issues count', () => {
       expect(findIssuesStat().props()).toEqual({
         href: `${project.webUrl}/-/issues`,
         tooltipText: 'Issues',
         a11yText: `${project.avatarLabel} has ${project.openIssuesCount} open issues`,
         iconName: 'issues',
         stat: project.openIssuesCount.toString(),
+      });
+    });
+
+    describe('when issues stat emits hover and click events', () => {
+      beforeEach(() => {
+        findIssuesStat().vm.$emit('hover');
+        findIssuesStat().vm.$emit('click');
+      });
+
+      it('emits hover-stat and click-stat events', () => {
+        expect(wrapper.emitted()).toEqual({
+          'click-stat': [['issues-count']],
+          'hover-stat': [['issues-count']],
+        });
       });
     });
   });
@@ -287,15 +363,31 @@ describe('ProjectsListItem', () => {
   });
 
   describe('when forking is enabled', () => {
-    it('renders forks count', () => {
+    beforeEach(() => {
       createComponent();
+    });
 
+    it('renders forks count', () => {
       expect(findForksStat().props()).toEqual({
         href: `${project.webUrl}/-/forks`,
         a11yText: `${project.avatarLabel} has ${project.forksCount} forks`,
         tooltipText: 'Forks',
         iconName: 'fork',
         stat: project.forksCount.toString(),
+      });
+    });
+
+    describe('when forking stat emits hover and click events', () => {
+      beforeEach(() => {
+        findForksStat().vm.$emit('hover');
+        findForksStat().vm.$emit('click');
+      });
+
+      it('emits hover-stat and click-stat events', () => {
+        expect(wrapper.emitted()).toEqual({
+          'click-stat': [['forks-count']],
+          'hover-stat': [['forks-count']],
+        });
       });
     });
   });
@@ -328,6 +420,17 @@ describe('ProjectsListItem', () => {
       createComponent();
 
       expect(findTopicBadges().exists()).toBe(true);
+    });
+
+    describe('when topic badges component emits click event', () => {
+      beforeEach(() => {
+        createComponent();
+        findTopicBadges().vm.$emit('click');
+      });
+
+      it('emits click-topic event', () => {
+        expect(wrapper.emitted('click-topic')).toEqual([[]]);
+      });
     });
   });
 
@@ -534,5 +637,23 @@ describe('ProjectsListItem', () => {
     createComponent({ propsData: { listItemClass: 'foo' } });
 
     expect(wrapper.element.firstChild.classList).toContain('foo');
+  });
+
+  describe('ProjectListItemDelayedDeletionModalFooter', () => {
+    const deleteProps = {
+      project: {
+        ...project,
+        availableActions: [ACTION_DELETE],
+        actionLoadingStates: { [ACTION_DELETE]: false },
+      },
+    };
+
+    it('renders modal footer', () => {
+      createComponent({ propsData: deleteProps });
+      findListActions().vm.$emit('delete');
+
+      expect(findDeleteModal().exists()).toBe(true);
+      expect(findDelayedDeletionModalFooter().exists()).toBe(false);
+    });
   });
 });

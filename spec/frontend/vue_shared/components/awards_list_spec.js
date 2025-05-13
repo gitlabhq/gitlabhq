@@ -92,8 +92,13 @@ const REACTION_CONTROL_CLASSES = [
 
 describe('vue_shared/components/awards_list', () => {
   let wrapper;
+  const mockCustomEmojiPath = '/groups/gitlab-org/-/custom_emoji/new';
 
-  const createComponent = (props = {}) => {
+  const createComponent = (
+    props = {
+      customEmojiPath: mockCustomEmojiPath,
+    },
+  ) => {
     wrapper = mount(AwardsList, { propsData: props });
   };
   const matchingEmojiTag = (name) => expect.stringMatching(`gl-emoji data-name="${name}"`);
@@ -113,6 +118,7 @@ describe('vue_shared/components/awards_list', () => {
   describe('default', () => {
     beforeEach(() => {
       createComponent({
+        customEmojiPath: mockCustomEmojiPath,
         awards: TEST_AWARDS,
         canAwardEmoji: true,
         currentUserId: USERS.root.id,
@@ -207,12 +213,14 @@ describe('vue_shared/components/awards_list', () => {
       const btn = findAddAwardButton();
 
       expect(btn.exists()).toBe(true);
+      expect(btn.props('customEmojiPath')).toBe(mockCustomEmojiPath);
     });
   });
 
   describe('with no awards', () => {
     beforeEach(() => {
       createComponent({
+        customEmojiPath: mockCustomEmojiPath,
         awards: [],
         canAwardEmoji: true,
       });
@@ -226,6 +234,7 @@ describe('vue_shared/components/awards_list', () => {
   describe('when cannot award emoji', () => {
     beforeEach(() => {
       createComponent({
+        customEmojiPath: mockCustomEmojiPath,
         awards: [createAward(EMOJI_CACTUS, USERS.root.id)],
         canAwardEmoji: false,
         currentUserId: USERS.marie.id,
@@ -240,6 +249,7 @@ describe('vue_shared/components/awards_list', () => {
   describe('with no user', () => {
     beforeEach(() => {
       createComponent({
+        customEmojiPath: mockCustomEmojiPath,
         awards: TEST_AWARDS,
         canAwardEmoji: false,
       });
@@ -256,6 +266,7 @@ describe('vue_shared/components/awards_list', () => {
   describe('with default awards', () => {
     beforeEach(() => {
       createComponent({
+        customEmojiPath: mockCustomEmojiPath,
         awards: [createAward(EMOJI_SMILE, USERS.marie), createAward(EMOJI_100, USERS.marie)],
         canAwardEmoji: true,
         currentUserId: USERS.root.id,

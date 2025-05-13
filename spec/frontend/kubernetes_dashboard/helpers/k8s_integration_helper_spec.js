@@ -6,6 +6,7 @@ import {
   calculateJobStatus,
   calculateCronJobStatus,
   generateServicePortsString,
+  getPodStatusText,
 } from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
 import { useFakeDate } from 'helpers/fake_date';
 
@@ -168,6 +169,128 @@ describe('k8s_integration_helper', () => {
           { port, protocol, nodePort },
         ]),
       ).toBe(`${port}/${protocol}, ${port}:${nodePort}/${protocol}`);
+    });
+  });
+
+  describe('getPodStatusText', () => {
+    it('returns an empty string if no status is provided', () => {
+      expect(getPodStatusText()).toBe('');
+    });
+
+    it('returns phase when no containerStatuses or reason exists', () => {
+      const status = {
+        phase: 'Running',
+      };
+
+      expect(getPodStatusText(status)).toBe('Running');
+    });
+
+    it('returns status reason when it exists and no containerStatuses', () => {
+      const status = {
+        phase: 'Running',
+        reason: 'NodeLost',
+      };
+
+      expect(getPodStatusText(status)).toBe('NodeLost');
+    });
+
+    it('returns waiting reason from container when it exists', () => {
+      const status = {
+        phase: 'Pending',
+        containerStatuses: [
+          {
+            state: {
+              waiting: {
+                reason: 'ContainerCreating',
+              },
+            },
+          },
+        ],
+      };
+
+      expect(getPodStatusText(status)).toBe('ContainerCreating');
+    });
+
+    it('returns terminated reason from container when it exists', () => {
+      const status = {
+        phase: 'Failed',
+        containerStatuses: [
+          {
+            state: {
+              terminated: {
+                reason: 'Error',
+              },
+            },
+          },
+        ],
+      };
+
+      expect(getPodStatusText(status)).toBe('Error');
+    });
+
+    it('returns the first container with waiting reason when multiple containers exist', () => {
+      const status = {
+        phase: 'Pending',
+        containerStatuses: [
+          {
+            state: {},
+          },
+          {
+            state: {
+              waiting: {
+                reason: 'ImagePullBackOff',
+              },
+            },
+          },
+        ],
+      };
+
+      expect(getPodStatusText(status)).toBe('ImagePullBackOff');
+    });
+
+    it('prioritizes waiting reason over terminated reason', () => {
+      const status = {
+        phase: 'Pending',
+        containerStatuses: [
+          {
+            state: {
+              waiting: {
+                reason: 'CrashLoopBackOff',
+              },
+              terminated: {
+                reason: 'Error',
+              },
+            },
+          },
+        ],
+      };
+
+      expect(getPodStatusText(status)).toBe('CrashLoopBackOff');
+    });
+
+    it('handles empty containerStatuses array', () => {
+      const status = {
+        phase: 'Pending',
+        containerStatuses: [],
+      };
+
+      expect(getPodStatusText(status)).toBe('Pending');
+    });
+
+    it('handles null or undefined state properties', () => {
+      const status = {
+        phase: 'Running',
+        containerStatuses: [
+          {
+            state: null,
+          },
+          {
+            // No state property
+          },
+        ],
+      };
+
+      expect(getPodStatusText(status)).toBe('Running');
     });
   });
 });

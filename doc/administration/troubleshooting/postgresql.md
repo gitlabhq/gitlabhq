@@ -109,13 +109,14 @@ This section is for links to information elsewhere in the GitLab documentation.
 
 - Consuming PostgreSQL from [within CI runners](../../ci/services/postgres.md).
 
-- Managing PostgreSQL versions on Linux package installations [from the development docs](https://docs.gitlab.com/omnibus/development/managing-postgresql-versions.html).
+- Managing PostgreSQL versions on Linux package installations from the Linux package development
+  documentation.
 
 - [PostgreSQL scaling](../postgresql/replication_and_failover.md)
   - Including [troubleshooting](../postgresql/replication_and_failover_troubleshooting.md)
     `gitlab-ctl patroni check-leader` and PgBouncer errors.
 
-- [Developer database documentation](../../development/database/_index.md),
+- Developer database documentation,
   some of which is absolutely not for production use. Including:
   - Understanding EXPLAIN plans.
 
@@ -262,7 +263,7 @@ Prerequisites:
 
 To observe a `CREATE INDEX` or `REINDEX` operation:
 
-- Use the built-in [`pg_stat_progress_create_index` view](https://www.postgresql.org/docs/current/progress-reporting.html#CREATE-INDEX-PROGRESS-REPORTING).
+- Use the built-in [`pg_stat_progress_create_index` view](https://www.postgresql.org/docs/16/progress-reporting.html#CREATE-INDEX-PROGRESS-REPORTING).
 
 For example, from a database console session, run the following command:
 

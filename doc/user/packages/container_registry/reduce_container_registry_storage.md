@@ -346,7 +346,7 @@ You can use the following application settings to prevent server resource starva
   start with a low number and increase it after verifying that container images are properly
   deleted. The default value is `200`.
 - `container_registry_expiration_policies_caching`: enable or disable tag creation timestamp caching
-  during execution of policies. Cached timestamps are stored in [Redis](../../../development/architecture.md#redis).
+  during execution of policies. Cached timestamps are stored in Redis.
   Enabled by default.
 
 For GitLab Self-Managed instances, those settings can be updated in the [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session):

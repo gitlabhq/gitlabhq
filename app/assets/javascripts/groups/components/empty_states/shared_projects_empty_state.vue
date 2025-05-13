@@ -1,11 +1,13 @@
 <script>
-import { GlEmptyState, GlSprintf } from '@gitlab/ui';
+import { GlSprintf } from '@gitlab/ui';
+import ResourceListsEmptyState from '~/vue_shared/components/resource_lists/empty_state.vue';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
-
 import { s__ } from '~/locale';
+import { SEARCH_MINIMUM_LENGTH } from '../../constants';
 
 export default {
-  components: { GlEmptyState, HelpPageLink, GlSprintf },
+  components: { ResourceListsEmptyState, HelpPageLink, GlSprintf },
+  SEARCH_MINIMUM_LENGTH,
   i18n: {
     title: s__('GroupsEmptyState|This group has not been invited to any other projects.'),
     description: s__(
@@ -13,11 +15,23 @@ export default {
     ),
   },
   inject: ['emptyProjectsIllustration'],
+  props: {
+    search: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
 };
 </script>
 
 <template>
-  <gl-empty-state :title="$options.i18n.title" :svg-path="emptyProjectsIllustration">
+  <resource-lists-empty-state
+    :title="$options.i18n.title"
+    :svg-path="emptyProjectsIllustration"
+    :search="search"
+    :search-minimum-length="$options.SEARCH_MINIMUM_LENGTH"
+  >
     <template #description>
       <gl-sprintf :message="$options.i18n.description">
         <template #link="{ content }">
@@ -29,5 +43,5 @@ export default {
         </template>
       </gl-sprintf>
     </template>
-  </gl-empty-state>
+  </resource-lists-empty-state>
 </template>

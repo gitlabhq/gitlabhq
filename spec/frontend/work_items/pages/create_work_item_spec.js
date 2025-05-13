@@ -6,6 +6,7 @@ import CreateWorkItemPage from '~/work_items/pages/create_work_item.vue';
 import CreateWorkItem from '~/work_items/components/create_work_item.vue';
 import workItemRelatedItemQuery from '~/work_items/graphql/work_item_related_item.query.graphql';
 import { visitUrl, updateHistory, removeParams } from '~/lib/utils/url_utility';
+import { setHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -155,6 +156,36 @@ describe('Create work item page component', () => {
         expect(removeParams).toHaveBeenCalledWith(['related_item_id']);
         expect(updateHistory).toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('when the add_related_issue url query param is provided to the backend', () => {
+    beforeEach(async () => {
+      setHTMLFixture(`
+          <div class="new-issue-params hidden">
+            <div class="params-title">
+              i am a title
+            </div>
+            <div class="params-description">
+              i
+              am
+              a
+              description!
+            </div>
+            <div class="params-add-related-issue">
+              234
+            </div>
+            <div class="params-discussion-to-resolve">
+
+            </div>
+          </div>`);
+      createComponent();
+      await waitForPromises();
+      await nextTick();
+    });
+
+    it('queries for the related item', () => {
+      expect(relatedItemQueryHandler).toHaveBeenCalledWith({ id: 'gid://gitlab/WorkItem/234' });
     });
   });
 

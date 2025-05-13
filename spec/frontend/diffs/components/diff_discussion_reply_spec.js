@@ -1,24 +1,25 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
 import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import DiffDiscussionReply from '~/diffs/components/diff_discussion_reply.vue';
 import NoteSignedOutWidget from '~/notes/components/note_signed_out_widget.vue';
 import DiscussionLockedWidget from '~/notes/components/discussion_locked_widget.vue';
-
 import { START_THREAD } from '~/diffs/i18n';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 describe('DiffDiscussionReply', () => {
   let wrapper;
-  let getters;
-  let store;
+  let pinia;
 
   const createComponent = (props = {}, slots = {}) => {
     wrapper = shallowMount(DiffDiscussionReply, {
-      store,
+      pinia,
       propsData: {
         ...props,
       },
@@ -28,26 +29,21 @@ describe('DiffDiscussionReply', () => {
     });
   };
 
+  beforeEach(() => {
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+    useNotes();
+  });
+
   describe('if user is signed in', () => {
     beforeEach(() => {
-      getters = {
-        userCanReply: () => true,
-        getNoteableData: () => ({
-          current_user: {
-            can_create_note: true,
-          },
-        }),
-        getUserData: () => ({
-          path: 'test-path',
-          avatar_url: 'avatar_url',
-          name: 'John Doe',
-          id: 1,
-        }),
+      useNotes().noteableData.current_user = { can_create_note: true };
+      useNotes().userData = {
+        path: 'test-path',
+        avatar_url: 'avatar_url',
+        name: 'John Doe',
+        id: 1,
       };
-
-      store = new Vuex.Store({
-        getters,
-      });
     });
 
     it('should render a form if component has form', () => {
@@ -84,14 +80,7 @@ describe('DiffDiscussionReply', () => {
     `(
       'reply button existence is `$showButton` when userCanReply is `$userCanReply`, hasForm is `$hasForm` and renderReplyPlaceholder is `$renderReplyPlaceholder`',
       ({ userCanReply, hasForm, renderReplyPlaceholder, showButton }) => {
-        getters = {
-          ...getters,
-          userCanReply: () => userCanReply,
-        };
-
-        store = new Vuex.Store({
-          getters,
-        });
+        useNotes().noteableData.current_user = { can_create_note: userCanReply };
 
         createComponent({
           renderReplyPlaceholder,
@@ -103,18 +92,7 @@ describe('DiffDiscussionReply', () => {
     );
 
     it('shows the locked discussion widget when the user is not allowed to create notes', () => {
-      getters = {
-        ...getters,
-        getNoteableData: () => ({
-          current_user: {
-            can_create_note: false,
-          },
-        }),
-      };
-
-      store = new Vuex.Store({
-        getters,
-      });
+      useNotes().noteableData.current_user = { can_create_note: false };
 
       createComponent({
         renderReplyPlaceholder: false,
@@ -127,19 +105,8 @@ describe('DiffDiscussionReply', () => {
 
   describe('if user is signed out', () => {
     beforeEach(() => {
-      getters = {
-        userCanReply: () => false,
-        getNoteableData: () => ({
-          current_user: {
-            can_create_note: false,
-          },
-        }),
-        getUserData: () => null,
-      };
-
-      store = new Vuex.Store({
-        getters,
-      });
+      useNotes().noteableData.current_user = { can_create_note: false };
+      useNotes().userData = null;
     });
 
     it('renders a signed out widget when user is not logged in', () => {

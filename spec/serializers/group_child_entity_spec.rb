@@ -34,7 +34,8 @@ RSpec.describe GroupChildEntity do
        can_edit
        visibility
        permission
-       relative_path].each do |attribute|
+       relative_path
+       web_url].each do |attribute|
       it "includes #{attribute}" do
         expect(json[attribute.to_sym]).to be_present
       end
@@ -106,7 +107,65 @@ RSpec.describe GroupChildEntity do
       end
     end
 
-    %w[children_count leave_path parent_id number_users_with_delimiter project_count subgroup_count].each do |attribute|
+    it 'returns is_linked_to_subscription as false' do
+      expect(json[:is_linked_to_subscription]).to be(false)
+    end
+
+    describe 'delayed deletion attributes' do
+      let_it_be(:deletion_adjourned_period) { 14 }
+
+      before do
+        stub_application_setting(deletion_adjourned_period: deletion_adjourned_period)
+      end
+
+      context 'when group is marked for deletion' do
+        let_it_be(:date) { Date.new(2025, 4, 14) }
+        let_it_be(:group) { create(:group) }
+        let_it_be(:subgroup) { create(:group, name: 'subgroup', parent: group) }
+        let_it_be(:sub_subgroup) { create(:group, name: 'subsubgroup', parent: subgroup) }
+        let_it_be(:project) { create(:project, name: 'project 1', group: group) }
+        let_it_be(:deletion_schedule) do
+          create(:group_deletion_schedule, group: group, marked_for_deletion_on: date, deleting_user: user)
+        end
+
+        it 'returns marked_for_deletion as true for child projects and groups' do
+          [group, subgroup, sub_subgroup, project].each do |item|
+            expect(described_class.new(item, request: request).as_json[:marked_for_deletion]).to eq(true)
+          end
+        end
+
+        it 'returns marked_for_deletion_on' do
+          expect(described_class.new(group, request: request).as_json[:marked_for_deletion_on]).to eq(date)
+        end
+
+        it 'returns permanent_deletion_date as the date the group will be deleted' do
+          expect(described_class.new(group, request: request).as_json[:permanent_deletion_date]).to eq((date + deletion_adjourned_period.days).strftime('%F'))
+        end
+      end
+
+      context 'when group is not marked for deletion' do
+        let_it_be(:group) { create(:group) }
+        let_it_be(:subgroup) { create(:group, name: 'subgroup', parent: group) }
+        let_it_be(:sub_subgroup) { create(:group, name: 'subsubgroup', parent: subgroup) }
+        let_it_be(:project) { create(:project, name: 'project 1', group: group) }
+
+        it 'returns marked_for_deletion as false for child projects and groups' do
+          [group, subgroup, sub_subgroup, project].each do |item|
+            expect(described_class.new(item, request: request).as_json[:marked_for_deletion]).to eq(false)
+          end
+        end
+
+        it 'returns marked_for_deletion_on as nil' do
+          expect(described_class.new(group, request: request).as_json[:marked_for_deletion_on]).to be_nil
+        end
+
+        it 'returns permanent_deletion_date as the theoretical date the group will be deleted' do
+          expect(described_class.new(group, request: request).as_json[:permanent_deletion_date]).to eq((Date.current + deletion_adjourned_period.days).strftime('%F'))
+        end
+      end
+    end
+
+    %w[children_count leave_path parent_id number_users_with_delimiter group_members_count project_count subgroup_count].each do |attribute|
       it "includes #{attribute}" do
         expect(json[attribute.to_sym]).to be_present
       end

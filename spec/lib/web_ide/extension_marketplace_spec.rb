@@ -25,19 +25,17 @@ RSpec.describe WebIde::ExtensionMarketplace, feature_category: :web_ide do
   let_it_be_with_reload(:current_user) { create(:user) }
 
   describe 'feature enabled methods' do
-    where(:vscode_web_ide, :web_ide_extensions_marketplace, :vscode_extension_marketplace_settings, :app_setting,
+    where(:web_ide_extensions_marketplace, :vscode_extension_marketplace_settings, :app_setting,
       :expectation) do
-      ref(:current_user) | ref(:current_user) | false | {}                | true
-      ref(:current_user) | ref(:current_user) | true  | {}                | false
-      ref(:current_user) | ref(:current_user) | true  | { enabled: true } | true
-      ref(:current_user) | false              | false | { enabled: true } | false
-      false              | ref(:current_user) | false | {}                | false
+      ref(:current_user) | false | {}                | true
+      ref(:current_user) | true  | {}                | false
+      ref(:current_user) | true  | { enabled: true } | true
+      false              | false | { enabled: true } | false
     end
 
     with_them do
       before do
         stub_feature_flags(
-          vscode_web_ide: vscode_web_ide,
           web_ide_extensions_marketplace: web_ide_extensions_marketplace,
           vscode_extension_marketplace_settings: vscode_extension_marketplace_settings
         )
@@ -129,8 +127,7 @@ RSpec.describe WebIde::ExtensionMarketplace, feature_category: :web_ide do
     before do
       stub_feature_flags(
         vscode_extension_marketplace_settings: vscode_extension_marketplace_settings,
-        web_ide_extensions_marketplace: web_ide_extensions_marketplace,
-        vscode_web_ide: true
+        web_ide_extensions_marketplace: web_ide_extensions_marketplace
       )
 
       stub_application_setting(vscode_extension_marketplace: app_setting)

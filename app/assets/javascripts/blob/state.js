@@ -1,9 +1,9 @@
 import Vue from 'vue';
 
-export const lineState = Vue.observable({
-  currentLineNumber: null,
+export const hashState = Vue.observable({
+  currentHash: window.location.hash,
 });
 
 export const updateLineNumber = (lineNumber) => {
-  lineState.currentLineNumber = lineNumber;
+  hashState.currentHash = lineNumber;
 };

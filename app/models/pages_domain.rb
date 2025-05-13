@@ -4,6 +4,7 @@ class PagesDomain < ApplicationRecord
   include Presentable
   include FromUnion
   include AfterCommitQueue
+  include Gitlab::EncryptedAttribute
 
   VERIFICATION_KEY = 'gitlab-pages-verification-code'
   VERIFICATION_THRESHOLD = 3.days.freeze
@@ -13,9 +14,9 @@ class PagesDomain < ApplicationRecord
 
   X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN = 19
 
-  enum certificate_source: { user_provided: 0, gitlab_provided: 1 }, _prefix: :certificate
-  enum scope: { instance: 0, group: 1, project: 2 }, _prefix: :scope, _default: :project
-  enum usage: { pages: 0, serverless: 1 }, _prefix: :usage, _default: :pages
+  enum :certificate_source, { user_provided: 0, gitlab_provided: 1 }, prefix: :certificate
+  enum :scope, { instance: 0, group: 1, project: 2 }, prefix: :scope, default: :project
+  enum :usage, { pages: 0, serverless: 1 }, prefix: :usage, default: :pages
 
   belongs_to :project
   has_many :acme_orders, class_name: "PagesDomainAcmeOrder"
@@ -48,7 +49,7 @@ class PagesDomain < ApplicationRecord
   attr_encrypted :key,
     mode: :per_attribute_iv_and_salt,
     insecure_mode: true,
-    key: Settings.attr_encrypted_db_key_base,
+    key: :db_key_base,
     algorithm: 'aes-256-cbc'
 
   scope :for_project, ->(project) { where(project: project) }

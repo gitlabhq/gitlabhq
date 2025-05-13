@@ -83,7 +83,7 @@ In those cases where the number of `records` is above a given threshold, inserti
 occur in multiple batches. The default batch size is defined in
 [`BulkInsertSafe::DEFAULT_BATCH_SIZE`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/concerns/bulk_insert_safe.rb).
 Assuming a default threshold of 500, inserting 950 records
-would result in two batches being written sequentially (of size 500 and 450 respectively.)
+would result in two batches being written sequentially (of size 500 and 450).
 You can override the default batch size via the `:batch_size` option:
 
 ```ruby

@@ -87,9 +87,9 @@ export default {
 
 <template>
   <div>
-    <h3 v-if="isLoading || showMetadata" class="gl-text-lg" data-testid="title">
+    <h2 v-if="isLoading || showMetadata" class="gl-heading-2 gl-mt-5" data-testid="title">
       {{ $options.i18n.componentTitle }}
-    </h3>
+    </h2>
     <gl-alert
       v-if="fetchPackageMetadataError"
       variant="danger"

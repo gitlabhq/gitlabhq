@@ -483,6 +483,13 @@ export const MR_ADD_COMMENT_NOW = {
   customizable: false,
 };
 
+export const MR_TOGGLE_REVIEW = {
+  id: 'mergeRequests.toggleReview',
+  description: s__('MergeRequest|Viewed by me'),
+  defaultKeys: ['v'],
+  customizable: false,
+};
+
 export const MR_NEXT_UNRESOLVED_DISCUSSION = {
   id: 'mergeRequests.nextUnresolvedDiscussion',
   description: __('Next unresolved thread'),
@@ -557,7 +564,8 @@ export const SIDEBAR_CLOSE_WIDGET = {
 export const WORK_ITEM_TOGGLE_SIDEBAR = {
   id: 'workitems.toggleSidebar',
   description: __('Show or hide sidebar'),
-  defaultKeys: ['mod+/'], // eslint-disable-line @gitlab/require-i18n-strings
+  defaultKeys: ['mod+/', 'shift+mod+7'], // eslint-disable-line @gitlab/require-i18n-strings
+  // Shift+7 is equivalent to forward-slash on some keyboards without a dedicated key
   customizable: false,
 };
 
@@ -708,6 +716,7 @@ const MR_SHORTCUTS_GROUP = {
     MR_TOGGLE_FILE_BROWSER,
     MR_ADD_TO_REVIEW,
     MR_ADD_COMMENT_NOW,
+    MR_TOGGLE_REVIEW,
   ],
 };
 

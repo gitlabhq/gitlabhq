@@ -2,10 +2,12 @@
 
 module ServiceDesk
   class CustomEmailVerification < ApplicationRecord
+    include Gitlab::EncryptedAttribute
+
     TIMEFRAME = 30.minutes
     STATES = { started: 0, finished: 1, failed: 2 }.freeze
 
-    enum error: {
+    enum :error, {
       incorrect_token: 0,
       incorrect_from: 1,
       mail_not_received_within_timeframe: 2,
@@ -18,7 +20,7 @@ module ServiceDesk
     attr_encrypted :token,
       mode: :per_attribute_iv,
       algorithm: 'aes-256-gcm',
-      key: Settings.attr_encrypted_db_key_base_32,
+      key: :db_key_base_32,
       encode: false,
       encode_iv: false
 
@@ -92,7 +94,7 @@ module ServiceDesk
 
     # Needs to be below `state_machine` definition to suppress
     # its method override warnings
-    enum state: STATES
+    enum :state, STATES
 
     class << self
       def generate_token

@@ -1,5 +1,6 @@
 <script>
-import { colorFromDefaultPalette } from '@gitlab/ui/dist/utils/charts/theme';
+import { colorFromDefaultPalette, colorFromDarkPalette } from '@gitlab/ui/dist/utils/charts/theme';
+import { darkModeEnabled } from '~/lib/utils/color_utils';
 import { roundOffFloat } from '~/lib/utils/common_utils';
 import { formatNumber } from '~/locale';
 
@@ -31,7 +32,9 @@ export default {
         const percentage = section.value / this.sectionsCombinedValue;
         return {
           ...section,
-          backgroundColor: section.color ?? colorFromDefaultPalette(index),
+          backgroundColor:
+            section.color ??
+            (darkModeEnabled() ? colorFromDarkPalette(index) : colorFromDefaultPalette(index)),
           cssPercentage: `${roundOffFloat(percentage * 100, 4)}%`,
           srLabelPercentage: formatNumber(percentage, {
             style: 'percent',

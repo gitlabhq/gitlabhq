@@ -206,7 +206,6 @@ module Trigger
   class CNG < Base
     TriggerRefBranchCreationFailed = Class.new(StandardError)
 
-    ASSETS_HASH = "cached-assets-hash.txt"
     DEFAULT_DEBIAN_IMAGE = "debian:bookworm-slim"
     DEFAULT_ALPINE_IMAGE = "alpine:3.20"
     DEFAULT_SKIPPED_JOBS = %w[final-images-listing].freeze
@@ -257,6 +256,14 @@ module Trigger
     end
 
     private
+
+    def assets_tag_variable
+      tag = ENV['GLCI_ASSETS_IMAGE_TAG']
+      return { 'GITLAB_ASSETS_TAG' => tag } unless tag.nil? || tag.empty?
+
+      logger.warn("No image tag found in GLCI_ASSETS_IMAGE_TAG environment variable, enabling asset compilation in CNG pipeline")
+      { 'COMPILE_ASSETS' => 'true' }
+    end
 
     # overridden base class methods
     def downstream_project_path
@@ -324,7 +331,8 @@ module Trigger
         "SKIP_JOB_REGEX" => DEFAULT_SKIPPED_JOB_REGEX,
         "DEBIAN_IMAGE" => DEFAULT_DEBIAN_IMAGE, # Make sure default values are always set to not end up as empty string
         "ALPINE_IMAGE" => DEFAULT_ALPINE_IMAGE, # Make sure default values are always set to not end up as empty string
-        **default_build_vars
+        **default_build_vars,
+        **assets_tag_variable
       }
     end
 
@@ -486,7 +494,8 @@ module Trigger
         "GITLAB_SIDEKIQ_TAG" => container_versions["gitlab-sidekiq-#{edition}"],
         "GITLAB_WEBSERVICE_TAG" => container_versions["gitlab-webservice-#{edition}"],
         "GITLAB_WORKHORSE_TAG" => container_versions["gitlab-workhorse-#{edition}"],
-        "GITLAB_KAS_TAG" => container_versions["gitlab-kas"]
+        "GITLAB_KAS_TAG" => container_versions["gitlab-kas"],
+        "GITLAB_CONTAINER_REGISTRY_TAG" => container_versions["gitlab-container-registry"]
       }
     end
 
@@ -542,7 +551,13 @@ module Trigger
         false
       end
 
-      existing_tags.keys
+      jobs_to_skip = existing_tags.keys
+      return jobs_to_skip unless jobs == jobs_to_skip
+
+      # Trigger job will fail with no error message if downstream pipeline has no jobs or only skipped/manual jobs.
+      # Trigger gitlab-rails job if that is the case for downstream pipeline to work correctly.
+      logger.warn("Retaining gitlab-rails job to avoid empty downstream pipeline to not fail trigger job!")
+      jobs_to_skip.reject { |name| name.start_with?("gitlab-rails") }
     end
 
     # rubocop:disable Gitlab/HTTParty -- CI script

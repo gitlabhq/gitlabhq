@@ -25,7 +25,7 @@ export const getQueryResponse = {
             upvotes: 3,
             resolvedDiscussionsCount: 4,
             resolvableDiscussionsCount: 4,
-            webUrl: 'project/-/merge_requests/789',
+            webPath: 'project/-/merge_requests/789',
             assignees: {
               nodes: [
                 {

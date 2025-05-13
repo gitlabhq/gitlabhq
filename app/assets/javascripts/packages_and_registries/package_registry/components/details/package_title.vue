@@ -83,6 +83,7 @@ export default {
     v-gl-resize-observer="checkBreakpoints"
     :title="packageEntity.name"
     :avatar="packageIcon"
+    :inline-actions="false"
   >
     <template #sub-header>
       <div data-testid="sub-header" class="gl-flex gl-flex-wrap gl-items-baseline gl-gap-2">

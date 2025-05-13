@@ -5,7 +5,13 @@ import { registerPlugins } from './plugins/index';
 
 const loadLanguage = async (language, hljs) => {
   const languageDefinition = await languageLoader[language]();
-  hljs.registerLanguage(language, languageDefinition.default);
+  if (Array.isArray(languageDefinition)) {
+    languageDefinition.forEach(([languageDependency, languageDependencyDefinition]) =>
+      hljs.registerLanguage(languageDependency, languageDependencyDefinition.default),
+    );
+  } else {
+    hljs.registerLanguage(language, languageDefinition.default);
+  }
 };
 
 const loadSubLanguages = async (languageDefinition, hljs) => {

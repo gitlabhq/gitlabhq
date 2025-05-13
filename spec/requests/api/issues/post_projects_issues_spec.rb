@@ -488,15 +488,9 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
 
       context 'when source and target projects are the same' do
         it 'returns 400 when trying to move an issue' do
-          post api(path, user),
-            params: { to_project_id: project.id }
+          post api(path, user), params: { to_project_id: project.id }
 
-          if issue.project.work_item_move_and_clone_flag_enabled?
-            expect(json_response['id']).to eq(issue.id)
-          else
-            expect(response).to have_gitlab_http_status(:bad_request)
-            expect(json_response['message']).to eq(same_project_error_message)
-          end
+          expect(json_response['id']).to eq(issue.id)
         end
       end
 
@@ -506,7 +500,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
             params: { to_project_id: target_project2.id }
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']).to eq(permissions_error_message)
+          expect(json_response['message']).to eq("Unable to move. You have insufficient permissions.")
         end
       end
 
@@ -558,26 +552,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
       end
     end
 
-    context 'with work_item_move_and_clone disabled' do
-      it_behaves_like 'move work item api requests' do
-        let(:same_project_error_message) { "Cannot move issue to project it originates from." }
-        let(:permissions_error_message) { "Cannot move issue due to insufficient permissions." }
-
-        before do
-          stub_feature_flags(work_item_move_and_clone: false)
-        end
-      end
-    end
-
-    context 'with work_item_move_and_clone enabled' do
-      it_behaves_like 'move work item api requests' do
-        let(:permissions_error_message) { "Unable to move. You have insufficient permissions." }
-
-        before do
-          stub_feature_flags(work_item_move_and_clone: true)
-        end
-      end
-    end
+    it_behaves_like 'move work item api requests'
   end
 
   describe '/projects/:id/issues/:issue_iid/clone' do
@@ -598,12 +573,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
 
             cloned_issue = Issue.last
 
-            # legacy clone adds an extra note for assignees, even though assignees are cloned from original issue and,
-            # in case of cloning notes, along with cloning assignments system notes as well
-            notes_count = 2
-            notes_count -= 1 if issue.project.work_item_move_and_clone_flag_enabled?
-
-            expect(cloned_issue.notes.count).to eq(notes_count)
+            expect(cloned_issue.notes.count).to eq(1)
             expect(cloned_issue.notes.pluck(:note)).not_to include(issue.notes.first.note)
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response['id']).to eq(cloned_issue.id)
@@ -630,7 +600,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
             params: { to_project_id: invalid_target_project.id }
 
           expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']).to eq(permissions_error_message)
+          expect(json_response['message']).to eq("Unable to clone. You have insufficient permissions.")
         end
       end
 
@@ -682,11 +652,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
 
         cloned_issue = Issue.last
 
-        # legacy clone adds an extra note for assignees, even though those we cloned from original issue
-        notes_count = issue.notes.count + 1
-        notes_count -= 1 if issue.project.work_item_move_and_clone_flag_enabled?
-
-        expect(cloned_issue.notes.count).to eq(notes_count)
+        expect(cloned_issue.notes.count).to eq(issue.notes.count)
         expect(cloned_issue.notes.pluck(:note)).to include(issue.notes.first.note)
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['id']).to eq(cloned_issue.id)
@@ -694,25 +660,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
       end
     end
 
-    context 'with work_item_move_and_clone disabled' do
-      before do
-        stub_feature_flags(work_item_move_and_clone: false)
-      end
-
-      it_behaves_like 'clone work item api requests' do
-        let(:permissions_error_message) { "Cannot clone issue due to insufficient permissions." }
-      end
-    end
-
-    context 'with work_item_move_and_clone enabled' do
-      before do
-        stub_feature_flags(work_item_move_and_clone: true)
-      end
-
-      it_behaves_like 'clone work item api requests' do
-        let(:permissions_error_message) { "Unable to clone. You have insufficient permissions." }
-      end
-    end
+    it_behaves_like 'clone work item api requests'
   end
 
   describe 'POST :id/issues/:issue_iid/subscribe' do

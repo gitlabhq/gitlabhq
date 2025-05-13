@@ -22,7 +22,10 @@ module Sidebars
 
         override :render?
         def render?
-          !!context.current_user
+          !!context.current_user && (
+            Gitlab::CurrentSettings.bulk_import_enabled? ||
+            Feature.enabled?(:override_bulk_import_disabled, context.current_user, type: :ops)
+          )
         end
 
         override :active_routes

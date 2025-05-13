@@ -8,11 +8,12 @@
 # List of available variables: https://docs.gitlab.com/ee/user/application_security/sast/#available-cicd-variables
 
 variables:
-  # Setting this variable will affect all Security templates
+  # Setting these variables affect all Security templates
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "$CI_TEMPLATE_REGISTRY_HOST/security-products"
+  AST_ENABLE_MR_PIPELINES: "true"
+  #
   SAST_IMAGE_SUFFIX: ""
-
   SAST_EXCLUDED_ANALYZERS: ""
   DEFAULT_SAST_EXCLUDED_PATHS: "spec, test, tests, tmp"
   SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS"
@@ -41,14 +42,35 @@ sast:
   script:
     - /analyzer run
 
+.gitlab-advanced-sast-exist-rules:
+  exists:
+    - '**/*.py'
+    - '**/*.go'
+    - '**/*.java'
+    - '**/*.jsp'
+    - '**/*.js'
+    - '**/*.jsx'
+    - '**/*.ts'
+    - '**/*.tsx'
+    - '**/*.cjs'
+    - '**/*.mjs'
+    - '**/*.cs'
+    - '**/*.rb'
+
 gitlab-advanced-sast:
   extends: .sast-analyzer
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
     SEARCH_MAX_DEPTH: 20
-    SAST_ANALYZER_IMAGE_TAG: 1
+    SAST_ANALYZER_IMAGE_TAG: 2
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gitlab-advanced-sast:$SAST_ANALYZER_IMAGE_TAG$SAST_IMAGE_SUFFIX"
+  cache:
+    key: "scan-metrics-$CI_COMMIT_REF_SLUG"
+    fallback_keys:
+      - "scan-metrics-$CI_DEFAULT_BRANCH"
+    paths:
+      - "scan_metrics.csv"
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never
@@ -56,82 +78,141 @@ gitlab-advanced-sast:
       when: never
     - if: $GITLAB_ADVANCED_SAST_ENABLED != 'true' && $GITLAB_ADVANCED_SAST_ENABLED != '1'
       when: never
-      # Add the job to merge request pipelines if there's an open merge request.
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+
+    # The following 3 blocks of rules define whether the job runs in a an *MR pipeline* or a *branch pipeline*
+    # when an MR exists. If the job has additional rules to observe they should be added in the blocks 1 and 3
+    # to cover both the *MR pipeline* and the *branch pipeline* workflows.
+
+    # 1. Run the job in an *MR* pipeline if MR pipelines for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $GITLAB_FEATURES =~ /\bsast_advanced\b/
-      exists:
-        - '**/*.py'
-        - '**/*.go'
-        - '**/*.java'
-        - '**/*.jsp'
-        - '**/*.js'
-        - '**/*.jsx'
-        - '**/*.ts'
-        - '**/*.tsx'
-        - '**/*.cjs'
-        - '**/*.mjs'
-        - '**/*.cs'
-        - '**/*.rb'
-    - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
+      exists: !reference [.gitlab-advanced-sast-exist-rules, exists]
+    # 2. Don't run the job in a *branch pipeline* if *MR pipelines* for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_OPEN_MERGE_REQUESTS
       when: never
-    # If there's no open merge request, add it to a *branch* pipeline instead.
+    # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bsast_advanced\b/
-      exists:
-        - '**/*.py'
-        - '**/*.go'
-        - '**/*.java'
-        - '**/*.jsp'
-        - '**/*.js'
-        - '**/*.jsx'
-        - '**/*.ts'
-        - '**/*.tsx'
-        - '**/*.cjs'
-        - '**/*.mjs'
-        - '**/*.cs'
-        - '**/*.rb'
+      exists: !reference [.gitlab-advanced-sast-exist-rules, exists]
 
 kubesec-sast:
   extends: .sast-analyzer
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 5
+    SAST_ANALYZER_IMAGE_TAG: 6
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/kubesec:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /kubesec/
       when: never
-    # Add the job to merge request pipelines if there's an open merge request.
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+
+    # The following 3 blocks of rules define whether the job runs in a an *MR pipeline* or a *branch pipeline*
+    # when an MR exists. If the job has additional rules to observe they should be added in the blocks 1 and 3
+    # to cover both the *MR pipeline* and the *branch pipeline* workflows.
+
+    # 1. Run the job in an *MR* pipeline if MR pipelines for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $SCAN_KUBERNETES_MANIFESTS == 'true'
-    - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
+    # 2. Don't run the job in a *branch pipeline* if *MR pipelines* for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_OPEN_MERGE_REQUESTS
       when: never
-    # If there's no open merge request, add it to a *branch* pipeline instead.
+    # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
     - if: $CI_COMMIT_BRANCH &&
           $SCAN_KUBERNETES_MANIFESTS == 'true'
+
+.pmd-apex-exist-rules:
+  exists:
+    - '**/*.cls'
 
 pmd-apex-sast:
   extends: .sast-analyzer
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 5
+    SAST_ANALYZER_IMAGE_TAG: 6
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/pmd-apex:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /pmd-apex/
       when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"  # Add the job to merge request pipelines if there's an open merge request.
-      exists:
-        - '**/*.cls'
-    - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
+
+    # The following 3 blocks of rules define whether the job runs in a an *MR pipeline* or a *branch pipeline*
+    # when an MR exists. If the job has additional rules to observe they should be added in the blocks 1 and 3
+    # to cover both the *MR pipeline* and the *branch pipeline* workflows.
+
+    # 1. Run the job in an *MR* pipeline if MR pipelines for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event"
+      exists: !reference [.pmd-apex-exist-rules, exists]
+    # 2. Don't run the job in a *branch pipeline* if *MR pipelines* for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_OPEN_MERGE_REQUESTS
       when: never
-    - if: $CI_COMMIT_BRANCH        # If there's no open merge request, add it to a *branch* pipeline instead.
-      exists:
-        - '**/*.cls'
+    # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
+    - if: $CI_COMMIT_BRANCH
+      exists: !reference [.pmd-apex-exist-rules, exists]
+
+.semgrep-exist-rules:
+  exists:
+    - '**/*.py'
+    - '**/*.js'
+    - '**/*.jsx'
+    - '**/*.ts'
+    - '**/*.tsx'
+    - '**/*.cjs'
+    - '**/*.mjs'
+    - '**/*.c'
+    - '**/*.cc'
+    - '**/*.cpp'
+    - '**/*.c++'
+    - '**/*.cp'
+    - '**/*.cxx'
+    - '**/*.h'
+    - '**/*.hpp'
+    - '**/*.go'
+    - '**/*.java'
+    - '**/*.cs'
+    - '**/*.scala'
+    - '**/*.sc'
+    - '**/*.php'
+    - '**/*.swift'
+    - '**/*.m'
+    - '**/*.rb'
+    - '**/*.kt'
+    - '**/*.properties'
+    - '**/application*.yml'
+    - '**/bootstrap*.yml'
+    - '**/application*.yaml'
+    - '**/bootstrap*.yaml'
+
+.semgrep-with-advanced-sast-exist-rules:
+  exists:
+    - '**/*.c'
+    - '**/*.cc'
+    - '**/*.cpp'
+    - '**/*.c++'
+    - '**/*.cp'
+    - '**/*.cxx'
+    - '**/*.h'
+    - '**/*.hpp'
+    - '**/*.scala'
+    - '**/*.sc'
+    - '**/*.php'
+    - '**/*.swift'
+    - '**/*.m'
+    - '**/*.kt'
+    - '**/*.properties'
+    - '**/application*.yml'
+    - '**/bootstrap*.yml'
+    - '**/application*.yaml'
+    - '**/bootstrap*.yaml'
 
 semgrep-sast:
   extends: .sast-analyzer
@@ -139,82 +220,45 @@ semgrep-sast:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
     SEARCH_MAX_DEPTH: 20
-    SAST_ANALYZER_IMAGE_TAG: 5
+    SAST_ANALYZER_IMAGE_TAG: 6
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/semgrep:$SAST_ANALYZER_IMAGE_TAG$SAST_IMAGE_SUFFIX"
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /semgrep/
       when: never
-    # Add the job to merge request pipelines if there's an open merge request.
+
+    # The following 3 blocks of rules define whether the job runs in a an *MR pipeline* or a *branch pipeline*
+    # when an MR exists. If the job has additional rules to observe they should be added in the blocks 1 and 3
+    # to cover both the *MR pipeline* and the *branch pipeline* workflows.
+
+    # 1. Run the job in an *MR* pipeline if MR pipelines for AST are enabled and there's an open merge request.
     ## In case gitlab-advanced-sast also runs, exclude files already scanned by gitlab-advanced-sast
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $GITLAB_FEATURES =~ /\bsast_advanced\b/ &&
           $SAST_EXCLUDED_ANALYZERS !~ /gitlab-advanced-sast/ &&
           ($GITLAB_ADVANCED_SAST_ENABLED == 'true' || $GITLAB_ADVANCED_SAST_ENABLED == '1')
       variables:
         SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS, **/*.py, **/*.go, **/*.java, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.cjs, **/*.mjs, **/*.cs, **/*.rb"
-      exists:
-        - '**/*.c'
-        - '**/*.cc'
-        - '**/*.cpp'
-        - '**/*.c++'
-        - '**/*.cp'
-        - '**/*.cxx'
-        - '**/*.h'
-        - '**/*.hpp'
-        - '**/*.scala'
-        - '**/*.sc'
-        - '**/*.php'
-        - '**/*.swift'
-        - '**/*.m'
-        - '**/*.kt'
-        - '**/*.properties'
-        - '**/application*.yml'
-        - '**/bootstrap*.yml'
-        - '**/application*.yaml'
-        - '**/bootstrap*.yaml'
-    ## In case gitlab-advanced-sast already covers all the files that semgrep-sast would have scanned
+      exists: !reference [.semgrep-with-advanced-sast-exist-rules, exists]
+    ## In case gitlab-advanced-sast already covers all the files that semgrep-sast would have scanned (i.e the previous rule did not match) skip this job
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $GITLAB_FEATURES =~ /\bsast_advanced\b/ &&
           $SAST_EXCLUDED_ANALYZERS !~ /gitlab-advanced-sast/ &&
           ($GITLAB_ADVANCED_SAST_ENABLED == 'true' || $GITLAB_ADVANCED_SAST_ENABLED == '1')
       when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-      exists:
-        - '**/*.py'
-        - '**/*.js'
-        - '**/*.jsx'
-        - '**/*.ts'
-        - '**/*.tsx'
-        - '**/*.cjs'
-        - '**/*.mjs'
-        - '**/*.c'
-        - '**/*.cc'
-        - '**/*.cpp'
-        - '**/*.c++'
-        - '**/*.cp'
-        - '**/*.cxx'
-        - '**/*.h'
-        - '**/*.hpp'
-        - '**/*.go'
-        - '**/*.java'
-        - '**/*.cs'
-        - '**/*.scala'
-        - '**/*.sc'
-        - '**/*.php'
-        - '**/*.swift'
-        - '**/*.m'
-        - '**/*.rb'
-        - '**/*.kt'
-        - '**/*.properties'
-        - '**/application*.yml'
-        - '**/bootstrap*.yml'
-        - '**/application*.yaml'
-        - '**/bootstrap*.yaml'
-    - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
+    ## In case gitlab-advanced-sast don't run, scan all files supported by semgrep
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event"
+      exists: !reference [.semgrep-exist-rules, exists]
+
+    # 2. Don't run the job in a *branch pipeline* if *MR pipelines* for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_OPEN_MERGE_REQUESTS
       when: never
-    # If there's no open merge request, add it to a *branch* pipeline instead.
+
+    # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
     ## In case gitlab-advanced-sast also runs, exclude files already scanned by gitlab-advanced-sast
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bsast_advanced\b/ &&
@@ -222,107 +266,79 @@ semgrep-sast:
           ($GITLAB_ADVANCED_SAST_ENABLED == 'true' || $GITLAB_ADVANCED_SAST_ENABLED == '1')
       variables:
         SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS, **/*.py, **/*.go, **/*.java, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.cjs, **/*.mjs, **/*.cs, **/*.rb"
-      exists:
-        - '**/*.c'
-        - '**/*.cc'
-        - '**/*.cpp'
-        - '**/*.c++'
-        - '**/*.cp'
-        - '**/*.cxx'
-        - '**/*.h'
-        - '**/*.hpp'
-        - '**/*.scala'
-        - '**/*.sc'
-        - '**/*.php'
-        - '**/*.swift'
-        - '**/*.m'
-        - '**/*.kt'
-        - '**/*.properties'
-        - '**/application*.yml'
-        - '**/bootstrap*.yml'
-        - '**/application*.yaml'
-        - '**/bootstrap*.yaml'
+      exists: !reference [.semgrep-with-advanced-sast-exist-rules, exists]
     ## In case gitlab-advanced-sast already covers all the files that semgrep-sast would have scanned
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bsast_advanced\b/ &&
           $SAST_EXCLUDED_ANALYZERS !~ /gitlab-advanced-sast/ &&
           ($GITLAB_ADVANCED_SAST_ENABLED == 'true' || $GITLAB_ADVANCED_SAST_ENABLED == '1')
       when: never
+    ## In case gitlab-advanced-sast don't run, scan all files supported by semgrep
     - if: $CI_COMMIT_BRANCH
-      exists:
-        - '**/*.py'
-        - '**/*.js'
-        - '**/*.jsx'
-        - '**/*.ts'
-        - '**/*.tsx'
-        - '**/*.cjs'
-        - '**/*.mjs'
-        - '**/*.c'
-        - '**/*.cc'
-        - '**/*.cpp'
-        - '**/*.c++'
-        - '**/*.cp'
-        - '**/*.cxx'
-        - '**/*.h'
-        - '**/*.hpp'
-        - '**/*.go'
-        - '**/*.java'
-        - '**/*.cs'
-        - '**/*.scala'
-        - '**/*.sc'
-        - '**/*.php'
-        - '**/*.swift'
-        - '**/*.m'
-        - '**/*.rb'
-        - '**/*.kt'
-        - '**/*.properties'
-        - '**/application*.yml'
-        - '**/bootstrap*.yml'
-        - '**/application*.yaml'
-        - '**/bootstrap*.yaml'
+      exists: !reference [.semgrep-exist-rules, exists]
+
+.sobelow-exist-rules:
+  exists:
+    - '**/mix.exs'
 
 sobelow-sast:
   extends: .sast-analyzer
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 5
+    SAST_ANALYZER_IMAGE_TAG: 6
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/sobelow:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /sobelow/
       when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"  # Add the job to merge request pipelines if there's an open merge request.
-      exists:
-        - '**/mix.exs'
-    - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
+
+    # The following 3 blocks of rules define whether the job runs in a an *MR pipeline* or a *branch pipeline*
+    # when an MR exists. If the job has additional rules to observe they should be added in the blocks 1 and 3
+    # to cover both the *MR pipeline* and the *branch pipeline* workflows.
+
+    # 1. Run the job in an *MR* pipeline if MR pipelines for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event"
+      exists: !reference [.sobelow-exist-rules, exists]
+    # 2. Don't run the job in a *branch pipeline* if *MR pipelines* for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_OPEN_MERGE_REQUESTS
       when: never
-    - if: $CI_COMMIT_BRANCH        # If there's no open merge request, add it to a *branch* pipeline instead.
-      exists:
-        - '**/mix.exs'
+    # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
+    - if: $CI_COMMIT_BRANCH
+      exists: !reference [.sobelow-exist-rules, exists]
+
+.spotbugs-exist-rules:
+  exists:
+    - '**/*.groovy'
 
 spotbugs-sast:
   extends: .sast-analyzer
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
-    SAST_ANALYZER_IMAGE_TAG: 5
+    SAST_ANALYZER_IMAGE_TAG: 6
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/spotbugs:$SAST_ANALYZER_IMAGE_TAG"
   rules:
     - if: $SAST_EXCLUDED_ANALYZERS =~ /spotbugs/
       when: never
-    - if: $SAST_EXPERIMENTAL_FEATURES == 'true'
-      exists:
-        - '**/AndroidManifest.xml'
-      when: never
     - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
       when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"  # Add the job to merge request pipelines if there's an open merge request.
-      exists:
-        - '**/*.groovy'
-    - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
+
+    # The following 3 blocks of rules define whether the job runs in a an *MR pipeline* or a *branch pipeline*
+    # when an MR exists. If the job has additional rules to observe they should be added in the blocks 1 and 3
+    # to cover both the *MR pipeline* and the *branch pipeline* workflows.
+
+    # 1. Run the job in an *MR* pipeline if MR pipelines for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_PIPELINE_SOURCE == "merge_request_event"
+      exists: !reference [.spotbugs-exist-rules, exists]
+    # 2. Don't run the job in a *branch pipeline* if *MR pipelines* for AST are enabled and there's an open merge request.
+    - if: $AST_ENABLE_MR_PIPELINES == "true" &&
+          $CI_OPEN_MERGE_REQUESTS
       when: never
-    - if: $CI_COMMIT_BRANCH        # If there's no open merge request, add it to a *branch* pipeline instead.
-      exists:
-        - '**/*.groovy'
+    # 3. Finally, run the job in a *branch pipeline* (When MR pipelines are disabled for AST, or it is enabled but no open MRs exist for the branch).
+    - if: $CI_COMMIT_BRANCH
+      exists: !reference [.spotbugs-exist-rules, exists]

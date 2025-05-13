@@ -1,5 +1,5 @@
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import FilteredSearchDropdownManager from '~/filtered_search/filtered_search_dropdown_manager';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';

@@ -13,7 +13,6 @@ import initDeployTokens from '~/deploy_tokens';
 import { initProjectRunnersRegistrationDropdown } from '~/ci/runner/project_runners/register';
 import { initProjectRunnersSettings } from '~/ci/runner/project_runners_settings/index';
 import { initGeneralPipelinesOptions } from '~/ci_settings_general_pipeline';
-import initDockerHubRateLimitsAlert from '~/docker_hub_rate_limits';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 
 // Initialize expandable settings panels
@@ -45,7 +44,6 @@ initRefSwitcherBadges();
 initTokenAccess();
 initCiSecureFiles();
 initGeneralPipelinesOptions();
-initDockerHubRateLimitsAlert();
 initProjectRunnersSettings();
 
 renderGFM(document.getElementById('js-shared-runners-markdown'));

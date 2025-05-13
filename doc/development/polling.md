@@ -27,7 +27,7 @@ Instead you should use polling mechanism with ETag caching in Redis.
    - requests should return status code 304
    - there should be no SQL queries logged in `log/development.log`
 
-## How it works
+## How polling with ETag caching works
 
 Cache Miss:
 

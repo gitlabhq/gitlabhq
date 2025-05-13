@@ -43,7 +43,7 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Access, feature_category: :pip
     it 'returns an error when there are no objects found' do
       expect(subject).not_to be_valid
       expect(subject.errors.first)
-        .to eq 'invalid interpolation access pattern'
+        .to eq 'invalid pattern used for interpolation. valid pattern is $[[ inputs.input ]]'
     end
   end
 
@@ -52,7 +52,7 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Access, feature_category: :pip
 
     it 'returns an error' do
       expect(subject).not_to be_valid
-      expect(subject.errors.first).to eq('unknown interpolation key: `nonexistent`')
+      expect(subject.errors.first).to eq('unknown input name provided: `nonexistent`')
     end
   end
 end

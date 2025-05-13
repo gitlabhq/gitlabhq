@@ -98,6 +98,8 @@ class ProjectsFinder < UnionFinder
     collection = by_feature_availability(collection)
     collection = by_updated_at(collection)
     collection = by_organization(collection)
+    collection = by_marked_for_deletion_on(collection)
+    collection = by_aimed_for_deletion(collection)
     by_repository_storage(collection)
   end
 
@@ -219,6 +221,20 @@ class ProjectsFinder < UnionFinder
     items.with_topic(topic)
   end
 
+  def by_marked_for_deletion_on(items)
+    return items unless params[:marked_for_deletion_on].present?
+
+    items.by_marked_for_deletion_on(params[:marked_for_deletion_on])
+  end
+
+  def by_aimed_for_deletion(items)
+    if ::Gitlab::Utils.to_boolean(params[:aimed_for_deletion])
+      items.aimed_for_deletion(Date.current)
+    else
+      items
+    end
+  end
+
   def by_not_aimed_for_deletion(items)
     params[:not_aimed_for_deletion].present? ? items.not_aimed_for_deletion : items
   end
@@ -298,11 +314,11 @@ class ProjectsFinder < UnionFinder
   end
 
   def active(items)
-    items.non_archived
+    items.non_archived.not_aimed_for_deletion
   end
 
   def inactive(items)
-    items.archived
+    items.archived.or(items.aimed_for_deletion(Date.current))
   end
 
   def finder_params

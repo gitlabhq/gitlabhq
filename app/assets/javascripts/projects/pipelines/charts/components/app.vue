@@ -1,5 +1,6 @@
 <script>
 import { GlTabs, GlTab } from '@gitlab/ui';
+import MigrationAlert from 'ee_component/analytics/dora/components/migration_alert.vue';
 import { mergeUrlParams, updateHistory, getParameterValues } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
@@ -13,9 +14,14 @@ export default {
   components: {
     GlTabs,
     GlTab,
+    MigrationAlert,
   },
   mixins: [InternalEvents.mixin(), glFeatureFlagsMixin()],
   inject: {
+    projectPath: {
+      type: String,
+      default: '',
+    },
     shouldRenderDoraCharts: {
       type: Boolean,
       default: false,
@@ -30,8 +36,7 @@ export default {
     },
   },
   data() {
-    const isClickHouseAvailable =
-      this.clickHouseEnabledForAnalytics && this.glFeatures?.ciImprovedProjectPipelineAnalytics;
+    const isClickHouseAvailable = this.clickHouseEnabledForAnalytics;
 
     const tabs = [
       {
@@ -43,20 +48,21 @@ export default {
       },
     ];
 
-    if (this.shouldRenderDoraCharts) {
+    if (this.shouldRenderDoraCharts && !this.glFeatures.doraMetricsDashboard) {
       tabs.push(
         {
           key: 'deployment-frequency',
           event: 'p_analytics_ci_cd_deployment_frequency',
           title: __('Deployment frequency'),
-          componentIs: () => import('ee_component/dora/components/deployment_frequency_charts.vue'),
+          componentIs: () =>
+            import('ee_component/analytics/dora/components/deployment_frequency_charts.vue'),
           lazy: true,
         },
         {
           key: 'lead-time',
           event: 'p_analytics_ci_cd_lead_time',
           title: __('Lead time'),
-          componentIs: () => import('ee_component/dora/components/lead_time_charts.vue'),
+          componentIs: () => import('ee_component/analytics/dora/components/lead_time_charts.vue'),
           lazy: true,
         },
         {
@@ -64,14 +70,15 @@ export default {
           event: 'visit_ci_cd_time_to_restore_service_tab',
           title: s__('DORA4Metrics|Time to restore service'),
           componentIs: () =>
-            import('ee_component/dora/components/time_to_restore_service_charts.vue'),
+            import('ee_component/analytics/dora/components/time_to_restore_service_charts.vue'),
           lazy: true,
         },
         {
           key: 'change-failure-rate',
           event: 'visit_ci_cd_failure_rate_tab',
           title: s__('DORA4Metrics|Change failure rate'),
-          componentIs: () => import('ee_component/dora/components/change_failure_rate_charts.vue'),
+          componentIs: () =>
+            import('ee_component/analytics/dora/components/change_failure_rate_charts.vue'),
           lazy: true,
         },
       );
@@ -90,6 +97,11 @@ export default {
       activeTabIndex: 0,
       tabs,
     };
+  },
+  computed: {
+    showDoraMetricsMigrationAlert() {
+      return this.shouldRenderDoraCharts && this.glFeatures.doraMetricsDashboard;
+    },
   },
   created() {
     this.syncActiveTab();
@@ -116,6 +128,12 @@ export default {
 </script>
 <template>
   <div>
+    <migration-alert
+      v-if="showDoraMetricsMigrationAlert"
+      :namespace-path="projectPath"
+      is-project
+    />
+
     <gl-tabs v-if="tabs.length > 1" :value="activeTabIndex" @input="onTabInput">
       <gl-tab
         v-for="tab in tabs"

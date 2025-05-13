@@ -2,7 +2,7 @@
 - header_title _("New project"), new_project_path
 - add_to_breadcrumbs s_('ProjectsNew|Import project'), new_project_path(anchor: 'import_project')
 
-- if Feature.enabled?(:new_project_creation_form, @user)
+- if Feature.enabled?(:new_project_creation_form, current_user)
   - add_page_specific_style 'page_bundles/projects'
   - namespace_id = namespace_id_from(params)
   #js-import-gitlab-project-root{ data: {

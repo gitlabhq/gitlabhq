@@ -188,15 +188,6 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
 
           it_behaves_like 'default branch pipeline'
         end
-
-        # required for building an up-to-date version of GitLab
-        # see https://gitlab.com/gitlab-com/gl-infra/production/-/issues/18926
-        context 'with build-assets-image' do
-          let(:ci_commit_branch) { master_branch }
-          let(:expected_job_name) { 'build-assets-image' }
-
-          it_behaves_like 'default branch pipeline'
-        end
       end
     end
   end

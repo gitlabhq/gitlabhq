@@ -46,6 +46,10 @@ RSpec.describe Snippets::UpdateService, feature_category: :source_code_managemen
           expect(subject).to be_error
         end
 
+        it 'responds with a reason' do
+          expect(subject.reason).to eq(described_class::SNIPPET_ACCESS_ERROR)
+        end
+
         it 'does not update snippet to public visibility' do
           original_visibility = snippet.visibility_level
 

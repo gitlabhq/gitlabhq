@@ -15,7 +15,6 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
   let(:jira_issue_prefix) { '' }
   let(:jira_issue_regex) { '' }
   let(:password) { 'jira-password' }
-  let(:project_key) { 'TEST' }
   let(:project_keys) { %w[TEST1 TEST2] }
   let(:transition_id) { 'test27' }
   let(:server_info_results) { { 'deploymentType' => 'Cloud' } }
@@ -26,7 +25,6 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
       url: url,
       username: username,
       password: password,
-      project_key: project_key,
       project_keys: project_keys
     )
   end
@@ -223,7 +221,18 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
     subject(:fields) { integration.fields }
 
     it 'returns custom fields' do
-      expect(fields.pluck(:name)).to eq(%w[url api_url jira_auth_type username password jira_issue_regex jira_issue_prefix jira_issue_transition_id issues_enabled project_keys])
+      expect(fields.pluck(:name)).to include(
+        'url',
+        'api_url',
+        'jira_auth_type',
+        'username',
+        'password',
+        'jira_issue_regex',
+        'jira_issue_prefix',
+        'jira_issue_transition_id',
+        'issues_enabled',
+        'project_keys'
+      )
     end
   end
 
@@ -408,7 +417,6 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
         jira_issue_regex: jira_issue_regex,
         jira_issue_prefix: jira_issue_prefix,
         jira_issue_transition_id: transition_id,
-        project_key: project_key,
         project_keys: project_keys
       }
     end
@@ -429,7 +437,6 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
       expect(integration.jira_tracker_data.jira_issue_prefix).to eq(jira_issue_prefix)
       expect(integration.jira_tracker_data.jira_issue_transition_id).to eq(transition_id)
       expect(integration.jira_tracker_data.deployment_cloud?).to be_truthy
-      expect(integration.jira_tracker_data.project_key).to eq(project_key)
       expect(integration.jira_tracker_data.project_keys).to eq(project_keys)
     end
 

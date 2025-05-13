@@ -76,3 +76,45 @@ RSpec.shared_examples 'rotating token fails due to missing access rights' do |to
     expect(page).not_to have_content("Your new #{token_type} access token has been created.")
   end
 end
+
+RSpec.shared_examples 'contains instance prefix when enabled' do
+  context 'with default instance prefix' do
+    let_it_be(:instance_prefix) { 'instance-prefix-' }
+
+    before do
+      stub_application_setting(instance_token_prefix: instance_prefix)
+    end
+
+    it 'can be identified by prefix' do
+      expect(token.class.prefix?('glffct-')).to be_truthy
+    end
+  end
+
+  context 'with custom instance prefix' do
+    let_it_be(:instance_prefix) { 'instance-prefix-' }
+
+    before do
+      stub_application_setting(instance_token_prefix: instance_prefix)
+    end
+
+    it 'starts with the instance prefix' do
+      expect(plaintext).to start_with(instance_prefix)
+    end
+
+    it 'can be identified by prefix' do
+      expect(token.class.prefix?(plaintext)).to be_truthy
+    end
+
+    it_behaves_like 'finding the valid revocable'
+
+    context 'with feature flag custom_prefix_for_all_token_types disabled' do
+      before do
+        stub_feature_flags(custom_prefix_for_all_token_types: false)
+      end
+
+      it 'starts with the default prefix' do
+        expect(plaintext).to start_with(default_prefix)
+      end
+    end
+  end
+end

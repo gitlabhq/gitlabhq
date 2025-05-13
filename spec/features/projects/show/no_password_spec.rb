@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'No Password Alert', feature_category: :groups_and_projects do
+RSpec.describe 'No Password Alert', :with_current_organization, feature_category: :groups_and_projects do
   let_it_be(:message_password_auth_enabled) { 'Your account is authenticated with SSO or SAML. To push and pull over HTTP with Git using this account, you must set a password or set up a personal access token to use instead of a password.' }
   let_it_be(:message_password_auth_disabled) { 'Your account is authenticated with SSO or SAML. To push and pull over HTTP with Git using this account, you must set up a personal access token to use instead of a password.' }
 

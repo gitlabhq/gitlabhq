@@ -119,7 +119,7 @@ RSpec.describe API::Internal::MailRoom, feature_category: :service_desk do
         expect(email).not_to be_nil
         expect(email.to).to match_array(["alan@adventuretime.ooo"])
         expect(email.subject).to include("Rejected")
-        expect(email.body.parts.last.to_s).to include("We couldn't process your email")
+        expect(email.body.parts.last.decoded).to include("We couldn't process your email")
       end
     end
 

@@ -1,6 +1,6 @@
 ---
-stage: Tenant Scale
-group: Cells Infrastructure
+stage: Data Access
+group: Database Frameworks
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 title: Loose foreign keys
 ---
@@ -33,7 +33,7 @@ Our preferred approach to this problem is eventual consistency. With the loose f
 feature, we can configure delayed association cleanup without negatively affecting the
 application performance.
 
-### How it works
+### How eventual consistency is implemented
 
 In the previous example, a record in the `projects` table can have multiple `ci_pipeline`
 records. To keep the cleanup process separate from the actual parent record deletion,

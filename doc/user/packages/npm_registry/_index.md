@@ -37,7 +37,7 @@ To authenticate, you can use:
 
 If your organization uses two-factor authentication (2FA), you must use a personal access token with the scope set to `api`.
 If you want to publish a package with a CI/CD pipeline, you must use a CI/CD job token.
-For more information, review the [guidance on tokens](../package_registry/_index.md#authenticate-with-the-registry).
+For more information, review the [guidance on tokens](../package_registry/supported_functionality.md#authenticate-with-the-registry).
 
 Do not use authentication methods other than the methods documented here. Undocumented authentication methods might be removed in the future.
 
@@ -92,7 +92,7 @@ Make sure to replace:
 Make sure to replace:
 
 - `<domain_name>` with your domain name. For example, `gitlab.com`.
-- `<project_id>` with the project ID from the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
+- `<project_id>` with the project ID from the [project overview page](../../project/working_with_projects.md#find-the-project-id).
 
 {{< /tab >}}
 
@@ -152,7 +152,7 @@ npm config set -- //<domain_name>/api/v4/projects/<project_id>/packages/npm/:_au
 Make sure to replace:
 
 - `<domain_name>` with your domain name. For example, `gitlab.com`.
-- `<project_id>` with the project ID from the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
+- `<project_id>` with the project ID from the [project overview page](../../project/working_with_projects.md#find-the-project-id).
 - `<token>` with your deploy token, group access token, project access token, or personal access token.
 
 {{< /tab >}}
@@ -447,7 +447,7 @@ Prerequisites:
 
    - Replace `@scope` with the [top-level group](#naming-convention) of the project you're installing to the package from.
    - Replace `<domain_name>` with your domain name, for example, `gitlab.com`.
-   - Replace `<project_id>` with your project ID, found on the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
+   - Replace `<project_id>` with your project ID, found on the [project overview page](../../project/working_with_projects.md#find-the-project-id).
 
 1. Install the package:
 
@@ -632,7 +632,7 @@ In this case, the request body contains information about all packages in your p
 
 To ensure your private package information stays within GitLab, always make sure to specify the GitLab registry when running `npm audit` commands.
 
-#### Limitations
+#### Known issues
 
 - Audit results depend on [package forwarding](#package-forwarding-to-npmjscom) being enabled. If forwarding is disabled by an administrator or group Owner, `npm audit` does not return vulnerability information.
 - The audit request includes information about all packages in your project, including private packages.

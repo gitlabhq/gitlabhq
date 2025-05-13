@@ -18,33 +18,30 @@ RSpec.describe Gitlab::Doctor::EncryptionKeys, feature_category: :shared do
 
   context 'when no encrypted attributes exist' do
     it 'outputs "NONE"' do
-      expect(logger).to receive(:info).with(/Encryption keys usage for DependencyProxy::GroupSetting: NONE/)
+      expect(logger).to receive(:info).with("Encryption keys usage for DependencyProxy::GroupSetting: NONE")
 
       doctor_encryption_secrets
     end
   end
 
   context 'when encrypted attributes exist' do
-    # This will work in Rails 7.1.4, see https://github.com/rails/rails/issues/52003#issuecomment-2149673942
-    #
-    # let!(:key_provider1) { ActiveRecord::Encryption::DerivedSecretKeyProvider.new(SecureRandom.base64(32)) }
-    #
-    # before do
-    #   ActiveRecord::Encryption.with_encryption_context(key_provider: key_provider1) do
-    #     create(:dependency_proxy_group_setting)
-    #   end
-    # end
-    #
-    # Until then, we can only use the default key provider
-    let!(:key_provider1) { ActiveRecord::Encryption.key_provider }
+    let(:current_key_provider) { ActiveRecord::Encryption.key_provider }
+    let(:unknown_key_provider) { ActiveRecord::Encryption::DerivedSecretKeyProvider.new(SecureRandom.base64(32)) }
 
     before do
+      # Create a record with the current encryption key
       create(:dependency_proxy_group_setting)
+
+      # Create a record with a different encryption key
+      ActiveRecord::Encryption.with_encryption_context(key_provider: unknown_key_provider) do
+        create(:dependency_proxy_group_setting)
+      end
     end
 
     it 'detects decryptable secrets' do
-      expect(logger).to receive(:info).with(/Encryption keys usage for DependencyProxy::GroupSetting:/)
-      expect(logger).to receive(:info).with(/- `#{key_provider1.encryption_key.id}` => 2/)
+      expect(logger).to receive(:info).with("Encryption keys usage for DependencyProxy::GroupSetting:")
+      expect(logger).to receive(:info).with("- `#{current_key_provider.encryption_key.id}` => 2")
+      expect(logger).to receive(:info).with("- `#{unknown_key_provider.encryption_key.id}` (UNKNOWN KEY!) => 2")
 
       doctor_encryption_secrets
     end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Integration settings', feature_category: :integrations do
+RSpec.describe 'Integration settings', :with_current_organization, feature_category: :integrations do
   context 'when the integration is for a project ' do
     let_it_be(:project) { create(:project) }
     let_it_be(:user) { create(:user) }

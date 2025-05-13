@@ -619,6 +619,7 @@ included_attributes:
     - :created_at
     - :sha
     - :author_id
+    - :namespace_id
   issue_assignees:
     - :user_id
   merge_request_assignees:
@@ -952,7 +953,6 @@ excluded_attributes:
     - :group_id
   resource_label_events:
     - :reference
-    - :reference_html
     - :epic_id
     - :issue_id
     - :merge_request_id
@@ -1115,6 +1115,13 @@ excluded_attributes:
     - :description_html
     - :icon_name
     - :namespace_id
+    - :updated_at
+  current_status:
+    - :id
+    - :namespace_id
+    - :work_item_id
+    - :system_defined_status_id
+    - :custom_status_id
     - :updated_at
   note_diff_file:
     - :id
@@ -1317,7 +1324,6 @@ ee:
       - :report_type
       - :findings
     findings:
-      - :project_fingerprint
       - :project_id
       - :location_fingerprint
       - :primary_identifier_fingerprint
@@ -1342,7 +1348,6 @@ ee:
     primary_identifier: *identifiers_definition
     vulnerability_finding:
       - :uuid
-      - :project_fingerprint
       - :project_id
       - :location_fingerprint
       - :name

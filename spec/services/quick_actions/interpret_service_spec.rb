@@ -440,7 +440,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           category: nil,
           duration: 1800,
           user_id: developer.id,
-          spent_at: Date.parse(date)
+          spent_at: Date.parse(date).midday
         })
       end
     end
@@ -2982,7 +2982,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           _, _, message = convert_to_ticket
 
           expect(message).to eq(expected_message)
-          expect(issuable).to have_attributes(
+          expect(item).to have_attributes(
             confidential: false,
             author_id: original_author.id,
             service_desk_reply_to: nil
@@ -2995,26 +2995,35 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           _, _, message = convert_to_ticket
 
           expect(message).to eq(s_('ServiceDesk|Converted issue to Service Desk ticket.'))
-          expect(issuable).to have_attributes(
+          expect(item).to have_attributes(
             confidential: expected_confidentiality,
             author_id: Users::Internal.support_bot_id,
             service_desk_reply_to: 'user@example.com'
           )
+
+          reopen_note = item.notes.last
+          expect(reopen_note.author).to eq(Users::Internal.support_bot)
+          expect(reopen_note).to be_confidential
         end
       end
 
-      let_it_be_with_reload(:issuable) { issue }
-      let_it_be(:original_author) { issue.author }
+      let_it_be_with_reload(:item) { create(:issue, project: project) }
+      let_it_be(:original_author) { item.author }
 
       let(:content) { '/convert_to_ticket' }
       let(:expected_message) do
         s_("ServiceDesk|Cannot convert issue to ticket because no email was provided or the format was invalid.")
       end
 
-      subject(:convert_to_ticket) { service.execute(content, issuable) }
+      subject(:convert_to_ticket) { service.execute(content, item) }
+
+      before do
+        # Support bot only has abilities in project if Service Desk enabled
+        allow(::ServiceDesk).to receive(:enabled?).with(project).and_return(true)
+      end
 
       it 'is part of the available commands' do
-        expect(service.available_commands(issuable)).to include(a_hash_including(name: :convert_to_ticket))
+        expect(service.available_commands(item)).to include(a_hash_including(name: :convert_to_ticket))
       end
 
       it_behaves_like 'a failed command execution'
@@ -3036,19 +3045,19 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
             create(:service_desk_setting, project: project, tickets_confidential_by_default: false)
           end
 
-          context 'when issuable is in a public project' do
+          context 'when item is in a public project' do
             it_behaves_like 'a successful command execution'
 
-            context 'when issuable is already confidential' do
+            context 'when item is already confidential' do
               before do
-                issuable.update!(confidential: true)
+                item.update!(confidential: true)
               end
 
               it_behaves_like 'a successful command execution'
             end
           end
 
-          context 'when issuable is in a private project' do
+          context 'when item is in a private project' do
             let(:expected_confidentiality) { false }
 
             before do
@@ -3058,12 +3067,18 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
             it_behaves_like 'a successful command execution'
           end
 
-          context 'when issuable is already confidential' do
+          context 'when item is already confidential' do
             let(:expected_confidentiality) { true }
 
             before do
-              issuable.update!(confidential: true)
+              item.update!(confidential: true)
             end
+
+            it_behaves_like 'a successful command execution'
+          end
+
+          context 'when item is a work item of type issue' do
+            let_it_be_with_reload(:item) { create(:work_item, :issue, project: project) }
 
             it_behaves_like 'a successful command execution'
           end
@@ -3072,22 +3087,32 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
 
       context 'when issue is Service Desk issue' do
         before do
-          issue.update!(
+          item.update!(
             author: support_bot,
             service_desk_reply_to: 'user@example.com'
           )
         end
 
-        it 'is not part of the available commands', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/512578' do
-          expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :convert_to_ticket))
+        it 'is not part of the available commands' do
+          expect(service.available_commands(item)).not_to include(a_hash_including(name: :convert_to_ticket))
         end
       end
 
       context 'with non-persisted issue' do
-        let(:issuable) { build(:issue) }
+        let(:item) { build(:issue) }
 
         it 'is not part of the available commands' do
-          expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :convert_to_ticket))
+          expect(service.available_commands(item)).not_to include(a_hash_including(name: :convert_to_ticket))
+        end
+      end
+
+      context 'when Service Desk is disabled' do
+        before do
+          allow(::ServiceDesk).to receive(:enabled?).with(project).and_return(false)
+        end
+
+        it 'is not part of the available commands' do
+          expect(service.available_commands(item)).not_to include(a_hash_including(name: :convert_to_ticket))
         end
       end
     end

@@ -608,6 +608,28 @@ export const fetchUpdatedNotes = ({ commit, state, getters, dispatch }) => {
   return axios
     .get(endpoint, options)
     .then(({ data }) => {
+      const botNote = data.notes?.find(
+        (note) => note.author.user_type === 'duo_code_review_bot' && !note.system,
+      );
+
+      if (botNote) {
+        let discussions = state.discussions.filter((d) => d.id === botNote.discussion_id);
+
+        if (!discussions.length) {
+          discussions = state.discussions;
+        }
+
+        for (const discussion of discussions) {
+          const systemNote = discussion.notes.find(
+            (note) => note.author.user_type === 'duo_code_review_bot' && note.system,
+          );
+          if (systemNote) {
+            commit(types.DELETE_NOTE, systemNote);
+            break;
+          }
+        }
+      }
+
       pollSuccessCallBack(data, commit, state, getters, dispatch);
     })
     .catch(() => {});

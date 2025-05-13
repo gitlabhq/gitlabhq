@@ -568,6 +568,7 @@ module ProjectsHelper
       cicd_catalog_path: cicd_catalog_path,
       is_project_archived: project.archived.to_s,
       is_project_empty: project.empty_repo?.to_s,
+      is_project_marked_for_deletion: project.marked_for_deletion?.to_s,
       project_avatar: project.avatar_url,
       project_name: project.name,
       project_id: project.id,
@@ -584,17 +585,23 @@ module ProjectsHelper
     configure_oauth_import_message('Bitbucket', help_page_path("integration/bitbucket.md"))
   end
 
-  def show_archived_project_banner?(project)
-    return false unless project.present? && project.saved?
+  def archiving_available?(project)
+    return false unless project
 
-    project.archived?
+    project.persisted? && !project.marked_for_deletion? && can?(current_user, :archive_project, project)
+  end
+
+  def show_archived_project_banner?(project)
+    return false unless project
+
+    project.persisted? && project.archived?
   end
 
   def show_inactive_project_deletion_banner?(project)
-    return false unless project.present? && project.saved?
+    return false unless project
     return false unless delete_inactive_projects?
 
-    project.inactive?
+    project.persisted? && project.inactive?
   end
 
   def inactive_project_deletion_date(project)
@@ -637,9 +644,8 @@ module ProjectsHelper
     localized_access_names[access] || Gitlab::Access.human_access(access)
   end
 
-  def project_delete_delayed_button_data(project, button_text = nil, is_security_policy_project: false)
+  def project_delete_delayed_button_data(project, button_text = nil)
     project_delete_button_shared_data(project, button_text).merge({
-      is_security_policy_project: is_security_policy_project.to_s,
       restore_help_path: help_page_path('user/project/working_with_projects.md', anchor: 'restore-a-project'),
       delayed_deletion_date: permanent_deletion_date_formatted(Date.current),
       form_path: project_path(project)
@@ -749,10 +755,10 @@ module ProjectsHelper
   def delete_delayed_message(project)
     date = permanent_deletion_date_formatted(Date.current)
 
-    if project.adjourned_deletion?
+    if project.delayed_deletion_ready?
       message = _("This action will place this project, including all its resources, in a pending deletion state " \
-        "for %{deletion_adjourned_period} days, and delete it permanently on %{strongOpen}%{date}%{strongClose}.")
-      ERB::Util.html_escape(message) % delete_message_data(project).merge(date: date,
+        "for %{deletion_adjourned_period} days, and delete it permanently on %{date}.")
+      ERB::Util.html_escape(message) % delete_message_data(project).merge(date: tag.strong(date),
         deletion_adjourned_period: project.deletion_adjourned_period)
     else
       delete_permanently_message
@@ -765,11 +771,11 @@ module ProjectsHelper
 
     date = permanent_deletion_date_formatted(project.marked_for_deletion_on)
 
-    message = _('This project is scheduled for deletion on %{strongOpen}%{date}%{strongClose}. ' \
+    message = _('This project is scheduled for deletion on %{date}. ' \
       'This action will permanently delete this project, ' \
       'including all its resources, %{strongOpen}immediately%{strongClose}. This action cannot be undone.')
 
-    ERB::Util.html_escape(message) % delete_message_data(project).merge(date: date)
+    ERB::Util.html_escape(message) % delete_message_data(project).merge(date: tag.strong(date))
   end
 
   def delete_permanently_message

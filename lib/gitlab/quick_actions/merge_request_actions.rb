@@ -304,8 +304,20 @@ module Gitlab
           if reviewers.blank?
             _("Failed to assign a reviewer because no user was specified.")
           else
-            _('Assigned %{reviewer_users_sentence} as %{reviewer_text}.') % { reviewer_users_sentence: reviewer_users_sentence(users),
-                                                                              reviewer_text: 'reviewer'.pluralize(reviewers.size) }
+            processed_users = process_reviewer_users(users)
+            processed_msg = process_reviewer_users_message
+
+            if processed_users.present?
+              [
+                processed_msg,
+                _('Assigned %{reviewer_users_sentence} as %{reviewer_text}.') % {
+                  reviewer_users_sentence: reviewer_users_sentence(processed_users),
+                  reviewer_text: 'reviewer'.pluralize(processed_users.size)
+                }
+              ].compact.join(' ')
+            else
+              processed_msg
+            end
           end
         end
         params do
@@ -319,13 +331,15 @@ module Gitlab
           extract_users(reviewer_param)
         end
         command :assign_reviewer, :reviewer do |users|
-          next if users.empty?
+          processed_users = process_reviewer_users(users)
+
+          next if processed_users.empty?
 
           if quick_action_target.allows_multiple_reviewers?
             @updates[:reviewer_ids] ||= quick_action_target.reviewers.map(&:id)
-            @updates[:reviewer_ids] |= users.map(&:id)
+            @updates[:reviewer_ids] |= processed_users.map(&:id)
           else
-            @updates[:reviewer_ids] = [users.first.id]
+            @updates[:reviewer_ids] = [processed_users.first.id]
           end
         end
 
@@ -347,7 +361,19 @@ module Gitlab
           if users.blank?
             _("Failed to request a review because no user was specified.")
           else
-            _('Requested a review from %{reviewer_users_sentence}.') % { reviewer_users_sentence: reviewer_users_sentence(users) }
+            processed_users = process_reviewer_users(users)
+            processed_msg = process_reviewer_users_message
+
+            if processed_users.present?
+              [
+                processed_msg,
+                _('Requested a review from %{reviewer_users_sentence}.') % {
+                  reviewer_users_sentence: reviewer_users_sentence(processed_users)
+                }
+              ].compact.join(' ')
+            else
+              processed_msg
+            end
           end
         end
         params do
@@ -361,7 +387,9 @@ module Gitlab
           extract_users(reviewer_param)
         end
         command :request_review do |users|
-          next if users.empty?
+          processed_users = process_reviewer_users(users)
+
+          next if processed_users.empty?
 
           @updates[:reviewer_ids] ||= quick_action_target.reviewers.map(&:id)
 
@@ -370,7 +398,7 @@ module Gitlab
             current_user: current_user
           )
 
-          reviewers_to_add(users).each do |user|
+          reviewers_to_add(processed_users).each do |user|
             if @updates[:reviewer_ids].include?(user.id)
               # Request a new review from the reviewer if they are already assigned
               service.execute(quick_action_target, user)
@@ -478,6 +506,16 @@ module Gitlab
 
       def preferred_auto_merge_strategy(merge_request)
         merge_orchestration_service.preferred_auto_merge_strategy(merge_request)
+      end
+
+      # Overriden in EE
+      def process_reviewer_users(users)
+        users
+      end
+
+      # Overriden in EE
+      def process_reviewer_users_message
+        nil
       end
     end
   end

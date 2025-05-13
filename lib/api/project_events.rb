@@ -4,6 +4,7 @@ module API
   class ProjectEvents < ::API::Base
     include PaginationParams
     include APIGuard
+
     helpers ::API::Helpers::EventsHelpers
 
     feature_category :user_profile

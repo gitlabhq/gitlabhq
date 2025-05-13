@@ -58,20 +58,22 @@ RSpec.describe Projects::CreateFromTemplateService, feature_category: :groups_an
   end
 
   context 'the result project' do
+    let(:project) { subject.execute }
+
     before do
       perform_enqueued_jobs do
-        @project = subject.execute
+        project
       end
 
-      @project.reload
+      project.reload
     end
 
     it 'overrides template description' do
-      expect(@project.description).to match('project description')
+      expect(project.description).to match('project description')
     end
 
     it 'overrides template visibility_level' do
-      expect(@project.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
+      expect(project.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
     end
   end
 end

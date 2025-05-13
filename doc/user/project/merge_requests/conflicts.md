@@ -62,9 +62,9 @@ If a file doesn't meet these criteria, you must resolve the conflict manually.
 GitLab shows [conflicts available for resolution](#conflicts-you-can-resolve-in-the-user-interface)
 in the user interface, and you can also resolve conflicts using the following methods:
 
-- **Interactive mode**: Best for conflicts where you only need to select which version of a line to keep.
-- **Inline editor**: Suitable for complex conflicts requiring manual edits to blend changes.
-- **Command line**: Provides complete control over complex conflicts. For more information, see [Resolve conflicts from the command line](../../../topics/git/git_rebase.md#resolve-conflicts-from-the-command-line).
+- Interactive mode: Best for conflicts where you only need to select which version of a line to keep.
+- Inline editor: Suitable for complex conflicts requiring manual edits to blend changes.
+- Command line: Provides complete control over complex conflicts. For more information, see [Resolve conflicts from the command line](../../../topics/git/git_rebase.md#resolve-conflicts-from-the-command-line).
 
 ### Interactive mode
 
@@ -139,6 +139,14 @@ To rebase a merge request's branch from the GitLab UI:
 
 GitLab schedules, then runs, a rebase of the branch against the default branch.
 GitLab shows the completed rebase as a system note.
+
+{{< alert type="note" >}}
+
+If you have configured commit signing for commits made
+through the GitLab UI, web commits lose their commit signatures
+[when rebased through the UI](../repository/signed_commits/web_commits.md#web-commits-become-unsigned-after-rebase).
+
+{{< /alert >}}
 
 ## Related topics
 

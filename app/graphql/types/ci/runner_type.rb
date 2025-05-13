@@ -61,9 +61,8 @@ module Types
       field :job_execution_status,
         Types::Ci::RunnerJobExecutionStatusEnum,
         null: true,
-        description: 'Job execution status of the runner.',
-        experiment: { milestone: '15.7' }
-      field :jobs, ::Types::Ci::JobType.connection_type, null: true,
+        description: 'Job execution status of the runner.'
+      field :jobs, ::Types::Ci::JobInterface.connection_type, null: true,
         description: 'Jobs assigned to the runner. This field can only be resolved for one runner in any single request.',
         authorize: :read_builds,
         resolver: ::Resolvers::Ci::RunnerJobsResolver

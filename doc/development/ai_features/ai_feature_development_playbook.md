@@ -156,7 +156,7 @@ For an overview, see [this video](https://youtu.be/-DK-XFFllwg).
 1. ELI5 Setup Considerations
    - Requires upfront time investment
    - Need to adjust evaluations for specific features
-   - Set up input data (e.g., local GDK for chat features)
+   - Set up input data (for example, local GDK for chat features)
 
 1. Challenges
    - Ensuring consistent data across different users

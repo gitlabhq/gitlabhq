@@ -67,4 +67,37 @@ RSpec.describe 'getting a WorkItem description template and content', feature_ca
       expect(expected_graphql_data).to be_nil
     end
   end
+
+  context 'when two templates from different projects have identical names' do
+    let(:query) do
+      graphql_query_for(:workItemDescriptionTemplateContent,
+        { templateContentInput: { projectId: project.id, name: "project_issues_template_a" } })
+    end
+
+    let_it_be(:group_default_template_files) do
+      {
+        ".gitlab/issue_templates/project_issues_template_a.md" => "group default content"
+      }
+    end
+
+    let_it_be(:group_default_template_project) do
+      create(:project, :custom_repo, files: group_default_template_files, group: group)
+    end
+
+    before do
+      group.file_template_project_id = group_default_template_project.id
+    end
+
+    it 'returns the template from the specified project' do
+      post_graphql(query, current_user: current_user)
+
+      expect(expected_graphql_data["projectId"]).to eq(project.id)
+      expect(expected_graphql_data["name"]).to eq("project_issues_template_a")
+      expect(expected_graphql_data["category"]).to be_nil
+      expect(expected_graphql_data["content"]).to eq("project_issues_template_a content")
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(graphql_errors).to be_nil
+    end
+  end
 end

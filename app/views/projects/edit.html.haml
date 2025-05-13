@@ -69,7 +69,7 @@
 
         = render 'export', project: @project
 
-        = render_if_exists 'projects/settings/archive'
+        = render 'projects/settings/archive'
 
         = render Pajamas::CardComponent.new do |c|
           - c.with_header do
@@ -77,7 +77,7 @@
               %h4.gl-text-base.gl-leading-24.gl-m-0= _('Change path')
             %p.gl-text-subtle.gl-text-sm.gl-m-0
               - link = link_to('', help_page_path('user/project/working_with_projects.md', anchor: 'rename-a-repository'), target: '_blank', rel: 'noopener noreferrer')
-              = safe_format(_("A project’s repository name defines its URL (the one you use to access the project via a browser) and its place on the file disk where GitLab is installed. %{link_start}Learn more.%{link_end}"), tag_pair(link, :link_start, :link_end))
+              = safe_format(_("A project’s repository name defines its URL (the one you use to access the project via a browser). %{link_start}Learn more.%{link_end}"), tag_pair(link, :link_start, :link_end))
 
           - c.with_body do
             = render 'projects/errors'
@@ -106,8 +106,7 @@
         = render_if_exists 'shared/groups_projects/settings/restore', context: @project
         = render 'delete'
 - else
-  - if can?(current_user, :archive_project, @project)
-    = render_if_exists 'projects/settings/archive'
+  = render 'projects/settings/archive'
   - if can?(current_user, :remove_project, @project)
     = render 'delete'
 

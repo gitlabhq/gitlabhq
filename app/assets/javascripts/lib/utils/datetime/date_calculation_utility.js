@@ -280,6 +280,14 @@ export const getDatesInRange = (d1, d2, formatter = (x) => x) => {
 export const secondsToMilliseconds = (seconds) => seconds * 1000;
 
 /**
+ * Converts the supplied number of milliseconds to seconds.
+ *
+ * @param {Number} milliseconds
+ * @return {Number} number of seconds
+ */
+export const millisecondsToSeconds = (milliseconds) => milliseconds / 1000;
+
+/**
  * Converts the supplied number of seconds to days.
  *
  * @param {Number} seconds

@@ -11,7 +11,7 @@ class Packages::DependencyLink < ApplicationRecord
   validates :dependency_type,
     uniqueness: { scope: %i[package_id dependency_id] }
 
-  enum dependency_type: { dependencies: 1, devDependencies: 2, bundleDependencies: 3, peerDependencies: 4 }
+  enum :dependency_type, { dependencies: 1, devDependencies: 2, bundleDependencies: 3, peerDependencies: 4 }
 
   scope :with_dependency_type, ->(dependency_type) { where(dependency_type: dependency_type) }
   scope :includes_dependency, -> { includes(:dependency) }

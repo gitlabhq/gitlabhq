@@ -3,24 +3,24 @@ import { GlIcon, GlBadge, GlTooltipDirective } from '@gitlab/ui';
 import uniqueId from 'lodash/uniqueId';
 
 import { createAlert } from '~/alert';
-import GroupListItemDeleteModal from 'ee_else_ce/vue_shared/components/groups_list/group_list_item_delete_modal.vue';
+import GroupListItemDeleteModal from '~/vue_shared/components/groups_list/group_list_item_delete_modal.vue';
 import axios from '~/lib/utils/axios_utils';
 import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import { __ } from '~/locale';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
-import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
+import { ACTION_DELETE, ACTION_LEAVE } from '~/vue_shared/components/list_actions/constants';
 import {
   TIMESTAMP_TYPES,
   TIMESTAMP_TYPE_CREATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
 import ListItem from '~/vue_shared/components/resource_lists/list_item.vue';
 import ListItemStat from '~/vue_shared/components/resource_lists/list_item_stat.vue';
-import {
-  renderDeleteSuccessToast,
-  deleteParams,
-} from 'ee_else_ce/vue_shared/components/groups_list/utils';
-import GroupListItemPreventDeleteModal from './group_list_item_prevent_delete_modal.vue';
+import { renderDeleteSuccessToast, deleteParams } from '~/vue_shared/components/groups_list/utils';
+import GroupListItemLeaveModal from '~/vue_shared/components/groups_list/group_list_item_leave_modal.vue';
+import GroupListItemPreventDeleteModal from '~/vue_shared/components/groups_list/group_list_item_prevent_delete_modal.vue';
+import GroupListItemActions from '~/vue_shared/components/groups_list/group_list_item_actions.vue';
+import GroupListItemInactiveBadge from './group_list_item_inactive_badge.vue';
 
 export default {
   i18n: {
@@ -36,10 +36,11 @@ export default {
     ListItemStat,
     GlIcon,
     GlBadge,
+    GroupListItemActions,
+    GroupListItemLeaveModal,
     GroupListItemPreventDeleteModal,
     GroupListItemDeleteModal,
-    GroupListItemInactiveBadge: () =>
-      import('ee_component/vue_shared/components/groups_list/group_list_item_inactive_badge.vue'),
+    GroupListItemInactiveBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -71,7 +72,8 @@ export default {
   data() {
     return {
       isDeleteModalVisible: false,
-      isDeleteLoading: false,
+      isDeleteModalLoading: false,
+      isLeaveModalVisible: false,
       modalId: uniqueId('groups-list-item-modal-id-'),
     };
   },
@@ -106,41 +108,46 @@ export default {
     groupMembersCount() {
       return numberToMetricPrefix(this.group.groupMembersCount);
     },
-    actions() {
-      return {
-        [ACTION_EDIT]: {
-          href: this.group.editPath,
-        },
-        [ACTION_DELETE]: {
-          action: this.onActionDelete,
-        },
-      };
-    },
     hasActionDelete() {
       return this.group.availableActions?.includes(ACTION_DELETE);
+    },
+    hasActionLeave() {
+      return this.group.availableActions?.includes(ACTION_LEAVE);
+    },
+    hasActions() {
+      return this.group.availableActions?.length;
+    },
+    hasFooterAction() {
+      return this.hasActionDelete || this.hasActionLeave;
     },
   },
   methods: {
     onActionDelete() {
       this.isDeleteModalVisible = true;
     },
-    onModalChange(isVisible) {
+    onDeleteModalChange(isVisible) {
       this.isDeleteModalVisible = isVisible;
     },
     async onDeleteModalConfirm() {
-      this.isDeleteLoading = true;
+      this.isDeleteModalLoading = true;
 
       try {
-        await axios.delete(`/${this.group.fullPath}`, {
+        await axios.delete(this.group.webUrl, {
           params: deleteParams(this.group),
         });
-        this.$emit('refetch');
+        this.refetch();
         renderDeleteSuccessToast(this.group);
       } catch (error) {
         createAlert({ message: this.$options.i18n.deleteErrorMessage, error, captureError: true });
       } finally {
-        this.isDeleteLoading = false;
+        this.isDeleteModalLoading = false;
       }
+    },
+    onActionLeave() {
+      this.isLeaveModalVisible = true;
+    },
+    refetch() {
+      this.$emit('refetch');
     },
   },
 };
@@ -151,7 +158,6 @@ export default {
     :resource="group"
     :show-icon="showGroupIcon"
     :icon-name="groupIconName"
-    :actions="actions"
     :list-item-class="listItemClass"
     :timestamp-type="timestampType"
   >
@@ -192,23 +198,43 @@ export default {
       />
     </template>
 
-    <template v-if="hasActionDelete" #footer>
-      <group-list-item-prevent-delete-modal
-        v-if="group.isLinkedToSubscription"
-        :visible="isDeleteModalVisible"
-        :modal-id="modalId"
-        @change="onModalChange"
-      />
-      <group-list-item-delete-modal
-        v-else
-        :visible="isDeleteModalVisible"
-        :modal-id="modalId"
-        :phrase="group.fullName"
-        :confirm-loading="isDeleteLoading"
+    <template v-if="hasActions" #actions>
+      <group-list-item-actions
         :group="group"
-        @confirm.prevent="onDeleteModalConfirm"
-        @change="onModalChange"
+        @refetch="refetch"
+        @delete="onActionDelete"
+        @leave="onActionLeave"
       />
+    </template>
+
+    <template v-if="hasFooterAction" #footer>
+      <template v-if="hasActionDelete">
+        <group-list-item-prevent-delete-modal
+          v-if="group.isLinkedToSubscription"
+          :visible="isDeleteModalVisible"
+          :modal-id="modalId"
+          @change="onDeleteModalChange"
+        />
+        <group-list-item-delete-modal
+          v-else
+          :visible="isDeleteModalVisible"
+          :modal-id="modalId"
+          :phrase="group.fullName"
+          :confirm-loading="isDeleteModalLoading"
+          :group="group"
+          @confirm.prevent="onDeleteModalConfirm"
+          @change="onDeleteModalChange"
+        />
+      </template>
+
+      <template v-if="hasActionLeave">
+        <group-list-item-leave-modal
+          v-model="isLeaveModalVisible"
+          :modal-id="modalId"
+          :group="group"
+          @success="refetch"
+        />
+      </template>
     </template>
 
     <template #children>

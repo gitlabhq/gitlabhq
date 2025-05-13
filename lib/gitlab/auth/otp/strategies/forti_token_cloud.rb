@@ -6,6 +6,7 @@ module Gitlab
       module Strategies
         class FortiTokenCloud < Base
           include Gitlab::Utils::StrongMemoize
+
           BASE_API_URL = 'https://ftc.fortinet.com:9696/api/v1'
 
           def validate(otp_code)

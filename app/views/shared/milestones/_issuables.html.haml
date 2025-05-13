@@ -1,9 +1,14 @@
 - show_counter = local_assigns.fetch(:show_counter, false)
+- subtitle = local_assigns.fetch(:subtitle, nil)
 
 = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-0' }, header_options: { class: "gl-text-subtle gl-flex" }) do |c|
   - c.with_header do
     .gl-grow-2
-      = title
+      .gl-flex.gl-flex-col.gl-text-default
+        = title
+        - if Feature.enabled?(:work_items_alpha, current_user)
+          .gl-text-subtle.gl-text-sm
+            = subtitle
     .gl-ml-3.gl-shrink-0.gl-font-bold.gl-whitespace-nowrap.gl-text-subtle
       - if show_counter
         %span

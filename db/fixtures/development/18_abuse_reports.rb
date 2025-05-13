@@ -5,7 +5,7 @@ module Db
         def self.seed
           Gitlab::Seeder.quiet do
             (::AbuseReport.default_per_page + 3).times do |i|
-              username = "#{::Gitlab::Seeder::REPORTED_USER_START}#{FFaker::Internet.unique.user_name}"
+              username = "#{::Gitlab::Seeder::REPORTED_USER_START}#{::Gitlab::Faker::Internet.unique_username}"
               reported_user =
                 ::User.create!(
                   username: username,

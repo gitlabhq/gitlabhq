@@ -372,7 +372,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
             expect(pipeline.target_sha).to eq(upstream_pipeline.target_sha)
             expect(pipeline.target_sha).to eq(upstream_pipeline.target_sha)
 
-            expect(pipeline.trigger_requests.last).to eq(bridge.trigger_request)
+            expect(pipeline.trigger).to eq(bridge.trigger)
           end
         end
 

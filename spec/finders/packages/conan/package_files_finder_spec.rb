@@ -5,15 +5,25 @@ require 'spec_helper'
 RSpec.describe Packages::Conan::PackageFilesFinder, feature_category: :package_registry do
   let_it_be(:package) { create(:conan_package) }
   let_it_be(:aditional_recipe_revision) { create(:conan_recipe_revision, package: package) }
+  let_it_be(:aditional_package_revision) { create(:conan_package_revision, package: package) }
+  let_it_be(:recipe_file_without_revision) do
+    create(:conan_package_file, :conan_recipe_file,
+      package: package, conan_recipe_revision: nil, conan_package_revision: nil)
+  end
 
   let_it_be(:package_file_without_revision) do
-    create(:conan_package_file, :conan_recipe_file,
-      package: package, conan_recipe_revision: nil)
+    create(:conan_package_file, :conan_package_manifest,
+      package: package, conan_recipe_revision: nil, conan_package_revision: nil)
+  end
+
+  let_it_be(:aditional_recipe_file) do
+    create(:conan_package_file, :conan_recipe_file, package: package,
+      conan_recipe_revision: aditional_recipe_revision)
   end
 
   let_it_be(:aditional_package_file) do
-    create(:conan_package_file, :conan_recipe_file, package: package,
-      conan_recipe_revision: aditional_recipe_revision)
+    create(:conan_package_file, :conan_package_manifest, package: package,
+      conan_recipe_revision: aditional_recipe_revision, conan_package_revision: aditional_package_revision)
   end
 
   let(:package_files) { package.package_files }
@@ -84,7 +94,7 @@ RSpec.describe Packages::Conan::PackageFilesFinder, feature_category: :package_r
         let(:recipe_revision_value) { Packages::Conan::FileMetadatum::DEFAULT_REVISION }
 
         it 'returns package files without recipe revision' do
-          expect(found_package_files).to match_array([package_file_without_revision])
+          expect(found_package_files).to match_array([recipe_file_without_revision, package_file_without_revision])
         end
       end
 
@@ -97,6 +107,31 @@ RSpec.describe Packages::Conan::PackageFilesFinder, feature_category: :package_r
         end
 
         it 'returns package files with matching recipe revision' do
+          expect(found_package_files).to match_array(expected_package_files)
+        end
+      end
+    end
+
+    context 'with package_revision' do
+      let(:params) { { package_revision: package_revision_value } }
+
+      context 'with default revision' do
+        let(:package_revision_value) { Packages::Conan::FileMetadatum::DEFAULT_REVISION }
+
+        it 'returns package files without package revision' do
+          expect(found_package_files).to match_array([package_file_without_revision])
+        end
+      end
+
+      context 'with specific revision' do
+        let(:package_revision_value) { package.conan_package_revisions.first.revision }
+        let(:expected_package_files) do
+          package_files.select do |file|
+            file.conan_file_metadatum.package_revision_value == package_revision_value
+          end
+        end
+
+        it 'returns package files with matching package revision' do
           expect(found_package_files).to match_array(expected_package_files)
         end
       end

@@ -2,7 +2,7 @@
 - header_title _("New project"), new_project_path
 - add_to_breadcrumbs s_('ProjectsNew|Import project'), new_project_path(anchor: 'import_project')
 
-- if Feature.enabled?(:new_project_creation_form, @user)
+- if Feature.enabled?(:new_project_creation_form, current_user)
   #js-vue-import-bitbucket-server-project-root{ data: {
     back_button_path: new_project_path(anchor: 'import_project'),
     form_path: configure_import_bitbucket_server_path(namespace_id: params[:namespace_id])

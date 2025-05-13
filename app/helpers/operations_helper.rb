@@ -15,16 +15,6 @@ module OperationsHelper
     templates = setting.available_issue_templates.map { |t| { value: t.key, text: t.name } }
 
     {
-      'prometheus_activated' => prometheus_integration.manual_configuration?.to_s,
-      'prometheus_form_path' => scoped_integration_path(
-        prometheus_integration,
-        project: prometheus_integration.project,
-        group: prometheus_integration.group
-      ),
-      'prometheus_reset_key_path' => reset_alerting_token_project_settings_operations_path(@project),
-      'prometheus_authorization_key' => @project.alerting_setting&.token,
-      'prometheus_api_url' => prometheus_integration.api_url,
-      'prometheus_url' => notify_project_prometheus_alerts_url(@project, format: :json),
       'alerts_setup_url' => help_page_path('operations/incident_management/integrations.md', anchor: 'configuration'),
       'alerts_usage_url' => project_alert_management_index_path(@project),
       'disabled' => disabled.to_s,
@@ -37,6 +27,23 @@ module OperationsHelper
       'auto_close_incident' => setting.auto_close_incident.to_s,
       'pagerduty_reset_key_path' => reset_pagerduty_token_project_settings_operations_path(@project),
       'operations_settings_endpoint' => project_settings_operations_path(@project)
+    }.merge(prometheus_alerts_integration_data)
+  end
+
+  def prometheus_alerts_integration_data
+    return {} unless prometheus_integration
+
+    {
+      'prometheus_activated' => prometheus_integration.manual_configuration?.to_s,
+      'prometheus_form_path' => scoped_integration_path(
+        prometheus_integration,
+        project: prometheus_integration.project,
+        group: prometheus_integration.group
+      ),
+      'prometheus_reset_key_path' => reset_alerting_token_project_settings_operations_path(@project),
+      'prometheus_authorization_key' => @project.alerting_setting&.token,
+      'prometheus_api_url' => prometheus_integration.api_url,
+      'prometheus_url' => notify_project_prometheus_alerts_url(@project, format: :json)
     }
   end
 

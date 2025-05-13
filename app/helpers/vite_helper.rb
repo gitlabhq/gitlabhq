@@ -8,19 +8,21 @@ module ViteHelper
     Gitlab::Utils.to_boolean(ViteRuby.env['VITE_ENABLED'], default: false)
   end
 
-  def vite_hmr_websocket_url
-    ViteRuby.env['VITE_HMR_WS_URL']
+  def vite_origin
+    ViteRuby.config.origin
   end
 
-  def vite_hmr_http_url
-    ViteRuby.env['VITE_HMR_HTTP_URL']
+  def vite_hmr_ws_origin
+    protocol = ViteRuby.config.https ? 'wss' : 'ws'
+    "#{protocol}://#{ViteRuby.config.host_with_port}"
   end
 
-  def vite_page_entrypoint_paths
-    action = case controller.action_name
+  def vite_page_entrypoint_paths(custom_action_name = nil)
+    action_name = custom_action_name || controller.action_name
+    action = case action_name
              when 'create' then 'new'
              when 'update' then 'edit'
-             else controller.action_name
+             else action_name
              end
 
     parts = (controller.controller_path.split('/') << action)
@@ -31,12 +33,6 @@ module ViteHelper
 
   def universal_stylesheet_link_tag(path, **options)
     return stylesheet_link_tag(path, **options) unless vite_enabled?
-
-    if Rails.env.test? && config.asset_host
-      # Link directly to Vite server when running tests because for unit and integration tests, there
-      # won't be a Rails server to proxy these requests to the Vite server.
-      options[:host] = URI::HTTP.build(host: ViteRuby.config.host, port: ViteRuby.config.port).to_s
-    end
 
     options[:extname] = false
 

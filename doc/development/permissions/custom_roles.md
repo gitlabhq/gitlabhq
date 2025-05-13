@@ -217,7 +217,7 @@ rule { custom_role_enables_read_dependency }.enable(:read_dependency)
 
 - Not all abilities need to be enabled on both levels, for instance `admin_terraform_state` allows users to manage a project's terraform state. It only needs to be enabled on the project level and not the group level, and thus only needs to be configured in `ee/app/policies/ee/project_policy.rb`.
 
-### Step 5: Verify
+### Step 5: Verify role access
 
 - Ensure SaaS mode is enabled with `GITLAB_SIMULATE_SAAS=1`.
 - Go to any Group that you are an owner of, then go to `Settings -> Roles and permissions`.
@@ -225,7 +225,19 @@ rule { custom_role_enables_read_dependency }.enable(:read_dependency)
 - Go to the Group's `Manage -> Members` page and assign a member to this newly created custom role.
 - Next, sign in as that member and ensure that you are able to access the page that the custom ability is intended for.
 
-### Step 6: Add specs
+### Step 6: Assess impact to advanced search
+
+Custom roles may impact [advanced search functionality](../../user/search/advanced_search.md#available-scopes) if the ability impacts data that is indexed by Advanced search.
+ 
+- Enable [Advanced search and index the instance](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/elasticsearch.md#enable-elasticsearch-in-the-gdk)
+- Sign in as a member with the custom role assigned to any Group
+- Perform a global search by navigating to `Search or go to...`. Type in a search term and select to search in `all GitLab`.
+- Verify that the user can search for data impacted by the custom role
+- Perform a group search by navigating to the group page then `Search or go to...`. Type in a search term and select search in group.
+- Verify that the user can search for data impacted by the custom role
+- Update [search authorization](../advanced_search.md#updating-authorization) if needed
+
+### Step 7: Add specs
 
 - Add the ability as a trait in the `MemberRoles` factory, `ee/spec/factories/member_roles.rb`.
 - Add tests to `ee/spec/requests/custom_roles/<ABILITY_NAME>/request_spec.rb` to ensure that once the user has been assigned the custom ability, they can successfully access the controllers, REST API endpoints and GraphQL API endpoints.
@@ -291,7 +303,9 @@ rule { custom_role_enables_read_dependency }.enable(:read_dependency)
   end
 ```
 
-### Step 6: Update documentation
+- Add [advanced search permissions tests](../advanced_search.md#permissions-tests) for impacted scopes if needed
+
+### Step 8: Update documentation
 
 Follow the [Contribute to the GitLab documentation](../documentation/_index.md) page to make the following changes to the documentation:
 

@@ -15,5 +15,5 @@ title: Troubleshooting Elasticsearch
 When working with Elasticsearch, you might encounter issues with:
 
 - [Elasticsearch access](access.md)
-- [Elasticsearch indexing](indexing.md)
+- [Elasticsearch indexing and searching](indexing.md)
 - [Elasticsearch migrations](migrations.md)

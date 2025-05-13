@@ -22,6 +22,7 @@ module WorkItems
             created_at: work_item.created_at,
             updated_at: work_item.updated_at,
             updated_by_id: work_item.updated_by_id,
+            state_id: work_item.state_id,
             closed_at: work_item.closed_at,
             closed_by_id: work_item.closed_by_id,
             duplicated_to_id: work_item.duplicated_to_id,

@@ -148,7 +148,7 @@ RSpec.describe 'Admin::Users::User', feature_category: :user_management, quarant
       end
 
       it "displays `Locked` next to user's name" do
-        expect(page).to have_content("#{locked_user.name} Locked")
+        expect(page).to have_content("#{locked_user.name} #{locked_user.email} Locked")
       end
 
       it 'allows a user to be unlocked from the `User administration dropdown', :js do

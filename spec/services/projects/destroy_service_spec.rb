@@ -868,6 +868,116 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     end
   end
 
+  describe '#delete_commit_statuses' do
+    let(:service) { described_class.new(project, user, {}) }
+    let(:batch_size) { described_class::BATCH_SIZE }
+
+    context 'when there are no commit statuses' do
+      it 'does not delete anything and logs zero count' do
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          class: described_class.name,
+          project_id: project.id,
+          message: 'leftover commit statuses',
+          orphaned_commit_status_count: 0
+        )
+
+        expect { service.send(:delete_commit_statuses) }.not_to change(::CommitStatus, :count)
+      end
+    end
+
+    context 'when there are fewer commit statuses than the batch size' do
+      before do
+        create_list(:commit_status, 2, project: project)
+      end
+
+      it 'deletes all statuses in a single batch and logs the count' do
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          class: described_class.name,
+          project_id: project.id,
+          message: 'leftover commit statuses',
+          orphaned_commit_status_count: 2
+        )
+
+        expect { service.send(:delete_commit_statuses) }
+          .to change { CommitStatus.for_project(project).count }.from(2).to(0)
+      end
+    end
+
+    context 'when there are more commit statuses than the batch size' do
+      before do
+        stub_const("#{described_class}::BATCH_SIZE", 2)
+        create_list(:commit_status, 3, project: project)
+      end
+
+      it 'deletes statuses in multiple batches and logs the total count' do
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          class: described_class.name,
+          project_id: project.id,
+          message: 'leftover commit statuses',
+          orphaned_commit_status_count: 3
+        )
+
+        expect { service.send(:delete_commit_statuses) }
+          .to change { CommitStatus.for_project(project).count }.from(3).to(0)
+      end
+    end
+  end
+
+  describe '#delete_environments' do
+    let(:service) { described_class.new(project, user, {}) }
+    let(:batch_size) { described_class::BATCH_SIZE }
+
+    context 'when there are no environments' do
+      it 'does not delete anything and logs zero count' do
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          class: described_class.name,
+          project_id: project.id,
+          message: 'Deleting environments completed',
+          deleted_environment_count: 0
+        )
+
+        expect { service.send(:delete_environments) }.not_to change(Environment, :count)
+      end
+    end
+
+    context 'when there are fewer environments than the batch size' do
+      before do
+        create_list(:environment, 2, project: project)
+      end
+
+      it 'deletes all environments in a single batch and logs the count' do
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          class: described_class.name,
+          project_id: project.id,
+          message: 'Deleting environments completed',
+          deleted_environment_count: 2
+        )
+
+        expect { service.send(:delete_environments) }
+          .to change { Environment.for_project(project).count }.from(2).to(0)
+      end
+    end
+
+    context 'when there are more environments than the batch size' do
+      before do
+        stub_const("#{described_class}::BATCH_SIZE", 2)
+        create_list(:environment, 3, project: project)
+      end
+
+      it 'deletes environments in multiple batches and logs the total count' do
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          class: described_class.name,
+          project_id: project.id,
+          message: 'Deleting environments completed',
+          deleted_environment_count: 3
+        )
+
+        expect { service.send(:delete_environments) }
+          .to change { Environment.for_project(project).count }.from(3).to(0)
+      end
+    end
+  end
+
   def destroy_project(project, user, params = {})
     described_class.new(project, user, params).public_send(async ? :async_execute : :execute)
   end

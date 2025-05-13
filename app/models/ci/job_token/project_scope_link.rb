@@ -32,7 +32,7 @@ module Ci
 
       # When outbound the target project is allowed to be accessed by the source job token.
       # When inbound the source project is allowed to be accessed by the target job token.
-      enum direction: {
+      enum :direction, {
         outbound: 0,
         inbound: 1
       }

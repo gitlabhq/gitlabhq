@@ -23,13 +23,13 @@ class Namespace::RootStorageStatistics < ApplicationRecord
 
   delegate :all_projects_except_soft_deleted, to: :namespace
 
-  enum notification_level: {
+  enum :notification_level, {
     storage_remaining: 100,
     caution: 30,
     warning: 15,
     danger: 5,
     exceeded: 0
-  }, _prefix: true
+  }, prefix: true
 
   def recalculate!
     update!(merged_attributes)

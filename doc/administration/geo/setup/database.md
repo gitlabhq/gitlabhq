@@ -1,5 +1,5 @@
 ---
-stage: Systems
+stage: Tenant Scale
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Geo database replication
@@ -61,7 +61,7 @@ recover. See below for more details.
 The following guide assumes that:
 
 - You are using the Linux package (so are using PostgreSQL 12 or later),
-  which includes the [`pg_basebackup` tool](https://www.postgresql.org/docs/12/app-pgbasebackup.html).
+  which includes the [`pg_basebackup` tool](https://www.postgresql.org/docs/16/app-pgbasebackup.html).
 - You have a **primary** site already set up (the GitLab server you are
   replicating from), running PostgreSQL (or equivalent version) managed by your Linux package installation, and
   you have a new **secondary** site set up with the same
@@ -82,6 +82,8 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    ```shell
    sudo -i
    ```
+
+1. [Opt out of automatic PostgreSQL upgrades](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades) to avoid unintended downtime when upgrading GitLab. Be aware of the known [caveats when upgrading PostgreSQL with Geo](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo). Especially for larger environments, PostgreSQL upgrades must be planned and executed consciously. As a result and going forward, ensure PostgreSQL upgrades are part of the regular maintenance activities.
 
 1. Edit `/etc/gitlab/gitlab.rb` and add a **unique** name for your site:
 
@@ -130,7 +132,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    gitlab_rails['db_password'] = '<your_db_password_here>'
    ```
 
-1. Define a password for the database [replication user](https://wiki.postgresql.org/wiki/Streaming_Replication).
+1. Define a password for the database [replication user](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION).
 
    Use the username defined in `/etc/gitlab/gitlab.rb` under the `postgresql['sql_replication_user']`
    setting. The default value is `gitlab_replicator`. If you changed the username to something else, adapt
@@ -214,7 +216,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    `postgresql['md5_auth_cidr_addresses']` and `postgresql['listen_address']`.
 
    The `listen_address` option opens PostgreSQL up to network connections with the interface
-   corresponding to the given address. See [the PostgreSQL documentation](https://www.postgresql.org/docs/12/runtime-config-connection.html)
+   corresponding to the given address. See [the PostgreSQL documentation](https://www.postgresql.org/docs/16/runtime-config-connection.html)
    for more details.
 
    {{< alert type="note" >}}
@@ -270,7 +272,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    ```
 
    You may also want to edit the `wal_keep_segments` and `max_wal_senders` to match your
-   database replication requirements. Consult the [PostgreSQL - Replication documentation](https://www.postgresql.org/docs/12/runtime-config-replication.html)
+   database replication requirements. Consult the [PostgreSQL - Replication documentation](https://www.postgresql.org/docs/16/runtime-config-replication.html)
    for more information.
 
 1. Save the file and reconfigure GitLab for the database listen changes and
@@ -347,6 +349,8 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    ```shell
    sudo -i
    ```
+
+1. [Opt out of automatic PostgreSQL upgrades](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades) to avoid unintended downtime when upgrading GitLab. Be aware of the known [caveats when upgrading PostgreSQL with Geo](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo). Especially for larger environments, PostgreSQL upgrades must be planned and executed consciously. As a result and going forward, ensure PostgreSQL upgrades are part of the regular maintenance activities.
 
 1. Stop application server and Sidekiq:
 
@@ -502,7 +506,7 @@ data before running `pg_basebackup`.
    sudo -i
    ```
 
-1. Choose a [database-friendly name](https://www.postgresql.org/docs/13/warm-standby.html#STREAMING-REPLICATION-SLOTS-MANIPULATION)
+1. Choose a [database-friendly name](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION-SLOTS-MANIPULATION)
    to use for your **secondary** site to
    use as the replication slot name. For example, if your domain is
    `secondary.geo.example.com`, use `secondary_example` as the slot
@@ -564,7 +568,7 @@ data before running `pg_basebackup`.
      (for example, you know the network path is secure, or you are using a site-to-site
      VPN). It is **not** safe over the public Internet!
    - You can read more details about each `sslmode` in the
-     [PostgreSQL documentation](https://www.postgresql.org/docs/12/libpq-ssl.html#LIBPQ-SSL-PROTECTION).
+     [PostgreSQL documentation](https://www.postgresql.org/docs/16/libpq-ssl.html#LIBPQ-SSL-PROTECTION).
      The instructions above are carefully written to ensure protection against
      both passive eavesdroppers and active "man-in-the-middle" attackers.
    - If you're repurposing an old site into a Geo **secondary** site, you must
@@ -594,7 +598,7 @@ see [the relevant documentation](../../postgresql/replication_and_failover.md).
 
 ### Changing the replication password
 
-To change the password for the [replication user](https://wiki.postgresql.org/wiki/Streaming_Replication)
+To change the password for the [replication user](https://www.postgresql.org/docs/16/warm-standby.html#STREAMING-REPLICATION)
 when using PostgreSQL instances managed by a Linux package installation:
 
 On the GitLab Geo **primary** site:
@@ -730,6 +734,8 @@ Leader instance**:
    sudo -i
    ```
 
+1. [Opt out of automatic PostgreSQL upgrades](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades) to avoid unintended downtime when upgrading GitLab. Be aware of the known [caveats when upgrading PostgreSQL with Geo](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo). Especially for larger environments, PostgreSQL upgrades must be planned and executed consciously. As a result and going forward, ensure PostgreSQL upgrades are part of the regular maintenance activities.
+
 1. Edit `/etc/gitlab/gitlab.rb` and add the following:
 
    ```ruby
@@ -789,6 +795,8 @@ Leader instance**:
    ```shell
    sudo -i
    ```
+
+1. [Opt out of automatic PostgreSQL upgrades](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades) to avoid unintended downtime when upgrading GitLab. Be aware of the known [caveats when upgrading PostgreSQL with Geo](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo). Especially for larger environments, PostgreSQL upgrades must be planned and executed consciously. As a result and going forward, ensure PostgreSQL upgrades are part of the regular maintenance activities.
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following:
 
@@ -971,6 +979,8 @@ For each node running a Patroni instance on the secondary site:
    ```shell
    sudo -i
    ```
+
+1. [Opt out of automatic PostgreSQL upgrades](https://docs.gitlab.com/omnibus/settings/database/#opt-out-of-automatic-postgresql-upgrades) to avoid unintended downtime when upgrading GitLab. Be aware of the known [caveats when upgrading PostgreSQL with Geo](https://docs.gitlab.com/omnibus/settings/database/#caveats-when-upgrading-postgresql-with-geo). Especially for larger environments, PostgreSQL upgrades must be planned and executed consciously. As a result and going forward, ensure PostgreSQL upgrades are part of the regular maintenance activities.
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following:
 

@@ -40,32 +40,32 @@ RSpec.describe Gitlab::Search::Params, feature_category: :global_search do
   end
 
   describe '#slice' do
-    let(:controller_params) { ActionController::Parameters.new(group_id: 123, search: search, include_forked: true) }
+    let(:controller_params) { ActionController::Parameters.new(group_id: 123, search: search, exclude_forks: true) }
     let(:params) { described_class.new(controller_params) }
 
     it 'returns a new params object with only the specified keys' do
-      sliced = params.slice(:include_forked, :group_id, :project_id)
+      sliced = params.slice(:exclude_forks, :group_id, :project_id)
 
       expect(sliced).to be_a(Hash)
-      expect(sliced[:include_forked]).to be(true)
+      expect(sliced[:exclude_forks]).to be(true)
       expect(sliced[:group_id]).to eq(123)
       expect(sliced[:project_id]).to be_nil
     end
 
     it 'works with string keys' do
-      sliced = params.slice('include_forked', 'group_id', 'project_id')
+      sliced = params.slice('exclude_forks', 'group_id', 'project_id')
 
       expect(sliced).to be_a(Hash)
-      expect(sliced['include_forked']).to be(true)
+      expect(sliced['exclude_forks']).to be(true)
       expect(sliced['group_id']).to eq(123)
       expect(sliced['project_id']).to be_nil
     end
 
     it 'handles mixed string and symbol keys' do
-      sliced = params.slice(:include_forked, 'group_id')
+      sliced = params.slice(:exclude_forks, 'group_id')
 
       expect(sliced).to be_a(Hash)
-      expect(sliced[:include_forked]).to be(true)
+      expect(sliced[:exclude_forks]).to be(true)
       expect(sliced[:group_id]).to eq(123)
       expect(sliced[:project_id]).to be_nil
     end
@@ -246,6 +246,18 @@ RSpec.describe Gitlab::Search::Params, feature_category: :global_search do
       with_them do
         it 'transforms param' do
           expect(search_params[:include_forked]).to eq(expected)
+        end
+      end
+    end
+
+    describe 'for exclude_forks' do
+      let(:params) { ActionController::Parameters.new(group_id: 123, search: search, exclude_forks: input) }
+
+      include_context 'with inputs'
+
+      with_them do
+        it 'transforms param' do
+          expect(search_params[:exclude_forks]).to eq(expected)
         end
       end
     end

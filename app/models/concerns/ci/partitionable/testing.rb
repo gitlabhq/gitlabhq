@@ -37,6 +37,7 @@ module Ci
         Ci::Sources::Project
         Ci::Stage
         Ci::UnitTestFailure
+        Ci::Workloads::Workload
       ].freeze
 
       def self.check_inclusion(klass)

@@ -26,7 +26,6 @@ module RapidDiffs
 
         def change_type
           return unless @line
-
           return 'added' if @line.added?
 
           'removed' if @line.removed?
@@ -37,6 +36,13 @@ module RapidDiffs
           when :right then 'rd-line-number-border-right'
           when :both  then 'rd-line-number-border-both'
           end
+        end
+
+        def label
+          return s_('RapidDiffs|Removed line %d') % line_number if @line.removed?
+          return s_('RapidDiffs|Added line %d') % line_number if @line.added?
+
+          s_('RapidDiffs|Line %d') % line_number
         end
 
         def visible?

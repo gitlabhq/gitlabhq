@@ -12,10 +12,11 @@ module Packages
 
       def execute
         return ERROR_RESPONSE_INVALID_PACKAGE_TYPE unless package_type_allowed?
+        return service_response_for(check_rule_exists_for_deploy_token_or_blank_user) if current_user.blank?
         return ERROR_RESPONSE_UNAUTHORIZED unless current_user_can_create_package?
 
         return service_response_for(check_rule_exists_for_user) if current_user.is_a?(User)
-        return service_response_for(check_rule_exists_for_deploy_token) if current_user.is_a?(DeployToken)
+        return service_response_for(check_rule_exists_for_deploy_token_or_blank_user) if current_user.is_a?(DeployToken)
 
         raise ArgumentError, "Invalid user"
       end
@@ -41,7 +42,7 @@ module Packages
         )
       end
 
-      def check_rule_exists_for_deploy_token
+      def check_rule_exists_for_deploy_token_or_blank_user
         project.package_protection_rules
                .for_package_type(params[:package_type])
                .for_package_name(params[:package_name])

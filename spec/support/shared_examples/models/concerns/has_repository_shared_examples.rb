@@ -139,6 +139,21 @@ RSpec.shared_examples 'model with repository' do
     it { expect(container.repo_exists?).to be(true) }
   end
 
+  describe '#ref_exists?' do
+    let(:ref_path) { 'refs/heads/master' }
+    let(:non_existent_ref_path) { 'refs/heads/foo' }
+
+    before do
+      allow_next_instance_of(Gitlab::GitalyClient::RefService) do |ref_service|
+        allow(ref_service).to receive(:ref_exists?).with(ref_path).and_return(true)
+        allow(ref_service).to receive(:ref_exists?).with(non_existent_ref_path).and_return(false)
+      end
+    end
+
+    it { expect(container.ref_exists?(ref_path)).to be(true) }
+    it { expect(container.ref_exists?(non_existent_ref_path)).to be(false) }
+  end
+
   describe '#root_ref' do
     let(:root_ref) { container.repository.root_ref }
 

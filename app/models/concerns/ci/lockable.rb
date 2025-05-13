@@ -10,11 +10,11 @@ module Ci
       # The values should be the same as `Ci::Pipeline.lockeds` with the
       # additional value of `unknown` to indicate rows that have not
       # yet been populated from the parent Ci::Pipeline
-      enum locked: {
+      enum :locked, {
         unlocked: 0,
         artifacts_locked: 1,
         unknown: 2
-      }, _prefix: :artifact
+      }, prefix: :artifact
     end
   end
 end

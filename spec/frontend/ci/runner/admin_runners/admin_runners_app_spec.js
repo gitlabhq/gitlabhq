@@ -106,7 +106,7 @@ describe('AdminRunnersApp', () => {
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
   const findRunnerPaginationNext = () => findRunnerPagination().findByText('Next');
   const findRunnerFilteredSearchBar = () => wrapper.findComponent(RunnerFilteredSearchBar);
-  const findNewInstanceRunnerButton = () => wrapper.findByText('New instance runner');
+  const findNewInstanceRunnerButton = () => wrapper.findByText('Create instance runner');
 
   const createComponent = ({
     props = {},
@@ -278,6 +278,7 @@ describe('AdminRunnersApp', () => {
     expect(runnerActions.props()).toEqual({
       runner,
       editUrl: runner.editAdminUrl,
+      size: 'medium',
     });
   });
 

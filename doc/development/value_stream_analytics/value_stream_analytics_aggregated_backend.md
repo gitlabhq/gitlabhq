@@ -186,17 +186,17 @@ Both tables are hash partitioned by the `stage_event_hash_id`. Each table uses 3
 an arbitrary number and it could be changed. Important is to keep the partitions under 100 GB in
 size (which gives the feature a lot of headroom).
 
-|Column|Description|
-|-|-|
-|`stage_event_hash_id`|partitioning key|
-|`merge_request_id` or `issue_id`|reference to the domain record (Issuable)|
-|`group_id`|reference to the group (de-normalization)|
-|`project_id`|reference to the project|
-|`milestone_id`|duplicated data from the domain record table|
-|`author_id`|duplicated data from the domain record table|
-|`state_id`|duplicated data from the domain record table|
-|`start_event_timestamp`|timestamp derived from the stage configuration|
-|`end_event_timestamp`|timestamp derived from the stage configuration|
+| Column                           | Description |
+|----------------------------------|-------------|
+| `stage_event_hash_id`            | partitioning key |
+| `merge_request_id` or `issue_id` | reference to the domain record (Issuable) |
+| `group_id`                       | reference to the group (de-normalization) |
+| `project_id`                     | reference to the project |
+| `milestone_id`                   | duplicated data from the domain record table |
+| `author_id`                      | duplicated data from the domain record table |
+| `state_id`                       | duplicated data from the domain record table |
+| `start_event_timestamp`          | timestamp derived from the stage configuration |
+| `end_event_timestamp`            | timestamp derived from the stage configuration |
 
 With accordance to the data separation requirements, the table doesn't have any foreign keys. The
 consistency is ensured by a background job (eventually consistent).
@@ -236,18 +236,18 @@ Thanks to this, we can easily switch between the old and new query backends.
 
 VSA supports various filters on the base query. Most of the filters require no additional JOINs:
 
-|Filter name|Description|
-|-|-|
-|`milestone_title`|The backend translates it to `milestone_id` filter|
-|`author_username`|The backend translates it to `author_id` filter|
-|`project_ids`|Only used on the group-level|
+| Filter name       | Description |
+|-------------------|-------------|
+| `milestone_title` | The backend translates it to `milestone_id` filter |
+| `author_username` | The backend translates it to `author_id` filter |
+| `project_ids`     | Only used on the group-level |
 
 Exceptions: these filters are applied on other tables which means we `JOIN` them.
 
-|Filter name|Description|
-|-|-|
-|`label_name`|Array filter, using the `label_links` table|
-|`assignee_username`|Array filter, using the `*_assignees` table|
+| Filter name         | Description |
+|---------------------|-------------|
+| `label_name`        | Array filter, using the `label_links` table |
+| `assignee_username` | Array filter, using the `*_assignees` table |
 
 To fully decompose the database, the required ID values would need to be replicated in the VSA
 database tables. This change could be implemented using array columns.

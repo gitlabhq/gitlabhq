@@ -11,7 +11,7 @@ module Gitlab
       class ResourceLinkEvent < ApplicationRecord
         self.table_name = 'resource_link_events'
 
-        enum action: {
+        enum :action, {
           add: 1,
           remove: 2
         }

@@ -11,6 +11,8 @@ export const ROUGE_TO_HLJS_LANGUAGE_MAP = {
   docker: 'dockerfile',
   batchfile: 'dos',
   elixir: 'elixir',
+  glimmer: 'glimmer',
+  'glimmer-javascript': 'glimmer-javascript',
   html: 'xml',
   hylang: 'hy',
   tex: 'latex',

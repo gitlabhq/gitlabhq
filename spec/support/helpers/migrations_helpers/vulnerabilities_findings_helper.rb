@@ -6,7 +6,6 @@ module MigrationHelpers
       uuid = SecureRandom.uuid
 
       {
-        project_fingerprint: SecureRandom.hex(20),
         location_fingerprint: Digest::SHA1.hexdigest(SecureRandom.hex(10)), # rubocop:disable Fips/SHA1
         uuid: uuid,
         name: "Vulnerability Finding #{uuid}",

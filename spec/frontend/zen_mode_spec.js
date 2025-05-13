@@ -1,4 +1,3 @@
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Dropzone from 'dropzone';
 import $ from 'jquery';
@@ -6,6 +5,7 @@ import htmlSnippetsShow from 'test_fixtures/snippets/show.html';
 import { Mousetrap } from '~/lib/mousetrap';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import GLForm from '~/gl_form';
+import axios from '~/lib/utils/axios_utils';
 import * as utils from '~/lib/utils/common_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import ZenMode from '~/zen_mode';

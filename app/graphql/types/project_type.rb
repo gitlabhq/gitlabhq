@@ -674,6 +674,10 @@ module Types
       null: true,
       description: 'Template used to create squash commit message in merge requests.'
 
+    field :merge_request_title_regex, GraphQL::Types::String,
+      null: true,
+      description: 'Regex used to validate the title of merge requests.'
+
     field :labels, Types::LabelType.connection_type,
       null: true,
       description: 'Labels available on this project.',

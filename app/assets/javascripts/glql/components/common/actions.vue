@@ -47,6 +47,10 @@ export default {
           text: __('Copy contents'),
           action: () => this.eventHub.$emit('dropdownAction', 'copyAsGFM'),
         },
+        {
+          text: __('Reload'),
+          action: () => this.eventHub.$emit('dropdownAction', 'reload'),
+        },
       ].filter(identity);
     },
   },
@@ -67,7 +71,6 @@ export default {
       :toggle-text="__('GLQL view options')"
       text-sr-only
       placement="bottom-end"
-      positioning-strategy="fixed"
     />
   </div>
 </template>

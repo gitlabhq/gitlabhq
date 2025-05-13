@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective, GlIcon, GlAnimatedLoaderIcon } from '@gitlab/ui';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { __, sprintf, s__ } from '~/locale';
 import ReviewerAvatarLink from './reviewer_avatar_link.vue';
@@ -44,6 +44,7 @@ export default {
   components: {
     GlButton,
     GlIcon,
+    GlAnimatedLoaderIcon,
     ReviewerAvatarLink,
   },
   directives: {
@@ -216,7 +217,15 @@ export default {
         :class="reviewStateIcon(user).class"
         data-testid="reviewer-state-icon-parent"
       >
+        <gl-animated-loader-icon
+          v-if="
+            user.type === 'DUO_CODE_REVIEW_BOT' &&
+            user.mergeRequestInteraction.reviewState === 'REVIEW_STARTED'
+          "
+          is-on
+        />
         <gl-icon
+          v-else
           :size="reviewStateIcon(user).size || 16"
           :name="reviewStateIcon(user).name"
           :class="reviewStateIcon(user).iconClass"

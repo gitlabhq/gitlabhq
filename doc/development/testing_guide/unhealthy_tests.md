@@ -192,7 +192,7 @@ element on a page that is not yet rendered, or in unit tests by failing to wait 
 1. Reduce the examples by bisecting the spec failure with
    `bin/rspec --seed <previously found> --require ./config/initializers/macos.rb --bisect <spec>`
 1. Look at the remaining examples and watch for state leakage
-   - e.g. Updating records created with `let_it_be` is a common source of problems
+   - For example, updating records created with `let_it_be` is a common source of problems
 1. Once fixed, rerun the specs with `seed`
 1. Run `scripts/rspec_check_order_dependence` to ensure the spec can be run in [random order](best_practices.md#test-order)
 1. Run `while :; do bin/rspec <spec> || break; done` in a loop again (and grab lunch) to verify it's no longer flaky
@@ -215,7 +215,7 @@ Unless you really need to have a test disabled very fast (`< 10min`), consider [
 To quickly quarantine a test without having to open a merge request and wait for pipelines,
 you can follow [the fast quarantining process](https://gitlab.com/gitlab-org/quality/engineering-productivity/fast-quarantine/-/tree/main/#fast-quarantine-a-test).
 
-**Please always proceed** to [open a long-term quarantine merge request](#long-term-quarantine) after fast-quarantining a test! This is to ensure the fast-quarantined test was correctly fixed by running tests from the CI/CD pipelines (which are not run in the context of the fast-quarantine project).
+**Always proceed** to [open a long-term quarantine merge request](#long-term-quarantine) after fast-quarantining a test! This is to ensure the fast-quarantined test was correctly fixed by running tests from the CI/CD pipelines (which are not run in the context of the fast-quarantine project).
 
 ##### Long-term quarantine
 
@@ -250,7 +250,7 @@ bin/rspec --tag ~quarantine
 bin/rspec --tag \~quarantine
 ```
 
-Also, please ensure that:
+Also, ensure that:
 
 1. The ~"quarantine" label is present on the merge request.
 1. The MR description mentions the flaky test issue with [the usual terms to link a merge request to an issue](https://gitlab.com/gitlab-org/quality/triage-ops/-/blob/8b8621ba5c0db3c044a771ebf84887a0a07353b3/triage/triage/related_issue_finder.rb#L8-18).

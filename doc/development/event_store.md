@@ -147,7 +147,7 @@ back into Sidekiq to be retried.
 ## Define an event
 
 An `Event` object represents a domain event that occurred in a [bounded context](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/bounded_contexts.yml).
-Producers can notify other bounded contexts about something that happened by publishing events, so that they can react to it. An event should be named `<domain_object><action>Event`, where the `action` is in past tense, e.g. `ReviewerAddedEvent` instead of `AddReviewerEvent`. The `domain_object` may be elided when it is obvious based on the bounded context, e.g. `MergeRequest::ApprovedEvent` instead of `MergeRequest::MergeRequestApprovedEvent`.
+Producers can notify other bounded contexts about something that happened by publishing events, so that they can react to it. An event should be named `<domain_object><action>Event`, where the `action` is in past tense, for example, `ReviewerAddedEvent` instead of `AddReviewerEvent`. The `domain_object` may be elided when it is obvious based on the bounded context, for example, `MergeRequest::ApprovedEvent` instead of `MergeRequest::MergeRequestApprovedEvent`.
 
 ### Guidance for good events
 
@@ -220,9 +220,9 @@ represent the single source of truth.
 It's best to use this technique as a performance optimization. For example: when an event has many
 subscribers that all fetch the same data again from the database.
 
-### Update the schema
+### Update the event
 
-Changes to the schema require multiple rollouts. While the new version is being deployed:
+Changes to the schema or event name require multiple rollouts. While the new version is being deployed:
 
 - Existing publishers can publish events using the old version.
 - Existing subscribers can consume events using the old version.
@@ -230,6 +230,16 @@ Changes to the schema require multiple rollouts. While the new version is being 
 
 As changing the schema ultimately impacts the Sidekiq arguments, refer to our
 [Sidekiq style guide](sidekiq/compatibility_across_updates.md#changing-the-arguments-for-a-worker) with regards to multiple rollouts.
+
+#### Rename event
+
+1. Rollout 1: Introduce new event and prepare the subscribers.
+   - Introduce a copy of the event with new name (you can have the old event inherit from the new).
+   - If the subscriber workers have knowledge of the event name, ensure that they are able to also process the new event.
+1. Rollout 2: Route new event to subscribers.
+   - Change the publisher to use the new event.
+   - Change all the subscriptions that used the old event to use the new event.
+   - Remove the old event class.
 
 #### Add properties
 
@@ -303,8 +313,9 @@ add a line like this to the `Gitlab::EventStore.configure!` method:
 
 {{< alert type="warning" >}}
 
-New workers are recommended to be introduced with a feature flag in order to
-[ensure compatibility with canary deployments](sidekiq/compatibility_across_updates.md#adding-new-workers).
+To [ensure compatibility with canary deployments](sidekiq/compatibility_across_updates.md#adding-new-workers)
+when registering subscriptions, the Sidekiq workers must be introduced in a previous deployment or we must
+use a feature flag.
 
 {{< /alert >}}
 

@@ -22,7 +22,7 @@ module QA
       return false unless Runtime::Search.elasticsearch_on?(admin_api_client)
       return true if advanced_search_enabled_in_ui?
 
-      return false unless QA::Specs::Helpers::ContextSelector.context_matches?({ subdomain: %i[staging
+      return false unless QA::Specs::Helpers::ContextSelector.context_matches?({ pipeline: %i[staging
         staging-canary] })
 
       raise Runtime::Search::ElasticSearchServerError,

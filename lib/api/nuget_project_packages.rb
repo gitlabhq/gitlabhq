@@ -109,6 +109,8 @@ module API
           .new(project_or_group, current_user, file_params.merge(nuspec_file_content: extracted_metadata.payload))
           .execute
 
+        forbidden!('Package protected.') if response.error? && response.cause.package_protected?
+
         render_api_error!(response.message, response.reason) if response.error?
       end
 

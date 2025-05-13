@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlModal } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
-import { WORK_ITEM_TYPE_NAME_LOWERCASE_MAP } from '../constants';
+import { NAME_TO_TEXT_LOWERCASE_MAP } from '../constants';
 
 export default {
   components: {
@@ -22,7 +22,7 @@ export default {
     cancelConfirmationText() {
       return sprintf(
         s__('WorkItem|Are you sure you want to cancel creating this %{workItemType}?'),
-        { workItemType: WORK_ITEM_TYPE_NAME_LOWERCASE_MAP[this.workItemType] },
+        { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType] },
       );
     },
   },

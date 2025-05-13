@@ -82,7 +82,7 @@ you find a solution.
 | Requests take too long to appear in UI                               | Consider restarting Sidekiq by running `gdk restart rails-background-jobs`. If that doesn't work, try `gdk kill` and then `gdk start`. Alternatively, you can bypass Sidekiq entirely. To do that temporary alter `Llm::CompletionWorker.perform_async` statements with `Llm::CompletionWorker.perform_inline` |
 | There is no Chat button in GitLab UI when GDK is running on non-SaaS mode | You do not have cloud connector access token record or seat assigned. To create cloud connector access record, in rails console put following code: `CloudConnector::Access.new(data: { available_services: [{ name: "duo_chat", serviceStartTime: ":date_in_the_future" }] }).save`. |
 
-Please, see also the section on [error codes](#interpreting-gitlab-duo-chat-error-codes) where you can read about codes
+For more information, see [interpreting GitLab Duo Chat error codes](#interpreting-gitlab-duo-chat-error-codes).
 that Chat sends to assist troubleshooting.
 
 ## Contributing to GitLab Duo Chat
@@ -161,9 +161,9 @@ required parameters of the prompt and sending them to AI gateway. AI gateway is 
 selecting Chat tools that are available for user based on their subscription and addon.
 
 When LLM selects the tool to use, this tool is executed on the Rails side. Tools use different endpoint to make
-a request to AI gateway. When you add a new tool, please take into account that AI gateway works with different clients
-and GitLab applications that have different versions. That means that old versions of GitLab won't know about a new tool,
-please contact Duo Chat team if you want to add a new tool. We're working on long-term solution for this [problem](https://gitlab.com/gitlab-org/gitlab/-/issues/466247).
+a request to AI gateway. When you add a new tool, take into account that AI gateway works with different clients
+and GitLab applications that have different versions. That means that old versions of GitLab won't know about a new tool.
+If you want to add a new tool, contact the Duo Chat team. We're working on long-term solution for this [problem](https://gitlab.com/gitlab-org/gitlab/-/issues/466247).
 
 #### Changes in AI gateway
 
@@ -205,6 +205,30 @@ keeping tools self-sufficient, and returning responses to the zero-shot agent. W
 adding new tools can expand the capabilities of the Chat feature.
 
 There are available short [videos](https://www.youtube.com/playlist?list=PL05JrBw4t0KoOK-bm_bwfHaOv-1cveh8i) covering this topic.
+
+### Working with multi-thread conversation
+
+If you're building features that interact with Duo Chat conversations, you need to understand how threads work.
+
+Duo Chat supports multiple conversations. Each conversation is represented by a thread, which contains multiple messages. The important attributes of a thread are:
+
+- `id`: The `id` is required when replying to a thread.
+- `conversation_type`: This allows for distinguishing between the different available Duo Chat conversation types. See the [thread conversation types list](../../api/graphql/reference/_index.md#aiconversationsthreadsconversationtype).
+  - If your feature needs its own conversation type, contact the Duo Chat team.
+
+If your feature requires calling GraphQL API directly, the following queries and mutations are available, for which you **must** specify the `conversation_type`.
+
+- [Query.aiConversationThreads](../../api/graphql/reference/_index.md#queryaiconversationthreads): lists threads
+- [Query.aiMessages](../../api/graphql/reference/_index.md#queryaimessages): lists one thread's messages. **Must** specify `threadId`.
+- [Mutation.aiAction](../../api/graphql/reference/_index.md#mutationaiaction): creates one message. If `threadId` is specified the message is appended into that thread.
+
+All chat conversations have a retention period, controlled by the admin. The default retention period is 30 days after last reply.
+
+- [Configure Duo Chat Conversation Expiration](../../user/gitlab_duo_chat/_index.md#configure-chat-conversation-expiration)
+
+### Developer Resources
+
+- [Example GraphQL Queries](#duo-chat-conversation-threads-graphql-queries) - See examples below in this document
 
 ## Debugging
 
@@ -292,7 +316,7 @@ While there are no strict guidelines for interpreting the comparison results, he
 
 In either of these scenarios, we recommend further investigation:
 
-1. Compare your results with [the daily evaluation results](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/evaluation-runner#view-daily-evaluation-result-on-master). e.g. look at the daily evaluations from yesterday and the day before.
+1. Compare your results with [the daily evaluation results](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/evaluation-runner#view-daily-evaluation-result-on-master). For instance, look at the daily evaluations from yesterday and the day before.
 1. If you observe similar patterns in these daily evaluations, it's likely that your merge request is safe to merge. However, if the patterns differ, it may indicate that your merge request has introduced unexpected changes.
 
 We strongly recommend running the regression evaluator in at least the following environments:
@@ -321,7 +345,7 @@ To view the results of these tests, open the `e2e:test-on-omnibus-ee` child pipe
 
 The `ai-gateway` job activates a cloud license and then assigns a Duo Pro seat to a test user, before the tests are run.
 
-For further information, please refer to the [GitLab QA documentation](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#aigateway-scenarios)
+For more information, see [AiGateway Scenarios](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#aigateway-scenarios).
 
 ## GraphQL Subscription
 
@@ -387,7 +411,7 @@ Examples of GraphQL Subscriptions in a Vue component:
     },
    ```
 
-Please keep in mind that the clientSubscriptionId must be unique for every request. Reusing a clientSubscriptionId will cause several unwanted side effects in the subscription responses.
+Keep in mind that the `clientSubscriptionId` must be unique for every request. Reusing a `clientSubscriptionId` will cause several unwanted side effects in the subscription responses.
 
 ### Duo Chat GraphQL queries
 
@@ -432,6 +456,68 @@ If you can't fetch the response, check `graphql_json.log`,
 `sidekiq_json.log`, `llm.log` or `modelgateway_debug.log` if it contains error
 information.
 
+### Duo Chat Conversation Threads GraphQL queries
+
+#### Querying messages in a conversation thread
+
+To retrieve messages from a specific thread, use the `aiMessages` query with a thread ID:
+
+```graphql
+query {
+  aiMessages(threadId: "gid://gitlab/Ai::Conversation::Thread/1") {
+    nodes {
+      requestId
+      content
+      role
+      timestamp
+      chunkId
+      errors
+    }
+  }
+}
+```
+
+#### Starting a new conversation thread
+
+If you don't include a threadId in your aiAction mutation, a new thread will be created:
+
+```graphql
+mutation {
+  aiAction(input: {
+    chat: {
+      content: "This will create a new conversation thread"
+    },
+    conversationType: DUO_CHAT
+  })
+  {
+    requestId
+    errors
+    threadId  # This will contain the ID of the newly created thread
+  }
+}
+```
+
+#### Creating a new message in an existing conversation thread
+
+To add a message to an existing thread, include the threadId in your aiAction mutation:
+
+```graphql
+mutation {
+  aiAction(input: {
+    chat: {
+      content: "this is another message in the same thread"
+    },
+    conversationType: DUO_CHAT,
+    threadId: "gid://gitlab/Ai::Conversation::Thread/1",
+  })
+  {
+    requestId
+    errors
+    threadId
+  }
+}
+```
+
 ## Testing GitLab Duo Chat in production-like environments
 
 GitLab Duo Chat is enabled in the [Staging](https://staging.gitlab.com/users/sign_in) and
@@ -442,6 +528,27 @@ Premium and Ultimate tiers, Staging Ref may be an easier place to test changes a
 team member because
 [you can make yourself an instance Admin in Staging Ref](https://handbook.gitlab.com/handbook/engineering/infrastructure/environments/staging-ref/#admin-access)
 and, as an Admin, easily create licensed groups for testing.
+
+### Important Testing Considerations
+
+**Note**: A user who has a seat in multiple groups with different tiers of Duo add-on gets the highest tier experience across the entire instance.
+
+It's not possible to test feature separation between different Duo add-ons if your test account has a seat in a higher tier add-on.
+To properly test different tiers, create a separate test account for each tier you need to test.
+
+### Staging testing groups
+
+To simplify testing on [staging](https://staging.gitlab.com), several pre-configured groups have been created with the appropriate licenses and add-ons:
+
+| Group | Duo Add-on | GitLab license |
+| --- | --- | --- |
+| [`duo_pro_gitlab_premium`](https://staging.gitlab.com/groups/duo_pro_gitlab_premium) | Pro | Premium |
+| [`duo_pro_gitlab_ultimate`](https://staging.gitlab.com/groups/duo_pro_gitlab_ultimate) | Pro | Ultimate |
+| [`duo_enterprise_gitlab_ultimate`](https://staging.gitlab.com/groups/duo_enterprise_gitlab_ultimate) | Enterprise | Ultimate |
+
+Ask in the `#g_duo_chat` channel on Slack to be added as an Owner to these groups.
+Once added as an Owner, you can add your secondary accounts to the group with a role Developer and assign them a seat in the Duo add-on.
+Then you can sign in as your Developer user and test access control to Duo Chat. 
 
 ### GitLab Duo Chat End-to-End Tests in live environments
 
@@ -462,15 +569,16 @@ and the analysis is tracked as a Snowplow event.
 
 The analysis can contain any of the attributes defined in the latest [iglu schema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/ai_question_category/jsonschema).
 
-- All possible "category" and "detailed_category" are listed [here](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/llm/fixtures/categories.xml).
-- The following is yet to be implemented:
-  - "is_proper_sentence"
-- The following are deprecated:
-  - "number_of_questions_in_history"
-  - "length_of_questions_in_history"
-  - "time_since_first_question"
+- The categories and detailed categories have been predefined by the product manager and the product designer, as we are not allowed to look at the actual questions from users. If there is reason to believe that there are missing or confusing categories, they can be changed. To edit the definitions, update `categories.xml` in both [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/ai_gateway/prompts/definitions/categorize_question/categories.xml) and [monolith](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/llm/fixtures/categories.xml). 
+- The list of attributes captured can be found in [labesl.xml](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/ai_gateway/prompts/definitions/categorize_question/labels.xml).
+  - The following is yet to be implemented:
+    - `is_proper_sentence`
+  - The following are deprecated:
+    - `number_of_questions_in_history`
+    - `length_of_questions_in_history`
+    - `time_since_first_question`
 
-[Dashboards](https://handbook.gitlab.com/handbook/engineering/development/data-science/duo-chat/#-dashboards-internal-only) can be created to visualize the collected data.
+The request count and the user count for each question category and detail category can be reviewed in [this Tableau dashboard](https://10az.online.tableau.com/#/site/gitlab/views/DuoCategoriesofQuestions/DuoCategories) (GitLab team members only).
 
 ## How `access_duo_chat` policy works
 
@@ -499,7 +607,7 @@ Follow the
 to evaluate GitLab Duo Chat changes locally. The prompt library documentation is
 the single source of truth and should be the most up-to-date.
 
-Please, see the video ([internal link](https://drive.google.com/file/d/1X6CARf0gebFYX4Rc9ULhcfq9LLLnJ_O-)) that covers the full setup.
+See the video ([internal link](https://drive.google.com/file/d/1X6CARf0gebFYX4Rc9ULhcfq9LLLnJ_O-)) that covers the full setup.
 
 ### (Deprecated) Issue and epic experiments
 
@@ -567,53 +675,50 @@ flow of how we construct a Chat prompt:
    from original GraphQL request and initializes a new instance of
    `Gitlab::Llm::Completions::Chat` and calls `execute` on it
    ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/55b8eb6ff869e61500c839074f080979cc60f9de/ee/lib/gitlab/llm/completions_factory.rb#L89))
-1. `Gitlab::Llm::Completions::Chat#execute` calls `Gitlab::Llm::Chain::Agents::SingleActionExecutor`.
-   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/d539f64ce6c5bed72ab65294da3bcebdc43f68c6/ee/lib/gitlab/llm/completions/chat.rb#L128-134))
-1. `Gitlab::Llm::Chain::Agents::SingleActionExecutor#execute` calls
-   `execute_streamed_request`, which calls `request`, a method defined in the
-   `AiDependent` concern
-   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/7ac19f75bd0ba4db5cfe7030e56c3672e2ccdc88/ee/lib/gitlab/llm/chain/concerns/ai_dependent.rb#L14))
-1. The `SingleActionExecutor#prompt_options` method assembles all prompt parameters for the AI gateway request
-   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/971d07aa37d9f300b108ed66304505f2d7022841/ee/lib/gitlab/llm/chain/agents/single_action_executor.rb#L120-120))
-1. `ai_request` is defined in `Llm::Completions::Chat` and evaluates to
-   `AiGateway`([code](https://gitlab.com/gitlab-org/gitlab/-/blob/971d07aa37d9f300b108ed66304505f2d7022841/ee/lib/gitlab/llm/completions/chat.rb#L51-51))
-1. `ai_request.request` routes to `Llm::Chain::Requests::AiGateway#request`,
-   which calls `ai_client.stream`
-   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/e88256b1acc0d70ffc643efab99cad9190529312/ee/lib/gitlab/llm/chain/requests/ai_gateway.rb#L20-27))
-1. `ai_client.stream` routes to `Gitlab::Llm::AiGateway::Client#stream`, which
-   makes an API request to the AI gateway `/v2/chat/agent` endpoint
-   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/e88256b1acc0d70ffc643efab99cad9190529312/ee/lib/gitlab/llm/ai_gateway/client.rb#L64-82))
-1. AI gateway receives the request
-   ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/e6f55d143ecb5409e8ca4fefc042e590e5a95158/ai_gateway/api/v2/chat/agent.py#L43-43))
-1. AI gateway gets the list of tools available for user
-   ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/e6f55d143ecb5409e8ca4fefc042e590e5a95158/ai_gateway/chat/toolset.py#L43-43))
-1. AI GW gets definitions for each tool
-   ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/e6f55d143ecb5409e8ca4fefc042e590e5a95158/ai_gateway/chat/tools/gitlab.py#L11-11))
-1. And they are inserted into prompt template alongside other prompt parameters that come from Rails
-   ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/e6f55d143ecb5409e8ca4fefc042e590e5a95158/ai_gateway/agents/definitions/chat/react/base.yml#L14-14))
-1. AI gateway makes request to LLM and return response to Rails.
-   ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/e6f55d143ecb5409e8ca4fefc042e590e5a95158/ai_gateway/api/v2/chat/agent.py#L103-103))
-1. We've now made our first request to the AI gateway. If the LLM says that the
-   answer to the first request is a final answer, we
-   [parse the answer](https://gitlab.com/gitlab-org/gitlab/-/blob/971d07aa37d9f300b108ed66304505f2d7022841/ee/lib/gitlab/llm/chain/parsers/single_action_parser.rb#L41-42)
-   and stream it ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/971d07aa37d9f300b108ed66304505f2d7022841/ee/lib/gitlab/llm/chain/concerns/ai_dependent.rb#L25-25))
-   and return it ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/971d07aa37d9f300b108ed66304505f2d7022841/ee/lib/gitlab/llm/chain/agents/single_action_executor.rb#L46-46))
-1. If the first answer is not final, the "thoughts" and "picked tools"
-   from the first LLM request are parsed and then the relevant tool class is
-   called.
-   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/971d07aa37d9f300b108ed66304505f2d7022841/ee/lib/gitlab/llm/chain/agents/single_action_executor.rb#L54-54))
-1. The tool executor classes also include `Concerns::AiDependent` and use the
-   included `request` method similar to how the chat executor does
-  ([example](https://gitlab.com/gitlab-org/gitlab/-/blob/70fca6dbec522cb2218c5dcee66caa908c84271d/ee/lib/gitlab/llm/chain/tools/identifier.rb#L8)).
-   The `request` method uses the same `ai_request` instance
-   that was injected into the `context` in `Llm::Completions::Chat`. For Chat,
-   this is `Gitlab::Llm::Chain::Requests::AiGateway`. So, essentially the same
-   request to the AI gateway is put together but with a different
-   `prompt` / `PROMPT_TEMPLATE` than for the first request
-   ([Example tool prompt template](https://gitlab.com/gitlab-org/gitlab/-/blob/70fca6dbec522cb2218c5dcee66caa908c84271d/ee/lib/gitlab/llm/chain/tools/issue_identifier/executor.rb#L39-104))
-1. If the tool answer is not final, the response is added to `agent_scratchpad`
-   and the loop in `SingleActionExecutor` starts again, adding the additional
-   context to the request. It loops to up to 10 times until a final answer is reached.
+1. `Gitlab::Llm::Completions::Chat#execute` calls `Gitlab::Duo::Chat::ReactExecutor`.
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/llm/completions/chat.rb#L122-L130))
+1. `Gitlab::Duo::Chat::ReactExecutor#execute` calls `#step_forward` which calls `Gitlab::Duo::Chat::StepExecutor#step`
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/duo/chat/react_executor.rb#L235)).
+1. `Gitlab::Duo::Chat::StepExecutor#step` calls `Gitlab::Duo::Chat::StepExecutor#perform_agent_request`, which sends a request to the AI Gateway `/v2/chat/agent/` endpoint
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/duo/chat/step_executor.rb#L69)).
+1. The AI Gateway `/v2/chat/agent` endpoint receives the request on the `api.v2.agent.chat.agent.chat` function
+   ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v2/chat/agent.py#L133))
+1. `api.v2.agent.chat.agent.chat` creates the `GLAgentRemoteExecutor` through the `gl_agent_remote_executor_factory` ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v2/chat/agent.py#L166)).
+
+      Upon creation of the `GLAgentRemoteExecutor`, the following parameters are passed:
+      - `tools_registry` - the registry of all available tools; this is passed through the factory ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/chat/container.py#L35))
+      - `agent` - `ReActAgent` object that wraps the prompt information, including the chosen LLM model, prompt template, etc
+
+1. `api.v2.agent.chat.agent.chat` calls the `GLAgentRemoteExecutor.on_behalf`, which gets the user tools early to raise an exception as soon as possible if an error occurs ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/chat/executor.py#L56)).
+1. `api.v2.agent.chat.agent.chat` calls the `GLAgentRemoteExecutor.stream` ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/chat/executor.py#L81)).
+1. `GLAgentRemoteExecutor.stream` calls `astream` on `agent` (an instance of `ReActAgent`) with inputs such as the messages and the list of available tools ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/chat/executor.py#L92)).
+1. The `ReActAgent` builds the prompts, with the available tools inserted into the system prompt template
+   ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/prompts/definitions/chat/react/system/1.0.0.jinja)).
+1. `ReActAgent.astream` sends a call to the LLM model ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/chat/agents/react.py#L216))
+1. The LLM response is returned to Rails
+   (code path: [`ReActAgent.astream`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/chat/agents/react.py#L209)
+   -> [`GLAgentRemoteExecutor.stream`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/chat/executor.py#L81)
+   -> [`api.v2.agent.chat.agent.chat`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v2/chat/agent.py#L133)
+   -> Rails)
+1. We've now made our first request to the AI gateway. If the LLM says that the answer to the first request is final,
+   Rails [parses the answer](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/duo/chat/react_executor.rb#L56) and [returns it](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/duo/chat/react_executor.rb#L63) for further response handling by [`Gitlab::Llm::Completions::Chat`](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/llm/completions/chat.rb#L66).
+1. If the answer is not final, the "thoughts" and "picked tools" from the first LLM request are parsed and then the relevant tool class is called.
+   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/duo/chat/react_executor.rb#L207)
+   | [example tool class](https://gitlab.com/gitlab-org/gitlab/-/blob/971d07aa37d9f300b108ed66304505f2d7022841/ee/lib/gitlab/llm/chain/tools/identifier.rb))
+      1. The tool executor classes include `Concerns::AiDependent` and use its `request` method.
+      ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/llm/chain/concerns/ai_dependent.rb#L14))
+      1. The `request` method uses the `ai_request` instance
+         that was injected into the `context` in `Llm::Completions::Chat`. For Chat,
+         this is `Gitlab::Llm::Chain::Requests::AiGateway`. ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/971d07aa37d9f300b108ed66304505f2d7022841/ee/lib/gitlab/llm/completions/chat.rb#L42)).
+      1. The tool indicates that `use_ai_gateway_agent_prompt=true` ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/llm/chain/tools/issue_reader/executor.rb#L121)).
+
+         This tells the `ai_request` to send the prompt to the `/v1/prompts/chat` endpoint ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/llm/chain/requests/ai_gateway.rb#L87)).
+
+      1. AI Gateway `/v1/prompts/chat` endpoint receives the request on `api.v1.prompts.invoke`
+      ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v1/prompts/invoke.py#L41)).
+      1. `api.v1.prompts.invoke` gets the correct tool prompt from the tool prompt registry ([code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v1/prompts/invoke.py#L49)).
+      1. The prompt is called either as a [stream](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v1/prompts/invoke.py#L86) or as a [non-streamed invocation](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/989ead63fae493efab255180a51786b69a403b49/ai_gateway/api/v1/prompts/invoke.py#L96).
+      1. If the tool answer is not final, the response is added to agent_scratchpad and the loop in `Gitlab::Duo::Chat::ReactExecutor` starts again, adding the additional context to the request. It loops to up to 10 times until a final answer is reached. ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/30817374f2feecdaedbd3a0efaad93feaed5e0a0/ee/lib/gitlab/duo/chat/react_executor.rb#L44))
 
 ## Interpreting GitLab Duo Chat error codes
 
@@ -621,7 +726,7 @@ GitLab Duo Chat has error codes with specified meanings to assist in debugging.
 
 See the [GitLab Duo Chat troubleshooting documentation](../../user/gitlab_duo_chat/troubleshooting.md) for a list of all GitLab Duo Chat error codes.
 
-When developing for GitLab Duo Chat, please include these error codes when returning an error and [document them](../../user/gitlab_duo_chat/troubleshooting.md), especially for user-facing errors.
+When developing for GitLab Duo Chat, include these error codes when returning an error and [document them](../../user/gitlab_duo_chat/troubleshooting.md), especially for user-facing errors.
 
 ### Error Code Format
 

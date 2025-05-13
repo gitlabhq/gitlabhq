@@ -1,0 +1,9 @@
+---
+name: collect_product_usage_events
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/510317
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182916
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/540574
+milestone: '17.10'
+group: group::analytics instrumentation
+type: beta
+default_enabled: true

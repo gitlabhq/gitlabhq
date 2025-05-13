@@ -65,7 +65,7 @@ class Projects::RunnersController < Projects::ApplicationController
   protected
 
   def runner
-    @runner ||= project.runners.find(params[:id])
+    @runner ||= Ci::Runner.find(safe_params[:id])
   end
 
   def runner_params

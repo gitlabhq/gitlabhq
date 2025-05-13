@@ -36,6 +36,8 @@ Prerequisites:
 
 ### Turn on Kubernetes resource management
 
+#### In your agent configuration file
+
 To turn on resource management, modify the agent configuration file to include the required permissions:
 
 ```yaml
@@ -53,6 +55,24 @@ ci_access:
       resource_management:
         enabled: true
 ```
+
+#### In your CI/CD jobs
+
+To have the agent manage resources for an environment, specify the agent in your deployment job. For example:
+
+```yaml
+deploy_review:
+  stage: deploy
+  script:
+    - echo "Deploy a review app"
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    kubernetes:
+      agent: path/to/agent/project:agent-name
+```
+
+CI/CD variables can be used in the agent path. For more information, see
+[Where variables can be used](../../../ci/variables/where_variables_can_be_used.md).
 
 ### Create environment templates
 
@@ -144,6 +164,27 @@ The following variables are available:
 
 All variables should be referenced using the double curly brace syntax, for example: `{{ .project.id }}`.
 See [`text/template`](https://pkg.go.dev/text/template) documentation for more information on the templating system used.
+
+### Resource lifecycle management
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/507486) in GitLab 18.0.
+
+{{< /history >}}
+
+Use the following settings to configure when Kubernetes resources should be removed:
+
+```yaml
+# Never delete resources
+delete_resources: never
+
+# Delete resources when environment is stopped
+delete_resources: on_stop
+```
+
+The default value is `on_stop`, which is specified in the
+[default environment template](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/internal/module/managed_resources/server/default_template.yaml).
 
 ### Managed resource labels and annotations
 

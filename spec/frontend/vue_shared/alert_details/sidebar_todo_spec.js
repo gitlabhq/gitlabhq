@@ -1,6 +1,6 @@
-import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import todoMarkDoneMutation from '~/graphql_shared/mutations/todo_mark_done.mutation.graphql';
 import SidebarTodo from '~/vue_shared/alert_details/components/sidebar/sidebar_todo.vue';
@@ -60,13 +60,13 @@ describe('Alert Details Sidebar To Do', () => {
       },
     });
 
-    wrapper = mount(SidebarTodo, {
+    wrapper = mountExtended(SidebarTodo, {
       apolloProvider: fakeApollo,
       propsData,
     });
   }
 
-  const findToDoButton = () => wrapper.find('[data-testid="alert-todo-button"]');
+  const findToDoButton = () => wrapper.findByTestId('alert-todo-button');
 
   describe('updating the alert to do', () => {
     describe('adding a todo', () => {

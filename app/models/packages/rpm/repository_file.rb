@@ -11,7 +11,7 @@ module Packages
       FILELISTS_FILENAME = 'filelists.xml'
       FILELISTS_SIZE_LIMITATION = 20.megabytes
 
-      enum status: { default: 0, pending_destruction: 1, processing: 2, error: 3 }
+      enum :status, { default: 0, pending_destruction: 1, processing: 2, error: 3 }
 
       belongs_to :project, inverse_of: :rpm_repository_files
 

@@ -12,6 +12,7 @@ module QA
 
       ITEMS_PER_PAGE = '100'
       PAGE_CUTOFF = '10'
+      # TODO: Remove groups with qa once fully transitioned over to e2e groups
       SANDBOX_GROUPS = %w[gitlab-qa-sandbox-group
         gitlab-qa-sandbox-group-0
         gitlab-qa-sandbox-group-1
@@ -20,7 +21,16 @@ module QA
         gitlab-qa-sandbox-group-4
         gitlab-qa-sandbox-group-5
         gitlab-qa-sandbox-group-6
-        gitlab-qa-sandbox-group-7].freeze
+        gitlab-qa-sandbox-group-7
+        gitlab-e2e-sandbox-group
+        gitlab-e2e-sandbox-group-0
+        gitlab-e2e-sandbox-group-1
+        gitlab-e2e-sandbox-group-2
+        gitlab-e2e-sandbox-group-3
+        gitlab-e2e-sandbox-group-4
+        gitlab-e2e-sandbox-group-5
+        gitlab-e2e-sandbox-group-6
+        gitlab-e2e-sandbox-group-7].freeze
 
       def initialize(dry_run: false)
         %w[GITLAB_ADDRESS GITLAB_QA_ACCESS_TOKEN].each do |var|

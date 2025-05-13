@@ -1,10 +1,10 @@
-= render ::Layouts::SettingsBlockComponent.new(_('Global Search'),
+= render ::Layouts::SettingsBlockComponent.new(_('Visibility and access controls'),
   id: 'js-global-search-settings',
   testid: 'admin-global-search-settings',
   expanded: expanded_by_default?) do |c|
   - c.with_description do
-    = _('Configure settings for global search.')
-    = link_to _('Learn more.'), help_page_path('user/search/_index.md', anchor: 'disable-global-search-scopes'), target: '_blank', rel: 'noopener noreferrer'
+    = _('Configure search access and visibility settings for search scopes.')
+    = link_to _('Learn more.'), help_page_path('user/search/_index.md', anchor: 'restrict-search-access'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-global-search-settings'), html: { class: 'fieldset-form', id: 'global-search-settings' } do |f|
       = form_errors(@application_setting)

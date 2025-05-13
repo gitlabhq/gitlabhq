@@ -476,7 +476,7 @@ module Types
     end
 
     def permanent_deletion_date
-      return unless group.adjourned_deletion_configured?
+      return unless group.adjourned_deletion?
 
       permanent_deletion_date_formatted(Date.current)
     end

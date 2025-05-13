@@ -8,6 +8,7 @@ RSpec.describe 'shared/milestones/_issuables.html.haml' do
   before do
     allow(view).to receive_messages(
       title: nil,
+      subtitle: nil,
       id: nil,
       show_project_name: nil,
       dom_class: '',

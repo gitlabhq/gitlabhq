@@ -388,7 +388,7 @@ end
 
 {{< alert type="warning" >}}
 
-In case you want to remove the middleware for a worker, please set the strategy to `:deprecated` to disable it and wait until
+In case you want to remove the middleware for a worker, set the strategy to `:deprecated` to disable it and wait until
 a required stop before removing it completely. That ensures that all paused jobs are resumed correctly.
 
 {{< /alert >}}

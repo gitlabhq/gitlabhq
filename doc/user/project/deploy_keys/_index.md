@@ -204,7 +204,7 @@ There are a few scenarios where a deploy key fails to push to a
 - The owner associated to a deploy key has [project membership permissions](../../permissions.md#project-members-permissions) lower than required to **View project code**.
 - The deploy key does not have [read-write permissions for the project](#edit-project-access-permissions-of-a-deploy-key).
 - The deploy key has been [revoked](#revoke-project-access-of-a-deploy-key).
-- **No one** is selected in [the **Allowed to push and merge** section](../repository/branches/protected.md#add-protection-to-existing-branches) of the protected branch.
+- **No one** is selected in [the **Allowed to push and merge** section](../repository/branches/protected.md#protect-a-branch) of the protected branch.
 
 This issue occurs because all deploy keys are associated to an account. Because the permissions for an account can change, this might lead to scenarios where a deploy key that was working is suddenly unable to push to a protected branch.
 
@@ -212,7 +212,7 @@ To resolve this issue, you can use the deploy keys API to create deploy keys for
 
 1. [Create a service account user](../../../api/group_service_accounts.md#create-a-service-account-user).
 1. [Create a personal access token](../../../api/user_tokens.md#create-a-personal-access-token) for that service account user. This token must have at least the `api` scope.
-1. [Invite the service account user to the project](../../profile/service_accounts.md#add-to-a-subgroup-or-project).
+1. [Invite the service account user to the project](../../profile/service_accounts.md#service-account-access-to-groups-and-projects).
 1. Use the deploy key API to [create a deploy key for the service account user](../../../api/deploy_keys.md#add-deploy-key):
 
    ```shell

@@ -22,6 +22,14 @@ RSpec.describe ViteHelper, feature_category: :tooling do
 
       it { expect(helper.vite_page_entrypoint_paths).to eq(result) }
     end
+
+    context 'with js_action_name instance variable set' do
+      it 'accepts custom action name' do
+        allow(helper.controller).to receive(:controller_path).and_return('some_path')
+        allow(helper.controller).to receive(:action_name).and_return('new')
+        expect(helper.vite_page_entrypoint_paths('new_2')).to eq(%w[pages.some_path.js pages.some_path.new_2.js])
+      end
+    end
   end
 
   describe '#universal_stylesheet_link_tag' do
@@ -55,20 +63,6 @@ RSpec.describe ViteHelper, feature_category: :tooling do
         expect(link_tag[:rel]).to eq('stylesheet')
         expect(link_tag[:href]).to eq('/vite-dev/stylesheets/styles.application.scss.css')
       end
-
-      context 'when asset_host is set' do
-        before do
-          allow(helper).to receive_message_chain(:config, :asset_host).and_return('http://localhost')
-
-          allow(ViteRuby.config).to receive(:host).and_return('localhost')
-          allow(ViteRuby.config).to receive(:port).and_return(3808)
-        end
-
-        it 'replaces the asset_host with the configured Vite host' do
-          expect(link_tag[:rel]).to eq('stylesheet')
-          expect(link_tag[:href]).to eq('http://localhost:3808/vite-dev/stylesheets/styles.application.scss.css')
-        end
-      end
     end
   end
 
@@ -96,6 +90,38 @@ RSpec.describe ViteHelper, feature_category: :tooling do
 
       it 'uses vite_asset_path' do
         expect(helper.universal_path_to_stylesheet(path)).to be(out_path)
+      end
+    end
+  end
+
+  describe '#vite_origin' do
+    before do
+      allow(ViteRuby).to receive_message_chain(:config, :origin).and_return('origin')
+    end
+
+    it { expect(helper.vite_origin).to eq('origin') }
+  end
+
+  describe '#vite_hmr_ws_origin' do
+    before do
+      allow(ViteRuby).to receive_message_chain(:config, :host_with_port).and_return('host')
+      allow(ViteRuby).to receive_message_chain(:config, :https).and_return(https)
+    end
+
+    context 'with https' do
+      let(:https) { true }
+
+      it 'returns wss origin' do
+        expect(helper.vite_hmr_ws_origin).to eq('wss://host')
+      end
+    end
+
+    context 'without https' do
+      let(:https) { false }
+
+      it 'returns ws origin' do
+        allow(ViteRuby).to receive_message_chain(:config, :https).and_return(false)
+        expect(helper.vite_hmr_ws_origin).to eq('ws://host')
       end
     end
   end

@@ -5,6 +5,7 @@ FactoryBot.define do
     sha
     issue { designs.first&.issue || association(:issue) }
     author { issue&.author || association(:user) }
+    namespace { issue&.project&.namespace || association(:namespace) }
 
     transient do
       designs_count { 1 }
@@ -15,6 +16,7 @@ FactoryBot.define do
 
     trait :importing do
       issue { nil }
+      namespace { association(:namespace) }
 
       designs_count { 0 }
       importing { true }

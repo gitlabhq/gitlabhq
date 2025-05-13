@@ -303,7 +303,7 @@ terraform/                                                                 <- co
 
 The state files are encrypted using Lockbox and require the following information for decryption:
 
-- The `db_key_base` [application secret](../development/application_secrets.md#secret-entries)
+- The `db_key_base` application secret
 - The project ID
 
 The encryption key is derived from both the `db_key_base` and the project ID. If you can't access `db_key_base`, decryption is not possible.

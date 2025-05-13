@@ -1,4 +1,4 @@
-import { GlDisclosureDropdown } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlDisclosureDropdownGroup } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import CompactCodeDropdown from '~/repository/components/code_dropdown/compact_code_dropdown.vue';
 import CodeDropdownCloneItem from '~/repository/components/code_dropdown/code_dropdown_clone_item.vue';
@@ -33,12 +33,15 @@ describe('Compact Code Dropdown component', () => {
     webIdeUrl,
     gitpodUrl,
     showWebIdeButton: true,
-    showGitpodButton: true,
+    isGitpodEnabledForUser: true,
+    isGitpodEnabledForInstance: true,
     currentPath,
     directoryDownloadLinks,
   };
 
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findDropdownGroups = () => wrapper.findAllComponents(GlDisclosureDropdownGroup);
+  const findDropdownGroupAtIndex = (index) => findDropdownGroups().at(index);
 
   const findCodeDropdownCloneItems = () => wrapper.findAllComponents(CodeDropdownCloneItem);
   const findCodeDropdownCloneItemAtIndex = (index) => findCodeDropdownCloneItems().at(index);
@@ -50,9 +53,12 @@ describe('Compact Code Dropdown component', () => {
 
   const closeDropdown = jest.fn();
 
-  const createComponent = (propsData = defaultPropsData) => {
+  const createComponent = (propsData) => {
     wrapper = shallowMount(CompactCodeDropdown, {
-      propsData,
+      propsData: {
+        ...defaultPropsData,
+        ...propsData,
+      },
       stubs: {
         GlDisclosureDropdown: stubComponent(GlDisclosureDropdown, {
           methods: {
@@ -62,6 +68,23 @@ describe('Compact Code Dropdown component', () => {
       },
     });
   };
+
+  describe('groups computed property', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('sets bordered=false for the first visible group', () => {
+      expect(findDropdownGroupAtIndex(0).props('bordered')).toBe(false);
+    });
+
+    it('sets bordered=true for subsequent visible groups', () => {
+      const dropdownGroups = findDropdownGroups();
+      for (let i = 1; i < dropdownGroups.length; i += 1) {
+        expect(findDropdownGroupAtIndex(i).props('bordered')).toBe(true);
+      }
+    });
+  });
 
   describe('copyGroup', () => {
     describe('rendering', () => {
@@ -86,7 +109,7 @@ describe('Compact Code Dropdown component', () => {
         ${'sshUrl'}  | ${sshUrl}
         ${'httpUrl'} | ${httpUrl}
       `('does not fail if only $name is set', ({ name, value }) => {
-        createComponent({ [name]: value });
+        createComponent({ sshUrl: undefined, httpUrl: undefined, [name]: value });
 
         expect(findCodeDropdownCloneItemAtIndex(0).props('link')).toBe(value);
       });
@@ -106,7 +129,7 @@ describe('Compact Code Dropdown component', () => {
       it('correctly calculates httpLabel for HTTPS protocol', () => {
         createComponent({ httpUrl: httpsUrl });
 
-        expect(findCodeDropdownCloneItemAtIndex(0).attributes('label')).toContain('HTTPS');
+        expect(findCodeDropdownCloneItemAtIndex(1).attributes('label')).toContain('HTTPS');
       });
 
       it.each`
@@ -127,7 +150,8 @@ describe('Compact Code Dropdown component', () => {
         sshUrl: undefined,
         httpUrl: undefined,
         showWebIdeButton: false,
-        showGitpodButton: false,
+        isGitpodEnabledForUser: false,
+        isGitpodEnabledForInstance: false,
       });
       expect(findCodeDropdownIdeItems().exists()).toBe(false);
     });
@@ -139,6 +163,23 @@ describe('Compact Code Dropdown component', () => {
       mockIdeItems.forEach((item, index) => {
         const ideItem = findCodeDropdownIdeItemAtIndex(index);
         expect(ideItem.props('ideItem')).toStrictEqual(item);
+      });
+    });
+
+    describe('conditional IDE items', () => {
+      it.each`
+        scenario                           | config                                   | excludedItem
+        ${'Web IDE when disabled'}         | ${{ showWebIdeButton: false }}           | ${'Web IDE'}
+        ${'GitPod when user disabled'}     | ${{ isGitpodEnabledForUser: false }}     | ${'GitPod'}
+        ${'GitPod when instance disabled'} | ${{ isGitpodEnabledForInstance: false }} | ${'GitPod'}
+      `('should not include $excludedItem in $scenario', ({ config, excludedItem }) => {
+        createComponent(config);
+
+        const ideItemTexts = findCodeDropdownIdeItems().wrappers.map(
+          (ideItem) => ideItem.props('ideItem').text,
+        );
+
+        expect(ideItemTexts).not.toContain(excludedItem);
       });
     });
   });

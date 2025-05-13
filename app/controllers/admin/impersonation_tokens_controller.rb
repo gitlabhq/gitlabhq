@@ -84,8 +84,6 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
   def set_index_vars
     @scopes = Gitlab::Auth.available_scopes_for(current_user)
 
-    @scopes = ::VirtualRegistries.filter_token_scopes(@scopes, current_user)
-
     @impersonation_token ||= finder.build
     @active_impersonation_tokens = active_impersonation_tokens
   end

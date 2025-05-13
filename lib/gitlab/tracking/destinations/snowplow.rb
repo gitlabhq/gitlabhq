@@ -9,6 +9,10 @@ module Gitlab
         extend ::Gitlab::Utils::Override
 
         SNOWPLOW_NAMESPACE = 'gl'
+        PRODUCT_USAGE_EVENT_COLLECT_ENDPOINT = 'events.gitlab.net'
+        PRODUCT_USAGE_EVENT_COLLECT_ENDPOINT_STG = 'events-stg.gitlab.net'
+        DEDICATED_APP_ID = 'gitlab_dedicated'
+        SELF_MANAGED_APP_ID = 'gitlab_sm'
 
         def initialize
           @event_eligibility_checker = Gitlab::Tracking::EventEligibilityChecker.new
@@ -40,30 +44,74 @@ module Gitlab
           emitter.input(payload)
         end
 
-        def options(group)
-          additional_features = Feature.enabled?(:additional_snowplow_tracking, group, type: :ops)
-          {
-            namespace: SNOWPLOW_NAMESPACE,
-            hostname: hostname,
-            cookie_domain: cookie_domain,
-            app_id: app_id,
-            form_tracking: additional_features,
-            link_click_tracking: additional_features
-          }.transform_keys! { |key| key.to_s.camelize(:lower).to_sym }
+        def frontend_client_options(group)
+          if Gitlab::CurrentSettings.snowplow_enabled? || ::Feature.disabled?(:collect_product_usage_events, :instance)
+            snowplow_options(group)
+          else
+            product_usage_events_options
+          end
         end
 
         def enabled?
-          Gitlab::CurrentSettings.snowplow_enabled?
+          Gitlab::CurrentSettings.snowplow_enabled? ||
+            ::Feature.enabled?(:collect_product_usage_events, :instance)
         end
 
         def hostname
-          Gitlab::CurrentSettings.snowplow_collector_hostname
+          if Gitlab::CurrentSettings.snowplow_enabled?
+            Gitlab::CurrentSettings.snowplow_collector_hostname
+          elsif Feature.enabled?(:use_staging_endpoint_for_product_usage_events, :instance)
+            PRODUCT_USAGE_EVENT_COLLECT_ENDPOINT_STG
+          else
+            PRODUCT_USAGE_EVENT_COLLECT_ENDPOINT
+          end
+        end
+
+        def app_id
+          if Gitlab::CurrentSettings.snowplow_enabled?
+            Gitlab::CurrentSettings.snowplow_app_id
+          else
+            product_usage_event_app_id
+          end
         end
 
         private
 
-        def app_id
-          Gitlab::CurrentSettings.snowplow_app_id
+        def snowplow_options(group)
+          additional_features = Feature.enabled?(:additional_snowplow_tracking, group, type: :ops)
+
+          # Using camel case as these keys will be used only in JavaScript
+          {
+            namespace: SNOWPLOW_NAMESPACE,
+            hostname: hostname,
+            cookieDomain: cookie_domain,
+            appId: app_id,
+            formTracking: additional_features,
+            linkClickTracking: additional_features
+          }
+        end
+
+        def product_usage_events_options
+          # Using camel case as these keys will be used only in JavaScript
+          {
+            namespace: SNOWPLOW_NAMESPACE,
+            hostname: Gitlab.host_with_port,
+            postPath: Rails.application.routes.url_helpers.event_forwarding_path,
+            forceSecureTracker: Gitlab.config.gitlab.https,
+            appId: app_id
+          }
+        end
+
+        def product_usage_event_app_id
+          if ::Gitlab::CurrentSettings.gitlab_dedicated_instance?
+            DEDICATED_APP_ID
+          else
+            SELF_MANAGED_APP_ID
+          end
+        end
+
+        def disable_product_usage_event_logging?
+          Gitlab::Utils.to_boolean(ENV['GITLAB_DISABLE_PRODUCT_USAGE_EVENT_LOGGING'], default: false)
         end
 
         def protocol
@@ -84,10 +132,20 @@ module Gitlab
         end
 
         def emitter
-          @emitter ||= SnowplowTracker::AsyncEmitter.new(
+          @emitter ||= emitter_class.new(
             endpoint: hostname,
             options: emitter_options
           )
+        end
+
+        def emitter_class
+          # snowplow_enabled? is true for gitlab.com and customers that configured their own Snowplow collector
+          # In both bases we do not want to log the events being sent as the instance is controlled by the same company
+          # controlling the Snowplow collector.
+          return SnowplowTracker::AsyncEmitter if Gitlab::CurrentSettings.snowplow_enabled?
+          return SnowplowTracker::AsyncEmitter if disable_product_usage_event_logging?
+
+          SnowplowLoggingEmitter
         end
 
         def emitter_options

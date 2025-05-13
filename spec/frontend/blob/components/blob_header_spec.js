@@ -1,7 +1,6 @@
 import Vue from 'vue';
-import { shallowMount, mount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BlobHeader from '~/blob/components/blob_header.vue';
 import DefaultActions from '~/blob/components/blob_header_default_actions.vue';
 import BlobFilepath from '~/blob/components/blob_header_filepath.vue';
@@ -29,17 +28,16 @@ describe('Blob Header Default Actions', () => {
   const findTableContents = () => wrapper.findComponent(TableContents);
   const findViewSwitcher = () => wrapper.findComponent(ViewerSwitcher);
   const findBlobFilePath = () => wrapper.findComponent(BlobFilepath);
-  const findRichTextEditorBtn = () =>
-    wrapper.findComponent('[data-testid="rich-blob-viewer-button"]');
-  const findSimpleTextEditorBtn = () =>
-    wrapper.findComponent('[data-testid="simple-blob-viewer-button"]');
+  const findRichTextEditorBtn = () => wrapper.findByTestId('rich-blob-viewer-button');
+  const findSimpleTextEditorBtn = () => wrapper.findByTestId('simple-blob-viewer-button');
   const findWebIdeLink = () => wrapper.findComponent(WebIdeLink);
+  const findDuoWorkflowActionSlot = () => wrapper.findByTestId('ee-duo-workflow-action');
 
   async function createComponent({
     blobProps = {},
     options = {},
     propsData = {},
-    mountFn = shallowMount,
+    mountFn = shallowMountExtended,
   } = {}) {
     const userInfoMockResolver = jest.fn().mockResolvedValue({
       data: { ...userInfoMock },
@@ -108,7 +106,21 @@ describe('Blob Header Default Actions', () => {
             gitpodUrl: gitpodBlobUrl,
             isGitpodEnabledForInstance: applicationInfoMock.gitpodEnabled,
             isGitpodEnabledForUser: userInfoMock.currentUser.gitpodEnabled,
+            disabled: false,
           });
+        });
+
+        it('disables the WebIdeLink component when file is LFS', async () => {
+          await createComponent({
+            options: {
+              provide: {
+                glFeatures: { blobOverflowMenu: false },
+              },
+            },
+            propsData: { isUsingLfs: true },
+          });
+
+          expect(findWebIdeLink().props('disabled')).toBe(true);
         });
 
         it('passes the edit button variant down to the WebIdeLink', () => {
@@ -215,7 +227,7 @@ describe('Blob Header Default Actions', () => {
             [key]: `<span>${slotContent}</span>`,
           },
         },
-        mountFn: mount,
+        mountFn: mountExtended,
       });
       expect(wrapper.text()).toContain(slotContent);
     });
@@ -224,6 +236,10 @@ describe('Blob Header Default Actions', () => {
       const showBlobSize = false;
       createComponent({ propsData: { showBlobSize } });
       expect(findBlobFilePath().props('showBlobSize')).toBe(showBlobSize);
+    });
+
+    it('does not render the Duo Workflow action slot', () => {
+      expect(findDuoWorkflowActionSlot().exists()).toBe(false);
     });
   });
 

@@ -450,7 +450,7 @@ export default {
         }
         view = views.get(key)
 
-        if (!itemSize && !sizes[i].size) {
+        if (!itemSize && !sizes[i]?.size) {
           if (view) this.unuseView(view)
           continue
         }

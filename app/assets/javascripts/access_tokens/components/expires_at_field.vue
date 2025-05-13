@@ -13,7 +13,7 @@ export default {
     GlDatepicker,
     GlFormGroup,
     MaxExpirationDateMessage: () =>
-      import('ee_component/access_tokens/components/max_expiration_date_message.vue'),
+      import('ee_component/vue_shared/components/access_tokens/max_expiration_date_message.vue'),
   },
   props: {
     defaultDateOffset: {

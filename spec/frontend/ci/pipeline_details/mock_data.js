@@ -1215,6 +1215,7 @@ export const mockPipelineStatusUpdatedResponse = {
       __typename: 'Pipeline',
       detailedStatus: {
         detailsPath: '/root/simple-ci-project/-/pipelines/1257',
+        deploymentDetailsPath: null,
         icon: 'status_success',
         id: 'success-1255-1255',
         label: 'passed',
@@ -1222,5 +1223,11 @@ export const mockPipelineStatusUpdatedResponse = {
         __typename: 'DetailedStatus',
       },
     },
+  },
+};
+
+export const mockPipelineStatusNullResponse = {
+  data: {
+    ciPipelineStatusUpdated: null,
   },
 };

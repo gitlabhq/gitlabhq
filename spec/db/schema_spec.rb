@@ -80,7 +80,6 @@ RSpec.describe 'Database schema',
       ci_pipeline_messages: %w[partition_id project_id],
       ci_pipeline_metadata: %w[partition_id],
       ci_pipeline_schedule_variables: %w[project_id],
-      ci_pipeline_variables: %w[partition_id pipeline_id project_id],
       ci_pipelines_config: %w[partition_id project_id],
       ci_pipelines: %w[partition_id auto_canceled_by_partition_id project_id user_id merge_request_id trigger_id], # LFKs are defined on the routing table
       ci_secure_file_states: %w[project_id],
@@ -91,12 +90,10 @@ RSpec.describe 'Database schema',
       ci_runner_taggings: %w[runner_id sharding_key_id], # The sharding_key_id value is meant to populate the partitioned table, no other usage. The runner_id FK exists at the partition level
       ci_runner_taggings_instance_type: %w[sharding_key_id], # This field is always NULL in this partition
       ci_runners: %w[sharding_key_id], # This value is meant to populate the partitioned table, no other usage
-      ci_runners_archived: %w[sharding_key_id creator_id], # This field is only used in the partitions, and has the appropriate FKs. We don't need the LFK for creator_id since that is already mirrored from ci_runners
       instance_type_ci_runners: %w[creator_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners routing table.
       group_type_ci_runners: %w[creator_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners routing table.
       project_type_ci_runners: %w[creator_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners routing table.
       ci_runner_machines: %w[runner_id sharding_key_id], # The runner_id and sharding_key_id fields are only used in the partitions, and have the appropriate FKs. The runner_id field will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/503749.
-      ci_runner_machines_archived: %w[runner_id sharding_key_id], # The sharding_key_id field is only used in the partitions, and has the appropriate FKs. The runner_id field will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/503749.
       instance_type_ci_runner_machines: %w[sharding_key_id], # This field is always NULL in this partition.
       group_type_ci_runner_machines: %w[sharding_key_id], # No need for LFK, rows will be deleted by the FK to ci_runners.
       project_type_ci_runner_machines: %w[sharding_key_id], # No need for LFK, rows will be deleted by the FK to ci_runners.
@@ -140,10 +137,11 @@ RSpec.describe 'Database schema',
       members: %w[source_id created_by_id],
       merge_requests: %w[last_edited_by_id state_id],
       merge_request_cleanup_schedules: %w[project_id],
+      merge_request_commits_metadata: %w[project_id commit_author_id committer_id],
       merge_requests_compliance_violations: %w[target_project_id],
       merge_request_diffs: %w[project_id],
       merge_request_diff_files: %w[project_id],
-      merge_request_diff_commits: %w[commit_author_id committer_id],
+      merge_request_diff_commits: %w[commit_author_id committer_id merge_request_commits_metadata_id],
       # merge_request_diff_commits_b5377a7a34 is the temporary table for the merge_request_diff_commits partitioning
       # backfill. It will get foreign keys after the partitioning is finished.
       merge_request_diff_commits_b5377a7a34: %w[merge_request_diff_id commit_author_id committer_id project_id],
@@ -182,14 +180,13 @@ RSpec.describe 'Database schema',
       repository_languages: %w[programming_language_id],
       routes: %w[source_id],
       security_findings: %w[project_id],
-      sent_notifications: %w[project_id noteable_id recipient_id commit_id in_reply_to_discussion_id],
+      sent_notifications: %w[project_id noteable_id recipient_id commit_id in_reply_to_discussion_id namespace_id], # namespace_id FK will be added after index creation
       slack_integrations: %w[team_id user_id bot_user_id], # these are external Slack IDs
       snippets: %w[author_id],
       spam_logs: %w[user_id],
       status_check_responses: %w[external_approval_rule_id],
       subscriptions: %w[user_id subscribable_id],
       suggestions: %w[commit_id],
-      taggings: %w[tag_id taggable_id tagger_id],
       timelogs: %w[user_id],
       todos: %w[target_id commit_id],
       uploads: %w[model_id organization_id namespace_id project_id],
@@ -258,9 +255,7 @@ RSpec.describe 'Database schema',
       subscription_user_add_on_assignment_versions: %w[item_id user_id purchase_id], # Managed by paper_trail gem, no need for FK on the historical data
       virtual_registries_packages_maven_cache_entries: %w[group_id], # We can't use a foreign key due to object storage references
       # system_defined_status_id reference to fixed items model which is stored in code
-      # custom_status_id to be implemented association, column exists for better column ordering
-      # TODO: Remove custom_status_id https://gitlab.com/gitlab-org/gitlab/-/work_items/520312
-      work_item_current_statuses: %w[system_defined_status_id custom_status_id]
+      work_item_current_statuses: %w[system_defined_status_id]
     }.with_indifferent_access.freeze
   end
 
@@ -270,7 +265,6 @@ RSpec.describe 'Database schema',
       ci_builds: 27,
       ci_pipelines: 24,
       ci_runners: 16,
-      ci_runners_archived: 17,
       deployments: 18,
       epics: 19,
       events: 16,
@@ -280,6 +274,7 @@ RSpec.describe 'Database schema',
       members: 21,
       merge_requests: 33,
       namespaces: 26,
+      notes: 16,
       p_ci_builds: 27,
       p_ci_pipelines: 24,
       packages_package_files: 16,

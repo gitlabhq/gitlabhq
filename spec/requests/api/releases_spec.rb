@@ -803,18 +803,6 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
           expect(response).to have_gitlab_http_status(:redirect)
           expect(uri.path).to eq("/api/v4/projects/#{project.id}/releases/#{release_b.tag}/downloads/bin/example.exe")
         end
-
-        it 'returns error when there is path traversal in suffix path' do
-          # TODO: remove spec once the feature flag is removed
-          # https://gitlab.com/gitlab-org/gitlab/-/issues/415460
-          stub_feature_flags(check_path_traversal_middleware_reject_requests: false)
-
-          get api("/projects/#{project.id}/releases/permalink/latest/downloads/bin/../../../../../../../password.txt", maintainer)
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-
-          expect(json_response['error']).to eq('suffix_path should be a valid file path')
-        end
       end
     end
   end

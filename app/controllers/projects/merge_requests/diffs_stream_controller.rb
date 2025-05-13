@@ -3,7 +3,7 @@
 module Projects
   module MergeRequests
     class DiffsStreamController < Projects::MergeRequests::ApplicationController
-      include StreamDiffs
+      include RapidDiffs::StreamingResource
 
       private
 
@@ -11,15 +11,14 @@ module Projects
         @merge_request
       end
 
-      def render_diff_file(diff_file)
-        render_to_string(
-          ::RapidDiffs::MergeRequestDiffFileComponent.new(
-            diff_file: diff_file,
-            merge_request: @merge_request,
-            parallel_view: view == :parallel
-          ),
-          layout: false
-        )
+      def render_diff_files_collection(diff_files, view_context)
+        ::RapidDiffs::MergeRequestDiffFileComponent
+          .with_collection(diff_files, merge_request: @merge_request, parallel_view: view == :parallel)
+          .render_in(view_context)
+      end
+
+      def sorted?
+        true
       end
     end
   end

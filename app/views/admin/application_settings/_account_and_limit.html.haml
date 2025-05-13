@@ -34,10 +34,26 @@
       = f.gitlab_ui_checkbox_component :remember_me_enabled, _('Allow users to extend their session'), help_text: _("Users can select 'Remember me' on sign-in to keep their session active beyond the session duration. %{link_start}Learn more%{link_end}.").html_safe % { link_start: remember_me_help_link_start, link_end: '</a>'.html_safe }
 
     = render_if_exists 'admin/application_settings/git_two_factor_session_expiry', form: f
-    = render 'admin/application_settings/require_personal_access_token_expiry', form: f
-    = render_if_exists 'admin/application_settings/personal_access_token_expiration_policy', form: f
-    = render_if_exists 'admin/application_settings/service_access_tokens_expiration_enforced', form: f
     = render_if_exists 'admin/application_settings/allow_top_level_group_owners_to_create_service_accounts', form: f
+
+    .form-group
+      = f.label :disable_feed_token, s_('AdminSettings|Feed token')
+      = f.gitlab_ui_checkbox_component :disable_feed_token, s_('AdminSettings|Disable feed token')
+
+    = render_if_exists 'admin/application_settings/disable_personal_access_tokens', form: f
+    %h5= s_('AccessTokens|Access token expiration')
+    .form-group
+      = render 'admin/application_settings/require_access_token_expiry', form: f
+      = render_if_exists 'admin/application_settings/service_accounts_pats_expiration_enforced', form: f
+    .form-group
+      = f.label :personal_access_token_prefix, s_('AccessTokens|Access token prefix')
+      = f.text_field :personal_access_token_prefix, placeholder: _('Maximum 20 characters'), class: 'form-control gl-form-input'
+    - if Feature.enabled?(:custom_prefix_for_all_token_types, :instance)
+      .form-group
+        = f.label :instance_token_prefix, s_('AccessTokens|Instance token prefix')
+        = f.text_field :instance_token_prefix, placeholder: _('Maximum 20 characters'), class: 'form-control gl-form-input'
+    = render_if_exists 'admin/application_settings/personal_access_token_expiration_policy', form: f
+
     = render_if_exists 'admin/application_settings/ssh_key_expiration_policy', form: f
 
     .form-group
@@ -68,16 +84,7 @@
           #application_setting_deactivate_dormant_users_period_error.form-text.gl-text-danger.gl-hidden
             = _('Please enter a value of 90 days or more')
           .form-text.gl-text-subtle
-            = _('Must be 90 days or more.')
-
-    .form-group
-      = f.label :personal_access_token_prefix, _('Personal access token prefix'), class: 'label-light'
-      = f.text_field :personal_access_token_prefix, placeholder: _('Maximum 20 characters'), class: 'form-control gl-form-input'
-
-    - if Feature.enabled?(:custom_prefix_for_all_token_types, :instance)
-      .form-group
-        = f.label :instance_token_prefix, _('Instance token prefix'), class: 'label-light'
-        = f.text_field :instance_token_prefix, placeholder: _('Maximum 20 characters'), class: 'form-control gl-form-input'
+            = _('Must be 90 days or more. Applies only to users with sign-in history. Users with no sign-in history are automatically deactivated after 7 days.')
 
     .form-group
       = f.label :user_show_add_ssh_key_message, _('Prompt users to upload SSH keys'), class: 'label-bold'

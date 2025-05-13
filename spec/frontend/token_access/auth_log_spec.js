@@ -87,9 +87,7 @@ describe('TokenAccess component', () => {
 
       await waitForPromises();
 
-      expect(findCrudComponentBody().text()).toContain(
-        'No authentication events in the last 30 days.',
-      );
+      expect(findCrudComponentBody().text()).toContain('No authentication events to display.');
     });
 
     it('displays a table when data is available', async () => {

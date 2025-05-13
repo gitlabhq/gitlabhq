@@ -296,6 +296,21 @@ RSpec.describe API::Notes, feature_category: :team_planning do
     end
   end
 
+  context "when noteable is a WikiPage::Meta" do
+    let!(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, container: project) }
+    let!(:wiki_page_meta_note) { create(:note, noteable: wiki_page_meta, project: project, author: user) }
+
+    before do
+      project.add_developer(user)
+    end
+
+    it_behaves_like "noteable API", 'projects', 'wiki_pages', 'id' do
+      let(:parent) { project }
+      let(:noteable) { wiki_page_meta }
+      let(:note) { wiki_page_meta_note }
+    end
+  end
+
   context "when noteable is a Merge Request" do
     let!(:merge_request) { create(:merge_request, source_project: project, target_project: project, author: user) }
     let!(:merge_request_note) { create(:note, noteable: merge_request, project: project, author: user) }

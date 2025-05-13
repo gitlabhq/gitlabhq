@@ -23,7 +23,14 @@ FactoryBot.define do
     conan_package_references do
       next [] if without_package_references
 
-      [association(:conan_package_reference, package: instance, recipe_revision: instance.conan_recipe_revisions.first)]
+      [association(
+        :conan_package_reference,
+        package: instance,
+        recipe_revision: instance.conan_recipe_revisions.first,
+        info: Gitlab::Json.parse(
+          File.read(Rails.root.join('spec/fixtures/packages/conan/parsed_conaninfo/conaninfo.json'))
+        )
+      )]
     end
 
     conan_package_revisions do

@@ -1,5 +1,5 @@
 ---
-stage: AI-Powered
+stage: AI-powered
 group: Custom Models
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Enable logging for self-hosted models.
@@ -8,7 +8,7 @@ title: Enable logging for self-hosted models
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
 - Offering: GitLab Self-Managed
 
@@ -19,9 +19,10 @@ title: Enable logging for self-hosted models
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../feature_flags.md) named `ai_custom_model`. Disabled by default.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/groups/gitlab-org/-/epics/15176) in GitLab 17.6.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
-- Feature flag `ai_custom_model` removed in GitLab 17.8
-- Generally available in GitLab 17.9
+- Feature flag `ai_custom_model` removed in GitLab 17.8.
+- Generally available in GitLab 17.9.
 - Ability to turn logging on and off through the UI added in GitLab 17.9.
+- Changed to include Premium in GitLab 18.0.
 
 {{< /history >}}
 
@@ -109,11 +110,8 @@ You control a subset of these logs by turning AI Logs on and off through the Duo
 
 When AI Logs are enabled, the [`llm.log` file](../logs/_index.md#llmlog) in your GitLab Self-Managed instance, code generation and Chat events that occur through your instance are captured. The log file does not capture anything when it is not enabled. Code completion logs are captured directly in the AI gateway. These logs are not transmitted to GitLab, and are only visible on your GitLab Self-Managed infrastructure.
 
-For more information on:
-
-- Logged events and their properties, see the [logged event documentation](../../development/ai_features/logged_events.md).
-- How to rotate, manage, export, and visualize the logs in `llm.log`, see the [log system documentation](../logs/_index.md).
-- The log file location (for example, so you can delete logs), see [LLM input and output logging](../logs/_index.md#llm-input-and-output-logging).
+- [Rotate, manage, export, and visualize the logs in `llm.log`](../logs/_index.md).
+- [View the log file location (for example, so you can delete logs)](../logs/_index.md#llm-input-and-output-logging).
 
 ### Logs in your AI gateway container
 
@@ -245,7 +243,7 @@ Response: ModelResponse(
             finish_reason='stop',
             index=0,
             message=Message(
-                content=' Here is the corrected Ruby code for your function:\n\n```ruby\ndef say_hello\n  puts "Hello, World!"\nend\n\ndef say_goodbye\n    puts "Goodbye, World!"\nend\n\ndef main\n  say_hello\n  say_goodbye\nend\n\nmain\n```\n\nIn your original code, the method names were misspelled as `say_hell` and `say_gobdye`. I corrected them to `say_hello` and `say_goodbye`, respectively. Also, there was no need for the prefix',
+                content=' Here is the corrected Ruby code for your function:\n\n```ruby\ndef say_hello\n  puts "Hello, World!"\nend\n\ndef say_goodbye\n    puts "Goodbye, World!"\nend\n\ndef main\n  say_hello\n  say_goodbye\nend\n\nmain\n```\n\nIn your original code, the method names were misspelled as `say_hell` and `say_gobdye`. I corrected them to `say_hello` and `say_goodbye`. Also, there was no need for the prefix',
                 role='assistant',
                 tool_calls=None,
                 function_call=None
@@ -309,7 +307,6 @@ The AI logs control whether additional debugging information, including prompts 
 
 - **GitLab Self-Managed and self-hosted AI gateway**: The feature flag enables detailed logging to `llm.log` on the self-hosted instance, capturing inputs and outputs for AI models.
 - **GitLab Self-Managed and GitLab-managed AI gateway**: The feature flag enables logging on your GitLab Self-Managed instance. However, the flag does **not** activate expanded logging for the GitLab-managed AI gateway side. Logging remains disabled for the cloud-connected AI gateway to protect sensitive data.
-For more information, see the [Feature Flag section under Privacy Considerations](../../development/ai_features/logging.md#privacy-considerations) documentation.
 
 ### Logging in cloud-connected AI gateways
 

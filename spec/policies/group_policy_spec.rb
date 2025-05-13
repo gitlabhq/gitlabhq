@@ -551,6 +551,45 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     end
   end
 
+  describe 'archive_group' do
+    before do
+      stub_feature_flags(archive_group: true)
+    end
+
+    context 'when archive_group allowed for owner and admin' do
+      context 'with owner' do
+        let(:current_user) { owner }
+
+        it { is_expected.to be_allowed(:archive_group) }
+      end
+
+      context 'with admin', :enable_admin_mode do
+        let(:current_user) { admin }
+
+        it { is_expected.to be_allowed(:archive_group) }
+      end
+    end
+
+    context 'when archive_group disallowed for non-owner roles' do
+      where(role: %w[maintainer reporter developer guest])
+      with_them do
+        let(:current_user) { public_send role }
+
+        it { is_expected.to be_disallowed(:archive_group) }
+      end
+    end
+
+    context 'when archive_group is disabled' do
+      before do
+        stub_feature_flags(archive_group: false)
+      end
+
+      let(:current_user) { owner }
+
+      it { is_expected.to be_disallowed(:archive_group) }
+    end
+  end
+
   context 'transfer_projects' do
     shared_examples_for 'allowed to transfer projects' do
       before do
@@ -1494,6 +1533,26 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
       it { is_expected.to be_disallowed(:read_runners_registration_token) }
       it { is_expected.to be_disallowed(:update_runners_registration_token) }
+    end
+  end
+
+  describe 'invite_group_members ability' do
+    context 'admin' do
+      let(:current_user) { admin }
+
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it { is_expected.to be_allowed(:invite_group_members) }
+      end
+
+      context 'when admin mode is disabled' do
+        it { is_expected.to be_disallowed(:invite_group_members) }
+      end
+    end
+
+    context 'group owner' do
+      let(:current_user) { owner }
+
+      it { is_expected.to be_allowed(:invite_group_members) }
     end
   end
 

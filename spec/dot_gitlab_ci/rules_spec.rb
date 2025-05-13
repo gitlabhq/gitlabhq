@@ -7,7 +7,7 @@ require('fast_spec_helper') # NOTE: Do not remove the parentheses from this requ
 
 PatternsList = Struct.new(:name, :patterns)
 
-RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
+RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output_length, feature_category: :tooling do
   config = YAML.safe_load_file(
     File.expand_path('../../.gitlab/ci/rules.gitlab-ci.yml', __dir__),
     aliases: true
@@ -62,6 +62,14 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
           # exception: `.if-merge-request-labels-pipeline-expedite` should both be set to "never",
           #            because when we set this label on an MR, we don't want to run either jobs.
           if base['if'] == config['.if-merge-request-labels-pipeline-expedite']['if']
+            expect(derived).to eq(base)
+            expect(derived['when']).to eq('never')
+            next
+          end
+
+          # exception: `.if-default-branch-schedule-weekly` should both be set to "never"
+          #            because the weekly job is a small subset of tests. We don't want to run either jobs.
+          if base['if'] == config['.if-default-branch-schedule-weekly']['if']
             expect(derived).to eq(base)
             expect(derived['when']).to eq('never')
             next
@@ -184,6 +192,7 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
         '.gitlab/agents/review-apps/config.yaml',
         '.gitlab/changelog_config.yml',
         '.gitlab/CODEOWNERS',
+        '.gitlab/lint/unused_helper_methods/exluded_methods.yml',
         '.gitleaksignore',
         '.gitpod.yml',
         '.graphqlrc',
@@ -235,7 +244,9 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
       Dir.glob('qa/.{,**/}*') +
       Dir.glob('qa/**/.gitlab-ci.yml') +
       Dir.glob('shared/**/*') +
-      Dir.glob('workhorse/.*')
+      Dir.glob('workhorse/.*') +
+      Dir.glob('.idea/**/*', File::FNM_DOTMATCH) +
+      Dir.glob('.yarn-cache/**/*', File::FNM_DOTMATCH)
     ).freeze
     no_matching_needed_files_ci_specific = (
       [

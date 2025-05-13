@@ -129,8 +129,8 @@ export default {
 </script>
 
 <template>
-  <div class="issuable-discussion">
-    <h3 class="gl-text-lg" data-testid="title">{{ __('History') }}</h3>
+  <div class="issuable-discussion gl-mt-3">
+    <h2 class="gl-heading-2" data-testid="title">{{ __('History') }}</h2>
     <gl-alert
       v-if="fetchPackagePipelinesError"
       variant="danger"

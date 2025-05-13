@@ -300,7 +300,7 @@ epics:
 | Merge Request | Review requested | Participants, Watchers, Subscribers, Custom notification level with this event selected, and the old reviewer. |
 | Merge Request | Reopened | Subscribers and participants. |
 | Merge Request | Title or description changed | Any new mentions by username. |
-| Merge Request | Added as approver | Custom notification level with this event selected. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12855) in GitLab 16.7. |
+| Merge Request | Merge request you're [eligible to approve](../project/merge_requests/approvals/rules.md#eligible-approvers) is created | Custom notification level with this event selected. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12855) in GitLab 16.7. [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/465347) from "Added as approver" in GitLab 17.11. |
 | Pipeline | Failed | The author of the pipeline. |
 | Pipeline | Fixed | The author of the pipeline. Enabled by default. |
 | Pipeline | Successful | The author of the pipeline, with Custom notification level for successful pipelines. If the pipeline failed previously, a "Fixed pipeline" message is sent for the first successful pipeline after the failure, and then a "Successful pipeline" message for any further successful pipelines. |

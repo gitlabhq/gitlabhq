@@ -67,6 +67,17 @@ describe('ListItem', () => {
     });
   });
 
+  describe('when avatar label is clicked', () => {
+    beforeEach(() => {
+      createComponent();
+      findAvatarLabeled().vm.$emit('label-link-click');
+    });
+
+    it('emits click-avatar event', () => {
+      expect(wrapper.emitted('click-avatar')).toEqual([[]]);
+    });
+  });
+
   it('renders avatar meta slot', () => {
     createComponent({ stubs: { GlAvatarLabeled } });
 

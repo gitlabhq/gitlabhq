@@ -2,11 +2,7 @@ import { isEqual, orderBy, isEmpty } from 'lodash';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { formatNumber } from '~/locale';
 import { joinPaths, queryToObject, objectToQuery, getBaseURL } from '~/lib/utils/url_utility';
-import {
-  LABEL_AGREGATION_NAME,
-  LANGUAGE_FILTER_PARAM,
-  SCOPE_BLOB,
-} from '~/search/sidebar/constants';
+import { LABEL_AGREGATION_NAME, LANGUAGE_FILTER_PARAM } from '~/search/sidebar/constants';
 import {
   SEARCH_SCOPE,
   USER_HANDLE,
@@ -225,14 +221,6 @@ export const scopeCrawler = (navigation, parentScope = null) => {
 
   return null;
 };
-
-export const skipBlobESCount = (state, itemScope) =>
-  !(
-    (state.query?.group_id || state.query?.project_id) &&
-    window.gon.features?.zoektMultimatchFrontend &&
-    state.zoektAvailable &&
-    itemScope === SCOPE_BLOB
-  );
 
 export const buildDocumentTitle = (title) => {
   const prevTitle = document.title;

@@ -1,4 +1,4 @@
-import { GlButton, GlTableLite } from '@gitlab/ui';
+import { GlButton, GlTableLite, GlKeysetPagination } from '@gitlab/ui';
 import CrudComponent from './crud_component.vue';
 
 export default {
@@ -44,6 +44,50 @@ const Template = (args, { argTypes }) => ({
   `,
 });
 
+const TableTemplate = (args, { argTypes }) => ({
+  components: { CrudComponent, GlButton, GlTableLite },
+  props: Object.keys(argTypes),
+  template: `
+    <crud-component v-bind="$props" ref="crudComponent">
+      <gl-table-lite
+        :items="tableItems"
+        :fields="tableFields" />
+
+      <template #form>
+        <p>Add form</p>
+        <div class="gl-flex gl-gap-3">
+          <gl-button variant="confirm">Add item</gl-button>
+          <gl-button @click="$refs.crudComponent.hideForm">Cancel</gl-button>
+        </div>
+      </template>
+    </crud-component>
+  `,
+});
+
+const ContentListTemplate = (args, { argTypes }) => ({
+  components: { CrudComponent, GlButton, GlKeysetPagination },
+  props: Object.keys(argTypes),
+  template: `
+    <crud-component v-bind="$props" ref="crudComponent">
+      <ul class="content-list">
+        <li v-for="item in items">{{ item.label }}</li>
+      </ul>
+
+      <template #form>
+        <p>Add form</p>
+        <div class="gl-flex gl-gap-3">
+          <gl-button variant="confirm">Add item</gl-button>
+          <gl-button @click="$refs.crudComponent.hideForm">Cancel</gl-button>
+        </div>
+      </template>
+
+      <template v-if="pagination" #pagination>
+        <gl-keyset-pagination v-bind="paginationProps" />
+      </template>
+    </crud-component>
+  `,
+});
+
 const defaultArgs = {
   descriptionEnabled: false,
   customActions: false,
@@ -83,7 +127,7 @@ WithFooter.args = {
   isEmpty: false,
 };
 
-export const WithPagnation = Template.bind({});
+export const WithPagnation = ContentListTemplate.bind({});
 WithPagnation.args = {
   ...defaultArgs,
   title: 'CRUD Component title',
@@ -92,7 +136,22 @@ WithPagnation.args = {
   count: 99,
   toggleText: 'Add action',
   pagination: true,
+  paginationProps: { hasPreviousPage: false, hasNextPage: true },
   isEmpty: false,
+  items: [
+    {
+      label: 'First item',
+    },
+    {
+      label: 'Second item',
+    },
+    {
+      label: 'Third item',
+    },
+    {
+      label: 'Fourth item',
+    },
+  ],
 };
 
 export const WithCustomActions = Template.bind({});
@@ -137,46 +196,6 @@ isCollapsible.args = {
   isCollapsible: true,
   isEmpty: false,
 };
-
-const TableTemplate = (args, { argTypes }) => ({
-  components: { CrudComponent, GlButton, GlTableLite },
-  props: Object.keys(argTypes),
-  template: `
-    <crud-component v-bind="$props" ref="crudComponent">
-    <gl-table-lite
-      :items="tableItems"
-      :fields="tableFields" />
-
-      <template #form>
-        <p>Add form</p>
-        <div class="gl-flex gl-gap-3">
-          <gl-button variant="confirm">Add item</gl-button>
-          <gl-button @click="$refs.crudComponent.hideForm">Cancel</gl-button>
-        </div>
-      </template>
-    </crud-component>
-  `,
-});
-
-const ContentListTemplate = (args, { argTypes }) => ({
-  components: { CrudComponent, GlButton },
-  props: Object.keys(argTypes),
-  template: `
-    <crud-component v-bind="$props" ref="crudComponent">
-      <ul class="content-list">
-        <li v-for="item in items">{{ item.label }}</li>
-      </ul>
-
-      <template #form>
-        <p>Add form</p>
-        <div class="gl-flex gl-gap-3">
-          <gl-button variant="confirm">Add item</gl-button>
-          <gl-button @click="$refs.crudComponent.hideForm">Cancel</gl-button>
-        </div>
-      </template>
-    </crud-component>
-  `,
-});
 
 export const TableExample = TableTemplate.bind({});
 TableExample.args = {

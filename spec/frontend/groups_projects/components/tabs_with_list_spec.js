@@ -25,6 +25,8 @@ import {
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
   SORT_DIRECTION_DESC,
   SORT_DIRECTION_ASC,
+  PAGINATION_TYPE_KEYSET,
+  PAGINATION_TYPE_OFFSET,
 } from '~/groups_projects/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import {
@@ -87,7 +89,11 @@ const defaultPropsData = {
     pagination: 'click_pagination_on_your_work_projects',
     tabs: 'click_tab_on_your_work_projects',
     sort: 'click_sort_on_your_work_projects',
+    initialLoad: 'initial_load_on_your_work_projects',
   },
+  tabCountsQuery: projectCountsQuery,
+  tabCountsQueryErrorMessage: 'An error occurred loading the project counts.',
+  paginationType: PAGINATION_TYPE_KEYSET,
 };
 
 const { bindInternalEventDocument } = useMockInternalEventsTracking();
@@ -143,6 +149,7 @@ describe('TabsWithList', () => {
     extendedWrapper(findTabByName(tabName)).findByTestId('tab-counter-badge').text();
   const findFilteredSearchAndSort = () => wrapper.findComponent(FilteredSearchAndSort);
   const findTabView = () => wrapper.findComponent(TabView);
+  const findBadge = () => wrapper.findComponent(GlBadge);
 
   afterEach(() => {
     router = null;
@@ -150,14 +157,14 @@ describe('TabsWithList', () => {
   });
 
   describe('template', () => {
-    describe('when project counts are loading', () => {
+    describe('when tab counts are loading', () => {
       it('does not show count badges', async () => {
         await createComponent();
-        expect(wrapper.findComponent(GlBadge).exists()).toBe(false);
+        expect(findBadge().exists()).toBe(false);
       });
     });
 
-    describe('when project counts are successfully retrieved', () => {
+    describe('when tab counts are successfully retrieved', () => {
       beforeEach(async () => {
         await createComponent();
         await waitForPromises();
@@ -172,24 +179,58 @@ describe('TabsWithList', () => {
       });
     });
 
-    describe('when project counts are not successfully retrieved', () => {
+    describe('when tab counts are not successfully retrieved', () => {
       const error = new Error();
 
-      beforeEach(async () => {
-        await createComponent({ projectsCountHandler: jest.fn().mockRejectedValue(error) });
-        await waitForPromises();
-      });
+      describe('when tabCountsQueryErrorMessage prop is passed', () => {
+        beforeEach(async () => {
+          await createComponent({ projectsCountHandler: jest.fn().mockRejectedValue(error) });
+          await waitForPromises();
+        });
 
-      it('displays error alert', () => {
-        expect(createAlert).toHaveBeenCalledWith({
-          message: 'An error occurred loading the project counts.',
-          error,
-          captureError: true,
+        it('displays error alert with message', () => {
+          expect(createAlert).toHaveBeenCalledWith({
+            message: defaultPropsData.tabCountsQueryErrorMessage,
+            error,
+            captureError: true,
+          });
         });
       });
 
-      it('does not show count badges', () => {
-        expect(wrapper.findComponent(GlBadge).exists()).toBe(false);
+      describe('when tabCountsQueryErrorMessage prop is not passed', () => {
+        beforeEach(async () => {
+          await createComponent({
+            projectsCountHandler: jest.fn().mockRejectedValue(error),
+            propsData: { tabCountsQueryErrorMessage: undefined },
+          });
+          await waitForPromises();
+        });
+
+        it('displays error alert with default message', () => {
+          expect(createAlert).toHaveBeenCalledWith({
+            message: 'An error occurred loading the tab counts.',
+            error,
+            captureError: true,
+          });
+        });
+      });
+
+      it('does not show tab count badges', async () => {
+        await createComponent({ projectsCountHandler: jest.fn().mockRejectedValue(error) });
+        await waitForPromises();
+
+        expect(findBadge().exists()).toBe(false);
+      });
+    });
+
+    describe('when tabCountsQuery prop is not passed', () => {
+      beforeEach(async () => {
+        await createComponent({ propsData: { tabCountsQuery: {} } });
+        await waitForPromises();
+      });
+
+      it('does not make GraphQL query or show tab count badges', () => {
+        expect(findBadge().exists()).toBe(false);
       });
     });
 
@@ -258,32 +299,19 @@ describe('TabsWithList', () => {
 
         expect(trackEventSpy).toHaveBeenCalledWith(
           'search_on_your_work_projects',
-          { label: 'Contributed' },
+          { label: CONTRIBUTED_TAB.value },
           undefined,
         );
         expect(trackEventSpy).toHaveBeenCalledWith(
           'filter_by_language_on_your_work_projects',
-          { label: 'Contributed', property: 'CSS' },
+          { label: CONTRIBUTED_TAB.value, property: '5' },
           undefined,
         );
         expect(trackEventSpy).toHaveBeenCalledWith(
           'filter_by_role_on_your_work_projects',
-          { label: 'Contributed', property: 'Owner' },
+          { label: CONTRIBUTED_TAB.value, property: '50' },
           undefined,
         );
-      });
-
-      describe('when invalid filter option is used', () => {
-        it('does not track events', async () => {
-          const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
-
-          findFilteredSearchAndSort().vm.$emit('filter', {
-            [FILTERED_SEARCH_TOKEN_LANGUAGE]: ['51'],
-          });
-          await waitForPromises();
-
-          expect(trackEventSpy).not.toHaveBeenCalled();
-        });
       });
     });
 
@@ -327,7 +355,10 @@ describe('TabsWithList', () => {
       it('tracks event', () => {
         expect(trackEventSpy).toHaveBeenCalledWith(
           'click_sort_on_your_work_projects',
-          { label: 'Contributed', property: `${SORT_OPTION_UPDATED.value}_${SORT_DIRECTION_DESC}` },
+          {
+            label: CONTRIBUTED_TAB.value,
+            property: `${SORT_OPTION_UPDATED.value}_${SORT_DIRECTION_DESC}`,
+          },
           undefined,
         );
       });
@@ -373,7 +404,10 @@ describe('TabsWithList', () => {
       it('tracks event', () => {
         expect(trackEventSpy).toHaveBeenCalledWith(
           'click_sort_on_your_work_projects',
-          { label: 'Contributed', property: `${SORT_OPTION_CREATED.value}_${SORT_DIRECTION_ASC}` },
+          {
+            label: CONTRIBUTED_TAB.value,
+            property: `${SORT_OPTION_CREATED.value}_${SORT_DIRECTION_ASC}`,
+          },
           undefined,
         );
       });
@@ -429,7 +463,7 @@ describe('TabsWithList', () => {
       expect(findTabView().props('tab')).toMatchObject(expectedTab);
     });
 
-    it('passes sorting, filtering, and pagination props', () => {
+    it('passes sorting, filtering, pagination, and event tracking props', () => {
       expect(findTabView().props()).toMatchObject({
         sort: query.sort,
         filters: {
@@ -440,6 +474,7 @@ describe('TabsWithList', () => {
         filteredSearchTermKey: defaultPropsData.filteredSearchTermKey,
         endCursor: mockEndCursor,
         startCursor: mockStartCursor,
+        eventTracking: defaultPropsData.eventTracking,
       });
     });
   });
@@ -520,7 +555,7 @@ describe('TabsWithList', () => {
 
         expect(trackEventSpy).toHaveBeenCalledWith(
           'click_tab_on_your_work_projects',
-          { label: PERSONAL_TAB.text },
+          { label: PERSONAL_TAB.value },
           undefined,
         );
       });
@@ -566,7 +601,7 @@ describe('TabsWithList', () => {
     });
   });
 
-  describe('when page is changed', () => {
+  describe('when keyset page is changed', () => {
     let trackEventSpy;
 
     describe('when going to next page', () => {
@@ -579,7 +614,7 @@ describe('TabsWithList', () => {
 
         trackEventSpy = bindInternalEventDocument(wrapper.element).trackEventSpy;
 
-        findTabView().vm.$emit('page-change', {
+        findTabView().vm.$emit('keyset-page-change', {
           endCursor: mockEndCursor,
           startCursor: null,
           hasPreviousPage: true,
@@ -597,7 +632,7 @@ describe('TabsWithList', () => {
       it('tracks event', () => {
         expect(trackEventSpy).toHaveBeenCalledWith(
           'click_pagination_on_your_work_projects',
-          { label: 'Contributed', property: 'next' },
+          { label: CONTRIBUTED_TAB.value, property: 'next' },
           undefined,
         );
       });
@@ -619,7 +654,7 @@ describe('TabsWithList', () => {
 
         trackEventSpy = bindInternalEventDocument(wrapper.element).trackEventSpy;
 
-        findTabView().vm.$emit('page-change', {
+        findTabView().vm.$emit('keyset-page-change', {
           endCursor: null,
           startCursor: mockStartCursor,
           hasPreviousPage: true,
@@ -635,10 +670,35 @@ describe('TabsWithList', () => {
       it('tracks event', () => {
         expect(trackEventSpy).toHaveBeenCalledWith(
           'click_pagination_on_your_work_projects',
-          { label: 'Contributed', property: 'previous' },
+          { label: CONTRIBUTED_TAB.value, property: 'previous' },
           undefined,
         );
       });
+    });
+  });
+
+  describe('when offset page is changed', () => {
+    beforeEach(async () => {
+      await createComponent({
+        route: defaultRoute,
+        propsData: {
+          paginationType: PAGINATION_TYPE_OFFSET,
+        },
+      });
+
+      findTabView().vm.$emit('offset-page-change', 2);
+
+      await waitForPromises();
+    });
+
+    it('sets `page` query string', () => {
+      expect(router.currentRoute.query).toMatchObject({
+        page: '2',
+      });
+    });
+
+    it('passes page prop to TabView component', () => {
+      expect(findTabView().props('page')).toBe(2);
     });
   });
 
@@ -666,6 +726,51 @@ describe('TabsWithList', () => {
 
     it('correctly passes timestampType prop to TabView component', () => {
       expect(findTabView().props('timestampType')).toBe(expectedTimestampType);
+    });
+  });
+
+  describe('when refetch event is fired', () => {
+    beforeEach(async () => {
+      await createComponent();
+      await waitForPromises();
+      await mockApollo.defaultClient.clearStore();
+      findTabView().vm.$emit('refetch');
+      await waitForPromises();
+    });
+
+    it('refetches tab counts', () => {
+      expect(successHandler).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('when TabView emits query-complete event', () => {
+    let trackEventSpy;
+
+    beforeEach(async () => {
+      await createComponent();
+      trackEventSpy = bindInternalEventDocument(wrapper.element).trackEventSpy;
+      findTabView().vm.$emit('query-complete');
+    });
+
+    describe('on initial load', () => {
+      it('tracks event', () => {
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          defaultPropsData.eventTracking.initialLoad,
+          { label: CONTRIBUTED_TAB.value },
+          undefined,
+        );
+      });
+    });
+
+    describe('on second load', () => {
+      beforeEach(() => {
+        trackEventSpy.mockClear();
+        findTabView().vm.$emit('query-complete');
+      });
+
+      it('does not track event', () => {
+        expect(trackEventSpy).not.toHaveBeenCalled();
+      });
     });
   });
 });

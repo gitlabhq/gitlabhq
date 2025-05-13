@@ -84,5 +84,4 @@ To toggle the new issue look:
 
 ## Related topics
 
-- [Work items development](../../../development/work_items.md)
 - [Test a new look for epics](../../group/epics/epic_work_items.md)

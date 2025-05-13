@@ -9,7 +9,7 @@ module ResourceEvents
 
     validates :action, presence: true
 
-    enum action: {
+    enum :action, {
       ban_user: 1,
       block_user: 2,
       delete_user: 3,
@@ -21,7 +21,7 @@ module ResourceEvents
       trust_user_and_close_report: 9
     }
 
-    enum reason: {
+    enum :reason, {
       spam: 1,
       offensive: 2,
       phishing: 3,

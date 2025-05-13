@@ -321,6 +321,8 @@ class WikiPage
   end
 
   def version_commit_timestamp
+    return version&.committed_date if version.is_a?(Commit)
+
     version&.commit&.committed_date
   end
 

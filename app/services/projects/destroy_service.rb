@@ -181,6 +181,7 @@ module Projects
       destroy_mr_diff_relations!
 
       destroy_merge_request_diffs!
+      delete_environments
 
       # Rails attempts to load all related records into memory before
       # destroying: https://github.com/rails/rails/issues/22510
@@ -268,7 +269,17 @@ module Projects
         ::Ci::DestroySecureFileService.new(project, current_user).execute(secure_file)
       end
 
-      deleted_count = ::CommitStatus.for_project(project).delete_all
+      delete_commit_statuses
+    end
+
+    def delete_commit_statuses
+      deleted_count = 0
+
+      loop do
+        deleted_rows = ::CommitStatus.for_project(project).limit(BATCH_SIZE).delete_all
+        deleted_count += deleted_rows
+        break if deleted_rows < BATCH_SIZE
+      end
 
       Gitlab::AppLogger.info(
         class: self.class.name,
@@ -282,6 +293,23 @@ module Projects
       project.deployments.each_batch(of: BATCH_SIZE) do |deployments|
         deployments.fast_destroy_all
       end
+    end
+
+    def delete_environments
+      deleted_count = 0
+
+      loop do
+        deleted_rows = ::Environment.for_project(project).limit(BATCH_SIZE).delete_all
+        deleted_count += deleted_rows
+        break if deleted_rows < BATCH_SIZE
+      end
+
+      Gitlab::AppLogger.info(
+        class: self.class.name,
+        project_id: project.id,
+        message: 'Deleting environments completed',
+        deleted_environment_count: deleted_count
+      )
     end
 
     # The project can have multiple webhooks with hundreds of thousands of web_hook_logs.

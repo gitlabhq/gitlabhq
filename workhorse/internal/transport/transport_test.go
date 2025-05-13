@@ -30,14 +30,14 @@ func TestValidateIpAddress(t *testing.T) {
 			address:      "192.168.0.0:80",
 			allowedURIs:  nil,
 			allowLocal:   false,
-			errorMessage: "requests to the private network are not allowed",
+			errorMessage: "IP 192.168.0.0 is not allowed: private IPs are not allowed",
 		},
 		{
 			name:         "Private IP Address",
 			address:      "172.16.0.0:80",
 			allowedURIs:  nil,
 			allowLocal:   false,
-			errorMessage: "requests to the private network are not allowed",
+			errorMessage: "IP 172.16.0.0 is not allowed: private IPs are not allowed",
 		},
 		{
 			name:        "Private IP Address with Allowed URIs",
@@ -46,11 +46,18 @@ func TestValidateIpAddress(t *testing.T) {
 			allowLocal:  false,
 		},
 		{
+			name:         "Private IPv6 Address",
+			address:      "[fd00::1]:80",
+			allowedURIs:  nil,
+			allowLocal:   false,
+			errorMessage: "IP fd00::1 is not allowed: private IPs are not allowed",
+		},
+		{
 			name:         "Loopback IP Address",
 			address:      "127.0.0.1:80",
 			allowedURIs:  nil,
 			allowLocal:   false,
-			errorMessage: "requests to loopback addresses are not allowed",
+			errorMessage: "IP 127.0.0.1 is not allowed: loopback IPs are not allowed",
 		},
 		{
 			name:        "Loopback IP Address with Allow Localhost",
@@ -59,11 +66,25 @@ func TestValidateIpAddress(t *testing.T) {
 			allowLocal:  true,
 		},
 		{
+			name:         "Loopback IPv6 Address",
+			address:      "[0000:0000:0000:0000:0000:0000:0000:0001]:80",
+			allowedURIs:  nil,
+			allowLocal:   false,
+			errorMessage: "IP ::1 is not allowed: loopback IPs are not allowed",
+		},
+		{
+			name:         "Loopback IPv6 Address",
+			address:      "[::1]:80",
+			allowedURIs:  nil,
+			allowLocal:   false,
+			errorMessage: "IP ::1 is not allowed: loopback IPs are not allowed",
+		},
+		{
 			name:         "Localhost IP Address",
 			address:      "0.0.0.0:80",
 			allowedURIs:  nil,
 			allowLocal:   false,
-			errorMessage: "requests to the localhost are not allowed",
+			errorMessage: "IP 0.0.0.0 is not allowed: unspecified IPs are not allowed",
 		},
 		{
 			name:        "Localhost IP Address with Allow Localhost",
@@ -76,21 +97,21 @@ func TestValidateIpAddress(t *testing.T) {
 			address:      "224.0.0.0:80",
 			allowedURIs:  nil,
 			allowLocal:   false,
-			errorMessage: "requests to the link local network are not allowed",
+			errorMessage: "IP 224.0.0.0 is not allowed: link-local unicast and multicast IPs are not allowed",
 		},
 		{
 			name:         "Link-Local Unicast IP Address",
 			address:      "169.254.0.0:80",
 			allowedURIs:  nil,
 			allowLocal:   false,
-			errorMessage: "requests to the link local network are not allowed",
+			errorMessage: "IP 169.254.0.0 is not allowed: link-local unicast and multicast IPs are not allowed",
 		},
 		{
 			name:         "Broadcast IP Address",
 			address:      "255.255.255.255:80",
 			allowedURIs:  nil,
 			allowLocal:   false,
-			errorMessage: "requests to the limited broadcast address are not allowed",
+			errorMessage: "IP 255.255.255.255 is not allowed: limited broadcast IPs are not allowed",
 		},
 	}
 

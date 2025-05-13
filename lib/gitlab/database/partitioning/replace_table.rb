@@ -6,17 +6,17 @@ module Gitlab
       class ReplaceTable
         DELIMITER = ";\n\n"
 
-        attr_reader :original_table, :replacement_table, :replaced_table, :primary_key_column,
+        attr_reader :original_table, :replacement_table, :replaced_table, :primary_key_columns,
           :sequence, :original_primary_key, :replacement_primary_key, :replaced_primary_key
 
-        def initialize(connection, original_table, replacement_table, replaced_table, primary_key_column)
+        def initialize(connection, original_table, replacement_table, replaced_table, primary_key_columns)
           @connection = connection
           @original_table = original_table
           @replacement_table = replacement_table
           @replaced_table = replaced_table
-          @primary_key_column = primary_key_column
+          @primary_key_columns = Array(primary_key_columns)
 
-          @sequence = default_sequence(original_table, primary_key_column)
+          @sequence = default_sequence(original_table, @primary_key_columns.first)
           @original_primary_key = default_primary_key(original_table)
           @replacement_primary_key = default_primary_key(replacement_table)
           @replaced_primary_key = default_primary_key(replaced_table)
@@ -48,9 +48,10 @@ module Gitlab
 
         def combined_sql_statements
           statements = []
+          first_pk_column = primary_key_columns.first
 
-          statements << alter_column_default(original_table, primary_key_column, expression: nil)
-          statements << alter_column_default(replacement_table, primary_key_column,
+          statements << alter_column_default(original_table, first_pk_column, expression: nil)
+          statements << alter_column_default(replacement_table, first_pk_column,
             expression: "nextval('#{quote_table_name(sequence)}'::regclass)")
 
           # If a different user owns the old table, the conversion process will fail to reassign the sequence
@@ -60,7 +61,7 @@ module Gitlab
             statements << set_table_owner_statement(original_table, table_owner(replacement_table))
           end
 
-          statements << alter_sequence_owned_by(sequence, replacement_table, primary_key_column)
+          statements << alter_sequence_owned_by(sequence, replacement_table, first_pk_column)
 
           rename_table_objects(statements, original_table, replaced_table, original_primary_key, replaced_primary_key)
           rename_table_objects(statements, replacement_table, original_table, replacement_primary_key, original_primary_key)
@@ -118,7 +119,7 @@ module Gitlab
 
         def set_table_owner_statement(table_name, new_owner)
           <<~SQL.chomp
-            ALTER TABLE #{quote_table_name(table_name)} OWNER TO #{new_owner}
+            ALTER TABLE #{quote_table_name(table_name)} OWNER TO #{quote_column_name(new_owner)}
           SQL
         end
 

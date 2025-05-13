@@ -9,13 +9,15 @@ module Gitlab
       UNIQUE_BY = %i[pipeline_id key partition_id].freeze
 
       class CiPipelineVariable < ::Ci::ApplicationRecord
+        include Gitlab::EncryptedAttribute
+
         self.table_name = :p_ci_pipeline_variables
         self.primary_key = :id
 
         attr_encrypted :value,
           mode: :per_attribute_iv_and_salt,
           insecure_mode: true,
-          key: Settings.attr_encrypted_db_key_base,
+          key: :db_key_base,
           algorithm: 'aes-256-cbc'
       end
 

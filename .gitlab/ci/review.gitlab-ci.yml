@@ -78,7 +78,7 @@ start-review-app-pipeline:
       optional: true
     - job: rails-production-server-boot-puma-cng
       optional: true
-    - job: build-assets-image
+    - job: compile-production-assets
       artifacts: false
   # We do not want to have ALL global variables passed as trigger variables,
   # as they cannot be overridden. See this issue for more context:

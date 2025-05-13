@@ -71,7 +71,7 @@ class MergeRequestDiff < ApplicationRecord
     state :overflow_diff_lines_limit
   end
 
-  enum diff_type: {
+  enum :diff_type, {
     regular: 1,
     merge_head: 2
   }
@@ -358,7 +358,7 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def first_commit
-    if Feature.enabled?(:more_commits_from_gitaly, project)
+    if Feature.enabled?(:commits_from_gitaly, project)
       commits(load_from_gitaly: true).last
     else
       commits.last
@@ -366,7 +366,7 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def last_commit
-    if Feature.enabled?(:more_commits_from_gitaly, project)
+    if Feature.enabled?(:commits_from_gitaly, project)
       commits(load_from_gitaly: true).first
     else
       commits.first
@@ -454,6 +454,30 @@ class MergeRequestDiff < ApplicationRecord
     base_commit_sha? && head_commit_sha? && start_commit_sha?
   end
 
+  def diffs_for_streaming(diff_options = {})
+    fetching_repository_diffs(diff_options) do |comparison|
+      reorder_diff_files!
+
+      collection = Gitlab::Diff::FileCollection::MergeRequestDiffStream.new(
+        self,
+        diff_options: diff_options
+      )
+
+      if comparison
+        # Delete the offset_index from options since we don't want to offset
+        # the diffs we will request given that we are already requesting specific
+        # paths
+        diff_options.delete(:offset_index)
+        diff_options[:generated_files] = comparison.generated_files
+        diff_options[:paths] = collection.diff_paths
+
+        comparison.diffs(diff_options)
+      else
+        collection
+      end
+    end
+  end
+
   def diffs_in_batch(batch_page, batch_size, diff_options:)
     fetching_repository_diffs(diff_options) do |comparison|
       Gitlab::Metrics.measure(:diffs_reorder) do
@@ -486,24 +510,27 @@ class MergeRequestDiff < ApplicationRecord
     end
   end
 
-  def paginated_diffs(page, per_page)
-    fetching_repository_diffs({}) do |comparison|
+  def paginated_diffs(page, per_page, diff_options = {})
+    fetching_repository_diffs(diff_options) do |comparison|
       reorder_diff_files!
 
       collection = Gitlab::Diff::FileCollection::PaginatedMergeRequestDiff.new(
         self,
         page,
-        per_page
+        per_page,
+        diff_options
       )
 
       if comparison
-        comparison.diffs(
+        diff_options.merge!(
           generated_files: comparison.generated_files,
           paths: collection.diff_paths,
           page: collection.current_page,
           per_page: collection.limit_value,
           count: collection.total_count
         )
+
+        comparison.diffs(diff_options)
       else
         collection
       end

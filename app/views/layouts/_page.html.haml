@@ -9,13 +9,13 @@
   %aside.js-super-sidebar.super-sidebar.super-sidebar-loading{ data: { root_path: root_path, sidebar: sidebar_data, force_desktop_expanded_sidebar: @force_desktop_expanded_sidebar.to_s, command_palette: command_palette_data(project: @project, current_ref: current_ref).to_json, is_saas: Gitlab.com?.to_s } }
 
   = render_if_exists "layouts/tanuki_bot_chat"
+  = render_if_exists "layouts/session_expire_modal"
 
   .content-wrapper{ class: "#{@content_wrapper_class}" }
     -# Broadcast messages
     .broadcast-wrapper
       = dispensable_render_if_exists "shared/token_expiration_banner"
       = dispensable_render "layouts/broadcast" unless content_for(:hide_broadcast_messages).present?
-      = yield :group_invite_members_banner
 
     -# Alerts
     .alert-wrapper.alert-wrapper-top-space.gl-flex.gl-flex-col.gl-gap-3.container-fluid{ class: alert_class }
@@ -34,6 +34,7 @@
       = yield :flash_message
       = dispensable_render "shared/gitlab_version/security_patch_upgrade_alert"
       = dispensable_render "shared/service_ping_consent"
+      = yield :group_invite_members_banner
       = dispensable_render_if_exists "layouts/header/ee_subscribable_banner"
       = dispensable_render_if_exists "layouts/header/seat_count_alert", context: context
       = dispensable_render_if_exists "shared/namespace_user_cap_reached_alert"

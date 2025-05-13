@@ -53,6 +53,7 @@ export default {
     },
   },
   computed: {
+    // eslint-disable-next-line vue/no-unused-properties -- `tracking` is used in the `Tracking` mixin.
     tracking() {
       return {
         label: SP_TRACK_LABEL,

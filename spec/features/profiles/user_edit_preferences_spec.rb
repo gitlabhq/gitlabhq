@@ -8,11 +8,9 @@ RSpec.describe 'User edit preferences profile', :js, feature_category: :user_pro
   # Empty value doesn't change the levels
   let(:language_percentage_levels) { nil }
   let(:user) { create(:user) }
-  let(:vscode_web_ide) { true }
 
   before do
     stub_languages_translation_percentage(language_percentage_levels)
-    stub_feature_flags(vscode_web_ide: vscode_web_ide)
     sign_in(user)
     visit(profile_preferences_path)
   end

@@ -1,17 +1,18 @@
 import { GlIcon } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
-import component from '~/vue_shared/components/registry/details_row.vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
 
 describe('DetailsRow', () => {
   let wrapper;
 
-  const findIcon = () => wrapper.findComponent(GlIcon);
-  const findDefaultSlot = () => wrapper.find('[data-testid="default-slot"]');
+  const defaultProps = {
+    icon: 'clock',
+  };
 
-  const mountComponent = (props) => {
-    wrapper = shallowMount(component, {
+  const createComponent = (props = {}) => {
+    wrapper = shallowMountExtended(DetailsRow, {
       propsData: {
-        icon: 'clock',
+        ...defaultProps,
         ...props,
       },
       slots: {
@@ -20,19 +21,22 @@ describe('DetailsRow', () => {
     });
   };
 
+  const findIcon = () => wrapper.findComponent(GlIcon);
+  const findDefaultSlot = () => wrapper.findByTestId('default-slot');
+
   it('has a default slot', () => {
-    mountComponent();
+    createComponent();
     expect(findDefaultSlot().exists()).toBe(true);
   });
 
   describe('icon prop', () => {
     it('contains an icon', () => {
-      mountComponent();
+      createComponent();
       expect(findIcon().exists()).toBe(true);
     });
 
     it('icon has the correct props', () => {
-      mountComponent();
+      createComponent();
       expect(findIcon().props()).toMatchObject({
         name: 'clock',
       });
@@ -41,12 +45,12 @@ describe('DetailsRow', () => {
 
   describe('padding prop', () => {
     it('padding has a default', () => {
-      mountComponent();
+      createComponent();
       expect(wrapper.classes('gl-py-2')).toBe(true);
     });
 
     it('is reflected in the template', () => {
-      mountComponent({ padding: 'gl-py-4' });
+      createComponent({ padding: 'gl-py-4' });
       expect(wrapper.classes('gl-py-4')).toBe(true);
     });
   });
@@ -54,12 +58,12 @@ describe('DetailsRow', () => {
   describe('dashed prop', () => {
     const borderClasses = ['gl-border-b-solid', 'gl-border-default', 'gl-border-b-1'];
     it('by default component has no border', () => {
-      mountComponent();
+      createComponent();
       expect(wrapper.classes).not.toEqual(expect.arrayContaining(borderClasses));
     });
 
     it('has a border when dashed is true', () => {
-      mountComponent({ dashed: true });
+      createComponent({ dashed: true });
       expect(wrapper.classes()).toEqual(expect.arrayContaining(borderClasses));
     });
   });

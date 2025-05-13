@@ -142,8 +142,6 @@ Layout/LineContinuationSpacing:
     - 'spec/services/users/migrate_records_to_ghost_user_service_spec.rb'
     - 'spec/support/helpers/redis_without_keys.rb'
     - 'spec/support/shared_examples/features/project_upload_files_shared_examples.rb'
-    - 'spec/support/shared_examples/harbor/artifacts_controller_shared_examples.rb'
-    - 'spec/support/shared_examples/harbor/tags_controller_shared_examples.rb'
     - 'spec/support/shared_examples/models/diff_note_after_commit_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/diff_discussions_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/discussions_shared_examples.rb'

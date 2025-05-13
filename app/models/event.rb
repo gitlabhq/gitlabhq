@@ -53,7 +53,7 @@ class Event < ApplicationRecord
 
   sha_attribute :fingerprint
 
-  enum action: ACTIONS, _suffix: true
+  enum :action, ACTIONS, suffix: true
 
   delegate :name, :email, :public_email, :username, to: :author, prefix: true, allow_nil: true
   delegate :title, to: :issue, prefix: true, allow_nil: true

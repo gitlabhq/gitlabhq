@@ -16,10 +16,10 @@ The `CODEOWNERS` file uses a syntax to define ownership rules.
 Each line in the file represents a rule, and specifies a file path pattern and one or more owners.
 The key elements are:
 
-- **File paths**: Specific files, directories, or wildcards.
-- **Code Owners**: Use `@mentions` for users, groups, or roles.
-- **Comments**: Lines starting with `#` are ignored.
-- **Sections**: Optional groupings of rules, defined using `[Section name]`.
+- File paths: Specific files, directories, or wildcards.
+- Code Owners: Use `@mentions` for users, groups, or roles.
+- Comments: Lines starting with `#` are ignored.
+- Sections: Optional groupings of rules, defined using `[Section name]`.
 
 {{< alert type="note" >}}
 
@@ -105,7 +105,7 @@ internal/README.md @user2
 ```
 
 Each Code Owner in the merge request widget is listed under a label.
-The following image shows **Default**, **Frontend**, and **Technical Writing** sections:
+The following image shows `Default`, `Frontend`, and `Technical Writing` sections:
 
 ![MR widget - Sectional Code Owners](../img/sectional_code_owners_v17_4.png)
 
@@ -217,6 +217,50 @@ when changes are submitted by using merge requests. If a change is submitted dir
 to the protected branch, approval from Code Owners is still required, even if the
 section is marked as optional.
 
+## Eligible code owners
+
+Eligibility rules determine who can be a valid code owner. Specific rules apply depending on the
+reference method in the `CODEOWNERS` file: username, group, or role.
+
+### User eligibility
+
+To be eligible as code owners, users referenced by their username (`@username`) must be authorized
+for the project. The following rules apply:
+
+- Project and group visibility settings do not affect eligibility.
+- Users [banned from a group](../../group/moderate_users.md) cannot be Code Owners.
+- Eligible users include those with:
+  - Direct membership in the project with Developer role or higher.
+  - Membership in the project's group (direct or inherited).
+  - Membership in any of the project's group's ancestors.
+  - Direct or inherited membership in a group that has been invited to the project.
+  - Direct membership (but not inherited) in a group that has been invited to the project's group.
+  - Direct membership (but not inherited) in a group that has been invited to the project's group's ancestor.
+
+### Group eligibility
+
+When referencing a group with group name (`@group_name`) or nested group name (`@nested/group/names`),
+the following rules apply:
+
+- Group visibility settings do not affect eligibility.
+- Only direct members of the referenced group are eligible. Inherited members are not included.
+- Eligible groups include:
+  - The project's group.
+  - The project's group's ancestors.
+  - Groups that are invited to the project with Developer role or higher.
+
+### Role eligibility
+
+When referencing a role (`@@role`), the following rules apply:
+
+- Only Developer, Maintainer, and Owner roles can be used as Code Owners.
+- Only direct project members with the specified role are eligible.
+- Roles are not inclusive of higher roles. For example, specifying `@@developer` does not include
+  users with Maintainer or Owner roles.
+
+For more complex scenarios involving group inheritance and eligibility,
+see [Group inheritance and eligibility](advanced.md#group-inheritance-and-eligibility).
+
 ## Add a role as a Code Owner
 
 {{< history >}}
@@ -251,7 +295,7 @@ role as Code Owners for `file.md`:
 
 ## Add a group as a Code Owner
 
-You can set **direct members** of a group or subgroup as a Code Owner.
+You can set direct members of a group or subgroup as a Code Owner.
 For more information about group membership, see [Membership types](../members/_index.md#membership-types).
 
 Prerequisites:
@@ -313,7 +357,7 @@ and are matched against the repository root.
 Paths starting with `/` match from the repository root:
 
 ```plaintext
-# # Matches only README.md in the root.
+# Matches only README.md in the root.
 /README.md
 
 # Matches only README.md inside the /docs directory.
@@ -383,7 +427,9 @@ Use `**` to match zero or more directories recursively:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180162) in GitLab 17.10.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180162) in GitLab 17.10 [with a flag](../../../administration/feature_flags.md) named `codeowners_file_exclusions`.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/517075) in GitLab 17.10.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/517309) in GitLab 17.11. Feature flag `codeowners_file_exclusions` removed.
 
 {{< /history >}}
 

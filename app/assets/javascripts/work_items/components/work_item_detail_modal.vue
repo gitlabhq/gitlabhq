@@ -96,6 +96,7 @@ export default {
     setErrorMessage(message) {
       this.error = message || this.$options.i18n.errorMessage;
     },
+    // eslint-disable-next-line vue/no-unused-properties
     show() {
       this.$refs.modal.show();
     },

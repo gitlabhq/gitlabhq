@@ -58,12 +58,6 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
         expect(subject.to_hash).to eq(commit_from_repo_hash)
       end
     end
-
-    it 'logs the event with the expected info' do
-      expect(Gitlab::AppLogger).to receive(:info).at_least(:once)
-
-      subject.to_hash
-    end
   end
 
   describe '.create_bulk' do

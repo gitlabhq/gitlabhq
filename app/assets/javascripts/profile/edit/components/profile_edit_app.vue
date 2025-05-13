@@ -182,11 +182,11 @@ export default {
     <!-- TODO: to implement profile editing form fields -->
     <!-- It will be implemented in the upcoming MRs -->
     <!-- Related issue: https://gitlab.com/gitlab-org/gitlab/-/issues/389918 -->
-    <div class="js-hide-when-nothing-matches-search gl-border-t gl-py-6">
+    <div class="js-hide-when-nothing-matches-search settings-sticky-footer gl-flex gl-gap-3">
       <gl-button
         variant="confirm"
         type="submit"
-        class="js-password-prompt-btn gl-mr-3"
+        class="js-password-prompt-btn"
         :disabled="uploadingProfile"
       >
         {{ $options.i18n.updateProfileSettings }}

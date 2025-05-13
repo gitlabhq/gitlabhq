@@ -22,7 +22,6 @@ class Group < Namespace
   include Importable
   include IdInOrdered
   include Members::Enumerable
-  include Namespaces::AdjournedDeletable
 
   extend ::Gitlab::Utils::Override
 
@@ -164,6 +163,7 @@ class Group < Namespace
   delegate :subgroup_runner_token_expiration_interval, :subgroup_runner_token_expiration_interval=, :subgroup_runner_token_expiration_interval_human_readable, :subgroup_runner_token_expiration_interval_human_readable=, to: :namespace_settings, allow_nil: true
   delegate :project_runner_token_expiration_interval, :project_runner_token_expiration_interval=, :project_runner_token_expiration_interval_human_readable, :project_runner_token_expiration_interval_human_readable=, to: :namespace_settings, allow_nil: true
   delegate :force_pages_access_control, :force_pages_access_control=, to: :namespace_settings, allow_nil: true
+  delegate :model_prompt_cache_enabled, :model_prompt_cache_enabled=, to: :namespace_settings, allow_nil: true
 
   delegate :require_dpop_for_manage_api_endpoints, :require_dpop_for_manage_api_endpoints=, to: :namespace_settings
   delegate :require_dpop_for_manage_api_endpoints?, to: :namespace_settings
@@ -204,6 +204,19 @@ class Group < Namespace
   after_commit :update_two_factor_requirement
 
   scope :with_users, -> { includes(:users) }
+
+  scope :active, -> do
+    non_archived.not_aimed_for_deletion
+  end
+
+  scope :inactive, -> do
+    joins(:namespace_settings)
+      .left_joins(:deletion_schedule)
+      .where(<<~SQL)
+        #{reflections['namespace_settings'].table_name}.archived = TRUE
+        OR #{reflections['deletion_schedule'].table_name}.#{reflections['deletion_schedule'].foreign_key} IS NOT NULL
+      SQL
+  end
 
   scope :with_non_archived_projects, -> { includes(:non_archived_projects) }
 
@@ -447,7 +460,7 @@ class Group < Namespace
     end
 
     def with_api_scopes
-      preload(:namespace_settings, :group_feature, :parent)
+      preload(:namespace_settings, :group_feature, :parent, :deletion_schedule)
     end
 
     # Handle project creation permissions based on application setting and group setting. The `default_project_creation`
@@ -1035,10 +1048,6 @@ class Group < Namespace
     ].compact.min
   end
 
-  def work_item_move_and_clone_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:work_item_move_and_clone, type: :beta)
-  end
-
   def work_items_feature_flag_enabled?
     feature_flag_enabled_for_self_or_ancestor?(:work_items)
   end
@@ -1175,6 +1184,12 @@ class Group < Namespace
     ::Clusters::Agent.for_projects(all_projects)
   end
 
+  def pending_delete?
+    return false unless deletion_schedule
+
+    deletion_schedule.marked_for_deletion_on.future?
+  end
+
   private
 
   def feature_flag_enabled_for_self_or_ancestor?(feature_flag, type: :development)
@@ -1256,6 +1271,12 @@ class Group < Namespace
 
     # We cannot disclose the Pages unique domain, hence returning generic error message
     errors.add(:path, _('has already been taken'))
+  end
+
+  # Overriding of Namespaces::AdjournedDeletable method
+  override :all_scheduled_for_deletion_in_hierarchy_chain
+  def all_scheduled_for_deletion_in_hierarchy_chain
+    self_and_ancestors(hierarchy_order: :asc).joins(:deletion_schedule)
   end
 end
 

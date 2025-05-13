@@ -120,11 +120,11 @@ registry, and copies the image to Google Artifact Registry.
 
    In the example, replace the following:
 
-   - <var><code>LOCATION</code></var>: the
+   - `LOCATION`: the
      Google Cloud region where you created your Google Artifact Registry repository.
-   - <var><code>PROJECT</code></var>: your
+   - `PROJECT`: your
      Google Cloud project ID.
-   - <var><code>REPOSITORY</code></var>: the
+   - `REPOSITORY`: the
      repository ID of your Google Artifact Registry repository.
 
    ```yaml

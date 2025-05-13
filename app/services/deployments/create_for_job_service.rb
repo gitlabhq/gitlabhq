@@ -3,6 +3,8 @@
 module Deployments
   # This class creates a deployment record for a pipeline job.
   class CreateForJobService
+    include Gitlab::InternalEventsTracking
+
     DeploymentCreationError = Class.new(StandardError)
 
     def execute(job)
@@ -42,6 +44,8 @@ module Deployments
           cluster_id: cluster.id,
           kubernetes_namespace: cluster.kubernetes_namespace_for(deployment.environment, deployable: job)
         )
+
+        track_cluster_deployment(job, cluster)
       end
 
       # Allocate IID for deployments.
@@ -62,6 +66,19 @@ module Deployments
         sha: job.sha,
         on_stop: job.on_stop
       }
+    end
+
+    def track_cluster_deployment(job, cluster)
+      track_internal_event(
+        'create_deployment_to_cluster',
+        user: job.user,
+        project: job.project,
+        additional_properties: {
+          label: job.project.namespace.actual_plan_name,
+          value: cluster.id,
+          property: cluster.managed.to_s
+        }
+      )
     end
   end
 end

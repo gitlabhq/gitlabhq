@@ -267,7 +267,7 @@ you can't force push unless you:
 - Unprotect it.
 - Allow force pushes.
 
-For more information, see [Allow force push on a protected branch](../../user/project/repository/branches/protected.md#allow-force-push-on-a-protected-branch).
+For more information, see [Allow force push on a protected branch](../../user/project/repository/branches/protected.md#allow-force-push).
 
 ## Restore your backed up branch
 

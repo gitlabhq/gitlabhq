@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::IntegrationsController, :enable_admin_mode, feature_category: :integrations do
+RSpec.describe Admin::IntegrationsController, :with_current_organization, :enable_admin_mode, feature_category: :integrations do
   let_it_be(:admin) { create(:admin) }
 
   before do

@@ -75,7 +75,9 @@ describe('NavItem component', () => {
       };
 
       it('updates the pill count', async () => {
-        createWrapper({ item: { id: itemIdForUpdate, pill_count: initialPillValue } });
+        createWrapper({
+          item: { id: itemIdForUpdate, pill_count: initialPillValue, pill_count_dynamic: true },
+        });
 
         await triggerPillValueUpdate();
 
@@ -83,7 +85,9 @@ describe('NavItem component', () => {
       });
 
       it('does not update the pill count for non matching item id', async () => {
-        createWrapper({ item: { id: '_non_matching_id_', pill_count: initialPillValue } });
+        createWrapper({
+          item: { id: '_non_matching_id_', pill_count: initialPillValue, pill_count_dynamic: true },
+        });
 
         await triggerPillValueUpdate();
 

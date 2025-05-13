@@ -31,8 +31,8 @@ RSpec.describe API::Wikis, feature_category: :wiki do
 
   let(:project_wiki) { create(:project_wiki, project: project, user: user) }
   let(:payload) { { content: 'content', format: 'rdoc', title: 'title' } }
-  let(:expected_keys_with_content) { %w[content format slug title encoding front_matter] }
-  let(:expected_keys_without_content) { %w[format slug title] }
+  let(:expected_keys_with_content) { %w[content format slug title encoding front_matter wiki_page_meta_id] }
+  let(:expected_keys_without_content) { %w[format slug title wiki_page_meta_id] }
   let(:wiki) { project_wiki }
 
   shared_examples_for 'wiki API 404 Project Not Found' do

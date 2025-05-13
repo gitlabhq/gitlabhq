@@ -244,12 +244,27 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
         end
       end
 
-      context 'when script and run are used together' do
-        let(:config) { { script: 'rspec', run: [{ name: 'step1', step: 'some reference' }] } }
+      context 'when mutually exclusive keys are used with run' do
+        using RSpec::Parameterized::TableSyntax
 
-        it 'returns error about using script and run' do
-          expect(entry).not_to be_valid
-          expect(entry.errors).to include 'job config these keys cannot be used together: script, run'
+        where(:conflicting_key, :error_message) do
+          :script        | 'job config these keys cannot be used together: script, run'
+          :before_script | 'job config these keys cannot be used together: before_script, run'
+          :after_script  | 'job config these keys cannot be used together: after_script, run'
+        end
+
+        with_them do
+          let(:config) do
+            {
+              conflicting_key => 'rspec',
+              run: [{ name: 'step1', step: 'some reference' }]
+            }
+          end
+
+          it 'returns error about mutually exclusive keys' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include error_message
+          end
         end
       end
 

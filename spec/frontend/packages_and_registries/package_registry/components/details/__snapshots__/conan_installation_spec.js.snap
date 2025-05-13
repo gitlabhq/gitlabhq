@@ -2,10 +2,6 @@
 
 exports[`ConanInstallation renders all the messages 1`] = `
 <div>
-  <installation-title-stub
-    options="[object Object]"
-    packagetype="conan"
-  />
   <code-instruction-stub
     copytext="Copy Conan Command"
     instruction="conan install @gitlab-org/package-15 --remote=gitlab"
@@ -14,7 +10,7 @@ exports[`ConanInstallation renders all the messages 1`] = `
     trackinglabel="code_instruction"
   />
   <h3
-    class="gl-text-lg"
+    class="gl-heading-3 gl-mt-5"
   >
     Registry setup
   </h3>

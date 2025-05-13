@@ -2,7 +2,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { ACCESS_LEVELS_STRING_TO_INTEGER } from '~/access_level/constants';
 
-export const formatGroup = (group) => ({
+export const formatGroupForGraphQLResolver = (group) => ({
   __typename: TYPENAME_GROUP,
   id: convertToGraphQLId(TYPENAME_GROUP, group.id),
   name: group.name,
@@ -13,11 +13,17 @@ export const formatGroup = (group) => ({
   createdAt: group.created_at,
   updatedAt: group.updated_at,
   avatarUrl: group.avatar_url,
+  markedForDeletionOn: group.marked_for_deletion_on,
   userPermissions: {
+    canLeave: group.can_leave,
     removeGroup: group.can_remove,
     viewEditPage: group.can_edit,
   },
-  webUrl: group.relative_path,
+  webUrl: group.web_url,
+  groupMembersCount: group.group_members_count,
+  isLinkedToSubscription: group.is_linked_to_subscription,
+  isAdjournedDeletionEnabled: group.is_adjourned_deletion_enabled,
+  permanentDeletionDate: group.permanent_deletion_date,
   maxAccessLevel: {
     integerValue: group.permission
       ? ACCESS_LEVELS_STRING_TO_INTEGER[group.permission.toUpperCase()]
@@ -28,10 +34,9 @@ export const formatGroup = (group) => ({
   },
   descendantGroupsCount: group.subgroup_count,
   projectsCount: group.project_count,
-  children: group.children ? group.children.map(formatGroup) : [],
+  children: group.children?.length ? group.children.map(formatGroupForGraphQLResolver) : [],
+  childrenCount: group.subgroup_count,
   // Properties below are hard coded for now until API has been
   // updated to support these fields.
   organizationEditPath: '',
-  groupMembersCount: 0,
-  isLinkedToSubscription: false,
 });

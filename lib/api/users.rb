@@ -129,6 +129,36 @@ module API
         end
       end
 
+      desc 'Revoke support PIN for a user. Available only for admins.' do
+        detail 'This feature allows administrators to revoke the support PIN for a specified user before its natural expiration'
+        success code: 204
+        is_array false
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+      end
+      post ":id/support_pin/revoke", feature_category: :user_management do
+        authenticated_as_admin!
+
+        user = User.find_by_id(params[:id])
+        not_found!('User') unless user
+
+        begin
+          result = ::Users::SupportPin::RevokeService.new(user).execute
+        rescue StandardError
+          error!("Error revoking Support PIN for user.", :unprocessable_entity)
+        end
+
+        case result[:status]
+        when :success
+          status :accepted
+        when :not_found
+          not_found!(result[:message])
+        else
+          error!(result[:message] || "Failed to revoke Support PIN", :bad_request)
+        end
+      end
+
       desc 'Get the list of users' do
         success Entities::UserBasic
       end

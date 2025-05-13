@@ -11,7 +11,7 @@ The policy used is based on the subject's class name - so `Ability.allowed?(user
 
 The Ruby gem source is available in the [declarative-policy](https://gitlab.com/gitlab-org/ruby/gems/declarative-policy) GitLab project.
 
-For information about naming and conventions, please refer to [Permission conventions page](permissions/conventions.md).
+For information about naming and conventions, see [permission conventions](permissions/conventions.md).
 
 ## Managing Permission Rules
 
@@ -83,7 +83,7 @@ blocks. These operators cannot be overridden, and are hence banned via a
 
 To see how the rules get evaluated into a judgment, open a Rails console and run: `policy.debug(:some_ability)`. This prints the rules in the order they are evaluated.
 
-For example, let's say you wanted to debug `IssuePolicy`. You might run
+For example, if you wanted to debug `IssuePolicy`. You might run
 the debugger in this way:
 
 ```ruby

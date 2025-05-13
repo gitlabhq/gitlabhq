@@ -55,9 +55,8 @@ export default {
     </template>
 
     <template v-else>
-      <gl-icon name="upload" class="gl-mr-2" />
       <span data-testid="manually-published">
-        {{ s__('PackageRegistry|Manually Published') }}
+        {{ s__('PackageRegistry|Manually published') }}
       </span>
     </template>
   </div>

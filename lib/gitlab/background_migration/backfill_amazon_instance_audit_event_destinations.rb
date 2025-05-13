@@ -5,9 +5,7 @@ module Gitlab
     class BackfillAmazonInstanceAuditEventDestinations < BatchedMigrationJob
       feature_category :audit_events
 
-      def perform
-        # CE implementation is a no-op
-      end
+      def perform; end
     end
   end
 end

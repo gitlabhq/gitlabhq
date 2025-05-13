@@ -99,6 +99,9 @@ RSpec.describe 'getting list of branch rules for a project', feature_category: :
 
     describe 'response' do
       let_it_be(:branch_name_a) { TestEnv::BRANCH_SHA.each_key.first }
+      let(:branch_rule_a_data) { branch_rules_data.dig(2, 'node') }
+      let(:branch_rule_b_data) { branch_rules_data.dig(1, 'node') }
+      let(:all_branches_rule_data) { branch_rules_data.dig(0, 'node') }
       let_it_be(:branch_name_b) { 'diff-*' }
       let_it_be(:protected_branch_a) do
         create(:protected_branch, project: project, name: branch_name_a)
@@ -119,85 +122,46 @@ RSpec.describe 'getting list of branch rules for a project', feature_category: :
         end
       end
 
-      let(:branch_rule_squash_settings) { true }
-
       before do
-        stub_feature_flags(branch_rule_squash_settings: branch_rule_squash_settings)
         post_graphql(query, current_user: current_user, variables: variables)
       end
 
       it_behaves_like 'a working graphql query'
 
-      context 'when the branch_rule_squash_settings flag is enabled' do
-        let(:all_branches_rule_data) { branch_rules_data.dig(0, 'node') }
-        let(:branch_rule_b_data) { branch_rules_data.dig(1, 'node') }
-        let(:branch_rule_a_data) { branch_rules_data.dig(2, 'node') }
+      it 'includes all fields', :use_sql_query_cache, :aggregate_failures do
+        expect(all_branches_rule_data).to include(
+          'id' => all_branches_rule.to_global_id.to_s,
+          'name' => 'All branches',
+          'isDefault' => false,
+          'isProtected' => false,
+          'matchingBranchesCount' => project.repository.branch_count,
+          'branchProtection' => nil,
+          "squashOption" => be_kind_of(Hash),
+          'createdAt' => nil,
+          'updatedAt' => nil
+        )
 
-        it 'includes all fields', :use_sql_query_cache, :aggregate_failures do
-          expect(all_branches_rule_data).to include(
-            'id' => all_branches_rule.to_global_id.to_s,
-            'name' => 'All branches',
-            'isDefault' => false,
-            'isProtected' => false,
-            'matchingBranchesCount' => project.repository.branch_count,
-            'branchProtection' => nil,
-            "squashOption" => be_kind_of(Hash),
-            'createdAt' => nil,
-            'updatedAt' => nil
-          )
+        expect(branch_rule_a_data).to include(
+          'id' => branch_rule_a.to_global_id.to_s,
+          'name' => branch_name_a,
+          'isDefault' => be_boolean,
+          'isProtected' => true,
+          'matchingBranchesCount' => 1,
+          'branchProtection' => be_kind_of(Hash),
+          'createdAt' => be_kind_of(String),
+          'updatedAt' => be_kind_of(String)
+        )
 
-          expect(branch_rule_a_data).to include(
-            'id' => branch_rule_a.to_global_id.to_s,
-            'name' => branch_name_a,
-            'isDefault' => be_boolean,
-            'isProtected' => true,
-            'matchingBranchesCount' => 1,
-            'branchProtection' => be_kind_of(Hash),
-            'createdAt' => be_kind_of(String),
-            'updatedAt' => be_kind_of(String)
-          )
-
-          expect(branch_rule_b_data).to include(
-            'id' => branch_rule_b.to_global_id.to_s,
-            'name' => branch_name_b,
-            'isDefault' => be_boolean,
-            'isProtected' => true,
-            'matchingBranchesCount' => wildcard_count,
-            'branchProtection' => be_kind_of(Hash),
-            'createdAt' => be_kind_of(String),
-            'updatedAt' => be_kind_of(String)
-          )
-        end
-      end
-
-      context 'when the branch_rule_squash_settings flag is not enabled' do
-        let(:branch_rule_squash_settings) { false }
-        let(:branch_rule_b_data) { branch_rules_data.dig(0, 'node') }
-        let(:branch_rule_a_data) { branch_rules_data.dig(1, 'node') }
-
-        it 'includes all fields', :use_sql_query_cache, :aggregate_failures do
-          expect(branch_rule_a_data).to include(
-            'id' => branch_rule_a.to_global_id.to_s,
-            'name' => branch_name_a,
-            'isDefault' => be_boolean,
-            'isProtected' => true,
-            'matchingBranchesCount' => 1,
-            'branchProtection' => be_kind_of(Hash),
-            'createdAt' => be_kind_of(String),
-            'updatedAt' => be_kind_of(String)
-          )
-
-          expect(branch_rule_b_data).to include(
-            'id' => branch_rule_b.to_global_id.to_s,
-            'name' => branch_name_b,
-            'isDefault' => be_boolean,
-            'isProtected' => true,
-            'matchingBranchesCount' => wildcard_count,
-            'branchProtection' => be_kind_of(Hash),
-            'createdAt' => be_kind_of(String),
-            'updatedAt' => be_kind_of(String)
-          )
-        end
+        expect(branch_rule_b_data).to include(
+          'id' => branch_rule_b.to_global_id.to_s,
+          'name' => branch_name_b,
+          'isDefault' => be_boolean,
+          'isProtected' => true,
+          'matchingBranchesCount' => wildcard_count,
+          'branchProtection' => be_kind_of(Hash),
+          'createdAt' => be_kind_of(String),
+          'updatedAt' => be_kind_of(String)
+        )
       end
 
       context 'when limiting the number of results' do

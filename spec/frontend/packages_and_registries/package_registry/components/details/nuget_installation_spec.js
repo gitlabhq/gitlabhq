@@ -1,7 +1,7 @@
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { packageData } from 'jest/packages_and_registries/package_registry/mock_data';
-import InstallationTitle from '~/packages_and_registries/package_registry/components/details/installation_title.vue';
+import InstallationMethod from '~/packages_and_registries/package_registry/components/details/installation_method.vue';
 import NugetInstallation from '~/packages_and_registries/package_registry/components/details/nuget_installation.vue';
 import {
   TRACKING_ACTION_COPY_NUGET_INSTALL_COMMAND,
@@ -20,7 +20,7 @@ describe('NugetInstallation', () => {
   const nugetSetupCommandStr = `nuget source Add -Name "GitLab" -Source "${packageEntity.nugetUrl}" -UserName <your_username> -Password <your_token>`;
 
   const findCodeInstructions = () => wrapper.findAllComponents(CodeInstructions);
-  const findInstallationTitle = () => wrapper.findComponent(InstallationTitle);
+  const findInstallationMethod = () => wrapper.findComponent(InstallationMethod);
   const findSetupDocsLink = () => wrapper.findComponent(GlLink);
 
   function createComponent() {
@@ -41,12 +41,8 @@ describe('NugetInstallation', () => {
   });
 
   describe('install command switch', () => {
-    it('has the installation title component', () => {
-      expect(findInstallationTitle().exists()).toBe(true);
-      expect(findInstallationTitle().props()).toMatchObject({
-        packageType: 'nuget',
-        options: [{ value: 'nuget', label: 'Show Nuget commands' }],
-      });
+    it('does not show the installation method component', () => {
+      expect(findInstallationMethod().exists()).toBe(false);
     });
   });
 

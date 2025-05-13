@@ -12,7 +12,7 @@ title: Experiments API
 
 {{< /details >}}
 
-Use this API to interact with A/B experiments. For more information, see the [experiment guide](../development/experiment_guide/_index.md).
+Use this API to interact with A/B experiments. This API is for internal use only.
 
 Prerequisites:
 

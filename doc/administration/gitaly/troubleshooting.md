@@ -1,5 +1,5 @@
 ---
-stage: Systems
+stage: Data Access
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Troubleshooting Gitaly
@@ -175,7 +175,7 @@ Confirm the following are all true:
   successfully creates the project but doesn't create the README.
 - When [tailing the logs](https://docs.gitlab.com/omnibus/settings/logs.html#tail-logs-in-a-console-on-the-server)
   on a Gitaly client and reproducing the error, you get `401` errors
-  when reaching the [`/api/v4/internal/allowed`](../../development/internal_api/_index.md) endpoint:
+  when reaching the `/api/v4/internal/allowed` endpoint:
 
   ```shell
   # api_json.log

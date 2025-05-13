@@ -7,26 +7,17 @@ export default () => {
 
   if (!modalEl) return false;
 
-  const {
-    canMerge,
-    isFork,
-    sourceBranch,
-    sourceProjectPath,
-    targetBranch,
-    sourceProjectDefaultUrl,
-    reviewingDocsPath,
-  } = modalEl.dataset;
+  const { isFork, sourceBranch, sourceProjectPath, sourceProjectDefaultUrl, reviewingDocsPath } =
+    modalEl.dataset;
 
   return new Vue({
     el: modalEl,
     render(h) {
       return h(MrWidgetHowToMergeModal, {
         props: {
-          canMerge: parseBoolean(canMerge),
           isFork: parseBoolean(isFork),
           sourceBranch,
           sourceProjectPath,
-          targetBranch,
           sourceProjectDefaultUrl,
           reviewingDocsPath,
         },

@@ -11,6 +11,16 @@ export const FEED_TOKEN = 'feedToken';
 export const INCOMING_EMAIL_TOKEN = 'incomingEmailToken';
 export const STATIC_OBJECT_TOKEN = 'staticObjectToken';
 
+export const DEFAULT_FILTER = [
+  {
+    type: 'state',
+    value: {
+      data: 'active',
+      operator: '=',
+    },
+  },
+];
+
 export const FILTER_OPTIONS = [
   {
     icon: 'status',

@@ -1,5 +1,5 @@
 <script>
-import { GlIntersperse, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlIntersperse, GlLink } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
@@ -22,7 +22,6 @@ export default {
   components: {
     GlIntersperse,
     GlLink,
-    GlSprintf,
     HelpPopover,
     RunnerDetail,
     RunnerMaintenanceNoteDetail: () =>
@@ -87,7 +86,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div v-if="runner">
     <div class="gl-pt-4">
       <dl class="gl-mb-0 gl-grid gl-grid-cols-[auto_1fr]">
         <runner-detail :label="s__('Runners|Description')" :value="runner.description" />
@@ -140,34 +139,13 @@ export default {
           class="gl-border-t-1 gl-border-t-default gl-pt-4 gl-border-t-solid"
           :value="runner.maintenanceNoteHtml"
         />
-
-        <runner-detail>
-          <template #label>
-            {{ s__('Runners|Runners') }}
-            <help-popover>
-              <gl-sprintf
-                :message="
-                  s__(
-                    'Runners|Runners are grouped when they have the same authentication token. This happens when you re-use a runner configuration in more than one runner manager. %{linkStart}How does this work?%{linkEnd}',
-                  )
-                "
-              >
-                <template #link="{ content }"
-                  ><gl-link :href="$options.RUNNER_MANAGERS_HELP_URL" target="_blank">{{
-                    content
-                  }}</gl-link></template
-                >
-              </gl-sprintf>
-            </help-popover>
-          </template>
-          <template #value>
-            <runner-managers-detail :runner="runner" />
-          </template>
-        </runner-detail>
       </dl>
     </div>
 
-    <runner-groups v-if="isGroupRunner" :runner="runner" />
-    <runner-projects v-if="isProjectRunner" :runner="runner" />
+    <div class="gl-mt-3 gl-flex gl-flex-col gl-gap-5">
+      <runner-managers-detail :runner="runner" />
+      <runner-groups v-if="isGroupRunner" :runner="runner" />
+      <runner-projects v-if="isProjectRunner" :runner="runner" />
+    </div>
   </div>
 </template>

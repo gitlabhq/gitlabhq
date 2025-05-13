@@ -2,6 +2,7 @@
 
 class SwapPackagesBuildInfosPipelineIdConvertToBigint < Gitlab::Database::Migration[2.2]
   include Gitlab::Database::MigrationHelpers::Swapping
+
   milestone '17.0'
   disable_ddl_transaction!
 

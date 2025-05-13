@@ -250,6 +250,30 @@ To disable group mentions:
 1. Select **Group mentions are disabled**.
 1. Select **Save changes**.
 
+## Disable user invitations to a group
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189898) in GitLab 18.0. Disabled by default.
+
+{{< /history >}}
+
+You can disable the ability for users to invite new members to sub-groups or projects in a top-level
+group. This also stops group Owners from sending invites. You must disable this setting before you
+can invite users again.
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+To disable user invitations:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > General**.
+1. Expand the **Permissions and group features** section.
+1. Select **Disable Group/Project members invitation**.
+1. Select **Save changes**.
+
 ## Export members as CSV
 
 {{< details >}}
@@ -276,13 +300,13 @@ For members with `Minimal Access` in the selected group, their `Max Role` and `S
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com
-- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442718) in GitLab 17.5.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/523468) in GitLab 18.0.
 
 {{< /history >}}
 
@@ -332,6 +356,13 @@ Additionally, restricted access might block the standard non-overage flows:
 - Inviting or updating existing billable users through email is blocked unexpectedly.
 
 ## User cap for groups
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
 
 {{< history >}}
 

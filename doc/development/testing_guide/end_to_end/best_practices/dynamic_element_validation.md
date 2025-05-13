@@ -13,7 +13,7 @@ Other problems that dynamic element validations solve are...
 - When our test is navigating to (or from) a page, we ensure that we are on the page we expect before
   test continuation.
 
-## How it works
+## How dynamic element validation works
 
 We interpret user actions on the page to have some sort of effect. These actions are
 

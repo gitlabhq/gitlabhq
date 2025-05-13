@@ -6,11 +6,13 @@ require_migration!
 RSpec.describe RegenerateCiJobTokenSigningKey, feature_category: :continuous_integration do
   let(:application_settings) do
     Class.new(ActiveRecord::Base) do
+      include Gitlab::EncryptedAttribute
+
       self.table_name = 'application_settings'
 
       attr_encrypted :ci_job_token_signing_key, {
         mode: :per_attribute_iv,
-        key: Settings.attr_encrypted_db_key_base_32,
+        key: :db_key_base_32,
         algorithm: 'aes-256-gcm',
         encode: false,
         encode_iv: false

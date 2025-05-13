@@ -8,7 +8,6 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { getBaseURL } from '~/lib/utils/url_utility';
 import { convertEachWordToTitleCase } from '~/lib/utils/text_utility';
 import { getDraft, clearDraft } from '~/lib/utils/autosave';
-import { findWidget } from '~/issues/list/utils';
 import {
   newWorkItemOptimisticUserPermissions,
   WIDGET_TYPE_ASSIGNEES,
@@ -29,9 +28,11 @@ import {
   WIDGET_TYPE_LINKED_ITEMS,
   STATE_CLOSED,
   WIDGET_TYPE_CUSTOM_FIELDS,
+  WIDGET_TYPE_STATUS,
 } from 'ee_else_ce/work_items/constants';
 import {
   findCurrentUserTodosWidget,
+  findDescriptionWidget,
   findHierarchyWidget,
   findHierarchyWidgetChildren,
   findNotesWidget,
@@ -315,6 +316,7 @@ export const setNewWorkItemCache = async (
   // eslint-disable-next-line max-params
 ) => {
   const workItemAttributesWrapperOrder = [
+    WIDGET_TYPE_STATUS,
     WIDGET_TYPE_ASSIGNEES,
     WIDGET_TYPE_LABELS,
     WIDGET_TYPE_WEIGHT,
@@ -350,8 +352,7 @@ export const setNewWorkItemCache = async (
   const draftData = JSON.parse(getDraft(autosaveKey));
 
   const draftTitle = draftData?.workspace?.workItem?.title || '';
-  const draftDescriptionWidget =
-    findWidget(WIDGET_TYPE_DESCRIPTION, draftData?.workspace?.workItem) || {};
+  const draftDescriptionWidget = findDescriptionWidget(draftData?.workspace?.workItem) || {};
   const draftDescription = draftDescriptionWidget?.description || null;
 
   widgets.push({
@@ -488,6 +489,14 @@ export const setNewWorkItemCache = async (
           color: '#1068bf',
           textColor: '#FFFFFF',
           __typename: 'WorkItemWidgetColor',
+        });
+      }
+
+      if (widgetName === WIDGET_TYPE_STATUS) {
+        widgets.push({
+          type: 'STATUS',
+          status: null,
+          __typename: 'WorkItemWidgetStatus',
         });
       }
 

@@ -170,14 +170,10 @@ describe('ProjectToken', () => {
         }),
       },
     });
-    const suggestionTexts = wrapper
-      .text()
-      .split('\n')
-      .map((text) => text.trim())
-      .filter(Boolean);
 
     todosProjectsResponse.data.projects.nodes.forEach((project, i) => {
-      expect(suggestionTexts[i]).toBe(project.fullPath);
+      const childIndex = i + 1;
+      expect(wrapper.findAll('div').at(childIndex).text()).toBe(project.fullPath);
     });
   });
 

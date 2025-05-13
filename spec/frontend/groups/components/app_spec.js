@@ -308,12 +308,12 @@ describe('AppComponent', () => {
       it('updates props which show modal confirmation dialog', () => {
         const group = { ...mockParentGroupItem };
 
-        expect(vm.groupLeaveConfirmationMessage).toBe('');
+        expect(vm.groupLeaveConfirmationTitle).toBe('');
         vm.showLeaveGroupModal(group, mockParentGroupItem);
 
         expect(vm.isModalVisible).toBe(true);
-        expect(vm.groupLeaveConfirmationMessage).toBe(
-          `Are you sure you want to leave the "${group.fullName}" group?`,
+        expect(vm.groupLeaveConfirmationTitle).toBe(
+          `Are you sure you want to leave "${group.fullName}"?`,
         );
       });
     });
@@ -409,29 +409,22 @@ describe('AppComponent', () => {
       });
 
       describe.each`
-        groups        | fromSearch | shouldRenderEmptyState | shouldRenderSearchEmptyState
-        ${[]}         | ${false}   | ${true}                | ${false}
-        ${mockGroups} | ${false}   | ${false}               | ${false}
-        ${[]}         | ${true}    | ${false}               | ${true}
-      `(
-        'when `groups` is $groups, and `fromSearch` is $fromSearch',
-        ({ groups, fromSearch, shouldRenderEmptyState, shouldRenderSearchEmptyState }) => {
-          it(`${shouldRenderEmptyState ? 'renders' : 'does not render'} empty state`, async () => {
-            createShallowComponent();
+        groups        | shouldRenderEmptyState
+        ${[]}         | ${true}
+        ${mockGroups} | ${false}
+      `('when `groups` is $groups', ({ groups, shouldRenderEmptyState }) => {
+        it(`${shouldRenderEmptyState ? 'renders' : 'does not render'} empty state`, async () => {
+          createShallowComponent();
 
-            await waitForPromises();
+          await waitForPromises();
 
-            vm.updateGroups(groups, fromSearch);
+          vm.updateGroups(groups);
 
-            await nextTick();
+          await nextTick();
 
-            expect(wrapper.findByTestId('empty-state').exists()).toBe(shouldRenderEmptyState);
-            expect(wrapper.findByTestId('search-empty-state').exists()).toBe(
-              shouldRenderSearchEmptyState,
-            );
-          });
-        },
-      );
+          expect(wrapper.findByTestId('empty-state').exists()).toBe(shouldRenderEmptyState);
+        });
+      });
     });
   });
 
@@ -526,8 +519,14 @@ describe('AppComponent', () => {
       const findGlModal = wrapper.findComponent(GlModal);
 
       expect(findGlModal.exists()).toBe(true);
-      expect(findGlModal.attributes('title')).toBe('Are you sure?');
+      expect(findGlModal.attributes('title')).toBe('');
       expect(findGlModal.props('actionPrimary').text).toBe('Leave group');
+      expect(findGlModal.text()).toContain('When you leave this group:');
+      expect(findGlModal.text()).toContain('You lose access to all projects within this group');
+      expect(findGlModal.text()).toContain(
+        'Your assigned issues and merge requests remain, but you cannot view or modify them',
+      );
+      expect(findGlModal.text()).toContain('You need an invitation to rejoin');
     });
   });
 });

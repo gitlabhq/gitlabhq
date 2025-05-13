@@ -3,7 +3,7 @@
 module Projects
   module MergeRequests
     class CreationsDiffsStreamController < Projects::MergeRequests::ApplicationController
-      include StreamDiffs
+      include RapidDiffs::StreamingResource
 
       skip_before_action :merge_request
       before_action :authorize_create_merge_request_from!

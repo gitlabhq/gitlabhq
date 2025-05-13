@@ -8,6 +8,7 @@ module Packages
       def package_files
         files = by_conan_file_type(super)
         files = by_recipe_revision(files)
+        files = by_package_revision(files)
         by_conan_package_reference(files)
       end
 
@@ -30,6 +31,16 @@ module Packages
           files.without_conan_recipe_revision
         else
           files.with_conan_recipe_revision(params[:recipe_revision])
+        end
+      end
+
+      def by_package_revision(files)
+        return files unless params[:package_revision]
+
+        if params[:package_revision] == Packages::Conan::FileMetadatum::DEFAULT_REVISION
+          files.without_conan_package_revision.with_conan_file_type(:package_file)
+        else
+          files.with_conan_package_revision(params[:package_revision])
         end
       end
     end

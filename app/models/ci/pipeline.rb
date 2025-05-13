@@ -39,6 +39,7 @@ module Ci
     UNLOCKABLE_STATUSES = (Ci::Pipeline.completed_statuses + [:manual]).freeze
     # UI only shows 100+. TODO: pass constant to UI for SSoT
     COUNT_FAILED_JOBS_LIMIT = 101
+    INPUTS_LIMIT = 20
 
     paginates_per 15
 
@@ -82,6 +83,10 @@ module Ci
     has_many :stages, ->(pipeline) { in_partition(pipeline).order(position: :asc) },
       partition_foreign_key: :partition_id, inverse_of: :pipeline
 
+    has_one :workload, ->(pipeline) { in_partition(pipeline) },
+      class_name: "Ci::Workloads::Workload",
+      partition_foreign_key: :partition_id, inverse_of: :pipeline
+
     #
     # In https://gitlab.com/groups/gitlab-org/-/epics/9991, we aim to convert all CommitStatus related models to
     # Ci::Job models. With that epic, we aim to replace `statuses` with `jobs`.
@@ -106,7 +111,6 @@ module Ci
 
     has_many :job_artifacts, through: :builds
     has_many :build_trace_chunks, class_name: 'Ci::BuildTraceChunk', through: :builds, source: :trace_chunks
-    has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id, inverse_of: :pipeline # rubocop:disable Cop/ActiveRecordDependent
     has_many :variables, ->(pipeline) { in_partition(pipeline) }, class_name: 'Ci::PipelineVariable', inverse_of: :pipeline, partition_foreign_key: :partition_id
     has_many :latest_builds, ->(pipeline) { in_partition(pipeline).latest.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Build'
     has_many :downloadable_artifacts, -> do
@@ -197,15 +201,15 @@ module Ci
 
     # We use `Enums::Ci::Pipeline.sources` here so that EE can more easily extend
     # this `Hash` with new values.
-    enum source: Enums::Ci::Pipeline.sources
+    enum :source, Enums::Ci::Pipeline.sources
 
-    enum config_source: Enums::Ci::Pipeline.config_sources
+    enum :config_source, Enums::Ci::Pipeline.config_sources
 
     # We use `Enums::Ci::Pipeline.failure_reasons` here so that EE can more easily
     # extend this `Hash` with new values.
-    enum failure_reason: Enums::Ci::Pipeline.failure_reasons
+    enum :failure_reason, Enums::Ci::Pipeline.failure_reasons
 
-    enum locked: { unlocked: 0, artifacts_locked: 1 }
+    enum :locked, { unlocked: 0, artifacts_locked: 1 }
 
     state_machine :status, initial: :created do
       event :enqueue do
@@ -460,6 +464,7 @@ module Ci
     scope :before_pipeline, ->(pipeline) { created_before_id(pipeline.id).outside_pipeline_family(pipeline) }
     scope :with_pipeline_source, ->(source) { where(source: source) }
     scope :preload_pipeline_metadata, -> { preload(:pipeline_metadata) }
+    scope :not_ref_protected, -> { where("#{quoted_table_name}.protected IS NOT true") }
 
     scope :outside_pipeline_family, ->(pipeline) do
       where.not(id: pipeline.same_family_pipeline_ids)
@@ -497,10 +502,13 @@ module Ci
     # sha - The commit SHA (or multiple SHAs) to limit the list of pipelines to.
     # limit - Number of pipelines to return. Chaining with sampling methods (#pick, #take)
     #         will cause unnecessary subqueries.
-    def self.newest_first(ref: nil, sha: nil, limit: nil)
+    def self.newest_first(ref: nil, sha: nil, limit: nil, source: nil)
       relation = order(id: :desc)
       relation = relation.where(ref: ref) if ref
       relation = relation.where(sha: sha) if sha
+      if source && Feature.enabled?(:source_filter_pipelines, :current_request)
+        relation = relation.where(source: source)
+      end
 
       if limit
         ids = relation.limit(limit).select(:id)
@@ -928,10 +936,6 @@ module Ci
       strong_memoize(:protected_ref) { project.protected_for?(git_ref) }
     end
 
-    def legacy_trigger
-      strong_memoize(:legacy_trigger) { trigger_requests.first }
-    end
-
     def variables_builder
       @variables_builder ||= ::Gitlab::Ci::Variables::Builder.new(self)
     end
@@ -1162,19 +1166,11 @@ module Ci
     end
 
     def complete_and_has_reports?(reports_scope)
-      if Feature.enabled?(:mr_show_reports_immediately, project, type: :development)
-        latest_report_builds(reports_scope).exists?
-      else
-        complete? && has_reports?(reports_scope)
-      end
+      complete? && has_reports?(reports_scope)
     end
 
     def complete_or_manual_and_has_reports?(reports_scope)
-      if Feature.enabled?(:mr_show_reports_immediately, project, type: :development)
-        latest_report_builds(reports_scope).exists?
-      else
-        complete_or_manual? && has_reports?(reports_scope)
-      end
+      complete_or_manual? && has_reports?(reports_scope)
     end
 
     def has_coverage_reports?
@@ -1220,9 +1216,17 @@ module Ci
     end
 
     def terraform_reports
-      ::Gitlab::Ci::Reports::TerraformReports.new.tap do |terraform_reports|
-        latest_report_builds(::Ci::JobArtifact.of_report_type(:terraform)).each do |build|
-          build.collect_terraform_reports!(terraform_reports)
+      if Feature.enabled?(:show_child_reports_in_mr_page, project)
+        ::Gitlab::Ci::Reports::TerraformReports.new.tap do |terraform_reports|
+          latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(:terraform)).each do |build|
+            build.collect_terraform_reports!(terraform_reports)
+          end
+        end
+      else
+        ::Gitlab::Ci::Reports::TerraformReports.new.tap do |terraform_reports|
+          latest_report_builds(::Ci::JobArtifact.of_report_type(:terraform)).each do |build|
+            build.collect_terraform_reports!(terraform_reports)
+          end
         end
       end
     end
@@ -1407,7 +1411,10 @@ module Ci
       return unless bridge_waiting?
       return unless current_user.can?(:update_pipeline, source_bridge.pipeline)
 
-      Ci::EnqueueJobService.new(source_bridge, current_user: current_user).execute(&:pending!) # rubocop:disable CodeReuse/ServiceClass
+      # Before enqueuing the trigger job again, its status must be one of :created, :skipped, :manual, and :scheduled.
+      # Also, we use `skip_pipeline_processing` to prevent processing the pipeline to avoid redundant process.
+      source_bridge.created!(current_user, skip_pipeline_processing: true)
+      Ci::EnqueueJobService.new(source_bridge, current_user: current_user).execute # rubocop:disable CodeReuse/ServiceClass
     end
 
     # EE-only

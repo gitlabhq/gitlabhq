@@ -27,15 +27,18 @@ Use the Jira DVCS (distributed version control system) connector if you self-hos
 with Jira Data Center or Jira Server and want to use the [Jira development panel](../development_panel.md).
 The Jira DVCS connector is developed and maintained by Atlassian.
 
-To configure the Jira DVCS connector, see the
-[Atlassian documentation](https://confluence.atlassian.com/adminjiraserver/integrating-with-development-tools-using-dvcs-1047552689.html).
+To configure the Jira DVCS connector, see
+[integrating with development tools using DVCS](https://confluence.atlassian.com/adminjiraserver/integrating-with-development-tools-using-dvcs-1047552689.html).
+Jira creates a webhook in the GitLab project to provide real-time updates.
+To configure this webhook, you must have at least the Maintainer role for the project.
+For more information, see [configuring webhook security](https://confluence.atlassian.com/adminjiraserver/configuring-webhook-security-1299913153.html).
 
 If you're on Jira Cloud, migrate to the GitLab for Jira Cloud app.
 For more information, see [Install the GitLab for Jira Cloud app](../connect-app.md#install-the-gitlab-for-jira-cloud-app).
 
 ## Refresh data imported to Jira
 
-Jira imports commits and branches for GitLab projects every 60 minutes.
+By default, Jira imports commits and branches for GitLab projects every 60 minutes.
 To refresh the data manually in Jira:
 
 1. Sign in to your Jira instance as the user you configured the integration with.

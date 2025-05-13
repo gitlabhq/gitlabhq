@@ -579,17 +579,17 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       context 'Job token permissions' do
-        it 'allows admin to set allowlist enforcement' do
+        it 'allows admin to toggle allowlist enforcement' do
           visit ci_cd_admin_application_settings_path
 
-          expect(current_settings.enforce_ci_inbound_job_token_scope_enabled).to eq(false)
+          expect(current_settings.enforce_ci_inbound_job_token_scope_enabled).to eq(true)
 
           within_testid('job-token-permissions-settings') do
             find('input[type="checkbox"]').click
             click_button 'Save changes'
           end
 
-          expect(current_settings.enforce_ci_inbound_job_token_scope_enabled).to eq(true)
+          expect(current_settings.enforce_ci_inbound_job_token_scope_enabled).to eq(false)
           expect(page).to have_content 'Application settings saved successfully'
         end
       end
@@ -1073,6 +1073,16 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           end
 
           let(:application_setting_key) { :group_invited_groups_api_limit }
+
+          it_behaves_like 'API rate limit setting'
+        end
+
+        context 'for POST /groups/:id/archive API requests' do
+          let(:rate_limit_field) do
+            format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'POST /groups/:id/archive and POST /groups/:id/unarchive', timeframe: 'minute')
+          end
+
+          let(:application_setting_key) { :group_archive_unarchive_api_limit }
 
           it_behaves_like 'API rate limit setting'
         end

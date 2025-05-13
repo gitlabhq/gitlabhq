@@ -10,6 +10,12 @@ RSpec.describe Gitlab::Fp::Message, feature_category: :shared do
     end
   end
 
+  describe '#to_s' do
+    it 'returns self.inspect' do
+      expect(described_class.new({ a: 1 }).to_s).to match(/#<Gitlab::Fp::Message:.* @content=\{:a=>1\}>/)
+    end
+  end
+
   describe 'validation' do
     it 'requires content to be a Hash' do
       # noinspection RubyMismatchedArgumentType - Intentionally passing wrong type to check runtime type validation

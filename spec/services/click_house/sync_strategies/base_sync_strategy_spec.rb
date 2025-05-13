@@ -66,6 +66,16 @@ RSpec.describe ClickHouse::SyncStrategies::BaseSyncStrategy, feature_category: :
             expect(events.size).to eq(4)
           end
 
+          it 'uses the configured primary_key for the id_for_cursor alias' do
+            allow(strategy).to receive(:primary_key).and_return(:id)
+            # consider primary key :id out of projections
+            allow(strategy).to receive(:projections).and_return([:project_id])
+
+            expect(execute).to eq({ status: :processed, records_inserted: 4, reached_end_of_table: true })
+            # cursor is still set to last primary key
+            expect(ClickHouse::SyncCursor.cursor_for(:events)).to eq(project_event1.id)
+          end
+
           context 'when new records are inserted while processing' do
             it 'does not process new records created during the iteration' do
               # Simulating the case when there is an insert during the iteration

@@ -37,6 +37,10 @@ Example response:
 ```json
 [
   {
+    "key": "5-Minute-Production-App",
+    "name": "5-Minute-Production-App"
+  },
+  {
     "key": "Android",
     "name": "Android"
   },
@@ -69,8 +73,28 @@ Example response:
     "name": "Code-Quality"
   },
   {
+    "key": "Composer",
+    "name": "Composer"
+  },
+  {
+    "key": "Cosign",
+    "name": "Cosign"
+  },
+  {
     "key": "Crystal",
     "name": "Crystal"
+  },
+  {
+    "key": "Dart",
+    "name": "Dart"
+  },
+  {
+    "key": "Deploy-ECS",
+    "name": "Deploy-ECS"
+  },
+  {
+    "key": "Diffblue-Cover",
+    "name": "Diffblue-Cover"
   },
   {
     "key": "Django",
@@ -85,36 +109,12 @@ Example response:
     "name": "Elixir"
   },
   {
-    "key": "Go",
-    "name": "Go"
+    "key": "Flutter",
+    "name": "Flutter"
   },
   {
-    "key": "Gradle",
-    "name": "Gradle"
-  },
-  {
-    "key": "Grails",
-    "name": "Grails"
-  },
-  {
-    "key": "Julia",
-    "name": "Julia"
-  },
-  {
-    "key": "LaTeX",
-    "name": "LaTeX"
-  },
-  {
-    "key": "Laravel",
-    "name": "Laravel"
-  },
-  {
-    "key": "Maven",
-    "name": "Maven"
-  },
-  {
-    "key": "Mono",
-    "name": "Mono"
+    "key": "Getting-Started",
+    "name": "Getting-Started"
   }
 ]
 ```
@@ -142,18 +142,6 @@ Example response:
 ```json
 {
   "name": "Ruby",
-  "content": "# This file is a template, and might need editing before it works on your project.\n# To contribute improvements to CI/CD templates, please follow the Development guide at:\n# https://docs.gitlab.com/ee/development/cicd/templates.html\n# This specific template is located at:\n# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Ruby.gitlab-ci.yml\n\n# Official language image. Look for the different tagged releases at:\n# https://hub.docker.com/r/library/ruby/tags/\nimage: ruby:latest\n\n# Pick zero or more services to be used on all builds.\n# Only needed when using a docker container to run your tests in.\n# Check out: https://docs.gitlab.com/ee/ci/services/\nservices:\n  - mysql:latest\n  - redis:latest\n  - postgres:latest\n\nvariables:\n  POSTGRES_DB: database_name\n\n# Cache gems in between builds\ncache:\n  paths:\n    - vendor/ruby\n\n# This is a basic example for a gem or script which doesn't use\n# services such as redis or postgres\nbefore_script:\n  - ruby -v  # Print out ruby version for debugging\n  # Uncomment next line if your rails app needs a JS runtime:\n  # - apt-get update -q \u0026\u0026 apt-get install nodejs -yqq\n  - bundle config set --local deployment true  # Install dependencies into ./vendor/ruby\n  - bundle install -j $(nproc)\n\n# Optional - Delete if not using `rubocop`\nrubocop:\n  script:\n    - rubocop\n\nrspec:\n  script:\n    - rspec spec\n\nrails:\n  variables:\n    DATABASE_URL: \"postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB\"\n  script:\n    - rails db:migrate\n    - rails db:seed\n    - rails test\n\n# This deploy job uses a simple deploy flow to Heroku, other providers, for example, AWS Elastic Beanstalk\n# are supported too: https://github.com/travis-ci/dpl\ndeploy:\n  stage: deploy\n  environment: production\n  script:\n    - gem install dpl\n    - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_PRODUCTION_KEY\n"
+  "content": "# This file is a template, and might need editing before it works on your project.\n# You can copy and paste this template into a new `.gitlab-ci.yml` file.\n# You should not add this template to an existing `.gitlab-ci.yml` file by using the `include:` keyword.\n#\n# To contribute improvements to CI/CD templates, please follow the Development guide at:\n# https://docs.gitlab.com/development/cicd/templates/\n# This specific template is located at:\n# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Ruby.gitlab-ci.yml\n\n# Official language image. Look for the different tagged releases at:\n# https://hub.docker.com/r/library/ruby/tags/\nimage: ruby:latest\n\n# Pick zero or more services to be used on all builds.\n# Only needed when using a docker container to run your tests in.\n# Check out: https://docs.gitlab.com/ee/ci/services/\nservices:\n  - mysql:latest\n  - redis:latest\n  - postgres:latest\n\nvariables:\n  POSTGRES_DB: database_name\n\n# Cache gems in between builds\ncache:\n  key:\n    files:\n      - Gemfile.lock\n  paths:\n    - vendor/ruby\n\n# This is a basic example for a gem or script which doesn't use\n# services such as redis or postgres\nbefore_script:\n  - ruby -v  # Print out ruby version for debugging\n  # Uncomment next line if your rails app needs a JS runtime:\n  # - apt-get update -q && apt-get install nodejs -yqq\n  - bundle config set --local deployment true\n  - bundle config set --local path './vendor/ruby' # Install dependencies into ./vendor/ruby\n  - bundle install -j $(nproc)\n\n# Optional - Delete if not using `rubocop`\nrubocop:\n  script:\n    - rubocop\n\nrspec:\n  script:\n    - rspec spec\n\nrails:\n  variables:\n    DATABASE_URL: \"postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB\"\n  script:\n    - rails db:migrate\n    - rails db:seed\n    - rails test\n\n# This deploy job uses a simple deploy flow to Heroku, other providers, e.g. AWS Elastic Beanstalk\n# are supported too: https://github.com/travis-ci/dpl\ndeploy:\n  stage: deploy\n  environment: production\n  script:\n    - gem install dpl\n    - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_PRODUCTION_KEY\n"
 }
 ```
-
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->

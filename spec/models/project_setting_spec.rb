@@ -99,6 +99,61 @@ RSpec.describe ProjectSetting, type: :model, feature_category: :groups_and_proje
     end
   end
 
+  describe 'calls backs' do
+    let_it_be(:project_1) { create(:project) }
+
+    describe '#enqueue_auto_merge_workers' do
+      context 'when the project setting is created' do
+        it 'does not enqueue the worker' do
+          expect(AutoMergeProcessWorker).not_to receive(:perform_async)
+
+          create(:project_setting, project: project_1)
+        end
+      end
+
+      context 'when the project setting is updated' do
+        let(:project_setting) { create(:project_setting, project: project_1) }
+
+        context 'when the regex is updated' do
+          it 'enqueues a auto merge process worker' do
+            expect(AutoMergeProcessWorker).to receive(:perform_async).with({ 'project_id' => project_1.id })
+
+            project_setting.update!(merge_request_title_regex: '/asa/')
+          end
+
+          context 'when regex is updated with the same value' do
+            it 'enqueues a auto merge process worker only one' do
+              expect(AutoMergeProcessWorker).to receive(:perform_async).with({ 'project_id' => project_1.id }).once
+
+              project_setting.update!(merge_request_title_regex: '/asa/')
+              project_setting.update!(merge_request_title_regex: '/asa/')
+            end
+          end
+
+          context 'when the merge_request_title_regex FF is off' do
+            before do
+              stub_feature_flags(merge_request_title_regex: false)
+            end
+
+            it 'does not enqueue the worker' do
+              expect(AutoMergeProcessWorker).not_to receive(:perform_async)
+
+              project_setting.update!(merge_request_title_regex: '/asa/')
+            end
+          end
+        end
+
+        context 'when the regex is not updated' do
+          it 'does not enqueue the worker' do
+            expect(AutoMergeProcessWorker).not_to receive(:perform_async)
+
+            project_setting.update!(merge_commit_template: '/asa/')
+          end
+        end
+      end
+    end
+  end
+
   describe 'target_platforms=' do
     it 'stringifies and sorts' do
       project_setting = build(:project_setting, target_platforms: [:watchos, :ios])

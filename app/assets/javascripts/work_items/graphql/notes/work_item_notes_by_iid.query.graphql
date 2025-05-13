@@ -10,7 +10,7 @@ query workItemNotesByIid($fullPath: ID!, $iid: String!, $after: String, $pageSiz
       namespace {
         id
       }
-      widgets {
+      widgets(onlyTypes: [NOTES]) {
         ... on WorkItemWidgetNotes {
           type
           discussionLocked

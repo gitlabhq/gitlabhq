@@ -166,4 +166,20 @@ RSpec.describe Packages::Conan::PackageReference, type: :model, feature_category
       it { is_expected.to be_empty }
     end
   end
+
+  describe '.pluck_reference_and_info' do
+    let_it_be(:package_references) { create_list(:conan_package_reference, 2) }
+
+    subject { described_class.id_in(package_references.map(&:id)).pluck_reference_and_info }
+
+    it { is_expected.to match_array(package_references.map { |pr| [pr.reference, pr.info] }) }
+
+    context 'when there are more records than MAX_PLUCK' do
+      before do
+        stub_const('ApplicationRecord::MAX_PLUCK', 1)
+      end
+
+      it { is_expected.to have_attributes(size: 1) }
+    end
+  end
 end

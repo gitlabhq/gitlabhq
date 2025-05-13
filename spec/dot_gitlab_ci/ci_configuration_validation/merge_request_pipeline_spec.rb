@@ -25,11 +25,35 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
 
   context "when unlabeled MR is changing GITALY_SERVER_VERSION" do
     let(:changed_files) { ['GITALY_SERVER_VERSION'] }
-    let(:expected_job_name) { 'eslint' }
+    let(:expected_job_name) { 'clone-gitlab-repo' }
 
     it_behaves_like 'merge request pipeline'
 
     it_behaves_like 'merge train pipeline'
+  end
+
+  context "with frontend file changes in MR" do
+    let(:changed_files) { ['package.json'] }
+
+    context "when MR is unlabeled and changes package.json" do
+      let(:expected_job_name) { 'eslint-changed-files' }
+
+      it_behaves_like 'merge request pipeline'
+    end
+
+    context "when MR is in tier-1 and changes package.json" do
+      let(:mr_labels) { ['pipeline::tier-1'] }
+      let(:expected_job_name) { 'eslint-changed-files' }
+
+      it_behaves_like 'merge request pipeline'
+    end
+
+    context "when MR is in tier-2 and changes package.json" do
+      let(:mr_labels) { ['pipeline::tier-2'] }
+      let(:expected_job_name) { 'eslint' }
+
+      it_behaves_like 'merge request pipeline'
+    end
   end
 
   context "when unlabeled MR is changing docs only" do
@@ -39,6 +63,10 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
     it_behaves_like 'merge request pipeline'
 
     it_behaves_like 'merge train pipeline'
+
+    it 'does not include a tier' do
+      expect(jobs).not_to include('pipeline-tier-1')
+    end
   end
 
   context 'when MR is created from "release-tools/update-gitaly" source branch' do

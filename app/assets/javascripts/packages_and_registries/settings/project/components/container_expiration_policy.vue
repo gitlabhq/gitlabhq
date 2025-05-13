@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlSprintf, GlLink, GlCard, GlButton, GlSkeletonLoader } from '@gitlab/ui';
+import { GlAlert, GlSprintf, GlLink, GlButton } from '@gitlab/ui';
 import {
   CONTAINER_CLEANUP_POLICY_TITLE,
   CONTAINER_CLEANUP_POLICY_DESCRIPTION,
@@ -13,6 +13,7 @@ import {
 } from '~/packages_and_registries/settings/project/constants';
 import expirationPolicyEnabledQuery from '~/packages_and_registries/settings/project/graphql/queries/get_expiration_policy_enabled.query.graphql';
 import ContainerExpirationPolicyEnabledText from '~/packages_and_registries/settings/project/components/container_expiration_policy_enabled_text.vue';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 
 export default {
   components: {
@@ -20,9 +21,8 @@ export default {
     GlAlert,
     GlSprintf,
     GlLink,
-    GlCard,
     GlButton,
-    GlSkeletonLoader,
+    CrudComponent,
   },
   inject: [
     'projectPath',
@@ -90,70 +90,63 @@ export default {
 </script>
 
 <template>
-  <gl-card data-testid="container-expiration-policy-project-settings">
-    <template #header>
-      <header class="gl-flex gl-flex-wrap gl-justify-between">
-        <h2
-          class="gl-m-0 gl-inline-flex gl-items-center gl-text-base gl-font-bold gl-leading-normal"
-        >
-          {{ $options.i18n.CONTAINER_CLEANUP_POLICY_TITLE }}
-        </h2>
-        <gl-button
-          v-if="isEnabled"
-          data-testid="rules-button"
-          :href="cleanupSettingsPath"
-          :loading="isLoading"
-          category="secondary"
-          size="small"
-          variant="confirm"
-        >
-          {{ cleanupRulesButtonText }}
-        </gl-button>
-      </header>
+  <crud-component
+    :title="$options.i18n.CONTAINER_CLEANUP_POLICY_TITLE"
+    :is-loading="isLoading"
+    data-testid="container-expiration-policy-project-settings"
+  >
+    <template #actions>
+      <gl-button
+        v-if="isEnabled"
+        data-testid="rules-button"
+        :href="cleanupSettingsPath"
+        :loading="isLoading"
+        category="secondary"
+        size="small"
+        class="gl-self-start"
+      >
+        {{ cleanupRulesButtonText }}
+      </gl-button>
     </template>
-    <template #default>
-      <p class="gl-text-subtle" data-testid="description">
-        <gl-sprintf :message="$options.i18n.CONTAINER_CLEANUP_POLICY_DESCRIPTION">
+    <template #description>
+      <gl-sprintf :message="$options.i18n.CONTAINER_CLEANUP_POLICY_DESCRIPTION">
+        <template #link="{ content }">
+          <gl-link :href="helpPagePath">{{ content }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </template>
+
+    <template v-if="isEnabled">
+      <container-expiration-policy-enabled-text
+        v-if="isCleanupEnabled"
+        :next-run-at="containerTagsExpirationPolicy.nextRunAt"
+      />
+      <p v-else data-testid="empty-cleanup-policy" class="gl-mb-0 gl-text-subtle">
+        {{
+          s__(
+            'ContainerRegistry|Registry cleanup disabled. Either no cleanup policies are enabled, or this project has no container images.',
+          )
+        }}
+      </p>
+    </template>
+    <template v-else>
+      <gl-alert
+        v-if="showDisabledFormMessage"
+        :dismissible="false"
+        :title="$options.i18n.UNAVAILABLE_FEATURE_TITLE"
+        variant="tip"
+      >
+        {{ $options.i18n.UNAVAILABLE_FEATURE_INTRO_TEXT }}
+
+        <gl-sprintf :message="unavailableFeatureMessage">
           <template #link="{ content }">
-            <gl-link :href="helpPagePath">{{ content }}</gl-link>
+            <gl-link :href="adminSettingsPath">{{ content }}</gl-link>
           </template>
         </gl-sprintf>
-      </p>
-      <div v-if="isLoading" class="gl-my-3">
-        <gl-skeleton-loader :lines="1" />
-      </div>
-      <template v-else-if="isEnabled">
-        <container-expiration-policy-enabled-text
-          v-if="isCleanupEnabled"
-          :next-run-at="containerTagsExpirationPolicy.nextRunAt"
-        />
-        <p v-else data-testid="empty-cleanup-policy" class="gl-mb-0 gl-text-subtle">
-          {{
-            s__(
-              'ContainerRegistry|Registry cleanup disabled. Either no cleanup policies are enabled, or this project has no container images.',
-            )
-          }}
-        </p>
-      </template>
-      <template v-else>
-        <gl-alert
-          v-if="showDisabledFormMessage"
-          :dismissible="false"
-          :title="$options.i18n.UNAVAILABLE_FEATURE_TITLE"
-          variant="tip"
-        >
-          {{ $options.i18n.UNAVAILABLE_FEATURE_INTRO_TEXT }}
-
-          <gl-sprintf :message="unavailableFeatureMessage">
-            <template #link="{ content }">
-              <gl-link :href="adminSettingsPath">{{ content }}</gl-link>
-            </template>
-          </gl-sprintf>
-        </gl-alert>
-        <gl-alert v-else-if="fetchSettingsError" variant="warning" :dismissible="false">
-          <gl-sprintf :message="$options.i18n.FETCH_SETTINGS_ERROR_MESSAGE" />
-        </gl-alert>
-      </template>
+      </gl-alert>
+      <gl-alert v-else-if="fetchSettingsError" variant="warning" :dismissible="false">
+        <gl-sprintf :message="$options.i18n.FETCH_SETTINGS_ERROR_MESSAGE" />
+      </gl-alert>
     </template>
-  </gl-card>
+  </crud-component>
 </template>

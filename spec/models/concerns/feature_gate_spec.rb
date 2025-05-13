@@ -16,6 +16,7 @@ RSpec.describe FeatureGate do
       Namespace                    | 5 | 'Namespace:5'
       Namespaces::ProjectNamespace | 6 | 'Namespaces::ProjectNamespace:6'
       Namespaces::UserNamespace    | 7 | 'Namespaces::UserNamespace:7'
+      Organizations::Organization  | 8 | 'Organizations::Organization:8'
     end
 
     with_them do

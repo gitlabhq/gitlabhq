@@ -1,5 +1,5 @@
 ---
-stage: Systems
+stage: Data Access
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Gitaly and Gitaly Cluster
@@ -12,7 +12,7 @@ title: Gitaly and Gitaly Cluster
 
 {{< /details >}}
 
-[Gitaly](https://gitlab.com/gitlab-org/gitaly) provides high-level RPC access to Git repositories.
+[Gitaly](https://gitlab.com/gitlab-org/gitaly) provides high-level remote procedure call (RPC) access to Git repositories.
 It is used by GitLab to read and write Git data.
 
 Gitaly is present in every GitLab installation and coordinates Git repository
@@ -65,7 +65,7 @@ If you have not yet migrated to Gitaly Cluster, you have two options:
 - A sharded Gitaly instance.
 - Gitaly Cluster.
 
-Contact your [Customer Success Manager](https://handbook.gitlab.com/job-families/sales/customer-success-management/) or customer support if you have any questions.
+Contact your Customer Success Manager or customer support if you have any questions.
 
 ### Known issues
 

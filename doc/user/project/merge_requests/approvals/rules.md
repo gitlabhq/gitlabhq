@@ -158,10 +158,17 @@ approvals from other users with at least the Developer role
 in the project count toward meeting the required number of approvals, even if the
 users were not explicitly listed in the approval rules.
 
+### Get notified about all merge requests you can approve
+
+To get email notifications every time a merge request you're eligible to approve is created:
+
+- [Set your notification level](../../../profile/notifications.md#edit-notification-settings) to **Custom**
+and select this event.
+
 ### Group approvers
 
-You can add a group of users as approvers. All **direct members** of this group
-can approve the rule. **Inherited members** cannot approve the rule.
+You can add a group of users as approvers. All direct members of this group
+can approve the rule. Inherited members cannot approve the rule.
 
 Typically the group is a subgroup in your top-level namespace, unless you are
 collaborating with an external group. If you are collaborating with another group,
@@ -193,7 +200,7 @@ become eligible approvers in the project. To enable this merge request approval 
 1. In the **Approvals required** column, enter the number of approvals required.
 
 You can also
-[require code owner approval](../../repository/branches/protected.md#require-code-owner-approval-on-a-protected-branch)
+[require code owner approval](../../repository/branches/protected.md#require-code-owner-approval)
 for protected branches.
 
 ## Enable approval permissions for users with the Reporter role
@@ -205,7 +212,7 @@ oversight on proposed work.
 
 Prerequisites:
 
-- You must select a specific branch, as this method does **not** work with `All Branches` or `All protected branches` settings.
+- You must select a specific branch, as this method does not work with `All Branches` or `All protected branches` settings.
 - The shared group must be added to an approval rule and not individual users, even when the added user is part of the group.
 
 To enable approval permissions for these users without granting them push access:
@@ -291,7 +298,7 @@ approval rule for certain branches:
    - To apply the rule to all protected branches, select **All protected branches**.
    - To apply the rule to a specific branch, select it from the list.
 1. To enable this configuration, follow
-   [Require Code Owner approval on a protected branch](../../repository/branches/protected.md#require-code-owner-approval-on-a-protected-branch).
+   [Require Code Owner approval on a protected branch](../../repository/branches/protected.md#require-code-owner-approval).
 
 ## Security Approvals
 

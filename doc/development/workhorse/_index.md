@@ -58,11 +58,11 @@ thereby minimizing the direct load on Rails.
 
 ### Expanding functionality
 
-- **Maintaining Simplicity:** While expanding Workhorse's functionalities to include direct handling
+- Maintaining Simplicity: While expanding Workhorse's functionalities to include direct handling
   of specific services (for example, container registry), it's crucial to maintain its simplicity and efficiency.
   Workhorse should not encompass complex control logic but rather focus on executing tasks as directed
   by Rails.
-- **Service Implementation and Data Migration:** Implementing new functionalities in Workhorse
+- Service Implementation and Data Migration: Implementing new functionalities in Workhorse
   requires careful consideration of data migration strategies and service continuity.
 
 ### Data management and operational integrity

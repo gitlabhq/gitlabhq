@@ -548,7 +548,13 @@ RSpec.describe API::Snippets, :aggregate_failures, factory_default: :keep, featu
 
     context "when destruction fails" do
       let(:error_message) { "some service error message" }
-      let(:error_response) { ServiceResponse.error(message: error_message, reason: :bad_request) }
+
+      let(:error_response) do
+        ServiceResponse.error(
+          message: error_message,
+          reason: ::Snippets::DestroyService::FAILED_TO_DELETE_ERROR
+        )
+      end
 
       before do
         allow_next_instance_of(::Snippets::DestroyService) do |service|

@@ -939,6 +939,33 @@ RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_manag
         end
       end
     end
+
+    context 'when a diff is collapsed from gitaly' do
+      let(:generated_files) { nil }
+
+      let(:diff_1) do
+        OpenStruct.new(
+          to_path: "README",
+          from_path: "README",
+          old_mode: 0100644,
+          new_mode: 0100644,
+          from_id: '357406f3075a57708d0163752905cc1576fceacc',
+          to_id: '8e5177d718c561d36efde08bad36b43687ee6bf0',
+          patch: 'a' * 10,
+          raw_patch_data: 'a' * 10,
+          end_of_patch: true,
+          collapsed: true
+        )
+      end
+
+      let(:diff_params) { [diff_1] }
+      let(:iterator) { Gitlab::GitalyClient::DiffStitcher.new(diff_params) }
+
+      it 'sets @collapsed_safe_limits' do
+        subject.to_a
+        expect(subject.collapsed_safe_limits?).to eq(true)
+      end
+    end
   end
 
   describe '.limits' do

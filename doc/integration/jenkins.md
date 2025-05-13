@@ -165,7 +165,6 @@ If you cannot [provide GitLab with your Jenkins server URL and authentication in
 ## Related topics
 
 - [GitLab Jenkins Integration](https://about.gitlab.com/solutions/jenkins/)
-- [How to set up Jenkins on your local machine](../development/integrations/jenkins.md)
 - [How to migrate from Jenkins to GitLab CI/CD](../ci/migration/jenkins.md)
 - [Jenkins to GitLab: The ultimate guide to modernizing your CI/CD environment](https://about.gitlab.com/blog/2023/11/01/jenkins-gitlab-ultimate-guide-to-modernizing-cicd-environment/?utm_campaign=devrel&utm_source=twitter&utm_medium=social&utm_budget=devrel)
 

@@ -136,6 +136,26 @@ To enable the GitLab for Slack app functionality, your network must allow inboun
 - For [Slack notifications](../../user/project/integrations/gitlab_slack_application.md#slack-notifications), the GitLab instance must be able to send requests to `https://slack.com`.
 - For [Slash commands](../../user/project/integrations/gitlab_slack_application.md#slash-commands) and other features, the GitLab instance must be able to receive requests from `https://slack.com`.
 
+## Enable support for multiple workspaces
+
+By default, you can [install the GitLab for Slack app](../../user/project/integrations/gitlab_slack_application.md#install-the-gitlab-for-slack-app) in only one Slack workspace.
+An administrator selects this workspace when they [create a GitLab for Slack app](#create-a-gitlab-for-slack-app).
+
+To enable support for multiple Slack workspaces, you must configure the GitLab for Slack app
+as an [unlisted distributed app](https://api.slack.com/distribution#unlisted-distributed-apps).
+An unlisted distributed app:
+
+- Is not published in the Slack App Directory.
+- Can only be used with your GitLab instance and not by other sites.
+
+To configure the GitLab for Slack app as an unlisted distributed app:
+
+1. Go to the [**Your Apps**](https://api.slack.com/apps) page on Slack and select your GitLab for Slack app.
+1. Select **Manage Distribution**.
+1. In the **Share Your App with Other Workspaces** section, expand **Remove Hard Coded Information**.
+1. Select the **I've reviewed and removed any hard-coded information** checkbox.
+1. Select **Activate Public Distribution**.
+
 ## Troubleshooting
 
 When administering the GitLab for Slack app, you might encounter the following issues.

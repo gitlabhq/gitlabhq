@@ -24,6 +24,7 @@ module Projects
 
     def create_prometheus_integration(project)
       integration = project.find_or_initialize_integration(::Integrations::Prometheus.to_param)
+      return unless integration
 
       # If the service has already been inserted in the database, that
       # means it came from a template, and there's nothing more to do.

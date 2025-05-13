@@ -78,6 +78,8 @@ itself: # project
     - web_url
     - description_html
     - repository_object_format
+    - marked_for_deletion_at
+    - marked_for_deletion_on
 
 build_auto_devops: # auto_devops
   unexposed_attributes:
@@ -190,13 +192,15 @@ project_setting:
     - product_analytics_configurator_connection_string
     - code_suggestions
     - duo_features_enabled
+    - auto_duo_code_review_enabled
     - require_reauthentication_to_approve
     - observability_alerts_enabled
     - spp_repository_pipeline_access
     - max_number_of_vulnerabilities
     - extended_prat_expiry_webhooks_execute
-    - merge_request_title_regex
     - protect_merge_request_pipelines
+    - model_prompt_cache_enabled
+    - web_based_commit_signing_enabled
 
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:

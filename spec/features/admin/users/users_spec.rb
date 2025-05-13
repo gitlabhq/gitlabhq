@@ -175,6 +175,30 @@ RSpec.describe 'Admin::Users', :with_current_organization, feature_category: :us
       end
     end
 
+    describe 'Humans filter' do
+      it 'filters by human users' do
+        bot_user = create(:user, user_type: :alert_bot)
+        normal_user = create(:user)
+
+        visit admin_users_path(filter: 'without_bots')
+
+        expect(has_user?(text: bot_user.email)).to be(false)
+        expect(has_user?(text: normal_user.email)).to be(true)
+      end
+    end
+
+    describe 'Bots filter' do
+      it 'filters by bot users' do
+        bot_user = create(:user, user_type: :alert_bot)
+        normal_user = create(:user)
+
+        visit admin_users_path(filter: 'bots')
+
+        expect(has_user?(text: bot_user.email)).to be(true)
+        expect(has_user?(text: normal_user.email)).to be(false)
+      end
+    end
+
     context 'when blocking/unblocking a user' do
       it 'shows confirmation and allows blocking and unblocking', :js do
         expect(has_user?(text: user.email)).to be(true)
@@ -257,7 +281,7 @@ RSpec.describe 'Admin::Users', :with_current_organization, feature_category: :us
       let_it_be(:locked_user) { create(:user, locked_at: DateTime.parse('2020-02-25 10:30:00 -0700')) }
 
       it "displays `Locked` badge next to user" do
-        expect(page).to have_content("#{locked_user.name} Locked")
+        expect(page).to have_content("#{locked_user.name} #{locked_user.email} Locked")
       end
 
       it 'allows a user to be unlocked from the `User administration dropdown', :js do

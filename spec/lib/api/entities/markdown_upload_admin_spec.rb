@@ -18,7 +18,8 @@ RSpec.describe API::Entities::MarkdownUploadAdmin, feature_category: :team_plann
         uploaded_by: {
           id: user.id,
           name: user.name,
-          username: user.username
+          username: user.username,
+          public_email: nil
         }
       )
     end

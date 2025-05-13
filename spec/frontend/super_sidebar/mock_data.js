@@ -153,7 +153,9 @@ export const contextSwitcherLinks = [
 
 export const sidebarData = {
   is_logged_in: true,
-  is_admin: false,
+  admin_mode: {
+    user_is_admin: false,
+  },
   admin_url: '/admin',
   current_menu_items: [],
   current_context: {},

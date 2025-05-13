@@ -15,7 +15,7 @@ module Ci
         "retry_outdated_job_docs_url" => help_page_path('ci/pipelines/settings.md', anchor: 'prevent-outdated-deployment-jobs'),
         "pipeline_test_report_url" => test_report_project_pipeline_path(project, build.pipeline),
         "log_viewer_path" => viewer_project_job_path(project, build),
-        "user_role" => project.team.human_max_access(current_user&.id)
+        "can_set_pipeline_variables" => Ability.allowed?(current_user, :set_pipeline_variables, project).to_s
       }
     end
 

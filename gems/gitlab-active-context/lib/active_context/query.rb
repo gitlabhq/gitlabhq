@@ -22,10 +22,14 @@
 #       ActiveContext::Query.prefix(traversal_ids: '9970-')
 #     )
 #
-# @example KNN vector search
+# @example KNN vector search by content
+#   ActiveContext::Query.knn(content: "Your content here", limit: 5)
+#
+# @example KNN vector search passing target and vector directly
 #   ActiveContext::Query.knn(target: "similarity", vector: [0.1, 0.2, 0.3], limit: 5)
 #
 # Supported Query Types:
+# - :all      - Return all documents
 # - :filter   - Exact match conditions
 # - :prefix   - Prefix/starts-with conditions
 # - :limit    - Restricts number of results
@@ -44,11 +48,15 @@
 
 module ActiveContext
   class Query
-    ALLOWED_TYPES = [:filter, :prefix, :limit, :knn, :and, :or].freeze
+    ALLOWED_TYPES = [:all, :filter, :prefix, :limit, :knn, :and, :or].freeze
     SPACES_PER_INDENT = 2
 
     class << self
       # Class methods to start the chain
+      def all
+        new(type: :all)
+      end
+
       def filter(**conditions)
         raise ArgumentError, "Filter cannot be empty" if conditions.empty?
 
@@ -73,13 +81,17 @@ module ActiveContext
         new(type: :and, children: queries)
       end
 
-      def knn(target:, vector:, limit:)
-        new(type: :knn, value: validate_and_build_knn_params(target: target, vector: vector, limit: limit))
+      def knn(limit:, target: nil, vector: nil, content: nil)
+        value = validate_and_build_knn_params(target: target, vector: vector, content: content, limit: limit)
+        new(type: :knn, value: value)
       end
 
-      def validate_and_build_knn_params(target:, vector:, limit:)
-        raise ArgumentError, "Target cannot be nil" if target.nil?
-        raise ArgumentError, "Vector must be an array" unless vector.is_a?(Array)
+      def validate_and_build_knn_params(target:, vector:, content:, limit:)
+        if content.nil? && (target.nil? || vector.nil?)
+          raise ArgumentError, "Either :content must be provided OR both :target AND :vector must be provided"
+        end
+
+        raise ArgumentError, "Vector must be an array" if !vector.nil? && !vector.is_a?(Array)
 
         if !limit.is_a?(Integer) || limit <= 0
           raise ArgumentError, "Limit must be a positive number, you used #{limit.class}: #{limit}"
@@ -88,6 +100,7 @@ module ActiveContext
         {
           target: target,
           vector: vector,
+          content: content,
           limit: limit
         }.compact
       end
@@ -127,10 +140,10 @@ module ActiveContext
       self.class.new(type: :limit, value: count, children: [self])
     end
 
-    def knn(target:, vector:, limit:)
+    def knn(limit:, target: nil, vector: nil, content: nil)
       self.class.new(
         type: :knn,
-        value: self.class.validate_and_build_knn_params(target: target, vector: vector, limit: limit),
+        value: self.class.validate_and_build_knn_params(target: target, vector: vector, content: content, limit: limit),
         children: [self]
       )
     end
@@ -141,7 +154,10 @@ module ActiveContext
                 when :filter, :prefix
                   "#{type}(#{value.map { |k, v| "#{k}: #{v}" }.join(', ')})"
                 when :knn
-                  knn_details = ["target: #{value[:target]}", "vector: [#{value[:vector].join(', ')}]"]
+                  knn_details = []
+                  knn_details << "target: #{value[:target]}" if value[:target]
+                  knn_details << "vector: [#{value[:vector].join(', ')}]" if value[:vector]
+                  knn_details << "content: #{value[:content]}" if value[:content]
                   knn_details << "limit: #{value[:limit]}" if value[:limit]
                   "knn(#{knn_details.join(', ')})"
                 when :limit

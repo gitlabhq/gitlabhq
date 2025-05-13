@@ -14,7 +14,7 @@ class Packages::Package < ApplicationRecord
   DETAILED_INFO_STATUSES = [:default, :deprecated].freeze
   STATUS_MESSAGE_MAX_LENGTH = 255
 
-  enum package_type: {
+  enum :package_type, {
     maven: 1,
     npm: 2,
     conan: 3,
@@ -31,7 +31,7 @@ class Packages::Package < ApplicationRecord
     ml_model: 14
   }
 
-  enum status: { default: 0, hidden: 1, processing: 2, error: 3, pending_destruction: 4, deprecated: 5 }
+  enum :status, { default: 0, hidden: 1, processing: 2, error: 3, pending_destruction: 4, deprecated: 5 }
 
   belongs_to :project
   belongs_to :creator, class_name: 'User'
@@ -249,24 +249,6 @@ class Packages::Package < ApplicationRecord
 
   def detailed_info?
     DETAILED_INFO_STATUSES.include?(status.to_sym)
-  end
-
-  private
-
-  # This method will block while another database transaction attempts to insert the same data.
-  # After the lock is released by the other transaction, the uniqueness validation may fail
-  # with record not unique validation error.
-
-  # Without this block the uniqueness validation wouldn't be able to detect duplicated
-  # records as transactions can't see each other's changes.
-
-  # This is a temp advisory lock to prevent race conditions. We will switch to use database `upsert`
-  # once we have a database unique index: https://gitlab.com/gitlab-org/gitlab/-/issues/424238#note_2187274213
-  def prevent_concurrent_inserts
-    lock_key = [self.class.table_name, project_id, name, version].join('-')
-    lock_expression = "hashtext(#{connection.quote(lock_key)})"
-
-    connection.execute("SELECT pg_advisory_xact_lock(#{lock_expression})")
   end
 end
 

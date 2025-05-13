@@ -250,8 +250,8 @@ On GitLab Self-Managed, by default this feature is not available. To make it ava
 
 {{< /alert >}}
 
-You can enforce 2FA for [Git over SSH operations](../development/gitlab_shell/features.md#git-operations). However, you should use
-[ED25519_SK](../user/ssh.md#ed25519_sk-ssh-keys) or [ECDSA_SK](../user/ssh.md#ecdsa_sk-ssh-keys) SSH keys instead. 2FA is enforced for Git operations only, and internal commands such as [`personal_access_token`](../development/gitlab_shell/features.md#personal-access-token) are excluded.
+You can enforce 2FA for Git over SSH operations. However, you should use
+[ED25519_SK](../user/ssh.md#ed25519_sk-ssh-keys) or [ECDSA_SK](../user/ssh.md#ecdsa_sk-ssh-keys) SSH keys instead. 2FA is enforced for Git operations only, and internal commands from GitLab Shell such as `personal_access_token` are excluded.
 
 To perform one-time password (OTP) verification, run:
 
@@ -265,7 +265,7 @@ Then authenticate by either:
 - In GitLab 15.3 and later, responding to a device push notification if
   [FortiAuthenticator is enabled](../user/profile/account/two_factor_authentication.md#enable-a-one-time-password-authenticator-using-fortiauthenticator).
 
-After successful authentication, you can perform [Git over SSH operations](../development/gitlab_shell/features.md#git-operations) for 15 minutes (default) with the associated
+After successful authentication, you can perform Git over SSH operations for 15 minutes (default) with the associated
 SSH key.
 
 ### Security limitation
@@ -274,15 +274,3 @@ SSH key.
 
 Once an OTP is verified, anyone can run Git over SSH with that private SSH key for
 the configured [session duration](../administration/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).
-
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->

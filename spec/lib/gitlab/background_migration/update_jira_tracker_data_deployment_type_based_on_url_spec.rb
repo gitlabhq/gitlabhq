@@ -27,11 +27,13 @@ RSpec.describe Gitlab::BackgroundMigration::UpdateJiraTrackerDataDeploymentTypeB
 
   before do
     jira_tracker_data = Class.new(ApplicationRecord) do
+      include Gitlab::EncryptedAttribute
+
       self.table_name = 'jira_tracker_data'
 
       def self.encryption_options
         {
-          key: Settings.attr_encrypted_db_key_base_32,
+          key: :db_key_base_32,
           encode: true,
           mode: :per_attribute_iv,
           algorithm: 'aes-256-gcm'

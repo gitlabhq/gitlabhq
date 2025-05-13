@@ -9,7 +9,7 @@ import { splitIntoChunks } from '~/vue_shared/components/source_viewer/workers/h
 import languageLoader from '~/content_editor/services/highlight_js_language_loader';
 import Tracking from '~/tracking';
 import axios from '~/lib/utils/axios_utils';
-import { TEXT_FILE_TYPE } from '../constants';
+import { TEXT_FILE_TYPE, FILE_EXTENSION_MAPPING_HLJS } from '../constants';
 
 /*
  * This mixin is intended to be used as an interface between our highlight worker and Vue components
@@ -50,8 +50,12 @@ export default {
       const { rawTextBlob, name, fileType, externalStorageUrl, rawPath, simpleViewer } = blob;
       let { language } = blob;
 
-      if (name.endsWith('.gleam')) {
-        language = 'gleam';
+      const fileExtensionOverride = Object.keys(FILE_EXTENSION_MAPPING_HLJS).find((extension) =>
+        name.endsWith(extension),
+      );
+
+      if (fileExtensionOverride) {
+        language = FILE_EXTENSION_MAPPING_HLJS[fileExtensionOverride];
       }
 
       if (simpleViewer?.fileType !== TEXT_FILE_TYPE) return;

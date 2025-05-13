@@ -20,6 +20,7 @@ module Tooling
         :path,
         :lines,
         :name,
+        :description,
         :feature_issue_url,
         :introduced_by_url,
         :rollout_issue_url,

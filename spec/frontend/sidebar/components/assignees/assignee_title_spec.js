@@ -1,5 +1,5 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
 import Component from '~/sidebar/components/assignees/assignee_title.vue';
 
@@ -7,7 +7,7 @@ describe('AssigneeTitle component', () => {
   let wrapper;
 
   const createComponent = (props) => {
-    return shallowMount(Component, {
+    return shallowMountExtended(Component, {
       propsData: {
         numberOfAssignees: 0,
         editable: false,
@@ -16,6 +16,8 @@ describe('AssigneeTitle component', () => {
       },
     });
   };
+
+  const findEditLink = () => wrapper.findByTestId('edit-link');
 
   describe('assignee title', () => {
     it('renders assignee', () => {
@@ -41,7 +43,7 @@ describe('AssigneeTitle component', () => {
     it('renders "Edit"', () => {
       wrapper = createComponent({ editable: true });
 
-      expect(wrapper.find('[data-test-id="edit-link"]').text()).toEqual('Edit');
+      expect(findEditLink().text()).toBe('Edit');
     });
   });
 
@@ -49,7 +51,7 @@ describe('AssigneeTitle component', () => {
     it('renders "Edit"', () => {
       wrapper = createComponent({ editable: true, changing: true });
 
-      expect(wrapper.find('[data-test-id="edit-link"]').text()).toEqual('Apply');
+      expect(findEditLink().text()).toBe('Apply');
     });
   });
 

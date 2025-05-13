@@ -56,6 +56,12 @@ module Ci
       @subject.projects.visible_to_user_and_access_level(@user, Gitlab::Access::MAINTAINER).exists?
     end
 
+    with_options score: 6
+    condition(:maintainer_in_owner_project) do
+      # Check if user is a maintainer+ in the project owning the runner
+      @user.authorized_projects(Gitlab::Access::MAINTAINER).id_in(@subject.owner).exists?
+    end
+
     with_options score: 8
     condition(:maintainer_in_any_associated_groups) do
       user_group_ids = @user.owned_or_maintainers_groups.select(:id)
@@ -79,7 +85,11 @@ module Ci
 
     rule { admin | owned_runner }.policy do
       enable :read_builds
+
       enable :read_runner
+      enable :assign_runner
+      enable :update_runner
+      enable :delete_runner
     end
 
     rule { is_instance_runner & any_maintainer_owned_groups_inheriting_shared_runners }.policy do
@@ -94,18 +104,16 @@ module Ci
       enable :read_runner
     end
 
+    rule { is_project_runner & maintainer_in_owner_project }.policy do
+      enable :update_runner
+    end
+
     rule { is_group_runner & maintainer_in_any_associated_groups }.policy do
       enable :read_runner
     end
 
     rule { is_group_runner & any_associated_projects_in_group_runner_inheriting_group_runners }.policy do
       enable :read_runner
-    end
-
-    rule { admin | owned_runner }.policy do
-      enable :assign_runner
-      enable :update_runner
-      enable :delete_runner
     end
 
     rule { ~admin & belongs_to_multiple_projects }.prevent :delete_runner

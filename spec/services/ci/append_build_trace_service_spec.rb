@@ -8,7 +8,7 @@ RSpec.describe Ci::AppendBuildTraceService, feature_category: :continuous_integr
   let_it_be_with_reload(:build) { create(:ci_build, :running, pipeline: pipeline) }
 
   before do
-    stub_feature_flags(ci_enable_live_trace: true)
+    stub_application_setting(ci_job_live_trace_enabled: true)
   end
 
   context 'build trace append is successful' do

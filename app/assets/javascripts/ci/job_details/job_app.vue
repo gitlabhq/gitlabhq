@@ -92,10 +92,8 @@ export default {
       'fullScreenEnabled',
     ]),
     ...mapGetters([
-      'headerTime',
       'hasUnmetPrerequisitesFailure',
       'shouldRenderCalloutMessage',
-      'shouldRenderTriggeredLabel',
       'hasEnvironment',
       'shouldRenderSharedRunnerLimitWarning',
       'hasJobLog',
@@ -237,14 +235,7 @@ export default {
       <div class="build-page" data-testid="job-content">
         <!-- Header Section -->
         <header>
-          <job-header
-            :status="job.status"
-            :time="headerTime"
-            :user="job.user"
-            :should-render-triggered-label="shouldRenderTriggeredLabel"
-            :name="jobName"
-            @clickedSidebarButton="toggleSidebar"
-          />
+          <job-header :job-id="job.id" :user="job.user" @clickedSidebarButton="toggleSidebar" />
           <gl-alert
             v-if="shouldRenderHeaderCallout"
             variant="danger"

@@ -24,7 +24,7 @@ RSpec.describe API::Entities::Group, feature_category: :groups_and_projects do
           :subgroup_creation_level, :emails_disabled, :emails_enabled, :lfs_enabled, :default_branch_protection,
           :default_branch_protection_defaults, :avatar_url, :request_access_enabled, :full_name, :full_path,
           :created_at, :parent_id, :organization_id, :shared_runners_setting, :custom_attributes, :statistics,
-          :default_branch, :root_storage_statistics
+          :default_branch, :root_storage_statistics, :archived
         )
       )
     end

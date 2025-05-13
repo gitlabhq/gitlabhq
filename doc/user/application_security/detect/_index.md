@@ -5,8 +5,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Detect
 ---
 
-Detect vulnerabilities in your project's repository and your application's behavior. Enable GitLab
-security tools for your project's entire lifecycle, starting before the first commit.
+Detect vulnerabilities in your project's repository and your application's behavior throughout the
+software development lifecycle. During development, automated scanning provides immediate contextual
+feedback, enabling developers to address potential vulnerabilities early. After development, you can
+schedule or run security scanning manually, to identify new risks. A vulnerability report collates
+all relevant details, enabling efficient vulnerability management.
+
+To get the best from GitLab vulnerability detection it's important to understand:
+
+- What aspects of your application or repository are scanned.
+- What determines which scanners run.
+- When vulnerability detection occurs.
+- How to evaluate the results of vulnerability detection.
 
 ## Detection coverage
 
@@ -42,14 +52,38 @@ Behavioral testing tools include:
 - API security testing: Test your application's API for known attacks and vulnerabilities to input.
 - Coverage-guided fuzz testing: Test your application for unexpected behavior.
 
-## Lifecycle coverage
+## Scanner selection
 
-You should enable vulnerability detection from before the first commit through to when your
-application can be deployed and run. Early detection has many benefits, including easier and quicker
-remediation.
+Security scanners are enabled for a project by either:
 
-All GitLab application security scanning tools can be run in a CI/CD pipeline, triggered by code
-changes. Security scans can also be run on a schedule, outside the context of code changes, and some
-can be run manually. It's important to also perform detection outside the CI/CD pipeline because
-risks can arise outside the context of code changes. For example, a newly-discovered vulnerability
-in a dependency might be a risk to any application using it.
+- Adding the scanner's CI/CD template to the `.gitlab-ci.yml` file, either directly or by using
+  AutoDevOps.
+- Enforcing the scanner by using a scan execution policy, pipeline execution policy, or
+  compliance framework. This enforcement can be applied directly to the project or inherited from
+  the project's parent group.
+
+## Vulnerability detection
+
+Vulnerability detection runs in a CI/CD pipeline when:
+
+- Code changes are committed and pushed to the repository.
+- A pipeline is run manually.
+- Started manually, for example, a DAST on-demand scan.
+- Scheduled by a scan execution policy.
+
+Vulnerability detection runs by default in branch pipelines, and in merge request pipelines if it's
+enabled in the CI/CD template.
+
+- On branch pipelines:
+
+  - Detect vulnerabilities on feature branches before you merge them into the default branch.
+  - Investigate and respond to new vulnerabilities in your long-lived branches.
+  - Run periodic, scheduled scans of your projects to identify new vulnerabilities, even if development has stopped.
+
+- On merge request pipelines:
+
+  - Enforce additional approval requirements to manage the risk of new vulnerabilities.
+  - Keep your project open to contributions while securing it against adversarial changes.
+
+View the results of security scanning in either the branch pipeline or the merge request.
+Vulnerabilities detected in the default branch are listed in the vulnerability report.

@@ -3,6 +3,7 @@
 module API
   class ResourceMilestoneEvents < ::API::Base
     include PaginationParams
+
     helpers ::API::Helpers::NotesHelpers
 
     resource_milestone_events_tags = %w[resource_milestone_events]

@@ -20,6 +20,8 @@ module Ci
           @inputs = []
           @errors = []
 
+          return unless valid_specs?(specs)
+
           build_inputs!(specs.to_h)
         end
 
@@ -61,6 +63,17 @@ module Ci
 
             @inputs << input_type.new(name: input_name, spec: spec)
           end
+        end
+
+        def valid_specs?(specs)
+          return true if specs.respond_to?(:to_h)
+
+          @errors.push(
+            format(s_("Pipelines|Invalid input specification: expected a hash-like object, got %{class_name}"),
+              class_name: specs.class.name)
+          )
+
+          false
         end
       end
     end

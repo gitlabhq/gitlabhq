@@ -41,6 +41,7 @@ module ServicePing
       {
         metadata: {
           uuid: service_ping_payload[:uuid],
+          unique_instance_id: service_ping_payload[:unique_instance_id],
           metrics: Gitlab::Utils::UsageData.metrics_collection_metadata(service_ping_payload)
         }
       }
@@ -82,6 +83,7 @@ module ServicePing
       error_payload = {
         time: current_time,
         uuid: Gitlab::CurrentSettings.uuid,
+        unique_instance_id: Gitlab::GlobalAnonymousId.instance_uuid,
         hostname: Gitlab.config.gitlab.host,
         version: Gitlab.version_info.to_s,
         message: "#{error.message.presence || error.class} at #{error.backtrace[0]}",

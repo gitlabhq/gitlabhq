@@ -17,7 +17,7 @@ schema changes, like additional indexes or columns, in an isolated copy of produ
 
 1. [Visit the console](https://console.postgres.ai/).
 1. Select **Sign in with Google**. (Not GitLab, as you need Google SSO to connect with our project.)
-1. After you sign in, select the GitLab organization and then visit "Ask Joe" in the sidebar.
+1. After signing in, select the GitLab organization, select "Joe Bot" in the sidebar, and then visit "Ask Joe".
 1. Select the database you're testing against:
    - Most queries for the GitLab project run against `gitlab-production-main`.
    - If the query is for a CI table, select `gitlab-production-ci`.

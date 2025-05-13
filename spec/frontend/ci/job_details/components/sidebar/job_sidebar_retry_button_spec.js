@@ -6,13 +6,11 @@ import job from 'jest/ci/jobs_mock_data';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import axios from '~/lib/utils/axios_utils';
 import waitForPromises from 'helpers/wait_for_promises';
-import { mockFullPath, mockPipelineVariablesPermissions } from '../../mock_data';
 
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_action');
 
 const defaultProvide = {
-  projectPath: mockFullPath,
-  userRole: 'maintainer',
+  canSetPipelineVariables: true,
 };
 
 describe('Job Sidebar Retry Button', () => {
@@ -25,11 +23,7 @@ describe('Job Sidebar Retry Button', () => {
   const findManualRetryButton = () => wrapper.findByTestId('manual-run-again-btn');
   const findManualRunEditButton = () => wrapper.findByTestId('manual-run-edit-btn');
 
-  const createWrapper = ({
-    mountFn = shallowMountExtended,
-    props = {},
-    pipelineVariablesPermissionsMixin = mockPipelineVariablesPermissions(true),
-  } = {}) => {
+  const createWrapper = ({ mountFn = shallowMountExtended, props = {}, provide = {} } = {}) => {
     store = createStore();
     wrapper = mountFn(JobsSidebarRetryButton, {
       propsData: {
@@ -42,8 +36,8 @@ describe('Job Sidebar Retry Button', () => {
       },
       provide: {
         ...defaultProvide,
+        ...provide,
       },
-      mixins: [pipelineVariablesPermissionsMixin],
       store,
     });
   };
@@ -149,7 +143,7 @@ describe('Job Sidebar Retry Button', () => {
     it('is not rendered if user is not allowed to view pipeline variables', async () => {
       createWrapper({
         props: { isManualJob: true },
-        pipelineVariablesPermissionsMixin: mockPipelineVariablesPermissions(false),
+        provide: { canSetPipelineVariables: false },
       });
       await waitForPromises();
       expect(findManualRunEditButton().exists()).toBe(false);

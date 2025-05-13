@@ -70,11 +70,11 @@ To view the list of images in the connected Artifact Registry repository in the 
 After the Artifact Registry integration is activated, the following predefined environment variables are available in CI/CD.
 You can use these environment variables to interact with the Artifact Registry, like pulling or pushing an image to the connected repository.
 
-| Variable | GitLab | Runner | Description |
-|-|-|-|-|
-| `GOOGLE_ARTIFACT_REGISTRY_PROJECT_ID` | 16.10 | 16.10 | The Google Cloud project ID where the Artifact Registry repository is located. |
-| `GOOGLE_ARTIFACT_REGISTRY_REPOSITORY_NAME` | 16.10  | 16.10 | The name of the connected Artifact Registry repository. |
-| `GOOGLE_ARTIFACT_REGISTRY_REPOSITORY_LOCATION` | 16.10  | 16.10 | The Google Cloud location of the connected Artifact Registry repository. |
+| Variable                                       | GitLab | Runner | Description |
+|------------------------------------------------|--------|--------|-------------|
+| `GOOGLE_ARTIFACT_REGISTRY_PROJECT_ID`          | 16.10  | 16.10  | The Google Cloud project ID where the Artifact Registry repository is located. |
+| `GOOGLE_ARTIFACT_REGISTRY_REPOSITORY_NAME`     | 16.10  | 16.10  | The name of the connected Artifact Registry repository. |
+| `GOOGLE_ARTIFACT_REGISTRY_REPOSITORY_LOCATION` | 16.10  | 16.10  | The Google Cloud location of the connected Artifact Registry repository. |
 
 ### Authenticate with the Google Artifact Registry
 

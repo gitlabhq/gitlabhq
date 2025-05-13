@@ -3,6 +3,7 @@
 module Resolvers
   class TodosResolver < BaseResolver
     type Types::TodoType.connection_type, null: true
+    include Gitlab::InternalEventsTracking
 
     alias_method :target, :object
 
@@ -49,6 +50,8 @@ module Resolvers
       return Todo.none unless current_user.present? && target.present?
       return Todo.none if target.is_a?(User) && target != current_user
 
+      track_bot_user if current_user.bot?
+
       TodosFinder.new(current_user, todo_finder_params(args)).execute.with_entity_associations
     end
 
@@ -74,6 +77,17 @@ module Resolvers
         type: target.class.name,
         target_id: target.id
       }
+    end
+
+    def track_bot_user
+      track_internal_event(
+        "request_todos_by_bot_user",
+        user: current_user,
+        additional_properties: {
+          label: 'user_type',
+          property: current_user.user_type
+        }
+      )
     end
   end
 end

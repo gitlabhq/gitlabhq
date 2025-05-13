@@ -6,28 +6,27 @@ module Gitlab
 
     private
 
-    def db_key_base(attribute)
-      dynamic_encryption_key(:db_key_base, attribute)
+    def db_key_base
+      dynamic_encryption_key(:db_key_base)
     end
 
-    def db_key_base_32(attribute)
-      dynamic_encryption_key(:db_key_base_32, attribute)
+    def db_key_base_32
+      dynamic_encryption_key(:db_key_base_32)
     end
 
-    def db_key_base_truncated(attribute)
-      dynamic_encryption_key(:db_key_base_truncated, attribute)
+    def db_key_base_truncated
+      dynamic_encryption_key(:db_key_base_truncated)
     end
 
-    def dynamic_encryption_key(key_type, attribute)
-      dynamic_encryption_key_for_operation(key_type, attr_encrypted_attributes[attribute][:operation])
+    def dynamic_encryption_key(key_type)
+      dynamic_encryption_key_for_operation(key_type)
     end
 
-    def dynamic_encryption_key_for_operation(key_type, operation)
-      if operation == :encrypting
-        Gitlab::Encryption::KeyProvider[key_type].encryption_key.secret
-      else
-        Gitlab::Encryption::KeyProvider[key_type].decryption_keys.map(&:secret)
-      end
+    def dynamic_encryption_key_for_operation(key_type)
+      # We always use the encryption key, which is the only key defined since
+      # we don't support multiple keys in attr_encrypted but only with
+      # Active Record Encryption.
+      Gitlab::Encryption::KeyProvider[key_type].encryption_key.secret
     end
   end
 end

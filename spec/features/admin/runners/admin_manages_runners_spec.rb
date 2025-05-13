@@ -137,7 +137,7 @@ RSpec.describe "Admin manages runners in admin runner list", :freeze_time, :js, 
       end
     end
 
-    describe 'filter by paused' do
+    describe 'filter by paused', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/541224' do
       before_all do
         create(:ci_runner, :instance, description: 'runner-active')
         create(:ci_runner, :instance, :paused, description: 'runner-paused')
@@ -173,7 +173,7 @@ RSpec.describe "Admin manages runners in admin runner list", :freeze_time, :js, 
       end
     end
 
-    describe 'filter by version prefix' do
+    describe 'filter by version prefix', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/541227' do
       before_all do
         runner_v15 = create(:ci_runner, :instance, description: 'runner-v15')
         runner_v14 = create(:ci_runner, :instance, description: 'runner-v14')
@@ -203,7 +203,7 @@ RSpec.describe "Admin manages runners in admin runner list", :freeze_time, :js, 
       end
     end
 
-    describe 'filter by creator' do
+    describe 'filter by creator', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/541229' do
       before_all do
         create(:ci_runner, :instance, description: 'runner-creator-admin', creator: admin)
         create(:ci_runner, :instance, description: 'runner-creator-user', creator: user)
@@ -238,7 +238,7 @@ RSpec.describe "Admin manages runners in admin runner list", :freeze_time, :js, 
       end
     end
 
-    describe 'filter by status' do
+    describe 'filter by status', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/541232' do
       before_all do
         freeze_time # Freeze time before `let_it_be` runs, so that runner statuses are frozen during execution
 
@@ -320,7 +320,7 @@ RSpec.describe "Admin manages runners in admin runner list", :freeze_time, :js, 
       end
     end
 
-    describe 'filter by type' do
+    describe 'filter by type', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/541237' do
       before_all do
         create(:ci_runner, :project, description: 'runner-project', projects: [project])
         create(:ci_runner, :group, description: 'runner-group', groups: [group])
@@ -422,7 +422,7 @@ RSpec.describe "Admin manages runners in admin runner list", :freeze_time, :js, 
       end
     end
 
-    describe 'filter by tag' do
+    describe 'filter by tag', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/541243' do
       let_it_be(:runner_1) { create(:ci_runner, :instance, description: 'runner-blue', tag_list: ['blue']) }
       let_it_be(:runner_2) { create(:ci_runner, :instance, description: 'runner-2-blue', tag_list: ['blue']) }
       let_it_be(:runner_3) { create(:ci_runner, :instance, description: 'runner-red', tag_list: ['red']) }

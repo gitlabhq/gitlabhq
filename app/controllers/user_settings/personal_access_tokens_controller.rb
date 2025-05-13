@@ -53,7 +53,7 @@ module UserSettings
       result = ::PersonalAccessTokens::CreateService.new(
         current_user: current_user,
         target_user: current_user,
-        organization_id: Current.organization&.id,
+        organization_id: Current.organization.id,
         params: personal_access_token_params,
         concatenate_errors: false
       ).execute
@@ -62,7 +62,9 @@ module UserSettings
 
       if result.success?
         tokens, size = active_access_tokens
-        render json: { new_token: @personal_access_token.token,
+        render json: { token: @personal_access_token.token,
+                       # Delete when `migrate_user_access_tokens_ui` feature flag is removed
+                       new_token: @personal_access_token.token,
                        active_access_tokens: tokens, total: size }, status: :ok
       else
         render json: { errors: result.errors }, status: :unprocessable_entity
@@ -124,8 +126,6 @@ module UserSettings
 
     def set_index_vars
       @scopes = Gitlab::Auth.available_scopes_for(current_user)
-
-      @scopes = ::VirtualRegistries.filter_token_scopes(@scopes, current_user)
 
       @active_access_tokens, @active_access_tokens_size = active_access_tokens
     end

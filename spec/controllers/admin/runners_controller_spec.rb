@@ -79,13 +79,20 @@ RSpec.describe Admin::RunnersController, feature_category: :fleet_visibility do
   describe '#edit' do
     render_views
 
-    let_it_be(:project) { create(:project) }
-    let_it_be(:project_two) { create(:project) }
+    let_it_be(:project) { create(:project, name: 'My project 1') }
+    let_it_be(:project_two) { create(:project, name: 'My project 2') }
 
     it 'shows a runner edit page' do
       get :edit, params: { id: runner.id }
 
       expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'shows a list of projects in runner edit page' do
+      get :edit, params: { id: runner.id, search: 'My project' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(assigns(:projects)).to match_array([project, project_two])
     end
 
     it 'shows 404 for unknown runner' do

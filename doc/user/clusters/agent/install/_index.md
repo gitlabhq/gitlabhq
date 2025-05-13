@@ -24,10 +24,11 @@ Before you can install the agent in your cluster, you need:
   - [Digital Ocean](https://docs.digitalocean.com/products/kubernetes/getting-started/quickstart/)
   - [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine/docs/deploy-app-cluster)
   - You should use [Infrastructure as Code techniques](../../../infrastructure/iac/_index.md) for managing infrastructure resources at scale.
-- On GitLab Self-Managed, a GitLab administrator must set up the
-  [agent server](../../../../administration/clusters/kas.md).
-  Then it is available by default at `wss://gitlab.example.com/-/kubernetes-agent/`.
-  On GitLab.com, the agent server is available at `wss://kas.gitlab.com`.
+- Access to an agent server:
+  - On GitLab.com, the agent server is available at `wss://kas.gitlab.com`.
+  - On GitLab Self-Managed, a GitLab administrator must set up the [agent server](../../../../administration/clusters/kas.md).
+    Then it is available by default at `wss://gitlab.example.com/-/kubernetes-agent/`.
+  - On GitLab Dedicated, the agent server is available at `wss://kas.<instance-domain>`, for example `wss://kas.example.gitlab-dedicated.com`. If you use a [custom hostname](../../../../administration/dedicated/configure_instance/network_security.md#bring-your-own-domain-byod) for your GitLab Dedicated instance, you can also choose a custom hostname for the KAS service.
 
 ## Bootstrap the agent with Flux support (recommended)
 
@@ -187,15 +188,7 @@ It might take up to 10 minutes for GitLab to start trying to establish a connect
 
 ### Install the agent in the cluster
 
-GitLab recommends using Helm to install the agent.
-
-To connect your cluster to GitLab, install the registered agent
-in your cluster. You can either:
-
-- [Install the agent with Helm](#install-the-agent-with-helm).
-- Or, follow the [advanced installation method](#advanced-installation-method).
-
-If you do not know which one to choose, we recommend starting with Helm.
+To connect your cluster to GitLab, [install the registered agent with Helm](#install-the-agent-with-helm).
 
 To install a receptive agent, follow the steps in [GitLab connects to agent (receptive agent)](#option-2-gitlab-connects-to-agent-receptive-agent).
 
@@ -291,10 +284,6 @@ DNS rebind protection is disabled when either the `HTTP_PROXY` or the `HTTPS_PRO
 and the domain DNS can't be resolved.
 
 {{< /alert >}}
-
-#### Advanced installation method
-
-GitLab also provides a [KPT package for the agent](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/tree/master/build/deployment/gitlab-agent). This method provides greater flexibility, but is only recommended for advanced users.
 
 ## Install multiple agents in your cluster
 

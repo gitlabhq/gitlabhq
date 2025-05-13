@@ -61,6 +61,10 @@ export default {
       required: false,
       default: () => [],
     },
+    canUpdateDesign: {
+      type: Boolean,
+      required: false,
+    },
   },
   computed: {
     toggleCommentsButtonLabel() {
@@ -116,7 +120,7 @@ export default {
         :aria-label="$options.i18n.downloadButtonLabel"
       />
       <archive-design-button
-        v-if="isLatestVersion"
+        v-if="isLatestVersion && canUpdateDesign"
         v-gl-tooltip.bottom
         button-size="medium"
         :title="$options.i18n.archiveButtonLabel"

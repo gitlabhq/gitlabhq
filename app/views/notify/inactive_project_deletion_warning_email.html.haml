@@ -1,6 +1,6 @@
 - project_link = link_to(_("%{project_name}") % { project_name: @project.name }, @project.http_url_to_repo)
 - projects_api_link = link_to(_("Projects API"), help_page_url('api/projects.md'))
-- events_api_link = link_to(_("Events API"), help_page_url('api/events.md', anchor: 'list-a-projects-visible-events'))
+- events_api_link = link_to(_("Events API"), help_page_url('api/events.md', anchor: 'list-all-visible-events-for-a-project'))
 
 %p
   = _('Hi %{username},') % { username: sanitize_name(@user.name) }

@@ -4,7 +4,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import * as commonUtils from '~/lib/utils/common_utils';
 import RegistrySettingsApp from '~/packages_and_registries/settings/project/components/registry_settings_app.vue';
-import MetadataDatabaseAlert from '~/packages_and_registries/shared/components/container_registry_metadata_database_alert.vue';
+import MetadataDatabaseBanner from '~/packages_and_registries/shared/components/container_registry_metadata_database_banner.vue';
 import PackageRegistrySection from '~/packages_and_registries/settings/project/components/package_registry_section.vue';
 import ContainerRegistrySection from '~/packages_and_registries/settings/project/components/container_registry_section.vue';
 import {
@@ -18,7 +18,7 @@ describe('Registry Settings app', () => {
   let wrapper;
 
   const findAlert = () => wrapper.findComponent(GlAlert);
-  const findMetadataDatabaseAlert = () => wrapper.findComponent(MetadataDatabaseAlert);
+  const findMetadataDatabaseBanner = () => wrapper.findComponent(MetadataDatabaseBanner);
   const findContainerRegistrySection = () => wrapper.findComponent(ContainerRegistrySection);
   const findPackageRegistrySection = () => wrapper.findComponent(PackageRegistrySection);
 
@@ -38,7 +38,7 @@ describe('Registry Settings app', () => {
     it('is rendered when metadata database is not enabled', () => {
       mountComponent();
 
-      expect(findMetadataDatabaseAlert().exists()).toBe(true);
+      expect(findMetadataDatabaseBanner().exists()).toBe(true);
     });
 
     it('is not rendered when metadata database is enabled', () => {
@@ -47,7 +47,7 @@ describe('Registry Settings app', () => {
         isContainerRegistryMetadataDatabaseEnabled: true,
       });
 
-      expect(findMetadataDatabaseAlert().exists()).toBe(false);
+      expect(findMetadataDatabaseBanner().exists()).toBe(false);
     });
   });
 

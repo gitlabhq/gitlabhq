@@ -68,7 +68,7 @@ RSpec.describe 'User Settings > Password', feature_category: :user_profile do
       end
     end
 
-    context 'with LDAP user' do
+    context 'with LDAP user', :with_current_organization do
       include LdapHelpers
 
       let(:ldap_settings) { { enabled: true } }

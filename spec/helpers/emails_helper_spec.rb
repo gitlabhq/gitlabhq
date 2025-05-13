@@ -314,6 +314,28 @@ RSpec.describe EmailsHelper, feature_category: :shared do
     end
   end
 
+  describe '#subject_with_prefix_and_suffix' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:email_subject_prefix, :email_subject_suffix, :output) do
+      nil   | nil   | 'A message from GitLab'
+      'AAA' | nil   | 'AAA | A message from GitLab'
+      nil   | 'BBB' | 'A message from GitLab | BBB'
+      'AAA' | 'BBB' | 'AAA | A message from GitLab | BBB'
+    end
+
+    with_them do
+      before do
+        stub_config_setting(email_subject_prefix: email_subject_prefix)
+        stub_config_setting(email_subject_suffix: email_subject_suffix)
+      end
+
+      it 'pads the email subject correctly' do
+        expect(described_class.subject_with_prefix_and_suffix(['A message from GitLab'])).to eq(output)
+      end
+    end
+  end
+
   describe 'Create realistic List-Id identifier' do
     using RSpec::Parameterized::TableSyntax
 

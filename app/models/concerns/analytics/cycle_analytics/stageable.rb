@@ -20,10 +20,10 @@ module Analytics
         validate :validate_stage_event_pairs
         validate :validate_labels
 
-        enum start_event_identifier: Gitlab::Analytics::CycleAnalytics::StageEvents.to_enum,
-          _prefix: :start_event_identifier
-        enum end_event_identifier: Gitlab::Analytics::CycleAnalytics::StageEvents.to_enum,
-          _prefix: :end_event_identifier
+        enum :start_event_identifier, Gitlab::Analytics::CycleAnalytics::StageEvents.to_enum,
+          prefix: :start_event_identifier
+        enum :end_event_identifier, Gitlab::Analytics::CycleAnalytics::StageEvents.to_enum,
+          prefix: :end_event_identifier
 
         alias_attribute :custom_stage?, :custom
         scope :default_stages, -> { where(custom: false) }

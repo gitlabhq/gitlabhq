@@ -67,10 +67,8 @@ export const note = {
     __typename: 'NotePermissions',
     adminNote: false,
     awardEmoji: false,
-    readNote: true,
     createNote: true,
     resolveNote: false,
-    repositionNote: false,
   },
   discussion: {
     __typename: 'Discussion',

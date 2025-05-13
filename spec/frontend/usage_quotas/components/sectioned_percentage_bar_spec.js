@@ -1,6 +1,7 @@
 import { GRAY_100 } from '@gitlab/ui/src/tokens/build/js/tokens';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SectionedPercentageBar from '~/usage_quotas/components/sectioned_percentage_bar.vue';
+import * as ColorUtils from '~/lib/utils/color_utils';
 
 describe('SectionedPercentageBar', () => {
   let wrapper;
@@ -181,6 +182,20 @@ describe('SectionedPercentageBar', () => {
     it('falls back to the palette color when not specified', () => {
       const section2 = wrapper.findByTestId(PERCENTAGE_BAR_SECTION_TESTID_PREFIX + SECTION_2);
       expect(section2.attributes('style')).toContain('background-color: rgb(177, 79, 24);');
+    });
+  });
+
+  describe('dark mode', () => {
+    it('uses a different color palette', () => {
+      jest.spyOn(ColorUtils, 'darkModeEnabled').mockImplementation(() => true);
+
+      createComponent();
+
+      const section1 = wrapper.findByTestId(PERCENTAGE_BAR_SECTION_TESTID_PREFIX + SECTION_1);
+      const section2 = wrapper.findByTestId(PERCENTAGE_BAR_SECTION_TESTID_PREFIX + SECTION_2);
+
+      expect(section1.attributes('style')).toContain('background-color: rgb(97, 122, 226);');
+      expect(section2.attributes('style')).toContain('background-color: rgb(224, 126, 65);');
     });
   });
 });

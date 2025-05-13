@@ -294,7 +294,7 @@ Change localization settings such as your language, calendar start day, and time
 
 ### Change your display language on the GitLab UI
 
-GitLab supports multiple languages on the UI. To help improve translations or request support for an unlisted language, view [Translating GitLab](../../development/i18n/translation.md).
+GitLab supports multiple languages on the UI.
 
 To choose a language for the GitLab UI:
 
@@ -512,15 +512,3 @@ To enable the extension marketplace for the Web IDE and workspaces:
 1. Select the **Enable extension marketplace** checkbox.
 1. In the third-party extension acknowledgment, select **I understand**.
 1. Select **Save changes**.
-
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->

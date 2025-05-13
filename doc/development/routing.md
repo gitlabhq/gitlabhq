@@ -92,7 +92,7 @@ cases:
 | Limited use, unlikely to be shared | `admin#labels` | No extra steps required. |
 
 In all cases, an old route should only be removed once traffic to it has
-dropped sufficiently (e.g., according to logs or BigQuery). Otherwise, more
+dropped sufficiently (for instance, according to logs or BigQuery). Otherwise, more
 effort may be required to inform users about its deprecation before it can be
 considered again for removal.
 

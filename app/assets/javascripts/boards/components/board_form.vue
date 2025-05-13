@@ -108,6 +108,7 @@ export default {
     return {
       board: { ...boardDefaults, ...this.currentBoard },
       isLoading: false,
+      isDisabled: false,
     };
   },
   apollo: {
@@ -147,7 +148,7 @@ export default {
       return !this.canAdminBoard;
     },
     submitDisabled() {
-      return this.isLoading || this.board.name.length === 0;
+      return this.isLoading || this.board.name.length === 0 || this.isDisabled;
     },
     primaryProps() {
       return {
@@ -259,6 +260,7 @@ export default {
           setError({ error, message: this.$options.i18n.deleteErrorMessage });
         } finally {
           this.isLoading = false;
+          this.isDisabled = true;
         }
       } else {
         try {
@@ -273,6 +275,7 @@ export default {
           setError({ error, message: this.$options.i18n.saveErrorMessage });
         } finally {
           this.isLoading = false;
+          this.isDisabled = true;
         }
       }
     },

@@ -28,7 +28,6 @@ RSpec/ChangeByZero:
     - 'ee/spec/services/geo/file_registry_removal_service_spec.rb'
     - 'ee/spec/services/geo/metrics_update_service_spec.rb'
     - 'ee/spec/services/gitlab_subscriptions/add_on_purchases/gitlab_com/provision_service_spec.rb'
-    - 'ee/spec/services/gitlab_subscriptions/add_on_purchases/self_managed/provision_services/duo_spec.rb'
     - 'ee/spec/services/push_rules/create_or_update_service_spec.rb'
     - 'ee/spec/services/registrations/import_namespace_create_service_spec.rb'
     - 'ee/spec/services/registrations/standard_namespace_create_service_spec.rb'

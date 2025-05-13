@@ -31,7 +31,7 @@ export default {
     },
     editLabels: {
       [Audio.name]: __('Edit audio description'),
-      [DrawioDiagram.name]: __('Edit diagram description'),
+      [DrawioDiagram.name]: __('Edit diagram URL and alt text'),
       [Image.name]: __('Edit image description'),
       [Video.name]: __('Edit video description'),
     },
@@ -79,6 +79,9 @@ export default {
     },
     editLabel() {
       return this.$options.i18n.editLabels[this.mediaType];
+    },
+    editDiagramLabel() {
+      return __('Make changes to the diagram');
     },
     deleteLabel() {
       return this.$options.i18n.deleteLabels[this.mediaType];
@@ -258,8 +261,8 @@ export default {
           category="tertiary"
           size="medium"
           data-testid="edit-diagram"
-          :aria-label="editLabel"
-          :title="editLabel"
+          :aria-label="editDiagramLabel"
+          :title="editDiagramLabel"
           icon="diagram"
           @click="editDiagram"
         />

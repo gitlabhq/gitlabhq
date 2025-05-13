@@ -9,7 +9,7 @@ title: Code Suggestions
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Add-on: GitLab Duo Pro or Enterprise, GitLab Duo with Amazon Q
+- Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - LLMs: For code completion, Vertex AI-hosted [`Codestral`](https://console.cloud.google.com/vertex-ai/publishers/mistralai/model-garden/codestral-2501) and Fireworks AI-hosted [`Codestral`](https://mistral.ai/news/codestral-2501). For code generation, Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet).
 - To opt out of Fireworks for a group, the feature flag `code_completion_opt_out_fireworks` is available.
@@ -28,19 +28,11 @@ title: Code Suggestions
 - [Introduced support for Fireworks AI-hosted Qwen2.5 code completion model](https://gitlab.com/groups/gitlab-org/-/epics/15850) in GitLab 17.6, with a flag named `fireworks_qwen_code_completion`.
 - Removed support for Qwen2.5 code completion model
 - Enabled Fireworks hosted `Codestral` by default via the feature flag `use_fireworks_codestral_code_completion` in GitLab 17.11
+- Changed to include GitLab Duo Core in GitLab 18.0.
 
 {{< /history >}}
 
 Use GitLab Duo Code Suggestions to write code more efficiently by using generative AI to suggest code while you're developing.
-
-Before you start using Code Suggestions, decide which of the following methods
-you want to use to manage Code Suggestions requests:
-
-- On GitLab.com or GitLab Self-Managed, the default GitLab AI vendor models and
-  cloud-based AI gateway that is hosted by GitLab.
-- On GitLab Self-Managed, in GitLab 17.9 and later, [GitLab Duo Self-Hosted with a supported self-hosted model](../../../../administration/gitlab_duo_self_hosted/_index.md).
-  Self-hosted models maximize security and privacy by making sure nothing is
-  sent to an external model.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 [View a click-through demo](https://gitlab.navattic.com/code-suggestions).
@@ -50,12 +42,14 @@ you want to use to manage Code Suggestions requests:
 
 To use Code Suggestions, you need:
 
-- A Premium or Ultimate subscription with the GitLab Duo Pro or Enterprise add-on.
-- An assigned seat in your GitLab Duo subscription.
+- A GitLab Duo Core, Pro, or Enterprise add-on.
+- A Premium or Ultimate subscription.
+- If you have GitLab Duo Pro or Enterprise, an assigned seat.
+- If you have GitLab Duo Core, [IDE features turned on](../../../gitlab_duo/turn_on_off.md#change-gitlab-duo-core-availability).
 
 {{< alert type="note" >}}
 
-GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however, the experience may be degraded. You should [upgrade to the latest version of GitLab](../../../../update/_index.md#upgrade-gitlab) for the best experience.
+GitLab Duo requires GitLab 17.2 or later. For GitLab Duo Core access, and for the best user experience and results, [upgrade to GitLab 18.0 or later](../../../../update/_index.md#upgrade-gitlab). Earlier versions might continue to work, however the experience might be degraded.
 
 {{< /alert >}}
 
@@ -81,7 +75,7 @@ To use Code Suggestions:
 1. When you receive a suggestion, you can do any of the following:
    - To accept a suggestion, press <kbd>Tab</kbd>.
    - To accept a partial suggestion, press either <kbd>Control</kbd>+<kbd>Right arrow</kbd> or <kbd>Command</kbd>+<kbd>Right arrow</kbd>.
-   - To reject a suggestion, press <kbd>Esc</kbd>.
+   - To reject a suggestion, press <kbd>Esc</kbd>. In Neovim, press <kbd>Control</kbd>+<kbd>E</kbd> to exit the menu.
    - To ignore a suggestion, keep typing as you usually would.
 
 ## View multiple code suggestions
@@ -98,12 +92,10 @@ might be available. To view all available suggestions:
 1. Hover over the code completion suggestion.
 1. Scroll through the alternatives. Either:
    - Use keyboard shortcuts:
-     - On a Mac, press <kbd>Option</kbd> + <kbd>]</kbd> to view the
-       next suggestion, and <kbd>Option</kbd> + <kbd>&#91;</kbd> to view the previous
-       suggestions.
-     - On Windows, press <kbd>Alt</kbd> + <kbd>]</kbd> to view the
-       next suggestion, and <kbd>Alt</kbd> + <kbd>&#91;</kbd> to view the previous
-       suggestions.
+     - On a Mac, press <kbd>Option</kbd> + <kbd>\[</kbd> to view the previous suggestion,
+       and press <kbd>Option</kbd> + <kbd>]</kbd> to view the next suggestion.
+     - On Windows, press <kbd>Alt</kbd> + <kbd>\[</kbd> to view the previous suggestion,
+       and press <kbd>Alt</kbd> + <kbd>]</kbd> to view the next suggestion.
    - On the dialog that's displayed, select the right or left arrow to see next or previous options.
 1. Press <kbd>Tab</kbd> to apply the suggestion you prefer.
 
@@ -166,7 +158,7 @@ Code Suggestions is aware of the context you're working in.
 | [Open tab files](#using-open-files-as-context) | Files open in tabs in your IDE. These files give GitLab Duo more information about the standards and practices in your code project. | Optional, but on by default. |
 | [Imported files](#using-imported-files-as-context) | Files imported in the current opened file. These imported files give GitLab Duo more information about the classes and methods used in the current file. | Optional and off by default. |
 
-**Footnotes:**
+Footnotes:
 
 1. Code completion is aware of all [supported languages](supported_extensions.md#supported-languages-by-ide).
    Code generation is aware of files in these languages only:
@@ -288,10 +280,8 @@ Use the imported files in your IDE to provide context about your code project. I
 Because of LLM limits and performance reasons, the content of the currently
 opened file is truncated:
 
-- For code completion:
-  - In GitLab 17.5 and earlier, to 2,048 tokens (roughly 8,192 characters).
-  - In GitLab 17.6 and later, to 32,000 tokens (roughly 128,000 characters).
-- For code generation: to 142,856 tokens (roughly 500,000 characters).
+- For code completion: to 32,000 tokens (roughly 128,000 characters).
+- For code generation: to 200,000 tokens (roughly 800,000 characters).
 
 Content above the cursor is prioritized over content below the cursor. The content
 above the cursor is truncated from the left side, and content below the cursor
@@ -317,18 +307,59 @@ However, Code Suggestions might generate suggestions that are:
 - Potentially insecure.
 - Offensive or insensitive.
 
-When using Code Suggestions, [code review best practice](../../../../development/code_review.md) still applies.
+When using Code Suggestions, code review best practices still apply.
+
+## Available language models
+
+Different language models can be the source for Code Suggestions.
+
+- On GitLab.com: GitLab hosts the models and connects to them through the cloud-based AI gateway.
+- On GitLab Self-Managed, two options exist:
+  - GitLab can [host the models and connects to them through the cloud-based AI gateway](set_up.md).
+  - Your organization can [use GitLab Duo Self-Hosted](../../../../administration/gitlab_duo_self_hosted/_index.md),
+    which means you host the AI gateway and language models. You can use GitLab AI vendor models
+    or the other supported language models.
 
 ## How the prompt is built
 
 To learn about the code that builds the prompt, see these files:
 
-- **Code generation**:
+- Code generation:
   [`ee/lib/api/code_suggestions.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/api/code_suggestions.rb#L76)
   in the `gitlab` repository.
-- **Code completion**:
+- Code completion:
   [`ai_gateway/code_suggestions/processing/completions.py`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/fcb3f485a8f047a86a8166aad81f93b6d82106a7/ai_gateway/code_suggestions/processing/completions.py#L273)
   in the `modelops` repository.
+
+## Prompt caching
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/535651) in GitLab 18.0.
+
+{{< /history >}}
+
+Prompt caching is enabled by default to improve Code Suggestions latency. When prompt caching is enabled, code completion prompt data is temporarily stored in memory by the model vendor. Prompt caching significantly improves latency by avoiding the re-processing of cached prompt and input data. The cached data is never logged to any persistent storage.
+
+### Disable prompt caching
+
+You can disable prompt caching for top-level groups in the GitLab Duo settings.
+
+On GitLab.com:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > GitLab Duo**.
+1. Select **Change configuration**.
+1. Disable the **Prompt caching** toggle.
+1. Select **Save changes**.
+
+On GitLab Self-Managed:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > General**.
+1. Expand **GitLab Duo features**.
+1. Disable the **Prompt caching** toggle.
+1. Select **Save changes**.
 
 ## Response time
 
@@ -338,13 +369,15 @@ Code Suggestions is powered by a generative AI model.
 - For code generation, algorithms or large code blocks might take more than five seconds to generate.
 
 Your personal access token enables a secure API connection to GitLab.com or to your GitLab instance.
-This API connection securely transmits a context window from your IDE/editor to the [GitLab AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist), a GitLab hosted service. The [gateway](../../../../development/ai_architecture.md) calls the large language model APIs, and then the generated suggestion is transmitted back to your IDE/editor.
+This API connection securely transmits a context window from your IDE/editor to the [GitLab AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist), a GitLab hosted service. The gateway calls the large language model APIs, and then the generated suggestion is transmitted back to your IDE/editor.
 
 ### Streaming
 
 Streaming of Code Generation responses is supported in JetBrains and Visual Studio, leading to
 perceived faster response times.
 Other supported IDEs will return the generated code in a single block.
+
+Streaming is not enabled for code completion.
 
 ### Direct and indirect connections
 

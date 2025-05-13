@@ -13,7 +13,7 @@ module Ci
         schedules_path: pipeline_schedules_path(project),
         settings_link: project_settings_ci_cd_path(project),
         timezone_data: timezone_data.to_json,
-        user_role: current_user ? project.team.human_max_access(current_user.id) : nil
+        can_set_pipeline_variables: Ability.allowed?(current_user, :set_pipeline_variables, project).to_s
       }
     end
   end

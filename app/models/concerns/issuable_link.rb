@@ -42,7 +42,7 @@ module IssuableLink
 
     scope :for_source_or_target, ->(issuable) { where(source: issuable).or(where(target: issuable)) }
 
-    enum link_type: Enums::IssuableLink.link_types
+    enum :link_type, Enums::IssuableLink.link_types
 
     private
 

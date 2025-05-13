@@ -212,7 +212,6 @@ class SnippetsFinder < UnionFinder
   def hide_created_by_banned_user(snippets)
     # if admin -> return all snippets, if not-admin -> filter out snippets by banned user
     return snippets if can?(current_user, :read_all_resources)
-    return snippets unless Feature.enabled?(:hide_snippets_of_banned_users)
 
     snippets.without_created_by_banned_user
   end

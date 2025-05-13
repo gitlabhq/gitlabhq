@@ -28,11 +28,13 @@ describe('Group Settings App', () => {
 
   const defaultProvide = {
     groupPath: 'foo_group_path',
+    glAbilities: {},
   };
 
   const mountComponent = ({
     resolver = jest.fn().mockResolvedValue(groupPackageSettingsMock),
     provide = defaultProvide,
+    adminDependencyProxyAbility = true,
   } = {}) => {
     Vue.use(VueApollo);
 
@@ -42,7 +44,12 @@ describe('Group Settings App', () => {
 
     wrapper = shallowMount(component, {
       apolloProvider,
-      provide,
+      provide: {
+        ...provide,
+        glAbilities: {
+          adminDependencyProxy: adminDependencyProxyAbility,
+        },
+      },
       mocks: {
         $toast: {
           show,
@@ -137,6 +144,23 @@ describe('Group Settings App', () => {
 
         expect(findAlert().exists()).toBe(false);
       });
+    });
+  });
+
+  describe('when ability adminDependencyProxy is false', () => {
+    beforeEach(() => {
+      mountComponent({
+        adminDependencyProxyAbility: false,
+      });
+    });
+
+    it('does not render dependency proxy settings section', () => {
+      expect(findDependencyProxySettings().exists()).toBe(false);
+    });
+
+    it('renders other settings section', () => {
+      expect(findPackageSettings().exists()).toBe(true);
+      expect(findPackageForwardingSettings().exists()).toBe(true);
     });
   });
 });

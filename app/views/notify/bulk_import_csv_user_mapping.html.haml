@@ -11,24 +11,24 @@
 
 - if @has_errors || @skipped_count > 0
   %p{ style: text_style }
-    = safe_format(s_('BulkImport|Items assigned to placeholder users were reassigned to users in %{strong_open}%{group}%{strong_close} according to the uploaded CSV file.'), strong_tag_pair, group: @group.name)
+    = safe_format(s_('BulkImport|Items assigned to placeholder users have been reassigned to users in %{strong_open}%{group}%{strong_close} according to the uploaded CSV file.'), strong_tag_pair, group: @group.name)
 - else
   %p{ style: text_style }
-    = safe_format(s_('BulkImport|All items assigned to placeholder users were reassigned to users in %{strong_open}%{group}%{strong_close} according to the uploaded CSV file.'), strong_tag_pair, group: @group.name)
+    = safe_format(s_('BulkImport|All items assigned to placeholder users have been reassigned to users in %{strong_open}%{group}%{strong_close} according to the uploaded CSV file.'), strong_tag_pair, group: @group.name)
 
 %ul
   %li
-    %span= safe_format(ns_('BulkImport|%{count} placeholder user matched to user.', 'BulkImport|%{count} placeholder users matched to users.', @success_count), count: @success_count)
+    %span= safe_format(ns_('BulkImport|%{count} placeholder user has been matched to a user.', 'BulkImport|%{count} placeholder users have been matched to users.', @success_count), count: @success_count)
   - if @has_errors
     %li{ style: error_style }
-      %strong= safe_format(ns_('BulkImport|%{count} placeholder user not matched to user.', 'BulkImport|%{count} placeholder users not matched to users.', @failed_count), count: @failed_count)
+      %strong= safe_format(ns_('BulkImport|%{count} placeholder user has not been matched to a user.', 'BulkImport|%{count} placeholder users have not been matched to users.', @failed_count), count: @failed_count)
   - if @skipped_count > 0
     %li{ style: emphasis_style }
-      = safe_format(ns_('BulkImport|%{count} placeholder user skipped.', 'BulkImport|%{count} placeholder users skipped.', @skipped_count), count: @skipped_count)
+      = safe_format(ns_('BulkImport|%{count} placeholder user has been skipped.', 'BulkImport|%{count} placeholder users have been skipped.', @skipped_count), count: @skipped_count)
 
 - if @has_errors
   %p{ style: text_style }
-    = s_('BulkImport|A CSV file containing a list of placeholder reassignment errors has been attached to this email.')
+    = s_('BulkImport|A CSV file with a list of placeholder reassignment errors is attached to this email.')
 
 %p{ style: text_style }
   - extra_params = @has_errors ? { status: 'failed' } : {}

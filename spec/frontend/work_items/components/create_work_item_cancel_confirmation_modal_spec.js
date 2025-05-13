@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlModal } from '@gitlab/ui';
 import CreateWorkItemCancelConfirmationModal from '~/work_items/components/create_work_item_cancel_confirmation_modal.vue';
-import { WORK_ITEM_TYPE_NAME_EPIC } from '~/work_items/constants';
+import { WORK_ITEM_TYPE_NAME_EPIC, WORK_ITEM_TYPE_NAME_ISSUE } from '~/work_items/constants';
 
 describe('CreateWorkItemCancelConfirmationModal', () => {
   let wrapper;
@@ -16,6 +16,7 @@ describe('CreateWorkItemCancelConfirmationModal', () => {
     wrapper = shallowMount(CreateWorkItemCancelConfirmationModal, {
       propsData: {
         isVisible: true,
+        workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
         ...props,
       },
       stubs: {

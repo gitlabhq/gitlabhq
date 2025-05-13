@@ -8,6 +8,7 @@ query requestingReviewAuthorOrAssignee(
   $reviewerWildcardId: ReviewerWildcardId
   $mergedAfter: Time
   $not: MergeRequestsResolverNegatedParams
+  $ignoredReviewerUsername: String
   $perPage: Int!
   $afterCursor: String
   $sort: MergeRequestSort = UPDATED_DESC
@@ -23,6 +24,7 @@ query requestingReviewAuthorOrAssignee(
       reviewerWildcardId: $reviewerWildcardId
       mergedAfter: $mergedAfter
       not: $not
+      ignoredReviewerUsername: $ignoredReviewerUsername
       or: $or
       first: $perPage
       after: $afterCursor

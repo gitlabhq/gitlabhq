@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner, :requires_admin, product_group: :pipeline_execution do
+  RSpec.describe 'Verify', :requires_admin, product_group: :pipeline_execution do
     describe 'Pipeline configuration access keyword' do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
       let(:project) { create(:project, name: 'project-with-artifacts', initialize_with_readme: true) }

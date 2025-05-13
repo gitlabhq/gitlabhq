@@ -62,7 +62,7 @@ review for the pipeline, focusing on the additional access. For more information
 - Allows instance runners to securely access multiple cloud accounts. The access is determined by the JWT token, which is specific to the user running the pipeline.
 - Removes the need to create logic to rotate secrets by retrieving temporary credentials by default.
 
-## How it works
+## ID token authentication for cloud services
 
 Each job can be configured with ID tokens, which are provided as a CI/CD variable containing the [token payload](../secrets/id_token_authentication.md#token-payload). These JWTs can be used to authenticate with the OIDC-supported cloud provider such as AWS, Azure, GCP, or Vault.
 

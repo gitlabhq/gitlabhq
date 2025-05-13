@@ -8,7 +8,7 @@ title: 'Tutorial: Use GitLab Observability with a NodeJS application'
 {{< alert type="flag" >}}
 
 The availability of this feature is controlled by a feature flag.
-For more information, see the history of the [**Distributed tracing** feature](../../development/tracing.md).
+For more information, see the history of the **Distributed tracing** feature.
 <!-- Update this note when observability_features flag is removed -->
 
 {{< /alert >}}
@@ -35,7 +35,7 @@ This tutorial uses the project name `nodejs-O11y-tutorial`.
    - In the **Project name** field, enter `nodejs-O11y-tutorial`.
 1. Select **Create project**.
 1. In the `nodejs-O11y-tutorial` project, on the left sidebar, select **Settings > Access tokens**.
-1. Create an access token with the `api` scope and Developer role. Store the token value somewhere safe—you'll need it later.
+1. Create an access token with the `api` scope and Developer role. Store the token value somewhere safe because you need it later.
 
 ## Instrument your NodeJS application
 

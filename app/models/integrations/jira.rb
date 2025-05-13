@@ -66,7 +66,7 @@ module Integrations
     before_save :format_project_keys, if: :project_keys_changed?
     after_commit :update_deployment_type, on: [:create, :update], if: :update_deployment_type?
 
-    enum comment_detail: {
+    enum :comment_detail, {
       standard: 1,
       all_details: 2
     }
@@ -184,10 +184,6 @@ module Integrations
     # https://gitlab.com/gitlab-org/gitlab/issues/29404
     # These fields are API only, so no field definition is required.
     data_field :jira_issue_transition_automatic
-    data_field :project_key
-    data_field :vulnerabilities_enabled
-    data_field :vulnerabilities_issuetype
-    data_field :customize_jira_issue_enabled
 
     # When these are false GitLab does not create cross reference
     # comments on Jira except when an issue gets transitioned.

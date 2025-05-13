@@ -3,8 +3,6 @@
 class UserDetail < ApplicationRecord
   extend ::Gitlab::Utils::Override
 
-  REGISTRATION_OBJECTIVE_PAIRS = { basics: 0, move_repository: 1, code_storage: 2, exploring: 3, ci: 4, other: 5, joining_team: 6 }.freeze
-
   belongs_to :user
   belongs_to :bot_namespace, class_name: 'Namespace', optional: true, inverse_of: :bot_user_details
 
@@ -14,6 +12,8 @@ class UserDetail < ApplicationRecord
   validates :bio, length: { maximum: 255 }, allow_blank: true
 
   validate :bot_namespace_user_type, if: :bot_namespace_id_changed?
+
+  ignore_column :registration_objective, remove_after: '2025-07-17', remove_with: '18.2'
 
   DEFAULT_FIELD_LENGTH = 500
 
@@ -55,8 +55,6 @@ class UserDetail < ApplicationRecord
 
   before_validation :sanitize_attrs
   before_save :prevent_nil_fields
-
-  enum :registration_objective, REGISTRATION_OBJECTIVE_PAIRS, suffix: true
 
   def sanitize_attrs
     %i[bluesky discord linkedin mastodon skype twitter website_url].each do |attr|

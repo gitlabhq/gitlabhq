@@ -330,7 +330,9 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
           last_deploy.update!(ref: 'foo')
         end
 
-        it_behaves_like 'ignores that deployment'
+        it 'extracts issue keys from commits made since the last deploy regardless of ref' do
+          expect(subject.issue_keys).to contain_exactly('add a', 'add d')
+        end
       end
 
       context 'when the deploy was not successful' do

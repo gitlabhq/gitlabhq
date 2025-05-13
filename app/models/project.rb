@@ -41,7 +41,6 @@ class Project < ApplicationRecord
   include RunnerTokenExpirationInterval
   include BlocksUnsafeSerialization
   include Subquery
-  include IssueParent
   include WorkItems::Parent
   include UpdatedAtFilterable
   include CrossDatabaseIgnoredTables
@@ -91,6 +90,7 @@ class Project < ApplicationRecord
 
   MAX_SUGGESTIONS_TEMPLATE_LENGTH = 255
   MAX_COMMIT_TEMPLATE_LENGTH = 500
+  MAX_MERGE_REQUEST_TITLE_REGEX = 255
 
   INSTANCE_RUNNER_RUNNING_JOBS_MAX_BUCKET = 5
 
@@ -204,9 +204,7 @@ class Project < ApplicationRecord
 
   has_one :catalog_resource, class_name: 'Ci::Catalog::Resource', inverse_of: :project
   has_many :ci_components, class_name: 'Ci::Catalog::Resources::Component', inverse_of: :project
-  # These are usages of the ci_components owned (not used) by the project
   has_many :ci_component_last_usages, class_name: 'Ci::Catalog::Resources::Components::LastUsage', inverse_of: :component_project
-  has_many :ci_component_usages, class_name: 'Ci::Catalog::Resources::Components::Usage', inverse_of: :project
   has_many :catalog_resource_versions, class_name: 'Ci::Catalog::Resources::Version', inverse_of: :project
   has_many :catalog_resource_sync_events, class_name: 'Ci::Catalog::Resources::SyncEvent', inverse_of: :project
 
@@ -600,6 +598,8 @@ class Project < ApplicationRecord
       delegate :enforce_auth_checks_on_uploads, :enforce_auth_checks_on_uploads=
       delegate :warn_about_potentially_unwanted_characters, :warn_about_potentially_unwanted_characters=
       delegate :duo_features_enabled, :duo_features_enabled=
+      delegate :model_prompt_cache_enabled, :model_prompt_cache_enabled=
+      delegate :merge_request_title_regex, :merge_request_title_regex=
     end
   end
 
@@ -685,6 +685,18 @@ class Project < ApplicationRecord
   scope :sorted_by_stars_asc, -> { reorder(self.arel_table['star_count'].asc) }
   scope :sorted_by_path_asc, -> { reorder(self.arel_table['path'].asc) }
   scope :sorted_by_path_desc, -> { reorder(self.arel_table['path'].desc) }
+  scope :sorted_by_full_path_asc, -> { order_by_full_path(:asc) }
+  scope :sorted_by_full_path_desc, -> { order_by_full_path(:desc) }
+  scope :order_by_full_path, ->(direction) do
+    build_keyset_order_on_joined_column(
+      scope: joins(:route),
+      attribute_name: 'project_full_path',
+      column: Route.arel_table[:path],
+      direction: direction,
+      nullable: :nulls_first
+    )
+  end
+
   # Sometimes queries (e.g. using CTEs) require explicit disambiguation with table name
   scope :projects_order_id_asc, -> { reorder(self.arel_table['id'].asc) }
   scope :projects_order_id_desc, -> { reorder(self.arel_table['id'].desc) }
@@ -925,7 +937,7 @@ class Project < ApplicationRecord
     left_outer_joins(:fork_network_member).where(fork_network_member: { forked_from_project_id: nil })
   }
 
-  enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
+  enum :auto_cancel_pending_pipelines, { disabled: 0, enabled: 1 }
 
   chronic_duration_attr :build_timeout_human_readable, :build_timeout,
     default: 3600, error_message: N_('Maximum job timeout has a value which could not be accepted')
@@ -1118,6 +1130,8 @@ class Project < ApplicationRecord
       when 'latest_activity_asc' then sorted_by_updated_asc
       when 'path_desc'then sorted_by_path_desc
       when 'path_asc' then sorted_by_path_asc
+      when 'full_path_desc'then sorted_by_full_path_desc
+      when 'full_path_asc' then sorted_by_full_path_asc
       when 'stars_desc' then sorted_by_stars_desc
       when 'stars_asc' then sorted_by_stars_asc
       else
@@ -1502,16 +1516,16 @@ class Project < ApplicationRecord
     latest_successful_build_for_ref(job_name, ref) || raise(ActiveRecord::RecordNotFound, "Couldn't find job #{job_name}")
   end
 
-  def latest_pipelines(ref: default_branch, sha: nil, limit: nil)
+  def latest_pipelines(ref: default_branch, sha: nil, limit: nil, source: nil)
     ref = ref.presence || default_branch
     sha ||= commit(ref)&.sha
     return ci_pipelines.none unless sha
 
-    ci_pipelines.newest_first(ref: ref, sha: sha, limit: limit)
+    ci_pipelines.newest_first(ref: ref, sha: sha, limit: limit, source: source)
   end
 
-  def latest_pipeline(ref = default_branch, sha = nil)
-    latest_pipelines(ref: ref, sha: sha).take
+  def latest_pipeline(ref = default_branch, sha = nil, source = nil)
+    latest_pipelines(ref: ref, sha: sha, source: source).take
   end
 
   def merge_base_commit(first_commit_id, second_commit_id)
@@ -1939,8 +1953,6 @@ class Project < ApplicationRecord
   # Returns a list of integration names that should be disabled at the project-level.
   # Globally disabled integrations should go in Integration.disabled_integration_names.
   def disabled_integrations
-    return [] if Rails.env.development?
-
     %w[zentao]
   end
 
@@ -2874,6 +2886,10 @@ class Project < ApplicationRecord
     self.storage_version && self.storage_version >= HASHED_STORAGE_FEATURES[feature]
   end
 
+  def archived
+    super && !marked_for_deletion?
+  end
+
   def renamed?
     persisted? && path_changed?
   end
@@ -3257,10 +3273,10 @@ class Project < ApplicationRecord
     ci_cd_settings.restrict_user_defined_variables?
   end
 
-  def override_pipeline_variables_allowed?(access_level)
+  def override_pipeline_variables_allowed?(access_level, user)
     return false unless ci_cd_settings
 
-    ci_cd_settings.override_pipeline_variables_allowed?(access_level)
+    ci_cd_settings.override_pipeline_variables_allowed?(access_level, user)
   end
 
   def ci_push_repository_for_job_token_allowed?
@@ -3348,10 +3364,6 @@ class Project < ApplicationRecord
 
   def pending_delete_or_hidden?
     pending_delete? || hidden?
-  end
-
-  def work_item_move_and_clone_flag_enabled?
-    Feature.enabled?(:work_item_move_and_clone, self, type: :beta) || group&.work_item_move_and_clone_flag_enabled?
   end
 
   def work_items_feature_flag_enabled?
@@ -3849,6 +3861,12 @@ class Project < ApplicationRecord
     run_after_commit do
       ::Ci::Catalog::Resources::SyncEvent.enqueue_worker
     end
+  end
+
+  # Overriding of Namespaces::AdjournedDeletable method
+  override :all_scheduled_for_deletion_in_hierarchy_chain
+  def all_scheduled_for_deletion_in_hierarchy_chain
+    ancestors(hierarchy_order: :asc).joins(:deletion_schedule)
   end
 end
 

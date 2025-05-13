@@ -80,6 +80,89 @@ RSpec.describe ActiveContext::Concerns::Collection do
     end
   end
 
+  describe '.current_search_embedding_version' do
+    let(:search_embedding_version) { 1 }
+
+    before do
+      allow(collection_record).to receive(:search_embedding_version).and_return(search_embedding_version)
+    end
+
+    it 'is empty hash' do
+      expect(collection_class.current_search_embedding_version).to eq({})
+    end
+
+    context 'when a MODELS constant is defined on the class' do
+      let(:models_hash) { { 1 => model_1 } }
+      let(:model_1) { { foo: 'bar' } }
+
+      before do
+        stub_const("#{collection_class}::MODELS", models_hash)
+      end
+
+      it 'returns the matching value from MODELS' do
+        expect(collection_class.current_search_embedding_version).to eq(model_1)
+      end
+
+      context 'when MODELS does not have an entry for collection_record.search_embedding_version' do
+        let(:search_embedding_version) { 2 }
+
+        it 'is empty hash' do
+          expect(collection_class.current_search_embedding_version).to eq({})
+        end
+      end
+    end
+  end
+
+  describe '.current_indexing_embedding_versions' do
+    let(:indexing_embedding_versions) { [1, 3] }
+
+    before do
+      allow(collection_record).to receive(:indexing_embedding_versions).and_return(indexing_embedding_versions)
+    end
+
+    it 'returns an empty array when no MODELS constant is defined' do
+      expect(collection_class.current_indexing_embedding_versions).to eq([])
+    end
+
+    context 'when a MODELS constant is defined on the class' do
+      let(:models_hash) { { 1 => model_1, 3 => model_3 } }
+      let(:model_1) { { name: 'model_1' } }
+      let(:model_3) { { name: 'model_3' } }
+
+      before do
+        stub_const("#{collection_class}::MODELS", models_hash)
+      end
+
+      it 'returns an array of models that correspond to the indexing_embedding_versions' do
+        expect(collection_class.current_indexing_embedding_versions).to eq([model_1, model_3])
+      end
+
+      context 'when some versions do not have corresponding models' do
+        let(:indexing_embedding_versions) { [1, 2, 3] }
+
+        it 'only includes models that exist in MODELS' do
+          expect(collection_class.current_indexing_embedding_versions).to eq([model_1, model_3])
+        end
+      end
+
+      context 'when no versions have corresponding models' do
+        let(:indexing_embedding_versions) { [4, 5] }
+
+        it 'returns an empty array' do
+          expect(collection_class.current_indexing_embedding_versions).to eq([])
+        end
+      end
+
+      context 'when indexing_embedding_versions is nil' do
+        let(:indexing_embedding_versions) { nil }
+
+        it 'returns an empty array' do
+          expect(collection_class.current_indexing_embedding_versions).to eq([])
+        end
+      end
+    end
+  end
+
   describe '#references' do
     let(:collection_instance) { collection_class.new(mock_object) }
 

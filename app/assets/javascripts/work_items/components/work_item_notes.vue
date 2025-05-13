@@ -7,8 +7,13 @@ import {
   TYPENAME_DISCUSSION_NOTE,
   TYPENAME_NOTE,
   TYPENAME_GROUP,
+  TYPENAME_USER,
 } from '~/graphql_shared/constants';
+import { Mousetrap } from '~/lib/mousetrap';
+import { ISSUABLE_COMMENT_OR_REPLY, keysFor } from '~/behaviors/shortcuts/keybindings';
+import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import SystemNote from '~/work_items/components/notes/system_note.vue';
+import gfmEventHub from '~/vue_shared/components/markdown/eventhub';
 import WorkItemNotesLoading from '~/work_items/components/notes/work_item_notes_loading.vue';
 import WorkItemNotesActivityHeader from '~/work_items/components/notes/work_item_notes_activity_header.vue';
 import {
@@ -88,6 +93,11 @@ export default {
       default: false,
     },
     canSummarizeComments: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    canCreateNote: {
       type: Boolean,
       required: false,
       default: false,
@@ -230,6 +240,11 @@ export default {
 
       return visibleNotes;
     },
+    userComments() {
+      return this.notesArray
+        .flatMap((discussion) => discussion.notes.nodes)
+        .filter((note) => !note.system);
+    },
     commentsDisabled() {
       return this.discussionFilter === WORK_ITEM_NOTES_FILTER_ONLY_HISTORY;
     },
@@ -266,6 +281,16 @@ export default {
   mounted() {
     if (this.shouldLoadPreviewNote) {
       this.cleanupScrollListener = scrollToTargetOnResize();
+    }
+    if (this.canCreateNote) {
+      Mousetrap.bind(keysFor(ISSUABLE_COMMENT_OR_REPLY), (e) => this.quoteReply(e));
+      gfmEventHub.$on('edit-current-user-last-note', this.editCurrentUserLastNote);
+    }
+  },
+  beforeDestroy() {
+    if (this.canCreateNote) {
+      Mousetrap.unbind(keysFor(ISSUABLE_COMMENT_OR_REPLY), this.quoteReply);
+      gfmEventHub.$off('edit-current-user-last-note', this.editCurrentUserLastNote);
     }
   },
   apollo: {
@@ -368,6 +393,74 @@ export default {
     },
   },
   methods: {
+    editCurrentUserLastNote(e) {
+      const currentUserId = convertToGraphQLId(TYPENAME_USER, gon.current_user_id);
+      const isToplevelCommentForm = Boolean(e.target.closest('.js-comment-form'));
+      let availableNotes = [];
+
+      if (isToplevelCommentForm) {
+        // User hit `Up` key from top-level comment form, populate all the comments,
+        // also ensure to reverse them only if sort order is set to newest-first (DESC).
+        availableNotes = this.formAtTop ? [...this.userComments] : [...this.userComments].reverse();
+      } else {
+        // User hit `Up` key from a comment form within an existing thread, populate
+        // all the comments, from this thread, and reverse order so the latest comments come first.
+        const discussionId = convertToGraphQLId(
+          TYPENAME_DISCUSSION_NOTE,
+          e.target.closest('.js-timeline-entry').dataset.discussionId,
+        );
+        availableNotes = [
+          ...this.notesArray.find((discussion) => discussion.id === discussionId).notes.nodes,
+        ].reverse();
+      }
+
+      // Find current user's last note.
+      const currentUserLastNote = availableNotes.find((note) => note.author.id === currentUserId);
+
+      if (!currentUserLastNote) return;
+
+      gfmEventHub.$emit('edit-note', {
+        note: currentUserLastNote,
+      });
+    },
+    getDiscussionIdFromSelection() {
+      const selection = window.getSelection();
+      if (selection.rangeCount <= 0) return null;
+
+      // Return early if selection is from description, we need to use the top-level comment field.
+      if (selection.anchorNode?.parentElement?.closest('.js-work-item-description')) return null;
+
+      const el = selection.getRangeAt(0).startContainer;
+      const node = el.nodeType === Node.TEXT_NODE ? el.parentNode : el;
+      return node.closest('.js-timeline-entry').getAttribute('discussion-id');
+    },
+    async quoteReply(e) {
+      const discussionId = this.getDiscussionIdFromSelection();
+      const text = await CopyAsGFM.selectionToGfm();
+
+      // Prevent 'r' being written.
+      if (e && typeof e.preventDefault === 'function') {
+        e.preventDefault();
+      }
+
+      // Check if selection is coming from an existing discussion
+      if (discussionId) {
+        gfmEventHub.$emit('quote-reply', {
+          discussionId,
+          text,
+          event: e,
+        });
+      } else {
+        // Selection is from description, append it to top-level comment form,
+        this.appendText(text);
+      }
+    },
+    appendText(text) {
+      // Based on selected sort order of discussion timeline,
+      // we have to choose correct <work-item-add-note/> reference.
+      // We're using `append` method from ~/vue_shared/components/markdown/markdown_editor.vue
+      this.$refs[this.formAtTop ? 'addNoteTop' : 'addNoteBottom'].appendText(text);
+    },
     getDiscussionKey(discussion) {
       // discussion key is important like this since after first comment changes
       const discussionId = discussion.notes.nodes[0].id;
@@ -474,6 +567,7 @@ export default {
       <div v-if="formAtTop && !commentsDisabled" class="js-comment-form">
         <ul class="notes notes-form timeline">
           <work-item-add-note
+            ref="addNoteTop"
             v-bind="workItemCommentFormProps"
             :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
             :is-group-work-item="isGroupWorkItem"
@@ -495,6 +589,7 @@ export default {
           <template v-else>
             <work-item-discussion
               :key="getDiscussionKey(discussion)"
+              ref="workItemDiscussion"
               :discussion="discussion.notes.nodes"
               :full-path="fullPath"
               :work-item-id="workItemId"
@@ -526,6 +621,7 @@ export default {
       <div v-if="!formAtTop && !commentsDisabled" class="js-comment-form">
         <ul class="notes notes-form timeline">
           <work-item-add-note
+            ref="addNoteBottom"
             v-bind="workItemCommentFormProps"
             :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
             :is-group-work-item="isGroupWorkItem"

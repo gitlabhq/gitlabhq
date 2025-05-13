@@ -7,6 +7,7 @@ message: "Instead of '%s' for the code block, use yaml, ruby, plaintext, markdow
 link: https://docs.gitlab.com/development/documentation/styleguide/#code-blocks
 vocab: false
 level: error
+nonword: true
 scope: raw
-raw:
-  - '\`\`\`(yml|rb|text|md|bash|sh\n|js\n|golang\n|py\n|docker\n|ts|irb)'
+tokens:
+  - '^[ 1\.-]*\`\`\`(yml|rb|text|md|bash|sh$|js$|golang$|py$|docker$|ts|irb)'

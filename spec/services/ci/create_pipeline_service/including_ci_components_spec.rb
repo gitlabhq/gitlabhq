@@ -112,7 +112,7 @@ RSpec.describe 'Creating a pipeline that includes CI components', feature_catego
 
         expect(pipeline).to be_persisted
         expect(pipeline.error_messages[0].content)
-          .to include 'unknown interpolation key: `suite`'
+          .to include 'unknown input name provided: `suite`'
       end
     end
 

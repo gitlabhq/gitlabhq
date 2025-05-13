@@ -9,7 +9,7 @@ module ResourceEvents
 
     validates :merge_request, presence: true
 
-    enum action: { add: 1, remove: 2 }
+    enum :action, { add: 1, remove: 2 }
 
     def self.issuable_id_column
       :merge_request_id

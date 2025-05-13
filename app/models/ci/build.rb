@@ -47,7 +47,6 @@ module Ci
 
     DEGRADATION_THRESHOLD_VARIABLE_NAME = 'DEGRADATION_THRESHOLD'
     RUNNERS_STATUS_CACHE_EXPIRATION = 1.minute
-    CANCELABLE_STATUSES = (HasStatus::CANCELABLE_STATUSES + ['canceling']).freeze
     DEPLOYMENT_NAMES = %w[deploy release rollout].freeze
 
     TOKEN_PREFIX = 'glcbt-'
@@ -144,7 +143,7 @@ module Ci
     delegate :enable_debug_trace!, to: :metadata
 
     serialize :options # rubocop:disable Cop/ActiveRecordSerialize
-    serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
+    serialize :yaml_variables, coder: Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
 
     delegate :name, to: :project, prefix: true
 
@@ -166,7 +165,7 @@ module Ci
       preload(
         :job_artifacts_archive, :ci_stage, :job_artifacts, :runner, :tags, :runner_manager, :metadata,
         pipeline: :project,
-        user: [:user_preference, :user_detail, :followees]
+        user: [:user_preference, :user_detail, :followees, :followers]
       )
     end
 
@@ -246,7 +245,7 @@ module Ci
 
       def clone_accessors
         %i[pipeline project ref tag options name
-          allow_failure stage_idx trigger_request
+          allow_failure stage_idx
           yaml_variables when environment coverage_regex
           description tag_list protected needs_attributes
           job_variables_attributes resource_group scheduling_type

@@ -3,29 +3,12 @@ import { OptionsMenuAdapter } from '~/rapid_diffs/options_menu/adapter';
 
 describe('Diff File Options Menu', () => {
   const item1 = { text: 'item 1', path: 'item/1/path' };
-  const html = `
-    <diff-file data-viewer="any">
-      <div class="rd-diff-file">
-        <div class="rd-diff-file-header" data-testid="rd-diff-file-header">
-        <div class="rd-diff-file-options-menu gl-ml-2">
-          <div class="js-options-menu">
-            <script type="application/json">
-              [{"text": "${item1.text}", "href": "${item1.path}"}]
-            </script>
-            <button class="js-options-button" data-click="toggleOptionsMenu" type="button"></button>
-          </div>
-        </div>
-      </div>
-      <div data-file-body=""><!-- body content --></div>
-      <diff-file-mounted></diff-file-mounted>
-    </diff-file>
-  `;
 
   function get(element) {
     const elements = {
       file: () => document.querySelector('diff-file'),
-      container: () => get('file').querySelector('.js-options-menu'),
-      serverButton: () => get('container').querySelector('.js-options-button'),
+      container: () => get('file').querySelector('[data-options-menu]'),
+      serverButton: () => get('container').querySelector('[data-click="toggleOptionsMenu"]'),
       vueButton: () => get('container').querySelector('[data-testid="base-dropdown-toggle"]'),
       menuItems: () =>
         get('container').querySelectorAll('[data-testid="disclosure-dropdown-item"]'),
@@ -34,18 +17,33 @@ describe('Diff File Options Menu', () => {
     return elements[element]?.();
   }
 
-  function assignAdapter(customAdapter) {
-    get('file').adapterConfig = { any: [customAdapter] };
-  }
+  const mount = () => {
+    const viewer = 'any';
+    document.body.innerHTML = `
+      <diff-file data-file-data='${JSON.stringify({ viewer })}'>
+        <div class="rd-diff-file">
+          <div class="rd-diff-file-header" data-testid="rd-diff-file-header">
+          <div class="rd-diff-file-options-menu gl-ml-2">
+            <div data-options-menu>
+              <script type="application/json">
+                [{"text": "${item1.text}", "href": "${item1.path}"}]
+              </script>
+              <button data-click="toggleOptionsMenu" type="button"></button>
+            </div>
+          </div>
+          <div data-file-body=""><!-- body content --></div>
+        </div>
+      </diff-file>
+    `;
+    get('file').mount({ adapterConfig: { [viewer]: [OptionsMenuAdapter] }, appData: {} });
+  };
 
   beforeAll(() => {
     customElements.define('diff-file', DiffFile);
   });
 
   beforeEach(() => {
-    document.body.innerHTML = html;
-    assignAdapter(OptionsMenuAdapter);
-    get('file').mount();
+    mount();
   });
 
   it('starts with the server-rendered button', () => {
@@ -66,6 +64,7 @@ describe('Diff File Options Menu', () => {
      * happen once (desireable!), so testing that it's no longer present is good
      */
     expect(get('serverButton')).toBeNull();
+    expect(document.activeElement).toEqual(get('vueButton'));
   });
 
   it('renders the correct menu items in the GlDisclosureDropdown as provided by the back end', () => {

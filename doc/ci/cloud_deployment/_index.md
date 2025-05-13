@@ -39,11 +39,11 @@ After you set up authentication, you can configure CI/CD to deploy.
 1. In your GitLab project, go to **Settings > CI/CD**. Set the following
    [CI/CD variables](../variables/_index.md):
 
-   | Environment variable name      | Value                   |
-   |:-------------------------------|:------------------------|
-   | `AWS_ACCESS_KEY_ID`            | Your Access key ID.     |
-   | `AWS_SECRET_ACCESS_KEY`        | Your secret access key. |
-   | `AWS_DEFAULT_REGION`           | Your region code. You might want to confirm that the AWS service you intend to use is [available in the chosen region](https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/). |
+   | Environment variable name | Value |
+   |:--------------------------|:------|
+   | `AWS_ACCESS_KEY_ID`       | Your Access key ID. |
+   | `AWS_SECRET_ACCESS_KEY`   | Your secret access key. |
+   | `AWS_DEFAULT_REGION`      | Your region code. You might want to confirm that the AWS service you intend to use is [available in the chosen region](https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/). |
 
 1. Variables are [protected by default](../variables/_index.md#protect-a-cicd-variable).
    To use GitLab CI/CD with branches or tags that are not protected,
@@ -101,11 +101,11 @@ To deploy to your ECS cluster:
    [CI/CD variables](../variables/_index.md). You can find these names by
    selecting the targeted cluster on your [Amazon ECS dashboard](https://console.aws.amazon.com/ecs/home).
 
-   | Environment variable name      | Value                   |
-   |:-------------------------------|:------------------------|
-   | `CI_AWS_ECS_CLUSTER`           | The name of the AWS ECS cluster that you're targeting for your deployments. |
-   | `CI_AWS_ECS_SERVICE`           | The name of the targeted service tied to your AWS ECS cluster. Ensure that this variable is scoped to the appropriate environment (`production`, `staging`, `review/*`). |
-   | `CI_AWS_ECS_TASK_DEFINITION`   | If the task definition is in ECS, the name of the task definition tied to the service. |
+   | Environment variable name         | Value |
+   |:----------------------------------|:------|
+   | `CI_AWS_ECS_CLUSTER`              | The name of the AWS ECS cluster that you're targeting for your deployments. |
+   | `CI_AWS_ECS_SERVICE`              | The name of the targeted service tied to your AWS ECS cluster. Ensure that this variable is scoped to the appropriate environment (`production`, `staging`, `review/*`). |
+   | `CI_AWS_ECS_TASK_DEFINITION`      | If the task definition is in ECS, the name of the task definition tied to the service. |
    | `CI_AWS_ECS_TASK_DEFINITION_FILE` | If the task definition is a JSON file in GitLab, the filename, including the path. For example, `ci/aws/my_task_definition.json`. If the name of the task definition in your JSON file is the same name as an existing task definition in ECS, then a new revision is created when CI/CD runs. Otherwise, a brand new task definition is created, starting at revision 1. |
 
    {{< alert type="warning" >}}

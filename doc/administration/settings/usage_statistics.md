@@ -21,7 +21,7 @@ For information about other tiers, see [Customer Product Usage Information](http
 ## Service Ping
 
 Service Ping is a process that collects and sends a weekly payload to GitLab Inc.
-For more information, see the [Service Ping guide](../../development/internal_analytics/service_ping/_index.md). When Service Ping is enabled, GitLab gathers data from other instances and enables certain [instance-level analytics features](../../user/analytics/_index.md)
+For more information, see the Service Ping guide. When Service Ping is enabled, GitLab gathers data from other instances and enables certain [instance-level analytics features](../../user/analytics/_index.md)
 that are dependent on Service Ping.
 
 ### Why enable Service Ping?
@@ -259,7 +259,7 @@ To enable or disable optional data in Service Ping:
 ## Access the Service Ping payload
 
 You can access the exact JSON payload sent to GitLab Inc. in the **Admin** area or through the API.
-See an [example Service Ping payload](../../development/internal_analytics/service_ping/_index.md#example-service-ping-payload).
+See an example Service Ping payload.
 
 ### In the UI
 
@@ -275,7 +275,7 @@ See [service ping API documentation](../../api/usage_data.md).
 ## Manually upload Service Ping payload
 
 You can upload the Service Ping payload to GitLab even if your instance doesn't have internet access,
-or if the Service Ping [cron job](../../development/internal_analytics/service_ping/_index.md#how-service-ping-works) is not enabled.
+or if the Service Ping cron job is not enabled.
 
 To upload the payload manually:
 
@@ -296,15 +296,3 @@ If there are problems with the manual upload:
 1. Open a confidential issue in the [security fork of version app project](https://gitlab.com/gitlab-org/security/version.gitlab.com).
 1. Attach the JSON payload if possible.
 1. Tag `@gitlab-org/analytics-section/analytics-instrumentation` who will triage the issue.
-
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->

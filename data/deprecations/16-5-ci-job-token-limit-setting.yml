@@ -9,7 +9,7 @@
   reporter: jocelynjane  # (required) GitLab username of the person reporting the deprecation
   stage: Software Supply Chain Security  # (required) String value of the stage that the feature was created in. e.g., Growth
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/383084  # (required) Link to the deprecation issue in GitLab
-  check_impact: Use the [Authentication Log](../ci/jobs/ci_job_token.md#job-token-authentication-log) to verify which projects are authenticating with your project.
+  check_impact: Refer to the [Understanding this change](https://gitlab.com/gitlab-org/gitlab/-/issues/383084#understanding-this-change) section for details.
   impact: high  # Can be one of: [critical, high, medium, low]
   scope: project  # Can be one or a combination of: [instance, group, project]
   resolution_role: Maintainer  # Can be one of: [Admin, Owner, Maintainer, Developer]
@@ -31,7 +31,11 @@
     [enforce this more secure setting for all projects](https://docs.gitlab.com/administration/settings/continuous_integration/#job-token-permissions).
     This setting prevents project maintainers from selecting **All groups and projects**.
     This change ensures a higher level of security between projects.
-    In GitLab 18.0, this setting will be enabled by default on GitLab.com, GitLab Self-Managed, and GitLab Dedicated.
+
+    In GitLab 18.0, this instance setting will be enabled by default on GitLab.com, GitLab Self-Managed, and GitLab Dedicated.
+    GitLab Self-Managed and GitLab Dedicated administrators can disable the setting after upgrading to GitLab 18.0
+    to restore the pre-upgrade behavior. No project settings will be changed in GitLab 18.0 for GitLab Self-Managed and
+    GitLab Dedicated, though the status of the instance setting impacts all projects on the instance.
 
     To prepare for this change, project maintainers using job tokens for cross-project authentication
     should populate their project's **Authorized groups and projects** allowlists. They should then change
@@ -39,7 +43,7 @@
 
     To help identify projects that need access to your project by authenticating with a CI/CD job token, in GitLab 17.6 we also introduced a method to [track job token authentications](https://about.gitlab.com/releases/2024/11/21/gitlab-17-6-released/#track-cicd-job-token-authentications) to your projects. You can use that data to populate your CI/CI job token allowlist.
 
-    In GitLab 17.10, we introduced [migration tooling](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#auto-populate-a-projects-allowlist) to automatically populate the CI/CD job token allowlist from the job token authentication log. We encourage you to use this migration tool to populate and use the allowlist before [general enforcement of allowlists in GitLab 18.0](https://docs.gitlab.com/ee/update/deprecations.html#cicd-job-token---authorized-groups-and-projects-allowlist-enforcement). In GitLab 18.0, automatic population and enforcement of the allowlist will occur as previously announced.
+    In GitLab 17.10, we introduced [migration tooling](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#auto-populate-a-projects-allowlist) to automatically populate the CI/CD job token allowlist from the job token authentication log. We encourage you to use this migration tool to populate and use the allowlist before [general enforcement of allowlists in GitLab 18.0](https://docs.gitlab.com/ee/update/deprecations.html#cicd-job-token---authorized-groups-and-projects-allowlist-enforcement). In GitLab 18.0, automatic population and enforcement of the allowlist will occur on GitLab.com as previously announced.
 
     This migration tool will be removed in GitLab 18.3.
   #

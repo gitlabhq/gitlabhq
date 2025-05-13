@@ -12,7 +12,6 @@ export default (selector = '#js-project-delete-button') => {
     nameWithNamespace,
     formPath,
     isFork,
-    isSecurityPolicyProject,
     issuesCount,
     mergeRequestsCount,
     forksCount,
@@ -28,7 +27,6 @@ export default (selector = '#js-project-delete-button') => {
         props: {
           confirmPhrase,
           nameWithNamespace,
-          disabled: parseBoolean(isSecurityPolicyProject),
           formPath,
           isFork: parseBoolean(isFork),
           issuesCount: parseInt(issuesCount, 10),

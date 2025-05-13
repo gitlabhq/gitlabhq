@@ -1,7 +1,7 @@
 import { GlButton, GlButtonGroup, GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
-import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
 import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -16,7 +16,7 @@ describe('NotificationsDropdown', () => {
   let mockAxios;
 
   function createComponent(injectedProperties = {}) {
-    return mount(NotificationsDropdown, {
+    return mountExtended(NotificationsDropdown, {
       stubs: {
         GlButtonGroup,
         GlButton,
@@ -40,11 +40,10 @@ describe('NotificationsDropdown', () => {
   }
 
   const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
-  const findSplitIcon = () => wrapper.find('[data-testid="notification-split-icon"]');
-  const findByTestId = (testId) => wrapper.find(`[data-testid="${testId}"]`);
+  const findSplitIcon = () => wrapper.findByTestId('notification-split-icon');
   const findAllNotificationsDropdownItems = () => wrapper.findAllComponents(GlListboxItem);
   const findListboxItemAt = (index) => findAllNotificationsDropdownItems().at(index);
-  const findListboxItem = (value) => wrapper.find(`[data-testid="listbox-item-${value}"]`);
+  const findListboxItem = (value) => wrapper.findByTestId(`listbox-item-${value}`);
   const findNotificationsModal = () => wrapper.findComponent(CustomNotificationsModal);
   const tooltipTitlePrefix = 'Notification setting';
 
@@ -152,7 +151,7 @@ describe('NotificationsDropdown', () => {
           initialNotificationLevel: level,
         });
 
-        const tooltipElement = findByTestId('notification-dropdown');
+        const tooltipElement = wrapper.findByTestId('notification-dropdown');
         const tooltip = getBinding(tooltipElement.element, 'gl-tooltip');
 
         expect(tooltip.value.title).toBe(`${tooltipTitlePrefix} - ${title}`);

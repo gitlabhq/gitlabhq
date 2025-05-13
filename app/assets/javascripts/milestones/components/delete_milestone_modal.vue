@@ -26,10 +26,6 @@ export default {
       type: Number,
       required: true,
     },
-    milestoneId: {
-      type: Number,
-      required: true,
-    },
     milestoneTitle: {
       type: String,
       required: true,

@@ -13,7 +13,7 @@ module Members
 
       mail_with_locale(
         to: recipient.notification_email_for(member_source.notification_group),
-        subject: EmailsHelper.subject_with_suffix([email_subject_text])
+        subject: EmailsHelper.subject_with_prefix_and_suffix([email_subject_text])
       )
     end
 

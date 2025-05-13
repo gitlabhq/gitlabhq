@@ -53,9 +53,10 @@ RSpec.describe ActiveContext::Databases::Concerns::Executor do
       expect(executor).to receive(:do_create_collection).with(
         name: full_name,
         number_of_partitions: number_of_partitions,
-        fields: fields
+        fields: fields,
+        options: {}
       )
-      expect(executor).to receive(:create_collection_record).with(full_name, number_of_partitions)
+      expect(executor).to receive(:create_collection_record).with(full_name, number_of_partitions, {})
 
       executor.create_collection(name, number_of_partitions: number_of_partitions)
     end
@@ -79,10 +80,20 @@ RSpec.describe ActiveContext::Databases::Concerns::Executor do
 
     it 'creates or updates a collection record with the correct attributes' do
       expect(collections).to receive(:find_or_initialize_by).with(name: name).and_return(collection)
-      expect(collection).to receive(:update).with(number_of_partitions: number_of_partitions)
+      expect(collection).to receive(:update).with(number_of_partitions: number_of_partitions,
+        include_ref_fields: true)
       expect(collection).to receive(:save!)
 
-      executor.send(:create_collection_record, name, number_of_partitions)
+      executor.send(:create_collection_record, name, number_of_partitions, {})
+    end
+
+    it 'sets include_ref_fields if passed in' do
+      expect(collections).to receive(:find_or_initialize_by).with(name: name).and_return(collection)
+      expect(collection).to receive(:update).with(number_of_partitions: number_of_partitions,
+        include_ref_fields: false)
+      expect(collection).to receive(:save!)
+
+      executor.send(:create_collection_record, name, number_of_partitions, { include_ref_fields: false })
     end
   end
 

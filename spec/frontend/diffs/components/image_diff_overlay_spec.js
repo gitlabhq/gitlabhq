@@ -6,7 +6,7 @@ import ImageDiffOverlay from '~/diffs/components/image_diff_overlay.vue';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import DesignNotePin from '~/vue_shared/components/design_management/design_note_pin.vue';
-import store from '~/mr_notes/stores';
+import { useNotes } from '~/notes/store/legacy_notes';
 import { imageDiffDiscussions } from '../mock_data/diff_discussions';
 
 Vue.use(PiniaVuePlugin);
@@ -24,7 +24,6 @@ describe('Diffs image diff overlay component', () => {
 
   function createComponent(props = {}) {
     wrapper = shallowMount(ImageDiffOverlay, {
-      store,
       pinia,
       parentComponent: {
         data() {
@@ -39,12 +38,17 @@ describe('Diffs image diff overlay component', () => {
         ...props,
       },
     });
+    // Vue 3 doesn't stub parent component's state with data()
+    if (!wrapper.vm.$parent.width) {
+      wrapper.vm.$parent.width = dimensions.width;
+      wrapper.vm.$parent.height = dimensions.height;
+    }
   }
 
   beforeEach(() => {
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
     useLegacyDiffs();
-    jest.spyOn(store, 'dispatch').mockResolvedValue();
+    useNotes();
   });
 
   it('renders comment badges', () => {
@@ -104,16 +108,15 @@ describe('Diffs image diff overlay component', () => {
     it('disables buttons when shouldToggleDiscussion is false', () => {
       createComponent({ shouldToggleDiscussion: false });
 
-      expect(getAllImageBadges().at(0).attributes('disabled')).toBe('true');
+      // Vue 3 sets disabled="disabled", Vue 2 disabled="true"
+      expect(['true', 'disabled']).toContain(getAllImageBadges().at(0).attributes('disabled'));
     });
 
     it('dispatches toggleDiscussion when clicking image badge', () => {
       createComponent();
       getAllImageBadges().at(0).vm.$emit('click');
 
-      expect(store.dispatch).toHaveBeenCalledWith('toggleDiscussion', {
-        discussionId: '1',
-      });
+      expect(useNotes().toggleDiscussion).toHaveBeenCalledWith({ discussionId: '1' });
     });
   });
 
@@ -130,11 +133,11 @@ describe('Diffs image diff overlay component', () => {
     });
 
     it('renders comment form badge', () => {
-      expect(getAllImageBadges().at(-1).exists()).toBe(true);
+      expect(getAllImageBadges().at(2).exists()).toBe(true);
     });
 
     it('sets comment form badge position', () => {
-      expect(getAllImageBadges().at(-1).props('position')).toStrictEqual({
+      expect(getAllImageBadges().at(2).props('position')).toStrictEqual({
         left: '10%',
         top: '10%',
       });

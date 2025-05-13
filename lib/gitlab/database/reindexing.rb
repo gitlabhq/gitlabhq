@@ -89,6 +89,22 @@ module Gitlab
           Coordinator.new(index).drop
         end
       end
+
+      def self.minimum_index_size!(bytes)
+        update_reindexing_setting!(:reindexing_minimum_index_size, bytes)
+      end
+
+      def self.minimum_relative_bloat_size!(threshold)
+        update_reindexing_setting!(:reindexing_minimum_relative_bloat_size, threshold)
+      end
+
+      def self.update_reindexing_setting!(key, value)
+        application_settings = Gitlab::CurrentSettings.current_application_settings
+        current_settings = application_settings.database_reindexing || {}
+        updated_settings = current_settings.merge(key => value)
+        application_settings.update!(database_reindexing: updated_settings)
+      end
+      private_class_method :update_reindexing_setting!
     end
   end
 end

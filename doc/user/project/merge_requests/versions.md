@@ -14,9 +14,9 @@ title: Merge request diff versions
 {{< /details >}}
 
 When you create a merge request, you select two branches to compare. The differences
-between the two branches are shown as a **diff** in the merge request. Each time
+between the two branches are shown as a diff in the merge request. Each time
 you push commits to a branch connected to a merge request, GitLab updates the
-merge request diff to a new **diff version**.
+merge request diff to a new diff version.
 
 {{< alert type="note" >}}
 
@@ -66,17 +66,4 @@ For more information, see how to [show or filter system notes on a merge request
 
 ## Related topics
 
-- [Merge request diffs for developers](../../../development/merge_request_concepts/diffs/_index.md)
 - [Merge request diff storage for administrators](../../../administration/merge_request_diffs.md)
-
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that might go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->

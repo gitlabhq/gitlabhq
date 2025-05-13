@@ -2,13 +2,14 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+gitlab_dedicated: yes
 title: External authorization control
 ---
 
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -92,7 +93,7 @@ If you enable external authorization, deploy tokens cannot access container or p
 
 {{< /alert >}}
 
-## How it works
+## How GitLab connects to an external authorization service
 
 When GitLab requests access, it sends a JSON POST request to the external
 service with this body:
@@ -145,15 +146,3 @@ label defined in the [global settings](#configuration) is used.
 On all project pages, in the upper-right corner, the label appears.
 
 ![A red overridden label with an open lock icon displays in the upper-right corner of a project.](img/classification_label_on_project_page_v14_8.png)
-
-<!-- ## Troubleshooting
-
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
-
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->

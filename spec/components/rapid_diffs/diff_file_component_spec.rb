@@ -7,7 +7,34 @@ require_relative './shared'
 RSpec.describe RapidDiffs::DiffFileComponent, type: :component, feature_category: :code_review_workflow do
   include_context "with diff file component tests"
 
-  def render_component(**args)
-    render_inline(described_class.new(diff_file: diff_file, **args))
+  describe 'header slot' do
+    let_it_be(:diff_file) { build(:diff_file) }
+
+    it 'renders the default header when no custom header is provided' do
+      allow_next_instance_of(
+        RapidDiffs::DiffFileHeaderComponent,
+        diff_file: diff_file
+      ) do |instance|
+        allow(instance).to receive(:render_in).and_return('diff-file-header')
+      end
+
+      result = render_component
+
+      expect(result.to_html).to include('diff-file-header')
+    end
+
+    it 'renders a custom header when provided' do
+      custom_header = '<div class="custom-header">Custom Header</div>'.html_safe
+
+      result = render_component do |c|
+        c.with_header { custom_header }
+      end
+
+      expect(result.css('.custom-header').text).to eq('Custom Header')
+    end
+  end
+
+  def render_component(**args, &block)
+    render_inline(described_class.new(diff_file: diff_file, **args), &block)
   end
 end

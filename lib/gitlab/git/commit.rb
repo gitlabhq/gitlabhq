@@ -35,8 +35,6 @@ module Gitlab
       attr_accessor(*SERIALIZE_KEYS)
       attr_reader :repository
 
-      attr_accessor :log_message
-
       def ==(other)
         return false unless other.is_a?(Gitlab::Git::Commit)
 
@@ -360,14 +358,6 @@ module Gitlab
       end
 
       def message
-        if log_message
-          Gitlab::AppLogger.info(
-            event: 'mrdc_message_method_git',
-            message:
-              "mrdc#message called via #{caller_locations.reject { |line| line.path.include?('/gems/') }.first(10)}"
-          )
-        end
-
         encode! @message
       end
 

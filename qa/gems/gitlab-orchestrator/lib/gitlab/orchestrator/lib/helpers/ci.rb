@@ -53,6 +53,10 @@ module Gitlab
             File.join(ci_project_dir, "GITLAB_KAS_VERSION")
           ).strip
         end
+
+        def registry_version
+          @registry_version ||= ENV["GITLAB_CONTAINER_REGISTRY_TAG"].presence || commit_sha
+        end
       end
     end
   end

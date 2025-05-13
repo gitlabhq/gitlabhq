@@ -30,18 +30,6 @@ RSpec.describe API::GroupPlaceholderReassignments, feature_category: :importers 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
-
-    context 'when importer_user_mapping_reassignment_csv flag is disabled' do
-      before do
-        stub_feature_flags(importer_user_mapping_reassignment_csv: false)
-      end
-
-      it 'returns 404' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
   end
 
   describe 'GET /groups/:id/placeholder_reassignments' do

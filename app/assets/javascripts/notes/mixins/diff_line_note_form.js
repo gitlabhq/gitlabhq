@@ -1,6 +1,4 @@
 import { mapState, mapActions } from 'pinia';
-// eslint-disable-next-line no-restricted-imports
-import { mapState as mapVuexState } from 'vuex';
 import { getDraftReplyFormData, getDraftFormData } from '~/batch_comments/utils';
 import {
   TEXT_DIFF_POSITION_TYPE,
@@ -14,13 +12,11 @@ import { formatLineRange } from '~/notes/components/multiline_comment_utils';
 import { SAVING_THE_COMMENT_FAILED, SOMETHING_WENT_WRONG } from '~/diffs/i18n';
 import { useBatchComments } from '~/batch_comments/store';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
 
 export default {
   computed: {
-    ...mapVuexState({
-      noteableData: (state) => state.notes.noteableData,
-      notesData: (state) => state.notes.notesData,
-    }),
+    ...mapState(useNotes, ['noteableData', 'notesData']),
     ...mapState(useLegacyDiffs, ['getDiffFileByHash', 'commit', 'showWhitespace']),
     ...mapState(useBatchComments, [
       'shouldRenderDraftRowInDiscussion',

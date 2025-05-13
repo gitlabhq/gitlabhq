@@ -6,6 +6,7 @@ RSpec.describe ActiveContext::BulkProcessQueue do
   let(:redis) { instance_double(Redis) }
   let(:bulk_processor) { instance_double('ActiveContext::BulkProcessor') }
   let(:logger) { instance_double('Logger', info: nil, error: nil) }
+  let(:preprocess_result) { { successful: references, failed: [] } }
 
   subject(:bulk_process_queue) { described_class.new(queue, shard) }
 
@@ -29,7 +30,7 @@ RSpec.describe ActiveContext::BulkProcessQueue do
       allow(bulk_process_queue).to receive(:deserialize_all).and_return(references)
       allow(redis).to receive(:zremrangebyscore)
       allow(references).to receive(:group_by).and_return({ reference_class => references })
-      allow(reference_class).to receive(:preprocess_references).and_return(references)
+      allow(reference_class).to receive(:preprocess_references).and_return(preprocess_result)
     end
 
     it 'processes specs and flushes the bulk processor' do
@@ -51,19 +52,21 @@ RSpec.describe ActiveContext::BulkProcessQueue do
 
     context 'when there are failures' do
       let(:failures) { ['failed_spec'] }
+      let(:preprocess_result) { { successful: references, failed: ['preprocess_failed_ref'] } }
 
       before do
         allow(bulk_processor).to receive(:flush).and_return(failures)
       end
 
       it 're-enqueues failures' do
-        expect(ActiveContext).to receive(:track!).with(failures, queue: queue)
+        combined_failures = ['preprocess_failed_ref'] + failures
+        expect(ActiveContext).to receive(:track!).with(combined_failures, queue: queue)
 
         bulk_process_queue.process(redis)
       end
 
       it 'returns the correct count of processed specs and failures' do
-        expect(bulk_process_queue.process(redis)).to eq([2, 1])
+        expect(bulk_process_queue.process(redis)).to eq([2, 2])
       end
     end
 

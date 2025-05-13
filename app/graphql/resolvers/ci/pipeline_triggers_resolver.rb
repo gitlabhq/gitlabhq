@@ -17,7 +17,7 @@ module Resolvers
       private
 
       def unconditional_includes
-        [:trigger_requests, :pipelines]
+        [:pipelines]
       end
     end
   end

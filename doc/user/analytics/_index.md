@@ -28,7 +28,6 @@ Use these features to gain insights into your overall software development lifec
 | DevOps adoption [by group](../group/devops_adoption/_index.md) and [by instance](../../administration/analytics/dev_ops_reports.md) | Organization's maturity in DevOps adoption, with feature adoption over time and feature distribution by group. | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
 | [Usage trends](../../administration/analytics/usage_trends.md) | Overview of instance data and changes in data volume over time. | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | [Insights](../project/insights/_index.md) | Customizable reports to explore issues, merged merge requests, and triage hygiene. | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
-| [Product analytics](../../development/internal_analytics/product_analytics.md) | Understanding how users behave and interact with your product.| {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
 | [Analytics dashboards](analytics_dashboards.md) | Built-in and customizable dashboards to visualize collected data. | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No |
 
 ### Productivity analytics

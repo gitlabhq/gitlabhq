@@ -16,14 +16,6 @@ export default {
   name: 'UsersChart',
   components: { GlAlert, GlAreaChart, ChartSkeletonLoader },
   props: {
-    startDate: {
-      type: Date,
-      required: true,
-    },
-    endDate: {
-      type: Date,
-      required: true,
-    },
     totalDataPoints: {
       type: Number,
       required: true,

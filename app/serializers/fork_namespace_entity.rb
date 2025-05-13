@@ -30,6 +30,8 @@ class ForkNamespaceEntity < Grape::Entity
     markdown_description(namespace)
   end
 
+  expose :marked_for_deletion?, as: :marked_for_deletion
+
   private
 
   def membership(user, object, memberships)
@@ -42,5 +44,3 @@ class ForkNamespaceEntity < Grape::Entity
     markdown_field(namespace, :description)
   end
 end
-
-ForkNamespaceEntity.prepend_mod_with('ForkNamespaceEntity')

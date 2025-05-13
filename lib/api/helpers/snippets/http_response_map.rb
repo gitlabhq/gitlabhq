@@ -10,7 +10,10 @@ module API
           success: 200,
           error: 400,
           invalid_params_error: 422,
+          snippet_access_error: 403,
+          snippet_not_found_error: 404,
           failed_to_create_error: 400,
+          failed_to_delete_error: 400,
           failed_to_update_error: 400
         }.freeze
 

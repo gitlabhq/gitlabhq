@@ -13,7 +13,6 @@ describe('MrWidgetMigrateJenkins', () => {
     let wrapper;
     let mockAxios;
     const props = {
-      humanAccess: 'maintainer',
       path: 'some/path',
       featureId: 'some-feature-id',
     };
