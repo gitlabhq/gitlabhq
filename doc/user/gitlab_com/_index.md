@@ -49,8 +49,6 @@ this limit. Repository limits apply to both public and private projects.
 
 ## Backups
 
-[See our backup strategy](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/#backups).
-
 To back up an entire project on GitLab.com, you can export it:
 
 - [Through the UI](../project/settings/import_export.md).
@@ -506,9 +504,7 @@ More details are available on the rate limits for
 
 GitLab can rate-limit requests at several layers. The rate limits listed here
 are configured in the application. These limits are the most
-restrictive for each IP address. For more information about the rate limits
-for GitLab.com, see
-[the documentation in the handbook](https://handbook.gitlab.com/handbook/engineering/infrastructure/rate-limiting).
+restrictive for each IP address.
 
 ### Group and project import by uploading export files
 

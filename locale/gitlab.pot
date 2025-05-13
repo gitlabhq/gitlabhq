@@ -27878,7 +27878,13 @@ msgstr ""
 msgid "GetStarted|Download the extension to access GitLab features and GitLab Duo AI capabilities to handle everyday tasks."
 msgstr ""
 
+msgid "GetStarted|There was a problem trying to end the tutorial. Please try again."
+msgstr ""
+
 msgid "GetStarted|Use GitLab Duo locally"
+msgstr ""
+
+msgid "GetStarted|You've ended the tutorial."
 msgstr ""
 
 msgid "GiB"
@@ -35864,6 +35870,9 @@ msgid "LearnGitLab|Create/import issues (tickets) to collaborate on ideas and pl
 msgstr ""
 
 msgid "LearnGitLab|Enable require merge approvals"
+msgstr ""
+
+msgid "LearnGitLab|End tutorial"
 msgstr ""
 
 msgid "LearnGitLab|Enroll"

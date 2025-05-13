@@ -46,7 +46,7 @@ All recommendations are for production configurations, including performance tes
 
 #### Overall recommendations
 
-- Production-grade Gitaly must be implemented on instance compute due to all of the above and below characteristics.
+- Production-grade Gitaly must be implemented on instance compute due to all of the previous and following characteristics.
 - Never use [burstable instance types](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-performance-instances.html) (such as `t2`, `t3`, `t4g`) for Gitaly.
 - Always use at least the [AWS Nitro generation of instances](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#ec2-nitro-instances) to ensure many of the below concerns are automatically handled.
 - Use Amazon Linux 2 to ensure that all [AWS oriented hardware and OS optimizations](https://aws.amazon.com/amazon-linux-2/faqs/) are maximized without additional configuration or SRE management.

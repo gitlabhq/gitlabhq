@@ -17,6 +17,8 @@ RSpec.shared_examples 'page with product usage data collection banner' do
     allow(user).to receive(:dismissed_callout?).and_return(false)
 
     visit page_path
+    wait_for_requests
+
     expect(page).to have_selector '[data-testid="product-usage-data-collection-banner"]'
 
     page.within('[data-testid="product-usage-data-collection-banner"]') do

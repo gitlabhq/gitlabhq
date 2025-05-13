@@ -195,19 +195,15 @@ RSpec.shared_examples 'when running a container_expiration_policy' do
 end
 
 RSpec.shared_examples 'with protected rule having pattern ^\d{1,2}-\d{1,2}-stable$' do
-  |delete_expectations:, service_response_extra: {}, supports_caching: false,
-   minimum_access_level_for_delete: :maintainer|
-  let_it_be(:rule) do
-    create(
-      :container_registry_protection_tag_rule,
-      tag_name_pattern: '^\d{1,2}-\d{1,2}-stable$',
-      project: project,
-      minimum_access_level_for_delete: minimum_access_level_for_delete
-    )
+  |delete_expectations:, service_response_extra: {}, supports_caching: false, extra_params: {}|
+
+  before do
+    patterns = [::Gitlab::UntrustedRegexp.new('^\d{1,2}-\d{1,2}-stable$')]
+    allow(service).to receive(:protected_patterns_for_delete).and_return(patterns)
   end
 
   let(:params) do
-    { 'name_regex_delete' => '.*' }
+    { 'name_regex_delete' => '.*' }.merge(extra_params)
   end
 
   it_behaves_like 'removing the expected tags',

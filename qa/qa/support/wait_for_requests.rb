@@ -24,7 +24,7 @@ module QA
         end
 
         script = requests.join(' || ')
-        Capybara.page.evaluate_script(script).zero? # rubocop:disable Style/NumericPredicate
+        Capybara.page.evaluate_script(script).to_i == 0
       end
 
       def spinner_exists?
@@ -32,11 +32,6 @@ module QA
       end
 
       def finished_loading?(wait: DEFAULT_MAX_WAIT_TIME)
-        # The number of selectors should be able to be reduced after
-        # migration to the new spinner is complete.
-        # https://gitlab.com/groups/gitlab-org/-/epics/956
-        # retry_on_exception added here due to `StaleElementReferenceError`. See: https://gitlab.com/gitlab-org/gitlab/-/issues/232485
-
         Capybara.page.has_no_css?('.gl-spinner', wait: wait)
       rescue Selenium::WebDriver::Error::StaleElementReferenceError => e
         QA::Runtime::Logger.error(".gl-spinner reference has become stale: #{e}")

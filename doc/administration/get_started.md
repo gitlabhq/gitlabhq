@@ -170,8 +170,6 @@ All backups are encrypted. After 90 days, backups are deleted.
   - Labels
   - Additional items
 
-For more information about GitLab SaaS backups, see our [Backup FAQ page](https://handbook.gitlab.com/handbook/engineering/infrastructure/faq/#gitlabcom-backups).
-
 {{< alert type="note" >}}
 
 You should not use [direct transfer](../user/group/import/_index.md) or
@@ -306,7 +304,6 @@ You can learn more about how to administer GitLab.
 ### Paid GitLab training
 
 - GitLab education services: Learn more about [GitLab and DevOps best practices](https://about.gitlab.com/services/education/) through our specialized training courses. See our full course catalog.
-- GitLab technical certifications: Explore our [certification options](https://handbook.gitlab.com/handbook/customer-success/professional-services-engineering/gitlab-technical-certifications/) that focus on key GitLab and DevOps skills.
 
 ### Free GitLab training
 

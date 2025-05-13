@@ -1061,7 +1061,7 @@ rspec unit pg17:
 
 rspec integration pg17:
   extends:
-    - .rspec-base-pg16
+    - .rspec-base-pg17
     - .rails:rules:default-branch-schedule-nightly--code-backstage
     - .rspec-integration-parallel
 

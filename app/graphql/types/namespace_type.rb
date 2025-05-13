@@ -133,6 +133,13 @@ module Types
       calls_gitaly: true,
       description: 'Work item description templates available to the namespace.'
 
+    field :link_paths,
+      Types::Namespaces::LinkPaths,
+      null: true,
+      description: 'Namespace relevant paths to create links on the UI.',
+      method: :itself,
+      experiment: { milestone: '18.1' }
+
     markdown_field :description_html, null: true
 
     def achievements_path

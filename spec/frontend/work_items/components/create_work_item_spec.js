@@ -2,6 +2,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlAlert, GlButton, GlFormSelect, GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { cloneDeep } from 'lodash';
 import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/project_namespace_work_item_types.query.graphql.json';
 import { setHTMLFixture } from 'helpers/fixtures';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
@@ -59,9 +60,9 @@ describe('Create work item component', () => {
   const mutationErrorHandler = jest.fn().mockResolvedValue(createWorkItemMutationErrorResponse);
   const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
   const workItemQuerySuccessHandler = jest.fn().mockResolvedValue(createWorkItemQueryResponse());
-  const namespaceWorkItemTypesHandler = jest
-    .fn()
-    .mockResolvedValue(namespaceWorkItemTypesQueryResponse);
+  const namespaceWorkItemTypes =
+    namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes;
+  const { webUrl: namespaceWebUrl } = namespaceWorkItemTypesQueryResponse.data.workspace;
 
   const findFormTitle = () => wrapper.find('h1');
   const findAlert = () => wrapper.findComponent(GlAlert);
@@ -86,14 +87,20 @@ describe('Create work item component', () => {
   const findResolveDiscussionLink = () =>
     wrapper.find('[data-testid="work-item-resolve-discussion"]').findComponent(GlLink);
 
-  const namespaceWorkItemTypes =
-    namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes;
-
   const createComponent = ({
     props = {},
     mutationHandler = createWorkItemSuccessHandler,
     preselectedWorkItemType = WORK_ITEM_TYPE_NAME_EPIC,
+    isGroupWorkItem = false,
   } = {}) => {
+    const namespaceResponseCopy = cloneDeep(namespaceWorkItemTypesQueryResponse);
+    namespaceResponseCopy.data.workspace.id = 'gid://gitlab/Group/33';
+    const namespaceResponse = isGroupWorkItem
+      ? namespaceResponseCopy
+      : namespaceWorkItemTypesQueryResponse;
+
+    const namespaceWorkItemTypesHandler = jest.fn().mockResolvedValue(namespaceResponse);
+
     mockApollo = createMockApollo(
       [
         [workItemByIidQuery, workItemQuerySuccessHandler],
@@ -898,4 +905,18 @@ describe('Create work item component', () => {
       });
     });
   });
+
+  it.each`
+    isGroupWorkItem | uploadsPath
+    ${true}         | ${`${namespaceWebUrl}/-/uploads`}
+    ${false}        | ${`${namespaceWebUrl}/uploads`}
+  `(
+    'passes correct uploads path for markdown editor when isGroupWorkItem is $isGroupWorkItem',
+    async ({ isGroupWorkItem, uploadsPath }) => {
+      createComponent({ isGroupWorkItem });
+      await waitForPromises();
+
+      expect(findDescriptionWidget().props('uploadsPath')).toBe(uploadsPath);
+    },
+  );
 });

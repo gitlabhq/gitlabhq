@@ -11,6 +11,7 @@ import {
   GlIcon,
 } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+
 import { createAlert } from '~/alert';
 import { clearDraft } from '~/lib/utils/autosave';
 import { isMetaEnterKeyPair, parseBoolean } from '~/lib/utils/common_utils';
@@ -30,7 +31,11 @@ import {
   getNewWorkItemAutoSaveKey,
   newWorkItemFullPath,
 } from '~/work_items/utils';
-import { TYPENAME_MERGE_REQUEST, TYPENAME_VULNERABILITY } from '~/graphql_shared/constants';
+import {
+  TYPENAME_MERGE_REQUEST,
+  TYPENAME_VULNERABILITY,
+  TYPENAME_GROUP,
+} from '~/graphql_shared/constants';
 import {
   I18N_WORK_ITEM_ERROR_CREATING,
   i18n,
@@ -198,7 +203,7 @@ export default {
       localTitle: this.title || '',
       error: null,
       workItem: {},
-      workItemTypes: [],
+      namespace: null,
       selectedProjectFullPath: this.initialSelectedProject(),
       selectedWorkItemTypeId: null,
       loading: false,
@@ -234,7 +239,7 @@ export default {
         this.error = i18n.fetchError;
       },
     },
-    workItemTypes: {
+    namespace: {
       query() {
         return namespaceWorkItemTypesQuery;
       },
@@ -244,7 +249,7 @@ export default {
         };
       },
       update(data) {
-        return data.workspace?.workItemTypes?.nodes;
+        return data.workspace;
       },
       async result() {
         this.initialLoadingWorkItemTypes = false;
@@ -291,6 +296,9 @@ export default {
     },
   },
   computed: {
+    workItemTypes() {
+      return this.namespace?.workItemTypes?.nodes ?? [];
+    },
     newWorkItemPath() {
       return newWorkItemFullPath(this.selectedProjectFullPath, this.selectedWorkItemTypeName);
     },
@@ -531,6 +539,16 @@ export default {
     },
     showWorkItemStatus() {
       return this.workItemStatus && this.glFeatures.workItemStatusFeatureFlag;
+    },
+    isGroupWorkItem() {
+      return this.namespace?.id.includes(TYPENAME_GROUP);
+    },
+    uploadsPath() {
+      const rootPath = this.namespace?.webUrl;
+      if (!rootPath) {
+        return window.uploads_path;
+      }
+      return this.isGroupWorkItem ? `${rootPath}/-/uploads` : `${rootPath}/uploads`;
     },
   },
   watch: {
@@ -871,7 +889,7 @@ export default {
           />
         </gl-form-group>
 
-        <gl-loading-icon v-if="$apollo.queries.workItemTypes.loading" size="lg" />
+        <gl-loading-icon v-if="$apollo.queries.namespace.loading" size="lg" />
         <gl-form-group
           v-else-if="showWorkItemTypeSelect || alwaysShowWorkItemTypeSelect"
           class="gl-max-w-26 gl-flex-grow"
@@ -915,6 +933,7 @@ export default {
               :new-work-item-type="selectedWorkItemTypeName"
               :work-item-id="workItemId"
               :work-item-iid="workItemIid"
+              :uploads-path="uploadsPath"
               @error="updateError = $event"
               @updateDraft="updateDraftData('description', $event)"
             />

@@ -143,6 +143,11 @@
     "CiDeletedNamespace",
     "Namespace"
   ],
+  "NamespacesLinkPaths": [
+    "GroupNamespaceLinks",
+    "ProjectNamespaceLinks",
+    "UserNamespaceLinks"
+  ],
   "NoteableInterface": [
     "AlertManagementAlert",
     "BoardEpic",

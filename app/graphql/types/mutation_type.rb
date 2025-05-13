@@ -208,6 +208,8 @@ module Types
     mount_mutation Mutations::Ci::Runner::Create, experiment: { milestone: '15.10' }
     mount_mutation Mutations::Ci::Runner::Delete
     mount_mutation Mutations::Ci::Runner::Update
+    mount_mutation Mutations::Ci::Runner::AssignToProject, experiment: { milestone: '18.1' }
+    mount_mutation Mutations::Ci::Runner::UnassignFromProject, experiment: { milestone: '18.1' }
     mount_mutation Mutations::Ci::RunnersRegistrationToken::Reset, deprecated: {
       reason: 'Underlying feature was deprecated in 15.6 and will be removed in 18.0',
       milestone: '17.7'
