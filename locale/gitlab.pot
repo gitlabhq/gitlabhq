@@ -13858,7 +13858,7 @@ msgstr ""
 msgid "ClusterAgents|Learn how to troubleshoot"
 msgstr ""
 
-msgid "ClusterAgents|Learn more about user access."
+msgid "ClusterAgents|Learn more about user access"
 msgstr ""
 
 msgid "ClusterAgents|Make sure you are using a valid token."
@@ -16993,6 +16993,9 @@ msgid "Connection failure"
 msgstr ""
 
 msgid "Consistency guarantee method"
+msgstr ""
+
+msgid "Contact Sales to get started."
 msgstr ""
 
 msgid "Contact sales"
@@ -23179,6 +23182,66 @@ msgstr ""
 msgid "DuoCodeReview|is working on a reply"
 msgstr ""
 
+msgid "DuoCoreTrialDiscover|Accelerate learning and collaboration through AI interaction"
+msgstr ""
+
+msgid "DuoCoreTrialDiscover|Advanced CI/CD"
+msgstr ""
+
+msgid "DuoCoreTrialDiscover|Automate coding and delivery"
+msgstr ""
+
+msgid "DuoCoreTrialDiscover|Automated compliance"
+msgstr ""
+
+msgid "DuoCoreTrialDiscover|Boost productivity with smart code assistance"
+msgstr ""
+
+msgid "DuoCoreTrialDiscover|Code from anywhere with remote development workflows, get meaningful feedback with Code Review, and track issues effectively with error tracking."
+msgstr ""
+
+msgid "DuoCoreTrialDiscover|Discover Premium with Duo Core"
+msgstr ""
+
+msgid "DuoCoreTrialDiscover|Eliminate bottlenecks while meeting security requirements with scalable repositories, advanced branching, granular access controls, and built-in compliance."
+msgstr ""
+
+msgid "DuoCoreTrialDiscover|Free up time to focus on building great software with streamlined code reviews, automated security checks, and compliance requirements."
+msgstr ""
+
+msgid "DuoCoreTrialDiscover|Get help from your AI companion throughout development"
+msgstr ""
+
+msgid "DuoCoreTrialDiscover|Get real-time guidance across the entire software development lifecycle. Generate tests, explain code, refactor efficiently, and chat directly in your IDE or web interface."
+msgstr ""
+
+msgid "DuoCoreTrialDiscover|GitLab Premium, now with Duo – native AI Code Suggestions and Chat"
+msgstr ""
+
+msgid "DuoCoreTrialDiscover|Greater developer productivity, collaboration, and quality"
+msgstr ""
+
+msgid "DuoCoreTrialDiscover|Native AI Benefits in Premium"
+msgstr ""
+
+msgid "DuoCoreTrialDiscover|New customers can get access to GitLab Premium with Duo "
+msgstr ""
+
+msgid "DuoCoreTrialDiscover|Prevent pipeline conflicts with merge trains and push rules, store build outputs with Artifact Registry, and reuse working templates across teams."
+msgstr ""
+
+msgid "DuoCoreTrialDiscover|Transform your development pipeline with intelligent automation tools that handle repetitive tasks."
+msgstr ""
+
+msgid "DuoCoreTrialDiscover|Unified, secure, and collaborative code management"
+msgstr ""
+
+msgid "DuoCoreTrialDiscover|Why GitLab Premium with Duo?"
+msgstr ""
+
+msgid "DuoCoreTrialDiscover|Write secure code faster with AI-powered suggestions in more than 20 languages, available in your favorite IDE. Automate routine tasks and accelerate development cycles."
+msgstr ""
+
 msgid "DuoEnterpriseDiscover|AI Impact Dashboard measures the ROI of AI"
 msgstr ""
 
@@ -23438,6 +23501,9 @@ msgid "DuoProTrial|You do not have access to trial GitLab Duo"
 msgstr ""
 
 msgid "DuoProTrial|You have successfully started a Duo Pro trial that will expire on %{exp_date}. To give members access to new GitLab Duo Pro features, %{assign_link_start}assign them%{assign_link_end} to GitLab Duo Pro seats."
+msgstr ""
+
+msgid "DuoTrialDiscover|Ask questions, explore concepts, test ideas, and receive instant feedback directly in your workflow."
 msgstr ""
 
 msgid "Duplicate entries found for compliance controls for the requirement."
@@ -64968,6 +65034,9 @@ msgstr ""
 msgid "Updating…"
 msgstr ""
 
+msgid "Upgrade"
+msgstr ""
+
 msgid "Upload"
 msgstr ""
 
@@ -73283,6 +73352,9 @@ msgid "past due"
 msgstr ""
 
 msgid "pending comment"
+msgstr ""
+
+msgid "per user/month."
 msgstr ""
 
 msgid "personal access token"

@@ -387,7 +387,6 @@ DEPENDENCIES
   influxdb-client (~> 3.2)
   junit_merge (~> 0.1.2)
   knapsack (~> 4.0)
-  mutex_m (~> 0.3.0)
   nokogiri (~> 1.18, >= 1.18.1)
   octokit (~> 9.2.0)
   parallel (~> 1.27)

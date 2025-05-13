@@ -12,7 +12,6 @@
     BROWSERSLIST_IGNORE_OLD_DATA: "true"
     GRAPHQL_SCHEMA_APOLLO_FILE: "tmp/tests/graphql/gitlab_schema_apollo.graphql"
 
-
 update-static-analysis-cache:
   extends:
     - .static-analysis-base

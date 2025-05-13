@@ -41,8 +41,13 @@ The following table provides an overview of the group members that get access to
 |---------------------------------------------------------------------|--------------------------|
 | Direct member of the group that is shared                           | {{< icon name="check-circle" >}} Yes   |
 | Inherited member of the group that is shared                        | {{< icon name="check-circle" >}} Yes   |
+| Shared member of the group that is shared <sup>1</sup>              | {{< icon name="dotted-circle" >}} Yes  |
 | Direct member of a subgroup, but not of the group that is shared    | {{< icon name="dotted-circle" >}} No   |
 | Inherited member of a subgroup, but not of the group that is shared | {{< icon name="dotted-circle" >}} No   |
+
+**Footnotes**:
+
+1. GitLab supports extending project access to shared group members, but this approach is not recommended. [Epic 122](https://gitlab.com/groups/gitlab-org/-/epics/122) proposes changing this behavior and transitioning to a teams model for sharing groups.
 
 The [visibility level](../../public_access.md) of the group you're inviting must be at least as restrictive as that of the project.
 For example, you can invite:
@@ -228,15 +233,16 @@ When you want another group's members to have access to your group,
 you can invite the [group](../../group/_index.md) to your group.
 The group's direct members get access to the group, which becomes a **shared group**.
 
-Only direct members of the invited group get access to the shared group, not inherited or subgroup members. To grant subgroup members access, invite the subgroup directly.
+Only direct members of the invited group get access to the shared group, not inherited, shared or subgroup members. To grant subgroup members access, invite the subgroup directly.
 
 The following table provides an overview of the group members that get access to a shared group:
 
 | Group member source                                          | Access to shared group |
 |--------------------------------------------------------------|------------------------|
-| Direct member of the group that is invited                   | {{< icon name="check-circle" >}} Yes   |
+| Direct member of the group that is invited                   | {{< icon name="check-circle" >}} Yes    |
 | Inherited member of the group that is invited                | {{< icon name="dotted-circle" >}} No    |
-| Member of a subgroup, but not of the group that is invited    | {{< icon name="dotted-circle" >}} No    |
+| Shared member of the group that is invited                   | {{< icon name="dotted-circle" >}} No    |
+| Member of a subgroup, but not of the group that is invited   | {{< icon name="dotted-circle" >}} No    |
 
 ### Member access and roles
 

@@ -12,7 +12,7 @@ describe('Deploy freeze timezone dropdown', () => {
   const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
   const findSearchBox = () => wrapper.findByTestId('listbox-search-input');
 
-  const createComponent = async (searchTerm, selectedTimezone) => {
+  const createComponent = async (searchTerm, selectedTimezone = '') => {
     wrapper = shallowMountExtended(TimezoneDropdown, {
       store,
       propsData: {
@@ -56,12 +56,13 @@ describe('Deploy freeze timezone dropdown', () => {
   });
 
   describe('Time zones found', () => {
+    const selectedTz = findTzByName('Alaska');
+
     beforeEach(async () => {
       await createComponent('Alaska');
     });
 
     it('renders only the time zone searched for', () => {
-      const selectedTz = findTzByName('Alaska');
       expect(findAllDropdownItems()).toHaveLength(1);
       expect(findDropdownItemByIndex(0).text()).toBe(formatTimezone(selectedTz));
     });
@@ -70,9 +71,14 @@ describe('Deploy freeze timezone dropdown', () => {
       expect(findEmptyResultsItem().exists()).toBe(false);
     });
 
-    describe('Custom events', () => {
-      const selectedTz = findTzByName('Alaska');
+    it('updates the dropdown when a new time zone is passed in', async () => {
+      const newTimezone = 'Europe/Paris';
+      wrapper.setProps({ value: newTimezone });
+      await nextTick();
+      expect(findDropdown().props('toggleText')).toBe('[UTC+2] Paris');
+    });
 
+    describe('Custom events', () => {
       it('should emit input if a time zone is clicked', () => {
         const payload = formatTimezone(selectedTz);
 

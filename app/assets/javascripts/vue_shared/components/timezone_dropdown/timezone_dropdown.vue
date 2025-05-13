@@ -69,6 +69,13 @@ export default {
         : undefined;
     },
   },
+  watch: {
+    value(newVal) {
+      if (newVal) {
+        this.tzValue = this.initialTimezone(this.timezoneData, newVal);
+      }
+    },
+  },
   methods: {
     selectTimezone(formattedTimezone) {
       const selectedTimezone = this.timezones.find(

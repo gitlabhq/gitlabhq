@@ -6,6 +6,8 @@ module Types
       class Base < BasePermissionType
         graphql_name 'NamespacePermissions'
 
+        abilities :admin_label
+
         ability_field :read_namespace
       end
     end

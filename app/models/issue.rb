@@ -70,7 +70,6 @@ class Issue < ApplicationRecord
   ignore_column :project_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
   ignore_column :promoted_to_epic_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
   ignore_column :updated_by_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
-  ignore_column :correct_work_item_type_id, remove_with: '18.0', remove_after: '2025-04-17'
 
   belongs_to :project
   belongs_to :namespace, inverse_of: :issues

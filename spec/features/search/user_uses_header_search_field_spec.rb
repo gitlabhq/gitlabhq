@@ -112,7 +112,7 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
       let(:scope_name) { 'all GitLab' }
     end
 
-    it 'displays search options', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/251076' do
+    it 'displays search options' do
       fill_in_search('test')
 
       expect(page).to have_selector(scoped_search_link('test'))

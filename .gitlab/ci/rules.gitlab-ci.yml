@@ -797,21 +797,9 @@
   - "qa/gems/gitlab-orchestrator/{Gemfile,Gemfile.lock}"
 
 .observability-code-patterns: &observability-code-patterns
-  # backend
-  - "ee/app/helpers/observability/**/*"
-  - "ee/app/helpers/projects/observability_helper.rb"
   - "lib/gitlab/observability.rb"
   - "ee/lib/ee/gitlab/observability.rb"
   - "ee/lib/api/internal/observability.rb"
-  - "ee/app/controllers/projects/tracing_controller.rb"
-  - "ee/app/controllers/projects/metrics_controller.rb"
-  - "ee/app/controllers/projects/logs_controller.rb"
-  - "ee/app/services/observability/**/*"
-  # frontend
-  - "app/assets/javascripts/observability/**/*"
-  - "ee/app/assets/javascripts/logs/**/*"
-  - "ee/app/assets/javascripts/metrics/**/*"
-  - "ee/app/assets/javascripts/tracing/**/*"
 
 ##################
 # Conditions set #
@@ -2772,15 +2760,6 @@
     # Run only when the merge request have dependency file modifications
     - <<: *if-merge-request
       changes: *dependency-patterns
-
-.appsec-libbehave:rules:
-  rules:
-    # Requiring $DEPENDENCY_REVIEW_PAT prevents the bot from running on forks or CE
-    # Without it the script would fail too.
-    # Run only when the merge request have dependency file modifications
-    - <<: *if-merge-request
-      changes: *dependency-patterns
-
 
 ##################
 # Releases rules #

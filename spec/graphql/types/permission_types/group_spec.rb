@@ -7,7 +7,8 @@ RSpec.describe Types::PermissionTypes::Group, feature_category: :groups_and_proj
 
   it 'has the correct permissions' do
     expected_permissions = [
-      :read_group, :create_projects, :create_custom_emoji, :remove_group, :view_edit_page, :can_leave
+      :read_group, :create_projects, :create_custom_emoji, :remove_group, :view_edit_page, :can_leave,
+      :admin_issue, :read_crm_contact, :read_crm_organization
     ]
 
     expected_permissions.each do |permission|

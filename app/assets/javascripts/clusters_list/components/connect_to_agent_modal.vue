@@ -16,7 +16,7 @@ export default {
     configuredText: s__(
       'ClusterAgents|You can connect to your cluster from the command line. Configure %{linkStart}kubectl%{linkEnd} command-line access by running the following command:',
     ),
-    learMoreText: s__('ClusterAgents|Learn more about user access.'),
+    learnMoreText: s__('ClusterAgents|Learn more about user access'),
     buttonClose: __('Close'),
   },
   learnMoreDocsLink: helpPagePath('user/clusters/agent/user_access'),
@@ -134,7 +134,8 @@ export default {
     </p>
 
     <p>
-      <gl-link :href="$options.learnMoreDocsLink"> {{ $options.i18n.learMoreText }} </gl-link>
+      <gl-link :href="$options.learnMoreDocsLink">{{ $options.i18n.learnMoreText }}</gl-link
+      >.
     </p>
 
     <template #modal-footer>

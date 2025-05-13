@@ -113,7 +113,7 @@ export const I18N_AGENT_MODAL = {
   registerAgentButton: s__('ClusterAgents|Create and register'),
   close: __('Close'),
   cancel: __('Cancel'),
-  learMore: __('Learn more.'),
+  learnMore: __('Learn more'),
 
   modalTitle: s__('ClusterAgents|Connect a Kubernetes cluster'),
   modalBody: s__('ClusterAgents|Create a new agent to register with GitLab.'),

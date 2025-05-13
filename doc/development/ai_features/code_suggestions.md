@@ -44,8 +44,10 @@ When testing interactions with the AI gateway, you might want to integrate your 
 with the deployed staging AI gateway. To do this:
 
 1. You need a cloud staging license that has the Code Suggestions add-on,
-   because add-ons are enabled on staging. Follow [these instructions](#setup-instructions-to-use-gdk-with-the-code-suggestions-add-on) to add the add-on to your license (you can reach out to `#s_fulfillment_engineering` if you have any problems). See this [handbook page](https://handbook.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses) for how to request a license for local development.
-1. Set environment variables to point customers-dot to staging, and the AI gateway to staging:
+   because add-ons are enabled on staging. Follow [these instructions](#setup-instructions-to-use-gdk-with-the-code-suggestions-add-on) to add the add-on to your license (you can reach out to `#s_fulfillment_engineering` if you have any problems).
+   See this [handbook page](https://handbook.gitlab.com/handbook/engineering/developer-onboarding/#working-on-gitlab-ee-developer-licenses) for how to request a license for local development.
+1. Set environment variables in your GDK to point customers-dot to staging, and the AI gateway to staging. You can refer to [this documentation](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/runit.md#using-environment-variables)
+   to set the environment variables in your GDK:
 
    ```shell
    export GITLAB_LICENSE_MODE=test

@@ -8,6 +8,8 @@ module Transactions
     # transaction. Handles special cases when running inside a test environment,
     # where tests may be wrapped in transactions
     def inside_transaction?
+      return false unless connected?
+
       base = Rails.env.test? ? open_transactions_baseline.to_i : 0
 
       connection.open_transactions > base
