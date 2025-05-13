@@ -1,7 +1,6 @@
 ---
 RSpec/FeatureCategory:
   Exclude:
-    - 'ee/spec/controllers/admin/application_settings_controller_spec.rb'
     - 'ee/spec/controllers/admin/clusters_controller_spec.rb'
     - 'ee/spec/controllers/autocomplete_controller_spec.rb'
     - 'ee/spec/controllers/dashboard_controller_spec.rb'
