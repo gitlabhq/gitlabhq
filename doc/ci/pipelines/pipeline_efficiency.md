@@ -258,5 +258,5 @@ identify recurring problems with CI pipeline efficiency.
 ### Related topics
 
 - [CI Monitoring Webcast Slides](https://docs.google.com/presentation/d/1ONwIIzRB7GWX-WOSziIIv8fz1ngqv77HO1yVfRooOHM/edit?usp=sharing)
-- [GitLab.com Monitoring Handbook](https://handbook.gitlab.com/handbook/engineering/monitoring/)
+- GitLab.com Monitoring Handbook
 - [Buildings dashboards for operational visibility](https://aws.amazon.com/builders-library/building-dashboards-for-operational-visibility/)

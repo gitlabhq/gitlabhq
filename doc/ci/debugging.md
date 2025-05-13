@@ -242,7 +242,7 @@ as they could be viewed by any user with access to the pipelines.
 
 ### Run the job's commands locally
 
-You can use a tool like [Rancher Desktop](https://rancherdesktop.io/) or [similar alternatives](https://handbook.gitlab.com/handbook/tools-and-tips/mac/#docker-desktop)
+You can use a tool like [Rancher Desktop](https://rancherdesktop.io/) or similar alternatives
 to run the job's container image on your local machine. Then, run the job's `script` commands
 in the container and verify the behavior.
 

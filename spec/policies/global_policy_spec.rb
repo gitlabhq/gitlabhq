@@ -751,6 +751,9 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
       let(:current_user) { admin_user }
       let(:permissions) do
         [
+          :access_admin_area,
+          :read_application_statistics,
+          :read_admin_users,
           :read_admin_audit_log,
           :read_admin_background_jobs,
           :read_admin_background_migrations,

@@ -180,6 +180,13 @@ module Gitlab
     def cancel
       self.class.cancel(@redis_shared_state_key, @uuid)
     end
+
+    # Returns true if the UUID for the key hasn't changed.
+    def same_uuid?
+      ::Gitlab::Redis::SharedState.with do |redis|
+        redis.get(@redis_shared_state_key) == @uuid
+      end
+    end
   end
 end
 

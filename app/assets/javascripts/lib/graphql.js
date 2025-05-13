@@ -79,6 +79,9 @@ export const typePolicies = {
   ProjectValueStreamAnalyticsFlowMetrics: {
     merge: true,
   },
+  ValueStreamStageMetrics: {
+    merge: true,
+  },
   ScanExecutionPolicy: {
     keyFields: ['name'],
   },

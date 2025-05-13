@@ -20,7 +20,7 @@ Use the [runner creation workflow](https://docs.gitlab.com/runner/register/#regi
 
 For information about the current development status of the new workflow, see [epic 7663](https://gitlab.com/groups/gitlab-org/-/epics/7663).
 
-For information about the technical design and reasons for the new architecture, see [Next GitLab Runner Token Architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/runner_tokens/).
+For information about the technical design and reasons for the new architecture, see Next GitLab Runner Token Architecture.
 
 If you experience problems or have concerns about the new runner registration workflow,
 or need more information, let us know in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387993).

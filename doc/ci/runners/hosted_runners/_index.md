@@ -85,7 +85,7 @@ For more information about the security of hosted runners for GitLab.com, see:
 
 - [Google Cloud Infrastructure Security Design Overview whitepaper](https://cloud.google.com/docs/security/infrastructure/design/resources/google_infrastructure_whitepaper_fa.pdf)
 - [GitLab Trust Center](https://about.gitlab.com/security/)
-- [GitLab Security Compliance Controls](https://handbook.gitlab.com/handbook/security/security-assurance/security-compliance/sec-controls/)
+- GitLab Security Compliance Controls
 
 ### Caching on hosted runners for GitLab.com
 

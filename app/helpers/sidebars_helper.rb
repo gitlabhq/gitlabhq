@@ -521,7 +521,7 @@ module SidebarsHelper
   end
 
   def display_admin_area_link?
-    current_user&.can_admin_all_resources?
+    current_user&.can?(:access_admin_area)
   end
 end
 

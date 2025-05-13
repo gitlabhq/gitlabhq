@@ -29,7 +29,7 @@ module Gitlab
           try_obtain_lease do
             # Keep reporting the metrics while the lease is valid
             # to ensure we have continuous data
-            while exclusive_lease.exists?
+            while exclusive_lease.same_uuid?
               report_metrics
               Kernel.sleep(DEFAULT_SAMPLING_INTERVAL_SECONDS)
             end

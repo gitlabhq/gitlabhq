@@ -19399,6 +19399,9 @@ msgstr ""
 msgid "CycleAnalytics|There is no data for 'Total time' available. Adjust the current filters."
 msgstr ""
 
+msgid "CycleAnalytics|There was an error while fetching data for the stage time chart."
+msgstr ""
+
 msgid "CycleAnalytics|Time to restore service"
 msgstr ""
 
