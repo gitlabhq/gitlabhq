@@ -640,17 +640,3 @@ off Gitaly Cluster to a sharded Gitaly instance:
 1. Create and configure a new [Gitaly server](configure_gitaly.md#run-gitaly-on-its-own-server).
 1. [Move the repositories](../operations/moving_repositories.md#moving-repositories) to the newly created storage. You can
    move them by shard or by group, which gives you the opportunity to spread them over multiple Gitaly servers.
-
-### Transition to Gitaly Cluster
-
-For the sake of removing complexity, we must remove direct Git access in GitLab. However, we can't
-remove it as long some GitLab installations require Git repositories on NFS.
-
-Two facets of our efforts to remove direct Git access in GitLab are:
-
-- Reduce the number of inefficient Gitaly queries made by GitLab.
-- Persuade administrators of fault-tolerant or horizontally-scaled GitLab instances to migrate off
-  NFS.
-
-The second facet presents the only real solution. For this, we developed
-[Gitaly Cluster](#gitaly-cluster).

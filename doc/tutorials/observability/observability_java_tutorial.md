@@ -5,8 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: 'Tutorial: Use GitLab Observability with a Java Spring application'
 ---
 
-For more information, see the history of the **Distributed tracing** feature.
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
 <!-- Update this note when observability_features flag is removed -->
+
+{{< /alert >}}
 
 In this tutorial, you'll learn how to create, configure, instrument, and monitor a Java Spring application using GitLab Observability features.
 

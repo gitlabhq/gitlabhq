@@ -6,6 +6,7 @@ module Ci
     TRANSACTION_MESSAGE = "can't perform network calls inside a database transaction"
     BATCH_SIZE = 100
     RETRY_IN = 10.minutes
+    ACCEPTABLE_DELAY = 12.hours
 
     def execute
       objects = load_next_batch
@@ -50,13 +51,22 @@ module Ci
       raise TransactionInProgressError, TRANSACTION_MESSAGE if transaction_open?
       return ServiceResponse.success if objects.empty?
 
-      deleted_at = Time.current
-      deleted = objects.select(&:delete_file_from_storage)
+      deleted = []
 
-      latencies = deleted.map { |record| (deleted_at - record.created_at).seconds }
+      objects.each do |object|
+        if object.delete_file_from_storage
+          deleted << object
+          ::Gitlab::Metrics::CiDeletedObjectProcessingSlis.record_error(error: false)
+          ::Gitlab::Metrics::CiDeletedObjectProcessingSlis.record_apdex(
+            success: object.created_at > ACCEPTABLE_DELAY.ago)
+        else
+          ::Gitlab::Metrics::CiDeletedObjectProcessingSlis.record_error(error: true)
+        end
+      end
+
       Ci::DeletedObject.id_in(deleted.map(&:id)).delete_all
 
-      ServiceResponse.success(payload: { latencies: latencies })
+      ServiceResponse.success
     end
 
     def transaction_open?

@@ -32,7 +32,7 @@ This feature is not ready for production use.
 
 {{< /alert >}}
 
-Use this API to track user behavior and application usage. For more information, see product analytics.
+Use this API to track user behavior and application usage.
 
 {{< alert type="note" >}}
 

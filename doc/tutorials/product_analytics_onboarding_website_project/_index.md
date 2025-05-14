@@ -33,7 +33,7 @@ Here's an overview of what we're going to do:
 
 To follow along this tutorial, you must:
 
-- Enable product analytics for your instance.
+- [Enable product analytics](../../development/internal_analytics/product_analytics.md#enable-product-analytics) for your instance.
 - Have the Owner role for the group you create the project in.
 
 ## Create a project from a template

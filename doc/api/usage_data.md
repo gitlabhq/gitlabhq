@@ -12,7 +12,7 @@ title: Service Ping API
 
 {{< /details >}}
 
-Use this API to interact with the GitLab Service Ping process. For more information, see the Service Ping development guidelines.
+Use this API to interact with the GitLab Service Ping process.
 
 ## Export Service Ping data
 

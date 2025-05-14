@@ -24,19 +24,6 @@ RSpec.describe Ci::DeleteObjectsService, :aggregate_failures, feature_category: 
       expect { execute }.to change { artifact.file.exists? }
     end
 
-    it 'returns an array of latency durations' do
-      freeze_time do
-        latency = 42.seconds
-
-        Ci::DeletedObject.update_all(created_at: Time.current - latency, pick_up_at: Time.current - latency)
-
-        response = service.execute
-
-        expect(response).to be_success
-        expect(response.payload).to eq({ latencies: [latency] })
-      end
-    end
-
     context 'when trying to execute without records' do
       let(:data) { [] }
 
@@ -143,6 +130,74 @@ RSpec.describe Ci::DeleteObjectsService, :aggregate_failures, feature_category: 
       end
 
       it { is_expected.to eq(2) }
+    end
+  end
+
+  describe "incrementing the Sli's for Apdex and error rate" do
+    context "when record is deleted" do
+      context 'with acceptable deletion delay' do
+        before do
+          Ci::DeletedObject.bulk_import(data)
+          # We disable the check because the specs are wrapped in a transaction
+          allow(service).to receive(:transaction_open?).and_return(false)
+        end
+
+        it 'increments the apdex for a successful delete' do
+          expect(Gitlab::Metrics::CiDeletedObjectProcessingSlis).to receive(:record_apdex).with(
+            success: true
+          )
+          service.execute
+        end
+
+        it 'increments the error_rate with no error' do
+          expect(Gitlab::Metrics::CiDeletedObjectProcessingSlis).to receive(:record_error).with(
+            error: false
+          )
+          service.execute
+        end
+      end
+
+      context 'with unacceptable deletion delay' do
+        before do
+          Ci::DeletedObject.bulk_import(data)
+          Ci::DeletedObject.update_all(created_at: 17.hours.ago)
+
+          # We disable the check because the specs are wrapped in a transaction
+          allow(service).to receive(:transaction_open?).and_return(false)
+        end
+
+        it 'increments the apdex for a unsuccessful delete' do
+          expect(Gitlab::Metrics::CiDeletedObjectProcessingSlis).to receive(:record_apdex).with(
+            success: false
+          )
+          service.execute
+        end
+
+        it 'increments the error_rate with no error' do
+          expect(Gitlab::Metrics::CiDeletedObjectProcessingSlis).to receive(:record_error).with(
+            error: false
+          )
+          service.execute
+        end
+      end
+    end
+
+    context "when record is not deleted" do
+      before do
+        Ci::DeletedObject.bulk_import(data)
+        allow_next_found_instance_of(Ci::DeletedObject) do |instance|
+          allow(instance).to receive(:delete_file_from_storage).and_return(false)
+        end
+        allow(service).to receive(:transaction_open?).and_return(false)
+      end
+
+      it 'increments the error_rate with an error' do
+        expect(Gitlab::Metrics::CiDeletedObjectProcessingSlis).to receive(:record_error).with(
+          error: true
+        )
+
+        service.execute
+      end
     end
   end
 end

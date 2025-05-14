@@ -2362,6 +2362,9 @@ msgstr ""
 msgid "AISummary|View summary"
 msgstr ""
 
+msgid "AI|Accept & Insert"
+msgstr ""
+
 msgid "AI|Apply AI-generated description"
 msgstr ""
 
@@ -2380,6 +2383,9 @@ msgstr ""
 msgid "AI|Description is required"
 msgstr ""
 
+msgid "AI|Discard suggestion"
+msgstr ""
+
 msgid "AI|Enable Auto Review"
 msgstr ""
 
@@ -2390,6 +2396,9 @@ msgid "AI|Explain with AI"
 msgstr ""
 
 msgid "AI|For example: Organizations should be able to forecast into the future by using value stream analytics charts. This feature would help them understand how their metrics are trending."
+msgstr ""
+
+msgid "AI|Generate"
 msgstr ""
 
 msgid "AI|Generate issue description"
@@ -2432,6 +2441,9 @@ msgid "AI|I'm sorry, I couldn't respond in time. Please try a more specific requ
 msgstr ""
 
 msgid "AI|Populate issue description"
+msgstr ""
+
+msgid "AI|Regenerate"
 msgstr ""
 
 msgid "AI|Replace the existing description with an AI-generated description? Any changes you have made will be lost."
@@ -2477,6 +2489,9 @@ msgid "AI|Write a brief description and have AI fill in the details."
 msgstr ""
 
 msgid "AI|Write a summary to fill out the selected issue template"
+msgstr ""
+
+msgid "AI|Write with GitLab Duo"
 msgstr ""
 
 msgid "AI|Your request does not seem to contain code to %{action}. To %{human_name} select the lines of code in your %{platform} and then type the command %{command_name} in the chat. You may add additional instructions after this command. If you have no code to select, you can also simply add the code after the command."
@@ -8724,6 +8739,9 @@ msgid "AsanaService|User personal access token. User must have access to the tas
 msgstr ""
 
 msgid "Ask GitLab Duo"
+msgstr ""
+
+msgid "Ask GitLab Duo to help you write descriptions, rewrite existing text and more..."
 msgstr ""
 
 msgid "Ask a maintainer to check the import status for more details."
@@ -21982,6 +22000,9 @@ msgstr ""
 msgid "Describe the goal of the changes and what reviewers should be aware of."
 msgstr ""
 
+msgid "Describe what you want to write"
+msgstr ""
+
 msgid "Description"
 msgstr ""
 
@@ -24235,9 +24256,6 @@ msgid "Enter a number"
 msgstr ""
 
 msgid "Enter a number from 0 to 100."
-msgstr ""
-
-msgid "Enter a prompt"
 msgstr ""
 
 msgid "Enter a search query to find more branches, or use * to create a wildcard."
@@ -27185,9 +27203,6 @@ msgid "General pipelines"
 msgstr ""
 
 msgid "General settings"
-msgstr ""
-
-msgid "Generate"
 msgstr ""
 
 msgid "Generate API key at %{site}"
@@ -32642,9 +32657,6 @@ msgid "Insert a quote"
 msgstr ""
 
 msgid "Insert code"
-msgstr ""
-
-msgid "Insert code change summary"
 msgstr ""
 
 msgid "Insert column left"
@@ -50047,7 +50059,7 @@ msgstr ""
 msgid "Rate the review"
 msgstr ""
 
-msgid "Rate this response %{separator} Mention %{codeStart}%{botUser}%{codeEnd} to continue the conversation."
+msgid "Rate this response %{emoji} %{separator} Mention %{codeStart}%{botUser}%{codeEnd} to continue the conversation."
 msgstr ""
 
 msgid "Raw blob request rate limit per minute"
@@ -50215,9 +50227,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Refreshing…"
-msgstr ""
-
-msgid "Regenerate"
 msgstr ""
 
 msgid "Regenerate export"
@@ -70087,9 +70096,6 @@ msgid "Write milestone description..."
 msgstr ""
 
 msgid "Write milestone description…"
-msgstr ""
-
-msgid "Write with GitLab Duo"
 msgstr ""
 
 msgid "Write your release notes or drag your files here…"

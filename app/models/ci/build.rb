@@ -648,7 +648,6 @@ module Ci
         .concat(dependency_proxy_variables)
         .concat(job_jwt_variables)
         .concat(scoped_variables)
-        .concat(job_variables)
         .concat(persisted_environment_variables)
     end
     strong_memoize_attr :base_variables

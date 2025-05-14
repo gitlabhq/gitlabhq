@@ -38,11 +38,9 @@ module Gitlab
             variables.concat(job.yaml_variables)
             variables.concat(user_variables(job.user))
             variables.concat(job.dependency_variables) if dependencies
-            variables.concat(secret_instance_variables)
-            variables.concat(secret_group_variables(environment: environment))
-            variables.concat(secret_project_variables(environment: environment))
-            variables.concat(pipeline.variables)
-            variables.concat(pipeline_schedule_variables)
+            variables.concat(
+              user_defined_variables(options: job.options, environment: environment, job_variables: job.manual_variables)
+            )
             variables.concat(release_variables)
           end
         end
@@ -67,11 +65,12 @@ module Gitlab
             variables.concat(job.yaml_variables)
             variables.concat(user_variables(job.user))
             variables.concat(job.dependency_variables) if dependencies
-            variables.concat(secret_instance_variables)
-            variables.concat(secret_group_variables(environment: environment, include_protected_vars: expose_group_variables))
-            variables.concat(secret_project_variables(environment: environment, include_protected_vars: expose_project_variables))
-            variables.concat(pipeline.variables)
-            variables.concat(pipeline_schedule_variables)
+            variables.concat(
+              user_defined_variables(
+                options: job.options, environment: environment, job_variables: job.manual_variables,
+                expose_project_variables: expose_project_variables, expose_group_variables: expose_group_variables
+              )
+            )
             variables.concat(release_variables)
           end
         end
@@ -96,11 +95,7 @@ module Gitlab
             variables.concat(job_attr[:yaml_variables])
             variables.concat(user_variables(user))
             # job.dependency_variables: No need because dependencies are not in the Seed step.
-            variables.concat(secret_instance_variables)
-            variables.concat(secret_group_variables(environment: environment))
-            variables.concat(secret_project_variables(environment: environment))
-            variables.concat(pipeline.variables)
-            variables.concat(pipeline_schedule_variables)
+            variables.concat(user_defined_variables(options: job_attr[:options], environment: environment))
             variables.concat(release_variables)
           end
         end
@@ -112,11 +107,7 @@ module Gitlab
 
             variables.concat(project.predefined_variables)
             variables.concat(pipeline_variables_builder.predefined_variables)
-            variables.concat(secret_instance_variables)
-            variables.concat(secret_group_variables(environment: nil))
-            variables.concat(secret_project_variables(environment: nil))
-            variables.concat(pipeline.variables)
-            variables.concat(pipeline_schedule_variables)
+            variables.concat(user_defined_variables(options: {}, environment: nil))
           end
         end
 
@@ -285,6 +276,17 @@ module Gitlab
             kubernetes_namespace: environment ? job.expanded_kubernetes_namespace : nil
             # environment.nil? means also that this is called from `simple_variables`.
           )
+        end
+
+        def user_defined_variables(options:, environment:, job_variables: nil, expose_group_variables: protected_ref?, expose_project_variables: protected_ref?) # rubocop:disable Lint/UnusedMethodArgument -- options will be used in EE
+          Gitlab::Ci::Variables::Collection.new.tap do |variables|
+            variables.concat(secret_instance_variables)
+            variables.concat(secret_group_variables(environment: environment, include_protected_vars: expose_group_variables))
+            variables.concat(secret_project_variables(environment: environment, include_protected_vars: expose_project_variables))
+            variables.concat(pipeline.variables)
+            variables.concat(pipeline_schedule_variables)
+            variables.concat(job_variables)
+          end
         end
 
         def job_name_slug(job_name)

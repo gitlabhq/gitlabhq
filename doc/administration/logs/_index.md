@@ -108,6 +108,7 @@ except those captured by `runit`.
 | [LogRotate logs](#logrotate-logs)               | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
 | [Mailroom](#mail_room_jsonlog-default)          | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
 | [NGINX](#nginx-logs)                            | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
+| [Patroni logs](#patroni-logs)                   | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
 | [PgBouncer logs](#pgbouncer-logs)               | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
 | [PostgreSQL logs](#postgresql-logs)             | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
 | [Praefect logs](#praefect-logs)                 | {{< icon name="dotted-circle" >}} Yes | {{< icon name="check-circle" >}} Yes  |
@@ -115,6 +116,7 @@ except those captured by `runit`.
 | [Puma](#puma-logs)                              | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
 | [Redis logs](#redis-logs)                       | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
 | [Registry logs](#registry-logs)                 | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
+| [Sentinel logs](#sentinel-logs)                 | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
 | [Workhorse logs](#workhorse-logs)               | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
 
 ## `production_json.log`
@@ -1284,6 +1286,10 @@ For Linux package installations, Mattermost logs are in these locations:
 
 For Linux package installations, Workhorse logs are in `/var/log/gitlab/gitlab-workhorse/current`.
 
+## Patroni logs
+
+For Linux package installations, Patroni logs are in `/var/log/gitlab/patroni/current`.
+
 ## PgBouncer logs
 
 For Linux package installations, PgBouncer logs are in `/var/log/gitlab/pgbouncer/current`.
@@ -1292,6 +1298,8 @@ For Linux package installations, PgBouncer logs are in `/var/log/gitlab/pgbounce
 
 For Linux package installations, PostgreSQL logs are in `/var/log/gitlab/postgresql/current`.
 
+If Patroni is being used, the PostgreSQL logs are stored in the [Patroni logs](#patroni-logs) instead.
+
 ## Prometheus logs
 
 For Linux package installations, Prometheus logs are in `/var/log/gitlab/prometheus/current`.
@@ -1299,6 +1307,10 @@ For Linux package installations, Prometheus logs are in `/var/log/gitlab/prometh
 ## Redis logs
 
 For Linux package installations, Redis logs are in `/var/log/gitlab/redis/current`.
+
+## Sentinel logs
+
+For Linux package installations, Sentinel logs are in `/var/log/gitlab/sentinel/current`.
 
 ## Alertmanager logs
 

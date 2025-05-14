@@ -132,13 +132,15 @@ export default {
     duoFeedbackText() {
       return sprintf(
         __(
-          'Rate this response %{separator} Mention %{codeStart}%{botUser}%{codeEnd} to continue the conversation.',
+          'Rate this response %{emoji} %{separator} Mention %{codeStart}%{botUser}%{codeEnd} to continue the conversation.',
         ),
         {
           separator: '•',
           codeStart: '<code>',
           botUser: '@GitLabDuo',
           codeEnd: '</code>',
+          emoji:
+            '<gl-emoji data-name="thumbsup"></gl-emoji> <gl-emoji data-name="thumbsdown"></gl-emoji>',
         },
         false,
       );

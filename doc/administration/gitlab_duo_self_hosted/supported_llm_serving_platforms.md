@@ -155,7 +155,15 @@ This change has been observed to notably improve response times in internal benc
 1. [AWS Bedrock](https://aws.amazon.com/bedrock/).
    A fully managed service that allows developers to build and scale generative AI applications using pre-trained models from leading AI companies. It seamlessly integrates with other AWS services and offers a pay-as-you-go pricing model.
 
-   You must configure the GitLab instance with your appropriate AWS IAM permissions before accessing Bedrock models. You cannot do this in the GitLab Duo Self-Hosted UI. For example, you can authenticate the AI Gateway instance by defining the [`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_REGION_NAME`](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) when starting the Docker image. For more information, see the [AWS Identity and Access Management (IAM) Guide](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam.html).
+   You must configure IAM credentials to access Bedrock with the appropriate AWS IAM permissions before accessing Bedrock models. You cannot do this in the GitLab Duo Self-Hosted UI.
+
+   To authenticate your AI Gateway instance export the appropriate AWS SDK environment variables such as [`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_REGION_NAME`](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) when starting the Docker container. For more information, see the [AWS Identity and Access Management (IAM) Guide](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam.html).
+
+   {{< alert type="note" >}}
+
+   Temporary credentials are not supported by AI Gateway at this time. For more information on adding support for Bedrock to use instance profile or temporary credentials, see [issue 542389](https://gitlab.com/gitlab-org/gitlab/-/issues/542389).
+
+   {{</alert>}}
 
    - [Supported foundation models in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)
 

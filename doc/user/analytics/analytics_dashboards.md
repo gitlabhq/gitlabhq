@@ -197,8 +197,6 @@ You can define different charts and add visualization options to some of them, s
 - Column chart, with the options listed in the [ECharts documentation](https://echarts.apache.org/en/option.html).
 - Data table.
 - Single stat, with the only option to set `decimalPlaces` (number, default value is 0).
-
-To add an inline chart visualization to a dashboard, see our Create a built-in dashboard guide.
 This process can also be followed for user-created dashboards. Each visualization must be written with the following
 required fields:
 
@@ -206,8 +204,6 @@ required fields:
 - type
 - data
 - options
-
-To contribute, see adding a new visualization render type.
 
 ### Define a chart visualization template
 

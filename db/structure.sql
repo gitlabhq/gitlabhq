@@ -4489,7 +4489,6 @@ CREATE TABLE p_ci_builds (
     erased_by_id bigint,
     project_id bigint,
     runner_id bigint,
-    trigger_request_id bigint,
     upstream_pipeline_id bigint,
     user_id bigint,
     execution_config_id bigint,
@@ -10874,7 +10873,6 @@ CREATE TABLE ci_builds (
     erased_by_id bigint,
     project_id bigint,
     runner_id bigint,
-    trigger_request_id bigint,
     upstream_pipeline_id bigint,
     user_id bigint,
     execution_config_id bigint,
@@ -33521,10 +33519,6 @@ CREATE INDEX index_p_ci_builds_on_execution_config_id ON ONLY p_ci_builds USING 
 
 CREATE INDEX index_0928d9f200 ON ci_builds USING btree (execution_config_id) WHERE (execution_config_id IS NOT NULL);
 
-CREATE INDEX tmp_p_ci_builds_trigger_request_id_idx ON ONLY p_ci_builds USING btree (trigger_request_id) WHERE (trigger_request_id IS NOT NULL);
-
-CREATE INDEX index_437b1804fb ON ci_builds USING btree (trigger_request_id) WHERE (trigger_request_id IS NOT NULL);
-
 CREATE INDEX index_aa3b4fe8c6 ON group_type_ci_runner_machines USING btree (executor_type);
 
 CREATE INDEX index_abuse_events_on_abuse_report_id ON abuse_events USING btree (abuse_report_id);
@@ -40634,8 +40628,6 @@ ALTER INDEX index_uploads_9ba88c4165_on_uploader_and_path ATTACH PARTITION impor
 ALTER INDEX index_ci_runner_machines_on_executor_type ATTACH PARTITION index_012094097c;
 
 ALTER INDEX index_p_ci_builds_on_execution_config_id ATTACH PARTITION index_0928d9f200;
-
-ALTER INDEX tmp_p_ci_builds_trigger_request_id_idx ATTACH PARTITION index_437b1804fb;
 
 ALTER INDEX index_ci_runner_machines_on_executor_type ATTACH PARTITION index_aa3b4fe8c6;
 
