@@ -195,9 +195,10 @@ module GroupsHelper
   def group_overview_tabs_app_data(group)
     {
       group_id: group.id,
-      subgroups_and_projects_endpoint: group_children_path(group, format: :json),
+      subgroups_and_projects_endpoint:
+        group_children_path(group, format: :json, archived: false, not_aimed_for_deletion: true),
       shared_projects_endpoint: group_shared_projects_path(group, format: :json),
-      inactive_projects_endpoint: group_children_path(group, format: :json, archived: 'only'),
+      inactive_projects_endpoint: group_children_path(group, format: :json, active: false),
       current_group_visibility: group.visibility,
       initial_sort: project_list_sort_by,
       show_schema_markup: 'true',

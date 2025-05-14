@@ -14,10 +14,7 @@ module API
         expose :created_at, documentation: { type: 'dateTime', example: '2017-05-19T13:31:08.849Z' }
         expose :updated_at, documentation: { type: 'dateTime', example: '2017-05-19T13:40:17.727Z' }
         expose :owner, using: ::API::Entities::UserBasic
-
-        expose :inputs, using: Entities::Ci::Input, if: ->(schedule) {
-          ::Feature.enabled?(:ci_inputs_for_pipelines, schedule.project)
-        }
+        expose :inputs, using: Entities::Ci::Input
       end
     end
   end

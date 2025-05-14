@@ -12,7 +12,6 @@ import { createAlert } from '~/alert';
 import { visitUrl, queryToObject } from '~/lib/utils/url_utility';
 import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
 import RefSelector from '~/ref/components/ref_selector.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone_dropdown.vue';
 import IntervalPatternInput from '~/pages/projects/pipeline_schedules/shared/components/interval_pattern_input.vue';
 import PipelineInputsForm from '~/ci/common/pipeline_inputs/pipeline_inputs_form.vue';
@@ -37,7 +36,6 @@ export default {
     RefSelector,
     TimezoneDropdown,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: [
     'projectPath',
     'projectId',
@@ -162,9 +160,6 @@ export default {
     filledVariables() {
       return this.updatedVariables.filter((variable) => variable.key !== '' && !variable.empty);
     },
-    isPipelineInputsFeatureAvailable() {
-      return this.glFeatures.ciInputsForPipelines;
-    },
     preparedVariablesUpdate() {
       return this.filledVariables.map((variable) => {
         return {
@@ -214,7 +209,7 @@ export default {
               variables: this.preparedVariablesCreate,
               active: this.activated,
               projectPath: this.projectPath,
-              ...(this.isPipelineInputsFeatureAvailable && { inputs: this.pipelineInputs }),
+              inputs: this.pipelineInputs,
             },
           },
         });
@@ -245,7 +240,7 @@ export default {
               ref: this.scheduleRef,
               variables: this.preparedVariablesUpdate,
               active: this.activated,
-              ...(this.isPipelineInputsFeatureAvailable && { inputs: this.pipelineInputs }),
+              inputs: this.pipelineInputs,
             },
           },
         });
@@ -327,7 +322,6 @@ export default {
       </gl-form-group>
       <!--Pipeline inputs-->
       <pipeline-inputs-form
-        v-if="isPipelineInputsFeatureAvailable"
         :saved-inputs="savedInputs"
         :query-ref="scheduleRef"
         class="gl-mb-6"

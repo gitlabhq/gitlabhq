@@ -13,8 +13,8 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
   let_it_be(:package_file1) { create(:helm_package_file, package: package) }
   let_it_be(:package_file2) { create(:helm_package_file, package: package) }
   let_it_be(:package2) { create(:helm_package, project: project, without_package_files: true) }
-  let_it_be(:package_file2_1) { create(:helm_package_file, package: package2, file_sha256: 'file2', file_name: 'filename2.tgz', description: 'hello from stable channel') }
-  let_it_be(:package_file2_2) { create(:helm_package_file, package: package2, file_sha256: 'file2', file_name: 'filename2.tgz', channel: 'test', description: 'hello from test channel') }
+  let_it_be(:package2_file1) { create(:helm_package_file, package: package2, file_sha256: 'file2', file_name: 'filename2.tgz', description: 'hello from stable channel') }
+  let_it_be(:package2_file2) { create(:helm_package_file, package: package2, file_sha256: 'file2', file_name: 'filename2.tgz', channel: 'test', description: 'hello from test channel') }
   let_it_be(:other_package) { create(:npm_package, project: project) }
 
   let(:snowplow_gitlab_standard_context) { snowplow_context }
@@ -204,6 +204,21 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
 
         it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status]
       end
+    end
+
+    context 'with package protection rule' do
+      let_it_be_with_reload(:package_protection_rule) do
+        create(:package_protection_rule, package_name_pattern: 'rook-ceph', package_type: :helm, project: project)
+      end
+
+      # The helm chart contains the file Chart.yml that defined the name 'rook-ceph' of the helm chart.
+      let(:params) { { chart: fixture_file_upload('spec/fixtures/packages/helm/rook-ceph-v1.5.8.tgz') } }
+
+      let(:user_headers) { basic_auth_header(user.username, personal_access_token.token) }
+      let(:headers) { user_headers.merge(workhorse_headers) }
+      let(:snowplow_gitlab_standard_context) { snowplow_context(user_role: :developer) }
+
+      it_behaves_like 'process helm upload', :developer, :created
     end
 
     context 'when an invalid token is passed' do

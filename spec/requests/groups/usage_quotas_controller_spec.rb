@@ -24,7 +24,6 @@ RSpec.describe Groups::UsageQuotasController, :with_license, feature_category: :
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.body).to match(/js-usage-quotas-view/)
-          .and have_pushed_frontend_feature_flags(virtualRegistryMaven: true)
       end
 
       it 'renders 404 page if subgroup' do

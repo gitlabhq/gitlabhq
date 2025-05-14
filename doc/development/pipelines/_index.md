@@ -85,7 +85,7 @@ To identify the RSpec tests that are likely to fail in a merge request, we use *
 
 ##### Dynamic mappings
 
-First, we use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ruby/gems/test_file_finder), with dynamic mapping strategies coming from the [`Crystalball` gem](https://github.com/toptal/crystalball))
+First, we use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ruby/gems/test_file_finder), with dynamic mapping strategies coming from the [`Crystalball` gem](https://gitlab.com/gitlab-org/ruby/gems/crystalball))
   ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/2348d57cf4710f89b96b25de0cf33a455d38325e/tooling/lib/tooling/find_tests.rb#L20), and [the mapping strategies we use in Crystalball](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/crystalball_env.rb)).
 
 In addition to `test_file_finder`, we have added several advanced mappings to detect even more tests to run:

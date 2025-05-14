@@ -37,8 +37,8 @@ to the respective group owning the feature.
 
 ### Tooling feature category
 
-For Engineering Productivity internal tooling we use `feature_category: :tooling`.
-For example, `knapsack` and `crystalball` are both used to run RSpec test
+For Developer Experience internal tooling we use `feature_category: :tooling`.
+For example, `knapsack` and `gitlab-crystalball` are both used to run RSpec test
 suites in CI and they don't belong to any product groups.
 
 ### Test platform feature category

@@ -524,9 +524,10 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
       expect(helper.group_overview_tabs_app_data(group)).to match(
         {
           group_id: group.id,
-          subgroups_and_projects_endpoint: including("/groups/#{group.path}/-/children.json"),
+          subgroups_and_projects_endpoint:
+            including("/groups/#{group.path}/-/children.json?archived=false&not_aimed_for_deletion=true"),
           shared_projects_endpoint: including("/groups/#{group.path}/-/shared_projects.json"),
-          inactive_projects_endpoint: including("/groups/#{group.path}/-/children.json?archived=only"),
+          inactive_projects_endpoint: including("/groups/#{group.path}/-/children.json?active=false"),
           current_group_visibility: group.visibility,
           initial_sort: initial_sort,
           show_schema_markup: 'true',

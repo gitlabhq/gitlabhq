@@ -4433,4 +4433,29 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
     it { is_expected.to contain_exactly(cluster_agent_for_project, cluster_agent_for_project_in_subgroup) }
   end
+
+  describe '#active?' do
+    let_it_be(:active_group) { create(:group) }
+    let_it_be(:inactive_group) { create(:group_with_deletion_schedule) }
+
+    context 'when group is active' do
+      specify { expect(active_group.active?).to be(true) }
+    end
+
+    context 'when group is inactive' do
+      specify { expect(inactive_group.active?).to be(false) }
+    end
+
+    context 'when ancestor is active' do
+      let_it_be(:group_with_active_ancestor) { create(:group, parent: active_group) }
+
+      specify { expect(group_with_active_ancestor.active?).to be(true) }
+    end
+
+    context 'when ancestor is inactive' do
+      let_it_be(:group_with_inactive_ancestor) { create(:group, parent: inactive_group) }
+
+      specify { expect(group_with_inactive_ancestor.active?).to be(false) }
+    end
+  end
 end

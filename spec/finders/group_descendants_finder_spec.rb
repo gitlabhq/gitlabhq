@@ -35,6 +35,16 @@ RSpec.describe GroupDescendantsFinder, feature_category: :groups_and_projects do
       end
     end
 
+    context 'when archived is `false`' do
+      let(:params) { { archived: 'false' } }
+
+      it 'does not include archived projects' do
+        _archived_project = create(:project, :archived, namespace: group)
+
+        expect(finder.execute).to be_empty
+      end
+    end
+
     context 'when archived is `only`' do
       let(:params) { { archived: 'only' } }
 
@@ -44,12 +54,6 @@ RSpec.describe GroupDescendantsFinder, feature_category: :groups_and_projects do
 
         expect(finder.execute).to contain_exactly(archived_project)
       end
-    end
-
-    it 'does not include archived projects' do
-      _archived_project = create(:project, :archived, namespace: group)
-
-      expect(finder.execute).to be_empty
     end
 
     it 'does not include projects aimed for deletion' do
@@ -67,6 +71,30 @@ RSpec.describe GroupDescendantsFinder, feature_category: :groups_and_projects do
         matching_project = create(:project, namespace: group, name: 'testproject')
 
         expect(finder.execute).to contain_exactly(matching_project)
+      end
+    end
+
+    context 'with active parameter' do
+      let_it_be(:active_child) { create(:group, parent: group) }
+      let_it_be(:active_project) { create(:project, group: group) }
+
+      let_it_be(:inactive_child) { create(:group_with_deletion_schedule, parent: group) }
+      let_it_be(:inactive_project) { create(:project, :archived, group: group) }
+
+      context 'when parameter is true' do
+        let(:params) { { active: true } }
+
+        it 'returns active children' do
+          expect(finder.execute).to contain_exactly(active_child, active_project)
+        end
+      end
+
+      context 'when parameter is false' do
+        let(:params) { { active: false } }
+
+        it 'returns inactive children' do
+          expect(finder.execute).to contain_exactly(inactive_child, inactive_project)
+        end
       end
     end
 

@@ -21543,6 +21543,9 @@ msgstr ""
 msgid "DeployTokens|Allows read, write, and delete access to container images through the dependency proxy."
 msgstr ""
 
+msgid "DeployTokens|Allows read-only access to container images through the dependency proxy and read-only access to virtual registries."
+msgstr ""
+
 msgid "DeployTokens|Allows read-only access to container images through the dependency proxy."
 msgstr ""
 
@@ -28412,7 +28415,7 @@ msgstr ""
 msgid "GitLabPages|When using Pages under the general domain of a GitLab instance (%{pages_host}), you cannot use HTTPS with subdomains of subdomains. If your namespace or groupname contains a dot, it does not work. This is a limitation of the HTTP Over TLS protocol. HTTP pages work if you don't redirect HTTP to HTTPS. %{docs_link_start}Learn more.%{link_end}"
 msgstr ""
 
-msgid "GitLabPages|With GitLab Pages you can host your static website directly from your GitLab repository. %{docs_link_start}Learn more.%{link_end}"
+msgid "GitLabPages|With GitLab Pages you can host your static website directly from your GitLab repository. %{docs_link_start}How do I publish my site with Pages?%{link_end}"
 msgstr ""
 
 msgid "GitLabPages|Your Pages site is not configured yet. See the %{docs_link_start}GitLab Pages documentation%{link_end} to learn how to upload your static site and have GitLab serve it. You can also take some inspiration from the %{samples_link_start}sample Pages projects%{link_end}."
@@ -40207,6 +40210,9 @@ msgid "New Protected Branch"
 msgstr ""
 
 msgid "New Security findings"
+msgstr ""
+
+msgid "New application"
 msgstr ""
 
 msgid "New branch"
@@ -65202,7 +65208,7 @@ msgstr ""
 msgid "UsageQuota|Buy storage"
 msgstr ""
 
-msgid "UsageQuota|Cache for frequently-accessed Docker images and packages."
+msgid "UsageQuota|Cache for frequently-accessed Docker images and virtual registries."
 msgstr ""
 
 msgid "UsageQuota|Code packages and container images."
@@ -66837,6 +66843,11 @@ msgstr ""
 msgid "View all"
 msgstr ""
 
+msgid "View all (one more item)"
+msgid_plural "View all (%d more items)"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "View all activity"
 msgstr ""
 
@@ -67094,6 +67105,9 @@ msgstr ""
 msgid "VirtualRegistry|Maven virtual registry"
 msgstr ""
 
+msgid "VirtualRegistry|Maven virtual registry was created"
+msgstr ""
+
 msgid "VirtualRegistry|Move upstream down"
 msgstr ""
 
@@ -67140,9 +67154,6 @@ msgid "VirtualRegistry|Use the arrow buttons to reorder upstreams. Artifacts are
 msgstr ""
 
 msgid "VirtualRegistry|Username (optional)"
-msgstr ""
-
-msgid "VirtualRegistry|Virtual registries"
 msgstr ""
 
 msgid "VirtualRegistry|Virtual registry"

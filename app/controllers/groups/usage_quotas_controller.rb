@@ -5,10 +5,6 @@ module Groups
     before_action :authorize_read_usage_quotas!
     before_action :verify_usage_quotas_enabled!
 
-    before_action do
-      push_frontend_feature_flag(:virtual_registry_maven, current_user)
-    end
-
     feature_category :consumables_cost_management
     urgency :low
 

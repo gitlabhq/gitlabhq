@@ -26,6 +26,7 @@ describe('Packages Protection Rule Form', () => {
     glFeatures: {
       packagesProtectedPackagesNuget: true,
       packagesProtectedPackagesDelete: true,
+      packagesProtectedPackagesHelm: true,
     },
   };
 
@@ -94,7 +95,14 @@ describe('Packages Protection Rule Form', () => {
         mountComponent();
 
         expect(findPackageTypeSelect().exists()).toBe(true);
-        expect(packageTypeSelectOptions()).toEqual(['CONAN', 'MAVEN', 'NPM', 'NUGET', 'PYPI']);
+        expect(packageTypeSelectOptions()).toEqual([
+          'CONAN',
+          'HELM',
+          'MAVEN',
+          'NPM',
+          'NUGET',
+          'PYPI',
+        ]);
       });
 
       describe('when feature flag packagesProtectedPackagesNuget is disabled', () => {
@@ -110,7 +118,24 @@ describe('Packages Protection Rule Form', () => {
           });
 
           expect(findPackageTypeSelect().exists()).toBe(true);
-          expect(packageTypeSelectOptions()).toEqual(['CONAN', 'MAVEN', 'NPM', 'PYPI']);
+          expect(packageTypeSelectOptions()).toEqual(['CONAN', 'HELM', 'MAVEN', 'NPM', 'PYPI']);
+        });
+      });
+
+      describe('when feature flag packagesProtectedPackagesHelm is disabled', () => {
+        it('contains available options without option "HELM"', () => {
+          mountComponent({
+            provide: {
+              ...defaultProvidedValues,
+              glFeatures: {
+                ...defaultProvidedValues.glFeatures,
+                packagesProtectedPackagesHelm: false,
+              },
+            },
+          });
+
+          expect(findPackageTypeSelect().exists()).toBe(true);
+          expect(packageTypeSelectOptions()).toEqual(['CONAN', 'MAVEN', 'NPM', 'NUGET', 'PYPI']);
         });
       });
     });

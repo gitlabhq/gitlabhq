@@ -158,9 +158,9 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 {{< history >}}
 
-- `inputs` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519958) in GitLab 17.10
-  [with a flag](../administration/feature_flags.md) named `ci_inputs_for_pipelines`. Disabled by default.
-- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/525504) in GitLab 17.11.
+- `inputs` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519958) in GitLab 17.10 [with a flag](../administration/feature_flags.md) named `ci_inputs_for_pipelines`. Disabled by default.
+- `inputs` attribute [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/525504) in GitLab 17.11.
+- `inputs` attribute [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/536548) in GitLab 18.1. Feature flag `ci_inputs_for_pipelines` removed.
 
 {{< /history >}}
 

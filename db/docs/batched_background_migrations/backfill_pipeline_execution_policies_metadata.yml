@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillPipelineExecutionPoliciesMetadata
+description: Backfill enforced_scans in pipeline execution policy metadata by analyzing the linked CI configs
+feature_category: security_policy_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181995
+milestone: '18.1'
+queued_migration_version: 20250506082441
+finalized_by: # version of the migration that finalized this BBM

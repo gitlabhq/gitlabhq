@@ -83,7 +83,6 @@ describe('Pipeline schedules form', () => {
   const createComponent = ({
     editing = false,
     requestHandlers,
-    ciInputsForPipelines = false,
     canSetPipelineVariables = true,
   } = {}) => {
     wrapper = shallowMountExtended(PipelineSchedulesForm, {
@@ -95,9 +94,6 @@ describe('Pipeline schedules form', () => {
       },
       provide: {
         ...defaultProvide,
-        glFeatures: {
-          ciInputsForPipelines,
-        },
       },
       mixins: [glFeatureFlagMixin()],
       apolloProvider: createMockApolloProvider(requestHandlers),
@@ -171,14 +167,8 @@ describe('Pipeline schedules form', () => {
       });
     });
 
-    it('does not display inputs form when feature flag is disabled', () => {
+    it('displays inputs form', () => {
       createComponent();
-
-      expect(findPipelineInputsForm().exists()).toBe(false);
-    });
-
-    it('displays inputs form when feature flag is enabled', () => {
-      createComponent({ ciInputsForPipelines: true });
 
       expect(findPipelineInputsForm().exists()).toBe(true);
       expect(findPipelineInputsForm().props()).toMatchObject({
@@ -257,7 +247,7 @@ describe('Pipeline schedules form', () => {
     });
 
     it('creates pipeline schedule successfully', async () => {
-      createComponent({ ciInputsForPipelines: true });
+      createComponent();
 
       const updatedInputs = [
         { name: 'input1', value: 'value1' },
@@ -313,24 +303,6 @@ describe('Pipeline schedules form', () => {
       expect(createAlert).toHaveBeenCalledWith({
         message: 'An error occurred while creating the pipeline schedule.',
       });
-    });
-
-    it('does not include inputs in mutation if feature flag is disabled', async () => {
-      createComponent({
-        requestHandlers: [[createPipelineScheduleMutation, createMutationHandlerSuccess]],
-      });
-
-      await waitForPromises();
-
-      findForm().vm.$emit('submit', { preventDefault });
-
-      expect(createMutationHandlerSuccess).toHaveBeenCalledWith(
-        expect.objectContaining({
-          input: expect.not.objectContaining({
-            inputs: expect.anything(),
-          }),
-        }),
-      );
     });
   });
 
@@ -414,7 +386,6 @@ describe('Pipeline schedules form', () => {
       ];
 
       createComponent({
-        ciInputsForPipelines: true,
         editing: true,
         requestHandlers: [
           [getPipelineSchedulesQuery, querySuccessHandler],
@@ -468,25 +439,6 @@ describe('Pipeline schedules form', () => {
       expect(createAlert).toHaveBeenCalledWith({
         message: 'An error occurred while updating the pipeline schedule.',
       });
-    });
-
-    it('does not include inputs in mutation if feature flag is disabled', async () => {
-      createComponent({
-        editing: true,
-        requestHandlers: [[updatePipelineScheduleMutation, updateMutationHandlerSuccess]],
-      });
-
-      await waitForPromises();
-
-      findForm().vm.$emit('submit', { preventDefault });
-
-      expect(updateMutationHandlerSuccess).toHaveBeenCalledWith(
-        expect.objectContaining({
-          input: expect.not.objectContaining({
-            inputs: expect.anything(),
-          }),
-        }),
-      );
     });
   });
 });

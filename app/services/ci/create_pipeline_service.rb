@@ -97,7 +97,7 @@ module Ci
         bridge: bridge,
         logger: @logger,
         partition_id: params[:partition_id],
-        inputs: ::Feature.enabled?(:ci_inputs_for_pipelines, project) ? inputs : {},
+        inputs: inputs,
         **extra_options(**options))
 
       @pipeline.readonly! if command.readonly?

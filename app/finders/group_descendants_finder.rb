@@ -15,17 +15,15 @@
 #     Supports all params that the `ProjectsFinder` and `GroupProjectsFinder`
 #     support.
 #
-#     filter: string - is aliased to `search` for consistency with the frontend
-#     archived: string - `only` or `true`.
-#                        `non_archived` is passed to the `ProjectFinder`s if none
-#                        was given.
+#     active: boolean - filters for active descendants.
+#     filter: string - is aliased to `search` for consistency with the frontend.
 class GroupDescendantsFinder
   attr_reader :current_user, :parent_group, :params
 
   def initialize(parent_group:, current_user: nil, params: {})
     @current_user = current_user
     @parent_group = parent_group
-    @params = params.reverse_merge(non_archived: params[:archived].blank?, not_aimed_for_deletion: true)
+    @params = params
   end
 
   def execute
@@ -59,14 +57,16 @@ class GroupDescendantsFinder
   end
 
   def direct_child_groups
-    GroupsFinder.new(current_user, parent: parent_group, all_available: true).execute # rubocop: disable CodeReuse/Finder
+    GroupsFinder # rubocop: disable CodeReuse/Finder
+      .new(current_user, parent: parent_group, all_available: true, active: params[:active])
+      .execute
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
   def all_visible_descendant_groups
     groups_table = Group.arel_table
     visible_to_user = groups_table[:visibility_level]
-                      .in(Gitlab::VisibilityLevel.levels_for_user(current_user))
+      .in(Gitlab::VisibilityLevel.levels_for_user(current_user))
 
     if current_user
       authorized_groups = GroupsFinder.new(current_user, all_available: false) # rubocop: disable CodeReuse/Finder

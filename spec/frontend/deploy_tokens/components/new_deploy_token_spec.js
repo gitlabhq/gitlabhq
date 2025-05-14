@@ -159,6 +159,9 @@ describe('New Deploy Token', () => {
     it('should show the read virtual registry scope', () => {
       const checkbox = findAllCheckboxes().at(3);
       expect(checkbox.text()).toContain('read_virtual_registry');
+      expect(checkbox.text()).toContain(
+        'Allows read-only access to container images through the dependency proxy.',
+      );
     });
 
     it('should show the write virtual registry scope', () => {

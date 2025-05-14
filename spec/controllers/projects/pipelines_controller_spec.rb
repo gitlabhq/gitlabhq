@@ -935,28 +935,6 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
           'my-job-build 1/2', 'my-job-build 2/2', 'my-job-test', 'my-job-test-2', 'my-job-deploy'
         )
       end
-
-      context 'when the FF ci_inputs_for_pipelines is disabled' do
-        before do
-          stub_feature_flags(ci_inputs_for_pipelines: false)
-        end
-
-        it 'behaves like the inputs are never passed and returns errors' do
-          expect { post_request }.not_to change { project.ci_pipelines.count }
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-
-          expect(json_response['errors'][0]).to include(
-            '`deploy_strategy` input: required value has not been provided'
-          )
-          expect(json_response['errors'][0]).to include(
-            '`job_stage` input: required value has not been provided'
-          )
-          expect(json_response['errors'][0]).to include(
-            '`test_script` input: required value has not been provided'
-          )
-        end
-      end
     end
   end
 

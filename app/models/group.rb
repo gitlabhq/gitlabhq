@@ -1184,6 +1184,10 @@ class Group < Namespace
     ::Clusters::Agent.for_projects(all_projects)
   end
 
+  def active?
+    self_and_ancestors.inactive.none?
+  end
+
   def pending_delete?
     return false unless deletion_schedule
 

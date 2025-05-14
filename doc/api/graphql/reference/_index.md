@@ -45108,6 +45108,7 @@ Package type of a package protection rule resource.
 | Value | Description |
 | ----- | ----------- |
 | <a id="packagesprotectionrulepackagetypeconan"></a>`CONAN` | Packages of the Conan format. |
+| <a id="packagesprotectionrulepackagetypehelm"></a>`HELM` | Packages of the Helm format. |
 | <a id="packagesprotectionrulepackagetypemaven"></a>`MAVEN` | Packages of the Maven format. |
 | <a id="packagesprotectionrulepackagetypenpm"></a>`NPM` | Packages of the npm format. |
 | <a id="packagesprotectionrulepackagetypenuget"></a>`NUGET` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 18.0. **Status**: Experiment. Packages of the NuGet format. Available only when feature flag `packages_protected_packages_nuget` is enabled. |

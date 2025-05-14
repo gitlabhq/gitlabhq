@@ -125,22 +125,6 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
             user: user
           )
         end
-
-        context 'when the FF ci_inputs_for_pipelines is disabled' do
-          before do
-            stub_feature_flags(ci_inputs_for_pipelines: false)
-          end
-
-          let(:expected_errors) do
-            [
-              '`deploy_strategy` input: required value has not been provided',
-              '`job_stage` input: required value has not been provided',
-              '`test_script` input: required value has not been provided'
-            ]
-          end
-
-          it_behaves_like 'returning errors'
-        end
       end
     end
 
@@ -215,22 +199,6 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         end
 
         it_behaves_like 'returning errors'
-
-        context 'when the FF ci_inputs_for_pipelines is disabled' do
-          before do
-            stub_feature_flags(ci_inputs_for_pipelines: false)
-          end
-
-          it 'creates a pipeline' do
-            response = execute
-            pipeline = response.payload
-
-            expect(response).to be_success
-            expect(pipeline).to be_created_successfully
-
-            expect(pipeline.builds.map(&:name)).to contain_exactly('job')
-          end
-        end
       end
     end
   end

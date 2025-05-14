@@ -80,8 +80,8 @@ export default {
     },
     moreChildrenLinkText() {
       return n__(
-        'One more item',
-        '%d more items',
+        'View all (one more item)',
+        'View all (%d more items)',
         this.item.childrenCount - this.item.children.length,
       );
     },
@@ -132,7 +132,7 @@ export default {
         @load-children="$emit('load-children', $event)"
         @refetch="onRefetch"
       >
-        <li v-if="hasMoreChildren" class="gl-border-b gl-py-4 gl-pl-3">
+        <li v-if="hasMoreChildren" class="gl-border-b gl-py-4 gl-pl-7">
           <div class="gl-flex gl-h-7 gl-items-center">
             <gl-link :href="item.webUrl" data-testid="more-children-link">
               {{ moreChildrenLinkText }}

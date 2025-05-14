@@ -239,28 +239,101 @@ RSpec.describe Groups::ChildrenController, feature_category: :groups_and_project
               ))
             end
           end
-
-          def descendant_ids(data)
-            return [] if data.blank?
-
-            data = Array.wrap(data)
-
-            ids = []
-            data.each do |item|
-              ids << item['id']
-              ids << descendant_ids(item['children'])
-            end
-
-            ids.flatten
-          end
         end
 
         it 'includes pagination headers' do
-          2.times { |i| create(:group, :public, parent: public_subgroup, name: "filterme#{i}") }
+          create_list(:group, 2, :public, parent: public_subgroup)
 
-          get :index, params: { group_id: group.to_param, filter: 'filter', per_page: 1 }, format: :json
+          get :index, params: { group_id: group.to_param, per_page: 1 }, format: :json
 
           expect(response).to include_pagination_headers
+        end
+      end
+
+      context 'with active parameter' do
+        let_it_be(:group) { create(:group) }
+
+        let_it_be(:active_child) { create(:group, parent: group) }
+
+        let_it_be(:marked_for_deletion_child) { create(:group_with_deletion_schedule, parent: group) }
+        let_it_be(:marked_for_deletion_project) do
+          create(:project, :public, group: group, marked_for_deletion_at: Date.current)
+        end
+
+        let_it_be(:archived_project) { create(:project, :archived, :public, group: group) }
+        let_it_be(:archived_child) do
+          create(:group, parent: group, namespace_settings: create(:namespace_settings, archived: true))
+        end
+
+        shared_examples 'endpoint that returns all child' do
+          it 'returns all child', :aggregate_failures do
+            make_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(descendant_ids(json_response))
+              .to contain_exactly(
+                active_child.id,
+                marked_for_deletion_child.id,
+                marked_for_deletion_project.id,
+                archived_child.id,
+                archived_project.id
+              )
+          end
+        end
+
+        context 'when true' do
+          subject(:make_request) { get :index, params: { group_id: group.to_param, active: true }, format: :json }
+
+          it 'returns active child', :aggregate_failures do
+            make_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(descendant_ids(json_response)).to contain_exactly(active_child.id)
+          end
+
+          context 'when group_descendants_active_filter flag is disabled' do
+            before do
+              stub_feature_flags(group_descendants_active_filter: false)
+            end
+
+            it_behaves_like 'endpoint that returns all child'
+          end
+
+          context 'when group is inactive' do
+            let_it_be(:deletion_schedule) { create(:group_deletion_schedule, group: group) }
+
+            it_behaves_like 'endpoint that returns all child'
+          end
+        end
+
+        context 'when false' do
+          subject(:make_request) { get :index, params: { group_id: group.to_param, active: false }, format: :json }
+
+          it 'returns inactive child', :aggregate_failures do
+            make_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(descendant_ids(json_response)).to contain_exactly(
+              marked_for_deletion_child.id,
+              marked_for_deletion_project.id,
+              archived_child.id,
+              archived_project.id
+            )
+          end
+
+          context 'when group_descendants_active_filter flag is disabled' do
+            before do
+              stub_feature_flags(group_descendants_active_filter: false)
+            end
+
+            it_behaves_like 'endpoint that returns all child'
+          end
+
+          context 'when group is inactive' do
+            let_it_be(:deletion_schedule) { create(:group_deletion_schedule, group: group) }
+
+            it_behaves_like 'endpoint that returns all child'
+          end
         end
       end
 
@@ -420,6 +493,12 @@ RSpec.describe Groups::ChildrenController, feature_category: :groups_and_project
 
         expect(response).to have_gitlab_http_status(:ok)
       end
+    end
+  end
+
+  def descendant_ids(data)
+    Array.wrap(data).flat_map do |item|
+      [item['id'], descendant_ids(item['children'])].flatten
     end
   end
 end

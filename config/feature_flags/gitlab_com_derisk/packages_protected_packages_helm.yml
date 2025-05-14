@@ -1,0 +1,10 @@
+---
+name: packages_protected_packages_helm
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/538372
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189801
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/538375
+milestone: '18.0'
+group: group::package registry
+type: gitlab_com_derisk
+default_enabled: false

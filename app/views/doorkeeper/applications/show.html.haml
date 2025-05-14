@@ -2,9 +2,7 @@
 - breadcrumb_title @application.name
 - page_title @application.name, _("Applications")
 
-%h1.page-title.gl-text-size-h-display
-  = _("Application: %{name}") % { name: @application.name }
-
+= render ::Layouts::PageHeadingComponent.new(_("Application: %{name}") % { name: @application.name })
 = render 'shared/doorkeeper/applications/show',
   edit_path: edit_oauth_application_path(@application),
   delete_path: oauth_application_path(@application),

@@ -13,15 +13,11 @@ describe('Pipeline variables form group', () => {
       initialVariables: [],
       editing: false,
     },
-    ciInputsForPipelines = false,
   ) => {
+    const stubs = mountFn === mountExtended ? { InputsAdoptionBanner: true } : {};
     wrapper = mountFn(PipelineVariablesFormGroup, {
       propsData: props,
-      provide: {
-        glFeatures: {
-          ciInputsForPipelines,
-        },
-      },
+      stubs,
     });
   };
 
@@ -35,34 +31,23 @@ describe('Pipeline variables form group', () => {
   const findVariableSecurityBtn = () => wrapper.findByTestId('variable-security-btn');
   const findRemoveIcons = () => wrapper.findAllByTestId('remove-ci-variable-row');
 
-  const addVariableToForm = () => {
+  const addVariableToForm = async () => {
     const input = findKeyInputs().at(0);
     input.setValue('test_var');
     input.trigger('change');
+    await nextTick();
   };
 
-  describe('Feature flag', () => {
-    describe('when the ciInputsForPipelines flag is disabled', () => {
-      beforeEach(() => {
-        createComponent();
-      });
-
-      it('does not display the inputs adoption banner', () => {
-        expect(findInputsAdoptionBanner().exists()).toBe(false);
-      });
+  describe('Pipeline inputs', () => {
+    beforeEach(() => {
+      createComponent();
     });
 
-    describe('when the ciInputsForPipelines flag is enabled', () => {
-      beforeEach(() => {
-        createComponent(undefined, undefined, true);
-      });
-
-      it('displays the inputs adoption banner', () => {
-        expect(findInputsAdoptionBanner().exists()).toBe(true);
-        expect(findInputsAdoptionBanner().props('featureName')).toBe(
-          'pipeline_schedules_inputs_adoption_banner',
-        );
-      });
+    it('displays the inputs adoption banner', () => {
+      expect(findInputsAdoptionBanner().exists()).toBe(true);
+      expect(findInputsAdoptionBanner().props('featureName')).toBe(
+        'pipeline_schedules_inputs_adoption_banner',
+      );
     });
   });
 
@@ -117,8 +102,7 @@ describe('Pipeline variables form group', () => {
 
     it('creates blank variable on input change event', async () => {
       expect(findVariableRows()).toHaveLength(1);
-      addVariableToForm();
-      await nextTick();
+      await addVariableToForm();
 
       expect(findVariableRows()).toHaveLength(2);
       expect(findKeyInputs().at(1).element.value).toBe('');
@@ -126,15 +110,13 @@ describe('Pipeline variables form group', () => {
     });
 
     it('does not display remove icon for last row', async () => {
-      addVariableToForm();
-      await nextTick();
+      await addVariableToForm();
 
       expect(findRemoveIcons()).toHaveLength(1);
     });
 
     it('removes ci variable row on remove icon button click', async () => {
-      addVariableToForm();
-      await nextTick();
+      await addVariableToForm();
       expect(findVariableRows()).toHaveLength(2);
 
       findRemoveIcons().at(0).trigger('click');
@@ -145,8 +127,7 @@ describe('Pipeline variables form group', () => {
     it('emits update-variables event when variable is added', async () => {
       expect(wrapper.emitted('update-variables')).toHaveLength(1);
 
-      addVariableToForm();
-      await nextTick();
+      await addVariableToForm();
 
       expect(wrapper.emitted('update-variables').at(-1)[0]).toMatchObject([
         { destroy: false, empty: true, key: 'test_var', value: '', variableType: 'ENV_VAR' },
@@ -157,8 +138,7 @@ describe('Pipeline variables form group', () => {
 
     it('emits update-variables event when variable is removed', async () => {
       expect(wrapper.emitted('update-variables')).toHaveLength(1);
-      addVariableToForm();
-      await nextTick();
+      await addVariableToForm();
 
       expect(wrapper.emitted('update-variables')).toHaveLength(2);
       findRemoveIcons().at(0).trigger('click');
@@ -174,8 +154,7 @@ describe('Pipeline variables form group', () => {
     });
 
     it('marks a variable as non-empty when its value changes', async () => {
-      addVariableToForm();
-      await nextTick();
+      await addVariableToForm();
 
       expect(wrapper.emitted('update-variables').at(-1)[0]).toMatchObject([
         { destroy: false, empty: true, key: 'test_var', value: '', variableType: 'ENV_VAR' },

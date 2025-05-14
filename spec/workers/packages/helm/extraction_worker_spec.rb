@@ -10,7 +10,7 @@ RSpec.describe Packages::Helm::ExtractionWorker, type: :worker, feature_category
     let(:package_file_id) { package_file.id }
     let(:channel) { 'stable' }
 
-    let(:expected_metadata) do
+    let(:helm_chart_yaml_attributes) do
       {
         'apiVersion' => 'v2',
         'description' => 'File, Block, and Object Storage Services for your Cloud-Native Environment',
@@ -21,7 +21,30 @@ RSpec.describe Packages::Helm::ExtractionWorker, type: :worker, feature_category
       }
     end
 
+    let(:expected_metadata) { helm_chart_yaml_attributes }
+
     subject { described_class.new.perform(channel, package_file_id) }
+
+    shared_examples 'valid package file' do
+      it_behaves_like 'an idempotent worker' do
+        let(:job_args) { [channel, package_file_id] }
+
+        it 'does not create package file', :aggregate_failures do
+          expect(Gitlab::ErrorTracking).not_to receive(:log_exception)
+
+          expect { subject }
+            .to not_change { Packages::Package.count }
+            .and not_change { Packages::PackageFile.count }
+            .and change { Packages::Helm::FileMetadatum.count }.from(0).to(1)
+            .and change { package.reload.status }.from('processing').to('default')
+
+          helm_file_metadatum = package_file.helm_file_metadatum
+
+          expect(helm_file_metadatum.channel).to eq(channel)
+          expect(helm_file_metadatum.metadata).to eq(expected_metadata)
+        end
+      end
+    end
 
     shared_examples 'handling error' do |error_message:,
       error_class: Packages::Helm::ExtractFileMetadataService::ExtractionError|
@@ -42,24 +65,63 @@ RSpec.describe Packages::Helm::ExtractionWorker, type: :worker, feature_category
       end
     end
 
-    context 'with valid package file' do
-      it_behaves_like 'an idempotent worker' do
-        let(:job_args) { [channel, package_file_id] }
+    it_behaves_like 'valid package file'
 
-        it 'updates package and package file', :aggregate_failures do
-          expect(Gitlab::ErrorTracking).not_to receive(:log_exception)
+    context 'with package protection rule for different roles and package_name_patterns', :enable_admin_mode do
+      using RSpec::Parameterized::TableSyntax
 
-          expect { subject }
-            .to not_change { Packages::Package.count }
-            .and not_change { Packages::PackageFile.count }
-            .and change { Packages::Helm::FileMetadatum.count }.from(0).to(1)
-            .and change { package.reload.status }.from('processing').to('default')
+      let(:package_protection_rule) do
+        create(:package_protection_rule, package_type: :helm, project: package.project)
+      end
 
-          helm_file_metadatum = package_file.helm_file_metadatum
+      let(:package_name_pattern) { 'DummyProject.*' }
 
-          expect(helm_file_metadatum.channel).to eq(channel)
-          expect(helm_file_metadatum.metadata).to eq(expected_metadata)
+      let(:project_developer) { create(:user, developer_of: package.project) }
+      let(:project_maintainer) { create(:user, maintainer_of: package.project) }
+      let(:project_owner) { package.project.owner }
+      let(:instance_admin) { create(:admin) }
+
+      let(:chart_name) { helm_chart_yaml_attributes['name'] }
+
+      before do
+        package_protection_rule.update!(
+          package_name_pattern: package_name_pattern,
+          minimum_access_level_for_push: minimum_access_level_for_push
+        )
+        package.update!(creator: package_creator)
+      end
+
+      shared_examples 'protected package' do
+        it_behaves_like 'handling error',
+          error_class: ::Packages::Helm::ProcessFileService::ProtectedPackageError,
+          error_message: "Helm chart 'rook-ceph' with version 'v1.5.8' is protected"
+
+        context 'when feature flag :packages_protected_packages_helm is disabled' do
+          before do
+            stub_feature_flags(packages_protected_packages_helm: false)
+          end
+
+          it_behaves_like 'valid package file'
         end
+      end
+
+      # -- Avoid formatting to keep one-line table syntax
+      where(:package_name_pattern, :minimum_access_level_for_push, :package_creator, :shared_examples_name) do
+        ref(:chart_name)               | :maintainer | ref(:project_developer)  | 'protected package'
+        ref(:chart_name)               | :maintainer | ref(:project_maintainer) | 'valid package file'
+        ref(:chart_name)               | :maintainer | nil                      | 'protected package'
+        ref(:chart_name)               | :owner      | ref(:project_maintainer) | 'protected package'
+        ref(:chart_name)               | :owner      | ref(:project_owner)      | 'valid package file'
+        ref(:chart_name)               | :admin      | ref(:project_owner)      | 'protected package'
+        ref(:chart_name)               | :admin      | ref(:instance_admin)     | 'valid package file'
+        ref(:chart_name)               | :admin      | nil                      | 'protected package'
+
+        lazy { "Other.#{chart_name}" } | :maintainer | ref(:project_owner)      | 'valid package file'
+        lazy { "Other.#{chart_name}" } | :admin      | ref(:project_owner)      | 'valid package file'
+        lazy { "Other.#{chart_name}" } | :admin      | nil                      | 'valid package file'
+      end
+      with_them do
+        it_behaves_like params[:shared_examples_name]
       end
     end
 

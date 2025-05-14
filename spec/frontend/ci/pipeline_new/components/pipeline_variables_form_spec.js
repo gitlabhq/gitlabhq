@@ -63,11 +63,7 @@ describe('PipelineVariablesForm', () => {
     },
   ];
 
-  const createComponent = async ({
-    props = {},
-    configVariables = [],
-    ciInputsForPipelines = false,
-  } = {}) => {
+  const createComponent = async ({ props = {}, configVariables = [] } = {}) => {
     mockCiConfigVariables = jest.fn().mockResolvedValue({
       data: {
         project: {
@@ -84,9 +80,6 @@ describe('PipelineVariablesForm', () => {
       propsData: { ...defaultProps, ...props },
       provide: {
         ...defaultProvide,
-        glFeatures: {
-          ciInputsForPipelines,
-        },
       },
     });
 
@@ -111,29 +104,13 @@ describe('PipelineVariablesForm', () => {
     });
   });
 
-  describe('Feature flag', () => {
-    describe('when the ciInputsForPipelines flag is disabled', () => {
-      beforeEach(async () => {
-        await createComponent();
-      });
+  it('displays the inputs adoption banner', async () => {
+    await createComponent();
 
-      it('does not display the inputs adoption banner', () => {
-        expect(findInputsAdoptionBanner().exists()).toBe(false);
-      });
-    });
-
-    describe('when the ciInputsForPipelines flag is enabled', () => {
-      beforeEach(async () => {
-        await createComponent({ ciInputsForPipelines: true });
-      });
-
-      it('displays the inputs adoption banner', () => {
-        expect(findInputsAdoptionBanner().exists()).toBe(true);
-        expect(findInputsAdoptionBanner().props('featureName')).toBe(
-          'pipeline_new_inputs_adoption_banner',
-        );
-      });
-    });
+    expect(findInputsAdoptionBanner().exists()).toBe(true);
+    expect(findInputsAdoptionBanner().props('featureName')).toBe(
+      'pipeline_new_inputs_adoption_banner',
+    );
   });
 
   describe('loading states', () => {

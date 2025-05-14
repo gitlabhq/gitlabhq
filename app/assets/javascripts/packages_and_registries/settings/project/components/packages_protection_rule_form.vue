@@ -125,6 +125,10 @@ export default {
         packageTypeOptions.push({ value: 'NUGET', text: s__('PackageRegistry|NuGet') });
       }
 
+      if (this.glFeatures.packagesProtectedPackagesHelm) {
+        packageTypeOptions.push({ value: 'HELM', text: s__('PackageRegistry|Helm') });
+      }
+
       return packageTypeOptions.sort((a, b) => a.text.localeCompare(b.text));
     },
     minimumAccessLevelForPushOptions() {

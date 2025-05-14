@@ -1,7 +1,4 @@
 - page_title _("New Application")
 
-%h1.page-title.gl-text-size-h-display= _("New Application")
-
-%hr
-
+= render ::Layouts::PageHeadingComponent.new(_('New application'))
 = render 'form', application: @application
