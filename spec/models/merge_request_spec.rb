@@ -3137,7 +3137,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         merge_request = create(:merge_request, :with_terraform_reports)
         merge_request.diff_head_pipeline.update!(status: :running)
 
-        expect(merge_request.has_terraform_reports?).to be_truthy
+        expect(merge_request.has_terraform_reports?).to be_falsey
       end
     end
 
@@ -3146,6 +3146,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       let_it_be(:child_pipeline) { create(:ci_pipeline, :with_terraform_reports, child_of: merge_request_with_pipeline.head_pipeline) }
 
       it 'returns true even if head pipeline does not have reports' do
+        merge_request_with_pipeline.head_pipeline.update!(status: :success)
+
         expect(merge_request_with_pipeline.has_terraform_reports?).to be_truthy
       end
 

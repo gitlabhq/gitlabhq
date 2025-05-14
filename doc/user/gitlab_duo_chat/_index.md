@@ -414,6 +414,16 @@ Different language models can be the source for GitLab Duo Chat.
 
   {{< /alert >}}
 
+## Input and output length
+
+For each Chat conversation, input and output length is limited:
+
+- Input is limited to 200,000 tokens (roughly 680,000 characters). The input tokens
+  include:
+  - All the [context that Chat is aware of](#the-context-chat-is-aware-of).
+  - All the previous questions and answers in that conversation.
+- Output is limited to 8,192 tokens (roughly 28,600 characters).
+
 ## Give feedback
 
 Your feedback is important to us as we continually enhance your GitLab Duo Chat experience.

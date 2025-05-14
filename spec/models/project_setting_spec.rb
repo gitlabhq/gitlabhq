@@ -297,4 +297,9 @@ RSpec.describe ProjectSetting, type: :model, feature_category: :groups_and_proje
       end
     end
   end
+
+  describe '#web_based_commit_signing_enabled' do
+    it_behaves_like 'a cascading project setting boolean attribute',
+      settings_attribute_name: :web_based_commit_signing_enabled
+  end
 end

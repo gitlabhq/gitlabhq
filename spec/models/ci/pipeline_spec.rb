@@ -4628,6 +4628,58 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '#complete_and_has_self_or_descendant_reports?' do
+    subject(:complete_and_has_self_or_descendant_reports?) do
+      pipeline.complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:test))
+    end
+
+    context 'when the pipeline has reports' do
+      let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :with_test_reports, :success) }
+
+      it { is_expected.to be_truthy }
+
+      context 'when the pipeline is not complete' do
+        before do
+          pipeline.update!(status: 'running')
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when the child pipeline has reports' do
+        let_it_be(:child_pipeline) { create(:ci_pipeline, :with_test_reports, :success, child_of: pipeline) }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'with a nested child pipeline that has reports' do
+        let_it_be(:child_pipeline) { create(:ci_pipeline, :success, child_of: pipeline) }
+        let_it_be(:nested_child_pipeline) { create(:ci_pipeline, :with_test_reports, :success, child_of: child_pipeline) }
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when the pipeline does not have reports' do
+      let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :success) }
+
+      it { is_expected.to be_falsey }
+
+      context 'when the child pipeline has reports' do
+        let_it_be(:child_pipeline) { create(:ci_pipeline, :with_test_reports, :success, child_of: pipeline) }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'with a nested child pipeline that has reports' do
+        let_it_be(:child_pipeline) { create(:ci_pipeline, :success, child_of: pipeline) }
+        let_it_be(:nested_child_pipeline) { create(:ci_pipeline, :with_test_reports, :success, child_of: child_pipeline) }
+
+        it { is_expected.to be_truthy }
+      end
+    end
+  end
+
   describe '#complete_or_manual_and_has_reports?' do
     subject(:complete_or_manual_and_has_reports?) do
       pipeline.complete_or_manual_and_has_reports?(

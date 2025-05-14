@@ -1169,6 +1169,10 @@ module Ci
       complete? && has_reports?(reports_scope)
     end
 
+    def complete_and_has_self_or_descendant_reports?(reports_scope)
+      complete? && latest_report_builds_in_self_and_project_descendants(reports_scope).exists?
+    end
+
     def complete_or_manual_and_has_reports?(reports_scope)
       complete_or_manual? && has_reports?(reports_scope)
     end

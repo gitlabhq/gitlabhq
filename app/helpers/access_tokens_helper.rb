@@ -38,6 +38,7 @@ module AccessTokensHelper
   def personal_access_token_data
     {
       access_token: {
+        **expires_at_field_data,
         create: user_settings_personal_access_tokens_path,
         revoke: api_v4_personal_access_tokens_path,
         rotate: api_v4_personal_access_tokens_path,

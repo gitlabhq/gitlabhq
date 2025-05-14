@@ -20,18 +20,6 @@ class ApplicationSetting < ApplicationRecord
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
     'Admin area > Settings > Metrics and profiling > Metrics - Grafana'
 
-  ignore_columns %i[
-    package_registry_allow_anyone_to_pull_option
-    package_registry_cleanup_policies_worker_capacity
-    packages_cleanup_package_file_worker_capacity
-    npm_package_requests_forwarding
-    lock_npm_package_requests_forwarding
-    maven_package_requests_forwarding
-    lock_maven_package_requests_forwarding
-    pypi_package_requests_forwarding
-    lock_pypi_package_requests_forwarding
-  ], remove_with: '18.1', remove_after: '2025-05-20'
-
   ignore_column :duo_nano_features_enabled, remove_with: '18.1', remove_after: '2025-06-19'
 
   KROKI_URL_ERROR_MESSAGE = 'Please check your Kroki URL setting in ' \

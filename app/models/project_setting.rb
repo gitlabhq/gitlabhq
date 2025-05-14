@@ -18,6 +18,8 @@ class ProjectSetting < ApplicationRecord
   scope :for_projects, ->(projects) { where(project_id: projects) }
   scope :with_namespace, -> { joins(project: :namespace) }
 
+  cascading_attr :web_based_commit_signing_enabled
+
   attr_encrypted :cube_api_key,
     mode: :per_attribute_iv,
     key: :db_key_base_32,

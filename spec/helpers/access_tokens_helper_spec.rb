@@ -66,6 +66,28 @@ RSpec.describe AccessTokensHelper, feature_category: :system_access do
     end
   end
 
+  describe '#personal_access_token_data' do
+    before do
+      allow(helper).to receive_messages(
+        expires_at_field_data: { max_date: '2022-03-02',
+                                 min_date: '2022-03-02' }
+      )
+    end
+
+    it 'returns data for the PATs UI in the user settings' do
+      expect(helper.personal_access_token_data).to match(a_hash_including({
+        access_token: {
+          max_date: '2022-03-02',
+          min_date: '2022-03-02',
+          create: '/-/user_settings/personal_access_tokens',
+          revoke: '/api/v4/personal_access_tokens',
+          rotate: '/api/v4/personal_access_tokens',
+          show: '/api/v4/personal_access_tokens'
+        }
+      }))
+    end
+  end
+
   describe '#expires_at_field_data', :freeze_time do
     before do
       # Test the CE version of `expires_at_field_data` by satisfying the condition in the EE

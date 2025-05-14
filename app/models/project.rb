@@ -600,6 +600,7 @@ class Project < ApplicationRecord
       delegate :duo_features_enabled, :duo_features_enabled=
       delegate :model_prompt_cache_enabled, :model_prompt_cache_enabled=
       delegate :merge_request_title_regex, :merge_request_title_regex=
+      delegate :web_based_commit_signing_enabled, :web_based_commit_signing_enabled=
     end
   end
 
