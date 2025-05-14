@@ -243,21 +243,21 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
     end
   end
 
-  shared_examples 'Allowed URIs' do |empty: false|
-    let(:allowed_uris) do
+  shared_examples 'Allowed endpoints' do |empty: false|
+    let(:allowed_endpoints) do
       ['http://127.0.0.1:9000']
     end
 
     before do
-      allow(ObjectStoreSettings).to receive(:enabled_endpoint_uris).and_return(allowed_uris)
+      allow(ObjectStoreSettings).to receive(:enabled_endpoint_uris).and_return(allowed_endpoints)
     end
 
-    it 'sets AllowedURIs' do
+    it 'sets AllowedEndpoints' do
       subject
 
       _, send_data = workhorse_send_data
 
-      expect(send_data['AllowedURIs']).to eq(allowed_uris)
+      expect(send_data['AllowedEndpoints']).to eq(allowed_endpoints)
     end
 
     context 'when dependency_proxy_for_containers_ssrf_protection is disabled' do
@@ -265,15 +265,15 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
         stub_feature_flags(dependency_proxy_for_containers_ssrf_protection: false)
       end
 
-      it 'does not include or sets to an empty array AllowedURIs in the Workhorse send-dependency instructions' do
+      it 'does not include or sets to an empty array AllowedEndpoints in the Workhorse send-dependency instructions' do
         subject
 
         _, send_data = workhorse_send_data
 
         if empty
-          expect(send_data['AllowedURIs']).to eq([])
+          expect(send_data['AllowedEndpoints']).to eq([])
         else
-          expect(send_data).not_to include('AllowedURIs')
+          expect(send_data).not_to include('AllowedEndpoints')
         end
       end
     end
@@ -406,14 +406,14 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
             expect(response).to have_gitlab_http_status(:ok)
 
             send_data_type, send_data = workhorse_send_data
-            url, ssrf_filter, allow_localhost, allowed_uris = send_data
-              .values_at('URL', 'SSRFFilter', 'AllowLocalhost', 'AllowedURIs')
+            url, ssrf_filter, allow_localhost, allowed_endpoints = send_data
+              .values_at('URL', 'SSRFFilter', 'AllowLocalhost', 'AllowedEndpoints')
 
             expect(send_data_type).to eq('send-url')
             expect(url).to eq(manifest.file.url)
             expect(ssrf_filter).to be(true)
             expect(allow_localhost).to be(true)
-            expect(allowed_uris).to eq([])
+            expect(allowed_endpoints).to eq([])
           end
 
           context 'when dependency_proxy_for_containers_ssrf_protection is disabled' do
@@ -428,8 +428,8 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
             it_behaves_like 'AllowLocalhost', disabled: true
           end
 
-          context 'with allowed URIs' do
-            it_behaves_like 'Allowed URIs', empty: true
+          context 'with allowed endpoints' do
+            it_behaves_like 'Allowed endpoints', empty: true
           end
         end
 
@@ -442,8 +442,8 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
             subject
 
             send_data_type, send_data = workhorse_send_data
-            header, url, ssrf_filter, allow_localhost, allowed_uris = send_data
-              .values_at('Headers', 'Url', 'SSRFFilter', 'AllowLocalhost', 'AllowedURIs')
+            header, url, ssrf_filter, allow_localhost, allowed_endpoints = send_data
+              .values_at('Headers', 'Url', 'SSRFFilter', 'AllowLocalhost', 'AllowedEndpoints')
 
             expect(send_data_type).to eq('send-dependency')
             expect(header).to eq(
@@ -453,7 +453,7 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
             expect(url).to eq(DependencyProxy::Registry.manifest_url(image, tag))
             expect(ssrf_filter).to be(true)
             expect(allow_localhost).to be(true)
-            expect(allowed_uris).to be_nil
+            expect(allowed_endpoints).to be_nil
             expect(response.headers['Content-Type']).to eq('application/gzip')
             expect(response.headers['Content-Disposition']).to eq(
               ActionDispatch::Http::ContentDisposition.format(disposition: 'attachment', filename: manifest.file_name)
@@ -472,8 +472,8 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
             it_behaves_like 'AllowLocalhost'
           end
 
-          context 'with allowed URIs' do
-            it_behaves_like 'Allowed URIs'
+          context 'with allowed endpoints' do
+            it_behaves_like 'Allowed endpoints'
           end
         end
       end
@@ -551,14 +551,14 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
             expect(response).to have_gitlab_http_status(:ok)
 
             send_data_type, send_data = workhorse_send_data
-            url, ssrf_filter, allow_localhost, allowed_uris = send_data
-              .values_at('URL', 'SSRFFilter', 'AllowLocalhost', 'AllowedURIs')
+            url, ssrf_filter, allow_localhost, allowed_endpoints = send_data
+              .values_at('URL', 'SSRFFilter', 'AllowLocalhost', 'AllowedEndpoints')
 
             expect(send_data_type).to eq('send-url')
             expect(url).to eq(blob.file.url)
             expect(ssrf_filter).to be(true)
             expect(allow_localhost).to be(true)
-            expect(allowed_uris).to eq([])
+            expect(allowed_endpoints).to eq([])
           end
 
           context 'when dependency_proxy_for_containers_ssrf_protection is disabled' do
@@ -573,8 +573,8 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
             it_behaves_like 'AllowLocalhost', disabled: true
           end
 
-          context 'with allowed URIs' do
-            it_behaves_like 'Allowed URIs', empty: true
+          context 'with allowed endpoints' do
+            it_behaves_like 'Allowed endpoints', empty: true
           end
         end
 
@@ -609,8 +609,8 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
             it_behaves_like 'AllowLocalhost'
           end
 
-          context 'with allowed URIs' do
-            it_behaves_like 'Allowed URIs'
+          context 'with allowed endpoints' do
+            it_behaves_like 'Allowed endpoints'
           end
         end
       end

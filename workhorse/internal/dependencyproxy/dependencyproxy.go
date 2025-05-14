@@ -37,9 +37,9 @@ var defaultTransportOptions = []transport.Option{
 }
 
 type cacheKey struct {
-	ssrfFilter     bool
-	allowLocalhost bool
-	allowedURIs    string
+	ssrfFilter       bool
+	allowLocalhost   bool
+	allowedEndpoints string
 }
 
 var httpClients sync.Map
@@ -57,7 +57,7 @@ type entryParams struct {
 	UploadConfig                     uploadConfig
 	SSRFFilter                       bool
 	AllowLocalhost                   bool
-	AllowedURIs                      []string
+	AllowedEndpoints                 []string
 	RestrictForwardedResponseHeaders forwardheaders.Params
 }
 
@@ -287,9 +287,9 @@ func (p *Injector) uploadURLFrom(params *entryParams, originalRequest *http.Requ
 
 func cachedClient(params *entryParams) *http.Client {
 	key := cacheKey{
-		allowLocalhost: params.AllowLocalhost,
-		ssrfFilter:     params.SSRFFilter,
-		allowedURIs:    strings.Join(params.AllowedURIs, ","),
+		allowLocalhost:   params.AllowLocalhost,
+		ssrfFilter:       params.SSRFFilter,
+		allowedEndpoints: strings.Join(params.AllowedEndpoints, ","),
 	}
 	cachedClient, found := httpClients.Load(key)
 	if found {
@@ -299,7 +299,7 @@ func cachedClient(params *entryParams) *http.Client {
 	options := defaultTransportOptions
 
 	if params.SSRFFilter {
-		options = append(options, transport.WithSSRFFilter(params.AllowLocalhost, params.AllowedURIs))
+		options = append(options, transport.WithSSRFFilter(params.AllowLocalhost, params.AllowedEndpoints))
 	}
 
 	client := &http.Client{

@@ -139,8 +139,8 @@ GitLab cannot display the combined results of multiple `browser_performance` rep
 
 Use `coverage_report:` to collect [coverage report](../testing/_index.md) in Cobertura or JaCoCo formats.
 
-The `coverage_format:` Can be either [`cobertura`](../testing/test_coverage_visualization/cobertura.md) or
-[`jacoco`](../testing/test_coverage_visualization/jacoco.md).
+The `coverage_format:` Can be either [`cobertura`](../testing/code_coverage/cobertura.md) or
+[`jacoco`](../testing/code_coverage/jacoco.md).
 
 Cobertura was originally developed for Java, but there are many third-party ports for other languages such as
 JavaScript, Python, and Ruby.

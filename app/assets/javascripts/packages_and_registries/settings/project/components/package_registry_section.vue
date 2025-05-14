@@ -17,7 +17,7 @@ export default {
   },
   inject: ['showDependencyProxySettings'],
   supportedPackageManagersHelpPath: helpPagePath(
-    'user/packages/package_registry/supported_package_managers.md',
+    'user/packages/package_registry/supported_functionality.md',
   ),
 };
 </script>

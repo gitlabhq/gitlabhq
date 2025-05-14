@@ -94,7 +94,7 @@ You can choose from two primary workflows. The GitOps workflow is recommended.
 
 ### GitOps workflow
 
-GitLab recommends using [Flux for GitOps](gitops.md). To get started, see [Tutorial: Set up Flux for GitOps](gitops/flux_tutorial.md).
+GitLab recommends using [Flux for GitOps](gitops.md). To get started, see [Tutorial: Set up Flux for GitOps](getting_started.md).
 
 ### GitLab CI/CD workflow
 

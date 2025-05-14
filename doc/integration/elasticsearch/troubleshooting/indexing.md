@@ -34,7 +34,7 @@ You can check for errors during project indexing.
 Errors might occur on:
 
 - The GitLab instance: if you cannot fix them yourself, contact GitLab Support for guidance.
-- The Elasticsearch instance: [if the error is not listed](../../advanced_search/elasticsearch_troubleshooting.md), contact your Elasticsearch administrator.
+- The Elasticsearch instance: [if the error is not listed](../../elasticsearch/troubleshooting/_index.md), contact your Elasticsearch administrator.
 
 If indexing does not return errors, check the status of indexed projects with the following Rake tasks:
 

@@ -672,6 +672,52 @@ container_scanning:
     CS_TRIVY_JAVA_DB: gitlab.example.com/trivy-java-db-mirror
 ```
 
+## Scanning archive formats
+
+Container Scanning supports images in archive formats (`.tar`, `.tar.gz`).
+Such images may be created, for example, using `docker save` or `docker buildx build -o - . > out.tar`.
+
+To scan an archive file, set the environment variable `CS_IMAGE` to the format `archive://path/to/archive`:
+
+- The `archive://` scheme prefix specifies that the analyzer is to scan an archive.
+- `path/to/archive` specifies the path to the archive to scan, whether an absolute path or a relative path.
+
+### Scanning archives built in a previous job
+
+To scan an archive built in a CI/CD job, you must pass the archive artifact from the build job to the container scanning job.
+Use the [`artifacts:paths`](../../../ci/yaml/_index.md#artifactspaths) and [`dependencies`](../../../ci/yaml/_index.md#dependencies) keywords to pass artifacts from one job to a following one:
+
+```yaml
+build_job:
+  script:
+    - docker buildx build -o - . > out.tar
+  artifacts:
+    paths:
+      - "out.tar"
+
+container_scanning:
+  variables:
+    CS_IMAGE: "archive://out.tar"
+  dependencies:
+    - build_job
+```
+
+### Scanning archives from the project repository
+
+To scan an archive found in your project repository, ensure that your [Git strategy](../../../ci/runners/configure_runners.md#git-strategy) enables access to your repository.
+Set the `GIT_STRATEGY` keyword to either `clone` or `fetch` in the `container_scanning` job because it is set to `none` by default.
+
+```yaml
+container_scanning:
+  variables:
+    GIT_STRATEGY: fetch
+```
+
+### Limitations
+
+Archive container scanning [does not support collecting location information](https://gitlab.com/gitlab-org/gitlab/-/issues/541110) for scanned dependencies.
+Moreover, there is a [known bug](https://gitlab.com/gitlab-org/gitlab/-/issues/501077) where vulnerability locations do not contain the image name, which may deduplicate vulnerabilities from different archives.
+
 ## Running the standalone container scanning tool
 
 It's possible to run the [GitLab container scanning tool](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning)

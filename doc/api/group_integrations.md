@@ -940,7 +940,7 @@ GET /groups/:id/integrations/hangouts-chat
 
 {{< /details >}}
 
-This feature is in [beta](../policy/experiment-beta-support.md).
+This feature is in [beta](../policy/development_stages_support.md).
 
 ### Set up Google Artifact Management
 
@@ -985,7 +985,7 @@ GET /groups/:id/integrations/google-cloud-platform-artifact-registry
 
 {{< /details >}}
 
-This feature is in [beta](../policy/experiment-beta-support.md).
+This feature is in [beta](../policy/development_stages_support.md).
 
 ### Set up Google Cloud Identity and Access Management
 

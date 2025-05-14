@@ -241,7 +241,7 @@ This approach uses a real cloud license through CustomersDot, providing the most
 
 When working in staging environments, you may need to set up Duo add-ons for your staging account. This is different from setting up your local development environment.
 
-> **Note:** This section contains the same information as the previous [Staging account setup](staging_accounts.md) document, which now redirects here.
+> **Note:** This section contains the same information as the previous [Staging account setup](ai_development_license.md) document, which now redirects here.
 
 ### Duo Pro
 

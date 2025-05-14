@@ -105,7 +105,7 @@ The following API resources are available in the project context:
 | [Project-level variables](project_level_variables.md)                          | `/projects/:id/variables` |
 | [Projects](projects.md) including setting Webhooks                             | `/projects`, `/projects/:id/hooks` (also available for users) |
 | [Protected branches](protected_branches.md)                                    | `/projects/:id/protected_branches` |
-| [Protected container registry](project_container_registry_protection_rules.md) | `/projects/:id/registry/protection/rules` |
+| [Protected container registry](container_repository_protection_rules.md)       | `/projects/:id/registry/protection/rules` |
 | [Protected environments](protected_environments.md)                            | `/projects/:id/protected_environments` |
 | [Protected packages](project_packages_protection_rules.md)                     | `/projects/:id/packages/protection/rules` |
 | [Protected tags](protected_tags.md)                                            | `/projects/:id/protected_tags` |

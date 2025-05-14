@@ -164,7 +164,7 @@ export const SYNC_STATUS_BADGES = {
     popoverText: s__(
       'Deployment|Sync status is unknown. %{linkStart}How do I configure Flux for my deployment?%{linkEnd}',
     ),
-    popoverLink: helpPagePath('user/clusters/agent/gitops/flux_tutorial'),
+    popoverLink: helpPagePath('user/clusters/agent/getting_started.md'),
   },
 };
 

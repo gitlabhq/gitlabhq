@@ -30698,7 +30698,12 @@ Represents an instance-level LDAP link.
 | <a id="ldapadminrolelinkcn"></a>`cn` | [`String`](#string) | Common Name (CN) of the LDAP group. |
 | <a id="ldapadminrolelinkfilter"></a>`filter` | [`String`](#string) | Search filter for the LDAP group. |
 | <a id="ldapadminrolelinkid"></a>`id` | [`ID!`](#id) | ID of the LDAP link. |
+| <a id="ldapadminrolelinklastsuccessfulsyncat"></a>`lastSuccessfulSyncAt` | [`Time`](#time) | Timestamp of the last successful sync. |
 | <a id="ldapadminrolelinkprovider"></a>`provider` | [`LdapProvider!`](#ldapprovider) | LDAP provider for the LDAP link. |
+| <a id="ldapadminrolelinksyncendedat"></a>`syncEndedAt` | [`Time`](#time) | Timestamp of when the last sync ended. |
+| <a id="ldapadminrolelinksyncerror"></a>`syncError` | [`String`](#string) | Error message if the sync has failed. |
+| <a id="ldapadminrolelinksyncstartedat"></a>`syncStartedAt` | [`Time`](#time) | Timestamp of when the last sync started. |
+| <a id="ldapadminrolelinksyncstatus"></a>`syncStatus` | [`LdapAdminRoleSyncStatus`](#ldapadminrolesyncstatus) | Status of the last sync. |
 
 ### `LdapProvider`
 
@@ -44404,6 +44409,18 @@ List of fields where the provided searchTerm should be looked up.
 | ----- | ----------- |
 | <a id="labelsearchfieldlistdescription"></a>`DESCRIPTION` | Search in the label description. |
 | <a id="labelsearchfieldlisttitle"></a>`TITLE` | Search in the label title. |
+
+### `LdapAdminRoleSyncStatus`
+
+All LDAP admin role sync statuses.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="ldapadminrolesyncstatusfailed"></a>`FAILED` | A sync that is failed. |
+| <a id="ldapadminrolesyncstatusnever_synced"></a>`NEVER_SYNCED` | A sync that is never synced. |
+| <a id="ldapadminrolesyncstatusqueued"></a>`QUEUED` | A sync that is queued. |
+| <a id="ldapadminrolesyncstatusrunning"></a>`RUNNING` | A sync that is running. |
+| <a id="ldapadminrolesyncstatussuccessful"></a>`SUCCESSFUL` | A sync that is successful. |
 
 ### `ListLimitMetric`
 
