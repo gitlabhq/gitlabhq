@@ -118,8 +118,31 @@ FactoryBot.define do
 
       project_namespace_hash[:id] = evaluator.project_namespace_id.presence
 
+      project_ci_cd_settings_hash = {}
+
+      ci_cd_settings_attribute_mapping = {
+        group_runners_enabled: nil,
+        merge_pipelines_enabled: nil,
+        merge_trains_enabled: nil,
+        keep_latest_artifact: nil,
+        restrict_user_defined_variables: nil,
+        ci_outbound_job_token_scope_enabled: :job_token_scope_enabled,
+        ci_inbound_job_token_scope_enabled: :inbound_job_token_scope_enabled,
+        runner_token_expiration_interval: nil,
+        runner_token_expiration_interval_human_readable: nil,
+        ci_delete_pipelines_in_seconds: :delete_pipelines_in_seconds
+      }
+
+      ci_cd_settings_attribute_mapping.each do |project_attr, ci_cd_settings_attr|
+        value = evaluator.public_send(project_attr)
+        ci_cd_settings_attr ||= project_attr
+
+        project_ci_cd_settings_hash[ci_cd_settings_attr] = value unless value.nil?
+      end
+
       project.build_project_namespace(project_namespace_hash)
       project.build_project_feature(project_feature_hash)
+      project.build_ci_cd_settings(project_ci_cd_settings_hash)
 
       project.set_runners_token(evaluator.runners_token) if evaluator.runners_token.present?
     end
@@ -142,19 +165,6 @@ FactoryBot.define do
           AuthorizedProjectUpdate::ProjectRecalculateService.new(project).execute
         end
       end
-
-      # assign the delegated `#ci_cd_settings` attributes after create
-      project.group_runners_enabled = evaluator.group_runners_enabled unless evaluator.group_runners_enabled.nil?
-      project.merge_pipelines_enabled = evaluator.merge_pipelines_enabled unless evaluator.merge_pipelines_enabled.nil?
-      project.merge_trains_enabled = evaluator.merge_trains_enabled unless evaluator.merge_trains_enabled.nil?
-      project.keep_latest_artifact = evaluator.keep_latest_artifact unless evaluator.keep_latest_artifact.nil?
-      project.restrict_user_defined_variables = evaluator.restrict_user_defined_variables unless evaluator.restrict_user_defined_variables.nil?
-      project.ci_outbound_job_token_scope_enabled = evaluator.ci_outbound_job_token_scope_enabled unless evaluator.ci_outbound_job_token_scope_enabled.nil?
-      project.ci_inbound_job_token_scope_enabled = evaluator.ci_inbound_job_token_scope_enabled unless evaluator.ci_inbound_job_token_scope_enabled.nil?
-      project.runner_token_expiration_interval = evaluator.runner_token_expiration_interval unless evaluator.runner_token_expiration_interval.nil?
-      project.runner_token_expiration_interval_human_readable = evaluator.runner_token_expiration_interval_human_readable unless evaluator.runner_token_expiration_interval_human_readable.nil?
-      project.ci_delete_pipelines_in_seconds = evaluator.ci_delete_pipelines_in_seconds unless evaluator.ci_delete_pipelines_in_seconds.nil?
-      project.ci_cd_settings.save!
 
       if evaluator.import_status
         import_state = project.import_state || project.build_import_state

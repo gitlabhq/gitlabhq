@@ -24,11 +24,13 @@ Labels:
 
 ## Types of labels
 
-You can use two types of labels in GitLab:
+Use three types of labels in GitLab:
 
 - **Project labels** can be assigned to issues and merge requests in that project only.
 - **Group labels** can be assigned to issues, merge requests, and [epics](../group/epics/_index.md)
   in any project in the selected group or its subgroups.
+- **Instance labels** [are created](../../administration/labels.md) by instance
+  administrators and are copied to all new projects.
 
 ## Assign and unassign labels
 
@@ -587,7 +589,7 @@ To set a label to get locked on merge:
 
 ## Related topics
 
-Practice working with labels in the following tutorials:
-
-- [Set up a single project for issue triage](../../tutorials/issue_triage/_index.md)
-- [Set up issue boards for team hand-off](../../tutorials/boards_for_teams/_index.md)
+- Tutorials:
+  - [Set up a single project for issue triage](../../tutorials/issue_triage/_index.md)
+  - [Set up issue boards for team hand-off](../../tutorials/boards_for_teams/_index.md)
+- [Labels administration](../../administration/labels.md)

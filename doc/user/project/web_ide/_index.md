@@ -38,10 +38,16 @@ You can access the Web IDE through several methods.
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Use the <kbd>.</kbd> keyboard shortcut.
 
-### From a file or directory
+### From a directory
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Go to your file or directory.
+1. Go to your directory.
+1. Select **Code > Open in Web IDE**.
+
+### From a file
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Go to your file.
 1. Select **Edit > Open in Web IDE**.
 
 ### From a merge request

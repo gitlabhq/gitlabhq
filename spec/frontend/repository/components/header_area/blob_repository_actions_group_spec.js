@@ -46,8 +46,20 @@ describe('BlobRepositoryActionsGroup', () => {
   it('renders correctly', () => {
     expect(findDropdownGroup().exists()).toBe(true);
     expect(findFindFileDropdownItem().exists()).toBe(true);
-    expect(findBlameDropdownItem().exists()).toBe(true);
-    expect(findPermalinkLinkDropdown().exists()).toBe(true);
+    expect(findBlameDropdownItem().props()).toStrictEqual({
+      item: {
+        extraAttrs: {
+          'data-testid': 'blame',
+        },
+        href: 'blame/file.js',
+        text: 'Blame',
+      },
+      variant: null,
+    });
+    expect(findPermalinkLinkDropdown().props()).toStrictEqual({
+      permalinkPath: 'flightjs/Flight/-/blob/46ca9ebd5a43ec240ee8d64e2bb829169dff744e/bower.json',
+      source: 'blob',
+    });
   });
 
   describe('Find file dropdown item', () => {

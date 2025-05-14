@@ -159,6 +159,11 @@ When the user accepts the reassignment:
 - In subsequent imports from the same source instance to the same top-level group or subgroup
   on the destination instance, contributions are mapped automatically to the user.
 
+[In GitLab 18.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/510673), if your top-level group
+has at least one [enterprise user](../../enterprise_user/_index.md), you can reassign contributions
+only to enterprise users in your organization in the UI or by using a CSV file.
+This feature is meant to prevent accidental reassignment to users outside your organization.
+
 {{< alert type="note" >}}
 
 User contribution mapping is not supported when you import projects to a [personal namespace](../../namespace/_index.md#types-of-namespaces).

@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Monitor', :smoke, product_group: :respond do
+  RSpec.describe 'Monitor', :smoke, product_group: :respond, feature_flag: {
+    name: :hide_incident_management_features
+  } do
     describe 'Alert Management' do
       let(:project) { create(:project, name: 'project-for-alerts', description: 'Project for alerts') }
       let(:alert_title) { Faker::Lorem.word }
@@ -114,9 +116,11 @@ module QA
           Page::Project::Settings::Monitor.perform(&:expand_alerts)
           Flow::AlertSettings.send_test_alert(integration_type: integration_type)
 
-          Page::Project::Menu.perform(&:go_to_monitor_incidents)
-          Page::Project::Monitor::Incidents::Index.perform do |index|
-            expect(index).to have_incident
+          unless Runtime::Feature.enabled?(:hide_incident_management_features)
+            Page::Project::Menu.perform(&:go_to_monitor_incidents)
+            Page::Project::Monitor::Incidents::Index.perform do |index|
+              expect(index).to have_incident
+            end
           end
         end
       end

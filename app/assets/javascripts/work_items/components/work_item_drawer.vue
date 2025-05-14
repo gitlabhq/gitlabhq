@@ -181,6 +181,16 @@ export default {
       });
     },
     handleClose(isClickedOutside) {
+      /* Do not close when a modal is open, or when the user is focused in an editor/input.
+       */
+      if (
+        document.body.classList.contains('modal-open') ||
+        document.activeElement?.closest('.js-editor') != null ||
+        document.activeElement.classList.contains('gl-form-input')
+      ) {
+        return;
+      }
+
       updateHistory({
         url: removeParams([DETAIL_VIEW_QUERY_PARAM_NAME, DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME]),
       });
@@ -243,6 +253,9 @@ export default {
     '.modal-content',
     '#create-merge-request-modal',
     '#b-toaster-bottom-left',
+    '.js-tanuki-bot-chat-toggle',
+    '#super-sidebar-search',
+    '#chat-component',
   ],
 };
 </script>

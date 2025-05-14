@@ -12,6 +12,7 @@ RSpec.describe 'Project navbar', :with_license, :js, feature_category: :groups_a
   let_it_be(:project) { create(:project, :repository, namespace: user.namespace) }
 
   before do
+    stub_feature_flags(hide_incident_management_features: false)
     sign_in(user)
 
     stub_config(registry: { enabled: false })

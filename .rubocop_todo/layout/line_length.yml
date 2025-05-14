@@ -2665,7 +2665,6 @@ Layout/LineLength:
     - 'spec/features/projects_spec.rb'
     - 'spec/features/search/user_searches_for_comments_spec.rb'
     - 'spec/features/search/user_searches_for_merge_requests_spec.rb'
-    - 'spec/features/search/user_uses_header_search_field_spec.rb'
     - 'spec/features/security/project/internal_access_spec.rb'
     - 'spec/features/security/project/public_access_spec.rb'
     - 'spec/features/security/project/snippet/internal_access_spec.rb'

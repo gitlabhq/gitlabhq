@@ -83,7 +83,7 @@ For this example website, we use the Browser SDK.
 To instrument your new website:
 
 1. In the project, select **Code > Repository**.
-1. Select the **Edit > Web IDE**.
+1. Select **Code > Web IDE**.
 1. In the left Web IDE toolbar, select **File Explorer** and open the `public/index.html` file.
 1. In the `public/index.html` file, before the closing `</body>` tag, paste the snippet you copied in the previous section.
 

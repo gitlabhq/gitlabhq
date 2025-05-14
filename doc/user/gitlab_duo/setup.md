@@ -114,4 +114,7 @@ These tests are performed:
 | Synchronization | Tests whether your subscription: <br>- Has been activated with an activation code and can be synchronized with `customers.gitlab.com`.<br>- Has correct access credentials.<br>- Has been synchronized recently. If it hasn't or the access credentials are missing or expired, you can [manually synchronize](../../subscriptions/manage_subscription.md#manually-synchronize-subscription-data) your subscription data. |
 | System exchange | Tests whether Code Suggestions can be used in your instance. If the system exchange assessment fails, users might not be able to use GitLab Duo features. |
 
-If you are experiencing any issues with the health check for GitLab Duo Self-Hosted, see the [troubleshooting section](../../administration/gitlab_duo_self_hosted/troubleshooting.md#gitlab-duo-health-check-is-not-working).
+If you are experiencing any issues with the health check for:
+
+- GitLab-hosted Duo, see the [troubleshooting page](troubleshooting.md).
+- GitLab Duo Self-Hosted, see the [troubleshooting section](../../administration/gitlab_duo_self_hosted/troubleshooting.md#gitlab-duo-health-check-is-not-working).

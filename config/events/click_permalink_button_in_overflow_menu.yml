@@ -1,0 +1,22 @@
+---
+description: Users access the permalink button from either blob or repository overflow menu through a click or keyboard shortcut
+internal_events: true
+action: click_permalink_button_in_overflow_menu
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: method (click/shortcut)
+  property:
+    description: source location (blob/repository)
+product_group: source_code
+product_categories:
+- source_code_management
+milestone: '18.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190730
+tiers:
+- free
+- premium
+- ultimate

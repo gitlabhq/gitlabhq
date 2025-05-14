@@ -2,6 +2,7 @@
 import Vue from 'vue';
 import { GlDisclosureDropdownItem, GlToast } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { InternalEvents } from '~/tracking';
 import { keysFor, PROJECT_FILES_GO_TO_PERMALINK } from '~/behaviors/shortcuts/keybindings';
 import { Mousetrap } from '~/lib/mousetrap';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
@@ -15,10 +16,16 @@ export default {
   components: {
     GlDisclosureDropdownItem,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     permalinkPath: {
       type: String,
       required: true,
+    },
+    source: {
+      type: String,
+      required: true,
+      validator: (value) => ['blob', 'repository'].includes(value),
     },
   },
   data() {
@@ -57,10 +64,14 @@ export default {
     triggerCopyPermalink() {
       const buttonElement = this.$refs.copyPermalinkButton.$el;
       buttonElement.click();
-      this.onCopyPermalink();
+      this.onCopyPermalink('shortcut');
     },
-    onCopyPermalink() {
+    onCopyPermalink(method) {
       this.$toast.show(__('Permalink copied to clipboard.'));
+      this.trackEvent('click_permalink_button_in_overflow_menu', {
+        label: method,
+        property: this.source,
+      });
     },
   },
 };
@@ -73,7 +84,7 @@ export default {
     data-testid="permalink"
     :data-clipboard-text="absolutePermalinkPath"
     data-clipboard-handle-tooltip="false"
-    @action="onCopyPermalink"
+    @action="onCopyPermalink('click')"
   >
     <template #list-item>
       <span class="gl-flex gl-items-center gl-justify-between">

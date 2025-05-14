@@ -20,7 +20,7 @@ module Members
 
       limit_date = Member::DAYS_TO_EXPIRE.days.from_now.to_date
 
-      expiring_members = Member.active.where(users: { user_type: :human }).expiring_and_not_notified(limit_date) # rubocop: disable CodeReuse/ActiveRecord
+      expiring_members = Member.non_invite.non_request.non_minimal_access.expiring_and_not_notified(limit_date)
 
       expiring_members.each_batch(of: BATCH_LIMIT) do |members|
         members.pluck_primary_key.each do |member_id|

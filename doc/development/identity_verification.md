@@ -92,7 +92,10 @@ For a walkthrough and high level explanation of the code, see [Identity Verifica
 
 ## QA Integration
 
-For end-to-end production and staging tests to function properly, GitLab [allows QA users to bypass identity verification](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117633).
+For end-to-end production and staging tests to function properly, GitLab allows QA users to bypass [Account email Verification](../security/email_verification.md) when:
+
+- The `User-Agent` for the request matches the configured `GITLAB_QA_USER_AGENT`.
+- Disable [email verification](testing_guide/end_to_end/best_practices/users.md#disable-email-verification)
 
 ## Additional resources
 

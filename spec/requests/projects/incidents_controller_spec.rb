@@ -33,21 +33,10 @@ RSpec.describe Projects::IncidentsController, feature_category: :incident_manage
 
     let(:user) { developer }
 
-    it 'shows the page' do
-      subject
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response).to render_template(:index)
-    end
-
-    context 'when user is unauthorized' do
-      let(:user) { anonymous }
-
-      it_behaves_like 'login required'
-    end
-
-    context 'when user is a guest' do
-      let(:user) { guest }
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(hide_incident_management_features: false)
+      end
 
       it 'shows the page' do
         subject
@@ -55,6 +44,27 @@ RSpec.describe Projects::IncidentsController, feature_category: :incident_manage
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template(:index)
       end
+
+      context 'when user is unauthorized' do
+        let(:user) { anonymous }
+
+        it_behaves_like 'login required'
+      end
+
+      context 'when user is a guest' do
+        let(:user) { guest }
+
+        it 'shows the page' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template(:index)
+        end
+      end
+    end
+
+    context 'when feature flag is enabled' do
+      it_behaves_like 'not found'
     end
   end
 

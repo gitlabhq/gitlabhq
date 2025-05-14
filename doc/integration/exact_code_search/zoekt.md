@@ -245,6 +245,32 @@ To set the number of concurrent indexing tasks:
 
 1. Select **Save changes**.
 
+## Set the number of parallel processes per indexing task
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/539526) in GitLab 18.1.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+You can set the number of parallel processes per indexing task.
+
+A higher number would improve indexing time at the cost of increased CPU and memory usage.
+The default value is `1` (one process per indexing task).
+
+You can adjust this value based on the node's performance and workload.
+To set the number of parallel processes per indexing task:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Search**.
+1. Expand **Exact code search configuration**.
+1. In the **Number of parallel processes per indexing task** text box, enter a value.
+1. Select **Save changes**.
+
 ## Set the number of namespaces per indexing rollout
 
 {{< history >}}

@@ -6,6 +6,7 @@ import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { Mousetrap } from '~/lib/mousetrap';
 import { hashState } from '~/blob/state';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 
 jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
 jest.mock('~/blob/state');
@@ -22,6 +23,7 @@ describe('PermalinkDropdownItem', () => {
     wrapper = shallowMountExtended(PermalinkDropdownItem, {
       propsData: {
         permalinkPath: relativePermalinkPath,
+        source: 'blob',
         ...props,
       },
       mocks: {
@@ -33,6 +35,7 @@ describe('PermalinkDropdownItem', () => {
   };
 
   const findPermalinkLinkDropdown = () => wrapper.findComponent(GlDisclosureDropdownItem);
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   beforeEach(() => {
     hashState.currentHash = null;
@@ -99,6 +102,45 @@ describe('PermalinkDropdownItem', () => {
       expect(triggerSpy).toHaveBeenCalledWith('y');
       expect(clickSpy).toHaveBeenCalled();
       expect(mockToastShow).toHaveBeenCalledWith('Permalink copied to clipboard.');
+    });
+
+    describe('tracking events', () => {
+      it.each([['blob'], ['repository']])(
+        'emits a tracking event with %s source when the dropdown item is clicked',
+        (source) => {
+          createComponent({ source });
+          const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+          findPermalinkLinkDropdown().vm.$emit('action');
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            'click_permalink_button_in_overflow_menu',
+            { label: 'click', property: source },
+            undefined,
+          );
+        },
+      );
+
+      it.each(['blob', 'repository'])(
+        'emits a tracking event with %s source when the shortcut is used',
+        async (source) => {
+          createComponent({ source });
+          const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+          const clickSpy = jest.spyOn(findPermalinkLinkDropdown().element, 'click');
+
+          const mousetrapInstance = wrapper.vm.mousetrap;
+          const triggerSpy = jest.spyOn(mousetrapInstance, 'trigger');
+          mousetrapInstance.trigger('y');
+
+          await nextTick();
+
+          expect(triggerSpy).toHaveBeenCalledWith('y');
+          expect(clickSpy).toHaveBeenCalled();
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            'click_permalink_button_in_overflow_menu',
+            { label: 'shortcut', property: source },
+            undefined,
+          );
+        },
+      );
     });
   });
 

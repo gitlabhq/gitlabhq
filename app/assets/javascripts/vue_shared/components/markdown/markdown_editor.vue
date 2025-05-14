@@ -367,7 +367,7 @@ export default {
 };
 </script>
 <template>
-  <div class="md-area-wrapper gl-rounded-lg !gl-px-0">
+  <div class="js-editor md-area-wrapper gl-rounded-lg !gl-px-0">
     <local-storage-sync
       v-if="!isDefaultEditorEnabled"
       :value="editingMode"

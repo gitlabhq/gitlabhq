@@ -61,6 +61,10 @@ RSpec.describe Sidebars::Projects::Menus::MonitorMenu, feature_category: :naviga
   context 'Menu items' do
     subject { described_class.new(context).renderable_items.index { |e| e.item_id == item_id } }
 
+    before do
+      stub_feature_flags(hide_incident_management_features: false)
+    end
+
     shared_examples 'access rights checks' do
       it { is_expected.not_to be_nil }
 

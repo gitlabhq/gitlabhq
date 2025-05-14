@@ -128,6 +128,7 @@ describe('RepositoryOverflowMenu', () => {
         expect(findPermalinkItem().props('permalinkPath')).toBe(
           '/gitlab-org/gitlab-shell/-/tree/5059017dea6e834f2f86fc670703ca36cbae98d6/cmd',
         );
+        expect(findPermalinkItem().props('source')).toBe('repository');
       });
 
       it('renders Permalink button with projectPath for root route', async () => {
@@ -139,6 +140,7 @@ describe('RepositoryOverflowMenu', () => {
         expect(findPermalinkItem().props('permalinkPath')).toBe(
           '/gitlab-org/gitlab-shell/-/tree/5059017dea6e834f2f86fc670703ca36cbae98d6/',
         );
+        expect(findPermalinkItem().props('source')).toBe('repository');
       });
 
       it('handles errors when fetching permalinkPath', async () => {
