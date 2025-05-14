@@ -2,7 +2,7 @@
 stage: Foundations
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Troubleshooting Elasticsearch indexing
+title: Troubleshooting Elasticsearch indexing and searching
 ---
 
 {{< details >}}
@@ -12,7 +12,7 @@ title: Troubleshooting Elasticsearch indexing
 
 {{< /details >}}
 
-When working with Elasticsearch indexing, you might encounter the following issues.
+When working with Elasticsearch indexing or searching, you might encounter the following issues.
 
 ## Create an empty index
 
@@ -157,6 +157,16 @@ If reindexing does not resolve this issue, and you did not pause the indexing pr
 To resolve this error, disconnect one of the GitLab instances from using the Elasticsearch cluster.
 
 For more information, see [issue 3421](https://gitlab.com/gitlab-org/gitlab/-/issues/3421).
+
+## Search fails with `too_many_clauses: maxClauseCount is set to 1024`
+
+This error occurs when a query has more clauses than defined in the `indices.query.bool.max_clause_count` setting:
+
+- [In Elasticsearch 7.17 and earlier](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/search-settings.html), the default value is `1024`.
+- [In Elasticsearch 8.0](https://www.elastic.co/guide/en/elasticsearch/reference/8.0/search-settings.html), the default value is `4096`.
+- [In Elasticsearch 8.1 and later](https://www.elastic.co/guide/en/elasticsearch/reference/8.1/search-settings.html), the setting is deprecated and the value is dynamically determined.
+
+To resolve this issue, increase the value or upgrade Elasticsearch 8.1 or later. Increasing the value may lead to performance degradation.
 
 ## Last resort to recreate an index
 
