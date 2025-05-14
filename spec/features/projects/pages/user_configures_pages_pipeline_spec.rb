@@ -31,7 +31,7 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
     it 'shows waiting screen' do
       visit project_pages_path(project)
 
-      expect(page).to have_content('Waiting for the Pages Pipeline to complete...')
+      expect(page).to have_content('Waiting for the Pages Pipeline to complete…')
     end
   end
 end

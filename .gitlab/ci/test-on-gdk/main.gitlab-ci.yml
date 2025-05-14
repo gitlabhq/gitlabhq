@@ -17,8 +17,10 @@ workflow:
 
 .rules:test:gdk-gitaly-version-change:
   rules:
-    changes:
-      - "GITALY_SERVER_VERSION"
+    - changes:
+        - "GITALY_SERVER_VERSION"
+    - when: manual
+      allow_failure: true
 
 .with-parallel:
   parallel: 15
@@ -98,7 +100,6 @@ gdk-instance-gitaly-transactions:
   variables:
     QA_GITALY_TRANSACTIONS_ENABLED: "true"
   rules:
-    - !reference [.rules:test:never-schedule-pipeline, rules]
     - !reference [.rules:test:gdk-gitaly-version-change, rules]
 
 # Take the existing GDK docker image and reconfigure it with Postgres load

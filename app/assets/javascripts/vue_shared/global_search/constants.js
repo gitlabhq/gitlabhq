@@ -86,23 +86,23 @@ export const COMMAND_PALETTE_TYPE_PAGES = s__('GlobalSearch|Pages or actions');
 export const COMMAND_PALETTE_TYPE_FILES = s__('GlobalSearch|Files');
 
 export const COMMAND_PALETTE_SEARCH_SCOPE_HEADER = s__(
-  'GlobalSearch|Search for `%{searchTerm}` in...',
+  'GlobalSearch|Search for `%{searchTerm}` in…',
 );
 
 export const COMMAND_PALETTE_PAGES_SCOPE_HEADER = s__(
-  'GlobalSearch|Search for `%{searchTerm}` pages in...',
+  'GlobalSearch|Search for `%{searchTerm}` pages in…',
 );
 
 export const COMMAND_PALETTE_USERS_SCOPE_HEADER = s__(
-  'GlobalSearch|Search for `%{searchTerm}` users in...',
+  'GlobalSearch|Search for `%{searchTerm}` users in…',
 );
 
 export const COMMAND_PALETTE_PROJECTS_SCOPE_HEADER = s__(
-  'GlobalSearch|Search for `%{searchTerm}` projects in...',
+  'GlobalSearch|Search for `%{searchTerm}` projects in…',
 );
 
 export const COMMAND_PALETTE_FILES_SCOPE_HEADER = s__(
-  'GlobalSearch|Search for `%{searchTerm}` files in...',
+  'GlobalSearch|Search for `%{searchTerm}` files in…',
 );
 
 export const COMMAND_PALETTE_PAGES_CHAR = '>';

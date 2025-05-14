@@ -92,7 +92,7 @@ Use the ServiceNow custom actions via the DevOps Change Velocity Docker image to
 
 #### Setup the Pipeline and Change Request Jobs
 
-Since this is add-on to the ServiceNow DevOps Change Velocity, the above setup steps are same. You just need to include the Docker image in the pipeline definition.
+This is an add-on to the ServiceNow DevOps Change Velocity, so the previous setup steps are the same. You just need to include the Docker image in the pipeline definition.
 
 Use the `gitlab-ci-workflow2.yml` sample pipeline in this repository as an example.
 

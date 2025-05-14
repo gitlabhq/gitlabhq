@@ -309,7 +309,7 @@ We recommend that batched background migrations are finalized after all of the
 following conditions are met:
 
 - The batched background migration is completed on GitLab.com
-- The batched background migration was added in or before the last [required stop](required_stops.md). For example if 17.8 is a required stop and the migration was added in 17.7, the finalizing migration can be added in 17.9.
+- The batched background migration was added in or before the last [required stop](required_stops.md). For example if 17.8 is a required stop and the migration was added in 17.7, the [finalizing migration can be added in 17.9](required_stops.md#long-running-migrations-being-finalized).
 
 The `ensure_batched_background_migration_is_finished` call must exactly match
 the migration that was used to enqueue it. Pay careful attention to:
@@ -1216,7 +1216,7 @@ for more details.
    This can be achieve in different ways, depending on the scenario.
 
    - Generate an `UPDATE` query, and use `FROM` to join the tables
-   that provide the necessary values 
+   that provide the necessary values
    ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184051)).
    - Generate an `UPDATE` query, and use `FROM(VALUES( ...))` to
    pass values calculated beforehand

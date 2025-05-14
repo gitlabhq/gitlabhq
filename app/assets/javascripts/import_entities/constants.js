@@ -38,7 +38,7 @@ export const STATUS_ICON_MAP = {
   [STATUSES.CREATED]: SCHEDULED_STATUS_ICON,
   [STATUSES.STARTED]: {
     icon: 'status-running',
-    text: __('Importing...'),
+    text: __('Importing…'),
     variant: 'info',
   },
   [STATUSES.FAILED]: {

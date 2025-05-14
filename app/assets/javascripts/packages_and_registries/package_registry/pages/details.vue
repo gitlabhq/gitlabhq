@@ -389,8 +389,8 @@ export default {
     </gl-modal>
 
     <gl-tabs>
-      <gl-tab :title="__('Detail')">
-        <div data-testid="package-information-content">
+      <gl-tab :title="__('Details')">
+        <div data-testid="package-information-content" class="-gl-mt-3">
           <package-history :package-entity="packageEntity" :project-name="projectName" />
 
           <gl-alert v-if="showDeprecationAlert" :dismissible="false" variant="warning">

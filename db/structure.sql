@@ -15968,6 +15968,7 @@ CREATE TABLE issuable_metric_images (
     url text,
     url_text text,
     namespace_id bigint,
+    CONSTRAINT check_10213e2b5c CHECK ((namespace_id IS NOT NULL)),
     CONSTRAINT check_3bc6d47661 CHECK ((char_length(url_text) <= 128)),
     CONSTRAINT check_5b3011e234 CHECK ((char_length(url) <= 255)),
     CONSTRAINT check_7ed527062f CHECK ((char_length(file) <= 255))
@@ -25760,7 +25761,9 @@ CREATE TABLE work_item_type_user_preferences (
     namespace_id bigint NOT NULL,
     work_item_type_id bigint,
     sort text,
-    CONSTRAINT check_7f4a25cee7 CHECK ((char_length(sort) <= 255))
+    display_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
+    CONSTRAINT check_7f4a25cee7 CHECK ((char_length(sort) <= 255)),
+    CONSTRAINT check_display_settings_is_hash CHECK ((jsonb_typeof(display_settings) = 'object'::text))
 );
 
 CREATE SEQUENCE work_item_type_user_preferences_id_seq

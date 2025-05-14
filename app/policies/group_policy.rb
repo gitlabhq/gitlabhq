@@ -132,11 +132,43 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     Feature.enabled?(:archive_group, @subject.root_ancestor)
   end
 
+  rule { (admin | owner) & archive_group_enabled }.enable :archive_group
+
+  condition(:archived?, scope: :subject) { @subject.self_or_ancestor_archived? }
+  condition(:group_deleted?, scope: :subject) { @subject.scheduled_for_deletion_in_hierarchy_chain? }
+
+  rule { archived? & archive_group_enabled }.policy do
+    prevent :admin_build
+    prevent :admin_group_member
+    prevent :admin_issue
+    prevent :admin_issue_board
+    prevent :admin_issue_board_list
+    prevent :admin_label
+    prevent :admin_milestone
+    prevent :admin_pipeline
+    prevent :admin_work_item
+    prevent :create_package
+    prevent :create_projects
+    prevent :create_runner
+    prevent :create_subgroup
+    prevent :edit_billing
+    prevent :import_projects
+    prevent :remove_group
+    prevent :reopen_issue
+    prevent :transfer_projects
+    prevent :update_issue
+  end
+
+  rule { archived? & archive_group_enabled & ~group_deleted? }.policy do
+    prevent :destroy_issue
+    prevent :destroy_user_achievement
+    prevent :destroy_package
+    prevent :destroy_upload
+  end
+
   rule { can?(:read_group) & design_management_enabled }.policy do
     enable :read_design_activity
   end
-
-  rule { (admin | owner) & archive_group_enabled }.enable :archive_group
 
   rule { public_group }.policy do
     enable :read_group

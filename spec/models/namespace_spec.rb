@@ -839,6 +839,51 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#self_or_ancestor_archived?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:grandparent) { create(:group) }
+    let(:parent) { create(:group, parent: grandparent) }
+    let(:namespace) { create(:group, parent: parent) }
+
+    where(:namespace_archived, :parent_archived, :grandparent_archived, :expected_result) do
+      true  | false | false | true
+      true  | false | true  | true
+      true  | true  | false | true
+      true  | true  | true  | true
+      false | true  | true  | true
+      false | true  | false | true
+      false | false | true  | true
+      false | false | false | false
+    end
+
+    with_them do
+      before do
+        namespace.namespace_settings.update!(archived: namespace_archived)
+        parent.namespace_settings.update!(archived: parent_archived)
+        grandparent.namespace_settings.update!(archived: grandparent_archived)
+      end
+
+      it 'returns the expected result' do
+        expect(namespace.self_or_ancestor_archived?).to eq(expected_result)
+      end
+    end
+
+    context 'when group has no parent' do
+      let_it_be(:root) { create(:group) }
+
+      it 'returns true when archived' do
+        root.namespace_settings.update!(archived: true)
+        expect(root.self_or_ancestor_archived?).to eq(true)
+      end
+
+      it 'returns false when not archived' do
+        root.namespace_settings.update!(archived: false)
+        expect(root.self_or_ancestor_archived?).to eq(false)
+      end
+    end
+  end
+
   describe '#traversal_ids' do
     let(:namespace) { build(:group) }
 

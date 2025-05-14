@@ -62,7 +62,6 @@ describe('Package Additional metadata', () => {
     jest.spyOn(Sentry, 'captureException').mockImplementation();
   });
 
-  const findTitle = () => wrapper.findByTestId('title');
   const findMainArea = () => wrapper.findByTestId('main');
   const findComponentIs = () => wrapper.findByTestId('component-is');
   const findAdditionalMetadataLoader = () => wrapper.findComponent(AdditionalMetadataLoader);
@@ -80,15 +79,6 @@ describe('Package Additional metadata', () => {
 
     expect(findAdditionalMetadataLoader().exists()).toBe(false);
     expect(Sentry.captureException).not.toHaveBeenCalled();
-  });
-
-  it('has the correct title', () => {
-    mountComponent();
-
-    const title = findTitle();
-
-    expect(title.exists()).toBe(true);
-    expect(title.text()).toMatchInterpolatedText(AdditionalMetadata.i18n.componentTitle);
   });
 
   it('does not render gl-alert', () => {
@@ -128,7 +118,6 @@ describe('Package Additional metadata', () => {
       await waitForPromises();
       await nextTick();
 
-      expect(findTitle().exists()).toBe(visible);
       expect(findMainArea().exists()).toBe(visible);
       expect(findComponentIs().exists()).toBe(visible);
 

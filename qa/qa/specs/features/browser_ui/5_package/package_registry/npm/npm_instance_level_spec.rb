@@ -121,7 +121,7 @@ module QA
           end
 
           Page::Project::Packages::Show.perform do |show|
-            expect(show).to have_package_info(package.name, "1.0.0")
+            expect(show).to have_package_info(name: package.name, version: "1.0.0")
           end
         end
       end

@@ -172,14 +172,14 @@ Pending comments display information about delayed actions. GitLab does not perf
 
 ## Submit a review
 
-To submit your completed review, you can:
+To submit your completed review:
 
 - Use the `/submit_review` [quick action](../../quick_actions.md) in the text of a non-review comment.
-- Select **Finish review**, then select **Submit review** at the bottom of the dialog.
+- On the top right, select **Your review**, then select **Submit review**.
   In the dialog, you can supply a **Summary comment**, approve (or reject) the merge request, and
   include quick actions:
 
-  ![Finish review with comment](img/mr_summary_comment_v16_9.png)
+  ![Finish review with comment](img/mr_summary_comment_v18_0.png)
 
 When you submit your review, GitLab:
 

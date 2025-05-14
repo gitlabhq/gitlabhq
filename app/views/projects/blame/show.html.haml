@@ -56,7 +56,7 @@
         .gradient
         = gl_loading_icon(size: 'sm')
         %span.gl-mx-2
-          = _('Loading full blame...')
+          = _('Loading full blame…')
 
   - if @blame_mode.pagination?
     = paginate(@blame_pagination.paginator, theme: "gitlab")

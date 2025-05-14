@@ -99,6 +99,7 @@ praefect:
 # ========== gitaly transactions enabled ===========
 # https://docs.gitlab.com/ee/architecture/blueprints/gitaly_transaction_management/
 gitaly-transactions:
+  when: manual
   extends:
     - .parallel
     - .omnibus-e2e

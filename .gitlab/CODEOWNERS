@@ -583,7 +583,6 @@ lib/gitlab/checks/**
 /doc/administration/auditor_users.md @idurham
 /doc/administration/auth/ @idurham
 /doc/administration/broadcast_messages.md @sselhorn
-/doc/administration/cells.md @emily.sahlani
 /doc/administration/cicd/ @lyspin
 /doc/administration/cicd/job_logs.md @rsarangadharan
 /doc/administration/clusters/ @z_painter
@@ -1043,13 +1042,11 @@ lib/gitlab/checks/**
 /doc/policy/ @axil
 /doc/security/ @idurham
 /doc/security/asset_proxy.md @msedlakjakubowski
-/doc/security/hardening_nist_800_53.md @emily.sahlani
 /doc/solutions/ @jfullam @Darwinjs @sbrightwell
 /doc/solutions/integrations/servicenow.md @ashrafkhamis
 /doc/subscriptions/ @lciutacu
 /doc/subscriptions/gitlab_com/ @lyspin
 /doc/subscriptions/gitlab_dedicated/ @emily.sahlani
-/doc/subscriptions/gitlab_dedicated_for_government/ @emily.sahlani
 /doc/topics/ @msedlakjakubowski
 /doc/topics/autodevops/ @z_painter
 /doc/topics/git/ @brendan777

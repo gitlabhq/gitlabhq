@@ -373,24 +373,20 @@ describe('Global Search Store Getters', () => {
     it('returns the correct name', () => {
       state.search = 'pie';
 
-      expect(getters.scopedSearchGroup(state, {}).name).toStrictEqual('Search for `pie` in...');
+      expect(getters.scopedSearchGroup(state, {}).name).toStrictEqual('Search for `pie` in…');
 
       state.commandChar = '@';
-      expect(getters.scopedSearchGroup(state, {}).name).toStrictEqual(
-        'Search for `pie` users in...',
-      );
+      expect(getters.scopedSearchGroup(state, {}).name).toStrictEqual('Search for `pie` users in…');
     });
 
     it('does not escape name', () => {
       state.search = '<pie`>#$%';
 
-      expect(getters.scopedSearchGroup(state, {}).name).toStrictEqual(
-        'Search for `<pie`>#$%` in...',
-      );
+      expect(getters.scopedSearchGroup(state, {}).name).toStrictEqual('Search for `<pie`>#$%` in…');
 
       state.commandChar = '>';
       expect(getters.scopedSearchGroup(state, {}).name).toStrictEqual(
-        'Search for `<pie`>#$%` pages in...',
+        'Search for `<pie`>#$%` pages in…',
       );
     });
   });
@@ -509,11 +505,11 @@ describe('Global Search Store Getters', () => {
 
   describe.each`
     commandChar | header
-    ${'>'}      | ${'Search for `%{searchTerm}` pages in...'}
-    ${'@'}      | ${'Search for `%{searchTerm}` users in...'}
-    ${':'}      | ${'Search for `%{searchTerm}` projects in...'}
-    ${'~'}      | ${'Search for `%{searchTerm}` files in...'}
-    ${'}'}      | ${'Search for `%{searchTerm}` in...'}
+    ${'>'}      | ${'Search for `%{searchTerm}` pages in…'}
+    ${'@'}      | ${'Search for `%{searchTerm}` users in…'}
+    ${':'}      | ${'Search for `%{searchTerm}` projects in…'}
+    ${'~'}      | ${'Search for `%{searchTerm}` files in…'}
+    ${'}'}      | ${'Search for `%{searchTerm}` in…'}
   `('scopedSearchGroup', ({ commandChar, header }) => {
     beforeEach(() => {
       createState();

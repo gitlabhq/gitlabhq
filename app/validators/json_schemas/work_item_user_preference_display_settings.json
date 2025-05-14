@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Work item user preference display settings",
+  "type": "object",
+  "properties": {
+    "shouldOpenItemsInSidePanel": {
+      "description": "Setting to toggle the drawer capability in listing pages.",
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

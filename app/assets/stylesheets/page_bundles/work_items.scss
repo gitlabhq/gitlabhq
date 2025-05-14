@@ -389,6 +389,11 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
         @apply gl-max-w-full;
       }
     }
+
+    // stylelint-disable-next-line gitlab/no-gl-class
+    .work-item-sidebar-dropdown .gl-new-dropdown-panel {
+      @apply gl-min-w-0 gl-max-w-[calc(100%-1rem)] #{!important};
+    }
   }
 }
 

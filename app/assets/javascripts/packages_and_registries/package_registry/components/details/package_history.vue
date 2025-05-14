@@ -23,7 +23,7 @@ import PackageHistoryLoader from './package_history_loader.vue';
 export default {
   name: 'PackageHistory',
   i18n: {
-    createdOn: s__('PackageRegistry|%{name} version %{version} was first created %{datetime}'),
+    createdOn: s__('PackageRegistry|Version %{version} was first created %{datetime}'),
     createdByCommitText: s__('PackageRegistry|Created by commit %{link} on branch %{branch}'),
     createdByPipelineText: s__(
       'PackageRegistry|Built by pipeline %{link} triggered %{datetime} by %{author}',
@@ -130,7 +130,6 @@ export default {
 
 <template>
   <div class="issuable-discussion gl-mt-3">
-    <h2 class="gl-heading-2" data-testid="title">{{ __('History') }}</h2>
     <gl-alert
       v-if="fetchPackagePipelinesError"
       variant="danger"
@@ -142,9 +141,6 @@ export default {
     <ul v-else class="timeline main-notes-list notes gl-mb-4" data-testid="timeline">
       <history-item icon="clock" data-testid="created-on">
         <gl-sprintf :message="$options.i18n.createdOn">
-          <template #name>
-            <strong>{{ packageEntity.name }}</strong>
-          </template>
           <template #version>
             <strong>{{ packageEntity.version }}</strong>
           </template>

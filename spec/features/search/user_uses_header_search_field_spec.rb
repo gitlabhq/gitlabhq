@@ -184,7 +184,7 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
         fill_in_search('Feature')
 
         within_testid("scoped-items") do
-          expect(page).to have_content('Search for `Feature` in...')
+          expect(page).to have_content('Search for `Feature` in…')
           expect(page).to have_link('all GitLab')
           expect(page).not_to have_link('Feature Flags')
         end

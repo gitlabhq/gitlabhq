@@ -127,7 +127,7 @@ This is an expansion phase that takes place during the `script` execution.
 Its behavior depends on the shell used (`bash`, `sh`, `cmd`, PowerShell). For example, if the job's
 `script` contains a line `echo $MY_VARIABLE-${MY_VARIABLE_2}`, it should be properly handled
 by bash/sh (leaving empty strings or some values depending whether the variables were
-defined or not), but don't work with Windows' `cmd` or PowerShell, since these shells
+defined or not), but don't work with Windows' `cmd` or PowerShell, because these shells
 use a different variables syntax.
 
 Supported:

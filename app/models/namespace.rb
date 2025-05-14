@@ -388,15 +388,23 @@ class Namespace < ApplicationRecord
   end
 
   def archive
-    return false if namespace_settings.archived?
+    return false if archived?
 
     namespace_settings.update(archived: true)
   end
 
   def unarchive
-    return false unless namespace_settings.archived?
+    return false unless archived?
 
     namespace_settings.update(archived: false)
+  end
+
+  def archived?
+    !!namespace_settings&.archived?
+  end
+
+  def self_or_ancestor_archived?
+    self_and_ancestors.archived.exists?
   end
 
   def to_reference_base(from = nil, full: false, absolute_path: false)

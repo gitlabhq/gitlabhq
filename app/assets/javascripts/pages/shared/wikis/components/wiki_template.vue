@@ -106,7 +106,7 @@ export default {
           block
           class="!gl-justify-start"
           category="tertiary"
-          >{{ __('Manage templates...') }}</gl-button
+          >{{ __('Manage templates…') }}</gl-button
         >
       </div>
     </template>

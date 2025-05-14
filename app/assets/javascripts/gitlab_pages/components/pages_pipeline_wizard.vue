@@ -9,7 +9,7 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import pagesMarkOnboardingComplete from '../queries/mark_onboarding_complete.graphql';
 
 export const i18n = {
-  loadingMessage: s__('GitLabPages|Updating your Pages configuration...'),
+  loadingMessage: s__('GitLabPages|Updating your Pages configuration…'),
 };
 
 export default {

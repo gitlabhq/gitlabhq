@@ -28,7 +28,7 @@ namespace :tw do
       # CodeOwnerRule.new('Analytics Instrumentation', ''),
       CodeOwnerRule.new('Authentication', '@idurham'),
       CodeOwnerRule.new('Authorization', '@idurham'),
-      CodeOwnerRule.new('Cells Infrastructure', '@emily.sahlani'),
+      # CodeOwnerRule.new('Cells Infrastructure', ''),
       CodeOwnerRule.new('Cloud Connector', '@jglassman1'),
       CodeOwnerRule.new('Code Creation', '@jglassman1'),
       CodeOwnerRule.new('Code Review', '@aqualls'),
@@ -49,7 +49,7 @@ namespace :tw do
       CodeOwnerRule.new('Duo Workflow', '@sselhorn'),
       CodeOwnerRule.new('Dynamic Analysis', '@phillipwells'),
       CodeOwnerRule.new('Editor Extensions', '@aqualls'),
-      CodeOwnerRule.new('Environment Automation', '@emily.sahlani'),
+      # CodeOwnerRule.new('Environment Automation', ''),
       CodeOwnerRule.new('Environments', '@z_painter'),
       # CodeOwnerRule.new('Fulfillment Platform', ''),
       CodeOwnerRule.new('Fuzz Testing', '@rdickenson'),
@@ -88,7 +88,7 @@ namespace :tw do
       CodeOwnerRule.new('Switchboard', '@emily.sahlani'),
       CodeOwnerRule.new('Testing', '@eread'),
       CodeOwnerRule.new('Tutorials', '@gl-docsteam'),
-      CodeOwnerRule.new('US Public Sector Services', '@emily.sahlani'),
+      # CodeOwnerRule.new('US Public Sector Services', ''),
       CodeOwnerRule.new('Utilization', '@lciutacu')
       # CodeOwnerRule.new('Vulnerability Research', '')
     ].freeze
