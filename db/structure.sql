@@ -33277,6 +33277,8 @@ CREATE UNIQUE INDEX idx_packages_on_project_id_name_version_unique_when_golang O
 
 CREATE UNIQUE INDEX idx_packages_on_project_id_name_version_unique_when_helm ON packages_packages USING btree (project_id, name, version) WHERE ((package_type = 11) AND (status <> 4));
 
+CREATE UNIQUE INDEX idx_packages_on_project_id_name_version_unique_when_maven ON packages_packages USING btree (project_id, name, version) WHERE ((package_type = 1) AND (status <> 4));
+
 CREATE UNIQUE INDEX idx_packages_on_project_id_name_version_unique_when_npm ON packages_packages USING btree (project_id, name, version) WHERE ((package_type = 2) AND (status <> 4));
 
 CREATE INDEX idx_packages_packages_on_npm_scope_and_project_id ON packages_packages USING btree (split_part((name)::text, '/'::text, 1), project_id) WHERE ((package_type = 2) AND ("position"((name)::text, '/'::text) > 0) AND (status = ANY (ARRAY[0, 3])) AND (version IS NOT NULL));
@@ -38458,8 +38460,6 @@ CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree 
 CREATE INDEX tmp_idx_orphaned_approval_merge_request_rules ON approval_merge_request_rules USING btree (id) WHERE ((report_type = ANY (ARRAY[2, 4])) AND (security_orchestration_policy_configuration_id IS NULL));
 
 CREATE INDEX tmp_idx_orphaned_approval_project_rules ON approval_project_rules USING btree (id) WHERE ((report_type = ANY (ARRAY[2, 4])) AND (security_orchestration_policy_configuration_id IS NULL));
-
-CREATE INDEX tmp_idx_packages_on_project_id_when_mvn_not_pending_destruction ON packages_packages USING btree (project_id) WHERE ((package_type = 1) AND (status <> 4));
 
 CREATE INDEX tmp_idx_redirect_routes_on_source_type_id_where_namespace_null ON redirect_routes USING btree (source_type, id) WHERE (namespace_id IS NULL);
 

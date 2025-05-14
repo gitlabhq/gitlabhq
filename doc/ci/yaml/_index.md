@@ -5498,11 +5498,10 @@ arm-sql-job:
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21619) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `ci_docker_image_pull_policy`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) in GitLab 15.2.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) in GitLab 15.4. [Feature flag `ci_docker_image_pull_policy`](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) removed.
-- Requires GitLab Runner 15.1 or later.
 
 {{< /history >}}
 
-The pull policy that the runner uses to fetch the Docker image.
+The pull policy that the runner uses to fetch the Docker image. Requires GitLab Runner 15.1 or later.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the [`default` section](#default).
 
