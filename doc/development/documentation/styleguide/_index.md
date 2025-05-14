@@ -158,6 +158,7 @@ GitLab documentation uses the following shortcodes:
 - [Version history](availability_details.md#history)
 - [Icons](#gitlab-svg-icons)
 - [Tabs](#tabs)
+- [Cards](#cards)
 
 ## Language
 
@@ -1937,6 +1938,27 @@ For more information, see [issue 225](https://gitlab.com/gitlab-org/technical-wr
 
 See [Pajamas](https://design.gitlab.com/components/tabs/#guidelines) for more
 details on tabs.
+
+## Cards
+
+Use cards to create landing pages with links to sub-pages.
+
+To create a set of cards, follow this example:
+
+```markdown
+{{</* cards */>}}
+
+- [The first page](first_page.md)
+- [Another page](another/page.md)
+- [One more page](one_more.md)
+
+{{</* /cards */>}}
+```
+
+Cards render only on the GitLab documentation site (`https://docs.gitlab.com`).
+In the GitLab product help, a set of cards appears as an unordered list of links.
+
+Card descriptions are populated from the `description` metadata on the Markdown page headers.
 
 ## Plagiarism
 

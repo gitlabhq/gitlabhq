@@ -29751,6 +29751,9 @@ msgstr ""
 msgid "Group membership expiration date removed"
 msgstr ""
 
+msgid "Group merge requests by workflow or by your role ('Reviews and Your Merge Requests'), and manage label visibility."
+msgstr ""
+
 msgid "Group milestone"
 msgstr ""
 

@@ -165,25 +165,15 @@ describe('GroupsListItem', () => {
     );
   });
 
-  describe('when access level is not available', () => {
-    const { accessLevel, ...groupWithoutAccessLevel } = group;
+  describe.each`
+    accessLevel
+    ${{ accessLevel: undefined }}
+    ${{ accessLevel: { integerValue: null } }}
+    ${{ accessLevel: { integerValue: ACCESS_LEVEL_NO_ACCESS_INTEGER } }}
+  `('when access level is $accessLevel', ({ accessLevel }) => {
     beforeEach(() => {
       createComponent({
-        propsData: { group: groupWithoutAccessLevel },
-      });
-    });
-
-    it('does not render level role badge', () => {
-      expect(findAccessLevelBadge().exists()).toBe(false);
-    });
-  });
-
-  describe('when access level is `No access`', () => {
-    beforeEach(() => {
-      createComponent({
-        propsData: {
-          group: { ...group, accessLevel: { integerValue: ACCESS_LEVEL_NO_ACCESS_INTEGER } },
-        },
+        propsData: { group: { ...group, accessLevel } },
       });
     });
 

@@ -86,9 +86,7 @@ of GitLab and `config.yml` of GitLab Shell.
 
 It is not necessary to create these directories manually now, and doing so can cause errors later in the installation.
 
-For a more in-depth overview, see the GitLab architecture in the development documentation.
-
-## Overview
+## Installation workflow
 
 The GitLab installation consists of setting up the following components:
 

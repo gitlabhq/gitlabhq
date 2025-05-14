@@ -171,6 +171,18 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           )
       end
     end
+
+    describe 'job status update subscription trigger' do
+      %w[cancel! drop! run! skip! success!].each do |action|
+        context "when build receives #{action} event" do
+          it 'triggers GraphQL subscription ciJobStatusUpdated' do
+            expect(GraphqlTriggers).to receive(:ci_job_status_updated).with(build)
+
+            build.public_send(action)
+          end
+        end
+      end
+    end
   end
 
   describe 'status' do

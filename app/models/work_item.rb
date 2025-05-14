@@ -72,13 +72,34 @@ class WorkItem < Issue
       }xo
     end
 
+    def alternative_reference_prefix_with_postfix
+      if Feature.enabled?(:extensible_reference_filters, Feature.current_request)
+        '[work_item:'
+      else
+        ''
+      end
+    end
+
     def reference_pattern
-      @reference_pattern ||= %r{
+      prefix_with_postfix = alternative_reference_prefix_with_postfix
+      if prefix_with_postfix.empty?
+        @reference_pattern ||= %r{
         (?:
           (#{namespace_reference_pattern})?#{Regexp.escape(reference_prefix)} |
-          #{Regexp.escape(alternative_reference_prefix)}
+          #{Regexp.escape(alternative_reference_prefix_without_postfix)}
         )#{Gitlab::Regex.work_item}
       }x
+      else
+        %r{
+        ((?:
+          (#{namespace_reference_pattern})?#{Regexp.escape(reference_prefix)} |
+          #{alternative_reference_prefix_without_postfix}
+        )#{Gitlab::Regex.work_item}) |
+        ((?:
+          #{Regexp.escape(prefix_with_postfix)}(#{namespace_reference_pattern}/)?
+        )#{Gitlab::Regex.work_item(reference_postfix)})
+      }x
+      end
     end
 
     def link_reference_pattern

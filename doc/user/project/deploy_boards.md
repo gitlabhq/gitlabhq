@@ -45,8 +45,6 @@ environments by using [Auto DevOps](../../topics/autodevops/_index.md).
 
 {{< /alert >}}
 
-## Overview
-
 With deploy boards you can gain more insight into deploys with benefits such as:
 
 - Following a deploy from the start, not just when it's done

@@ -90,8 +90,8 @@ existing indexes are updated whenever data is written to a table. As a
 result, having many indexes on the same table slows down writes. It's therefore important
 to balance query performance with the overhead of maintaining an extra index.
 
-Let's say that adding an index reduces SELECT timings by 5 milliseconds but increases
-INSERT/UPDATE/DELETE timings by 10 milliseconds. In this case, the new index may not be worth
+For example, if adding an index reduces SELECT timings by 5 milliseconds but increases
+INSERT/UPDATE/DELETE timings by 10 milliseconds, the new index may not be worth
 it. A new index is more valuable when SELECT timings are reduced and INSERT/UPDATE/DELETE
 timings are unaffected.
 

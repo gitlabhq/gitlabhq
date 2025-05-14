@@ -447,7 +447,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Search::ElasticGroupAssociationDeletionWorker' => 3,
         'Search::Elastic::CommitIndexerWorker' => 2,
         'Search::Elastic::DeleteWorker' => 3,
-        'Search::Zoekt::AdjustIndicesReservedStorageBytesEventWorker' => 1,
         'Search::Zoekt::ForceUpdateOverprovisionedIndexEventWorker' => 1,
         'Search::Zoekt::DeleteProjectEventWorker' => 1,
         'Search::Zoekt::IndexMarkedAsReadyEventWorker' => 1,

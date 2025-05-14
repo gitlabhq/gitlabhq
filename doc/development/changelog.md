@@ -163,8 +163,8 @@ git push -f origin your-branch-name
 ```
 
 To edit older (or multiple commits), use `git rebase -i HEAD~N` where `N` is the
-last N number of commits to rebase. Let's say you have 3 commits on your branch:
-A, B, and C. If you want to update commit B, you need to run:
+last N number of commits to rebase. For example, if you have three commits on your branch,
+and only want to update the second commit, you need to run:
 
 ```shell
 git rebase -i HEAD~2

@@ -120,17 +120,15 @@ in these cases:
 
 ##### A. Feature flag for an operation that runs a few times per day
 
-Let's say you are releasing a new functionality that runs a few times per day, for example, in a daily or
-hourly cron job. And this new functionality is controlled by the newly introduced feature flag.
+If, for example, you're releasing a new feature that runs a few times per day in a cron job, and the feature is controlled by the newly introduced feature flag.
 For example, [rewriting the database query for a cron job](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128759/diffs).
 In this case, releasing the feature flag for a percentage below 25% might give you slow feedback
-regarding whether to proceed with the rollout or not. Also, if the cron job fails, it will [retry](../sidekiq/_index.md#retries).
+regarding whether to proceed with the rollout or not. Also, if the cron job fails, it [retries](../sidekiq/_index.md#retries).
 So the consequences of something going wrong won't be that big. In this case, releasing with a percentage of 25% or 50%
 will be an acceptable choice.
 
-But you have to make sure to log the result of the feature flag check to the log of your worker. See instructions
-[here](../logging.md#logging-context-metadata-through-rails-or-grape-requests)
-about best practices for logging.
+But you have to make sure to log the result of the feature flag check to the log of your worker. For more instructions about best practices for logging, see
+[Logging context metadata (through Rails or Grape requests)](../logging.md#logging-context-metadata-through-rails-or-grape-requests).
 
 ##### B. Feature flag for an operation that runs hundreds or thousands times per day
 
@@ -139,7 +137,7 @@ it might not be run often. In this case, choose a percentage high enough to coll
 to know whether to proceed or not. You can consider starting with `5%` or `10%` in this case, while monitoring
 the logs for any errors, or returned `500`s statuses to the users.
 
-But as you continue with the rollout and increasing the percentage, you will need to consider looking at the
+But as you continue with the rollout and increase the percentage, you need to consider looking at the
 performance impact of the feature. You can consider monitoring
 the [Latency: Apdex and error ratios](https://dashboards.gitlab.net/d/general-triage/general-platform-triage?orgId=1)
 dashboard on Grafana.

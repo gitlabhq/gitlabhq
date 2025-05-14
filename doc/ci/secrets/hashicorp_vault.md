@@ -136,9 +136,9 @@ JWTs are credentials, which can grant access to resources. Be careful where you 
 
 {{< /alert >}}
 
-Let's say you have the passwords for your staging and production databases stored in a Vault server
-that is running on `http://vault.example.com:8200`. Your staging password is `pa$$w0rd`
-and your production password is `real-pa$$w0rd`.
+Consider a scenario where you store passwords for your staging and production databases in a Vault server.
+
+You can retrieve the passwords with the `vault kv get` command.
 
 ```shell
 $ vault kv get -field=password secret/myproject/staging/db
@@ -147,6 +147,9 @@ pa$$w0rd
 $ vault kv get -field=password secret/myproject/production/db
 real-pa$$w0rd
 ```
+
+Your staging password is `pa$$w0rd`,
+and your production password is `real-pa$$w0rd`.
 
 To configure your Vault server, start by enabling the [JWT Auth](https://developer.hashicorp.com/vault/docs/auth/jwt) method:
 

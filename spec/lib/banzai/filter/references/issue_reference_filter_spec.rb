@@ -191,11 +191,50 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_categor
     it_behaves_like 'an internal reference'
   end
 
-  context 'alternative internal_reference' do
+  context 'alternative GL- internal reference' do
     let(:written_reference) { "GL-#{issue.iid}" }
     let(:reference) { "##{issue.iid}" }
 
     it_behaves_like 'an internal reference'
+  end
+
+  context 'when feature flag extensible_reference_filters is enabled' do
+    before do
+      stub_feature_flags(extensible_reference_filters: true)
+    end
+
+    context 'alternative [issue:XXX] internal reference' do
+      let(:written_reference) { "[issue:#{issue.iid}]" }
+      let(:reference) { "##{issue.iid}" }
+
+      it_behaves_like 'an internal reference'
+    end
+
+    context 'project [issue:project/path/XXX] reference' do
+      let(:reference) { "[issue:#{project.full_path}/#{issue.iid}]" }
+
+      it_behaves_like 'a reference containing an element node'
+
+      it_behaves_like 'a reference with issue type information'
+    end
+  end
+
+  context 'when feature flag extensible_reference_filters is disabled' do
+    before do
+      stub_feature_flags(extensible_reference_filters: false)
+      stub_commonmark_sourcepos_disabled
+    end
+
+    it 'alternative [issue:XXX] reference does not work' do
+      doc = reference_filter("[issue:#{issue.iid}]")
+      expect(doc.to_html).to eq("<p>[issue:#{issue.iid}]</p>")
+    end
+
+    it 'project [issue:project/path/XXX] reference does not work' do
+      reference = "[issue:#{project.full_path}/#{issue.iid}]"
+      doc = reference_filter(reference)
+      expect(doc.to_html).to eq("<p>#{reference}</p>")
+    end
   end
 
   context 'cross-project / cross-namespace complete reference' do

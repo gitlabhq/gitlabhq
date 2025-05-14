@@ -231,6 +231,7 @@ module Ci
 
     after_commit :track_ci_secrets_management_id_tokens_usage, on: :create, if: :id_tokens?
     after_commit :track_ci_build_created_event, on: :create
+    after_commit :trigger_job_status_change_subscription, if: :saved_change_to_status?
 
     class << self
       # This is needed for url_for to work,
@@ -409,6 +410,10 @@ module Ci
 
     def self.taggings_join_model
       ::Ci::BuildTag
+    end
+
+    def trigger_job_status_change_subscription
+      GraphqlTriggers.ci_job_status_updated(self)
     end
 
     # A Ci::Bridge may transition to `canceling` as a result of strategy: :depend

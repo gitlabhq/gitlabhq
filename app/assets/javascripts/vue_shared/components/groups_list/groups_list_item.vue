@@ -94,7 +94,9 @@ export default {
       return ACCESS_LEVEL_LABELS[this.accessLevel];
     },
     shouldShowAccessLevel() {
-      return this.accessLevel !== undefined && this.accessLevel !== ACCESS_LEVEL_NO_ACCESS_INTEGER;
+      const falsyValues = [undefined, null, ACCESS_LEVEL_NO_ACCESS_INTEGER];
+
+      return !falsyValues.includes(this.accessLevel);
     },
     groupIconName() {
       return this.group.parent ? 'subgroup' : 'group';

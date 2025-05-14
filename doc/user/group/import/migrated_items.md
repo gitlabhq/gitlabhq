@@ -74,6 +74,7 @@ Some group items are excluded from migration because they:
   - Deploy tokens
   - Webhooks
 - Are not supported:
+  - Custom fields
   - Iteration cadence settings
   - Pending member invitations
   - Push rules
@@ -233,6 +234,7 @@ Some project items are excluded from migration because they:
 - Are not supported:
   - Agents
   - Container registry
+  - Custom fields
   - Environments
   - Feature flags
   - Infrastructure registry

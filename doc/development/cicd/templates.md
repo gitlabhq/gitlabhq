@@ -264,7 +264,7 @@ you make a change to an *existing* template, you **must** make sure that it does
 CI/CD in existing projects.
 
 For example, changing a job name in a template could break pipelines in an existing project.
-Let's say there is a template named `Performance.gitlab-ci.yml` with the following content:
+In this example, a template named `Performance.gitlab-ci.yml` has the following content:
 
 ```yaml
 performance:

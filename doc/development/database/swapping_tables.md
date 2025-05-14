@@ -9,8 +9,7 @@ Sometimes you need to replace one table with another. For example, when
 migrating data in a very large table it's often better to create a copy of the
 table and insert & migrate the data into this new table in the background.
 
-Let's say you want to swap the table `events` with `events_for_migration`. In
-this case you need to follow 3 steps:
+For example, to swap a table called `events` with another table called `events_for_migration`, you would need to:
 
 1. Rename `events` to `events_temporary`
 1. Rename `events_for_migration` to `events`

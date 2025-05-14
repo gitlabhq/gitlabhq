@@ -22,8 +22,6 @@ You can automate this feature in your applications by using [Auto DevOps](../../
 
 {{< /alert >}}
 
-## Overview
-
 GitLab uses [Sitespeed.io](https://www.sitespeed.io), a free and open source
 tool, for measuring the rendering performance of web sites. The
 [Sitespeed plugin](https://gitlab.com/gitlab-org/gl-performance) that GitLab built outputs

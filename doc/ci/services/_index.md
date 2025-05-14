@@ -171,8 +171,8 @@ test:
 
 ## Accessing the services
 
-Let's say that you need a Wordpress instance to test some API integration with
-your application. You can then use for example the
+If you need a Wordpress instance to test API integration with
+your application, you can use the
 [`tutum/wordpress`](https://hub.docker.com/r/tutum/wordpress/) image in your
 `.gitlab-ci.yml` file:
 

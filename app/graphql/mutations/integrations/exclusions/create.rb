@@ -22,12 +22,14 @@ module Mutations
         argument :project_ids,
           [::Types::GlobalIDType[::Project]],
           required: false,
+          prepare: ->(ids, _ctx) { ids.uniq },
           validates: { length: { maximum: MAX_PROJECT_IDS } },
           description: "IDs of projects to exclude up to a maximum of #{MAX_PROJECT_IDS}."
 
         argument :group_ids,
           [::Types::GlobalIDType[::Group]],
           required: false,
+          prepare: ->(ids, _ctx) { ids.uniq },
           validates: { length: { maximum: MAX_GROUP_IDS } },
           description: "IDs of groups to exclude up to a maximum of #{MAX_GROUP_IDS}."
 

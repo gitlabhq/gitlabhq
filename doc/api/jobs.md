@@ -36,9 +36,9 @@ GET /projects/:id/jobs
 ```
 
 | Attribute | Type                           | Required | Description |
-|-----------|--------------------------------|----------|-------------|
+| --------- | ------------------------------ | -------- | ----------- |
 | `id`      | integer/string                 | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `scope`   | string **or** array of strings | No       | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, `waiting_for_resource`, or `manual`. All jobs are returned if `scope` is not provided. |
+| `scope`   | string **or** array of strings | No       | Scope of jobs to show. Either one of or an array of [job status values](#job-status-values). All jobs are returned if `scope` is not provided. |
 
 ```shell
 curl --globoff \
@@ -210,6 +210,23 @@ Example of response:
 ]
 ```
 
+### Job status values
+
+The `status` field in job responses and the `scope` parameter for filtering jobs use the following values:
+
+- `canceled`: Job was manually canceled or automatically aborted.
+- `canceling`: Job is being canceled but `after_script` is running.
+- `created`: Job has been created but not yet processed.
+- `failed`: Job execution failed.
+- `manual`: Job requires manual action to start.
+- `pending`: Job is in the queue waiting for a runner.
+- `preparing`: Runner is preparing the execution environment.
+- `running`: Job is executing on a runner.
+- `scheduled`: Job has been scheduled but execution hasn't started.
+- `skipped`: Job was skipped due to conditions or dependencies.
+- `success`: Job completed successfully.
+- `waiting_for_resource`: Job is waiting for resources to become available.
+
 ## List pipeline jobs
 
 Get a list of jobs for a pipeline.
@@ -227,11 +244,11 @@ GET /projects/:id/pipelines/:pipeline_id/jobs
 ```
 
 | Attribute         | Type                           | Required | Description |
-|-------------------|--------------------------------|----------|-------------|
+| ----------------- | ------------------------------ | -------- | ----------- |
 | `id`              | integer/string                 | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `pipeline_id`     | integer                        | Yes      | ID of a pipeline. Can also be obtained in CI jobs via the [predefined CI variable](../ci/variables/predefined_variables.md) `CI_PIPELINE_ID`. |
+| `pipeline_id`     | integer                        | Yes      | ID of a pipeline. Can also be obtained in CI jobs using the [predefined CI variable](../ci/variables/predefined_variables.md) `CI_PIPELINE_ID`. |
 | `include_retried` | boolean                        | No       | Include retried jobs in the response. Defaults to `false`. |
-| `scope`           | string **or** array of strings | No       | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, `waiting_for_resource`, or `manual`. All jobs are returned if `scope` is not provided. |
+| `scope`           | string **or** array of strings | No       | Scope of jobs to show. Either one of or an array of [job status values](#job-status-values). All jobs are returned if `scope` is not provided. |
 
 ```shell
 curl --globoff \
@@ -411,10 +428,10 @@ GET /projects/:id/pipelines/:pipeline_id/bridges
 ```
 
 | Attribute     | Type                           | Required | Description |
-|---------------|--------------------------------|----------|-------------|
+| ------------- | ------------------------------ | -------- | ----------- |
 | `id`          | integer/string                 | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `pipeline_id` | integer                        | Yes      | ID of a pipeline. |
-| `scope`       | string **or** array of strings | No       | Scope of jobs to show. Either one of or an array of the following: `created`, `pending`, `running`, `failed`, `success`, `canceled`, `skipped`, `waiting_for_resource`, or `manual`. All jobs are returned if `scope` is not provided. |
+| `scope`       | string **or** array of strings | No       | Scope of jobs to show. Either one of or an array of [job status values](#job-status-values). All jobs are returned if `scope` is not provided. |
 
 ```shell
 curl --globoff \

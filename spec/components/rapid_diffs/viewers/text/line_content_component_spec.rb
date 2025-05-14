@@ -29,7 +29,7 @@ RSpec.describe RapidDiffs::Viewers::Text::LineContentComponent, type: :component
 
   it 'renders empty cell' do
     render_component(line: nil, position: :old)
-    expect(page).to have_selector('td[data-position="old"]')
+    expect(page).to have_selector('td[data-position="old"]:empty')
   end
 
   def render_component(line:, position: nil)

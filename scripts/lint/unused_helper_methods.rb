@@ -9,7 +9,7 @@ require 'rainbow'
 require 'yaml'
 
 UNUSED_METHODS = 49
-EXCLUDED_METHODS_PATH = '.gitlab/lint/unused_helper_methods/exluded_methods.yml'
+EXCLUDED_METHODS_PATH = '.gitlab/lint/unused_helper_methods/excluded_methods.yml'
 
 print_output = %w[true 1].include? ENV["REPORT_ALL_UNUSED_METHODS"]
 

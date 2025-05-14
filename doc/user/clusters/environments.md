@@ -36,8 +36,6 @@ deployed to the Kubernetes cluster and it:
 - Shows the project and the relevant environment related to the deployment.
 - Displays the status of the pods for that environment.
 
-## Overview
-
 With cluster environments, you can gain insight into:
 
 - Which projects are deployed to the cluster.

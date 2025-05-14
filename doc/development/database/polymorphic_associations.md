@@ -79,12 +79,10 @@ a separate table allows you to use everything a database may provide to ensure
 consistency and query data efficiently, without any additional application logic
 being necessary.
 
-Let's say you have a `members` table storing both approved and pending members,
-for both projects and groups, and the pending state is determined by the column
-`requested_at` being set or not. Schema wise such a setup can lead to various
-columns only being set for certain rows, wasting space. It's also possible that
-certain indexes are only set for certain rows, again wasting space. Finally,
-querying such a table requires less than ideal queries. For example:
+Consider a `members` table that stores approved and pending members for both projects and groups.
+To determine if a member is pending, we check whether a value is set in the `requested_at` column.
+Schema-wise, this configuration can waste space by only setting some indexes and columns for
+certain rows. Querying this table also requires suboptimal queries. For example:
 
 ```sql
 SELECT *

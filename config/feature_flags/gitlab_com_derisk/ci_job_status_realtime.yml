@@ -1,0 +1,9 @@
+---
+name: ci_job_status_realtime
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/541146
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190759
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/541272
+milestone: '18.1'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

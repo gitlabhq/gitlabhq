@@ -1325,6 +1325,7 @@ class MergeRequest < ApplicationRecord
 
     clear_memoization(:source_branch_head)
     clear_memoization(:target_branch_head)
+    clear_memoization(:diff_stats)
   end
 
   def reload_diff_if_branch_changed

@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe GitlabSchema.types['Subscription'], feature_category: :subscription_management do
   it 'has the expected fields' do
     expected_fields = %i[
+      ci_job_status_updated
       ci_pipeline_status_updated
       issuable_assignees_updated
       issue_crm_contacts_updated
