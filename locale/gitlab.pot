@@ -54207,6 +54207,9 @@ msgstr ""
 msgid "Secrets|Secret %{secretName} has been deleted."
 msgstr ""
 
+msgid "Secrets|Secret manager user permissions"
+msgstr ""
+
 msgid "Secrets|Secrets"
 msgstr ""
 
@@ -56623,9 +56626,6 @@ msgid "Select a project"
 msgstr ""
 
 msgid "Select a repository containing templates for common files."
-msgstr ""
-
-msgid "Select a role"
 msgstr ""
 
 msgid "Select a template repository"

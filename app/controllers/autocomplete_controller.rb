@@ -115,8 +115,6 @@ class AutocompleteController < ApplicationController
   end
 
   def check_autocomplete_users_rate_limit!
-    return check_search_rate_limit! if Feature.disabled?(:autocomplete_users_rate_limit) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- cannot scope to user as it needs to handle unauthenticated requests
-
     if current_user
       check_rate_limit!(:autocomplete_users, scope: current_user)
     else

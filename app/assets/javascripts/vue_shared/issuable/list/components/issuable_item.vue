@@ -575,6 +575,7 @@ export default {
           :work-item-iid="issuableIid"
           :work-item-web-url="issuableLinkHref"
         />
+        <slot name="custom-status"></slot>
       </ul>
       <div
         class="gl-hidden sm:gl-flex sm:gl-flex-col sm:gl-items-end md:gl-flex-row md:gl-items-center"

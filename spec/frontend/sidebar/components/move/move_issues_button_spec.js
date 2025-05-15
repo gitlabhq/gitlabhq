@@ -76,6 +76,14 @@ if (IS_EE) {
   getIssuesQueryCompleteResponse.data.project.issues.nodes[0].epic = {
     id: 'gid://gitlab/Epic/1',
   };
+  getIssuesQueryCompleteResponse.data.project.issues.nodes[0].status = {
+    color: '#DD2B0E',
+    iconName: 'status-cancelled',
+    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/4',
+    name: "Won't do",
+    position: 0,
+    __typename: 'WorkItemStatus',
+  };
 }
 
 const mockIssueResult = {

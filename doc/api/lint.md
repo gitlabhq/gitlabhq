@@ -12,6 +12,8 @@ title: CI Lint API
 
 {{< /details >}}
 
+Use this API to [validate your GitLab CI/CD configuration](../ci/yaml/lint.md).
+
 ## Validate sample CI/CD configuration
 
 Checks if a sample CI/CD YAML configuration is valid. This endpoint validates the

@@ -8,7 +8,7 @@ import {
   GlFormSelect,
   GlToggle,
 } from '@gitlab/ui';
-import SecretManagerSettings from 'ee_component/pages/projects/shared/permissions/components/secret_manager_settings.vue';
+import SecretManagerSettings from 'ee_component/pages/projects/shared/permissions/secrets_manager/secrets_manager_settings.vue';
 import ConfirmDanger from '~/vue_shared/components/confirm_danger/confirm_danger.vue';
 import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/settings_pannel_mixin';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -310,6 +310,11 @@ export default {
     confirmationPhrase: {
       type: String,
       required: true,
+    },
+    isSecretsManagerAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     showVisibilityConfirmModal: {
       type: Boolean,
@@ -1222,7 +1227,11 @@ export default {
         </gl-form-checkbox>
       </project-setting-row>
       <ci-catalog-settings v-if="canAddCatalogResource" :full-path="confirmationPhrase" />
-      <secret-manager-settings v-if="canManageSecretManager" :full-path="confirmationPhrase" />
+      <secret-manager-settings
+        v-if="isSecretsManagerAvailable"
+        :can-manage-secrets-manager="canManageSecretManager"
+        :full-path="confirmationPhrase"
+      />
       <other-project-settings />
       <project-setting-row
         v-if="policySettingsAvailable"

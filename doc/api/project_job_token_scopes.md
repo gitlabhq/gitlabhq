@@ -2,7 +2,7 @@
 stage: Software Supply Chain Security
 group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Project CI/CD job token scope API
+title: CI/CD job token scope API
 ---
 
 {{< details >}}
@@ -12,7 +12,7 @@ title: Project CI/CD job token scope API
 
 {{< /details >}}
 
-You can read more about the [CI/CD job token](../ci/jobs/ci_job_token.md).
+Use this API to interact with [CI/CD job token](../ci/jobs/ci_job_token.md) scopes.
 
 {{< alert type="note" >}}
 

@@ -493,9 +493,12 @@ export const setNewWorkItemCache = async (
       }
 
       if (widgetName === WIDGET_TYPE_STATUS) {
+        const { defaultOpenStatus } = widgetDefinitions.find(
+          (widget) => widget.type === WIDGET_TYPE_STATUS,
+        );
         widgets.push({
           type: 'STATUS',
-          status: null,
+          status: defaultOpenStatus,
           __typename: 'WorkItemWidgetStatus',
         });
       }

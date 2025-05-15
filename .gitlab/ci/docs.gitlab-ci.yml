@@ -186,14 +186,13 @@ docs-i18n-lint markdown:
     - .default-retry
     - .docs:rules:docs-i18n-lint
     - .docs-markdown-lint-image
-    - .yarn-cache
   stage: lint
   needs: []
   script:
+    - 'echo "  link-fragments: false" >> .markdownlint-cli2.yaml'
     - source ./scripts/utils.sh
     - |
       function docs_lint_markdown() {
-        yarn_install_script
         install_gitlab_gem
         scripts/lint-i18n-doc.sh
       }

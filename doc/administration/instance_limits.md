@@ -198,6 +198,7 @@ This endpoint has been requested too many times. Try again later.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368926) in GitLab 17.10 [with a flag](feature_flags.md) named `autocomplete_users_rate_limit`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/523595) in GitLab 18.1. Feature flag `autocomplete_users_rate_limit` removed.
 
 {{< /history >}}
 

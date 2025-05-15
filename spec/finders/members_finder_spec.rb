@@ -330,4 +330,17 @@ RSpec.describe MembersFinder, feature_category: :groups_and_projects do
       it { is_expected.to contain_exactly(owner_member) }
     end
   end
+
+  context 'when filtering by access_levels' do
+    let_it_be(:maintainer_member) { project.add_maintainer(user1) }
+    let_it_be(:developer_member)  { project.add_developer(user2) }
+
+    it 'returns only members whose access_level matches the given filter' do
+      finder = described_class.new(project, user2, params: { access_levels: [Gitlab::Access::MAINTAINER] })
+      result = finder.execute
+
+      expect(result).to contain_exactly(maintainer_member)
+      expect(result.map(&:access_level)).to all(eq(Gitlab::Access::MAINTAINER))
+    end
+  end
 end
