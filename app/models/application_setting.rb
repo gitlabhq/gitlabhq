@@ -691,7 +691,7 @@ class ApplicationSetting < ApplicationRecord
 
   jsonb_accessor :service_ping_settings,
     gitlab_environment_toolkit_instance: [:boolean, { default: false }],
-    gitlab_product_usage_data_enabled: [:boolean, { default: true }]
+    gitlab_product_usage_data_enabled: [:boolean, { default: Settings.gitlab['initial_gitlab_product_usage_data'] }]
 
   jsonb_accessor :rate_limits_unauthenticated_git_http,
     throttle_unauthenticated_git_http_enabled: [:boolean, { default: false }],
