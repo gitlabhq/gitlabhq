@@ -48566,8 +48566,6 @@ definitions:
         type: boolean
       read_compliance_dashboard:
         type: boolean
-      read_admin_dashboard:
-        type: boolean
       read_admin_cicd:
         type: boolean
       read_crm_contact:

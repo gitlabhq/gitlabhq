@@ -2,6 +2,7 @@
 import { GlButton, GlTooltipDirective, GlIcon, GlAnimatedLoaderIcon } from '@gitlab/ui';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { __, sprintf, s__ } from '~/locale';
+import { createAlert } from '~/alert';
 import ReviewerAvatarLink from './reviewer_avatar_link.vue';
 
 const LOADING_STATE = 'loading';
@@ -132,7 +133,7 @@ export default {
         done: () => this.requestRemovalComplete(userId),
       });
     },
-    requestReviewComplete(userId, success) {
+    requestReviewComplete(userId, success, errorMessage) {
       if (success) {
         this.loadingStates[userId] = SUCCESS_STATE;
 
@@ -141,6 +142,10 @@ export default {
         }, 1500);
       } else {
         this.loadingStates[userId] = null;
+
+        if (errorMessage) {
+          createAlert({ message: errorMessage });
+        }
       }
     },
     requestRemovalComplete(userId) {

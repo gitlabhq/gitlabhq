@@ -3412,6 +3412,17 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
             end
           end
 
+          context 'when the child will become confidential, and the parent is confidential' do
+            let_it_be(:confidential_parent) { create(:work_item, :issue, :confidential, project: project) }
+            let(:content) { "/confidential\n/set_parent #{confidential_parent.to_reference(project)}" }
+
+            it 'sets correct update params' do
+              _, updates, _ = service.execute(content, task_work_item)
+
+              expect(updates).to eq({ set_parent: confidential_parent, confidential: true })
+            end
+          end
+
           context 'when the child and parent are incompatible types' do
             let(:other_task_work_item) { create(:work_item, :task, project: project) }
             let(:content) { "/set_parent #{other_task_work_item.to_reference(project)}" }

@@ -43,6 +43,7 @@ import {
   TOKEN_TYPE_ENVIRONMENT,
   TOKEN_TYPE_STATE,
   TOKEN_TYPE_SUBSCRIBED,
+  TOKEN_TYPE_STATUS,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 
 export const ISSUE_REFERENCE = /^#\d+$/;
@@ -593,6 +594,16 @@ export const filtersMap = {
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'subscribed',
+      },
+    },
+  },
+  [TOKEN_TYPE_STATUS]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'status',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'status',
       },
     },
   },

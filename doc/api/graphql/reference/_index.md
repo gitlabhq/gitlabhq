@@ -44497,7 +44497,6 @@ Member role admin permission.
 | Value | Description |
 | ----- | ----------- |
 | <a id="memberroleadminpermissionread_admin_cicd"></a>`READ_ADMIN_CICD` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. Read CI/CD details including runners and jobs. |
-| <a id="memberroleadminpermissionread_admin_dashboard"></a>`READ_ADMIN_DASHBOARD` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.6. **Status**: Experiment. Read-only access to admin dashboard. |
 | <a id="memberroleadminpermissionread_admin_monitoring"></a>`READ_ADMIN_MONITORING` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. Allows read access to system monitoring including system info, background migrations, health checks, audit logs, and gitaly in the Admin Area. |
 | <a id="memberroleadminpermissionread_admin_subscription"></a>`READ_ADMIN_SUBSCRIPTION` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. Read subscription details in the Admin area. |
 | <a id="memberroleadminpermissionread_admin_users"></a>`READ_ADMIN_USERS` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. Allows read access to the user list and user details in the Admin area. |
@@ -44529,7 +44528,6 @@ Member role permission.
 | <a id="memberrolepermissionmanage_protected_tags"></a>`MANAGE_PROTECTED_TAGS` | Create, read, update, and delete protected tags. |
 | <a id="memberrolepermissionmanage_security_policy_link"></a>`MANAGE_SECURITY_POLICY_LINK` | Allows linking security policy projects. |
 | <a id="memberrolepermissionread_admin_cicd"></a>`READ_ADMIN_CICD` | Read CI/CD details including runners and jobs. |
-| <a id="memberrolepermissionread_admin_dashboard"></a>`READ_ADMIN_DASHBOARD` | Read-only access to admin dashboard. |
 | <a id="memberrolepermissionread_admin_monitoring"></a>`READ_ADMIN_MONITORING` | Allows read access to system monitoring including system info, background migrations, health checks, audit logs, and gitaly in the Admin Area. |
 | <a id="memberrolepermissionread_admin_subscription"></a>`READ_ADMIN_SUBSCRIPTION` | Read subscription details in the Admin area. |
 | <a id="memberrolepermissionread_admin_users"></a>`READ_ADMIN_USERS` | Allows read access to the user list and user details in the Admin area. |

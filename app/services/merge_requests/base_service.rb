@@ -5,6 +5,7 @@ module MergeRequests
     extend ::Gitlab::Utils::Override
     include MergeRequests::AssignsMergeParams
     include MergeRequests::ErrorLogger
+    include Gitlab::Utils::StrongMemoize
 
     delegate :repository, to: :project
 
@@ -314,6 +315,11 @@ module MergeRequests
 
       todo_service.merge_request_became_unmergeable(merge_request)
     end
+
+    def duo_code_review_bot
+      ::Users::Internal.duo_code_review_bot
+    end
+    strong_memoize_attr :duo_code_review_bot
   end
 end
 

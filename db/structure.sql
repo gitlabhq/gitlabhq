@@ -16108,6 +16108,7 @@ CREATE TABLE issue_emails (
     issue_id bigint NOT NULL,
     email_message_id text NOT NULL,
     namespace_id bigint,
+    CONSTRAINT check_0c81c7ea61 CHECK ((namespace_id IS NOT NULL)),
     CONSTRAINT check_5abf3e6aea CHECK ((char_length(email_message_id) <= 1000))
 );
 
