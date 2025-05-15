@@ -1,0 +1,100 @@
+- name: "GitLab Premium and Ultimate with Duo"
+  description: |
+            We're excited to announce GitLab Premium with Duo and GitLab Ultimate with Duo. GitLab Premium and Ultimate now include AI-native features.
+
+            GitLab's AI-native features include Code Suggestions and Chat within the IDE. Development teams can use these features to:
+
+            - Analyze, understand, and explain code
+            - Write secure code faster
+            - Quickly generate tests to maintain code quality
+            - Easily refactor code to improve performance or use specific libraries
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/user/gitlab_duo/#summary-of-gitlab-duo-features'
+  image_url: https://about.gitlab.com/images/18_0/Premium_Duo.png
+  published_at: 2025-05-15
+  release: 18.0
+- name: "Automatic reviews with Duo Code Review"
+  description: |
+      Duo Code Review provides valuable insights during the review process, but currently requires you to manually request reviews on each merge request.
+
+      You can now configure GitLab Duo Code Review to run automatically on merge requests by updating your project's merge request settings. When enabled, Duo Code Review automatically reviews merge requests unless:
+
+      - The merge request is marked as draft.
+      - The merge request contains no changes.
+
+      Automatic reviews ensure that all code in your project receives a review, consistently improving code quality across your codebase.
+  stage: create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/user/project/merge_requests/duo_in_merge_requests/#automatic-reviews-from-gitlab-duo'
+  image_url: https://about.gitlab.com/images/18_0/create-auto-dcr.png
+  published_at: 2025-05-15
+  release: 18.0
+- name: "GitLab Query Language views enhancements"
+  description: |
+        We've made significant improvements to GitLab Query Language (GLQL) views. These improvements include support for:
+
+        - The `>=` and `<=` operators for all date types
+        - The **View actions** dropdown in views
+        - The **Reload** action
+        - Field aliases
+        - Aliasing columns to a custom name in GLQL tables
+
+        We welcome your feedback on this enhancement, and on GLQL views in general, in [issue 509791](https://gitlab.com/gitlab-org/gitlab/-/issues/509791).
+  stage: plan
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/user/glql/'
+  published_at: 2025-05-15
+  release: 18.0
+- name: "New CI/CD analytics view for projects in limited availability"
+  description: |
+        The redesigned CI/CD analytics view transforms how your development teams analyze, monitor, and optimize pipeline performance
+        and reliability. Developers can access intuitive visualizations in the GitLab UI that reveal performance
+        trends and reliability metrics. Embedding these insights in your project repository eliminates context-switching
+        that disrupts developer flow. Teams can identify and address pipeline bottlenecks that drain productivity.
+        This enhancement leads to faster development cycles, improved collaboration, and data-driven confidence to optimize your
+        CI/CD workflows in GitLab.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/user/analytics/ci_cd_analytics/'
+  image_url: https://img.youtube.com/vi/78Nxbem9OAk/hqdefault.jpg
+  published_at: 2025-05-15
+  release: 18.0
+- name: "Shared Kubernetes namespace for workspaces"
+  description: |
+      You can now create GitLab workspaces in a shared Kubernetes namespace. This removes the need to create
+      a new namespace for every workspace and eliminates the requirement to give elevated ClusterRole
+      permission to the agent. With this feature, you can more easily adopt workspaces in secure or
+      restricted environments, offering a simpler path to scale.
+
+      To enable shared namespaces, set the `shared_namespace` field in your agent configuration file to
+      specify the Kubernetes namespace you want to use for all workspaces.
+
+      Thank you to the half dozen community contributors who helped build this feature through
+      [GitLab's Co-Create program](https://about.gitlab.com/community/co-create/)!
+  stage: create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/user/workspace/settings/#shared_namespace'
+  image_url: https://img.youtube.com/vi/CXakdRuoGgU/hqdefault.jpg
+  published_at: 2025-05-15
+  release: 18.0
+- name: "Event data collection"
+  description: |
+      In GitLab 18.0, we are enabling event-level product usage data collection from GitLab Self-Managed and GitLab Dedicated instances. Unlike aggregated data, event-level data provides GitLab with deeper insights into usage, allowing us to improve user experience on the platform and increase feature adoption. For detailed instructions on how to adjust data sharing settings, please refer to our documentation.
+  stage: monitor
+  self-managed: true
+  gitlab-com: false
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/administration/settings/event_data/'
+  published_at: 2025-05-15
+  release: 18.0

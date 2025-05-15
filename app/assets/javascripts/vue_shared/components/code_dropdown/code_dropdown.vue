@@ -61,22 +61,37 @@ export default {
         Boolean(this.sshUrl) && {
           text: __('Visual Studio Code (SSH)'),
           href: `${this.$options.vsCodeBaseUrl}${this.sshUrlEncoded}`,
+          extraAttrs: {
+            isUnsafeLink: true,
+          },
         },
         Boolean(this.httpUrl) && {
           text: __('Visual Studio Code (HTTPS)'),
           href: `${this.$options.vsCodeBaseUrl}${this.httpUrlEncoded}`,
+          extraAttrs: {
+            isUnsafeLink: true,
+          },
         },
         Boolean(this.sshUrl) && {
           text: __('IntelliJ IDEA (SSH)'),
           href: `${this.$options.jetBrainsBaseUrl}${this.sshUrlEncoded}`,
+          extraAttrs: {
+            isUnsafeLink: true,
+          },
         },
         Boolean(this.httpUrl) && {
           text: __('IntelliJ IDEA (HTTPS)'),
           href: `${this.$options.jetBrainsBaseUrl}${this.httpUrlEncoded}`,
+          extraAttrs: {
+            isUnsafeLink: true,
+          },
         },
         Boolean(this.xcodeUrl) && {
           text: __('Xcode'),
           href: this.xcodeUrl,
+          extraAttrs: {
+            isUnsafeLink: true,
+          },
         },
       ].filter(Boolean);
 

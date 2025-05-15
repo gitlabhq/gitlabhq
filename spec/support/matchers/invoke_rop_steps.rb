@@ -64,9 +64,9 @@ module InvokeRopSteps
           "but was a #{step_action.class}"
       end
 
-      unless [:map, :and_then].freeze.include?(step_action)
-        raise "'invoke_rop_steps' argument array entry second element ':#{step_action}' must be either " \
-          ":map or :and_then, but was :#{step_action}"
+      unless [:and_then, :map, :map_err, :inspect_ok, :inspect_err].freeze.include?(step_action)
+        raise "'invoke_rop_steps' argument array entry second element ':#{step_action}' must be one of " \
+          ":and_then, :map, :map_err, :inspect_ok, or :inspect_err, but was :#{step_action}"
       end
     end
   end
@@ -132,8 +132,10 @@ module InvokeRopSteps
         expected_rop_step[:returned_object] = ok_results_for_steps[step_class]
       elsif step_action == :and_then
         expected_rop_step[:returned_object] = Gitlab::Fp::Result.ok(context_passed_along_steps)
-      elsif step_action == :map
+      elsif [:map, :map_err].freeze.include?(step_action)
         expected_rop_step[:returned_object] = context_passed_along_steps
+      elsif [:inspect_ok, :inspect_err].freeze.include?(step_action)
+        expected_rop_step[:returned_object] = nil
       else
         raise "Unexpected internal error when building expected ROP steps: step_action '#{step_action}' is invalid"
       end
@@ -149,7 +151,7 @@ module InvokeRopSteps
       step => {
         step_class: Class => step_class,
         step_class_method: Symbol => step_class_method,
-        returned_object: Gitlab::Fp::Result | Hash => returned_object
+        returned_object: Gitlab::Fp::Result | Hash | nil => returned_object
       }
 
       set_up_step_class_expectation(

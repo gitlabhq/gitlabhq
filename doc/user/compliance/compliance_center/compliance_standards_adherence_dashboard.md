@@ -2,8 +2,10 @@
 stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Compliance standards adherence dashboard
+title: Compliance standards adherence dashboard (deprecated)
 ---
+
+<!--- start_remove The following content will be removed on remove_date: '2026-02-01' -->
 
 {{< details >}}
 
@@ -11,6 +13,13 @@ title: Compliance standards adherence dashboard
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
+
+{{< alert type="warning" >}}
+
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/470834) in GitLab 17.11
+and is planned for removal in 18.6. Use the [compliance status report](compliance_status_report.md) instead.
+
+{{< /alert >}}
 
 {{< history >}}
 
@@ -150,3 +159,5 @@ To export the compliance standards adherence report for projects in a group:
 1. Select **Export standards adherence report**.
 
 A report is compiled and delivered to your email inbox as an attachment.
+
+<!--- end_remove -->

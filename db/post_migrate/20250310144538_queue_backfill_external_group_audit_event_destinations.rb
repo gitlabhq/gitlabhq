@@ -12,7 +12,7 @@ class QueueBackfillExternalGroupAuditEventDestinations < Gitlab::Database::Migra
 
   def up
     # no-op because there was a bug in the original migration (double JSON encoding),
-    # which has been fixed by QueueBackfillExternalGroupAuditEventDestinationsFixed
+    # which has been fixed by QueueFixIncompleteInstanceExternalAuditDestinations
   end
 
   def down; end

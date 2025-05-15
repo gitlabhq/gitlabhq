@@ -127,6 +127,7 @@ describe('Code Dropdown component', () => {
 
         expect(item.props('item').text).toBe(name);
         expect(item.props('item').href).toContain(href);
+        expect(item.props('item').extraAttrs.isUnsafeLink).toBe(true);
       });
 
       it('closes the dropdown on click', () => {

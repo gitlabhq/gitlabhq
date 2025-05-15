@@ -11,19 +11,9 @@ class QueueBackfillExternalInstanceAuditEventDestinationsFixed < Gitlab::Databas
   SUB_BATCH_SIZE = 10
 
   def up
-    delete_batched_background_migration(ORIGINAL_MIGRATION, :audit_events_instance_external_audit_event_destinations,
-      :id, [])
-
-    queue_batched_background_migration(
-      MIGRATION,
-      :audit_events_instance_external_audit_event_destinations,
-      :id,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE
-    )
+    # no-op because there was a bug in the migration
+    # replaced by QueueFixIncompleteExternalAuditDestinations
   end
 
-  def down
-    delete_batched_background_migration(MIGRATION, :audit_events_instance_external_audit_event_destinations, :id, [])
-  end
+  def down; end
 end

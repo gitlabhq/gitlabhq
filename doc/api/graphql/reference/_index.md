@@ -24079,6 +24079,7 @@ Represents a ComplianceRequirementsControl associated with a ComplianceRequireme
 | ---- | ---- | ----------- |
 | <a id="compliancerequirementscontrolcontroltype"></a>`controlType` | [`String!`](#string) | Type of the compliance control. |
 | <a id="compliancerequirementscontrolexpression"></a>`expression` | [`String`](#string) | Expression of the compliance control. |
+| <a id="compliancerequirementscontrolexternalcontrolname"></a>`externalControlName` | [`String`](#string) | Name of the external control. |
 | <a id="compliancerequirementscontrolexternalurl"></a>`externalUrl` | [`String`](#string) | URL of the external control. |
 | <a id="compliancerequirementscontrolid"></a>`id` | [`ID!`](#id) | Compliance requirements control ID. |
 | <a id="compliancerequirementscontrolname"></a>`name` | [`String!`](#string) | Name of the compliance control. |
@@ -49539,6 +49540,7 @@ Attributes for defining a CI/CD variable.
 | ---- | ---- | ----------- |
 | <a id="compliancerequirementscontrolinputcontroltype"></a>`controlType` | [`String`](#string) | Type of the compliance control. |
 | <a id="compliancerequirementscontrolinputexpression"></a>`expression` | [`String`](#string) | Expression of the compliance control. |
+| <a id="compliancerequirementscontrolinputexternalcontrolname"></a>`externalControlName` | [`String`](#string) | Name of the external control. |
 | <a id="compliancerequirementscontrolinputexternalurl"></a>`externalUrl` | [`String`](#string) | URL of the external control. |
 | <a id="compliancerequirementscontrolinputname"></a>`name` | [`String!`](#string) | New name for the compliance requirement control. |
 | <a id="compliancerequirementscontrolinputsecrettoken"></a>`secretToken` | [`String`](#string) | Secret token for an external control. |
