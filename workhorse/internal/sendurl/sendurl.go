@@ -29,7 +29,7 @@ type entryParams struct {
 	URL                              string
 	AllowRedirects                   bool
 	AllowLocalhost                   bool
-	AllowedURIs                      []string
+	AllowedEndpoints                 []string
 	SSRFFilter                       bool
 	DialTimeout                      config.TomlDuration
 	ResponseHeaderTimeout            config.TomlDuration
@@ -43,12 +43,12 @@ type entryParams struct {
 }
 
 type cacheKey struct {
-	requestTimeout  time.Duration
-	responseTimeout time.Duration
-	allowRedirects  bool
-	allowLocalhost  bool
-	ssrfFilter      bool
-	allowedURIs     string
+	requestTimeout   time.Duration
+	responseTimeout  time.Duration
+	allowRedirects   bool
+	allowLocalhost   bool
+	ssrfFilter       bool
+	allowedEndpoints string
 }
 
 var httpClients sync.Map
@@ -206,12 +206,12 @@ func (e *entry) streamResponse(w http.ResponseWriter, body io.Reader) error {
 
 func cachedClient(params entryParams) *http.Client {
 	key := cacheKey{
-		requestTimeout:  params.DialTimeout.Duration,
-		responseTimeout: params.ResponseHeaderTimeout.Duration,
-		allowRedirects:  params.AllowRedirects,
-		allowLocalhost:  params.AllowLocalhost,
-		ssrfFilter:      params.SSRFFilter,
-		allowedURIs:     strings.Join(params.AllowedURIs, ","),
+		requestTimeout:   params.DialTimeout.Duration,
+		responseTimeout:  params.ResponseHeaderTimeout.Duration,
+		allowRedirects:   params.AllowRedirects,
+		allowLocalhost:   params.AllowLocalhost,
+		ssrfFilter:       params.SSRFFilter,
+		allowedEndpoints: strings.Join(params.AllowedEndpoints, ","),
 	}
 	cachedClient, found := httpClients.Load(key)
 	if found {
@@ -227,7 +227,7 @@ func cachedClient(params entryParams) *http.Client {
 		options = append(options, transport.WithResponseHeaderTimeout(params.ResponseHeaderTimeout.Duration))
 	}
 	if params.SSRFFilter {
-		options = append(options, transport.WithSSRFFilter(params.AllowLocalhost, params.AllowedURIs))
+		options = append(options, transport.WithSSRFFilter(params.AllowLocalhost, params.AllowedEndpoints))
 	}
 
 	client := &http.Client{

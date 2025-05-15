@@ -55,7 +55,7 @@ internal/testhelper/testhelper.go:18:2: import 'github.com/dlclark/regexp2' is n
 internal/testhelper/testhelper.go:243:21: G302: Expect file permissions to be 0600 or less (gosec)
 internal/testhelper/testhelper.go:256:39: G115: integer overflow conversion uintptr -> int (gosec)
 internal/testhelper/testhelper.go:270:39: G115: integer overflow conversion uintptr -> int (gosec)
-internal/transport/transport.go:133:1: cognitive complexity 38 of func `validateIPAddress` is high (> 20) (gocognit)
+internal/transport/transport.go:136: Function 'validateIPAddress' is too long (77 > 60) (funlen)
 internal/upload/artifacts_upload_test.go:49:1: cognitive complexity 32 of func `testArtifactsUploadServer` is high (> 20) (gocognit)
 internal/upload/artifacts_uploader.go:82:11: G204: Subprocess launched with a potential tainted input or cmd arguments (gosec)
 internal/upload/destination/destination.go:72: internal/upload/destination/destination.go:72: Line contains TODO/BUG/FIXME/NOTE/OPTIMIZE/HACK: "TODO: remove `data` these once rails ful..." (godox)

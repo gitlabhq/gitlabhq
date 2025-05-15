@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"strings"
 	"syscall"
 	"time"
 
@@ -53,6 +54,8 @@ var privateNetworks = []net.IPNet{
 	parseCIDR("2001:10::/28"),  /* Deprecated (previously ORCHID) - RFC 4843 */
 	parseCIDR("2001:20::/28"),  /* ORCHIDv2 - RFC7343 */
 }
+
+var lookupIPFunc = net.LookupIP
 
 // NewDefaultTransport creates a new default transport that has Workhorse's User-Agent header set.
 func NewDefaultTransport() http.RoundTripper {
@@ -106,10 +109,10 @@ func WithResponseHeaderTimeout(timeout time.Duration) Option {
 }
 
 // WithSSRFFilter sets IP restrictions for the transport.
-func WithSSRFFilter(allowLocalhost bool, allowedURIs []string) Option {
+func WithSSRFFilter(allowLocalhost bool, allowedEndpoints []string) Option {
 	return func(t *http.Transport) {
 		t.DialContext = (&net.Dialer{
-			Control: validateIPAddress(allowLocalhost, allowedURIs),
+			Control: validateIPAddress(allowLocalhost, allowedEndpoints),
 		}).DialContext
 	}
 }
@@ -130,19 +133,45 @@ func newRestrictedTransport(options ...Option) http.RoundTripper {
 	return tracing.NewRoundTripper(correlation.NewInstrumentedRoundTripper(t))
 }
 
-func validateIPAddress(allowLocalhost bool, allowedURIs []string) func(network, address string, c syscall.RawConn) error {
+func validateIPAddress(allowLocalhost bool, allowedEndpoints []string) func(network, address string, c syscall.RawConn) error {
 	return func(_, address string, _ syscall.RawConn) error {
 		host, _, _ := net.SplitHostPort(address)
 
 		ipAddress := net.ParseIP(host)
 
-		for _, allowedURI := range allowedURIs {
-			uri := helper.URLMustParse(allowedURI)
+		for _, allowedEndpoint := range allowedEndpoints {
+			var hostname string
 
-			ips, err := net.LookupIP(uri.Hostname())
+			switch {
+			case strings.Contains(allowedEndpoint, "://"):
+				// It's already a URL
+				uri := helper.URLMustParse(allowedEndpoint)
+				hostname = uri.Hostname()
+			case strings.Contains(allowedEndpoint, ":"):
+				// It's a host:port format
+				hostPart, _, err := net.SplitHostPort(allowedEndpoint)
+				if err != nil {
+					return fmt.Errorf("invalid host:port format: %v", err)
+				}
 
+				hostname = hostPart
+			default:
+				// It's a hostname
+				hostname = allowedEndpoint
+			}
+
+			// Check if it's an IP address itself
+			if ip := net.ParseIP(hostname); ip != nil {
+				if ip.Equal(ipAddress) {
+					return nil
+				}
+				continue // Skip DNS lookup for IP addresses
+			}
+
+			// Perform DNS lookup
+			ips, err := lookupIPFunc(hostname)
 			if err != nil {
-				return fmt.Errorf("error resolving IP address: %v", err)
+				return fmt.Errorf("error resolving IP address for %s: %v", hostname, err)
 			}
 
 			for _, ip := range ips {
