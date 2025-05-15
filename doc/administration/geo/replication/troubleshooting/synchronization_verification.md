@@ -409,9 +409,9 @@ When missing files or inconsistencies are present, you can encounter entries in 
 
 The same errors are also reflected in the UI under **Admin > Geo > Sites** when reviewing the synchronization status of specific replicables. In this scenario, a specific *upload* is missing:
 
-![The Geo Uploads replicable dashboard displaying all failed errors.](../img/geo_uploads_file_missing_v17_11.png)
+![The Geo Uploads replicable dashboard displaying all failed errors.](img/geo_uploads_file_missing_v17_11.png)
 
-![The Geo Uploads replicable dashboard displaying missing file error.](../img/geo_uploads_file_missing_details_v17_11.png)
+![The Geo Uploads replicable dashboard displaying missing file error.](img/geo_uploads_file_missing_details_v17_11.png)
 
 #### Clean up inconsistencies
 

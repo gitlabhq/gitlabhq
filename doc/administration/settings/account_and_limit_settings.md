@@ -171,7 +171,7 @@ You can change how long users can remain signed in without activity.
 
    {{< /alert >}}
 
-If [Remember me](#turn-remember-me-on-or-off) is enabled, users' sessions can remain active for an indefinite period of time.
+If [Remember me](#configure-the-remember-me-option) is enabled, users' sessions can remain active for an indefinite period of time.
 
 For details, see [cookies used for sign-in](../../user/profile/_index.md#cookies-used-for-sign-in).
 
@@ -195,7 +195,7 @@ By default, sessions expire a set amount of time after the session becomes inact
 When the session duration is met, the session ends and the user is signed out even if:
 
 - The user is still actively using the session.
-- The user selected [remember me](#turn-remember-me-on-or-off) during sign in.
+- The user selected [remember me](#configure-the-remember-me-option) during sign in.
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
@@ -204,7 +204,7 @@ When the session duration is met, the session ends and the user is signed out ev
 
 After a session ends, a window prompts the user to sign in again.
 
-### Turn Remember me on or off
+### Configure the Remember me option
 
 {{< history >}}
 

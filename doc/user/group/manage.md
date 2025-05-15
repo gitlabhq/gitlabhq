@@ -250,7 +250,7 @@ To disable group mentions:
 1. Select **Group mentions are disabled**.
 1. Select **Save changes**.
 
-## Disable user invitations to a group
+## Prevent invitations to a group
 
 {{< history >}}
 
@@ -258,15 +258,17 @@ To disable group mentions:
 
 {{< /history >}}
 
-You can disable the ability for users to invite new members to sub-groups or projects in a top-level
+You can remove the ability for users to invite new members to subgroups or projects in a top-level
 group. This also stops group Owners from sending invites. You must disable this setting before you
 can invite users again.
+
+On GitLab Self-Managed and GitLab Dedicated instances, you can prevent user invitations for the entire instance. For more information, see [prevent invitations to a groups and projects](../../administration/settings/visibility_and_access_controls.md#prevent-invitations-to-groups-and-projects).
 
 Prerequisites:
 
 - You must have the Owner role for the group.
 
-To disable user invitations:
+To prevent invitations to a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.

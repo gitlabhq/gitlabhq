@@ -5,7 +5,7 @@
 - @force_desktop_expanded_sidebar = true
 
 - if Feature.enabled?(:edit_user_profile_vue, current_user)
-  .js-user-profile{ data: user_profile_data(@user) }
+  .js-user-profile-edit{ data: user_profile_data(@user) }
 - else
   = gitlab_ui_form_for @user, url: user_settings_profile_path, method: :put, html: { multipart: true, class: 'edit-user js-edit-user js-quick-submit gl-show-field-errors js-password-prompt-form', remote: true }, authenticity_token: true do |f|
     = render ::Layouts::SettingsSectionComponent.new(s_("Profiles|Public avatar")) do |c|

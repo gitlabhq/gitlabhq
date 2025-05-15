@@ -14,8 +14,9 @@ module Gitlab
       DATE_REGEX = %r{(\d{2,4}[/\-.]\d{1,2}[/\-.]\d{1,2})}
       CATEGORY_REGEX = %r{\[timecategory:(.*)\]}
 
-      def initialize(spend_command_arg)
+      def initialize(spend_command_arg, timezone)
         @spend_arg = spend_command_arg
+        @timezone = timezone || Time.zone.name
       end
 
       def execute
@@ -38,7 +39,9 @@ module Gitlab
         return DateTime.current unless date_present?
 
         string_date = @spend_arg.match(DATE_REGEX)[0]
-        Date.parse(string_date).midday
+        date = Date.parse(string_date)
+        date = date.in_time_zone(@timezone)
+        date.midday
       end
 
       def date_present?

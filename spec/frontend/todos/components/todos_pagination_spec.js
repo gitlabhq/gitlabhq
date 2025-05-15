@@ -1,12 +1,17 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlKeysetPagination } from '@gitlab/ui';
+import { nextTick } from 'vue';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 
 import TodosPagination, { CURSOR_CHANGED_EVENT } from '~/todos/components/todos_pagination.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
 import { DEFAULT_PAGE_SIZE } from '~/todos/constants';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
 describe('TodosPagination', () => {
   let wrapper;
+
+  useLocalStorageSpy();
 
   const createComponent = (props = {}) => {
     wrapper = shallowMount(TodosPagination, {
@@ -16,6 +21,9 @@ describe('TodosPagination', () => {
         startCursor: '',
         endCursor: '',
         ...props,
+      },
+      stubs: {
+        LocalStorageSync,
       },
     });
   };
@@ -148,5 +156,25 @@ describe('TodosPagination', () => {
         before: null,
       },
     ]);
+  });
+
+  it('syncs the page size to local storage', async () => {
+    const pageSizeSelector = findPageSizeSelector();
+    const newSize = 50;
+
+    pageSizeSelector.vm.$emit('input', newSize);
+    await nextTick();
+
+    expect(localStorage.setItem).toHaveBeenCalledWith('todos-page-size', newSize.toString());
+  });
+
+  it('loads page size from local storage', async () => {
+    const savedSize = 5;
+    localStorage.setItem('todos-page-size', savedSize.toString());
+
+    createComponent();
+    await nextTick();
+
+    expect(findPageSizeSelector().props('value')).toBe(savedSize);
   });
 });

@@ -433,6 +433,12 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
 
     shared_examples 'spend command with valid date' do
+      let(:timezone) { 'Europe/Athens' }
+
+      before do
+        allow(developer).to receive(:timezone).and_return(timezone)
+      end
+
       it 'populates spend time: 1800 with date in date type format' do
         _, updates, _ = service.execute(content, issuable)
 
@@ -440,7 +446,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           category: nil,
           duration: 1800,
           user_id: developer.id,
-          spent_at: Date.parse(date).midday
+          spent_at: Date.parse(date).in_time_zone(timezone).midday
         })
       end
     end

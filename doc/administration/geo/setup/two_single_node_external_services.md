@@ -322,7 +322,7 @@ secondary site is a read-only copy.
    1. Select **Geo > Sites**.
    1. Select **Add site**.
 
-      ![Form to add a new secondary Geo site](../replication/img/adding_a_secondary_v15_8.png)
+      ![Form to add a new secondary Geo site](img/adding_a_secondary_v15_8.png)
 
    1. In **Name**, enter the value for `gitlab_rails['geo_node_name']` in
       `/etc/gitlab/gitlab.rb`. The values must match exactly.
@@ -397,7 +397,7 @@ The initial replication might take some time.
 You can monitor the synchronization process on each Geo site from the primary
 site **Geo Sites** dashboard in your browser.
 
-![Geo admin dashboard showing the synchronization status of a secondary site.](../replication/img/geo_dashboard_v14_0.png)
+![Geo admin dashboard showing the synchronization status of a secondary site.](img/geo_dashboard_v14_0.png)
 
 ## Configure the tracking database
 

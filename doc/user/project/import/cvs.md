@@ -19,11 +19,10 @@ control system similar to [SVN](https://subversion.apache.org/).
 
 The following list illustrates the main differences between CVS and Git:
 
-- **Git is distributed.** On the other hand, CVS is centralized using a client-server
-  architecture. This translates to Git having a more flexible workflow since
+- **Git is distributed.** On the other hand, CVS is centralized and uses a client-server
+  architecture. This translates to Git having a more flexible workflow because
   your working area is a copy of the entire repository. This decreases the
-  overhead when switching branches or merging for example, since you don't have
-  to communicate with a remote server.
+  overhead when switching branches or merging, for example, because you don't need to communicate with a remote server.
 - **Atomic operations.** In Git all operations are
   [atomic](https://en.wikipedia.org/wiki/Atomic_commit), either they succeed as
   whole, or they fail without any changes. In CVS, commits (and other operations)

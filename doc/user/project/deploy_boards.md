@@ -61,8 +61,7 @@ the given environment. Hovering above each square you can see the state of a
 deploy rolling out. The percentage is the percent of the pods that are updated
 to the latest release.
 
-Since deploy boards are tightly coupled with Kubernetes, there is some required
-knowledge. In particular, you should be familiar with:
+Deploy boards are tightly coupled with Kubernetes, so you should be familiar with:
 
 - [Kubernetes pods](https://kubernetes.io/docs/concepts/workloads/pods/)
 - [Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
@@ -71,22 +70,21 @@ knowledge. In particular, you should be familiar with:
 
 ## Use cases
 
-Since the deploy board is a visual representation of the Kubernetes pods for a
-specific environment, there are a lot of use cases. To name a few:
+The deploy board is a visual representation of the Kubernetes pods for a
+specific environment, so there are a lot of use cases. To name a few:
 
-- You want to promote what's running in staging, to production. You go to the
-  environments list, verify that what's running in staging is what you think is
-  running, then select the [manual job](../../ci/jobs/job_control.md#create-a-job-that-must-be-run-manually) to deploy to production.
-- You trigger a deploy, and you have many containers to upgrade so you know
+- You want to promote what's running in staging to production. So you go to the
+  environments list, verify that what's running in staging is what you think it is, then select the [manual job](../../ci/jobs/job_control.md#create-a-job-that-must-be-run-manually) to deploy to production.
+- You triggered a deploy, and you have many containers to upgrade, so you know
   this takes a while (you've also throttled your deploy to only take down X
   containers at a time). But you need to tell someone when it's deployed, so you
-  go to the environments list, look at the production environment to see what
+  go to the environments list and look at the production environment to see what
   the progress is in real-time as each pod is rolled.
 - You get a report that something is weird in production, so you look at the
-  production environment to see what is running, and if a deploy is ongoing or
-  stuck or failed.
+  production environment to see what is running, and if a deploy is ongoing,
+  stuck, or failed.
 - You've got an MR that looks good, but you want to run it on staging because
-  staging is set up in some way closer to production. You go to the environment
+  staging is set up in some way closer to production. So you go to the environment
   list, find the [Review App](../../ci/review_apps/_index.md) you're interested in, and select the
   manual action to deploy it to staging.
 

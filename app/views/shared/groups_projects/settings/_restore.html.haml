@@ -1,8 +1,7 @@
 - return unless context.is_a?(Group) || context.is_a?(Project)
-- return unless context.marked_for_deletion?
+- return unless context.self_deletion_scheduled?
 
--# FIXME: Replace `context.marked_for_deletion_on` with `context` after https://gitlab.com/gitlab-org/gitlab/-/work_items/527085
-- date = permanent_deletion_date_formatted(context.marked_for_deletion_on)
+- date = permanent_deletion_date_formatted(context)
 
 - if context.is_a?(Group)
   - context_name = _('group')
@@ -18,6 +17,6 @@
 
   - c.with_body do
     %p
-      = (_("This %{context} has been scheduled for deletion on %{strongStart}%{date}%{strongEnd}. To cancel the scheduled deletion, you can restore this %{context}, including all its resources.") % { context: context_name, strongStart: "<strong>", strongEnd: "</strong>", date: date }).html_safe
+      = safe_format(_("This %{context} has been scheduled for deletion on %{date}. To cancel the scheduled deletion, you can restore this %{context}, including all its resources."), context: context_name, date: tag.strong(date))
     = render Pajamas::ButtonComponent.new(variant: :confirm, method: :post, href: restore_path) do
       = _('Restore %{context}') % { context: context_name }

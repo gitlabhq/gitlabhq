@@ -40,7 +40,7 @@ can [use Vault secrets in a CI job](#use-vault-secrets-in-a-ci-job).
 The flow for using GitLab with HashiCorp Vault
 is summarized by this diagram:
 
-![Flow between GitLab and HashiCorp](../img/gitlab_vault_workflow_v13_4.png "How GitLab authenticates with HashiCorp Vault")
+![Flow between GitLab and HashiCorp](img/gitlab_vault_workflow_v13_4.png "How GitLab authenticates with HashiCorp Vault")
 
 1. Configure your vault and secrets.
 1. Generate your JWT and provide it to your CI job.

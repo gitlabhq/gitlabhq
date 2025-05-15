@@ -178,9 +178,10 @@ export default {
         this.currentStep = 1;
       }
     },
-    onSelectNamespace({ id, fullPath }) {
+    onSelectNamespace({ id, fullPath, visibility }) {
       this.namespace.id = id;
       this.namespace.fullPath = fullPath;
+      this.namespace.visibility = visibility;
       this.showValidation = false;
     },
   },

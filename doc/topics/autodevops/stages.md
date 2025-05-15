@@ -243,7 +243,7 @@ For more information, see
 
 ## Auto Review Apps
 
-This is an optional step, since many projects don't have a Kubernetes cluster
+This is an optional step because many projects don't have a Kubernetes cluster
 available. If the [requirements](requirements.md) are not met, the job is
 silently skipped.
 

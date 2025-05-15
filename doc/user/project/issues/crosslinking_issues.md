@@ -41,7 +41,7 @@ add `#xxx` to the commit message, where `xxx` is the issue number.
 git commit -m "this is my commit message. Ref #xxx"
 ```
 
-Since commit messages cannot usually begin with a `#` character, you may use
+Commit messages cannot usually begin with a `#` character, so you may use
 the alternative `GL-xxx` notation as well:
 
 ```shell

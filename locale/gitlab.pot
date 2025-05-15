@@ -47128,6 +47128,9 @@ msgstr ""
 msgid "Profiles|Private contributions"
 msgstr ""
 
+msgid "Profiles|Private profile"
+msgstr ""
+
 msgid "Profiles|Profile was successfully updated"
 msgstr ""
 
@@ -47222,6 +47225,9 @@ msgid "Profiles|This information will appear on your profile."
 msgstr ""
 
 msgid "Profiles|Time settings"
+msgstr ""
+
+msgid "Profiles|Timezone"
 msgstr ""
 
 msgid "Profiles|Title"
@@ -47327,6 +47333,9 @@ msgid "Profiles|must contain only a bluesky did:plc identifier."
 msgstr ""
 
 msgid "Profiles|username"
+msgstr ""
+
+msgid "Profiles|what information is hidden?"
 msgstr ""
 
 msgid "Profiles|your account"
@@ -61991,7 +62000,7 @@ msgstr ""
 msgid "Third Party Advisory Link"
 msgstr ""
 
-msgid "This %{context} has been scheduled for deletion on %{strongStart}%{date}%{strongEnd}. To cancel the scheduled deletion, you can restore this %{context}, including all its resources."
+msgid "This %{context} has been scheduled for deletion on %{date}. To cancel the scheduled deletion, you can restore this %{context}, including all its resources."
 msgstr ""
 
 msgid "This %{issuableType} is confidential and should only be visible to team members with at least the Planner role."
@@ -62033,7 +62042,7 @@ msgstr ""
 msgid "This action will permanently delete this project, including all its resources."
 msgstr ""
 
-msgid "This action will place this group, including its subgroups and projects, in a pending deletion state for %{deletion_delayed_period} days, and delete it permanently on %{date}."
+msgid "This action will place this group, including its subgroups and projects, in a pending deletion state for %{deletion_adjourned_period} days, and delete it permanently on %{date}."
 msgstr ""
 
 msgid "This action will place this project, including all its resources, in a pending deletion state for %{deletion_adjourned_period} days, and delete it permanently on %{date}."
@@ -62261,7 +62270,7 @@ msgstr ""
 msgid "This group is not permitted to create compliance violations"
 msgstr ""
 
-msgid "This group is scheduled for deletion on %{date}. This action will permanently delete this group, including its subgroups and projects, %{strong_open}immediately%{strong_close}. This action cannot be undone."
+msgid "This group is scheduled for deletion on %{date}. This action will permanently delete this group, including its subgroups and projects, %{strongOpen}immediately%{strongClose}. This action cannot be undone."
 msgstr ""
 
 msgid "This group is scheduled to be deleted on %{date}. You are about to delete this group, including its subgroups and projects, immediately. This action cannot be undone."

@@ -2089,91 +2089,33 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
-  describe '#scheduled_for_deletion?' do
-    context 'when project is NOT scheduled for deletion' do
-      it { expect(helper.scheduled_for_deletion?(project)).to be false }
-    end
+  describe '#delete_delayed_project_message' do
+    subject(:message) { helper.delete_delayed_project_message(project) }
 
-    context 'when project is scheduled for deletion' do
-      let_it_be(:archived_project) { create(:project, :archived, marked_for_deletion_at: 10.minutes.ago) }
+    specify do
+      deletion_adjourned_period = ::Gitlab::CurrentSettings.deletion_adjourned_period
 
-      it { expect(helper.scheduled_for_deletion?(archived_project)).to be true }
-    end
-  end
-
-  describe '#delete_delayed_message' do
-    subject(:message) { helper.delete_delayed_message(project) }
-
-    before do
-      allow(project).to receive(:delayed_deletion_ready?)
-        .and_return(feature_available)
-    end
-
-    context 'when project has delayed deletion feature' do
-      let(:feature_available) { true }
-
-      specify do
-        deletion_adjourned_period = ::Gitlab::CurrentSettings.deletion_adjourned_period
-        deletion_date = helper.permanent_deletion_date_formatted(Date.current)
-
-        expect(message).to eq "This action will place this project, " \
-          "including all its resources, in a pending deletion state for #{deletion_adjourned_period} days, " \
-          "and delete it permanently on <strong>#{deletion_date}</strong>."
-      end
-    end
-
-    context 'when project does not have delayed deletion feature' do
-      let(:feature_available) { false }
-
-      specify do
-        expect(message).to eq "This action will permanently delete this project, including all its resources."
-      end
+      expect(message).to eq "This action will place this project, " \
+        "including all its resources, in a pending deletion state for #{deletion_adjourned_period} days, " \
+        "and delete it permanently on <strong>#{helper.permanent_deletion_date_formatted}</strong>."
     end
   end
 
-  describe '#delete_immediately_message' do
-    subject(:message) { helper.delete_immediately_message(project) }
+  describe '#delete_immediately_project_scheduled_for_deletion_message' do
+    let(:marked_for_deletion) { Date.parse('2024-01-01') }
+
+    subject(:message) { helper.delete_immediately_project_scheduled_for_deletion_message(project) }
 
     before do
-      allow(project).to receive(:adjourned_deletion?).and_return(allowed)
-      allow(project).to receive(:adjourned_deletion_configured?).and_return(allowed)
       allow(project).to receive(:marked_for_deletion_on).and_return(marked_for_deletion)
     end
 
-    describe 'when adjourned deletion is not available' do
-      let(:allowed) { false }
-      let(:marked_for_deletion) { nil }
+    it 'returns the delete permanently override message' do
+      deletion_date = helper.permanent_deletion_date_formatted(project)
 
-      it 'returns permanent deletion message' do
-        expect(message).to eq "This action will permanently delete this project, including all its resources."
-      end
-    end
-
-    describe 'when adjourned deletion is available and project is already marked for deletion' do
-      let(:allowed) { true }
-      let(:marked_for_deletion) { Date.parse('2024-01-01') }
-
-      it 'returns the delete permanently override message' do
-        deletion_date = helper.permanent_deletion_date_formatted(project.marked_for_deletion_on)
-
-        expect(message).to eq "This project is scheduled for deletion on <strong>#{deletion_date}</strong>. " \
-          "This action will permanently delete this project, including all its resources, " \
-          "<strong>immediately</strong>. This action cannot be undone."
-      end
-    end
-
-    describe 'when adjourned deletion is available and project is not marked for deletion' do
-      let(:allowed) { true }
-      let(:marked_for_deletion) { nil }
-
-      it 'returns the delete delete delayed message' do
-        deletion_adjourned_period = ::Gitlab::CurrentSettings.deletion_adjourned_period
-        deletion_date = helper.permanent_deletion_date_formatted(Date.current)
-
-        expect(message).to eq "This action will place this project, " \
-          "including all its resources, in a pending deletion state for #{deletion_adjourned_period} days, " \
-          "and delete it permanently on <strong>#{deletion_date}</strong>."
-      end
+      expect(message).to eq "This project is scheduled for deletion on <strong>#{deletion_date}</strong>. " \
+        "This action will permanently delete this project, including all its resources, " \
+        "<strong>immediately</strong>. This action cannot be undone."
     end
   end
 

@@ -77,7 +77,7 @@ Customers may have multiple instances of Free tier, subject to some exceptions.
 
 For the Free tier of GitLab.com, [there is a five-user maximum on a top-level namespace with private visibility](../user/free_user_limit.md) per customer or entity.
 This five-user maximum is in the aggregate of any Free tier instances. So, for example, if a customer has one Free tier instance with five users,
-that customer is prohibited from activating an additional Free tier instance of any user level since the five-user maximum has been met.
+that customer is prohibited from activating an additional Free tier instance of any user level because the five-user maximum has been met.
 
 For the Free tier of self-managed, there is no five-user maximum.
 
@@ -147,7 +147,7 @@ The following scenarios reflect questions a customer may ask related to multiple
 
 - Q: I want to buy a license for 50 total users, but want to split these users into two instances. Can I do this?
 - A: Yes, provided it is for two GitLab Self-Managed instances, you can apply one Cloud Licensing activation code (or license key) to multiple GitLab Self-Managed instances,
-  provided that the users on the instances are the same, or are a subset of the total users. In this case, since there are 50 total or unique users, you may split
+  provided that the users on the instances are the same, or are a subset of the total users. In this case, because there are 50 total or unique users, you may split
   those users into two subset instances.
 
 #### Example 2

@@ -71,7 +71,7 @@ and there should be no failures (shown in red). If a large proportion of
 objects aren't yet replicated (shown in gray), consider giving the site more
 time to complete.
 
-![Geo admin dashboard showing the synchronization status of a secondary site.](../../replication/img/geo_dashboard_v14_0.png)
+![Geo admin dashboard showing the synchronization status of a secondary site.](img/geo_dashboard_v14_0.png)
 
 If any objects are failing to replicate, this should be investigated before
 scheduling the maintenance window. After a planned failover, anything that

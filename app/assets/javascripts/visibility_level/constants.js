@@ -57,6 +57,18 @@ export const ORGANIZATION_VISIBILITY_TYPE = {
   ),
 };
 
+export const PROJECT_VISIBILITY_LEVEL_DESCRIPTIONS = {
+  [VISIBILITY_LEVEL_PUBLIC_STRING]: s__(
+    'VisibilityLevel|Project access must be granted explicitly to each user. If this project is part of a group, access is granted to members of the group.',
+  ),
+  [VISIBILITY_LEVEL_INTERNAL_STRING]: s__(
+    'VisibilityLevel|The project can be accessed by any logged in user except external users.',
+  ),
+  [VISIBILITY_LEVEL_PRIVATE_STRING]: s__(
+    'VisibilityLevel|The project can be accessed without any authentication.',
+  ),
+};
+
 export const GROUP_VISIBILITY_LEVEL_DESCRIPTIONS = {
   [VISIBILITY_LEVEL_PUBLIC_STRING]: s__(
     'VisibilityLevel|The group and any public projects can be viewed without any authentication.',

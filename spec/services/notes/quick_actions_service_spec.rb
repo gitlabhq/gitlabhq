@@ -122,22 +122,26 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
           context 'when not specifying a date' do
             let(:note_text) { "/spend 1h" }
 
-            it 'does not include the date' do
-              _, update_params = service.execute(note)
-              service.apply_updates(update_params, note)
+            it 'includes the date, time and timezone' do
+              allow_any_instance_of(User).to receive(:timezone).and_return('Hawaii') # rubocop:disable RSpec/AnyInstanceOf -- It's not the next instance
 
-              expect(Note.last.note).to eq('added 1h of time spent')
+              travel_to(Time.utc(2025, 5, 1)) do
+                _, update_params = service.execute(note)
+                service.apply_updates(update_params, note)
+
+                expect(Note.last.note).to eq('added 1h of time spent at 2025-04-30 14:00:00 -1000')
+              end
             end
           end
 
           context 'when specifying a date' do
             let(:note_text) { "/spend 1h 2020-01-01" }
 
-            it 'does include the date' do
+            it 'includes the date, time and timezone' do
               _, update_params = service.execute(note)
               service.apply_updates(update_params, note)
 
-              expect(Note.last.note).to eq('added 1h of time spent at 2020-01-01')
+              expect(Note.last.note).to eq('added 1h of time spent at 2020-01-01 12:00:00 UTC')
             end
           end
         end

@@ -114,7 +114,7 @@ module NamespacesHelper
     Rails.application.routes.url_helpers.group_usage_quotas_url(group.root_ancestor, *args)
   end
 
-  def permanent_deletion_date_formatted(container_or_date, format: '%F')
+  def permanent_deletion_date_formatted(container_or_date = Date.current, format: '%F')
     date =
       if container_or_date.respond_to?(:self_deletion_scheduled_deletion_created_on)
         container_or_date.self_deletion_scheduled_deletion_created_on

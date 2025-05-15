@@ -440,7 +440,7 @@ Prerequisites:
      this list by authorization type.
 1. Select **Save changes**.
 
-## Disable user invitations
+## Prevent invitations to groups and projects
 
 {{< history >}}
 
@@ -448,14 +448,16 @@ Prerequisites:
 
 {{< /history >}}
 
-You can disable the ability for non-administrators to invite users to groups or projects. After
+You can remove the ability for non-administrators to invite users to all groups or projects on the instance. After
 you configure this setting, only administrators can invite users to groups or projects on the instance.
+
+You can also prevent user invitations for a specific group. For more information, see [prevent user invitations to a group](../../user/group/manage.md#prevent-invitations-to-a-group).
 
 Prerequisites:
 
 - You must be an administrator.
 
-To disable user invitations:
+To prevent invitations to an instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.

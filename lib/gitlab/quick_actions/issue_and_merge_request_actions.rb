@@ -228,7 +228,7 @@ module Gitlab
             current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target)
         end
         parse_params do |raw_time_date|
-          Gitlab::QuickActions::SpendTimeAndDateSeparator.new(raw_time_date).execute
+          Gitlab::QuickActions::SpendTimeAndDateSeparator.new(raw_time_date, current_user.timezone).execute
         end
         command :spend, :spent, :spend_time do |time_spent, time_spent_date, category|
           if time_spent

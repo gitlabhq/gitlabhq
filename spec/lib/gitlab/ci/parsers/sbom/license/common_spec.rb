@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Parsers::Sbom::License, feature_category: :dependency_management do
+RSpec.describe Gitlab::Ci::Parsers::Sbom::License::Common, feature_category: :dependency_management do
   describe "#parse" do
     subject(:license) { described_class.new(data).parse }
 
@@ -39,33 +39,7 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::License, feature_category: :dependency
         expect(license.name).to eq("Example, Inc. Commercial License")
       end
     end
-
-    context "when the license has neither id nor name" do
-      let(:data) do
-        {
-          "license" => {
-            "url" => "https://example.com/license.txt"
-          }
-        }
-      end
-
-      it "returns nil" do
-        is_expected.to be_nil
-      end
-    end
-
-    context "when the license is defined using an expression" do
-      let(:data) do
-        {
-          "expression" => {
-            "name" => "EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0"
-          }
-        }
-      end
-
-      it "ignores the license" do
-        is_expected.to be_nil
-      end
-    end
   end
+
+  it_behaves_like 'with sbom licenses'
 end

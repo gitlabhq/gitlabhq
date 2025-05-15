@@ -592,7 +592,7 @@ lib/gitlab/checks/**
 /doc/administration/credentials_inventory.md @idurham
 /doc/administration/custom_html_header_tags.md @eread
 /doc/administration/custom_project_templates.md @brendan777
-/doc/administration/dedicated/ @emily.sahlani
+/doc/administration/dedicated/ @lyspin
 /doc/administration/dedicated/hosted_runners.md @rsarangadharan
 /doc/administration/diff_limits.md @brendan777
 /doc/administration/docs_self_host.md @axil
@@ -649,8 +649,7 @@ lib/gitlab/checks/**
 /doc/administration/operations/gitlab_sshd.md @brendan777
 /doc/administration/operations/moving_repositories.md @eread
 /doc/administration/package_information/ @axil
-/doc/administration/packages/ @lyspin
-/doc/administration/packages/_index.md @z_painter
+/doc/administration/packages/ @z_painter
 /doc/administration/pages/ @msedlakjakubowski
 /doc/administration/polling.md @axil
 /doc/administration/raketasks/ @axil
@@ -738,12 +737,12 @@ lib/gitlab/checks/**
 /doc/api/cluster_discovery.md @z_painter
 /doc/api/code_suggestions.md @jglassman1
 /doc/api/commits.md @brendan777
-/doc/api/container_registry.md @lyspin
-/doc/api/container_repository_protection_rules.md @lyspin
+/doc/api/container_registry.md @z_painter
+/doc/api/container_repository_protection_rules.md @z_painter
 /doc/api/custom_attributes.md @msedlakjakubowski
 /doc/api/dependencies.md @rdickenson
 /doc/api/dependency_list_export.md @rlehmann1
-/doc/api/dependency_proxy.md @lyspin
+/doc/api/dependency_proxy.md @z_painter
 /doc/api/deploy_keys.md @z_painter
 /doc/api/deploy_tokens.md @z_painter
 /doc/api/deployments.md @z_painter
@@ -933,7 +932,7 @@ lib/gitlab/checks/**
 /doc/ci/examples/ @lyspin
 /doc/ci/examples/deployment/ @z_painter
 /doc/ci/examples/semantic-release.md @z_painter
-/doc/ci/gitlab_google_cloud_integration/ @lyspin
+/doc/ci/gitlab_google_cloud_integration/ @z_painter
 /doc/ci/inputs/ @marcel.amirault
 /doc/ci/interactive_web_terminal/ @rsarangadharan
 /doc/ci/jobs/ @marcel.amirault
@@ -1046,7 +1045,7 @@ lib/gitlab/checks/**
 /doc/solutions/integrations/servicenow.md @ashrafkhamis
 /doc/subscriptions/ @lciutacu
 /doc/subscriptions/gitlab_com/ @lyspin
-/doc/subscriptions/gitlab_dedicated/ @emily.sahlani
+/doc/subscriptions/gitlab_dedicated/ @lyspin
 /doc/topics/ @msedlakjakubowski
 /doc/topics/autodevops/ @z_painter
 /doc/topics/git/ @brendan777
@@ -1160,9 +1159,6 @@ lib/gitlab/checks/**
 /doc/user/operations_dashboard/ @z_painter
 /doc/user/organization/ @phillipwells
 /doc/user/packages/ @z_painter
-/doc/user/packages/container_registry/ @lyspin
-/doc/user/packages/dependency_proxy/ @lyspin
-/doc/user/packages/harbor_container_registry/ @lyspin
 /doc/user/permissions.md @idurham
 /doc/user/profile/_index.md @idurham
 /doc/user/profile/account/ @idurham
@@ -1196,8 +1192,8 @@ lib/gitlab/checks/**
 /doc/user/project/integrations/confluence.md @msedlakjakubowski
 /doc/user/project/integrations/git_guardian.md @brendan777
 /doc/user/project/integrations/github.md @lyspin
-/doc/user/project/integrations/google_artifact_management.md @lyspin
-/doc/user/project/integrations/harbor.md @lyspin
+/doc/user/project/integrations/google_artifact_management.md @z_painter
+/doc/user/project/integrations/harbor.md @z_painter
 /doc/user/project/integrations/matrix.md @sselhorn
 /doc/user/project/issue_board.md @msedlakjakubowski
 /doc/user/project/issues/ @msedlakjakubowski

@@ -229,7 +229,7 @@ After a pipeline runs successfully, you can view code coverage results in:
 
 - Merge request widget: See the coverage percentage and changes compared to the target branch.
 
-  ![Merge request widget showing code coverage percentage](../img/pipelines_test_coverage_mr_widget_v17_3.png)
+  ![Merge request widget showing code coverage percentage](img/pipelines_test_coverage_mr_widget_v17_3.png)
 
 - Merge request diff: Review which lines are covered by tests. Available with Cobertura and JaCoCo reports.
 - Pipeline jobs: Monitor coverage results for individual jobs.

@@ -62,11 +62,11 @@ The [environment URL](../yaml/_index.md#environmenturl) is displayed in a few
 places in GitLab:
 
 - In a merge request as a link:
-  ![Environment URL in merge request](../img/environments_mr_review_app_v11_10.png)
+  ![Environment URL in merge request](img/environments_mr_review_app_v11_10.png)
 - In the Environments view as a button:
   ![Open live environment from environments view](img/environments_open_live_environment_v14_8.png)
 - In the Deployments view as a button:
-  ![Environment URL in deployments](../img/deployments_view_v11_10.png)
+  ![Environment URL in deployments](img/deployments_view_v11_10.png)
 
 You can see this information in a merge request if:
 
@@ -75,7 +75,7 @@ You can see this information in a merge request if:
 
 For example:
 
-![Environment URLs in merge request](../img/environments_link_url_mr_v10_1.png)
+![Environment URLs in merge request](img/environments_link_url_mr_v10_1.png)
 
 #### Go from source files to public pages
 

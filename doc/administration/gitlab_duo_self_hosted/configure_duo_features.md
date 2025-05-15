@@ -163,7 +163,7 @@ Configure the GitLab Duo feature and sub-feature to send queries to the configur
 
    For example, for the code generation sub-feature under GitLab Duo Code Suggestions, you can select **Claude-3 on Bedrock deployment (Claude 3)**.
 
-   ![GitLab Duo Self-Hosted Feature Configuration](../img/gitlab_duo_self_hosted_feature_configuration_v17_11.png)
+   ![GitLab Duo Self-Hosted Feature Configuration](img/gitlab_duo_self_hosted_feature_configuration_v17_11.png)
 
 #### GitLab Duo Chat sub-feature fall back configuration
 
@@ -190,4 +190,4 @@ To disable a GitLab Duo feature or sub-feature:
 
    For example, to specifically disable the `Write Test` and `Refactor Code` features, select **Disabled**:
 
-   ![Disabling GitLab Duo Feature](../img/gitlab_duo_self_hosted_disable_feature_v17_11.png)
+   ![Disabling GitLab Duo Feature](img/gitlab_duo_self_hosted_disable_feature_v17_11.png)

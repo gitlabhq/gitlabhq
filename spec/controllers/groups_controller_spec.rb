@@ -588,11 +588,10 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
           it 'returns json with message' do
             subject
 
-            # FIXME: Replace `group.marked_for_deletion_on` with `group` after https://gitlab.com/gitlab-org/gitlab/-/work_items/527085
             expect(json_response['message'])
             .to eq(
               "'#{group.name}' has been scheduled for deletion and will be deleted on " \
-                "#{permanent_deletion_date_formatted(group.marked_for_deletion_on)}.")
+                "#{permanent_deletion_date_formatted(group)}.")
           end
         end
       end

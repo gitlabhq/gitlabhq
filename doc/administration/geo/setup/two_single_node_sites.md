@@ -592,7 +592,7 @@ You must manually replicate the secret file across all of your secondary sites, 
    1. Select **Geo > Sites**.
    1. Select **Add site**.
 
-      ![Form to add a new site with three input fields: Name, External URL, and Internal URL (optional).](../replication/img/adding_a_secondary_v15_8.png)
+      ![Form to add a new site with three input fields: Name, External URL, and Internal URL (optional).](img/adding_a_secondary_v15_8.png)
 
    1. In **Name**, enter the value for `gitlab_rails['geo_node_name']` in
       `/etc/gitlab/gitlab.rb`. The values must match exactly.
@@ -667,7 +667,7 @@ The initial replication might take some time.
 You can monitor the synchronization process on each Geo site from the primary
 site **Geo Sites** dashboard in your browser.
 
-![The Geo Sites dashboard displaying the synchronization status.](../replication/img/geo_dashboard_v14_0.png)
+![The Geo Sites dashboard displaying the synchronization status.](img/geo_dashboard_v14_0.png)
 
 ## Related topics
 

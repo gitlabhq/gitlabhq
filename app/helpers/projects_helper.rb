@@ -117,14 +117,17 @@ module ProjectsHelper
 
   def remove_project_message(project)
     if project.delayed_deletion_ready?
-      _("Deleting a project places it into a read-only state until %{date}, " \
-        "at which point the project will be permanently deleted. Are you ABSOLUTELY sure?"
-       ) % { date: permanent_deletion_date_formatted(Date.current) }
+      format(
+        _("Deleting a project places it into a read-only state until %{date}, " \
+          "at which point the project will be permanently deleted. Are you ABSOLUTELY sure?"),
+        date: permanent_deletion_date_formatted(Date.current)
+      )
     else
-      _(
-        "You are going to delete %{project_full_name}. Deleted projects " \
-          "CANNOT be restored! Are you ABSOLUTELY sure?"
-      ) % { project_full_name: project.full_name }
+      format(
+        _("You are going to delete %{project_full_name}. Deleted projects " \
+          "CANNOT be restored! Are you ABSOLUTELY sure?"),
+        project_full_name: project.full_name
+      )
     end
   end
 
@@ -653,7 +656,7 @@ module ProjectsHelper
   def project_delete_delayed_button_data(project, button_text = nil)
     project_delete_button_shared_data(project, button_text).merge({
       restore_help_path: help_page_path('user/project/working_with_projects.md', anchor: 'restore-a-project'),
-      delayed_deletion_date: permanent_deletion_date_formatted(Date.current),
+      delayed_deletion_date: permanent_deletion_date_formatted,
       form_path: project_path(project)
     })
   end
@@ -754,38 +757,24 @@ module ProjectsHelper
     dashboard_projects_landing_paths.include?(request.path) && !current_user.authorized_projects.exists?
   end
 
-  def scheduled_for_deletion?(project)
-    project.marked_for_deletion_at.present?
+  def delete_delayed_project_message(project)
+    safe_format(
+      _("This action will place this project, including all its resources, in a pending deletion state " \
+        "for %{deletion_adjourned_period} days, and delete it permanently on %{date}."),
+      deletion_adjourned_period: project.deletion_adjourned_period,
+      date: tag.strong(permanent_deletion_date_formatted)
+    )
   end
 
-  def delete_delayed_message(project)
-    date = permanent_deletion_date_formatted(Date.current)
-
-    if project.delayed_deletion_ready?
-      message = _("This action will place this project, including all its resources, in a pending deletion state " \
-        "for %{deletion_adjourned_period} days, and delete it permanently on %{date}.")
-      ERB::Util.html_escape(message) % delete_message_data(project).merge(date: tag.strong(date),
-        deletion_adjourned_period: project.deletion_adjourned_period)
-    else
-      delete_permanently_message
-    end
-  end
-
-  def delete_immediately_message(project)
-    return delete_permanently_message unless project.adjourned_deletion?
-    return delete_delayed_message(project) unless project.marked_for_deletion_on
-
-    date = permanent_deletion_date_formatted(project.marked_for_deletion_on)
-
-    message = _('This project is scheduled for deletion on %{date}. ' \
-      'This action will permanently delete this project, ' \
-      'including all its resources, %{strongOpen}immediately%{strongClose}. This action cannot be undone.')
-
-    ERB::Util.html_escape(message) % delete_message_data(project).merge(date: tag.strong(date))
-  end
-
-  def delete_permanently_message
-    _('This action will permanently delete this project, including all its resources.')
+  def delete_immediately_project_scheduled_for_deletion_message(project)
+    safe_format(
+      _('This project is scheduled for deletion on %{date}. ' \
+        'This action will permanently delete this project, ' \
+        'including all its resources, %{strongOpen}immediately%{strongClose}. This action cannot be undone.'),
+      date: tag.strong(permanent_deletion_date_formatted(project)),
+      strongOpen: '<strong>'.html_safe,
+      strongClose: '</strong>'.html_safe
+    )
   end
 
   def project_delete_immediately_button_data(project, button_text = nil)
@@ -807,17 +796,6 @@ module ProjectsHelper
   end
 
   private
-
-  def delete_message_data(project)
-    {
-      project_path_with_namespace: project.path_with_namespace,
-      project: project.path,
-      strongOpen: '<strong>'.html_safe,
-      strongClose: '</strong>'.html_safe,
-      codeOpen: '<code>'.html_safe,
-      codeClose: '</code>'.html_safe
-    }
-  end
 
   def project_delete_button_shared_data(project, button_text = nil)
     merge_requests_count = Projects::AllMergeRequestsCountService.new(project).count

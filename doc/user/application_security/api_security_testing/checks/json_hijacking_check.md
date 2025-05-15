@@ -11,7 +11,7 @@ Checks for JSON data potentially vulnerable to hijacking. This check looks for a
 
 ## Remediation
 
-JSON hijacking allows an attacker to send a GET request via a malicious web site or similar attack vector and utilize a user's stored credentials to retrieve sensitive or protected data to which that user has access. Since a JSON array on its own is valid JavaScript, a malicious GET request to a resource that returns only a JavaScript array can allow the attacker to use a malicious script to read the data in the array from the request. GET requests should never return a JSON array, even if the resource requires authentication to access. Consider using POST instead of a GET for this request or wrapping the array in a JSON object.
+JSON hijacking allows an attacker to send a GET request via a malicious web site or similar attack vector and utilize a user's stored credentials to retrieve sensitive or protected data to which that user has access. A JSON array on its own is valid JavaScript, so a malicious GET request to a resource that returns only a JavaScript array can allow the attacker to use a malicious script to read the data in the array from the request. GET requests should never return a JSON array, even if the resource requires authentication to access. Consider using POST instead of a GET for this request or wrapping the array in a JSON object.
 
 ## Links
 

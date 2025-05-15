@@ -1,8 +1,21 @@
 <script>
-import { GlFormGroup, GlFormInput, GlFormSelect, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlFormGroup, GlFormInput, GlFormSelect, GlSprintf, GlLink, GlIcon } from '@gitlab/ui';
 import { kebabCase } from 'lodash';
+import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import validation, { initForm } from '~/vue_shared/directives/validation';
+import SingleChoiceSelector from '~/vue_shared/components/single_choice_selector.vue';
+import SingleChoiceSelectorItem from '~/vue_shared/components/single_choice_selector_item.vue';
+import {
+  VISIBILITY_LEVEL_LABELS,
+  VISIBILITY_LEVEL_PRIVATE_STRING,
+  VISIBILITY_LEVEL_INTERNAL_STRING,
+  VISIBILITY_LEVEL_PUBLIC_STRING,
+  VISIBILITY_TYPE_ICON,
+  PROJECT_VISIBILITY_LEVEL_DESCRIPTIONS,
+  VISIBILITY_LEVELS_INTEGER_TO_STRING,
+  VISIBILITY_LEVELS_STRING_TO_INTEGER,
+} from '~/visibility_level/constants';
 import { K8S_OPTION, DEPLOYMENT_TARGET_SELECTIONS } from '../form_constants';
 import NewProjectDestinationSelect from './project_destination_select.vue';
 
@@ -13,10 +26,21 @@ export default {
     GlFormSelect,
     GlSprintf,
     GlLink,
+    GlIcon,
     NewProjectDestinationSelect,
+    SingleChoiceSelector,
+    SingleChoiceSelectorItem,
   },
   directives: {
     validation: validation(),
+  },
+  inject: {
+    restrictedVisibilityLevels: {
+      default: [],
+    },
+    defaultProjectVisibility: {
+      default: VISIBILITY_LEVEL_PRIVATE_STRING,
+    },
   },
   props: {
     namespace: {
@@ -35,12 +59,19 @@ export default {
       form,
       selectedNamespace: this.namespace,
       selectedTarget: null,
+      visibilityLevels: [],
     };
   },
   computed: {
     isK8sOptionSelected() {
       return this.selectedTarget === K8S_OPTION.value;
     },
+    defaultVisibilityLevel() {
+      return VISIBILITY_LEVELS_INTEGER_TO_STRING[this.defaultProjectVisibility];
+    },
+  },
+  mounted() {
+    this.setVisibilityLevelsOptions();
   },
   methods: {
     updateSlug() {
@@ -48,10 +79,43 @@ export default {
     },
     onSelectNamespace(newNamespace) {
       this.$emit('onSelectNamespace', newNamespace);
+      this.setVisibilityLevelsOptions();
+    },
+    setVisibilityLevelsOptions() {
+      this.visibilityLevels = [
+        this.visibilityLevelInfo(VISIBILITY_LEVEL_PRIVATE_STRING),
+        this.visibilityLevelInfo(VISIBILITY_LEVEL_INTERNAL_STRING),
+        this.visibilityLevelInfo(VISIBILITY_LEVEL_PUBLIC_STRING),
+      ];
+    },
+    visibilityLevelInfo(visibilityLevelString) {
+      const visibilityLevelInteger = VISIBILITY_LEVELS_STRING_TO_INTEGER[visibilityLevelString];
+      let disableMessage = '';
+
+      if (this.restrictedVisibilityLevels.includes(visibilityLevelInteger)) {
+        disableMessage = s__(
+          'VisibilityLevel|This visibility level has been restricted by your administrator.',
+        );
+      } else if (
+        visibilityLevelInteger > VISIBILITY_LEVELS_STRING_TO_INTEGER[this.namespace.visibility]
+      ) {
+        disableMessage = s__(
+          'VisibilityLevel|This visibility level is not allowed because the parent group has a more restrictive visibility level.',
+        );
+      }
+
+      return {
+        title: VISIBILITY_LEVEL_LABELS[visibilityLevelString],
+        description: PROJECT_VISIBILITY_LEVEL_DESCRIPTIONS[visibilityLevelString],
+        icon: VISIBILITY_TYPE_ICON[visibilityLevelString],
+        value: visibilityLevelString,
+        disabled: disableMessage !== '',
+        disabledMessage: disableMessage,
+        id: 1,
+      };
     },
   },
   helpPageK8s: helpPagePath('user/clusters/agent/_index'),
-  K8S_OPTION,
   DEPLOYMENT_TARGET_SELECTIONS,
 };
 </script>
@@ -168,6 +232,30 @@ export default {
       </template>
     </gl-form-group>
 
-    <!-- Visibility Level should be added in: https://gitlab.com/gitlab-org/gitlab/-/issues/514700 -->
+    <gl-form-group :label="s__('ProjectsNew|Visibility Level')">
+      <single-choice-selector :checked="defaultVisibilityLevel" name="project[visibility_level]">
+        <single-choice-selector-item
+          v-for="{
+            title,
+            description,
+            icon,
+            value,
+            disabled,
+            disabledMessage,
+            id,
+          } in visibilityLevels"
+          :id="id"
+          :key="value"
+          :value="value"
+          :description="description"
+          :disabled-message="disabledMessage"
+          :disabled="disabled"
+          :data-testid="`${value}-visibility-level`"
+        >
+          <gl-icon :name="icon" />
+          {{ title }}
+        </single-choice-selector-item>
+      </single-choice-selector>
+    </gl-form-group>
   </div>
 </template>

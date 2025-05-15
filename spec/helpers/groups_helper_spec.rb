@@ -784,6 +784,39 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#delete_delayed_group_message' do
+    let(:group) { build(:group) }
+
+    subject(:message) { helper.delete_delayed_group_message(group) }
+
+    specify do
+      deletion_adjourned_period = ::Gitlab::CurrentSettings.deletion_adjourned_period
+
+      expect(message).to eq "This action will place this group, " \
+        "including its subgroups and projects, in a pending deletion state for #{deletion_adjourned_period} days, " \
+        "and delete it permanently on <strong>#{helper.permanent_deletion_date_formatted}</strong>."
+    end
+  end
+
+  describe '#delete_immediately_group_scheduled_for_deletion_message' do
+    let(:group) { build(:group) }
+    let(:marked_for_deletion) { Date.parse('2024-01-01') }
+
+    subject(:message) { helper.delete_immediately_group_scheduled_for_deletion_message(group) }
+
+    before do
+      allow(group).to receive(:marked_for_deletion_on).and_return(marked_for_deletion)
+    end
+
+    it 'returns the delete permanently override message' do
+      deletion_date = helper.permanent_deletion_date_formatted(group)
+
+      expect(message).to eq "This group is scheduled for deletion on <strong>#{deletion_date}</strong>. " \
+        "This action will permanently delete this group, including its subgroups and projects, " \
+        "<strong>immediately</strong>. This action cannot be undone."
+    end
+  end
+
   describe '#remove_group_message' do
     let_it_be(:group) { create(:group) }
     let(:delayed_deletion_message) { "The contents of this group, its subgroups and projects will be permanently deleted after" }

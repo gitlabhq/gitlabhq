@@ -36,7 +36,7 @@ module Emails
       @project = ::Project.find(project_id)
       @user = ::User.find(recipient_id)
       @deletion_due_in_days = ::Gitlab::CurrentSettings.deletion_adjourned_period.days
-      @deletion_date = permanent_deletion_date_formatted(@project.marked_for_deletion_on, format: '%B %-d, %Y')
+      @deletion_date = permanent_deletion_date_formatted(@project, format: '%B %-d, %Y')
 
       email_with_layout(
         to: @user.email,

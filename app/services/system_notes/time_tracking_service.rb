@@ -62,25 +62,16 @@ module SystemNotes
     #
     # Returns the created Note object
     def change_time_spent
+      update_activity_counter
       time_spent = noteable.time_spent
 
       if time_spent == :reset
         body = "removed time spent"
+        create_note(NoteSummary.new(noteable, project, author, body, action: 'time_tracking'))
       else
-        spent_at = noteable.spent_at&.to_date
-        parsed_time = Gitlab::TimeTrackingFormatter.output(time_spent.abs)
-        action = time_spent > 0 ? 'added' : 'subtracted'
-
-        text_parts = ["#{action} #{parsed_time} of time spent"]
-        text_parts << "at #{spent_at}" if spent_at && spent_at != DateTime.current.to_date
-        body = text_parts.join(' ')
+        spent_at = noteable.spent_at
+        time_spent_note(time_spent, spent_at)
       end
-
-      if noteable.is_a?(Issue)
-        issue_activity_counter.track_issue_time_spent_changed_action(author: author, project: project)
-      end
-
-      create_note(NoteSummary.new(noteable, project, author, body, action: 'time_tracking'))
     end
 
     # Called when a timelog is added to an issuable
@@ -96,34 +87,43 @@ module SystemNotes
     # Returns the created Note object
     def created_timelog(timelog)
       time_spent = timelog.time_spent
-      spent_at = timelog.spent_at&.to_date
-      parsed_time = Gitlab::TimeTrackingFormatter.output(time_spent.abs)
-      action = time_spent > 0 ? 'added' : 'subtracted'
+      spent_at = timelog.spent_at
 
-      text_parts = ["#{action} #{parsed_time} of time spent"]
-      text_parts << "at #{spent_at}" if spent_at && spent_at != DateTime.current.to_date
-      body = text_parts.join(' ')
-
-      if noteable.is_a?(Issue)
-        issue_activity_counter.track_issue_time_spent_changed_action(author: author, project: project)
-      end
-
-      create_note(NoteSummary.new(noteable, project, author, body, action: 'time_tracking'))
+      update_activity_counter
+      time_spent_note(time_spent, spent_at)
     end
 
     def remove_timelog(timelog)
       time_spent = timelog.time_spent
-      spent_at = timelog.spent_at&.to_date
+      spent_at = timelog.spent_at
 
       parsed_time = Gitlab::TimeTrackingFormatter.output(time_spent)
 
-      body = "deleted #{parsed_time} of spent time"
-      body += " from #{spent_at}" if spent_at
-
+      body = "deleted #{parsed_time} of spent time from #{formatted_spent_at(spent_at)}"
       create_note(NoteSummary.new(noteable, project, author, body, action: 'time_tracking'))
     end
 
     private
+
+    def update_activity_counter
+      return unless noteable.is_a?(Issue)
+
+      issue_activity_counter.track_issue_time_spent_changed_action(author: author, project: project)
+    end
+
+    def formatted_spent_at(spent_at)
+      spent_at ||= DateTime.current
+      timezone = author.timezone || Time.zone.name
+      spent_at.in_time_zone(timezone)
+    end
+
+    def time_spent_note(time_spent, spent_at)
+      parsed_time = Gitlab::TimeTrackingFormatter.output(time_spent.abs)
+      action = time_spent > 0 ? 'added' : 'subtracted'
+
+      body = "#{action} #{parsed_time} of time spent at #{formatted_spent_at(spent_at)}"
+      create_note(NoteSummary.new(noteable, project, author, body, action: 'time_tracking'))
+    end
 
     def changed_date_body(changed_dates)
       %w[start_date due_date].each_with_object([]) do |date_field, word_array|
@@ -157,14 +157,14 @@ module SystemNotes
     def time_estimate_system_note
       parsed_time = Gitlab::TimeTrackingFormatter.output(noteable.time_estimate)
       previous_estimate = noteable.previous_changes['time_estimate']&.at(0) || 0
-      parsed_previous_restimate = Gitlab::TimeTrackingFormatter.output(previous_estimate)
+      parsed_previous_estimate = Gitlab::TimeTrackingFormatter.output(previous_estimate)
 
       if previous_estimate == 0
         "added time estimate of #{parsed_time}"
       elsif noteable.time_estimate == 0
-        "removed time estimate of #{parsed_previous_restimate}"
+        "removed time estimate of #{parsed_previous_estimate}"
       else
-        "changed time estimate to #{parsed_time} from #{parsed_previous_restimate}"
+        "changed time estimate to #{parsed_time} from #{parsed_previous_estimate}"
       end
     end
   end
