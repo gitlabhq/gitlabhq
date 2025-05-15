@@ -332,10 +332,10 @@ class ApplicationSetting < ApplicationRecord
     allow_blank: true
 
   jsonb_accessor :token_prefixes,
-    instance_token_prefix: [:string, { default: 'gl' }]
+    instance_token_prefix: [:string, { default: '' }]
 
   validates :instance_token_prefix,
-    format: { with: %r{\A[a-zA-Z0-9-]+\z} },
+    format: { with: %r{\A[a-zA-Z0-9]+\z} },
     length: { maximum: 20, message: N_('is too long (maximum is %{count} characters)') },
     allow_blank: true
 

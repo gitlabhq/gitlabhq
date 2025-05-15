@@ -24,7 +24,7 @@ RSpec.describe Gitlab::EncryptedAttribute, feature_category: :shared do
       describe key_method do
         context 'when encrypting' do
           before do
-            record.attr_encrypted_attributes[:token][:operation] = :encrypting
+            record.attr_encrypted_encrypted_attributes[:token][:operation] = :encrypting
           end
 
           it 'returns the encryption key secret' do
@@ -35,7 +35,7 @@ RSpec.describe Gitlab::EncryptedAttribute, feature_category: :shared do
 
         context 'when decrypting' do
           before do
-            record.attr_encrypted_attributes[:token][:operation] = :decrypting
+            record.attr_encrypted_encrypted_attributes[:token][:operation] = :decrypting
           end
 
           it 'returns the encryption key secret' do

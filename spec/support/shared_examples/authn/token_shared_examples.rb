@@ -79,7 +79,7 @@ end
 
 RSpec.shared_examples 'contains instance prefix when enabled' do
   context 'with default instance prefix' do
-    let_it_be(:instance_prefix) { 'instance-prefix-' }
+    let_it_be(:instance_prefix) { 'instanceprefix' }
 
     before do
       stub_application_setting(instance_token_prefix: instance_prefix)
@@ -91,7 +91,7 @@ RSpec.shared_examples 'contains instance prefix when enabled' do
   end
 
   context 'with custom instance prefix' do
-    let_it_be(:instance_prefix) { 'instance-prefix-' }
+    let_it_be(:instance_prefix) { 'instanceprefix' }
 
     before do
       stub_application_setting(instance_token_prefix: instance_prefix)

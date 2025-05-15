@@ -54,7 +54,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         project_api_limit: 400,
         project_invited_groups_api_limit: 60,
         projects_api_limit: 2000,
-        instance_token_prefix: 'gl',
+        instance_token_prefix: '',
         use_clickhouse_for_analytics: false,
         user_contributed_projects_api_limit: 100,
         user_projects_api_limit: 300,

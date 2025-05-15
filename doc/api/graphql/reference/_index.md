@@ -19162,6 +19162,29 @@ The edge type for [`SecretPermission`](#secretpermission).
 | <a id="secretpermissionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="secretpermissionedgenode"></a>`node` | [`SecretPermission`](#secretpermission) | The item at the end of the edge. |
 
+#### `SecurityPolicyTypeConnection`
+
+The connection type for [`SecurityPolicyType`](#securitypolicytype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securitypolicytypeconnectionedges"></a>`edges` | [`[SecurityPolicyTypeEdge]`](#securitypolicytypeedge) | A list of edges. |
+| <a id="securitypolicytypeconnectionnodes"></a>`nodes` | [`[SecurityPolicyType]`](#securitypolicytype) | A list of nodes. |
+| <a id="securitypolicytypeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `SecurityPolicyTypeEdge`
+
+The edge type for [`SecurityPolicyType`](#securitypolicytype).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securitypolicytypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="securitypolicytypeedgenode"></a>`node` | [`SecurityPolicyType`](#securitypolicytype) | The item at the end of the edge. |
+
 #### `SentryErrorConnection`
 
 The connection type for [`SentryError`](#sentryerror).
@@ -21486,6 +21509,22 @@ Represents the approval policy.
 | <a id="approvalpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
 | <a id="approvalpolicyuserapprovers"></a>`userApprovers` | [`[UserCore!]`](#usercore) | Approvers of the user type. |
 | <a id="approvalpolicyyaml"></a>`yaml` | [`String!`](#string) | YAML definition of the policy. |
+
+### `ApprovalPolicyAttributesType`
+
+Represents policy fields related to the approval policy.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="approvalpolicyattributestypeactionapprovers"></a>`actionApprovers` | [`[PolicyApproversType!]`](#policyapproverstype) | Multiple approvers action. |
+| <a id="approvalpolicyattributestypeallgroupapprovers"></a>`allGroupApprovers` | [`[PolicyApprovalGroup!]`](#policyapprovalgroup) | All potential approvers of the group type, including groups inaccessible to the user. |
+| <a id="approvalpolicyattributestypecustomroles"></a>`customRoles` | [`[MemberRole!]`](#memberrole) | Approvers of the custom role type. Users belonging to these role(s) alone will be approvers. |
+| <a id="approvalpolicyattributestypedeprecatedproperties"></a>`deprecatedProperties` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Introduced** in GitLab 16.10. **Status**: Experiment. All deprecated properties in the policy. |
+| <a id="approvalpolicyattributestyperoleapprovers"></a>`roleApprovers` | [`[MemberAccessLevelName!]`](#memberaccesslevelname) | Approvers of the role type. Users belonging to these role(s) alone will be approvers. |
+| <a id="approvalpolicyattributestypesource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
+| <a id="approvalpolicyattributestypeuserapprovers"></a>`userApprovers` | [`[UserCore!]`](#usercore) | Approvers of the user type. |
 
 ### `ApprovalProjectRule`
 
@@ -29085,6 +29124,28 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupscanresultpoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="groupscanresultpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
+##### `Group.securityPolicies`
+
+List of security policies configured for the namespace.
+
+{{< details >}}
+**Introduced** in GitLab 18.1.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`SecurityPolicyTypeConnection`](#securitypolicytypeconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupsecuritypoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
+| <a id="groupsecuritypoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
+
 ##### `Group.securityPolicyProjectSuggestions`
 
 Security policy project suggestions.
@@ -33529,6 +33590,28 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespacescanresultpoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="namespacescanresultpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
+##### `Namespace.securityPolicies`
+
+List of security policies configured for the namespace.
+
+{{< details >}}
+**Introduced** in GitLab 18.1.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`SecurityPolicyTypeConnection`](#securitypolicytypeconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespacesecuritypoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
+| <a id="namespacesecuritypoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
+
 ##### `Namespace.vulnerabilityManagementPolicies`
 
 Vulnerability Management Policies of the project.
@@ -34766,6 +34849,18 @@ Represents the pipeline execution policy.
 | <a id="pipelineexecutionpolicywarnings"></a>`warnings` | [`[String!]!`](#string) | Warnings associated with the policy. |
 | <a id="pipelineexecutionpolicyyaml"></a>`yaml` | [`String!`](#string) | YAML definition of the policy. |
 
+### `PipelineExecutionPolicyAttributesType`
+
+Represents policy fields related to the pipeline execution policy.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelineexecutionpolicyattributestypepolicyblobfilepath"></a>`policyBlobFilePath` | [`String!`](#string) | Path to the policy file in the project. |
+| <a id="pipelineexecutionpolicyattributestypesource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
+| <a id="pipelineexecutionpolicyattributestypewarnings"></a>`warnings` | [`[String!]!`](#string) | Warnings associated with the policy. |
+
 ### `PipelineExecutionSchedulePolicy`
 
 Represents the pipeline execution schedule policy.
@@ -34784,6 +34879,18 @@ Represents the pipeline execution schedule policy.
 | <a id="pipelineexecutionschedulepolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
 | <a id="pipelineexecutionschedulepolicywarnings"></a>`warnings` | [`[String!]!`](#string) | Warnings associated with the policy. |
 | <a id="pipelineexecutionschedulepolicyyaml"></a>`yaml` | [`String!`](#string) | YAML definition of the policy. |
+
+### `PipelineExecutionScheduledPolicyAttributesType`
+
+Represents policy fields related to the pipeline execution scheduled policy.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelineexecutionscheduledpolicyattributestypepolicyblobfilepath"></a>`policyBlobFilePath` | [`String!`](#string) | Path to the policy file in the project. |
+| <a id="pipelineexecutionscheduledpolicyattributestypesource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
+| <a id="pipelineexecutionscheduledpolicyattributestypewarnings"></a>`warnings` | [`[String!]!`](#string) | Warnings associated with the policy. |
 
 ### `PipelineManualVariable`
 
@@ -37056,6 +37163,28 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectsecurityexclusionsscanner"></a>`scanner` | [`ExclusionScannerEnum`](#exclusionscannerenum) | Filter entries by scanner. |
 | <a id="projectsecurityexclusionstype"></a>`type` | [`ExclusionTypeEnum`](#exclusiontypeenum) | Filter entries by exclusion type. |
 
+##### `Project.securityPolicies`
+
+All security policies of the project.
+
+{{< details >}}
+**Introduced** in GitLab 18.1.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`SecurityPolicyTypeConnection`](#securitypolicytypeconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsecuritypoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
+| <a id="projectsecuritypoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
+
 ##### `Project.securityPolicyProjectLinkedGroups`
 
 Groups linked to the project, when used as Security Policy Project.
@@ -38721,6 +38850,17 @@ Represents the scan execution policy.
 | <a id="scanexecutionpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
 | <a id="scanexecutionpolicyyaml"></a>`yaml` | [`String!`](#string) | YAML definition of the policy. |
 
+### `ScanExecutionPolicyAttributesType`
+
+Represents policy fields related to the scan execution policy.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="scanexecutionpolicyattributestypedeprecatedproperties"></a>`deprecatedProperties` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Introduced** in GitLab 17.3. **Status**: Experiment. All deprecated properties in the policy. |
+| <a id="scanexecutionpolicyattributestypesource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
+
 ### `ScanResultPolicy`
 
 Represents the scan result policy.
@@ -38808,6 +38948,24 @@ Representation of a secrets permission.
 | <a id="secretpermissionpermissions"></a>`permissions` | [`String!`](#string) | Permissions to be provided. ['create', 'update', 'read', 'delete']. |
 | <a id="secretpermissionprincipal"></a>`principal` | [`Principal!`](#principal) | Who is provided access to. For eg: User/Role/MemberRole/Group. |
 | <a id="secretpermissionproject"></a>`project` | [`Project!`](#project) | Project the secret permission belong to. |
+
+### `SecurityPolicyType`
+
+Represents the security policy.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securitypolicytypedescription"></a>`description` | [`String!`](#string) | Description of the policy. |
+| <a id="securitypolicytypeeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
+| <a id="securitypolicytypeenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the policy is enabled. |
+| <a id="securitypolicytypename"></a>`name` | [`String!`](#string) | Name of the policy. |
+| <a id="securitypolicytypepolicyattributes"></a>`policyAttributes` | [`PolicyAttributesUnion!`](#policyattributesunion) | Attributes specific to the policy type. |
+| <a id="securitypolicytypepolicyscope"></a>`policyScope` | [`PolicyScope`](#policyscope) | Scope of the policy. |
+| <a id="securitypolicytypetype"></a>`type` | [`String`](#string) | Description of the policy type. |
+| <a id="securitypolicytypeupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
+| <a id="securitypolicytypeyaml"></a>`yaml` | [`String!`](#string) | YAML definition of the policy. |
 
 ### `SecurityPolicyValidationError`
 
@@ -41218,6 +41376,16 @@ Represents the vulnerability management policy.
 | <a id="vulnerabilitymanagementpolicysource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 | <a id="vulnerabilitymanagementpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
 | <a id="vulnerabilitymanagementpolicyyaml"></a>`yaml` | [`String!`](#string) | YAML definition of the policy. |
+
+### `VulnerabilityManagementPolicyAttributesType`
+
+Represents policy fields related to the vulnerability management policy.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitymanagementpolicyattributestypesource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 
 ### `VulnerabilityNamespaceStatisticType`
 
@@ -47742,6 +47910,18 @@ One of:
 - [`PypiMetadata`](#pypimetadata)
 - [`TerraformModuleMetadata`](#terraformmodulemetadata)
 
+#### `PolicyAttributesUnion`
+
+Represents specific policy types. Its fields depend on the policy type.
+
+One of:
+
+- [`ApprovalPolicyAttributesType`](#approvalpolicyattributestype)
+- [`PipelineExecutionPolicyAttributesType`](#pipelineexecutionpolicyattributestype)
+- [`PipelineExecutionScheduledPolicyAttributesType`](#pipelineexecutionscheduledpolicyattributestype)
+- [`ScanExecutionPolicyAttributesType`](#scanexecutionpolicyattributestype)
+- [`VulnerabilityManagementPolicyAttributesType`](#vulnerabilitymanagementpolicyattributestype)
+
 #### `Registrable`
 
 One of:
@@ -48336,6 +48516,7 @@ Implementations:
 - [`PipelineExecutionSchedulePolicy`](#pipelineexecutionschedulepolicy)
 - [`ScanExecutionPolicy`](#scanexecutionpolicy)
 - [`ScanResultPolicy`](#scanresultpolicy)
+- [`SecurityPolicyType`](#securitypolicytype)
 - [`VulnerabilityManagementPolicy`](#vulnerabilitymanagementpolicy)
 
 ##### Fields

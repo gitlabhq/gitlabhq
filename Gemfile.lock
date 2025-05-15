@@ -127,12 +127,6 @@ PATH
       oj (~> 3.16, >= 3.16.10)
 
 PATH
-  remote: vendor/gems/attr_encrypted
-  specs:
-    attr_encrypted (3.2.4)
-      encryptor (~> 3.0.0)
-
-PATH
   remote: vendor/gems/bundler-checksum
   specs:
     bundler-checksum (0.1.0)
@@ -352,6 +346,8 @@ GEM
       traces (~> 0.15)
     atlassian-jwt (0.2.1)
       jwt (~> 2.1)
+    attr_encrypted (4.2.0)
+      encryptor (~> 3.0.0)
     attr_required (1.0.2)
     awesome_print (1.9.2)
     awrence (1.2.1)
@@ -2079,7 +2075,7 @@ DEPENDENCIES
   asciidoctor-plantuml (~> 0.0.16)
   async (~> 2.23.0)
   atlassian-jwt (~> 0.2.1)
-  attr_encrypted (~> 3.2.4)!
+  attr_encrypted (~> 4.2)
   awesome_print
   aws-sdk-cloudformation (~> 1)
   aws-sdk-core (~> 3.223.0)

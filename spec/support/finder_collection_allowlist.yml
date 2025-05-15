@@ -66,6 +66,7 @@
 - Security::PipelineExecutionPoliciesFinder
 - Security::PipelineExecutionSchedulePoliciesFinder
 - Security::VulnerabilityManagementPoliciesFinder
+- Security::AllPoliciesFinder
 - Security::SecurityPoliciesFinder
 - Security::SecurityProjectGroupFinder
 - SentryIssueFinder

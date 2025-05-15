@@ -159,7 +159,7 @@ module ApplicationSettingImplementation
         password_authentication_enabled_for_web: Settings.gitlab['signin_enabled'],
         performance_bar_allowed_group_id: nil,
         personal_access_token_prefix: 'glpat-',
-        instance_token_prefix: 'gl',
+        instance_token_prefix: '',
         plantuml_enabled: false,
         plantuml_url: nil,
         diagramsnet_enabled: true,

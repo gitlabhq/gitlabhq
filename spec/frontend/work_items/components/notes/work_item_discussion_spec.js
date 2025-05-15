@@ -11,7 +11,7 @@ import WorkItemNoteReplying from '~/work_items/components/notes/work_item_note_r
 import WorkItemAddNote from '~/work_items/components/notes/work_item_add_note.vue';
 import toggleWorkItemNoteResolveDiscussion from '~/work_items/graphql/notes/toggle_work_item_note_resolve_discussion.mutation.graphql';
 import {
-  mockWorkItemCommentNote,
+  mockWorkItemDiscussion,
   mockToggleResolveDiscussionResponse,
   mockWorkItemNotesResponseWithComments,
 } from 'jest/work_items/mock_data';
@@ -40,7 +40,7 @@ describe('Work Item Discussion', () => {
     .mockResolvedValue(mockToggleResolveDiscussionResponse);
 
   const createComponent = ({
-    discussion = [mockWorkItemCommentNote],
+    discussion = mockWorkItemDiscussion,
     workItemId = mockWorkItemId,
     workItemType = 'Task',
     isExpandedOnLoad = true,
@@ -85,7 +85,7 @@ describe('Work Item Discussion', () => {
   describe('when hideFullscreenMarkdownButton is true', () => {
     beforeEach(() => {
       createComponent({
-        discussion: mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0].notes.nodes,
+        discussion: mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0],
         hideFullscreenMarkdownButton: true,
       });
     });
@@ -100,18 +100,17 @@ describe('Work Item Discussion', () => {
   describe('When the main comments has threads', () => {
     beforeEach(() => {
       createComponent({
-        discussion: mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0].notes.nodes,
+        discussion: mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0],
       });
     });
 
     it('should render timeline-entry-item with required data attributes', () => {
-      const expectedDiscussion =
-        mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0].notes.nodes[0];
+      const expectedDiscussion = mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0];
 
       expect(findTimelineEntryItem().attributes()).toEqual({
         class: expect.any(String),
-        'data-note-id': expectedDiscussion.id.split('/').pop(),
-        'data-discussion-id': expectedDiscussion.discussion.id,
+        'data-note-id': expectedDiscussion.notes.nodes[0].id.split('/').pop(),
+        'data-discussion-id': expectedDiscussion.id,
       });
     });
 
@@ -154,7 +153,7 @@ describe('Work Item Discussion', () => {
   describe('When replying to any comment', () => {
     beforeEach(async () => {
       createComponent({
-        discussion: mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0].notes.nodes,
+        discussion: mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0],
       });
       const mainComment = findThreadAtIndex(0);
 
@@ -187,7 +186,7 @@ describe('Work Item Discussion', () => {
     createComponent();
     findThreadAtIndex(0).vm.$emit('deleteNote');
 
-    expect(wrapper.emitted('deleteNote')).toEqual([[mockWorkItemCommentNote]]);
+    expect(wrapper.emitted('deleteNote')).toEqual([[mockWorkItemDiscussion.notes.nodes[0]]]);
   });
 
   it('emits `error` event when child note emits an `error`', () => {
@@ -204,28 +203,20 @@ describe('Work Item Discussion', () => {
       window.gon.current_user_id = 'gid://gitlab/User/1';
       window.gon.current_user_fullname = 'Administrator';
     });
-    const resolvedDiscussionList =
-      mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0].notes.nodes.slice();
-    resolvedDiscussionList.forEach((note) => {
-      return {
-        ...note,
-        discussion: {
-          id: note.discussion.id,
-          resolved: true,
-          resolvable: true,
-          resolvedBy: {
-            id: 'gid://gitlab/User/1',
-            name: 'Administrator',
-            __typename: 'UserCore',
-          },
-          __typename: 'Discussion',
-        },
-      };
-    });
+    const resolvedDiscussion = {
+      ...mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0],
+      resolved: true,
+      resolvable: true,
+      resolvedBy: {
+        id: 'gid://gitlab/User/1',
+        name: 'Administrator',
+        __typename: 'UserCore',
+      },
+    };
 
     it('Resolved discussion is not expanded on default', () => {
       createComponent({
-        discussion: resolvedDiscussionList,
+        discussion: resolvedDiscussion,
         isExpandedOnLoad: false,
       });
 
@@ -234,7 +225,7 @@ describe('Work Item Discussion', () => {
 
     it('should pass `isDiscussionResolvable` prop as true when user has resolveNote permission', () => {
       createComponent({
-        discussion: resolvedDiscussionList,
+        discussion: resolvedDiscussion,
         isExpandedOnLoad: false,
       });
 
@@ -242,23 +233,25 @@ describe('Work Item Discussion', () => {
     });
 
     it('should pass `isDiscussionResolvable` prop as false when user does not have resolveNote permission', () => {
-      const resolvedDiscussionListWithoutPermissions = resolvedDiscussionList.map((note) => {
-        return {
-          ...note,
-          userPermissions: {
-            adminNote: true,
-            awardEmoji: true,
-            readNote: true,
-            createNote: true,
-            resolveNote: false,
-            repositionNote: true,
-            __typename: 'NotePermissions',
-          },
-        };
-      });
+      const resolvedDiscussionWithoutPermissions = { ...resolvedDiscussion };
+
+      resolvedDiscussionWithoutPermissions.notes.nodes = resolvedDiscussion.notes.nodes.map(
+        (note) => {
+          return {
+            ...note,
+            userPermissions: {
+              adminNote: true,
+              awardEmoji: true,
+              createNote: true,
+              resolveNote: false,
+              __typename: 'NotePermissions',
+            },
+          };
+        },
+      );
 
       createComponent({
-        discussion: resolvedDiscussionListWithoutPermissions,
+        discussion: resolvedDiscussionWithoutPermissions,
         isExpandedOnLoad: false,
       });
 
@@ -267,8 +260,7 @@ describe('Work Item Discussion', () => {
 
     it('toggles resolved status when toggle icon is clicked from note header', async () => {
       createComponent({
-        discussion:
-          mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0].notes.nodes.slice(),
+        discussion: mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0],
         isExpandedOnLoad: true,
       });
 
@@ -287,14 +279,13 @@ describe('Work Item Discussion', () => {
   });
 
   describe('quote-reply event', () => {
-    const mockDiscussions =
-      mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0].notes.nodes;
+    const mockDiscussion = mockWorkItemNotesWidgetResponseWithComments.discussions.nodes[0];
     let mockAppendTextSpy;
 
     beforeEach(async () => {
       window.gon.current_user_id = 1;
       createComponent({
-        discussion: mockDiscussions,
+        discussion: mockDiscussion,
       });
 
       mockAppendTextSpy = jest
@@ -304,7 +295,7 @@ describe('Work Item Discussion', () => {
         event: {
           preventDefault: jest.fn(),
         },
-        discussionId: mockDiscussions[0].discussion.id,
+        discussionId: mockDiscussion.id,
         text: 'quoted text',
       });
       await nextTick();

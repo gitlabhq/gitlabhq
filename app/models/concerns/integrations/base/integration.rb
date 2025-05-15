@@ -672,10 +672,10 @@ module Integrations
 
       def reencrypt_properties
         unless properties.nil? || properties.empty?
-          attr_encrypted_attributes = self.class.attr_encrypted_attributes[:properties]
+          attr_encrypted_attributes = self.class.attr_encrypted_encrypted_attributes[:properties]
           key = dynamic_encryption_key_for_operation(attr_encrypted_attributes[:key])
           iv = generate_iv(attr_encrypted_attributes[:algorithm])
-          ep = self.class.attr_encrypt(:properties, properties, { key: key, iv: iv })
+          ep = self.class.attr_encrypted_encrypt(:properties, properties, { key: key, iv: iv })
         end
 
         { 'encrypted_properties' => ep, 'encrypted_properties_iv' => iv }

@@ -67,7 +67,7 @@ module Gitlab
     attr_reader :old_key, :new_key
 
     def otp_secret_settings
-      @otp_secret_settings ||= User.attr_encrypted_attributes[:otp_secret]
+      @otp_secret_settings ||= User.attr_encrypted_encrypted_attributes[:otp_secret]
     end
 
     def reencrypt(user, old_key, new_key)

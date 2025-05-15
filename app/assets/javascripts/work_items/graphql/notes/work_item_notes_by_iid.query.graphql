@@ -20,6 +20,12 @@ query workItemNotesByIid($fullPath: ID!, $iid: String!, $after: String, $pageSiz
             }
             nodes {
               id
+              resolved
+              resolvable
+              resolvedBy {
+                id
+                name
+              }
               notes {
                 nodes {
                   ...WorkItemNote

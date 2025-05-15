@@ -19,10 +19,6 @@ extend ignore_feature_category
 
 gem 'bundler-checksum', '~> 0.1.0', path: 'vendor/gems/bundler-checksum', require: false, feature_category: :shared
 
-# NOTE: When incrementing the major or minor version here, also increment activerecord_version
-# in vendor/gems/attr_encrypted/attr_encrypted.gemspec until we resolve
-# https://gitlab.com/gitlab-org/gitlab/-/issues/375713
-#
 # See https://docs.gitlab.com/ee/development/gemfile.html#upgrade-rails for guidelines when upgrading Rails
 
 gem 'rails', '~> 7.1.5.1', feature_category: :shared
@@ -128,7 +124,7 @@ gem 'invisible_captcha', '~> 2.1.0', feature_category: :insider_threat
 gem 'devise-two-factor', '~> 4.1.1', feature_category: :system_access
 gem 'rqrcode', '~> 2.2', feature_category: :system_access
 
-gem 'attr_encrypted', '~> 3.2.4', path: 'vendor/gems/attr_encrypted', feature_category: :shared
+gem 'attr_encrypted', '~> 4.2', feature_category: :shared
 
 # GitLab Pages
 gem 'validates_hostname', '~> 1.0.13', feature_category: :pages

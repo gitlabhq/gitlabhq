@@ -42,7 +42,7 @@ module AccessTokensHelper
         create: user_settings_personal_access_tokens_path,
         revoke: api_v4_personal_access_tokens_path,
         rotate: api_v4_personal_access_tokens_path,
-        show: api_v4_personal_access_tokens_path
+        show: "#{api_v4_personal_access_tokens_path}?user_id=:id"
       }
     }
   end

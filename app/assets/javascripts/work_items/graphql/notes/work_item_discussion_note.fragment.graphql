@@ -16,6 +16,12 @@ fragment WorkItemDiscussionNote on Note {
   }
   discussion {
     id
+    resolved
+    resolvable
+    resolvedBy {
+      id
+      name
+    }
     notes {
       nodes {
         ...WorkItemNote

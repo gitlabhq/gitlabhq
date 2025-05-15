@@ -58,9 +58,7 @@ class DeployToken < ApplicationRecord
   def self.prefix_for_deploy_token
     return DEPLOY_TOKEN_PREFIX unless Feature.enabled?(:custom_prefix_for_all_token_types, :instance)
 
-    # Manually remove gl - we'll add this from the configuration.
-    # Once the feature flag has been removed, we can change DEPLOY_TOKEN_PREFIX to `ft-`
-    ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(DEPLOY_TOKEN_PREFIX.delete_prefix('gl'))
+    ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(DEPLOY_TOKEN_PREFIX)
   end
 
   def valid_for_dependency_proxy?

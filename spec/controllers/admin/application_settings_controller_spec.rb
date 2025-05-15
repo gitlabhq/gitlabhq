@@ -322,7 +322,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       let(:application_settings) { ApplicationSetting.current }
 
       context 'with valid prefix' do
-        let(:prefix) { 'instance-prefix-' }
+        let(:prefix) { 'instanceprefix' }
 
         it 'updates instance_token_prefix setting' do
           put :update, params: { application_setting: { instance_token_prefix: prefix } }
@@ -339,6 +339,7 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
             this-prefix-is-longer-than-20-characters
             @
             :
+            -
           ]
         end
 

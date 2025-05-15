@@ -679,6 +679,8 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       end
 
       shared_examples 'a discussion note email' do |model|
+        let(:noteable_url_args) { {} }
+
         it_behaves_like 'it should have Gmail Actions links'
 
         # Two tests with flakiness:1 are coming from this test:
@@ -702,7 +704,12 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
           issuable_url = "project_wiki_url" if note.for_wiki_page?
           anchor = "note_#{note.id}"
 
-          is_expected.to have_body_text "started a new <a href=\"#{public_send(issuable_url, project, note.noteable, anchor: anchor)}\">discussion</a>"
+          is_expected.to have_body_text(
+            format(
+              "started a new <a href=\"%{url}\">discussion</a>",
+              url: public_send(issuable_url, project, note.noteable, anchor: anchor, **noteable_url_args)
+            )
+          )
         end
 
         context 'when a comment on an existing discussion' do
@@ -826,12 +833,14 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
         before do
           allow(note).to receive(:noteable).and_return(wiki_page_meta)
-          allow(wiki_page_meta).to receive(:id).and_return(wiki_page_meta.canonical_slug)
         end
 
         subject { described_class.note_wiki_page_email(recipient.id, note.id) }
 
-        it_behaves_like 'a discussion note email', :discussion_note_on_wiki_page
+        it_behaves_like 'a discussion note email', :discussion_note_on_wiki_page do
+          let(:noteable_url_args) { { id: wiki_page_meta.canonical_slug } }
+        end
+
         it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
           let(:model) { wiki_page_meta }
         end
@@ -842,7 +851,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         it_behaves_like 'appearance header and footer not enabled'
 
         it 'has the correct subject' do
-          is_expected.to have_subject('Re: a-known-name | Page 1 (slug)')
+          is_expected.to have_subject("Re: a-known-name | #{wiki_page_meta.title} (slug)")
         end
 
         it 'contains a link to the wiki page note' do

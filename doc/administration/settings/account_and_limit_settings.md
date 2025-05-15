@@ -371,8 +371,7 @@ This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 
-You can set a custom prefix for all tokens generated on your instance.
-By default, GitLab uses `gl` as the instance prefix.
+You can set a custom prefix that is prepended to all tokens generated on your instance.
 
 Custom token prefixes apply only to the following tokens:
 

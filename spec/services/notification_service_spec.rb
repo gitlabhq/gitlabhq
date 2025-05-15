@@ -1733,8 +1733,8 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
   context 'wiki page note', :deliver_mails_inline do
     let_it_be(:project) { create(:project, :public, :repository) }
-    let(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, container: project) }
-    let(:note) { create(:note, noteable: wiki_page_meta, project: project) }
+    let_it_be(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, container: project) }
+    let_it_be(:note) { create(:note, noteable: wiki_page_meta, project: project) }
 
     before_all do
       build_team(project)

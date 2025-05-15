@@ -80,7 +80,7 @@ export default {
     },
     moreChildrenLinkText() {
       return n__(
-        'View all (one more item)',
+        'View all (%d more item)',
         'View all (%d more items)',
         this.item.childrenCount - this.item.children.length,
       );

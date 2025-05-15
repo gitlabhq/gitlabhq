@@ -332,7 +332,7 @@ RSpec.shared_examples 'a webhook' do |factory:|
   end
 
   describe 'encrypted attributes' do
-    subject { described_class.attr_encrypted_attributes.keys }
+    subject { described_class.attr_encrypted_encrypted_attributes.keys }
 
     it { is_expected.to contain_exactly(:token, :url, :url_variables, :custom_headers) }
   end

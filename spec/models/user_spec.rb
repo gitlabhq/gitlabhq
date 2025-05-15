@@ -2523,7 +2523,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'with instance prefix configured' do
-      let(:instance_prefix) { 'instance-prefix-' }
+      let(:instance_prefix) { 'instanceprefix' }
 
       before do
         stub_application_setting(instance_token_prefix: instance_prefix)
@@ -2532,7 +2532,7 @@ RSpec.describe User, feature_category: :user_profile do
       it 'returns feed token with instance prefix' do
         user = create(:user)
 
-        expect(user.feed_token).to start_with("#{instance_prefix}ft-")
+        expect(user.feed_token).to start_with("#{instance_prefix}glft-")
       end
     end
 

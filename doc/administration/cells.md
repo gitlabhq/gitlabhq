@@ -26,7 +26,7 @@ Cells 1.0 is in development. For more information about the state of cell develo
 
 {{< /alert >}}
 
-This page explains how to configure the GitLab Rails console for cell functionality. For more information on the proposed design and terminology, see the design document for [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/).
+To test cell functionality, configure the GitLab Rails console.
 
 ## Configuration
 

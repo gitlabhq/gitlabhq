@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class UserPreference < ApplicationRecord
+  include SafelyChangeColumnDefault
+
   # We could use enums, but Rails 4 doesn't support multiple
   # enum options with same name for multiple fields, also it creates
   # extra methods that aren't really needed here.
@@ -9,6 +11,8 @@ class UserPreference < ApplicationRecord
 
   belongs_to :user
   belongs_to :home_organization, class_name: "Organizations::Organization", optional: true
+
+  columns_changing_default :organization_groups_projects_display
 
   scope :with_user, -> { joins(:user) }
   scope :gitpod_enabled, -> { where(gitpod_enabled: true) }

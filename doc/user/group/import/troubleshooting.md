@@ -168,3 +168,16 @@ To resolve this issue:
 For more information about the relations and batches that failed to export,
 use the export status API endpoints for [projects](../../../api/project_relations_export.md#export-status)
 and [groups](../../../api/group_relations_export.md#export-status) on the source instance.
+
+## Error: `duplicate key value violates unique constraint`
+
+You might get the following error when importing records:
+
+```plaintext
+PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint
+```
+
+This error occurs when a Sidekiq worker processing the import
+restarts due to high CPU or memory usage during import.
+To configure workers for imports, see
+[Sidekiq configuration](../../project/import/_index.md#sidekiq-configuration).

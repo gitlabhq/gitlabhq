@@ -24,7 +24,7 @@ RSpec.describe 'Import/Export Project configuration', feature_category: :importe
     context "where relation #{params[:relation_path]}" do
       it 'does not have prohibited keys' do
         relation_class = relation_class_for_name(relation_name)
-        relation_attributes = relation_class.new.attributes.keys - relation_class.attr_encrypted_attributes.keys.map(&:to_s)
+        relation_attributes = relation_class.new.attributes.keys - relation_class.attr_encrypted_encrypted_attributes.keys.map(&:to_s)
         current_attributes = parsed_attributes(relation_name, relation_attributes)
         prohibited_keys = current_attributes.select do |attribute|
           prohibited_key?(attribute) || !relation_class.attribute_method?(attribute)

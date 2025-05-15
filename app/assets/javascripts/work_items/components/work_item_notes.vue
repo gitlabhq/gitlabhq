@@ -463,7 +463,7 @@ export default {
     },
     getDiscussionKey(discussion) {
       // discussion key is important like this since after first comment changes
-      const discussionId = discussion.notes.nodes[0].id;
+      const discussionId = discussion.id;
       return discussionId.split('/')[discussionId.split('/').length - 1];
     },
     isSystemNote(note) {
@@ -488,10 +488,7 @@ export default {
       );
     },
     isDiscussionExpandedOnLoad(discussion) {
-      return !this.isDiscussionResolved(discussion) || this.isHashTargeted(discussion);
-    },
-    isDiscussionResolved(discussion) {
-      return discussion.notes.nodes[0]?.discussion?.resolved;
+      return !discussion.resolved || this.isHashTargeted(discussion);
     },
     async fetchMoreNotes() {
       this.isLoadingMore = true;
@@ -508,14 +505,14 @@ export default {
     showDeleteNoteModal(note, discussion) {
       const isLastNote = discussion.notes.nodes.length === 1;
       this.$refs.deleteNoteModal.show();
-      this.noteToDelete = { ...note, isLastNote };
+      this.noteToDelete = { ...note, isLastNote, discussionId: discussion.id };
     },
     cancelDeletingNote() {
       this.noteToDelete = null;
     },
     async deleteNote() {
       try {
-        const { id, isLastNote, discussion } = this.noteToDelete;
+        const { id, isLastNote, discussionId } = this.noteToDelete;
         await this.$apollo.mutate({
           mutation: deleteNoteMutation,
           variables: {
@@ -525,7 +522,7 @@ export default {
           },
           update(cache) {
             const deletedObject = isLastNote
-              ? { __typename: TYPENAME_DISCUSSION, id: discussion.id }
+              ? { __typename: TYPENAME_DISCUSSION, id: discussionId }
               : { __typename: TYPENAME_NOTE, id };
             cache.modify({
               id: cache.identify(deletedObject),
@@ -590,7 +587,7 @@ export default {
             <work-item-discussion
               :key="getDiscussionKey(discussion)"
               ref="workItemDiscussion"
-              :discussion="discussion.notes.nodes"
+              :discussion="discussion"
               :full-path="fullPath"
               :work-item-id="workItemId"
               :work-item-iid="workItemIid"

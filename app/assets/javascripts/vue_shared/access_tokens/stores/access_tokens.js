@@ -23,13 +23,12 @@ import { serializeParams, update2WeekFromNow, updateUrlWithQueryParams } from '.
  *
  * @param {Object} options
  * @param {string} options.url
- * @param {string|number} options.id
  * @param {Object<string, string|number>} options.params
  * @param {string} options.sort
  */
-const fetchTokens = async ({ url, id, params, sort }) => {
+const fetchTokens = async ({ url, params, sort }) => {
   const { data, headers } = await axios.get(url, {
-    params: { user_id: id, sort, ...params },
+    params: { sort, ...params },
   });
   const { perPage, total } = parseIntPagination(normalizeHeaders(headers));
 
@@ -105,7 +104,6 @@ export const useAccessTokens = defineStore('accessTokens', {
             const url = Api.buildUrl(this.urlShow.replace(':id', this.id));
             const { total } = await fetchTokens({
               url,
-              id: this.id,
               params,
               sort: this.sort,
             });
@@ -136,7 +134,6 @@ export const useAccessTokens = defineStore('accessTokens', {
         updateUrlWithQueryParams({ params: this.params, sort: this.sort });
         const { data, perPage, total } = await fetchTokens({
           url,
-          id: this.id,
           params: this.params,
           sort: this.sort,
         });

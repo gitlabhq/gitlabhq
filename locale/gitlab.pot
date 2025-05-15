@@ -1191,6 +1191,9 @@ msgid_plural "%{no_of_days} days"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{noteable_type} is not supported"
+msgstr ""
+
 msgid "%{numOfSteps} steps across %{numOfFiles} files"
 msgstr ""
 
@@ -66855,7 +66858,7 @@ msgstr ""
 msgid "View all"
 msgstr ""
 
-msgid "View all (one more item)"
+msgid "View all (%d more item)"
 msgid_plural "View all (%d more items)"
 msgstr[0] ""
 msgstr[1] ""

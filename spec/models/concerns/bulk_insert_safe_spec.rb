@@ -172,9 +172,19 @@ RSpec.describe BulkInsertSafe, feature_category: :database do
 
         bulk_insert_item_class.bulk_insert!(items)
 
-        attribute_names = bulk_insert_item_class.attribute_names - %w[id created_at updated_at]
-        expect(bulk_insert_item_class.last(items.size).pluck(*attribute_names)).to eq(
-          items.pluck(*attribute_names))
+        encrypted_attribute_names = bulk_insert_item_class.attr_encrypted_encrypted_attributes.keys.map(&:to_s)
+        attribute_names = bulk_insert_item_class.attribute_names - %w[id created_at updated_at] - encrypted_attribute_names
+
+        decrypted_values = bulk_insert_item_class.last(items.size).map do |record|
+          encrypted_attribute_names.index_with { |attr| record.public_send(attr) }
+        end
+
+        expected_values = items.map do |record|
+          encrypted_attribute_names.index_with { |attr| record.public_send(attr) }
+        end
+
+        expect(bulk_insert_item_class.last(items.size).pluck(*attribute_names)).to eq(items.pluck(*attribute_names))
+        expect(decrypted_values).to eq(expected_values)
       end
 
       it 'rolls back the transaction when any item is invalid' do

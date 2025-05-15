@@ -54,7 +54,7 @@ RSpec.describe Authn::AgnosticTokenIdentifier, feature_category: :system_access 
       end
 
       context 'with custom instance prefix' do
-        let_it_be(:instance_prefix) { 'instance-prefix-' }
+        let_it_be(:instance_prefix) { 'instanceprefix' }
 
         before do
           stub_application_setting(instance_token_prefix: instance_prefix)

@@ -153,7 +153,7 @@ To create a project that uses SHA-256 hashing:
 
 ### Why SHA-256?
 
-By default, Git uses the SHA-1 [hashing algorithm](https://handbook.gitlab.com/handbook/security/cryptographic-standard/#algorithmic-standards)
+By default, Git uses the SHA-1 hashing algorithm
 to generate a 40-character
 ID for objects such as commits, blobs, trees, and tags. The SHA-1 algorithm was proven to be insecure when
 [Google was able to produce a hash collision](https://security.googleblog.com/2017/02/announcing-first-sha1-collision.html).
