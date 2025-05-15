@@ -22,25 +22,25 @@ the user's identity, validity period, and permissions.
 
 The benefits of SSH certificate authentication are:
 
-- **Centralized access control**: You can manage access through a central CA, instead of individual
+- Centralized access control: You can manage access through a central CA, instead of individual
   user-managed SSH keys.
-- **Enhanced security**: SSH certificates are more secure than traditional SSH keys.
-- **Time-limited access**: You can set certificates to expire after a specific period.
-- **Simplified credential management**: Organizations can maintain a list of approved
+- Enhanced security: SSH certificates are more secure than traditional SSH keys.
+- Time-limited access: You can set certificates to expire after a specific period.
+- Simplified credential management: Organizations can maintain a list of approved
   SSH certificate credentials for repository access.
-- **Independent from user-managed credentials**: Access is controlled with group-managed
+- Independent from user-managed credentials: Access is controlled with group-managed
   certificates, and not users' personal public SSH keys.
 
 ## SSH certificates and SSH keys
 
 The following table compares SSH certificates and SSH keys:
 
-| Feature                   | SSH certificates                      | SSH keys |
-| ------------------------- | ------------------------------------- | -------- |
-| **Access control**        | Centralized through group-managed CA. | Distributed across individual user accounts. |
-| **Expiration**            | Built-in expiration.                  | No built-in expiration. |
-| **Credential management** | Managed by group Owners.              | Managed by individual users. |
-| **Setup complexity**      | More complex initial setup.           | Simpler initial setup. |
+| Feature               | SSH certificates                      | SSH keys |
+| --------------------- | ------------------------------------- | -------- |
+| Access control        | Centralized through group-managed CA. | Distributed across individual user accounts. |
+| Expiration            | Built-in expiration.                  | No built-in expiration. |
+| Credential management | Managed by group Owners.              | Managed by individual users. |
+| Setup complexity      | More complex initial setup.           | Simpler initial setup. |
 
 ## Authentication flow
 

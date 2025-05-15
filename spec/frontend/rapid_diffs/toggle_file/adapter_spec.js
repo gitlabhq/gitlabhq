@@ -14,6 +14,19 @@ describe('Diff File Toggle Behavior', () => {
     return elements[element]?.();
   }
 
+  const delegatedClick = (element) => {
+    let event;
+    element.addEventListener(
+      'click',
+      (e) => {
+        event = e;
+      },
+      { once: true },
+    );
+    element.click();
+    get('file').onClick(event);
+  };
+
   const mount = () => {
     const viewer = 'any';
     document.body.innerHTML = `
@@ -28,7 +41,11 @@ describe('Diff File Toggle Behavior', () => {
         </div>
       </diff-file>
     `;
-    get('file').mount({ adapterConfig: { [viewer]: [ToggleFileAdapter] }, appData: {} });
+    get('file').mount({
+      adapterConfig: { [viewer]: [ToggleFileAdapter] },
+      appData: {},
+      unobserve: jest.fn(),
+    });
   };
 
   beforeAll(() => {
@@ -48,7 +65,7 @@ describe('Diff File Toggle Behavior', () => {
     const hide = get('hide');
     const body = get('body');
 
-    hide.click();
+    delegatedClick(hide);
 
     expect(body.hidden).toEqual(true);
     expect(document.activeElement).toEqual(show);
@@ -72,12 +89,12 @@ describe('Diff File Toggle Behavior', () => {
       tick = () => cb();
     });
 
-    get('hide').click();
+    delegatedClick(get('hide'));
     expect(get('show').style.transition).toBe('none');
     tick();
     expect(get('show').style.transition).toBe('');
 
-    get('show').click();
+    delegatedClick(get('show'));
     expect(get('hide').style.transition).toBe('none');
     tick();
     expect(get('hide').style.transition).toBe('');

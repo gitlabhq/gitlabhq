@@ -7,7 +7,6 @@
 - add_page_specific_style 'page_bundles/xterm'
 - add_page_specific_style 'page_bundles/log_viewer'
 
-%h1.gl-text-size-h-display.gl-m-3
-  = @build.name
+= render ::Layouts::PageHeadingComponent.new(@build.name)
 
 #js-job-log-viewer{ data: { raw_log_path: raw_project_job_path(@project, @build, params: { proxy: true }) } }

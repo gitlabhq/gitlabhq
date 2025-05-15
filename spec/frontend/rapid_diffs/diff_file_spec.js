@@ -1,21 +1,5 @@
 import { DiffFile } from '~/rapid_diffs/diff_file';
-import IS from '~/rapid_diffs/intersection_observer';
 import { DIFF_FILE_MOUNTED } from '~/rapid_diffs/dom_events';
-
-// We have to use var here because jest hoists mock calls, so let would be uninitialized at this point
-// eslint-disable-next-line no-var
-var trigger;
-// We can't apply useMockIntersectionObserver here because IS is called immediately when DiffFile is imported
-jest.mock('~/rapid_diffs/intersection_observer', () => {
-  class Observer {
-    constructor(callback) {
-      trigger = callback;
-    }
-  }
-  Observer.prototype.observe = jest.fn();
-  Observer.prototype.unobserve = jest.fn();
-  return Observer;
-});
 
 describe('DiffFile Web Component', () => {
   const fileData = JSON.stringify({ viewer: 'current', custom: 'bar' });
@@ -32,8 +16,11 @@ describe('DiffFile Web Component', () => {
   const getDiffElement = () => document.querySelector('[id=foo]');
   const getWebComponentElement = () => document.querySelector('diff-file');
 
-  const triggerVisibility = (isIntersecting) =>
-    trigger([{ isIntersecting, target: getWebComponentElement() }]);
+  const triggerVisibility = (isIntersecting) => {
+    const target = getWebComponentElement();
+    // eslint-disable-next-line no-unused-expressions
+    isIntersecting ? target.onVisible({}) : target.onInvisible({});
+  };
 
   const createDefaultAdapter = (customAdapter) => {
     defaultAdapter = customAdapter;
@@ -43,7 +30,22 @@ describe('DiffFile Web Component', () => {
     app = {
       adapterConfig,
       appData,
+      observe: jest.fn(),
+      unobserve: jest.fn(),
     };
+  };
+
+  const delegatedClick = (element) => {
+    let event;
+    element.addEventListener(
+      'click',
+      (e) => {
+        event = e;
+      },
+      { once: true },
+    );
+    element.click();
+    getWebComponentElement().onClick(event);
   };
 
   const mount = () => {
@@ -81,7 +83,7 @@ describe('DiffFile Web Component', () => {
 
   it('observes diff element', () => {
     mount();
-    expect(IS.prototype.observe).toHaveBeenCalledWith(getWebComponentElement());
+    expect(app.observe).toHaveBeenCalledWith(getWebComponentElement());
   });
 
   it('triggers mounted event', () => {
@@ -93,6 +95,13 @@ describe('DiffFile Web Component', () => {
     expect(defaultAdapter.mounted).toHaveBeenCalled();
     expect(defaultAdapter.mounted.mock.instances[0]).toStrictEqual(getContext());
     expect(emitted).toBe(true);
+  });
+
+  it('properly unmounts', () => {
+    mount();
+    const element = getWebComponentElement();
+    document.body.innerHTML = '';
+    expect(app.unobserve).toHaveBeenCalledWith(element);
   });
 
   it('#selectFile', () => {
@@ -109,7 +118,7 @@ describe('DiffFile Web Component', () => {
 
     it('handles all clicks', () => {
       triggerVisibility(true);
-      getDiffElement().click();
+      delegatedClick(getDiffElement());
       expect(defaultAdapter.click).toHaveBeenCalledWith(expect.any(MouseEvent));
       expect(defaultAdapter.click.mock.instances[0]).toStrictEqual(getContext());
     });
@@ -117,7 +126,7 @@ describe('DiffFile Web Component', () => {
     it('handles specific clicks', () => {
       triggerVisibility(true);
       const clickTarget = getDiffElement().querySelector('[data-click=foo]');
-      clickTarget.click();
+      delegatedClick(clickTarget);
       expect(defaultAdapter.clicks.foo).toHaveBeenCalledWith(expect.any(MouseEvent), clickTarget);
       expect(defaultAdapter.clicks.foo.mock.instances[0]).toStrictEqual(getContext());
     });

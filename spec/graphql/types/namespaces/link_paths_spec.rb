@@ -14,7 +14,7 @@ RSpec.describe Types::Namespaces::LinkPaths, feature_category: :shared do
 
   with_them do
     describe ".resolve_type" do
-      it 'knows the correct type for objects' do
+      it "knows the correct type for objects" do
         namespace = namespace_class.new
 
         expect(described_class.resolve_type(namespace, {}))
@@ -22,19 +22,19 @@ RSpec.describe Types::Namespaces::LinkPaths, feature_category: :shared do
       end
     end
 
-    describe '.orphan_types' do
-      it 'includes the type' do
+    describe ".orphan_types" do
+      it "includes the type" do
         expect(described_class.orphan_types).to include(namespace_type_name)
       end
     end
   end
 
-  it 'raises an error for an unknown type' do
+  it "raises an error for an unknown type" do
     namespace = build(:project)
 
     expect { described_class.resolve_type(namespace, {}) }
       .to raise_error("Unknown GraphQL type for namespace type #{namespace.class}")
   end
 
-  it_behaves_like 'expose all link paths fields for the namespace'
+  it_behaves_like "expose all link paths fields for the namespace"
 end

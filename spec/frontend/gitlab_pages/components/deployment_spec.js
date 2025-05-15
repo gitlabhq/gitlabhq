@@ -48,6 +48,8 @@ describe('PagesDeployment', () => {
     wrapper.findByTestId('deployment-restore').trigger('click');
   };
 
+  const findErrorBadge = () => wrapper.findByTestId('error-badge');
+
   describe.each`
     description                 | deployment               | isPrimary
     ${'Primary deployment'}     | ${primaryDeployment}     | ${true}
@@ -95,10 +97,6 @@ describe('PagesDeployment', () => {
       });
 
       if (isPrimary) {
-        it('highlights the deployment', () => {
-          expect(wrapper.classes()).toContain('gl-bg-blue-50');
-        });
-
         it('shows "Primary deployment" as deployment type label for screen readers', () => {
           expect(wrapper.findByTestId('deployment-type').text()).toContain('Primary deployment');
         });
@@ -202,8 +200,8 @@ describe('PagesDeployment', () => {
         ]);
       });
 
-      it('changes its appearance to include a red border', () => {
-        expect(wrapper.classes()).toContain('gl-border-red-500');
+      it('shows error badge', () => {
+        expect(findErrorBadge().exists()).toBe(true);
       });
     },
   );

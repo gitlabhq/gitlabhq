@@ -1,0 +1,56 @@
+# frozen_string_literal: true
+
+def deprecated_design_token_patterns
+  [
+    # Match SCSS variables like $white, $black
+    /\$(black|white)\b/,
+
+    # Match SCSS variables like $blue-500, $gray-100, etc.
+    /\$(blue|gray|green|orange|purple|red|brand|data-viz|theme|t-white-a|t-gray-a)[a-zA-Z0-9_\-]*\b/,
+
+    # Match Tailwind/utility classes like gl-bg-black, gl-text-white
+    /gl-(bg|border|fill|text)-(black|white)\b/,
+
+    # rubocop:disable Layout/LineLength -- cannot split regex
+    # Match Tailwind/utility classes like gl-bg-blue-500, gl-text-red-100, etc.
+    /gl-(bg|border|fill|text)-(blue|gray|green|orange|purple|red|brand|data-viz|theme|t-white-a|t-gray-a)[a-zA-Z0-9_\-]*\b/
+    # rubocop:enable Layout/LineLength
+  ]
+end
+
+def get_files_with_deprecated_tokens(files)
+  files.each_with_object({}) do |file, result|
+    next unless file.end_with?('.scss', '.css', '.vue', '.js', '.haml')
+
+    content = File.read(file)
+
+    matches = deprecated_design_token_patterns.each_with_object(Set.new) do |pattern, matches|
+      file_matches = content.scan(pattern)
+      matches.merge(file_matches.flatten.compact) unless file_matches.empty?
+    end
+
+    result[file] = matches.to_a unless matches.empty?
+  end
+end
+
+files_with_deprecated_tokens = get_files_with_deprecated_tokens(helper.all_changed_files)
+
+return if files_with_deprecated_tokens.empty?
+
+# rubocop:disable Layout/LineLength -- otherwise create unnecessary newlines
+warn 'This merge request changed files with deprecated design tokens. Please consider replacing them with semantic design tokens.'
+# rubocop:enable Layout/LineLength
+
+return unless helper.ci?
+
+markdown(<<~MARKDOWN)
+  ## Deprecated design tokens
+
+  The following files use deprecated design tokens. Please use semantic design tokens instead:
+
+  #{files_with_deprecated_tokens.map do |file, tokens|
+    "* `#{file}` contains deprecated tokens: #{tokens.map { |token| "`#{token}`" }.join(', ')}"
+  end.join("\n")}
+
+  See https://design.gitlab.com/product-foundations/design-tokens-technical-implementation for more information on semantic design tokens.
+MARKDOWN

@@ -4,9 +4,7 @@
 .top-area
   .row
     .col-sm-6
-      %h1.page-title.gl-text-size-h-display
-        = _("Terminal for environment")
-        = @environment.name
+      = render ::Layouts::PageHeadingComponent.new("#{_("Terminal for environment")} #{@environment.name}")
 
     .col-sm-6
       .nav-controls

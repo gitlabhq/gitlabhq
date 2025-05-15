@@ -12,6 +12,7 @@ import { useDiffsView } from '~/rapid_diffs/stores/diffs_view';
 import { fixWebComponentsStreamingOnSafari } from '~/rapid_diffs/app/safari_fix';
 import { DIFF_FILE_MOUNTED } from '~/rapid_diffs/dom_events';
 import { disableContentVisibilityOnOlderChrome } from '~/rapid_diffs/app/chrome_fix';
+import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
 
 jest.mock('~/lib/graphql');
 jest.mock('~/awards_handler');
@@ -23,6 +24,8 @@ jest.mock('~/rapid_diffs/app/safari_fix');
 jest.mock('~/rapid_diffs/app/chrome_fix');
 
 describe('Rapid Diffs App', () => {
+  const { trigger } = useMockIntersectionObserver();
+
   let app;
 
   const appData = {
@@ -33,6 +36,7 @@ describe('Rapid Diffs App', () => {
     shouldSortMetadataFiles: true,
   };
   const getHiddenFilesWarningTarget = () => document.querySelector('[data-hidden-files-warning]');
+  const getDiffFile = () => document.querySelector('diff-file');
 
   const createApp = (data = {}) => {
     setHTMLFixture(
@@ -41,6 +45,9 @@ describe('Rapid Diffs App', () => {
           data-rapid-diffs
           data-app-data='${JSON.stringify({ ...appData, ...data })}'
         >
+          <diff-file>
+            <button>Click me!</button>
+          </diff-file>
           <div data-view-settings></div>
           <div data-file-browser></div>
           <div data-file-browser-toggle></div>
@@ -140,5 +147,28 @@ describe('Rapid Diffs App', () => {
     createApp({ shouldSortMetadataFiles: false });
     app.init();
     expect(app.appData.shouldSortMetadataFiles).toBe(false);
+  });
+
+  it('delegates clicks', () => {
+    const onClick = jest.fn();
+    createApp();
+    getDiffFile().onClick = onClick;
+    app.init();
+    document.querySelector('button').click();
+    expect(onClick).toHaveBeenCalled();
+  });
+
+  it('delegates visibility', () => {
+    const onVisible = jest.fn();
+    const onInvisible = jest.fn();
+    createApp();
+    getDiffFile().onVisible = onVisible;
+    getDiffFile().onInvisible = onInvisible;
+    app.init();
+    app.observe(getDiffFile());
+    trigger(getDiffFile(), { entry: { isIntersecting: true, target: getDiffFile() } });
+    expect(onVisible).toHaveBeenCalled();
+    trigger(getDiffFile(), { entry: { isIntersecting: false, target: getDiffFile() } });
+    expect(onInvisible).toHaveBeenCalled();
   });
 });

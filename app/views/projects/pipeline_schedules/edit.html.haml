@@ -2,7 +2,6 @@
 - breadcrumb_title "##{@schedule.id}"
 - page_title _("Edit"), @schedule.description, _("Pipeline Schedule")
 
-%h1.page-title.gl-text-size-h-display
-  = _("Edit Scheduled Pipeline")
+= render ::Layouts::PageHeadingComponent.new(_("Edit scheduled pipeline"))
 
 #pipeline-schedules-form-edit{ data: js_pipeline_schedules_form_data(@project, @schedule) }

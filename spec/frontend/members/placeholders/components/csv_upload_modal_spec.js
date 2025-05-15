@@ -29,21 +29,23 @@ describe('CsvUploadModal', () => {
   const findUploadDropzone = () => wrapper.findComponent(UploadDropzone);
   const findUploadErrorAlert = () => wrapper.findByTestId('upload-error');
   const findGlModal = () => wrapper.findComponent(GlModal);
+  const findBypassConfirmationMessage = () => wrapper.findByTestId('bypass-confirmation-message');
 
-  function createComponent() {
-    return shallowMountExtended(CsvUploadModal, {
+  const createComponent = ({ provide = {} } = {}) => {
+    wrapper = shallowMountExtended(CsvUploadModal, {
       propsData: {
         modalId: 'csv-upload-modal',
       },
       provide: {
         ...defaultInjectedAttributes,
+        ...provide,
       },
     });
-  }
+  };
 
   beforeEach(() => {
     mockAxios = new MockAdapter(axios);
-    wrapper = createComponent();
+    createComponent();
   });
 
   afterEach(() => {
@@ -55,6 +57,22 @@ describe('CsvUploadModal', () => {
 
     expect(downloadLink.exists()).toBe(true);
     expect(downloadLink.attributes('href')).toBe(defaultInjectedAttributes.reassignmentCsvPath);
+  });
+
+  describe('allowBypassPlaceholderConfirmation', () => {
+    it('does not render bypass confirmation message when false', () => {
+      expect(findBypassConfirmationMessage().exists()).toBe(false);
+    });
+
+    it('renders bypass confirmation message message when true', () => {
+      createComponent({
+        provide: {
+          allowBypassPlaceholderConfirmation: true,
+        },
+      });
+
+      expect(findBypassConfirmationMessage().exists()).toBe(true);
+    });
   });
 
   describe('CSV upload', () => {

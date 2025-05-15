@@ -4,10 +4,28 @@ module Types
   module Namespaces
     module LinkPaths
       include ::Types::BaseInterface
-      # required for the new_comment_template_paths
-      include ::IssuablesHelper
 
       graphql_name 'NamespacesLinkPaths'
+
+      # rubocop: disable Graphql/AuthorizeTypes, GraphQL/GraphqlName -- helper class
+      class UrlHelpers
+        include GitlabRoutingHelper
+        include Gitlab::Routing
+
+        # required for the new_comment_template_paths
+        include ::IssuablesHelper
+
+        # required for the new_comment_template_paths
+        public :new_comment_template_paths
+
+        attr_reader :current_user
+
+        def initialize(current_user)
+          @current_user = current_user
+        end
+      end
+      private_constant :UrlHelpers
+      # rubocop: enable Graphql/AuthorizeTypes, GraphQL/GraphqlName
 
       TYPE_MAPPINGS = {
         ::Group => ::Types::Namespaces::LinkPaths::GroupNamespaceLinksType,
@@ -79,7 +97,7 @@ module Types
       private
 
       def url_helpers
-        Gitlab::Routing.url_helpers
+        @url_helpers ||= UrlHelpers.new(current_user)
       end
     end
   end

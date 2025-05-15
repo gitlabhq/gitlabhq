@@ -1,7 +1,7 @@
 <script>
 import produce from 'immer';
 import { debounce, isEmpty, isNull } from 'lodash';
-import { GlAvatarLabeled, GlButton, GlCollapsibleListbox } from '@gitlab/ui';
+import { GlAvatarLabeled, GlButton, GlCollapsibleListbox, GlModal, GlSprintf } from '@gitlab/ui';
 import {
   getFirstPropertyValue,
   normalizeHeaders,
@@ -36,6 +36,8 @@ export default {
     GlAvatarLabeled,
     GlButton,
     GlCollapsibleListbox,
+    GlModal,
+    GlSprintf,
   },
   inject: {
     group: {
@@ -45,6 +47,9 @@ export default {
       default: false,
     },
     allowInactivePlaceholderReassignment: {
+      default: false,
+    },
+    allowBypassPlaceholderConfirmation: {
       default: false,
     },
   },
@@ -352,39 +357,62 @@ export default {
           this.isCancelLoading = false;
         });
     },
+    confirmUser() {
+      const hasSelectedUserToReassign = Boolean(this.selectedUserToReassign.id);
+      this.isConfirmLoading = true;
+      this.$apollo
+        .mutate({
+          mutation: hasSelectedUserToReassign
+            ? importSourceUserReassignMutation
+            : importSourceUserKeepAsPlaceholderMutation,
+          variables: {
+            id: this.sourceUser.id,
+            ...(hasSelectedUserToReassign ? { userId: this.selectedUserToReassign.id } : {}),
+          },
+          refetchQueries: [hasSelectedUserToReassign ? {} : importSourceUsersQuery],
+        })
+        .then(({ data }) => {
+          const { errors } = getFirstPropertyValue(data);
+          if (errors?.length) {
+            createAlert({ message: errors.join() });
+          } else if (!hasSelectedUserToReassign) {
+            this.$emit('confirm');
+          }
+        })
+        .catch(() => {
+          createAlert({
+            message: s__('UserMapping|Placeholder user could not be reassigned.'),
+          });
+        })
+        .finally(() => {
+          this.isConfirmLoading = false;
+        });
+    },
     onConfirm() {
       this.isValidated = true;
-      if (!this.userSelectInvalid) {
-        const hasSelectedUserToReassign = Boolean(this.selectedUserToReassign.id);
-        this.isConfirmLoading = true;
-        this.$apollo
-          .mutate({
-            mutation: hasSelectedUserToReassign
-              ? importSourceUserReassignMutation
-              : importSourceUserKeepAsPlaceholderMutation,
-            variables: {
-              id: this.sourceUser.id,
-              ...(hasSelectedUserToReassign ? { userId: this.selectedUserToReassign.id } : {}),
-            },
-            refetchQueries: [hasSelectedUserToReassign ? {} : importSourceUsersQuery],
-          })
-          .then(({ data }) => {
-            const { errors } = getFirstPropertyValue(data);
-            if (errors?.length) {
-              createAlert({ message: errors.join() });
-            } else if (!hasSelectedUserToReassign) {
-              this.$emit('confirm');
-            }
-          })
-          .catch(() => {
-            createAlert({
-              message: s__('UserMapping|Placeholder user could not be reassigned.'),
-            });
-          })
-          .finally(() => {
-            this.isConfirmLoading = false;
-          });
+
+      if (this.userSelectInvalid) {
+        return;
       }
+
+      if (
+        this.allowBypassPlaceholderConfirmation &&
+        !this.dontReassignSelected &&
+        this.$refs.confirmModal
+      ) {
+        this.$refs.confirmModal.show();
+      } else {
+        this.confirmUser();
+      }
+    },
+  },
+
+  confirmModal: {
+    actionPrimary: {
+      text: s__('UserMapping|Confirm reassignment'),
+    },
+    actionSecondary: {
+      text: __('Cancel'),
     },
   },
 };
@@ -464,13 +492,36 @@ export default {
         >{{ __('Cancel') }}</gl-button
       >
     </template>
-    <gl-button
-      v-else
-      variant="confirm"
-      :loading="isConfirmLoading"
-      data-testid="confirm-button"
-      @click="onConfirm"
-      >{{ confirmText }}</gl-button
-    >
+    <template v-else>
+      <gl-button
+        variant="confirm"
+        :loading="isConfirmLoading"
+        data-testid="confirm-button"
+        @click="onConfirm"
+        >{{ confirmText }}</gl-button
+      >
+      <gl-modal
+        v-if="allowBypassPlaceholderConfirmation"
+        ref="confirmModal"
+        modal-id="placeholder-reassignment-confirm-modal"
+        data-testid="confirm-modal"
+        :title="s__('UserMapping|Confirm reassignment')"
+        :action-primary="$options.confirmModal.actionPrimary"
+        :action-secondary="$options.confirmModal.actionSecondary"
+        @primary="confirmUser"
+      >
+        <gl-sprintf
+          :message="
+            s__(
+              'UserMapping|The %{strongStart}Skip confirmation when reassigning placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately.',
+            )
+          "
+        >
+          <template #strong="{ content }">
+            <strong>{{ content }}</strong>
+          </template>
+        </gl-sprintf>
+      </gl-modal>
+    </template>
   </div>
 </template>

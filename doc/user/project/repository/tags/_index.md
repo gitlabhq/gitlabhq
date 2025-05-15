@@ -16,9 +16,9 @@ title: Tags
 In Git, a tag marks an important point in a repository's history.
 Git supports two types of tags:
 
-- **Lightweight tags** point to specific commits, and contain no other information.
+- Lightweight tags point to specific commits, and contain no other information.
   Also known as soft tags. Create or remove them as needed.
-- **Annotated tags** contain metadata, can be signed for verification purposes,
+- Annotated tags contain metadata, can be signed for verification purposes,
   and can't be changed.
 
 The creation or deletion of a tag can be used as a trigger for automation, including:

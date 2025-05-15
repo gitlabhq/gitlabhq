@@ -31,7 +31,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
       it 'edits the pipeline' do
         find_by_testid('edit-pipeline-schedule-btn').click
 
-        expect(page).to have_content(s_('PipelineSchedules|Edit Scheduled Pipeline'))
+        expect(page).to have_content(s_('PipelineSchedules|Edit scheduled pipeline'))
         expect(page).to have_button(s_('PipelineSchedules|Save changes'))
       end
 

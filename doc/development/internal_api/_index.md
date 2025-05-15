@@ -48,9 +48,9 @@ Called by [Gitaly](https://gitlab.com/gitlab-org/gitaly) and
 [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell) to check access to a
 repository.
 
-- **When called from GitLab Shell**: No changes are passed, and the internal
+- When called from GitLab Shell: No changes are passed, and the internal
   API replies with the information needed to pass the request on to Gitaly.
-- **When called from Gitaly in a `pre-receive` hook**: The changes are passed
+- When called from Gitaly in a `pre-receive` hook: The changes are passed
   and validated to determine if the push is allowed.
 
 Calls are limited to 50 seconds each.
@@ -285,7 +285,7 @@ recovery codes based on their SSH key.
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
 | `key_id`  | integer | no | The ID of the SSH key used as found in the authorized-keys file or through the `/authorized_keys` check |
-| `user_id` | integer | no | **Deprecated** User ID for which to generate new recovery codes |
+| `user_id` | integer | no | Deprecated. User ID for which to generate new recovery codes |
 
 ```plaintext
 GET /internal/two_factor_recovery_codes
@@ -854,7 +854,7 @@ Example response:
 {{< /details >}}
 
 The group SCIM API partially implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644). This API provides the `/groups/:group_path/Users` and `/groups/:group_path/Users/:id` endpoints. The base URL is `<http|https>://<GitLab host>/api/scim/v2`. Because this API is for
-**system** use for SCIM provider integration, it is subject to change without notice.
+system use for SCIM provider integration, it is subject to change without notice.
 
 To use this API, enable [Group SSO](../../user/group/saml_sso/_index.md) for the group.
 This API is only in use where [SCIM for Group SSO](../../user/group/saml_sso/scim_setup.md) is enabled. It's a prerequisite to the creation of SCIM identities.
@@ -1123,7 +1123,7 @@ Returns an empty response with a `204` status code if successful.
 {{< /history >}}
 
 The instance SCIM API partially implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644). This API provides the `/application/Users` and `/application/Users/:id` endpoints. The base URL is `<http|https>://<GitLab host>/api/scim/v2`. Because this API is for
-**system** use for SCIM provider integration, it is subject to change without notice.
+system use for SCIM provider integration, it is subject to change without notice.
 
 To use this API, enable [SAML SSO](../../integration/saml.md) for the instance.
 

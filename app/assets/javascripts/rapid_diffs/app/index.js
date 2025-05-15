@@ -20,10 +20,15 @@ import { disableContentVisibilityOnOlderChrome } from '~/rapid_diffs/app/chrome_
 export class RapidDiffsFacade {
   root;
   appData;
+  streamRemainingDiffs;
+  reloadDiffs;
+  intersectionObserver;
   adapterConfig = VIEWER_ADAPTERS;
 
+  #DiffFileImplementation;
+
   constructor({ DiffFileImplementation = DiffFile } = {}) {
-    this.DiffFileImplementation = DiffFileImplementation;
+    this.#DiffFileImplementation = DiffFileImplementation;
     this.root = document.querySelector('[data-rapid-diffs]');
     this.appData = camelizeKeys(JSON.parse(this.root.dataset.appData));
     this.streamRemainingDiffs = this.#streamRemainingDiffs.bind(this);
@@ -31,10 +36,36 @@ export class RapidDiffsFacade {
   }
 
   init() {
+    this.#delegateEvents();
     this.#registerCustomElements();
     this.#initHeader();
     this.#initSidebar();
     this.#initDiffsList();
+  }
+
+  observe(instance) {
+    this.intersectionObserver.observe(instance);
+  }
+
+  unobserve(instance) {
+    this.intersectionObserver.unobserve(instance);
+  }
+
+  #delegateEvents() {
+    this.root.addEventListener('click', (event) => {
+      const diffFile = event.target.closest('diff-file');
+      if (!diffFile) return;
+      diffFile.onClick(event);
+    });
+    this.intersectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.onVisible(entry);
+        } else {
+          entry.target.onInvisible(entry);
+        }
+      });
+    });
   }
 
   #streamRemainingDiffs() {
@@ -52,10 +83,10 @@ export class RapidDiffsFacade {
   }
 
   #registerCustomElements() {
-    window.customElements.define('diff-file', this.DiffFileImplementation);
+    window.customElements.define('diff-file', this.#DiffFileImplementation);
     window.customElements.define('diff-file-mounted', this.#DiffFileMounted);
     window.customElements.define('streaming-error', StreamingError);
-    fixWebComponentsStreamingOnSafari(this.root, this.DiffFileImplementation);
+    fixWebComponentsStreamingOnSafari(this.root, this.#DiffFileImplementation);
   }
 
   get #DiffFileMounted() {

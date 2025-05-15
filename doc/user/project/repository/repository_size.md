@@ -18,7 +18,7 @@ It can differ slightly from one instance to another due to compression, housekee
 
 ## Size calculation
 
-The **Project overview** page shows the size of all files in the repository, including repository files,
+The project overview page shows the size of all files in the repository, including repository files,
 artifacts, and LFS. This size is updated every 15 minutes.
 
 The size of a repository is determined by computing the accumulated size of all files in the repository.

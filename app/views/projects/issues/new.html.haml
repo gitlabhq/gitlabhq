@@ -24,6 +24,5 @@
 - if use_work_item
   #js-work-items{ data: work_items_data(@project, current_user) }
 - else
-  .page-title-holder
-    %h1.page-title.gl-text-size-h-display= _("New Issue")
+  = render ::Layouts::PageHeadingComponent.new(_("New issue"))
   = render "form"

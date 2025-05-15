@@ -77,7 +77,7 @@ For GitLab.com push size limits, see [accounts and limit settings](../../user/gi
 {{< alert type="note" >}}
 
 When you [add files to a repository](../../user/project/repository/web_editor.md#create-a-file)
-through the web UI, the maximum **attachment** size is the limiting factor. This happens
+through the web UI, the maximum attachment size is the limiting factor. This happens
 because the web server
 must receive the file before GitLab can generate the commit.
 Use [Git LFS](../../topics/git/lfs/_index.md) to add large files to a repository.
@@ -204,7 +204,7 @@ When the session duration is met, the session ends and the user is signed out ev
 
 After a session ends, a window prompts the user to sign in again.
 
-### Turn **Remember me** on or off
+### Turn Remember me on or off
 
 {{< history >}}
 

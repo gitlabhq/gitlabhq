@@ -1,10 +1,6 @@
 - add_to_breadcrumbs _('Milestones'), project_milestones_path(@project)
 - breadcrumb_title _('New milestone')
-- page_title _('New Milestone')
+- page_title _('New milestone')
 
-%h1.page-title.gl-text-size-h-display
-  = _('New Milestone')
-
-%hr
-
+= render ::Layouts::PageHeadingComponent.new(page_title)
 = render 'form'

@@ -263,7 +263,7 @@ export default {
       <gl-link
         :href="
           listTypeToggleEnabled
-            ? 'https://gitlab.com/gitlab-org/gitlab/-/issues/533850'
+            ? 'https://gitlab.com/gitlab-org/gitlab/-/issues/542823'
             : 'https://gitlab.com/gitlab-org/gitlab/-/issues/515912'
         "
       >

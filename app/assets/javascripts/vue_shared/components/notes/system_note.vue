@@ -249,7 +249,10 @@ export default {
           </template>
         </note-header>
       </div>
-      <div class="note-body gl-pb-0 gl-pl-3">
+      <div
+        class="note-body gl-pb-0 gl-pl-3"
+        :class="{ '!gl-block': showLines || shouldShowDescriptionVersion }"
+      >
         <div
           v-safe-html="note.note_html"
           :class="{

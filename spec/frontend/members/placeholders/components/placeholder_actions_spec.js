@@ -1,10 +1,11 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlCollapsibleListbox } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlModal } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { stubComponent } from 'helpers/stub_component';
 
 import PlaceholderActions from '~/members/placeholders/components/placeholder_actions.vue';
 import searchUsersQuery from '~/graphql_shared/queries/users_search_all_paginated.query.graphql';
@@ -52,6 +53,8 @@ describe('PlaceholderActions', () => {
   const $toast = {
     show: jest.fn(),
   };
+  const modalStub = { show: jest.fn() };
+  const GlModalStub = stubComponent(GlModal, { methods: modalStub });
 
   const createComponent = ({
     seachUsersQueryHandler = usersQueryHandler,
@@ -87,6 +90,9 @@ describe('PlaceholderActions', () => {
         ...provide,
       },
       mocks: { $toast },
+      stubs: {
+        GlModal: GlModalStub,
+      },
     });
   };
 
@@ -95,6 +101,7 @@ describe('PlaceholderActions', () => {
   const findNotifyButton = () => wrapper.findByTestId('notify-button');
   const findCancelButton = () => wrapper.findByTestId('cancel-button');
   const findConfirmButton = () => wrapper.findByTestId('confirm-button');
+  const findConfirmModal = () => wrapper.findByTestId('confirm-modal');
 
   it('renders listbox with infinite scroll', () => {
     createComponent();
@@ -306,6 +313,83 @@ describe('PlaceholderActions', () => {
 
     it('renders Confirm button', () => {
       expect(findConfirmButton().exists()).toBe(true);
+    });
+
+    it('does not render confirm modal', () => {
+      expect(findConfirmModal().exists()).toBe(false);
+    });
+  });
+
+  describe('when status is PENDING_REASSIGNMENT and allowBypassPlaceholderConfirmation is true', () => {
+    beforeEach(async () => {
+      createComponent({
+        props: {
+          sourceUser: {
+            ...mockSourceUsers[0],
+            status: 'PENDING_REASSIGNMENT',
+          },
+        },
+        provide: {
+          allowBypassPlaceholderConfirmation: true,
+        },
+      });
+      await waitForPromises();
+    });
+
+    it('renders confirm modal', () => {
+      expect(findConfirmModal().exists()).toBe(true);
+      expect(findConfirmModal().props('title')).toBe('Confirm reassignment');
+    });
+
+    describe('when "Do not reassign" is selected', () => {
+      beforeEach(() => {
+        findDontReassignButton().vm.$emit('click');
+      });
+
+      it('renders confirm button as "Confirm"', () => {
+        expect(findConfirmButton().text()).toBe('Confirm');
+      });
+
+      it('does not show confirm modal when confirm button is clicked', () => {
+        findConfirmButton().vm.$emit('click');
+
+        expect(modalStub.show).not.toHaveBeenCalled();
+      });
+
+      it('calls keepAsPlaceholder mutation', async () => {
+        findConfirmButton().vm.$emit('click');
+        await waitForPromises();
+
+        expect(keepAsPlaceholderMutationHandler).toHaveBeenCalledWith({
+          id: mockSourceUsers[0].id,
+        });
+      });
+    });
+
+    describe('when user is selected', () => {
+      beforeEach(() => {
+        findListbox().vm.$emit('select', mockUser1.id);
+      });
+
+      it('renders confirm button as "Reassign"', () => {
+        expect(findConfirmButton().text()).toBe('Reassign');
+      });
+
+      it('shows confirm modal when confirm button is clicked', () => {
+        findConfirmButton().vm.$emit('click');
+
+        expect(modalStub.show).toHaveBeenCalled();
+      });
+
+      it('confirms user on modal primary action', async () => {
+        findConfirmModal().vm.$emit('primary');
+        await waitForPromises();
+
+        expect(reassignMutationHandler).toHaveBeenCalledWith({
+          id: mockSourceUsers[0].id,
+          userId: mockUser1.id,
+        });
+      });
     });
   });
 

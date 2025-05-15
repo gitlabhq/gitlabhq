@@ -38,7 +38,7 @@ When adding new sections, GitLab parses these titles to determine where to place
 the new information in the file. GitLab sorts sections according to their versions,
 not their dates.
 
-Each section contains changes sorted by category (like **Features**), and the format
+Each section contains changes sorted by category (like "Features"), and the format
 of these sections can be changed. The section names derive from the values of the
 Git trailer used to include or exclude commits.
 

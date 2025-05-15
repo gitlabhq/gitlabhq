@@ -24,6 +24,7 @@ export default {
     restoreError: s__(
       'Pages|Restoring the deployment failed. The deployment might be permanently deleted.',
     ),
+    error: s__('Pages|Has error'),
     activeState: s__('Pages|Active'),
     stoppedState: s__('Pages|Stopped'),
     primaryDeploymentTitle: s__('Pages|Primary deployment'),
@@ -136,24 +137,30 @@ export default {
 </script>
 
 <template>
-  <div
-    class="gl-border gl-flex gl-flex-col gl-gap-2 gl-rounded-lg gl-p-4"
-    :class="{ 'gl-bg-blue-50': isPrimary, 'gl-border-red-500': hasError }"
-    @click="toggleDetail"
-  >
+  <li class="gl-flex gl-flex-col gl-gap-2" @click="toggleDetail">
     <div class="gl-flex gl-items-center gl-justify-start gl-gap-3">
       <div class="gl-flex gl-justify-center gl-gap-3">
         <div data-testid="deployment-state">
           <gl-badge
-            v-if="deployment.active"
-            variant="info"
+            v-if="hasError"
+            variant="danger"
             size="sm"
-            icon="status_success"
+            icon="error"
+            icon-size="sm"
+            data-testid="error-badge"
+          >
+            {{ $options.i18n.error }}
+          </gl-badge>
+          <gl-badge
+            v-if="deployment.active"
+            variant="success"
+            size="sm"
+            icon="check-circle-filled"
             icon-size="sm"
           >
             {{ $options.i18n.activeState }}
           </gl-badge>
-          <gl-badge v-else variant="neutral" size="sm" icon="status_canceled" icon-size="sm">
+          <gl-badge v-else variant="neutral" size="sm" icon="status-stopped" icon-size="sm">
             {{ $options.i18n.stoppedState }}
           </gl-badge>
         </div>
@@ -326,7 +333,7 @@ export default {
         </gl-button>
       </div>
     </div>
-  </div>
+  </li>
 </template>
 
 <style scoped></style>

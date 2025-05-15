@@ -72,7 +72,7 @@ is turned on, administrators must enter Admin Mode to create new projects.
 
 Prerequisites:
 
-- You must be an administrator, or have the **Owner** role in a project.
+- You must be an administrator, or have the Owner role in a project.
 
 To restrict project deletion to only administrators:
 
@@ -162,8 +162,8 @@ To configure delayed project deletion:
 1. Scroll to:
    - In GitLab 15.11 with `always_perform_delayed_deletion` feature flag enabled: **Deletion protection** and set the retention period to a value between `1` and `90` days.
    - In GitLab 15.1 to 15.10: **Deletion protection** and select **Keep deleted groups and projects**, then set the retention period.
-   - In GitLab 15.0 and earlier: **Default delayed project protection** and select **Enable delayed project deletion by
-     default for newly-created groups**, then set the retention period.
+   - In GitLab 15.0 and earlier: **Default delayed project protection** and select
+     **Enable delayed project deletion by default for newly-created groups**, then set the retention period.
 1. Select **Save changes**.
 
 {{< /tab >}}

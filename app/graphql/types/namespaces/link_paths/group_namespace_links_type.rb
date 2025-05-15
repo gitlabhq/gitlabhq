@@ -26,7 +26,7 @@ module Types
         end
 
         def new_comment_template
-          new_comment_template_paths(group)&.dig(0, :href)
+          url_helpers.new_comment_template_paths(group)&.dig(0, :href)
         end
       end
     end

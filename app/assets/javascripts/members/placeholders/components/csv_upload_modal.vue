@@ -17,6 +17,9 @@ export default {
     UploadDropzone,
   },
   inject: {
+    allowBypassPlaceholderConfirmation: {
+      default: false,
+    },
     reassignmentCsvPath: {
       default: '',
     },
@@ -184,11 +187,33 @@ export default {
       {{ uploadError }}
     </gl-alert>
     <gl-alert variant="warning" :dismissible="false">
-      {{
-        s__(
-          'UserMapping|After you select "Reassign", users receive an email to accept the reassignment. Accepted reassignments cannot be undone, so check all data carefully before you continue.',
-        )
-      }}
+      <div v-if="allowBypassPlaceholderConfirmation" data-testid="bypass-confirmation-message">
+        <gl-sprintf
+          :message="
+            s__(
+              'UserMapping|The %{strongStart}Skip confirmation when reassigning placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately.',
+            )
+          "
+        >
+          <template #strong="{ content }">
+            <strong>{{ content }}</strong>
+          </template>
+        </gl-sprintf>
+        <p class="gl-mb-0 gl-mt-3">
+          {{
+            s__(
+              'UserMapping|Reassignments cannot be undone, so check all data carefully before you continue.',
+            )
+          }}
+        </p>
+      </div>
+      <template v-else>
+        {{
+          s__(
+            'UserMapping|After you select "Reassign", users receive an email to accept the reassignment. Accepted reassignments cannot be undone, so check all data carefully before you continue.',
+          )
+        }}
+      </template>
     </gl-alert>
   </gl-modal>
 </template>

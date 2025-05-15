@@ -30,6 +30,7 @@ import {
   WORK_ITEM_TYPE_NAME_TEST_CASE,
   WORK_ITEM_TYPE_NAME_TICKET,
 } from '~/work_items/constants';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
@@ -124,6 +125,7 @@ describe('Create work item component', () => {
         hasIssueWeightsFeature: false,
       },
       stubs: {
+        PageHeading,
         GlSprintf,
       },
     });

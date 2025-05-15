@@ -268,7 +268,7 @@ describe('Merge requests app component', () => {
       createComponent(null, { listTypeToggleEnabled: true });
       await waitForPromises();
       expect(findFeedbackLink().attributes('href')).toBe(
-        'https://gitlab.com/gitlab-org/gitlab/-/issues/533850',
+        'https://gitlab.com/gitlab-org/gitlab/-/issues/542823',
       );
     });
   });

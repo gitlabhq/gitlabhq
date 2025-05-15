@@ -41,7 +41,7 @@ You can manage your branches:
 
 {{< /history >}}
 
-The **Branch rules overview** page shows all branches with any configured protections,
+The branch rules overview page shows all branches with any configured protections,
 and their protection methods:
 
 ![Example of a branch with configured protections](img/view_branch_protections_v15_10.png)
@@ -50,7 +50,7 @@ Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
-To view the **Branch rules overview** list:
+To view the branch rules overview list:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Repository**.

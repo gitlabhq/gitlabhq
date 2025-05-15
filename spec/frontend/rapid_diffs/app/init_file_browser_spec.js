@@ -104,7 +104,9 @@ describe('Init file browser', () => {
         <diff-file data-file-data="{}" id="first"><div></div></diff-file>
       `,
     );
-    DiffFile.getAll().forEach((file) => file.mount({ adapterConfig: {}, appData: {} }));
+    DiffFile.getAll().forEach((file) =>
+      file.mount({ adapterConfig: {}, appData: {}, unobserve: jest.fn() }),
+    );
   });
 
   beforeAll(() => {

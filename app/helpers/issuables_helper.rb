@@ -408,7 +408,7 @@ module IssuablesHelper
   def new_comment_template_paths(group, project = nil)
     [{
       text: _('Your comment templates'),
-      href: ::Gitlab::Routing.url_helpers.profile_comment_templates_path
+      href: profile_comment_templates_path
     }]
   end
 end

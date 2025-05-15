@@ -2,6 +2,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlLoadingIcon } from '@gitlab/ui';
 import PagesDeployments from '~/gitlab_pages/components/deployments.vue';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import getProjectPagesDeploymentsQuery from '~/gitlab_pages/queries/get_project_pages_deployments.graphql';
@@ -68,6 +69,9 @@ describe('PagesDeployments', () => {
       ]),
       provide: {
         projectFullPath: 'my-group/my-project',
+      },
+      stubs: {
+        CrudComponent,
       },
     });
   };
@@ -165,6 +169,7 @@ describe('PagesDeployments', () => {
   describe('when the "Include stopped deployments" toggle is switched on', () => {
     beforeEach(async () => {
       createComponent();
+      await waitForPromises();
       wrapper.findByTestId('show-inactive-toggle').vm.$emit('change', true);
       await waitForPromises();
     });

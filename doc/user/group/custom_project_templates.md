@@ -52,7 +52,7 @@ Projects in nested subgroups are not included in the template list.
 A [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/480779) exists:
 [Inherited members](../project/members/_index.md#membership-types) can't select project templates,
 unless the `project_templates_without_min_access` feature flag is enabled.
-This feature flag [is disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/425452)
+This feature flag [is disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/480779)
 on GitLab.com, and so users must be granted direct membership of the template project.
 
 ## Example structure

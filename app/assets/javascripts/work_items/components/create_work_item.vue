@@ -26,6 +26,7 @@ import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ZenMode from '~/zen_mode';
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
 import WorkItemDates from 'ee_else_ce/work_items/components/work_item_dates.vue';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import {
   getDisplayReference,
   getNewWorkItemAutoSaveKey,
@@ -109,6 +110,7 @@ export default {
     WorkItemCustomFields: () =>
       import('ee_component/work_items/components/work_item_custom_fields.vue'),
     WorkItemStatus: () => import('ee_component/work_items/components/work_item_status.vue'),
+    PageHeading,
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['fullPath', 'groupPath'],
@@ -874,7 +876,7 @@ export default {
       <gl-alert v-if="error" class="gl-mb-3" variant="danger" @dismiss="error = null">
         {{ error }}
       </gl-alert>
-      <h1 v-if="!hideFormTitle" class="page-title gl-text-xl gl-pb-5">{{ titleText }}</h1>
+      <page-heading v-if="!hideFormTitle" :heading="titleText" />
       <div class="gl-flex gl-items-center gl-gap-4">
         <gl-form-group
           v-if="showProjectSelector"

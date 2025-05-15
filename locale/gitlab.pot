@@ -23622,9 +23622,6 @@ msgstr ""
 msgid "Edit Release"
 msgstr ""
 
-msgid "Edit Scheduled Pipeline"
-msgstr ""
-
 msgid "Edit Slack integration"
 msgstr ""
 
@@ -23716,6 +23713,9 @@ msgid "Edit release"
 msgstr ""
 
 msgid "Edit release (%{title})"
+msgstr ""
+
+msgid "Edit scheduled pipeline"
 msgstr ""
 
 msgid "Edit single file"
@@ -32175,9 +32175,6 @@ msgstr ""
 msgid "InProductMarketing|Invite unlimited colleagues"
 msgstr ""
 
-msgid "InProductMarketing|No credit card required"
-msgstr ""
-
 msgid "InProductMarketing|No credit card required."
 msgstr ""
 
@@ -40209,9 +40206,6 @@ msgstr ""
 msgid "New Label"
 msgstr ""
 
-msgid "New Milestone"
-msgstr ""
-
 msgid "New Pipeline Schedule"
 msgstr ""
 
@@ -43966,6 +43960,9 @@ msgid "Pages|Expires at"
 msgstr ""
 
 msgid "Pages|Files"
+msgstr ""
+
+msgid "Pages|Has error"
 msgstr ""
 
 msgid "Pages|Last updated"
@@ -64231,10 +64228,10 @@ msgstr ""
 msgid "TrialsDiscover|Increase security"
 msgstr ""
 
-msgid "Trials|Create a new group and start your trial of Ultimate with GitLab Duo Enterprise."
+msgid "Trials|Create a new group and start your free trial."
 msgstr ""
 
-msgid "Trials|You can apply your trial of Ultimate with GitLab Duo Enterprise to a group."
+msgid "Trials|You can apply your free trial to a group."
 msgstr ""
 
 msgid "Trial|Activate my trial"
@@ -64264,9 +64261,6 @@ msgstr ""
 msgid "Trial|GitLab Subscription Agreement"
 msgstr ""
 
-msgid "Trial|Please provide the following information to start your trial."
-msgstr ""
-
 msgid "Trial|Privacy Statement"
 msgstr ""
 
@@ -64276,7 +64270,10 @@ msgstr ""
 msgid "Trial|Start your free Ultimate and GitLab Duo Enterprise trial"
 msgstr ""
 
-msgid "Trial|Start your free Ultimate and GitLab Duo Enterprise trial on %{group_name}"
+msgid "Trial|Start your free trial"
+msgstr ""
+
+msgid "Trial|Start your free trial on %{group_name}"
 msgstr ""
 
 msgid "Trial|State or province"
@@ -65964,6 +65961,9 @@ msgstr ""
 msgid "UserMapping|Awaiting reassignment"
 msgstr ""
 
+msgid "UserMapping|Confirm reassignment"
+msgstr ""
+
 msgid "UserMapping|Contribution and membership reassignment cannot be undone. Incorrect reassignment %{linkStart}poses a security risk%{linkEnd}, so check carefully before you reassign."
 msgstr ""
 
@@ -66138,6 +66138,9 @@ msgstr ""
 msgid "UserMapping|Reassignment waiting on user approval."
 msgstr ""
 
+msgid "UserMapping|Reassignments cannot be undone, so check all data carefully before you continue."
+msgstr ""
+
 msgid "UserMapping|Reassignments in %{group} rejected"
 msgstr ""
 
@@ -66166,6 +66169,9 @@ msgid "UserMapping|Something went wrong while uploading the CSV file."
 msgstr ""
 
 msgid "UserMapping|Source name"
+msgstr ""
+
+msgid "UserMapping|The %{strongStart}Skip confirmation when reassigning placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately."
 msgstr ""
 
 msgid "UserMapping|The file is being processed and you will receive an email when completed."
