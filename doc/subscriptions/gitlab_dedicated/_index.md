@@ -79,9 +79,9 @@ You can view compliance and certification details, and download compliance artif
 
 GitLab Dedicated implements strict access controls to protect your environment:
 
-- Follows the [principle of least privilege](https://handbook.gitlab.com/handbook/security/access-management-policy/#principle-of-least-privilege).
+- Follows the principle of least privilege, which grants only the minimum permissions necessary.
 - Restricts access to the AWS organization to select GitLab team members.
-- User accounts follow the [Access Management Policy](https://handbook.gitlab.com/handbook/security/access-management-policy/).
+- Implements comprehensive security policies and access requests for user accounts.
 - Uses a single Hub account for automated actions and emergency access.
 - GitLab Dedicated engineers do not have direct access to customer environments.
 
@@ -249,8 +249,8 @@ The following operational features are not available:
 GitLab uses [feature flags](../../user/feature_flags.md) to support the development and rollout of new or experimental features.
 In GitLab Dedicated:
 
-- Features using feature flags that are **enabled by default** are available.
-- Features using feature flags that are **disabled by default** are not available and cannot be enabled by administrators.
+- Features behind feature flags that are **enabled by default** are available.
+- Features behind feature flags that are **disabled by default** are not available and cannot be enabled by administrators.
 
 Features behind flags that are disabled by default are not ready for production use and therefore unsafe for GitLab Dedicated.
 

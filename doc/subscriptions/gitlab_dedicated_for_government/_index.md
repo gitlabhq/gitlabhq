@@ -88,17 +88,16 @@ As a single-tenant SaaS solution, GitLab Dedicated for Government provides infra
 
 #### Access controls
 
-GitLab Dedicated for Government adheres to the
-[principle of least privilege](https://handbook.gitlab.com/handbook/security/access-management-policy/#principle-of-least-privilege)
-to control access to customer tenant environments. Tenant AWS accounts live under
-a top-level GitLab Dedicated for Government AWS parent organization. Access to the AWS Organization
-is restricted to select GitLab team members. All user accounts within the AWS Organization
-follow the overall [GitLab Access Management Policy](https://handbook.gitlab.com/handbook/security/access-management-policy/).
-Direct access to customer tenant environments is restricted to a single Hub account.
-The GitLab Dedicated Control Plane uses the Hub account to perform automated actions
-over tenant accounts when managing environments.
+GitLab Dedicated for Government implements strict access controls to protect your environment:
 
-Similarly, GitLab Dedicated engineers do not have direct access to customer tenant environments.
+- Follows the principle of least privilege, which grants only the minimum permissions necessary.
+- Places tenant AWS accounts under a top-level GitLab Dedicated for Government AWS parent organization.
+- Restricts access to the AWS organization to select GitLab team members.
+- Implements comprehensive security policies and access requests for user accounts.
+- Uses a single Hub account for automated actions and emergency access.
+- Uses the GitLab Dedicated Control Plane with the Hub account to perform automated actions over tenant accounts.
+
+GitLab Dedicated engineers do not have direct access to customer tenant environments.
 In [break glass](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/blob/main/engineering/breaking_glass.md)
 situations, where access to resources in the tenant environment is required to
 address a high-severity issue, GitLab engineers must go through the Hub account
@@ -147,7 +146,6 @@ The following features will not be supported:
 - Mattermost
 - [Server-side Git hooks](../../administration/server_hooks.md).
   GitLab Dedicated for Government is a SaaS service, and access to the underlying infrastructure is only available to GitLab Inc. team members. Due to the nature of server side configuration, there is a possible security concern of running arbitrary code on Dedicated services, as well as the possible impact that can have on the service SLA. Use the alternative [push rules](../../user/project/repository/push_rules.md) or [webhooks](../../user/project/integrations/webhooks.md) instead.
-- Interacting with GitLab [Feature Flags](../../administration/feature_flags.md). [Feature flags support the development and rollout of new or experimental features](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags) on GitLab.com. Features behind feature flags are not considered ready for production use, are experimental and therefore unsafe for GitLab Dedicated. Stability and SLAs may be affected by changing default settings.
 
 ### Operational features
 
@@ -158,7 +156,19 @@ The following operational features are not available:
 - Multiple login providers
 - Support for deploying to non-AWS cloud providers, such as GCP or Azure
 - Switchboard
-- Pre-Production Instance
+- Pre-Production instance
+
+### Feature flags
+
+GitLab uses [feature flags](../../administration/feature_flags.md) to support the development and rollout of new or experimental features.
+In GitLab Dedicated for Government:
+
+- Features behind feature flags that are **enabled by default** are available.
+- Features behind feature flags that are **disabled by default** are not available and cannot be enabled by administrators.
+
+Features behind flags that are disabled by default are not ready for production use and therefore unsafe for GitLab Dedicated for Government.
+
+When a feature becomes generally available and the flag is enabled or removed, the feature becomes available in GitLab Dedicated for Government in the same GitLab version.
 
 ## Service Level Agreement
 

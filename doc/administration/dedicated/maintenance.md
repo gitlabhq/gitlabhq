@@ -44,7 +44,7 @@ Longer service interruptions are rare. If extended downtime is expected, GitLab 
 
 {{< alert type="note" >}}
 
-Performance degradation or downtime during the scheduled maintenance window does not count against [the system Service Level Availability](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/).
+Performance degradation or downtime during the scheduled maintenance window does not count against the system service level availability (SLA).
 
 {{< /alert >}}
 
@@ -64,18 +64,25 @@ For example, GitLab 16.9 released on 2024-02-15. Instances in the EMEA and Ameri
 
 {{< alert type="note" >}}
 
-If a production change lock (PCL) is active during a scheduled upgrade, GitLab defers the upgrade to the first maintenance window after the PCL ends. For more information, including upcoming and current PCL periods, see [Production Change Lock](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/#production-change-lock-pcl).
+If a production change lock (PCL) is active during a scheduled upgrade, GitLab defers the upgrade to the first maintenance window after the PCL ends. 
+
+A PCL for GitLab Dedicated is a complete pause on all production changes during periods of reduced team availability such as major holidays. During a PCL, the following is paused:
+
+- Configuration changes using Switchboard.
+- Code deployments or infrastructure changes.
+- Automated maintenance.
+- New customer onboarding.
+
+When a PCL is in effect, Switchboard displays a notification banner to alert users.
+PCLs help ensure system stability when support resources may be limited.
 
 {{< /alert >}}
 
 ## Emergency maintenance
 
-In an event of a platform outage, degradation, or a security event requiring urgent action,
-GitLab performs emergency maintenance per
-[the emergency change processes](https://handbook.gitlab.com/handbook/engineering/infrastructure/emergency-change-processes/).
+Emergency maintenance is initiated when urgent actions are required on a GitLab Dedicated tenant instance. For example, when a critical (S1) security vulnerability requires urgent patching, GitLab performs emergency maintenance to upgrade your tenant instance to a secure version. This maintenance can occur outside scheduled maintenance windows.
 
-Emergency maintenance is initiated when urgent actions need to be executed by GitLab on a
-GitLab Dedicated tenant instance. For example, when a critical (S1) security vulnerability requires urgent patching, GitLab performs emergency maintenance to upgrade your tenant instance to a secure version. This maintenance can occur outside scheduled maintenance windows.
+GitLab prioritizes stability and security while minimizing customer impact during emergency maintenance. The specific maintenance procedures follow established internal processes, and all changes undergo appropriate review and approval before they are applied.
 
 GitLab provides advance emergency maintenance notice when possible and sends complete details after the issue is resolved. The GitLab Support team creates a support ticket and notifies all [Switchboard users](create_instance/_index.md#step-1-get-access-to-switchboard) by email.
 
