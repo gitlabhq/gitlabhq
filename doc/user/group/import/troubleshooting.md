@@ -181,3 +181,21 @@ This error occurs when a Sidekiq worker processing the import
 restarts due to high CPU or memory usage during import.
 To configure workers for imports, see
 [Sidekiq configuration](../../project/import/_index.md#sidekiq-configuration).
+
+## Error: `BulkImports::FileDownloadService::ServiceError Invalid content type`
+
+When using direct transfer between GitLab instances, you might encounter the following error:
+
+```plaintext
+BulkImports::FileDownloadService::ServiceError Invalid content type
+```
+
+This error is related to how network traffic is routed between instances.
+If a content type other than `application/gzip` is returned,
+your network requests might be bypassing GitLab Workhorse.
+
+To resolve this issue:
+
+- Check that your Ingress is configured to route traffic through
+  GitLab Workhorse on port `8181` rather than directly to Puma.
+- Consider enabling [proxy downloads](../../../administration/object_storage.md#proxy-download) for object storage.

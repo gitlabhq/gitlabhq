@@ -29,6 +29,7 @@ export default (function initInviteMembersModal() {
           hasGitlabSubscription: parseBoolean(el.dataset.hasGitlabSubscription),
           addSeatsHref: el.dataset.addSeatsHref,
           hasBsoEnabled: parseBoolean(el.dataset.hasBsoFeatureEnabled),
+          searchUrl: el.dataset.searchUrl,
         },
         render: (createElement) =>
           createElement(InviteMembersModal, {

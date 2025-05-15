@@ -16,7 +16,6 @@ GitLab Inc. periodically collects information about your instance in order
 to perform various actions.
 
 For free GitLab Self-Managed instances, all usage statistics are [opt-out](#enable-or-disable-service-ping).
-For information about other tiers, see [Customer Product Usage Information](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/#service-ping-formerly-known-as-usage-ping).
 
 ## Service Ping
 
@@ -34,7 +33,7 @@ There are several other benefits to enabling Service Ping:
 
 - Analyze the users' activities over time of your GitLab installation.
 - A [DevOps Score](../analytics/dev_ops_reports.md) to give you an overview of your entire instance's adoption of concurrent DevOps from planning to monitoring.
-- More proactive support (assuming that our [Customer Success Managers (CSMs)](https://handbook.gitlab.com/job-families/sales/customer-success-management/) and support organization used the data to deliver more value).
+- More proactive support through Customer Success Managers (CSMs) who can use the collected data.
 - Insight and advice into how to get the most value out of your investment in GitLab.
 - Reports that show how you compare against other similar organizations (anonymized), with specific advice and recommendations on how to improve your DevOps processes.
 - Participation in our [Registration Features Program](#registration-features-program) to receive free paid features.
@@ -44,7 +43,7 @@ There are several other benefits to enabling Service Ping:
 In GitLab versions 14.1 and later, GitLab Free customers with a GitLab Self-Managed instance running
 GitLab Enterprise Edition can receive paid features by [enabling registration features](#enable-registration-features) and sending us
 activity data through Service Ping. Features introduced here do not remove the feature from its paid
-tier. Instances on a paid tier are subject to our [Product Usage Data policy](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/) managed by [Cloud Licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).
+tier. Instances on a paid tier are subject to the [Product Usage Data policy](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/) managed by [Cloud Licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).
 
 ### Available features
 
@@ -137,7 +136,6 @@ If your GitLab instance is behind a proxy, set the appropriate
 {{< alert type="note" >}}
 
 Whether you can disable Service Ping completely depends on the instance's tier and the specific license.
-For more information, see [Customer Product Usage Information](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/#service-ping-formerly-known-as-usage-ping).
 Service Ping settings only control whether the data is being shared with GitLab, or limited to only internal use by the instance.
 Even if you disable Service Ping, the `gitlab_service_ping_worker` background job still periodically generates a Service Ping payload for your instance.
 The payload is available in the [Metrics and profiling](#manually-upload-service-ping-payload) admin section.
@@ -202,7 +200,6 @@ the **Admin** area.
 ## Enable or disable optional data in Service Ping
 
 GitLab differentiates between operational and optional collected data.
-For more information, see [Customer product usage information](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/#service-ping-formerly-known-as-usage-ping).
 
 ### Through the UI
 

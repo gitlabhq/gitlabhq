@@ -311,6 +311,12 @@ For more information, see the history.
 
 {{< /alert >}}
 
+{{< alert type="note" >}}
+
+Deleting a branch rule is not available for rules targeting `all branches`.
+
+{{< /alert >}}
+
 Prerequisites:
 
 - You must have at least the Maintainer role for the project.

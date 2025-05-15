@@ -501,6 +501,31 @@ You can change the maximum time a job can run before it times out:
 - At the [runner level](../ci/runners/configure_runners.md#set-the-maximum-job-timeout).
   This limit must be 10 minutes or longer.
 
+### Maximum number of jobs in a pipeline
+
+You can limit the maximum number of jobs in a pipeline. The number
+of jobs in a pipeline is checked at pipeline creation and when new commit statuses are created.
+Pipelines that have too many jobs fail with a `size_limit_exceeded` error.
+
+- On GitLab.com, a limit is
+  [defined for each subscription tier](../user/gitlab_com/_index.md#cicd),
+  and this limit affects all projects with that tier.
+- On GitLab Self-Managed, [Premium or Ultimate](https://about.gitlab.com/pricing/) subscriptions,
+  this limit is defined under a `default` plan that affects all
+  projects. This limit is disabled (`0`) by default.
+
+To change the limit for a GitLab Self-Managed instance, change the `default` plan's limit with the following
+[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session) command:
+
+```ruby
+# If limits don't exist for the default plan, you can create one with:
+# Plan.default.create_limits!
+
+Plan.default.actual_limits.update!(ci_pipeline_size: 500)
+```
+
+Set the limit to `0` to disable it.
+
 ### Maximum number of deployment jobs in a pipeline
 
 You can limit the maximum number of deployment jobs in a pipeline. A deployment is
@@ -531,7 +556,7 @@ When this limit is exceeded, pipeline creation fails with the error `downstream 
 
 Increasing this limit is not recommended. The default limit protects your GitLab instance from excessive resource consumption, potential pipeline recursion, and database overload.
 
-Instead of increasing the limit, restructure your CI/CD configuration by splitting large pipeline hierarchies into smaller pipelines or using parallel jobs.
+Instead of increasing the limit, restructure your CI/CD configuration by splitting large pipeline hierarchies into smaller pipelines. Consider using `needs` between jobs or dependent stages within a single pipeline.
 
 {{< /alert >}}
 

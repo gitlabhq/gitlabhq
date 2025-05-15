@@ -820,6 +820,11 @@ Example response:
 Add or update the pipeline status of a commit. If the commit is associated with a merge request,
 the API call must target the commit in the merge request's source branch.
 
+If a pipeline already exists and it exceeds the [maximum number of jobs in a single pipeline limit](../administration/instance_limits.md#maximum-number-of-jobs-in-a-pipeline):
+
+- If `pipeline_id` is specified, a `422` error is returned: `The number of jobs has exceeded the limit`.
+- Otherwise, a new pipeline is created.
+
 ```plaintext
 POST /projects/:id/statuses/:sha
 ```

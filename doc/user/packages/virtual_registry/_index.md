@@ -2,7 +2,7 @@
 stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Virtual Registry
+title: Virtual registry
 ---
 
 {{< details >}}
@@ -36,8 +36,7 @@ With this approach, you can configure your applications to use one virtual regis
 
 To configure the virtual registry:
 
-- You need a top-level group with a GitLab license with at least the premium level.
-- You must be at least Maintainer of the top-level group.
+- You need a top-level group with at least the Maintainer role.
 - Make sure you enable the dependency proxy setting. It's enabled by default, but [administrators can turn it off](../../../administration/packages/dependency_proxy.md).
 - You must configure authentication for your supported [package format](#supported-package-formats).
 
@@ -60,7 +59,12 @@ When a virtual registry receives a request for a package:
 
 ### Caching system
 
-All upstream registries have a caching system. A caching system stores request paths in a cache entry, and serves the responses for identical requests from the GitLab virtual registry. This way, the virtual registry does not have to contact the upstream again when the same package is requested.
+All upstream registries have a caching system that:
+
+- Stores requests in a cache entry
+- Serves the responses for identical requests from the GitLab virtual registry
+
+This way, the virtual registry does not have to contact the upstream again when the same package is requested.
 
 If a requested path has not been cached in any of the available upstreams:
 
@@ -71,9 +75,9 @@ If the requested path has been cached in any of the available upstreams:
 
 1. The virtual registry checks the [cache validity period](#cache-validity-period) to see if the cache entry needs to be refreshed before forwarding the response.
 1. If the cache is valid, the cache entry of the upstream fulfills the request.
-   - At this point, notice the virtual registry does not walk through the ordered list of upstreams again. If a lower priority upstream has cached the request, and a higher priority upstream has the requested file but not in its cache, the request is fulfilled with the lower priority upstream cache entry. This is by design.
+   - If a lower priority upstream has the request in its cache, and a higher priority contains the file but has not cached the request, the lower priority upstream fulfills the request. The virtual registry does not walk the ordered list of upstreams again.
 
-If an upstream can't be found to fulfill the request, the virtual registry returns a `404 Not Found` error.
+The virtual registry returns a `404 Not Found` error if it cannot find an upstream to fulfill the request.
 
 #### Cache validity period
 
@@ -83,26 +87,32 @@ that a cache entry is considered valid to fulfill a request.
 Before the virtual registry pulls from an existing cache entry,
 it checks the cache validity period to determine if the entry must be refreshed or not.
 
-If the entry is outside the validity period, the virtual registry checks if the upstream response is identical to the one in the cache. If:
+If the entry is outside the validity period, the virtual registry checks
+if the upstream response is identical to the one in the cache. If:
 
 - The response is identical, the entry is used to fulfill the request.
 - The response is not identical, the response is downloaded again from the upstream to overwrite the upstream cache entry.
 
-If network conditions prevent the virtual registry from connecting to the upstream, the caching system uses the available cache entry to serve the request. This way, as long as the virtual registry has the response related to a request in the cache, that request is fulfilled, even when outside the validity period.
+If the virtual registry cannot connect to an upstream due to network conditions,
+the upstream serves the request with the available cache entry.
+
+As long as the virtual registry has the response related to
+a request in the cache, that request is fulfilled,
+even when outside the validity period.
 
 ##### Set the cache validity period
 
 The cache validity period is important in the overall performance of the virtual registry to fulfill requests. Contacting external registries is a costly operation. Smaller validity periods increase the amount of checks, and longer periods decrease them.
 
-You can turn off cache validity checks by setting it to 0.
+You can turn off cache validity checks by setting it to `0`.
 
-The default value of the cache validity period is 24 hours.
+The default value of the cache validity period is `24` hours.
 
-You should set the cache validity period to 0 when the external registry targeted by the upstream is known to have immutable responses. This is often the case when using official public registries. For more information, check your [supported package format](#supported-package-formats).
+You should set the cache validity period to `0` when the external registry targeted by the upstream is known to have immutable responses. This is often the case with official public registries. For more information, check your [supported package format](#supported-package-formats).
 
 ### Object storage usage
 
-Cache entries save their files in object storage in [the `dependency_proxy` bucket](../../../administration/object_storage.md#configure-the-parameters-of-each-object).
+Cache entries save their files in object storage in the [`dependency_proxy` bucket](../../../administration/object_storage.md#configure-the-parameters-of-each-object).
 
 Object storage usage counts towards the top-level group [object storage usage limit](../../storage_usage_quotas.md#view-storage).
 
@@ -116,9 +126,12 @@ Virtual registry performance might vary based on factors like:
 
 ### Tradeoffs
 
-Virtual registries are more advanced than public registries. When you pull dependencies with a virtual registry, it might take longer than other registries, such as public, official registries.
+Virtual registries are more advanced than public registries.
+When you pull dependencies with a virtual registry,
+it might take longer than other registries, such as public, official registries.
 
-Compared with public registries, virtual registries also support multiple upstream registries and authentication, but these advantages are not free.
+Compared with public registries, virtual registries
+also support multiple upstream registries and authentication.
 
 ### Upstream prioritization
 
@@ -132,7 +145,7 @@ When you manage a list of private upstream registries:
 - You should prioritize registries with the most packages at the top of the list. This approach:
   - Increases the chances that a high-priority registry can fulfill the request
   - Prevents walking the entire ordered list to find a valid upstream registry
-- You should put registries that host the least amount of packages at the bottom of the list.
+- You should put registries with the least amount of packages at the bottom of the list.
 
 ### Performance improvements with usage
 
@@ -142,8 +155,6 @@ When an upstream registry caches a request, the time to fulfill an identical req
 
 ### Use the CI/CD cache
 
-GitLab CI/CD jobs can further increase their performance by [using caching in GitLab CI/CD](../../../ci/caching/_index.md#common-use-cases-for-caches) for dependencies.
+You can use [caching in GitLab CI/CD](../../../ci/caching/_index.md#common-use-cases-for-caches) so that jobs do not have to download dependencies from the virtual registry.
 
-By using caching in the CI/CD cache, jobs can avoid downloading dependencies from the virtual registry, which improves the execution time.
-
-However, this enhancement comes with the cost of duplicating the storage for each dependency. Each dependency is stored in the virtual registry and the CI/CD cache.
+This method improves execution time, but also duplicates storage for each dependency (dependencies are stored in the CI/CD cache and virtual registry).

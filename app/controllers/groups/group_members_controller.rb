@@ -2,6 +2,7 @@
 
 class Groups::GroupMembersController < Groups::ApplicationController
   include MembershipActions
+  include Members::InviteModalActions
   include MembersPresentation
   include SortingHelper
   include Gitlab::Utils::StrongMemoize

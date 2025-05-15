@@ -1,6 +1,5 @@
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
-import { GlIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import PagesDeployment from '~/gitlab_pages/components/deployment.vue';
 import deletePagesDeploymentMutation from '~/gitlab_pages/queries/delete_pages_deployment.mutation.graphql';
@@ -8,6 +7,7 @@ import restorePagesDeploymentMutation from '~/gitlab_pages/queries/restore_pages
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import UserDate from '~/vue_shared/components/user_date.vue';
+import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import {
   primaryDeployment,
   environmentDeployment,
@@ -51,10 +51,10 @@ describe('PagesDeployment', () => {
   const findErrorBadge = () => wrapper.findByTestId('error-badge');
 
   describe.each`
-    description                 | deployment               | isPrimary
-    ${'Primary deployment'}     | ${primaryDeployment}     | ${true}
-    ${'Environment deployment'} | ${environmentDeployment} | ${false}
-  `('$description', ({ deployment, isPrimary }) => {
+    description                 | deployment
+    ${'Primary deployment'}     | ${primaryDeployment}
+    ${'Environment deployment'} | ${environmentDeployment}
+  `('$description', ({ deployment }) => {
     beforeEach(() => {
       createComponent({ deployment });
     });
@@ -63,7 +63,7 @@ describe('PagesDeployment', () => {
       it('renders deployment details', () => {
         expect(wrapper.findByTestId('deployment-url').text()).toBe(deployment.url);
         expect(
-          wrapper.findByTestId('deployment-created-at').findComponent(UserDate).props('date'),
+          wrapper.findByTestId('deployment-created-at').findComponent(TimeAgo).props('time'),
         ).toBe(deployment.createdAt);
         expect(wrapper.findByTestId('deployment-ci-build-id').text()).toContain(
           deployment.ciBuildId.toString(),
@@ -76,7 +76,7 @@ describe('PagesDeployment', () => {
         );
         expect(wrapper.findByTestId('deployment-size').text()).toContain('1.0 KiB');
         expect(
-          wrapper.findByTestId('deployment-updated-at').findComponent(UserDate).props('date'),
+          wrapper.findByTestId('deployment-updated-at').findComponent(TimeAgo).props('time'),
         ).toBe(deployment.updatedAt);
 
         if (deployment.expiresAt) {
@@ -84,35 +84,9 @@ describe('PagesDeployment', () => {
             wrapper.findByTestId('deployment-expires-at').findComponent(UserDate).props('date'),
           ).toBe(deployment.expiresAt);
         } else {
-          expect(wrapper.findByTestId('deployment-expires-at').exists()).toBe(false);
+          expect(wrapper.findByTestId('deployment-expires-at').text()).toBe('Never expires');
         }
       });
-
-      it('toggles deployment details on click', async () => {
-        expect(wrapper.findByTestId('deployment-details').isVisible()).toBe(false);
-
-        await wrapper.trigger('click');
-
-        expect(wrapper.findByTestId('deployment-details').isVisible()).toBe(true);
-      });
-
-      if (isPrimary) {
-        it('shows "Primary deployment" as deployment type label for screen readers', () => {
-          expect(wrapper.findByTestId('deployment-type').text()).toContain('Primary deployment');
-        });
-
-        it('shows the "home" icon', () => {
-          expect(wrapper.findByTestId('deployment-type').findComponent(GlIcon).props('name')).toBe(
-            'home',
-          );
-        });
-      } else {
-        it('shows the pathPrefix', () => {
-          expect(wrapper.findByTestId('deployment-type').text()).toContain(
-            environmentDeployment.pathPrefix,
-          );
-        });
-      }
     });
 
     describe('deployment is active', () => {
@@ -156,7 +130,7 @@ describe('PagesDeployment', () => {
         expect(wrapper.findByTestId('deployment-delete').exists()).toBe(false);
       });
 
-      it('restores deployment when delete button is clicked', async () => {
+      it('restores deployment when restore button is clicked', async () => {
         await restoreDeployment();
 
         expect(restorePagesDeploymentMutationHandler).toHaveBeenCalledWith({

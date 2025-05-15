@@ -185,4 +185,14 @@ EOS
       )
     end
   end
+
+  def simulate_post_receive(project, branch_name, identifier)
+    oldrev = project.repository.commit(branch_name).sha
+
+    yield
+
+    newrev = project.repository.commit(branch_name).sha
+    changes = Base64.encode64("#{oldrev} #{newrev} refs/heads/#{branch_name}")
+    Repositories::PostReceiveWorker.new.perform("project-#{project.id}", identifier, changes)
+  end
 end

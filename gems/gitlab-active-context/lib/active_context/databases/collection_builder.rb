@@ -13,6 +13,14 @@ module ActiveContext
         fields << Field::Bigint.new(name, index: index)
       end
 
+      def integer(name, index: false)
+        fields << Field::Integer.new(name, index: index)
+      end
+
+      def smallint(name, index: false)
+        fields << Field::Smallint.new(name, index: index)
+      end
+
       def boolean(name, index: true)
         fields << Field::Boolean.new(name, index: index)
       end
@@ -39,6 +47,8 @@ module ActiveContext
       end
 
       class Bigint < Field; end
+      class Integer < Field; end
+      class Smallint < Field; end
       class Boolean < Field; end
       class Keyword < Field; end
       class Text < Field; end

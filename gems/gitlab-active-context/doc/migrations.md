@@ -7,6 +7,8 @@ Create a file in `ActiveContext::Config.migrations_path`.
 ActiveContext supports several field types for defining collection schemas:
 
 - `bigint`: For large numeric values (accepts `index: true/false`, defaults to `false`)
+- `integer`: For standard numeric values (accepts `index: true/false`, defaults to `false`)
+- `smallint`: For small numeric values (accepts `index: true/false`, defaults to `false`)
 - `boolean`: For boolean values (accepts `index: true/false`, defaults to `true`)
 - `keyword`: For exact-match searchable string fields (always indexed, no `index` option)
 - `text`: For full-text searchable content (accepts `index: true/false`, defaults to `false`)
@@ -24,6 +26,8 @@ class CreateMergeRequests < ActiveContext::Migration[1.0]
     create_collection :merge_requests, number_of_partitions: 3 do |c|
       c.bigint :issue_id, index: true
       c.bigint :namespace_id, index: true
+      c.integer :iid, index: true
+      c.smallint :priority, index: true
       c.boolean :is_draft
       c.keyword :traversal_ids
       c.text :description

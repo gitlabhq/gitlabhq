@@ -1257,37 +1257,18 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     end
   end
 
-  describe '#has_protected_tag_rules_for_delete?' do
+  describe '#protected_from_delete_by_tag_rules?' do
+    let_it_be_with_refind(:project) { create(:project, path: 'test') }
     let_it_be(:user) { create(:user) }
     let(:has_tags) { true }
 
-    subject { repository.has_protected_tag_rules_for_delete?(user) }
+    subject { repository.protected_from_delete_by_tag_rules?(user) }
 
     before do
       allow(repository).to receive(:has_tags?).and_return(has_tags)
     end
 
-    context 'when the project does not have tag protection rules' do
-      it { is_expected.to be_falsey }
-    end
-
-    context 'when the user is nil' do
-      let(:user) { nil }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when the project has tag protection rules' do
-      let_it_be(:project) { create(:project, path: 'test') }
-
-      before_all do
-        create(
-          :container_registry_protection_tag_rule,
-          project: project,
-          minimum_access_level_for_delete: Gitlab::Access::OWNER
-        )
-      end
-
+    shared_examples 'checking for mutable tag protection rules' do
       context 'for admin' do
         before do
           allow(user).to receive(:can_admin_all_resources?).and_return(true)
@@ -1296,7 +1277,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
         it { is_expected.to be_falsey }
       end
 
-      context 'when user has lower access level' do
+      context 'when the user has a lower access level' do
         before_all do
           project.add_maintainer(user)
         end
@@ -1310,12 +1291,86 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
         end
       end
 
-      context 'when user has the same or higher access level' do
+      context 'when the user meets the minimum access level' do
         before_all do
           project.add_owner(user)
         end
 
         it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when the project does not have tag protection rules' do
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when the user is nil' do
+      let(:user) { nil }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when the project only has mutable tag protection rules' do
+      before_all do
+        create(
+          :container_registry_protection_tag_rule,
+          project: project,
+          minimum_access_level_for_delete: Gitlab::Access::OWNER
+        )
+      end
+
+      it_behaves_like 'checking for mutable tag protection rules'
+    end
+
+    context 'when the project has immutable tag protection rule only' do
+      before_all do
+        create(
+          :container_registry_protection_tag_rule,
+          :immutable,
+          project: project
+        )
+      end
+
+      it { is_expected.to be_truthy }
+
+      context 'when the container repository does not have tags' do
+        let(:has_tags) { false }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when the feature container_registry_immutable_tags is disabled' do
+        before do
+          stub_feature_flags(container_registry_immutable_tags: false)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when the project has both immutable and mutable tags' do
+      before_all do
+        create(
+          :container_registry_protection_tag_rule,
+          :immutable,
+          project: project
+        )
+        create(
+          :container_registry_protection_tag_rule,
+          project: project,
+          tag_name_pattern: 'mutable',
+          minimum_access_level_for_delete: Gitlab::Access::OWNER
+        )
+      end
+
+      it { is_expected.to be_truthy }
+
+      context 'when the feature container_registry_immutable_tags is disabled' do
+        before do
+          stub_feature_flags(container_registry_immutable_tags: false)
+        end
+
+        it_behaves_like 'checking for mutable tag protection rules'
       end
     end
   end

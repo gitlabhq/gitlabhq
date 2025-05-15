@@ -76,6 +76,12 @@ module ActiveContext
             when Field::Bigint
               # Bigint is 8 bytes
               fixed_columns << [field, 8]
+            when Field::Integer
+              # Integer is 4 bytes
+              fixed_columns << [field, 4]
+            when Field::Smallint
+              # Smallint is 2 bytes
+              fixed_columns << [field, 2]
             when Field::Boolean
               # Boolean is 1 byte
               fixed_columns << [field, 1]
@@ -100,6 +106,10 @@ module ActiveContext
           case field
           when Field::Bigint
             table.bigint(field.name, **field.options.except(:index))
+          when Field::Integer
+            table.integer(field.name, **field.options.except(:index))
+          when Field::Smallint
+            table.integer(field.name, limit: 2, **field.options.except(:index))
           when Field::Boolean
             table.boolean(field.name, **field.options.except(:index))
           when Field::Keyword, Field::Text

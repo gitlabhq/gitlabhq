@@ -1,0 +1,10 @@
+---
+name: new_implementation_of_invite_members_search
+description: New implementation of "Invite Members" search
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/460261
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190070
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/540306
+milestone: '18.1'
+group: group::authentication
+type: gitlab_com_derisk
+default_enabled: false

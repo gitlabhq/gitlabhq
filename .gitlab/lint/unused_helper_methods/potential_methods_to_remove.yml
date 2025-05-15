@@ -1,0 +1,105 @@
+# The methods listed here have been identified as "unused" by the linter
+#   scripts/lint/unused_helper_methods.rb, and are potential targets for future
+#   removal.
+#
+# If it turns out that a method you are attempting to remove is in fact in use,
+#   remove it from this file and add it to `excluded_methods.yml`.
+#
+tag_pair_for_link:
+  file: ee/app/helpers/admin/application_settings_helper.rb
+start_free_trial_data:
+  file: ee/app/helpers/billing_plans_helper.rb
+compliance_frameworks_list_data:
+  file: ee/app/helpers/compliance_management/compliance_framework/group_settings_helper.rb
+project_vulnerability_path:
+  file: ee/app/helpers/ee/gitlab_routing_helper.rb
+user_group_saml_omniauth_metadata_path:
+  file: ee/app/helpers/ee/gitlab_routing_helper.rb
+saas_user_caps_i18n_string:
+  file: ee/app/helpers/ee/groups/settings_helper.rb
+project_compliance_framework_app_data:
+  file: ee/app/helpers/ee/projects_helper.rb
+discover_page_hand_raise_lead_data:
+  file: ee/app/helpers/gitlab_subscriptions/hand_raise_leads_helper.rb
+discover_duo_pro_hand_raise_lead_data:
+  file: ee/app/helpers/gitlab_subscriptions/hand_raise_leads_helper.rb
+buy_addon_data:
+  file: ee/app/helpers/subscriptions_helper.rb
+group_icon:
+  file: app/helpers/avatars_helper.rb
+topic_icon:
+  file: app/helpers/avatars_helper.rb
+project_branches:
+  file: app/helpers/branches_helper.rb
+can_view_namespace_catalog?:
+  file: app/helpers/ci/catalog/resources_helper.rb
+js_ci_catalog_data:
+  file: app/helpers/ci/catalog/resources_helper.rb
+environments_list_data:
+  file: app/helpers/environments_helper.rb
+event_feed_title:
+  file: app/helpers/events_helper.rb
+event_feed_summary:
+  file: app/helpers/events_helper.rb
+group_title_link:
+  file: app/helpers/groups_helper.rb
+has_dismissed_ide_environments_callout?:
+  file: app/helpers/ide_helper.rb
+integration_issue_type:
+  file: app/helpers/integrations_helper.rb
+integration_todo_target_type:
+  file: app/helpers/integrations_helper.rb
+user_dropdown_label:
+  file: app/helpers/issuables_helper.rb
+project_dropdown_label:
+  file: app/helpers/issuables_helper.rb
+group_dropdown_label:
+  file: app/helpers/issuables_helper.rb
+text_color_for_bg:
+  file: app/helpers/labels_helper.rb
+manage_labels_title:
+  file: app/helpers/labels_helper.rb
+show_projects?:
+  file: app/helpers/projects_helper.rb
+request_access_group_members_path:
+  file: app/helpers/routing/groups/members_helper.rb
+approve_access_request_group_member_path:
+  file: app/helpers/routing/groups/members_helper.rb
+resend_invite_group_member_path:
+  file: app/helpers/routing/groups/members_helper.rb
+edit_pipeline_schedule_path:
+  file: app/helpers/routing/pipeline_schedules_helper.rb
+play_pipeline_schedule_path:
+  file: app/helpers/routing/pipeline_schedules_helper.rb
+take_ownership_pipeline_schedule_path:
+  file: app/helpers/routing/pipeline_schedules_helper.rb
+request_access_project_members_path:
+  file: app/helpers/routing/projects/members_helper.rb
+leave_project_members_path:
+  file: app/helpers/routing/projects/members_helper.rb
+approve_access_request_project_member_path:
+  file: app/helpers/routing/projects/members_helper.rb
+resend_invite_project_member_path:
+  file: app/helpers/routing/projects/members_helper.rb
+search_filter_link:
+  file: app/helpers/search_helper.rb
+sidebar_tracking_attributes_by_object:
+  file: app/helpers/sidebars_helper.rb
+scope_avatar_classes:
+  file: app/helpers/sidebars_helper.rb
+sort_value_stars_asc:
+  file: app/helpers/sorting_titles_values_helper.rb
+display_subscription_banner!;:
+  file: app/helpers/subscribable_banner_helper.rb
+group_or_project_milestone_path:
+  file: app/helpers/timeboxes_helper.rb
+can_admin_project_milestones?:
+  file: app/helpers/timeboxes_helper.rb
+render_two_factor_auth_recovery_settings_check;:
+  file: app/helpers/users/callouts_helper.rb
+dismiss_two_factor_auth_recovery_settings_check;:
+  file: app/helpers/users/callouts_helper.rb
+all_visibility_levels_restricted?:
+  file: app/helpers/visibility_level_helper.rb
+link_to_wiki_page:
+  file: app/helpers/wiki_helper.rb

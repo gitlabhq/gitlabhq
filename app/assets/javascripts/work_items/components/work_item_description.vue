@@ -301,6 +301,10 @@ export default {
         }
         if (this.isEditing && this.createFlow) {
           this.startEditing();
+          // Reset edit state as the description
+          // can also be populated from localStorage
+          // when creating a new work item.
+          this.wasEdited = false;
         }
       },
       error() {
@@ -328,6 +332,18 @@ export default {
         if (this.descriptionTemplate === this.descriptionText) {
           return;
         }
+        if (this.createFlow && !this.wasEdited && hasContent && this.appliedTemplate === '') {
+          // If the template was fetched on component mount
+          // while in create flow, we may also have populated
+          // the description from localStorage. In this case,
+          // we need avoid showing the warning on first load.
+          // while also setting appliedTemplate to the current
+          // template such that reset is possible.
+          this.appliedTemplate = this.descriptionTemplate;
+          this.wasEdited = true;
+          return;
+        }
+
         if (!isUnchangedTemplate && (isDirty || hasContent)) {
           this.showTemplateApplyWarning = true;
         } else {

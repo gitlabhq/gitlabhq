@@ -402,6 +402,25 @@ describe('WorkItemDescription', () => {
           expect(findApplyTemplate().exists()).toBe(true);
         });
 
+        it('does not display a warning when a description is pre-populated in create mode', async () => {
+          // Mimic component mount with a pre-populated description
+          await createComponent({
+            editMode: true,
+            workItemId: newWorkItemId(workItemQueryResponse.data.workItem.workItemType.name),
+          });
+          findDescriptionTemplateListbox().vm.$emit('selectTemplate', {
+            name: 'default',
+            projectId: 1,
+            catagory: 'catagory',
+          });
+          await nextTick();
+          await waitForPromises();
+
+          expect(findDescriptionTemplateWarning().exists()).toBe(false);
+          expect(findCancelApplyTemplate().exists()).toBe(false);
+          expect(findApplyTemplate().exists()).toBe(false);
+        });
+
         it('hides the warning when the cancel button is clicked', async () => {
           expect(findDescriptionTemplateWarning().exists()).toBe(true);
           findCancelApplyTemplate().vm.$emit('click');

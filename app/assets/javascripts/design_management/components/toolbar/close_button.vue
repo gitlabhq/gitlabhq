@@ -18,7 +18,10 @@ export default {
       class="gl-mx-3"
       icon="close"
       category="tertiary"
-      :to="$options.DESIGNS_ROUTE_NAME"
+      :to="{
+        name: $options.DESIGNS_ROUTE_NAME,
+        query: $route.query,
+      }"
     />
   </div>
 </template>

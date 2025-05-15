@@ -70,6 +70,10 @@ module ActiveContext
             mappings[field.name] = case field
                                    when Field::Bigint
                                      { type: 'long' }
+                                   when Field::Integer
+                                     { type: 'integer' }
+                                   when Field::Smallint
+                                     { type: 'short' }
                                    when Field::Boolean
                                      { type: 'boolean' }
                                    when Field::Keyword

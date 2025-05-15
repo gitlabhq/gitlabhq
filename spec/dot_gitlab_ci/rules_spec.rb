@@ -193,6 +193,7 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
         '.gitlab/changelog_config.yml',
         '.gitlab/CODEOWNERS',
         '.gitlab/lint/unused_helper_methods/excluded_methods.yml',
+        '.gitlab/lint/unused_helper_methods/potential_methods_to_remove.yml',
         '.gitleaksignore',
         '.gitpod.yml',
         '.graphqlrc',

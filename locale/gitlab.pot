@@ -3354,6 +3354,9 @@ msgstr ""
 msgid "Account: %{account}"
 msgstr ""
 
+msgid "AccountTokens|Service Account/Tokens"
+msgstr ""
+
 msgid "Achievements"
 msgstr ""
 
@@ -14942,22 +14945,22 @@ msgstr ""
 msgid "CommandPalette|Project files"
 msgstr ""
 
+msgid "CommandPalette|Search by filename"
+msgstr ""
+
+msgid "CommandPalette|Search by project (minimum 3 characters)"
+msgstr ""
+
+msgid "CommandPalette|Search by username (minimum 3 characters)"
+msgstr ""
+
+msgid "CommandPalette|Search for a page or action"
+msgstr ""
+
 msgid "CommandPalette|Settings"
 msgstr ""
 
-msgid "CommandPalette|command"
-msgstr ""
-
-msgid "CommandPalette|go to project file"
-msgstr ""
-
 msgid "CommandPalette|issue (enter at least 3 chars)"
-msgstr ""
-
-msgid "CommandPalette|project (enter at least 3 chars)"
-msgstr ""
-
-msgid "CommandPalette|user (enter at least 3 chars)"
 msgstr ""
 
 msgid "Commands applied"
@@ -35540,6 +35543,12 @@ msgstr ""
 msgid "LDAP|No LDAP synchronizations"
 msgstr ""
 
+msgid "LDAP|Select server"
+msgstr ""
+
+msgid "LDAP|Server"
+msgstr ""
+
 msgid "LDAP|Sync method"
 msgstr ""
 
@@ -43968,6 +43977,9 @@ msgstr ""
 msgid "Pages|Last updated"
 msgstr ""
 
+msgid "Pages|Never expires"
+msgstr ""
+
 msgid "Pages|No deployments yet"
 msgstr ""
 
@@ -43978,9 +43990,6 @@ msgid "Pages|Parallel deployments: %{count}"
 msgstr ""
 
 msgid "Pages|Path prefix"
-msgstr ""
-
-msgid "Pages|Primary deployment"
 msgstr ""
 
 msgid "Pages|Restore"
@@ -51743,6 +51752,9 @@ msgstr ""
 msgid "Roles and permissions"
 msgstr ""
 
+msgid "Roles|Groups"
+msgstr ""
+
 msgid "Roll up totals may reflect child items you don’t have access to."
 msgstr ""
 
@@ -53386,10 +53398,19 @@ msgstr ""
 msgid "ScanResultPolicy|%{listType} according to the %{buttonType}"
 msgstr ""
 
+msgid "ScanResultPolicy|Add exception"
+msgstr ""
+
+msgid "ScanResultPolicy|Add exception(s)"
+msgstr ""
+
 msgid "ScanResultPolicy|Add new criteria"
 msgstr ""
 
 msgid "ScanResultPolicy|Add new license"
+msgstr ""
+
+msgid "ScanResultPolicy|Add policy exception"
 msgstr ""
 
 msgid "ScanResultPolicy|Age criteria can only be added for pre-existing vulnerabilities"
@@ -53500,6 +53521,9 @@ msgstr ""
 msgid "ScanResultPolicy|For scanners that require builds, when a project does not have a build pipeline."
 msgstr ""
 
+msgid "ScanResultPolicy|Groups"
+msgstr ""
+
 msgid "ScanResultPolicy|If selected, the following choices will overwrite %{linkStart}project settings%{linkEnd} but only affect the branches selected in the policy."
 msgstr ""
 
@@ -53566,6 +53590,9 @@ msgstr ""
 msgid "ScanResultPolicy|Override project approval settings"
 msgstr ""
 
+msgid "ScanResultPolicy|Policy Exception settings"
+msgstr ""
+
 msgid "ScanResultPolicy|Pre-existing"
 msgstr ""
 
@@ -53608,6 +53635,9 @@ msgstr ""
 msgid "ScanResultPolicy|Required scanners defined in the condition did not run or produce any artifacts."
 msgstr ""
 
+msgid "ScanResultPolicy|Roles"
+msgstr ""
+
 msgid "ScanResultPolicy|Save allowlist"
 msgstr ""
 
@@ -53629,7 +53659,13 @@ msgstr ""
 msgid "ScanResultPolicy|Select list type"
 msgstr ""
 
+msgid "ScanResultPolicy|Service accounts/tokens"
+msgstr ""
+
 msgid "ScanResultPolicy|Severity is:"
+msgstr ""
+
+msgid "ScanResultPolicy|Source branch pattern"
 msgstr ""
 
 msgid "ScanResultPolicy|Specify the packages where this license requires approval before use"
@@ -58820,6 +58856,9 @@ msgid "Source project cannot be found."
 msgstr ""
 
 msgid "Source-Branch"
+msgstr ""
+
+msgid "SourceBranchPattern|Source branch patterns"
 msgstr ""
 
 msgid "SourceEditor|\"el\" parameter is required for createInstance()"

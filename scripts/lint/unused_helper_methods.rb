@@ -8,8 +8,8 @@ require 'parallel'
 require 'rainbow'
 require 'yaml'
 
-UNUSED_METHODS = 49
 EXCLUDED_METHODS_PATH = '.gitlab/lint/unused_helper_methods/excluded_methods.yml'
+POTENTIAL_METHODS_PATH = '.gitlab/lint/unused_helper_methods/potential_methods_to_remove.yml'
 
 print_output = %w[true 1].include? ENV["REPORT_ALL_UNUSED_METHODS"]
 
@@ -72,18 +72,21 @@ if print_output
   exit 0
 end
 
-if unused.size > UNUSED_METHODS
-  added = unused.size - UNUSED_METHODS
+potential_methods_count = YAML.load_file(POTENTIAL_METHODS_PATH, symbolize_names: true).size
+
+if unused.size > potential_methods_count
+  added = unused.size - potential_methods_count
   puts Rainbow("ERROR: #{added} unused methods were added. Please remove them.").red.bright
 
   exit 1
-elsif unused.size < UNUSED_METHODS
+elsif unused.size < potential_methods_count
   warning = <<~UPDATE_UNUSED
-  WARNING: It appears you have removed unused methods. Thank you!
+  🏆 It appears you have removed unused methods. Thank you!
 
-  Please update scripts/lint/unused_helper_methods.rb to reflect the new number:
-  UNUSED_METHODS = #{unused.size}
+  Please update potential_methods_to_remove.yml with the current list of unused methods.
   UPDATE_UNUSED
 
-  puts Rainbow(warning).yellow.bright
+  print Rainbow(warning).yellow.bright
+
+  exit 1
 end

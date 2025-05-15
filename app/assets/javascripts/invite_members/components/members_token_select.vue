@@ -4,7 +4,8 @@ import { debounce, isEmpty } from 'lodash';
 import { __ } from '~/locale';
 import { getUsers } from '~/rest_api';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { memberName } from '../utils/member_utils';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { memberName, searchUsers } from '../utils/member_utils';
 import {
   SEARCH_DELAY,
   USERS_FILTER_ALL,
@@ -22,6 +23,8 @@ export default {
     GlIcon,
     GlSprintf,
   },
+  mixins: [glFeatureFlagsMixin()],
+  inject: ['searchUrl'],
   props: {
     placeholder: {
       type: String,
@@ -133,6 +136,9 @@ export default {
       }));
     },
     retrieveUsersRequest() {
+      if (this.glFeatures.newImplementationOfInviteMembersSearch) {
+        return searchUsers(this.searchUrl, this.query);
+      }
       return getUsers(this.query, this.queryOptions);
     },
     retrieveUsers: debounce(async function debouncedRetrieveUsers() {

@@ -5,6 +5,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import * as UserApi from '~/api/user_api';
 import MembersTokenSelect from '~/invite_members/components/members_token_select.vue';
 import { VALID_TOKEN_BACKGROUND, INVALID_TOKEN_BACKGROUND } from '~/invite_members/constants';
+import * as MembersUtils from '~/invite_members/utils/member_utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 const label = 'testgroup';
@@ -16,8 +17,9 @@ const handleEnterSpy = jest.fn();
 
 /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
 let wrapper;
+const searchUrl = 'https://example.com/gitlab/groups/mygroup/-/group_members/invite_search.json';
 
-const createComponent = ({ props = {} } = {}) => {
+const createComponent = ({ props = {}, glFeatures = {} } = {}) => {
   wrapper = mountExtended(MembersTokenSelect, {
     propsData: {
       ariaLabelledby: label,
@@ -25,6 +27,7 @@ const createComponent = ({ props = {} } = {}) => {
       placeholder,
       ...props,
     },
+    provide: { glFeatures, searchUrl },
   });
 };
 
@@ -89,6 +92,25 @@ describe('MembersTokenSelect', () => {
   });
 
   describe('users', () => {
+    describe('when `newImplementationOfInviteMembersSearch` is enabled', () => {
+      let tokenSelector;
+
+      beforeEach(() => {
+        jest.spyOn(MembersUtils, 'searchUsers').mockResolvedValue({ data: allUsers });
+        createComponent({ glFeatures: { newImplementationOfInviteMembersSearch: true } });
+        tokenSelector = findTokenSelector();
+      });
+
+      it('calls the API with search parameter with whitespaces and is trimmed', async () => {
+        tokenSelector.vm.$emit('text-input', ' foo@bar.com ');
+
+        await waitForPromises();
+
+        expect(MembersUtils.searchUsers).toHaveBeenCalledWith(searchUrl, 'foo@bar.com');
+        expect(tokenSelector.props('hideDropdownWithNoItems')).toBe(false);
+      });
+    });
+
     beforeEach(() => {
       jest.spyOn(UserApi, 'getUsers').mockResolvedValue({ data: allUsers });
       createComponent();

@@ -128,6 +128,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
         end
 
         delete :leave
+
+        get :invite_search, format: :json
       end
     end
 

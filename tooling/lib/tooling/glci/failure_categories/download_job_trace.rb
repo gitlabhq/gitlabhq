@@ -22,7 +22,7 @@ module Tooling
       class DownloadJobTrace
         DEFAULT_TRACE_MARKER = 'failure-analyzer'
         DEFAULT_MAX_ATTEMPTS = 5
-        DEFAULT_RETRY_DELAY_SECONDS = 10
+        DEFAULT_RETRY_DELAY_SECONDS = 20
 
         def initialize(
           api_url: ENV['CI_API_V4_URL'],
