@@ -86,7 +86,9 @@ RSpec.describe 'Database schema',
       p_ci_pipelines: %w[partition_id auto_canceled_by_partition_id auto_canceled_by_id trigger_id],
       p_ci_runner_machine_builds: %w[project_id],
       ci_runner_taggings: %w[runner_id sharding_key_id], # The sharding_key_id value is meant to populate the partitioned table, no other usage. The runner_id FK exists at the partition level
-      ci_runner_taggings_instance_type: %w[sharding_key_id], # This field is always NULL in this partition
+      ci_runner_taggings_instance_type: %w[tag_id sharding_key_id], # sharding_key_id is always NULL in this partition, tag_id is handled on ci_runner_taggings
+      ci_runner_taggings_group_type: %w[tag_id], # tag_id is handled on ci_runner_taggings
+      ci_runner_taggings_project_type: %w[tag_id], # tag_id is handled on ci_runner_taggings
       ci_runners: %w[sharding_key_id], # This value is meant to populate the partitioned table, no other usage
       instance_type_ci_runners: %w[creator_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners routing table.
       group_type_ci_runners: %w[creator_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners routing table.

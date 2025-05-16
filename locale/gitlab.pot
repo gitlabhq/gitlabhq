@@ -5776,6 +5776,9 @@ msgstr ""
 msgid "AiPowered|Are you sure you want to turn off GitLab Duo Workflow?"
 msgstr ""
 
+msgid "AiPowered|Assign models to AI-native features."
+msgstr ""
+
 msgid "AiPowered|Assign seats"
 msgstr ""
 
@@ -5810,6 +5813,9 @@ msgid "AiPowered|Configure AI-native GitLab Duo features. %{linkStart}Which feat
 msgstr ""
 
 msgid "AiPowered|Configure GitLab Duo Self-Hosted"
+msgstr ""
+
+msgid "AiPowered|Configure features"
 msgstr ""
 
 msgid "AiPowered|Configure how long GitLab Duo Chat conversations persist before they expire:"
@@ -5939,6 +5945,9 @@ msgid "AiPowered|Local AI gateway URL"
 msgstr ""
 
 msgid "AiPowered|Might result in requests having higher latency."
+msgstr ""
+
+msgid "AiPowered|Model Selection"
 msgstr ""
 
 msgid "AiPowered|Monitor, manage, and customize AI features to ensure efficient utilization and alignment."
@@ -37589,6 +37598,9 @@ msgstr ""
 msgid "MemberRole|Failed to save role: %{error}"
 msgstr ""
 
+msgid "MemberRole|Failed to schedule LDAP sync. Please retry syncing."
+msgstr ""
+
 msgid "MemberRole|Group cn:"
 msgstr ""
 
@@ -37688,6 +37700,9 @@ msgstr ""
 msgid "MemberRole|Sync all"
 msgstr ""
 
+msgid "MemberRole|Sync scheduled"
+msgstr ""
+
 msgid "MemberRole|The CSV report contains a list of users, assigned role and access in all groups, subgroups, and projects. When the export is completed, it will be sent as an attachment to %{email}."
 msgstr ""
 
@@ -37695,6 +37710,9 @@ msgid "MemberRole|The Developer role gives users access to contribute code while
 msgstr ""
 
 msgid "MemberRole|The Guest role is for users who need visibility into a project or group but should not have the ability to make changes, such as external stakeholders."
+msgstr ""
+
+msgid "MemberRole|The LDAP sync has been scheduled. Refresh the page to view sync status."
 msgstr ""
 
 msgid "MemberRole|The Maintainer role is primarily used for managing code reviews, approvals, and administrative settings for projects. This role can also manage project memberships."
@@ -67147,6 +67165,9 @@ msgstr ""
 msgid "VirtualRegistry|Add upstream"
 msgstr ""
 
+msgid "VirtualRegistry|Are you sure you want to delete %{strongOpen}%{name}%{strongClose}?"
+msgstr ""
+
 msgid "VirtualRegistry|Cache: %{size}"
 msgstr ""
 
@@ -67165,10 +67186,19 @@ msgstr ""
 msgid "VirtualRegistry|Create upstream"
 msgstr ""
 
+msgid "VirtualRegistry|Delete Maven registry"
+msgstr ""
+
+msgid "VirtualRegistry|Delete registry"
+msgstr ""
+
 msgid "VirtualRegistry|Delete upstream"
 msgstr ""
 
 msgid "VirtualRegistry|Description (optional)"
+msgstr ""
+
+msgid "VirtualRegistry|Edit registry"
 msgstr ""
 
 msgid "VirtualRegistry|Edit upstream"
@@ -67196,6 +67226,12 @@ msgid "VirtualRegistry|Maven virtual registry"
 msgstr ""
 
 msgid "VirtualRegistry|Maven virtual registry was created"
+msgstr ""
+
+msgid "VirtualRegistry|Maven virtual registry was deleted"
+msgstr ""
+
+msgid "VirtualRegistry|Maven virtual registry was updated"
 msgstr ""
 
 msgid "VirtualRegistry|Move upstream down"

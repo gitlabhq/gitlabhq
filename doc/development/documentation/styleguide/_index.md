@@ -1013,6 +1013,11 @@ Sometimes they are more precise and will be maintained more actively.
 
 For each external link you add, weigh the customer benefit with the maintenance difficulties.
 
+### Links to handbook
+
+Limit links to the handbook. Some links are unavoidable, like licensing terms, data usage and access policies,
+testing agreements, and terms and conditions.
+
 ### Confidential or restricted access links
 
 Don't link directly to:

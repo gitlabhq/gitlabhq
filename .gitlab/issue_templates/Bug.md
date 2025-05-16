@@ -88,6 +88,20 @@ will also determine whether the bug is fixed in a more recent version. -->
 
 <!-- If you can, link to the line of code that might be responsible for the problem. -->
 
+### Patch release information for backports
+
+If the bug fix needs to be backported in a [patch release](https://handbook.gitlab.com/handbook/engineering/releases/patch-releases) to a version
+under [the maintenance policy](https://docs.gitlab.com/policy/maintenance/), please follow the steps on the
+[patch release runbook for GitLab engineers](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/engineers.md).
+
+Refer to the [internal "Release Information" dashboard](https://dashboards.gitlab.net/d/delivery-release_info/delivery3a-release-information?orgId=1)
+for information about the next patch release, including the targeted versions, expected release date, and current status.
+
+#### High-severity bug remediation
+
+To remediate high-severity issues requiring an [internal release](https://handbook.gitlab.com/handbook/engineering/releases/internal-releases/) for single-tenant SaaS instances,
+refer to the [internal release process for engineers](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/internal-releases/engineers.md?ref_type=heads).
+
 /label ~"type::bug"
 <!-- If you don't have /label privileges, follow up with an issue comment of `@gitlab-bot label ~"type::bug"` -->
 

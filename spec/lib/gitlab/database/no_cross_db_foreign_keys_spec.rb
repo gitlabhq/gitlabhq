@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'cross-database foreign keys' do
+RSpec.describe 'cross-database foreign keys', feature_category: :database do
   # While we are building out Cells, we will be moving tables from gitlab_main schema
   # to either gitlab_main_clusterwide schema or gitlab_main_cell schema.
   # During this transition phase, cross database foreign keys need
@@ -16,9 +16,7 @@ RSpec.describe 'cross-database foreign keys' do
       'zoekt_replicas.zoekt_enabled_namespace_id',
       'zoekt_replicas.namespace_id',
       'system_access_microsoft_applications.namespace_id',
-      'ci_runner_taggings_project_type.tag_id',                  # https://gitlab.com/gitlab-org/gitlab/-/issues/467664
-      'ci_runner_taggings_group_type.tag_id',                    # https://gitlab.com/gitlab-org/gitlab/-/issues/467664
-      'p_ci_build_tags.tag_id',                                  # https://gitlab.com/gitlab-org/gitlab/-/issues/470872
+      'p_ci_build_tags.tag_id',                                          # https://gitlab.com/gitlab-org/gitlab/-/issues/470872
       'ci_secure_file_states.ci_secure_file_id',                         # https://gitlab.com/groups/gitlab-org/-/epics/17347
       'dependency_proxy_blob_states.dependency_proxy_blob_id',           # https://gitlab.com/groups/gitlab-org/-/epics/17347
       'dependency_proxy_blob_states.group_id',                           # https://gitlab.com/groups/gitlab-org/-/epics/17347

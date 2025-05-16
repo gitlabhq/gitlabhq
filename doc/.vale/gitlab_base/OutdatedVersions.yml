@@ -10,4 +10,4 @@ level: suggestion
 nonword: true
 ignorecase: true
 tokens:
-  - "GitLab v?(2[^0-9]|[4-9]|1[0-4])"
+  - "GitLab v?(2[^0-9]|[4-9]|1[0-5])"

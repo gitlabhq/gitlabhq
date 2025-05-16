@@ -401,7 +401,7 @@ to close. Users can include issue closing patterns in the merge request descript
 of a commit message. Closing messages in commit messages are easy to miss. In both cases, the merge request widget
 shows information about the issue to close on merge:
 
-![This merge request closes issue #2754.](../merge_requests/img/closing_pattern_v17_4.png)
+![This merge request closes issue #2754.](img/closing_pattern_v17_4.png)
 
 When you merge a merge request, GitLab checks that you have permission to close the targeted issues.
 In public repositories, this check is important, because external users can create both merge requests

@@ -6,7 +6,7 @@
   body: |  # Do not modify this line, instead modify the lines below.
     The [required pipeline configuration](https://docs.gitlab.com/administration/settings/continuous_integration/#required-pipeline-configuration-deprecated) feature is deprecated in GitLab 14.8 for Premium customers and is scheduled for removal in GitLab 15.0. This feature is not deprecated for GitLab Ultimate customers.
 
-    This change to move the feature to GitLab Ultimate tier is intended to help our features better align with our [pricing philosophy](https://handbook.gitlab.com/handbook/company/pricing/#three-tiers) as we see demand for this feature originating primarily from executives.
+    This change to move the feature to GitLab Ultimate tier is intended to help our features better align with our pricing philosophy as we see demand for this feature originating primarily from executives.
 
     This change will also help GitLab remain consistent in its tiering strategy with the other related Ultimate-tier features of:
     [Security policies](https://docs.gitlab.com/user/application_security/policies/) and [compliance framework pipelines](https://docs.gitlab.com/user/project/settings/#compliance-pipeline-configuration).

@@ -111,7 +111,7 @@ as taking longer to resolve. To disable streaming:
 1. In VS Code, on the top bar, go to **Code > Settings > Settings**.
 1. On the top right corner, select **Open Settings (JSON)** to edit your `settings.json` file:
 
-   ![The icons on the top right corner of VS Code, including 'Open Settings.'](../../../../editor_extensions/visual_studio_code/img/open_settings_v17_5.png)
+   ![The icons on the top right corner of VS Code, including 'Open Settings.'](img/open_settings_v17_5.png)
 1. In your `settings.json` file, add this line, or set it to `false` it already exists:
 
    ```json

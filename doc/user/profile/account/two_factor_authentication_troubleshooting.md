@@ -138,4 +138,4 @@ To create a support request:
 ### Reset 2FA for enterprise users
 
 If you are a top-level group Owner on a paid plan, you can disable 2FA for enterprise users.
-For more information, see [Disable two-factor-authentication](../../enterprise_user/_index.md#disable-two-factor-authentication).
+For more information, see [disable 2FA for enterprise users](../../../security/two_factor_authentication.md#enterprise-users).

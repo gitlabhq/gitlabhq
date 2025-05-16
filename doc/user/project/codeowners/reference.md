@@ -107,7 +107,7 @@ internal/README.md @user2
 Each Code Owner in the merge request widget is listed under a label.
 The following image shows `Default`, `Frontend`, and `Technical Writing` sections:
 
-![MR widget - Sectional Code Owners](../img/sectional_code_owners_v17_4.png)
+![MR widget - Sectional Code Owners](img/sectional_code_owners_v17_4.png)
 
 For more section configuration options, see:
 
@@ -208,7 +208,7 @@ In this example, the `[Go]` section is optional:
 
 The optional Code Owners section displays in merge requests under the description:
 
-![MR widget - Optional Code Owners sections](../img/optional_code_owners_sections_v17_4.png)
+![MR widget - Optional Code Owners sections](img/optional_code_owners_sections_v17_4.png)
 
 If a section is duplicated in the file, and one of them is marked as optional and the other isn't, the section is required.
 
@@ -333,11 +333,11 @@ In this example:
 - The group `group-name` is listed under the `[Maintainers]` section.
 - The `group-name` contains the following direct members:
 
-  ![List of group members.](../img/direct_group_members_v17_9.png)
+  ![List of group members.](img/direct_group_members_v17_9.png)
 
 - In the merge request approval widget, the same direct members are listed as `Maintainers`:
 
-  ![Merge request maintainers.](../img/merge_request_maintainers_v17_9.png)
+  ![Merge request maintainers.](img/merge_request_maintainers_v17_9.png)
 
 {{< alert type="note" >}}
 

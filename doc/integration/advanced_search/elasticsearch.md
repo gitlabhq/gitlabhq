@@ -570,8 +570,16 @@ in your Sidekiq logs. For more information, see
 
 - Indexing all project records [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428070) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `search_index_all_projects`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148111) in GitLab 16.11. Feature flag `search_index_all_projects` removed.
+- Indexing vulnerability records [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/536299) on GitLab.com and GitLab Dedicated in GitLab 18.1 [with a flag](../../administration/feature_flags.md) named `vulnerability_es_ingestion`. Disabled by default.
 
 {{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
 
 When you select the **Limit the amount of namespace and project data to index** checkbox,
 you can specify namespaces and projects to index.
@@ -581,6 +589,8 @@ When you enable this setting:
 
 - Namespaces or projects must be specified for full indexing.
 - Project records (metadata like project names and descriptions) are always indexed for all projects.
+- Vulnerability records are always indexed for all projects and namespaces
+  to support filtering in security reports.
 - [Associated data](#advanced-search-index-scopes) is indexed only for the namespaces and projects you specify.
 
 {{< alert type="warning" >}}
@@ -997,6 +1007,11 @@ When performing a search, the GitLab index uses the following scopes:
 | `wiki_blobs`     | Wiki contents          |
 | `users`          | Users                  |
 | `epics`          | Epic data              |
+
+On GitLab.com and GitLab Dedicated, vulnerability records are always indexed
+for all projects and namespaces to support features outside of search.
+Indexing vulnerability records on GitLab Self-Managed is proposed in
+[issue 525484](https://gitlab.com/gitlab-org/gitlab/-/issues/525484).
 
 ## Tuning
 

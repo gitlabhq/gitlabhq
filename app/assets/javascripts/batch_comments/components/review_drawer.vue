@@ -153,6 +153,9 @@ export default {
       'discardDrafts',
       'clearDrafts',
     ]),
+    isOnLatestDiff(draft) {
+      return draft.position?.head_sha === this.getNoteableData.diff_head_sha;
+    },
     async onClickDraft(draft) {
       if (this.viewDiffsFileByFile) {
         await this.goToFile({ path: draft.file_path });

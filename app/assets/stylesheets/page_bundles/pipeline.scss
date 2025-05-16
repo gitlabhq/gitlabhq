@@ -110,9 +110,23 @@
   min-height: calc(#{$dropdown-max-height-lg} + #{$gl-spacing-scale-6});
 }
 
+.pipeline-job-action {
+  &:hover {
+    background-color: var(--gl-action-neutral-background-color-hover);
+  }
+
+  &:focus {
+    background-color: var(--gl-action-neutral-background-color-focus);
+  }
+
+  &:active {
+    background-color: var(--gl-action-neutral-background-color-active);
+  }
+}
+
 // stylelint-disable-next-line gitlab/no-gl-class
 .gl-pipeline-job-width {
-  width: 100%;
+  @apply gl-w-full;
   max-width: 400px;
 
   .pipeline-graph-container & {

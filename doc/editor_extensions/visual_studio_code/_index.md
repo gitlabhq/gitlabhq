@@ -83,7 +83,7 @@ To select an account:
 1. Expand **Issues and Merge Requests**.
 1. Select the line containing **(multiple projects)** to expand the list of accounts.
 1. Select your desired project:
-   ![select project-account combination](../img/select-project-account_v17_7.png)
+   ![select project-account combination](img/select-project-account_v17_7.png)
 
 The **Issues and Merge requests** list updates with your selected project's information.
 
@@ -184,7 +184,7 @@ Use this extension to review, comment on, and approve merge requests without lea
 1. To review the proposed changes to a file, select the file from the list to show it in a VS Code tab.
    GitLab shows diff comments inline in the tab. In the list, deleted files are marked in red:
 
-   ![An alphabetical list of files changed in this merge request, including the change types.](../img/vscode_view_changed_file_v17_6.png)
+   ![An alphabetical list of files changed in this merge request, including the change types.](img/vscode_view_changed_file_v17_6.png)
 
 Use the diff to:
 

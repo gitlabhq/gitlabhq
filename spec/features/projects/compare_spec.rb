@@ -192,9 +192,7 @@ RSpec.describe "Compare", :js, feature_category: :source_code_management do
       # wait for searching for commits to finish
       has_testid?('listbox-no-results-text')
 
-      within(find_by_testid('listbox-search-input')) do
-        find('input').send_keys(:return)
-      end
+      find_by_testid('listbox-search-input').send_keys(:return)
     else
       # find before all to wait for the items visibility
       within(".js-compare-#{dropdown_type}-dropdown") do

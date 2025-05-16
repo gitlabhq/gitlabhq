@@ -61,7 +61,7 @@ you can rename it to `<namespace>.gitlab.io`, where `<namespace>` is your GitLab
    If you set the repository path to `gitlab-tests.gitlab.io`,
    the resulting URL for your Pages website is `https://gitlab-tests.gitlab.io`.
 
-   ![Change repository's path](../img/change_path_v12_10.png)
+   ![Change repository's path](img/change_path_v12_10.png)
 
 1. Open your SSG configuration file and change the [base URL](../getting_started_part_one.md#urls-and-base-urls)
    from `"project-name"` to `""`. The project name setting varies by SSG and may not be in the configuration file.

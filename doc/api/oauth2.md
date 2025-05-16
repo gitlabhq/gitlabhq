@@ -414,7 +414,7 @@ detailed flow description.
 Resource owner password credentials are disabled for users with
 [two-factor authentication](../user/profile/account/two_factor_authentication.md) turned on
 and [enterprise users](../user/enterprise_user/_index.md)
-with [password authentication disabled for their group](../user/enterprise_user/_index.md#disable-authentication-methods).
+with [password authentication disabled for their group](../user/enterprise_user/_index.md#restrict-authentication-methods).
 These users can access the API using [personal access tokens](../user/profile/personal_access_tokens.md)
 instead.
 {{< /alert >}}

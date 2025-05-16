@@ -285,7 +285,7 @@ To explain the code in a merge request:
 1. On the new tab, select the lines you want to have explained.
 1. On the left side, select the question mark ({{< icon name="question" >}}). You might have to scroll to the first line of your selection to view it.
 
-   ![explain code in a merge request](../repository/img/explain_code_v17_1.png)
+   ![explain code in a merge request](img/explain_code_v17_1.png)
 
 Duo Chat explains the code. It might take a moment for the explanation to be generated.
 

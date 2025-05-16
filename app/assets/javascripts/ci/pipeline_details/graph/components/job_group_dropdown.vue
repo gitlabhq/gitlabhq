@@ -118,16 +118,16 @@ export default {
       <button
         type="button"
         :class="[cssClassJobName, { 'ci-job-item-failed': isFailed }]"
-        class="gl-w-full gl-bg-transparent gl-pr-4"
+        class="gl-bg-transparent"
       >
-        <div class="gl-flex gl-items-stretch gl-justify-between">
+        <div class="gl-flex gl-items-center gl-justify-between">
           <job-item
             :type="$options.jobItemTypes.jobDropdown"
             :job="group"
             :stage-name="stageName"
             hide-tooltip
           />
-          <gl-badge variant="muted" class="-gl-ml-5 -gl-mr-2 gl-self-center">
+          <gl-badge variant="muted">
             {{ group.size }}
           </gl-badge>
         </div>

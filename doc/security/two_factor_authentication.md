@@ -186,6 +186,22 @@ when they next sign in to GitLab.
 
 {{< /alert >}}
 
+### For all users
+
+To disable 2FA for all users even when forced 2FA is disabled, use the following Rake task.
+
+- For installations that use the Linux package:
+
+  ```shell
+  sudo gitlab-rake gitlab:two_factor:disable_for_all_users
+  ```
+
+- For self-compiled installations:
+
+  ```shell
+  sudo -u git -H bundle exec rake gitlab:two_factor:disable_for_all_users RAILS_ENV=production
+  ```
+
 ### For a single user
 
 #### Administrators
@@ -212,21 +228,31 @@ You can disable 2FA for your own account.
 
 You cannot use the API endpoint to disable 2FA for administrators.
 
-### For all users
+#### Enterprise users
 
-To disable 2FA for all users even when forced 2FA is disabled, use the following Rake task.
+{{< details >}}
 
-- For installations that use the Linux package:
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
 
-  ```shell
-  sudo gitlab-rake gitlab:two_factor:disable_for_all_users
-  ```
+{{< /details >}}
 
-- For self-compiled installations:
+{{< history >}}
 
-  ```shell
-  sudo -u git -H bundle exec rake gitlab:two_factor:disable_for_all_users RAILS_ENV=production
-  ```
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9484) in GitLab 15.8.
+
+{{< /history >}}
+
+Top-level group Owners can disable two-factor authentication (2FA) for enterprise users.
+
+To disable 2FA:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Manage > Members**.
+1. Find a user with the **Enterprise** and **2FA** badges.
+1. Select **More actions** ({{< icon name="ellipsis_v" >}}) and select **Disable two-factor authentication**.
+
+You can also [use the API](../api/group_enterprise_users.md#disable-two-factor-authentication-for-an-enterprise-user) to disable 2FA for enterprise users.
 
 ## 2FA for Git over SSH operations
 

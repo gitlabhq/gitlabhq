@@ -77,17 +77,7 @@ export default {
       required: true,
     },
   },
-  jobClasses: [
-    'gl-p-3',
-    'gl-border-0',
-    '!gl-rounded-base',
-    'hover:gl-bg-strong',
-    'dark:hover:gl-bg-gray-200',
-    'focus:gl-bg-strong',
-    'dark:focus:gl-bg-gray-200',
-    'hover:gl-text-strong',
-    'focus:gl-text-strong',
-  ],
+  jobClasses: ['gl-w-full', 'gl-p-3', 'gl-border-0', '!gl-rounded-base', 'pipeline-job-action'],
   data() {
     return {
       showConfirmationModal: false,

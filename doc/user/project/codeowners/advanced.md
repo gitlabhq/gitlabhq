@@ -150,7 +150,7 @@ For example, to require two approvals for the `[Documentation]` section:
 
 The `Documentation` Code Owners section in the Approvals area displays two approvals are required:
 
-![MR widget - Multiple Approval Code Owners sections](../img/multi_approvals_code_owners_sections_v15_9.png)
+![MR widget - Multiple Approval Code Owners sections](img/multi_approvals_code_owners_sections_v15_9.png)
 
 ## Group inheritance and eligibility
 

@@ -178,6 +178,17 @@ The token generated when you create an agent for Kubernetes. Use **agent access 
 - secret token
 - authentication token
 
+## Agentic Chat, GitLab Duo Agentic Chat
+
+GitLab Duo Agentic Chat is an experimental, enhanced version of [GitLab Duo Chat](#chat-gitlab-duo-chat).
+
+Use **Agentic Chat** with a capital `a` and `c` for **Agentic Chat** or **GitLab Duo Agentic Chat**.
+
+On first use on a page, use **GitLab Duo Agentic Chat**.
+Thereafter, use **Agentic Chat** by itself.
+
+Do not use **Duo Agentic Chat**.
+
 ## agnostic
 
 Instead of **agnostic**, use **platform-independent** or **vendor-neutral**.
@@ -408,6 +419,11 @@ Instead of:
 - On the **Seat utilization** card, select **Assign seats**.
 
 ## Chat, GitLab Duo Chat
+
+GitLab Duo Chat is an AI-native assistant that helps developers with contextual,
+conversational code explanations, troubleshooting, and guidance.
+
+It is different from [GitLab Duo Agentic Chat](#agentic-chat-gitlab-duo-agentic-chat).
 
 Use **Chat** with a capital `c` for **Chat** or **GitLab Duo Chat**.
 
