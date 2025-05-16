@@ -91,29 +91,6 @@ These versions of Ubuntu are supported.
 | Ubuntu 22.04     | GitLab CE / GitLab EE 15.5.0   | `amd64`, `arm64` | [Ubuntu installation documentation](https://about.gitlab.com/install/#ubuntu) | April 2027           | [Ubuntu details](https://wiki.ubuntu.com/Releases) |
 | Ubuntu 24.04     | GitLab CE / GitLab EE 17.1.0   | `amd64`, `arm64` | [Ubuntu installation documentation](https://about.gitlab.com/install/#ubuntu) | April 2029           | [Ubuntu details](https://wiki.ubuntu.com/Releases) |
 
-## Update GitLab package sources after upgrading the OS
-
-After upgrading the operating system, you might also need to update the GitLab package source URL in your package
-manager configuration.
-
-If your package manager reports that no further updates are available, but you know updates exist, repeat the
-instructions on the [Linux package install guide](https://about.gitlab.com/install/#content) to add the GitLab
-package repository. Future GitLab upgrades are fetched according to your upgraded operating system.
-
-## Update both GitLab and the operating system
-
-To upgrade both the operating system (OS) and GitLab:
-
-1. Upgrade the OS.
-1. Check if it's necessary to [update the GitLab package sources](#update-gitlab-package-sources-after-upgrading-the-os).
-1. [Upgrade GitLab](../../update/_index.md).
-
-## Corrupted Postgres indexes after upgrading the OS
-
-As part of upgrading the operating system, if your `glibc` version changes, then you must follow
-[Upgrading operating systems for PostgreSQL](../postgresql/upgrading_os.md) to avoid corrupted
-indexes.
-
 ## Packages for ARM64
 
 GitLab provides arm64/aarch64 packages for some supported operating systems.

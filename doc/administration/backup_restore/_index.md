@@ -15,12 +15,12 @@ title: Back up and restore overview
 Your GitLab instance contains critical data for your software development or organization.
 It is important to have a disaster recovery plan that includes regular backups for:
 
-- **Data protection**: Safeguard against data loss due to hardware failures, software bugs, or accidental deletions.
-- **Disaster recovery**: Restore GitLab instances and data in case of adverse events.
-- **Version control**: Provide historical snapshots that enable rollbacks to previous states.
-- **Compliance**: Meet the regulatory requirements of specific industries.
-- **Migration**: Facilitate moving GitLab to new servers or environments.
-- **Testing and development**: Create copies for testing upgrades or new features without risk to production data.
+- Data protection: Safeguard against data loss due to hardware failures, software bugs, or accidental deletions.
+- Disaster recovery: Restore GitLab instances and data in case of adverse events.
+- Version control: Provide historical snapshots that enable rollbacks to previous states.
+- Compliance: Meet the regulatory requirements of specific industries.
+- Migration: Facilitate moving GitLab to new servers or environments.
+- Testing and development: Create copies for testing upgrades or new features without risk to production data.
 
 {{< alert type="note" >}}
 

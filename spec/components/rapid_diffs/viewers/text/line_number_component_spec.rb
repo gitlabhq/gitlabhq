@@ -6,6 +6,7 @@ RSpec.describe RapidDiffs::Viewers::Text::LineNumberComponent, type: :component,
   let_it_be(:diff_file) { build(:diff_file) }
   let_it_be(:old_line) { diff_file.diff_lines_with_match_tail.find { |line| line.type == 'old' } }
   let_it_be(:new_line) { diff_file.diff_lines_with_match_tail.find { |line| line.type == 'new' } }
+  let_it_be(:meta_line) { diff_file.diff_lines_with_match_tail.find { |line| line.type == 'match' } }
   let(:link) { page.find('a') }
   let(:td) { page.find('td') }
 
@@ -24,6 +25,18 @@ RSpec.describe RapidDiffs::Viewers::Text::LineNumberComponent, type: :component,
   it "renders empty cell for added line on left side" do
     render_component(line: new_line, position: :old)
     expect(page).to have_selector('td[data-change=added]')
+    expect(page).not_to have_selector('a')
+  end
+
+  it "renders empty cell for meta line on right side" do
+    render_component(line: meta_line, position: :new)
+    expect(page).to have_selector('td[data-change="meta"]')
+    expect(page).not_to have_selector('a')
+  end
+
+  it "renders empty cell for meta line on left side" do
+    render_component(line: meta_line, position: :old)
+    expect(page).to have_selector('td[data-change="meta"]')
     expect(page).not_to have_selector('a')
   end
 

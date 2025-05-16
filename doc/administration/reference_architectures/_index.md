@@ -626,7 +626,7 @@ For deploying GitLab over multiple data centers or regions, we offer [GitLab Geo
 
 ## Validation and test results
 
-The [GitLab Delivery: Framework](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/gitlab-delivery/framework/) team
+GitLab
 does regular smoke and performance tests for these architectures to ensure they
 remain compliant.
 

@@ -252,7 +252,7 @@ Next, we must associate the **public** subnets to the route table:
 
 We also must create two private route tables so that instances in each private subnet can reach the internet via the NAT gateway in the corresponding public subnet in the same availability zone.
 
-1. Follow the previous steps to create two private route tables. Name them `gitlab-private-a` and `gitlab-private-b`. 
+1. Follow the previous steps to create two private route tables. Name them `gitlab-private-a` and `gitlab-private-b`.
 1. Next, add a new route to each of the private route tables where the destination is `0.0.0.0/0` and the target is one of the NAT gateways we created earlier.
    1. Add the NAT gateway we created in `gitlab-public-10.0.0.0` as the target for the new route in the `gitlab-private-a` route table.
    1. Similarly, add the NAT gateway in `gitlab-public-10.0.2.0` as the target for the new route in the `gitlab-private-b`.
@@ -669,11 +669,38 @@ Let's create an EC2 instance where we install Gitaly:
 
 {{< alert type="note" >}}
 
-Instead of storing configuration _and_ repository data on the root volume, you can also choose to add an additional EBS volume for repository storage. Follow the same guidance mentioned previously. See the [Amazon EBS pricing](https://aws.amazon.com/ebs/pricing/). We do not recommend using EFS as it may negatively impact the performance of GitLab. You can review the [relevant documentation](../../administration/nfs.md#avoid-using-cloud-based-file-systems) for more details.
+Instead of storing configuration and repository data on the root volume, you can also choose to add an additional EBS volume for repository storage. Follow
+the same guidance mentioned previously. See the [Amazon EBS pricing page](https://aws.amazon.com/ebs/pricing/).
 
 {{< /alert >}}
 
 Now that we have our EC2 instance ready, follow the [documentation to install GitLab and set up Gitaly on its own server](../../administration/gitaly/configure_gitaly.md#run-gitaly-on-its-own-server). Perform the client setup steps from that document on the [GitLab instance we created](#install-gitlab) previously.
+
+##### Elastic File System (EFS)
+
+{{< alert type="warning" >}}
+
+We do not recommend using EFS because it can negatively impact the performance of GitLab. For more information, see the
+[documentation about avoiding cloud-based file systems](../../administration/nfs.md#avoid-using-cloud-based-file-systems).
+
+{{< /alert >}}
+
+If you do decide to use EFS, ensure that the [PosixUser](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-efs-accesspoint.html#cfn-efs-accesspoint-posixuser)
+attribute is either omitted or correctly specified with the UID and GID of the `git` user on the system that Gitaly is
+installed. The UID and GID can be retrieved with the following commands:
+
+```shell
+# UID
+$ id -u git
+
+# GID
+$ id -g git
+```
+
+Additionally, you should not configure multiple [access points](https://docs.aws.amazon.com/efs/latest/ug/efs-access-points.html),
+especially if they specify different credentials. An application other than Gitaly can manipulate permissions on
+the Gitaly storage directories in a way that prevents Gitaly from operating correctly. For an example of this problem, see
+[`omnibus-gitlab` issue 8893](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8893).
 
 #### Add Support for Proxied SSL
 

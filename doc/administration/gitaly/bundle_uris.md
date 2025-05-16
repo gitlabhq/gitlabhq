@@ -57,7 +57,7 @@ storage services:
 - Google Cloud Storage
 - AWS S3 (or compatible)
 - Azure Blob Storage
-- Local file storage (**not recommended**)
+- Local file storage (not recommended)
 
 ### Configure Azure Blob storage
 

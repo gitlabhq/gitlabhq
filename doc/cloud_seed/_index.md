@@ -28,7 +28,7 @@ services on a hyper-cloud based on a foundation of Terraform and infrastructure-
 
 ## Purpose
 
-We believe that it should be **trivial** to deploy web applications (and other workloads) from GitLab to major cloud
+We believe that it should be trivial to deploy web applications (and other workloads) from GitLab to major cloud
 providers.
 
 To support this effort, Cloud Seed makes it straightforward and intuitive to consume appropriate Google Cloud services

@@ -6,6 +6,7 @@ RSpec.describe RapidDiffs::Viewers::Text::LineContentComponent, type: :component
   let_it_be(:diff_file) { build(:diff_file) }
   let_it_be(:old_line) { diff_file.diff_lines_with_match_tail.find { |line| line.type == 'old' } }
   let_it_be(:new_line) { diff_file.diff_lines_with_match_tail.find { |line| line.type == 'new' } }
+  let_it_be(:meta_line) { diff_file.diff_lines_with_match_tail.find { |line| line.type == 'match' } }
 
   it 'renders added line' do
     allow(new_line).to receive_messages(added?: true, removed?: false)
@@ -25,6 +26,12 @@ RSpec.describe RapidDiffs::Viewers::Text::LineContentComponent, type: :component
     allow(old_line).to receive_messages(added?: false, removed?: false)
     render_component(line: old_line, position: :old)
     expect(page).to have_selector('td[data-position="old"]', text: old_line.text[1..], normalize_ws: false)
+  end
+
+  it 'renders meta line' do
+    render_component(line: meta_line, position: :old)
+    selector = 'td[data-position="old"][data-change="meta"]'
+    expect(page).to have_selector(selector)
   end
 
   it 'renders empty cell' do

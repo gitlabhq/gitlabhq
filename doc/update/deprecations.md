@@ -806,29 +806,6 @@ For more information about updating your storage driver configuration, see [use 
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
-### Single database connection is deprecated
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">15.9</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387898).
-
-</div>
-
-Previously, the [GitLab database](https://docs.gitlab.com/omnibus/settings/database/)
-configuration had a single `main:` section. This is being deprecated. The new
-configuration has both a `main:` and a `ci:` section.
-
-This deprecation affects users compiling GitLab from source, who will need
-to [add the `ci:` section](https://docs.gitlab.com/install/installation/#configure-gitlab-db-settings).
-Omnibus, the Helm chart, and Operator will handle this configuration
-automatically from GitLab 16.0 onwards.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
 ### Slack notifications integration
 
 <div class="deprecation-notes">

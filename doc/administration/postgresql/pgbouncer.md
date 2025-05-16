@@ -103,7 +103,7 @@ Do not backup or restore GitLab through a PgBouncer connection: it causes a GitL
 
 ## Enable Monitoring
 
-If you enable Monitoring, it must be enabled on **all** PgBouncer servers.
+If you enable Monitoring, it must be enabled on all PgBouncer servers.
 
 1. Create/edit `/etc/gitlab/gitlab.rb` and add the following configuration:
 

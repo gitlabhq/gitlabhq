@@ -121,7 +121,7 @@ the Sidekiq style guide in the GitLab development documentation. We support quer
 based on a subset of worker attributes:
 
 - `feature_category` - the
-  [GitLab feature category](https://handbook.gitlab.com/handbook/product/categories/#categories-a-z) the
+  GitLab feature category the
   queue belongs to. For example, the `merge` queue belongs to the
   `source_code_management` category.
 - `has_external_dependencies` - whether or not the queue connects to external

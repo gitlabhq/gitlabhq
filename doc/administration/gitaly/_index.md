@@ -265,14 +265,14 @@ In this example:
 
 The availability objectives for Gitaly clusters assuming a single node failure are:
 
-- **Recovery Point Objective (RPO):** Less than 1 minute.
+- Recovery Point Objective (RPO): Less than 1 minute.
 
   Writes are replicated asynchronously. Any writes that have not been replicated
   to the newly promoted primary are lost.
 
   [Strong consistency](#strong-consistency) prevents loss in some circumstances.
 
-- **Recovery Time Objective (RTO):** Less than 10 seconds.
+- Recovery Time Objective (RTO): Less than 10 seconds.
   Outages are detected by a health check run by each Praefect node every
   second. Failover requires ten consecutive failed health checks on each
   Praefect node.
@@ -587,7 +587,7 @@ To downgrade a Gitaly Cluster (assuming multiple Praefect nodes):
    ```
 
 1. Count the number of migrations with `unknown migration` in the `APPLIED` column.
-1. On a Praefect node that has **not** been downgraded, perform a dry run of the rollback to validate which migrations to revert. `<CT_UNKNOWN>`
+1. On a Praefect node that has not been downgraded, perform a dry run of the rollback to validate which migrations to revert. `<CT_UNKNOWN>`
    is the number of unknown migrations reported by the downgraded node.
 
    ```shell

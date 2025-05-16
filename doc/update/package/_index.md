@@ -15,6 +15,20 @@ title: Upgrading Linux package instances
 Upgrading Linux package instances to a later version of GitLab requires several steps, many specific to Linux package
 installations.
 
+## Upgrade the operating system (optional)
+
+If required, you should upgrade to a [supported operating system](../../administration/package_information/supported_os.md) before upgrading GitLab itself.
+
+After upgrading the operating system, you might also need to update the GitLab package source URL in your package manager's configuration.
+If your package manager reports that no further updates are available, but you know that updates exist, repeat the instructions on the
+[Linux package install guide](https://about.gitlab.com/install/#content) to add the GitLab package repository. Future GitLab upgrades are fetched
+according to your upgraded operating system.
+
+### Corrupted PostgresSQL indexes after upgrading the OS
+
+As part of upgrading the operating system, if your `glibc` version changes, then you must follow
+[Upgrading operating systems for PostgreSQL](../../administration/postgresql/upgrading_os.md) to avoid corrupted indexes.
+
 ## Downtime
 
 - For single node installations, GitLab is not available to users while an

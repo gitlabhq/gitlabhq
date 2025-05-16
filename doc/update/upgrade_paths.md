@@ -68,7 +68,7 @@ releases.
 
 To quickly calculate which upgrade stops are required based on your current and desired target GitLab version, see the
 [Upgrade Path tool](https://gitlab-com.gitlab.io/support/toolbox/upgrade-path/). This tool is
-maintained by the [GitLab Support team](https://handbook.gitlab.com/handbook/support/#about-the-support-team).
+maintained by the GitLab Support team.
 
 To share feedback and help improve the tool, create an issue or merge request in the [upgrade-path project](https://gitlab.com/gitlab-com/support/toolbox/upgrade-path).
 

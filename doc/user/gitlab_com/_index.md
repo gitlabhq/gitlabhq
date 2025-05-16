@@ -287,11 +287,11 @@ GitLab.com uses the IP ranges `34.74.90.64/28` and `34.74.226.0/24` for traffic 
 fleet. This whole range is solely allocated to GitLab. Connections from webhooks or
 repository mirroring come from these IP addresses. You should allow these connections.
 
-- **Incoming connections** - GitLab.com is fronted by Cloudflare. For incoming connections to GitLab.com,
+- Incoming connections - GitLab.com is fronted by Cloudflare. For incoming connections to GitLab.com,
   allow CIDR blocks of Cloudflare ([IPv4](https://www.cloudflare.com/ips-v4/) and
   [IPv6](https://www.cloudflare.com/ips-v6/)).
 
-- **Outgoing connections from CI/CD runners** - We don't provide static IP addresses for outgoing
+- Outgoing connections from CI/CD runners - We don't provide static IP addresses for outgoing
   connections from CI/CD runners. However, these guidelines can help:
   - Linux GPU-enabled and Linux Arm64 runners are deployed into Google Cloud, in `us-central1`.
   - Other GitLab.com instance runners are deployed into Google Cloud in `us-east1`.

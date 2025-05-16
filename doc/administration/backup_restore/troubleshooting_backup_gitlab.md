@@ -39,7 +39,7 @@ and the jobs begin running again.
 
 {{< alert type="warning" >}}
 
-The steps in this section can potentially lead to **data loss** on the above listed items.
+The steps in this section can potentially lead to data loss on the above listed items.
 Consider opening a [Support Request](https://support.gitlab.com/hc/en-us/requests/new) if you're a Premium or Ultimate customer.
 
 {{< /alert >}}
@@ -283,7 +283,7 @@ This problem stops the backup script from completing. To fix this problem, you m
 
 {{< alert type="warning" >}}
 
-The steps in this section can potentially lead to **data loss**. All steps must be followed strictly in the order given.
+The steps in this section can potentially lead to data loss. All steps must be followed strictly in the order given.
 Consider opening a [Support Request](https://support.gitlab.com/hc/en-us/requests/new) if you're a Premium or Ultimate customer.
 
 {{< /alert >}}
@@ -310,7 +310,7 @@ To fix these files, you must clean up all remote uploaded files that are in the 
 
    {{< alert type="warning" >}}
 
-   The following action is **irreversible**.
+   The following action is irreversible.
 
    {{< /alert >}}
 
@@ -434,7 +434,7 @@ Truncate the filenames in the `uploads` table:
 
    {{< alert type="warning" >}}
 
-   The following action is **irreversible**.
+   The following action is irreversible.
 
    {{< /alert >}}
 

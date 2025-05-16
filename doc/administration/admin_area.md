@@ -416,7 +416,7 @@ This information is shown for each runner:
 
 | Attribute    | Description |
 |--------------|-------------|
-| Status       | The status of the runner. In [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/22224), for the **Ultimate** tier, the upgrade status is available. |
+| Status       | The status of the runner. In [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/22224), for the Ultimate tier, the upgrade status is available. |
 | Runner details | Information about the runner, including partial token and details about the computer the runner was registered from. |
 | Version      | GitLab Runner version. |
 | Jobs         | Total number of jobs run by the runner. |

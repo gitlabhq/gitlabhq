@@ -9,13 +9,13 @@ When upgrading your PostgreSQL database engine, it is important to follow all st
 recommended by the PostgreSQL community and your cloud provider. Two
 kinds of upgrades exist for PostgreSQL databases:
 
-- **Minor version upgrades**: These include only bug and security fixes. They are
+- Minor version upgrades: These include only bug and security fixes. They are
   always backward-compatible with your existing application database model.
 
   The minor version upgrade process consists of replacing the PostgreSQL binaries
   and restarting the database service. The data directory remains unchanged.
 
-- **Major version upgrades**: These change the internal storage format and the database
+- Major version upgrades: These change the internal storage format and the database
   catalog. As a result, object statistics used by the query optimizer
   [are not transferred to the new version](https://www.postgresql.org/docs/16/pgupgrade.html)
   and must be rebuilt with `ANALYZE`.

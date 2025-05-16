@@ -133,7 +133,7 @@
 
 // Do not use nesting here to allow quick jump to code based on the selector
 .rd-line-number:hover:not(:empty),
-.rd-hunk-lines-inline:hover .rd-line-number,
+.rd-hunk-lines-inline:hover .rd-line-number:not([data-change=meta]),
 .rd-hunk-lines:has(.rd-line-content[data-position=new]:hover:not(:empty)) .rd-line-number[data-position=new],
 .rd-hunk-lines:has(.rd-line-content[data-position=old]:hover:not(:empty)) .rd-line-number[data-position=old] {
   --rd-line-border-color: var(--code-line-nubmer-hover-border-color, #{$gl-color-purple-200});
@@ -158,6 +158,11 @@
   background-color: var(--rd-line-background-color);
 }
 
+.rd-line-number[data-change=meta] {
+  --rd-line-background-color: var(--code-meta-diff-background-color);
+  background-color: var(--code-meta-diff-background-color);
+}
+
 .rd-line-number-border-right,
 .rd-line-number-border-both {
   border-right: 1px solid var(--rd-line-border-color, var(--rd-line-theme-border-color));
@@ -171,6 +176,7 @@
 .rd-line-number,
 .rd-line-content {
   --rd-line-border-color: oklch(from var(--rd-line-background-color) calc(l + var(--rd-code-border-adjust)) c h);
+  background-color: var(--rd-line-background-color);
 }
 
 .rd-line-content[data-change=removed] + .rd-line-number[data-change=added] {
@@ -241,7 +247,6 @@
 
 .rd-line-content[data-change=removed] {
   --rd-line-background-color: var(--rd-line-removed-background-color);
-  background-color: var(--rd-line-background-color);
 
   &::before {
     // / "" allows us to not announce this with screen readers
@@ -252,12 +257,21 @@
 
 .rd-line-content[data-change=added] {
   --rd-line-background-color: var(--rd-line-added-background-color);
-  background-color: var(--rd-line-background-color);
 
   &::before {
     // / "" allows us to not announce this with screen readers
     content: "+" / "";
     color: var(--code-new-diff-sign-color, scale-color($line-number-new, $red: -30%, $green: -30%, $blue: -30%));
+  }
+}
+
+.rd-line-content[data-change=meta] {
+  --rd-line-background-color: var(--code-meta-diff-background-color);
+  color: var(--code-meta-diff-color);
+  user-select: none;
+
+  &::before {
+    content: "\\" / "";
   }
 }
 

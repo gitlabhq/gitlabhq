@@ -89,7 +89,7 @@ If this applies to you, [further adjustments might be required](_index.md#scalin
 
 ## Testing methodology
 
-The 20 RPS / 1k user reference architecture is designed to accommodate most common workflows. The [GitLab Delivery: Framework](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/gitlab-delivery/framework/) team regularly conducts smoke and performance testing against the following endpoint throughput targets:
+The 20 RPS / 1k user reference architecture is designed to accommodate most common workflows. GitLab regularly conducts smoke and performance testing against the following endpoint throughput targets:
 
 | Endpoint type | Target throughput |
 | ------------- | ----------------- |

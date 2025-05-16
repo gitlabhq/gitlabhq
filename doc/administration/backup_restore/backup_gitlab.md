@@ -145,7 +145,7 @@ The backup Rake task GitLab provides does _not_ store your configuration files. 
 The secrets file may change after upgrades.
 {{< /alert >}}
 
-You should back up the configuration directory. At the very **minimum**, you must back up:
+You should back up the configuration directory. At the very minimum, you must back up:
 
 {{< tabs >}}
 
@@ -270,7 +270,7 @@ you make sure that all backups are complete before starting a new one.
 
 {{< alert type="note" >}}
 
-You can only restore a backup to **exactly the same version and type (CE/EE)**
+You can only restore a backup to exactly the same version and type (CE/EE)
 of GitLab on which it was created.
 
 {{< /alert >}}
@@ -817,8 +817,9 @@ Both options accept a comma-separated list of project or group paths. If you
 specify a group path, all repositories in all projects in the group and
 descendent groups are included or skipped, depending on which option you used.
 
-For example, to back up all repositories for all projects in **Group A** (`group-a`), the repository for **Project C** in **Group B** (`group-b/project-c`),
-and skip the **Project D** in **Group A** (`group-a/project-d`):
+For example, to back up all repositories for all projects in Group A (`group-a`), the repository for
+Project C in Group B (`group-b/project-c`),
+and skip the Project D in Group A (`group-a/project-d`):
 
 {{< tabs >}}
 
@@ -1631,5 +1632,5 @@ There are a few possible downsides to this:
   the last project that gets backed up.
 - Fork networks should be entirely read-only while the projects inside get backed up to prevent potential changes to the pool repository.
 
-There is an **experimental** script that attempts to automate this process in
+There is an experimental script that attempts to automate this process in
 [the Geo team Runbooks project](https://gitlab.com/gitlab-org/geo-team/runbooks/-/tree/main/experimental-online-backup-through-rsync).

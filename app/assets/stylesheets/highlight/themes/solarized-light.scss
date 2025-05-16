@@ -133,6 +133,9 @@ $solarized-light-il: #2aa198;
   --code-new-diff-color: #{$solarized-light-line-color-new};
   --code-new-inline-diff-background-color: #{$solarized-light-new-idiff};
 
+  --code-meta-diff-background-color: #{$solarized-light-matchline-bg};
+  --code-meta-diff-color: #{$gl-color-alpha-dark-24};
+
   --code-diff-hunk-header-background-color: #{$solarized-light-matchline-bg};
   --code-diff-hunk-header-color: #{$gl-color-alpha-dark-24};
 

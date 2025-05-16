@@ -154,6 +154,9 @@ $dark-il: #de935f;
   --code-new-diff-color: #{$dark-line-num-color-new};
   --code-new-inline-diff-background-color: #{$dark-new-idiff};
 
+  --code-meta-diff-background-color: #{$dark-diff-match-color};
+  --code-meta-diff-color: #{$dark-diff-match-bg};
+
   --code-diff-hunk-header-background-color: #{$dark-diff-match-color};
   --code-diff-hunk-header-color: #{$dark-diff-match-bg};
 

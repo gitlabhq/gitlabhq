@@ -95,7 +95,7 @@ The following list depicts the network architecture of Gitaly:
 - A `(Gitaly address, Gitaly token)` corresponds to a Gitaly server.
 - A Gitaly server hosts one or more storages.
 - A Gitaly client can use one or more Gitaly servers.
-- Gitaly addresses must be specified in such a way that they resolve correctly for **all** Gitaly
+- Gitaly addresses must be specified in such a way that they resolve correctly for all Gitaly
   clients.
 - Gitaly clients are:
   - Puma.
@@ -104,7 +104,7 @@ The following list depicts the network architecture of Gitaly:
   - GitLab Shell.
   - Elasticsearch indexer.
   - Gitaly itself.
-- A Gitaly server must be able to make RPC calls **to itself** by using its own
+- A Gitaly server must be able to make RPC calls to itself by using its own
   `(Gitaly address, Gitaly token)` pair as specified in `/config/gitlab.yml`.
 - Authentication is done through a static token which is shared among the Gitaly and GitLab Rails
   nodes.
@@ -141,7 +141,7 @@ You can use as few as one server with one repository storage if desired.
 Install Gitaly on each Gitaly server using either:
 
 - A Linux package installation. [Download and install](https://about.gitlab.com/install/) the Linux package you want
-  but **do not** provide the `EXTERNAL_URL=` value.
+  but do not provide the `EXTERNAL_URL=` value.
 - A self-compiled installation. Follow the steps at [Install Gitaly](../../install/installation.md#install-gitaly).
 
 ### Configure Gitaly servers
@@ -772,7 +772,7 @@ Because `enforced="false"`, it is safe to start rolling out the new token.
 
 ### Update Gitaly authentication token
 
-To update to a new Gitaly authentication token, on each Gitaly client **and** Gitaly server:
+To update to a new Gitaly authentication token, on each Gitaly client and Gitaly server:
 
 1. Update the configuration:
 
@@ -805,7 +805,7 @@ After the new token is set, and all services involved have been restarted, you w
 - `status="denied"`.
 
 After the new token is picked up by all Gitaly clients and Gitaly servers, the
-**only non-zero rate** should be `enforced="false",status="would be ok"`.
+only non-zero rate should be `enforced="false",status="would be ok"`.
 
 ### Disable auth transitioning mode
 
@@ -825,7 +825,7 @@ gitaly['configuration'] = {
 
 {{< alert type="warning" >}}
 
-Without completing this step, you have **no Gitaly authentication**.
+Without completing this step, you have no Gitaly authentication.
 
 {{< /alert >}}
 
