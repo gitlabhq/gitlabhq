@@ -56,6 +56,11 @@ module Gitlab
               'table. Please use prepare_partitioned_async_index on the partitioned table.'
           end
 
+          if partition?(table_name)
+            raise ArgumentError, 'prepare_async_index can not be used on a child partition ' \
+              'table. Please use prepare_partitioned_async_index on the partitioned table.'
+          end
+
           return unless async_index_creation_available?
           raise "Table #{table_name} does not exist" unless table_exists?(table_name)
 

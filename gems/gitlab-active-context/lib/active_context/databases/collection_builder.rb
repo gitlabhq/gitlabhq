@@ -21,7 +21,7 @@ module ActiveContext
         fields << Field::Smallint.new(name, index: index)
       end
 
-      def boolean(name, index: true)
+      def boolean(name, index: false)
         fields << Field::Boolean.new(name, index: index)
       end
 

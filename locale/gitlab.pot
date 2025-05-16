@@ -4010,7 +4010,7 @@ msgstr ""
 msgid "Admin notes"
 msgstr ""
 
-msgid "AdminAIPoweredFeatures|AI-powered features"
+msgid "AdminAIPoweredFeatures|AI-native features"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Add self-hosted model"
@@ -4361,7 +4361,7 @@ msgstr ""
 msgid "AdminSelfHostedModels|If required, provide the API token that grants access to your self-hosted model deployment."
 msgstr ""
 
-msgid "AdminSelfHostedModels|Manage GitLab Duo by configuring and assigning self-hosted models to AI-powered features."
+msgid "AdminSelfHostedModels|Manage GitLab Duo by configuring and assigning self-hosted models to AI-native features."
 msgstr ""
 
 msgid "AdminSelfHostedModels|Model family"
@@ -4379,7 +4379,7 @@ msgstr ""
 msgid "AdminSelfHostedModels|Model uses an API token"
 msgstr ""
 
-msgid "AdminSelfHostedModels|More features are available in beta. You can %{linkStart}turn on AI-powered beta features%{linkEnd}."
+msgid "AdminSelfHostedModels|More features are available in beta. You can %{linkStart}turn on AI-native beta features%{linkEnd}."
 msgstr ""
 
 msgid "AdminSelfHostedModels|More models are available in beta. You can %{linkStart}turn on self-hosted model beta features%{linkEnd}."
@@ -5801,7 +5801,7 @@ msgstr ""
 msgid "AiPowered|Configure AI features"
 msgstr ""
 
-msgid "AiPowered|Configure AI-powered GitLab Duo features. %{linkStart}Which features?%{linkEnd}"
+msgid "AiPowered|Configure AI-native GitLab Duo features. %{linkStart}Which features?%{linkEnd}"
 msgstr ""
 
 msgid "AiPowered|Configure GitLab Duo Self-Hosted"
@@ -5999,7 +5999,7 @@ msgstr ""
 msgid "AiPowered|Turn on prompt caching to improve Duo performance. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "AiPowered|Unlock advanced AI-powered capabilities with the Premium or Ultimate tier designed for your development needs."
+msgid "AiPowered|Unlock advanced AI-native capabilities with the Premium or Ultimate tier designed for your development needs."
 msgstr ""
 
 msgid "AiPowered|Upgrade to"
@@ -6038,7 +6038,7 @@ msgstr ""
 msgid "AiPowered|When you turn on GitLab Duo Workflow, a service account is created."
 msgstr ""
 
-msgid "AiPowered|Workflow is an AI-powered coding agent in the Visual Studio Code (VS Code) IDE."
+msgid "AiPowered|Workflow is an AI-native coding agent in the Visual Studio Code (VS Code) IDE."
 msgstr ""
 
 msgid "AiPowered|You now have access to GitLab Duo Chat and Code Suggestions in supported IDEs. To start using these features, %{link1Start}install the GitLab extension in your IDE%{link1End}. If you already have this extension installed, %{link2Start}explore what you can do with GitLab Duo Core%{link2End}."
@@ -9917,10 +9917,10 @@ msgstr ""
 msgid "BillingPlans|Start a free GitLab Duo Enterprise Trial"
 msgstr ""
 
-msgid "BillingPlans|Start an Ultimate trial with GitLab Duo Enterprise to try the complete set of features from GitLab. GitLab Duo Enterprise gives you access to the full product offering from GitLab, including AI-powered features."
+msgid "BillingPlans|Start an Ultimate trial with GitLab Duo Enterprise to try the complete set of features from GitLab. GitLab Duo Enterprise gives you access to the full product offering from GitLab, including AI-native features."
 msgstr ""
 
-msgid "BillingPlans|Start an Ultimate trial with GitLab Duo Enterprise to try the complete set of features from GitLab. GitLab Duo Enterprise gives you access to the full product offering from GitLab, including AI-powered features. You can try it for free, no credit card required."
+msgid "BillingPlans|Start an Ultimate trial with GitLab Duo Enterprise to try the complete set of features from GitLab. GitLab Duo Enterprise gives you access to the full product offering from GitLab, including AI-native features. You can try it for free, no credit card required."
 msgstr ""
 
 msgid "BillingPlans|Start free trial of GitLab Ultimate and GitLab Duo Enterprise"
@@ -23272,7 +23272,7 @@ msgstr ""
 msgid "DuoEnterpriseDiscover|AI-assisted root cause analysis for CI/CD job failures, and suggested fixes to quickly remedy broken pipelines."
 msgstr ""
 
-msgid "DuoEnterpriseDiscover|AI-powered vulnerability explanation and resolution features to remediate vulnerabilities and uplevel skills."
+msgid "DuoEnterpriseDiscover|AI-native vulnerability explanation and resolution features to remediate vulnerabilities and uplevel skills."
 msgstr ""
 
 msgid "DuoEnterpriseDiscover|Advanced troubleshooting"
@@ -23311,7 +23311,7 @@ msgstr ""
 msgid "DuoEnterpriseDiscover|Why GitLab Duo Enterprise?"
 msgstr ""
 
-msgid "DuoEnterpriseDiscover|Write secure code faster with AI-powered suggestions in more than 20 languages, and chat with your AI companion throughout development."
+msgid "DuoEnterpriseDiscover|Write secure code faster with AI-native suggestions in more than 20 languages, and chat with your AI companion throughout development."
 msgstr ""
 
 msgid "DuoEnterpriseDiscover|Your end-to-end AI partner"
@@ -23443,7 +23443,7 @@ msgstr ""
 msgid "DuoProDiscover|Real-time guidance"
 msgstr ""
 
-msgid "DuoProDiscover|Refactor code into modern languages with AI-powered GitLab Duo"
+msgid "DuoProDiscover|Refactor code into modern languages with AI-native GitLab Duo"
 msgstr ""
 
 msgid "DuoProDiscover|Ship software faster and more securely with AI integrated into your entire DevSecOps lifecycle."
@@ -23452,13 +23452,13 @@ msgstr ""
 msgid "DuoProDiscover|Streamline communication, facilitate knowledge sharing, and improve project management."
 msgstr ""
 
-msgid "DuoProDiscover|Streamline the refactoring process with AI-powered recommendations to optimize code structure and improve readability."
+msgid "DuoProDiscover|Streamline the refactoring process with AI-native recommendations to optimize code structure and improve readability."
 msgstr ""
 
-msgid "DuoProDiscover|The GitLab %{link_start}AI Transparency Center%{link_end} details how GitLab upholds ethics and transparency in its AI-powered features."
+msgid "DuoProDiscover|The GitLab %{link_start}AI Transparency Center%{link_end} details how GitLab upholds ethics and transparency in its AI-native features."
 msgstr ""
 
-msgid "DuoProDiscover|The GitLab %{link_start}AI Transparency Center%{link_end} details how we uphold ethics and transparency in our AI-powered features."
+msgid "DuoProDiscover|The GitLab %{link_start}AI Transparency Center%{link_end} details how we uphold ethics and transparency in our AI-native features."
 msgstr ""
 
 msgid "DuoProDiscover|Transparent AI"
@@ -27944,7 +27944,7 @@ msgstr ""
 msgid "Get a support subscription"
 msgstr ""
 
-msgid "Get access to all Ultimate and GitLab Duo AI-powered features, free for 60 days. No credit card required."
+msgid "Get access to all Ultimate and GitLab Duo AI-native features, free for 60 days. No credit card required."
 msgstr ""
 
 msgid "Get free trial"
@@ -32148,7 +32148,7 @@ msgstr ""
 msgid "In use"
 msgstr ""
 
-msgid "InProductMarketing|%{upper_start}Free 60-day trial%{upper_end} %{lower_start}GitLab Ultimate & GitLab Duo Enterprise%{lower_end} %{last_start}Sign up for a free trial of the most comprehensive AI-powered DevSecOps Platform%{last_end}"
+msgid "InProductMarketing|%{upper_start}Free 60-day trial%{upper_end} %{lower_start}GitLab Ultimate & GitLab Duo Enterprise%{lower_end} %{last_start}Sign up for a free trial of the most comprehensive AI-native DevSecOps Platform%{last_end}"
 msgstr ""
 
 msgid "InProductMarketing|60-day trial period"
@@ -36007,7 +36007,7 @@ msgstr ""
 msgid "LearnGitLab|GitLab works best as a team. Invite your colleague to enjoy all features."
 msgstr ""
 
-msgid "LearnGitLab|In this tutorial, we explore 10 tips and best practices to integrate GitLab Duo Chat into your AI-powered DevSecOps workflows and refine your prompts for the best results."
+msgid "LearnGitLab|In this tutorial, we explore 10 tips and best practices to integrate GitLab Duo Chat into your AI-native DevSecOps workflows and refine your prompts for the best results."
 msgstr ""
 
 msgid "LearnGitLab|Included in trial"
@@ -48508,7 +48508,7 @@ msgstr ""
 msgid "ProjectSettings|Upstream project"
 msgstr ""
 
-msgid "ProjectSettings|Use AI-powered features in this project."
+msgid "ProjectSettings|Use AI-native features in this project."
 msgstr ""
 
 msgid "ProjectSettings|Used for every new merge request."
@@ -63674,7 +63674,7 @@ msgstr ""
 msgid "Todos|You"
 msgstr ""
 
-msgid "Todos|You now have access to AI-powered features. Learn how to set up Code Suggestions and Chat in your IDE"
+msgid "Todos|You now have access to AI-native features. Learn how to set up Code Suggestions and Chat in your IDE"
 msgstr ""
 
 msgid "Todos|Your SSH key has expired"
@@ -70544,7 +70544,10 @@ msgstr ""
 msgid "You cannot impersonate an internal user"
 msgstr ""
 
-msgid "You cannot invite a new member to %{strong_start}%{group_name}%{strong_end} since its disabled by %{actor}."
+msgid "You cannot invite a new member to %{strong_start}%{group_name}%{strong_end}. User invitations are disabled by the %{actor}."
+msgstr ""
+
+msgid "You cannot invite a new member to %{strong_start}%{project_name}%{strong_end}. User invitations are disabled by the %{actor}."
 msgstr ""
 
 msgid "You cannot play this scheduled pipeline at the moment. Please wait a minute."

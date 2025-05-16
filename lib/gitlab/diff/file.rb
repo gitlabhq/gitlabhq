@@ -447,7 +447,7 @@ module Gitlab
       end
 
       def ai_reviewable?
-        diffable? && !deleted_file?
+        diffable? && text?
       end
 
       def modified_file?

@@ -468,4 +468,23 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
       it { is_expected.to eq(expected) }
     end
   end
+
+  describe '#merge_request_dashboard_role_based_data' do
+    subject(:data) { merge_request_dashboard_role_based_data }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(current_user)
+    end
+
+    it do
+      expect(data.dig(:tabs, 0, :lists, 0, 2, :variables)).to include(
+        or: {
+          reviewerWildcard: "NONE",
+          onlyReviewerUsername: "GitLabDuo",
+          reviewStates: %w[REVIEWED REQUESTED_CHANGES]
+        },
+        perPage: 10
+      )
+    end
+  end
 end

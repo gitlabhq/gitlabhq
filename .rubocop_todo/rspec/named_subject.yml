@@ -3174,7 +3174,6 @@ RSpec/NamedSubject:
     - 'spec/tooling/danger/stable_branch_spec.rb'
     - 'spec/tooling/docs/deprecation_handling_spec.rb'
     - 'spec/tooling/graphql/docs/renderer_spec.rb'
-    - 'spec/tooling/lib/tooling/crystalball/coverage_lines_strategy_spec.rb'
     - 'spec/tooling/lib/tooling/find_changes_spec.rb'
     - 'spec/tooling/lib/tooling/find_codeowners_spec.rb'
     - 'spec/tooling/lib/tooling/find_files_using_feature_flags_spec.rb'

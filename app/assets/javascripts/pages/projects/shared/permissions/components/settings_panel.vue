@@ -494,7 +494,7 @@ export default {
       if (this.licensedAiFeaturesAvailable) {
         return {
           label: s__('ProjectSettings|GitLab Duo'),
-          helpText: s__('ProjectSettings|Use AI-powered features in this project.'),
+          helpText: s__('ProjectSettings|Use AI-native features in this project.'),
           helpPath: duoHelpPath,
         };
       }

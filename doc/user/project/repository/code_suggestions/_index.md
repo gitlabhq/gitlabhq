@@ -417,7 +417,7 @@ Prerequisites:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
-1. Expand **AI-powered features**.
+1. Expand **AI-native features**.
 1. Choose an option:
    - To enable direct connections and minimize latency for code completion requests, clear the **Disable direct connections for code suggestions** checkbox.
    - To disable direct connections, select the **Disable direct connections for code suggestions** checkbox.

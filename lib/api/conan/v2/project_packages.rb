@@ -4,7 +4,7 @@ module API
   module Conan
     module V2
       class ProjectPackages < ::API::Base
-        MAX_FILES_COUNT = 1000
+        MAX_FILES_COUNT = MAX_PACKAGE_REVISIONS_COUNT = 1000
 
         before do
           if Feature.disabled?(:conan_package_revisions_support, Feature.current_request)
@@ -285,6 +285,36 @@ module API
                       end
                     end
                     namespace 'revisions' do
+                      desc 'Get the list of package revisions' do
+                        detail 'This feature was introduced in GitLab 18.0'
+                        success code: 200, model: ::API::Entities::Packages::Conan::PackageRevisions
+                        failure [
+                          { code: 400, message: 'Bad Request' },
+                          { code: 401, message: 'Unauthorized' },
+                          { code: 403, message: 'Forbidden' },
+                          { code: 404, message: 'Not Found' }
+                        ]
+                        tags %w[conan_packages]
+                      end
+                      route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+                      route_setting :authorization, job_token_policies: :read_packages,
+                        allow_public_access_for_enabled_project_features: :package_registry
+                      get urgency: :low do
+                        not_found!('Package') unless package
+
+                        package_revisions = package
+                          .conan_package_revisions
+                          .by_recipe_revision_and_package_reference(params[:recipe_revision],
+                            params[:conan_package_reference])
+                          .order_by_id_desc
+                          .limit(MAX_PACKAGE_REVISIONS_COUNT)
+
+                        package_reference = "#{package.conan_recipe}##{params[:recipe_revision]}:" \
+                          "#{params[:conan_package_reference]}"
+                        present({ package_reference:, package_revisions: },
+                          with: ::API::Entities::Packages::Conan::PackageRevisions)
+                      end
+
                       params do
                         requires :package_revision, type: String, regexp: Gitlab::Regex.conan_revision_regex_v2,
                           desc: 'Package revision', documentation: { example: '3bdd2d8c8e76c876ebd1ac0469a4e72c' }

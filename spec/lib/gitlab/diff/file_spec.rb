@@ -1253,20 +1253,16 @@ RSpec.describe Gitlab::Diff::File, feature_category: :shared do
 
   describe '#ai_reviewable?' do
     let(:diffable?) { true }
-    let(:deleted_file?) { false }
+    let(:text?) { true }
 
     before do
       allow(diff_file).to receive(:diffable?).and_return(diffable?)
-      allow(diff_file).to receive(:deleted_file?).and_return(deleted_file?)
+      allow(diff_file).to receive(:text?).and_return(text?)
     end
 
     subject(:ai_reviewable?) { diff_file.ai_reviewable? }
 
     it { is_expected.to eq(true) }
-
-    it 'returns true' do
-      expect(diff_file.ai_reviewable?).to eq(true)
-    end
 
     context 'when not diffable' do
       let(:diffable?) { false }
@@ -1274,8 +1270,8 @@ RSpec.describe Gitlab::Diff::File, feature_category: :shared do
       it { is_expected.to eq(false) }
     end
 
-    context 'when deleted file' do
-      let(:deleted_file?) { true }
+    context 'when not text' do
+      let(:text?) { false }
 
       it { is_expected.to eq(false) }
     end

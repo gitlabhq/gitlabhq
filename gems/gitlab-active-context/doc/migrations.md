@@ -9,7 +9,7 @@ ActiveContext supports several field types for defining collection schemas:
 - `bigint`: For large numeric values (accepts `index: true/false`, defaults to `false`)
 - `integer`: For standard numeric values (accepts `index: true/false`, defaults to `false`)
 - `smallint`: For small numeric values (accepts `index: true/false`, defaults to `false`)
-- `boolean`: For boolean values (accepts `index: true/false`, defaults to `true`)
+- `boolean`: For boolean values (accepts `index: true/false`, defaults to `false`)
 - `keyword`: For exact-match searchable string fields (always indexed, no `index` option)
 - `text`: For full-text searchable content (accepts `index: true/false`, defaults to `false`)
 - `vector`: For embedding vectors (accepts `index: true/false`, defaults to `true`), requires `dimensions:` specification

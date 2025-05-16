@@ -149,7 +149,7 @@ Prerequisites:
      1. On the left sidebar, select **Subscription**.
      1. In **Subscription details**, to the right of **Last sync**, select
         synchronize subscription ({{< icon name="retry" >}}).
-1. Select the **AI-powered features** tab.
+1. Select the **AI-native features** tab.
 
 ### Configure the feature to use a self-hosted model
 
@@ -158,7 +158,7 @@ Configure the GitLab Duo feature and sub-feature to send queries to the configur
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Configure GitLab Duo Self-Hosted**.
-1. Select the **AI-powered features** tab.
+1. Select the **AI-native features** tab.
 1. For the feature and sub-feature you want to configure, from the dropdown list, choose the self-hosted model you want to use.
 
    For example, for the code generation sub-feature under GitLab Duo Code Suggestions, you can select **Claude-3 on Bedrock deployment (Claude 3)**.
@@ -185,7 +185,7 @@ To disable a GitLab Duo feature or sub-feature:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Configure GitLab Duo Self-Hosted**.
-1. Select the **AI-powered features** tab.
+1. Select the **AI-native features** tab.
 1. For the feature or sub-feature you want to disable, from the dropdown list, select **Disabled**.
 
    For example, to specifically disable the `Write Test` and `Refactor Code` features, select **Disabled**:

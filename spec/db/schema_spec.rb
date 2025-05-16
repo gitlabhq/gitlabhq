@@ -504,7 +504,8 @@ RSpec.describe 'Database schema',
       FAILURE_MESSAGE
     end
 
-    it 'uses json schema validator', :eager_load, :aggregate_failures, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/500903' do
+    it 'uses json schema validator', :eager_load, :aggregate_failures,
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/500903' do
       columns_name_with_jsonb.each do |jsonb_column|
         column_name = jsonb_column["column_name"]
         models = models_by_table_name[jsonb_column["table_name"]] || []

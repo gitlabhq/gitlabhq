@@ -7775,8 +7775,6 @@
 - './spec/tasks/rubocop_rake_spec.rb'
 - './spec/tooling/docs/deprecation_handling_spec.rb'
 - './spec/tooling/graphql/docs/renderer_spec.rb'
-- './spec/tooling/lib/tooling/crystalball/coverage_lines_execution_detector_spec.rb'
-- './spec/tooling/lib/tooling/crystalball/coverage_lines_strategy_spec.rb'
 - './spec/tooling/lib/tooling/find_codeowners_spec.rb'
 - './spec/tooling/lib/tooling/helm3_client_spec.rb'
 - './spec/tooling/lib/tooling/kubernetes_client_spec.rb'

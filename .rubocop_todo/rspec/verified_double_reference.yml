@@ -226,7 +226,6 @@ RSpec/VerifiedDoubleReference:
     - 'spec/tooling/danger/specs/feature_category_suggestion_spec.rb'
     - 'spec/tooling/danger/specs/match_with_array_suggestion_spec.rb'
     - 'spec/tooling/danger/specs/project_factory_suggestion_spec.rb'
-    - 'spec/tooling/lib/tooling/crystalball/coverage_lines_strategy_spec.rb'
     - 'spec/views/search/_results.html.haml_spec.rb'
     - 'spec/workers/activity_pub/projects/releases_subscription_worker_spec.rb'
     - 'spec/workers/bulk_imports/pipeline_batch_worker_spec.rb'

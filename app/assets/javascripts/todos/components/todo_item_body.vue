@@ -159,7 +159,7 @@ export default {
 
       if (DUO_ACCESS_GRANTED_ACTIONS.includes(this.todo.action)) {
         name = s__(
-          'Todos|You now have access to AI-powered features. Learn how to set up Code Suggestions and Chat in your IDE',
+          'Todos|You now have access to AI-native features. Learn how to set up Code Suggestions and Chat in your IDE',
         );
       }
 

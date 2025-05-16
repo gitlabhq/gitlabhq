@@ -307,7 +307,7 @@ Enabling Duo for just the root user is sufficient for initial setup and testing.
 
 1. Enable AI Features
 
-   - Navigate to the "AI-powered features" tab
+   - Navigate to the "AI-native features" tab
    - Assign the configured model to the following features:
      - Code Suggestions > Code Generation
      - Code Suggestions > Code Completion

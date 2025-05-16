@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Groups > Usage Quotas', :js, feature_category: :consumables_cost_management do
+  include UsageQuotasHelpers
+
   let_it_be_with_reload(:group) { create(:group) }
   let_it_be_with_reload(:user) { create(:user) }
   let_it_be_with_reload(:sub_group) { create(:group, parent: group) }
@@ -12,8 +14,7 @@ RSpec.describe 'Groups > Usage Quotas', :js, feature_category: :consumables_cost
   end
 
   before do
-    # Disable the logic that reaches out to CDot
-    stub_feature_flags(limited_access_modal: false)
+    setup_usage_quotas_env(group.id)
     sign_in(user)
   end
 

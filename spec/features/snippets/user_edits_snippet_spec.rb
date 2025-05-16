@@ -9,7 +9,16 @@ RSpec.describe 'User edits snippet', :js, feature_category: :source_code_managem
   let_it_be(:file_name) { 'test.rb' }
   let_it_be(:content) { 'puts "test"' }
   let_it_be(:user) { create(:user) }
-  let_it_be(:snippet, reload: true) { create(:personal_snippet, :repository, :public, file_name: file_name, content: content, author: user) }
+  let_it_be(:snippet, reload: true) do
+    create(
+      :personal_snippet,
+      :repository,
+      :public,
+      file_name: file_name,
+      content: content,
+      author: user
+    )
+  end
 
   before do
     sign_in(user)

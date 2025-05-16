@@ -1,0 +1,12 @@
+---
+table_name: project_authorizations_for_migration
+classes: []
+feature_categories:
+- permissions
+description: Stores maximal access to the project per user
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190374
+milestone: '18.0'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects
+table_size: over_limit

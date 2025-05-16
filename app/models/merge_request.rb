@@ -502,6 +502,28 @@ class MergeRequest < ApplicationRecord
     )
   end
 
+  scope :with_valid_or_no_reviewers, ->(states, user) do
+    reviewers = Arel::Table.new("#{to_ability_name}_reviewers")
+
+    valid_states_expr = reviewers_subquery
+      .where(reviewers[:user_id].not_eq(user.id))
+      .where(reviewers[:state].in(states))
+      .exists
+
+    no_reviewers_expr = reviewers_subquery.exists.not
+
+    only_user_expr = reviewers_subquery
+      .where(reviewers[:user_id].not_eq(user.id))
+      .exists
+      .not
+
+    where(
+      valid_states_expr
+        .or(no_reviewers_expr)
+        .or(only_user_expr.and(valid_states_expr.not))
+    )
+  end
+
   scope :review_requested_to, ->(user, states = nil) do
     scope = reviewers_subquery.where(Arel::Table.new("#{to_ability_name}_reviewers")[:user_id].eq(user.id))
     scope = scope.where(Arel::Table.new("#{to_ability_name}_reviewers")[:state].in(states)) if states

@@ -234,6 +234,12 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       it { expect(merge_requests).to match_array([merge_request1, merge_request3, merge_request4]) }
     end
 
+    describe '.with_valid_or_no_reviewers' do
+      subject(:merge_requests) { described_class.with_valid_or_no_reviewers([MergeRequestReviewer.states[:requested_changes]], user1) }
+
+      it { expect(merge_requests).to match_array([merge_request1, merge_request3, merge_request4]) }
+    end
+
     describe '.by_blob_path' do
       let(:path) { 'bar/branch-test.txt' }
 

@@ -15482,6 +15482,70 @@ paths:
       tags:
       - conan_packages
       operationId: getApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionPackagesConanPackageReferenceLatest
+  ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/packages/{conan_package_reference}/revisions"
+  : get:
+      summary: Get the list of package revisions
+      description: This feature was introduced in GitLab 18.0
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: package_name
+        description: Package name
+        type: string
+        required: true
+        example: my-package
+      - in: path
+        name: package_version
+        description: Package version
+        type: string
+        required: true
+        example: '1.0'
+      - in: path
+        name: package_username
+        description: Package username
+        type: string
+        required: true
+        example: my-group+my-project
+      - in: path
+        name: package_channel
+        description: Package channel
+        type: string
+        required: true
+        example: stable
+      - in: path
+        name: recipe_revision
+        description: Recipe revision
+        type: string
+        required: true
+        example: df28fd816be3a119de5ce4d374436b25
+      - in: path
+        name: conan_package_reference
+        description: Package reference
+        type: string
+        required: true
+        example: 5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
+      responses:
+        '200':
+          description: Get the list of package revisions
+          schema:
+            "$ref": "#/definitions/API_Entities_Packages_Conan_PackageRevisions"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+      - conan_packages
+      operationId: getApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionPackagesConanPackageReferenceRevisions
   ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/packages/{conan_package_reference}/revisions/{package_revision}/files"
   : get:
       summary: List package files
@@ -51719,6 +51783,19 @@ definitions:
     required:
     - file
     description: Upload recipe package files
+  API_Entities_Packages_Conan_PackageRevisions:
+    type: object
+    properties:
+      packageReference:
+        type: string
+        example: packageTest/1.2.3@gitlab-org+conan/stable#1883c9f810f2d6e5b59d5285c7141970:133a1f2158ff2cf69739f316ec21143785be54c7
+        description: The Conan package reference
+      revisions:
+        type: array
+        items:
+          "$ref": "#/definitions/API_Entities_Packages_Conan_Revision"
+        description: List of package revisions
+    description: API_Entities_Packages_Conan_PackageRevisions model
   ? putApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionPackagesConanPackageReferenceRevisionsPackageRevisionFilesFileName
   : type: object
     properties:

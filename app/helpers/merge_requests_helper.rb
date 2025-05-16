@@ -518,8 +518,9 @@ module MergeRequestsHelper
                 query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
                 variables: {
                   or: {
-                    reviewerWildcard: 'NONE',
-                    reviewStates: %w[REQUESTED_CHANGES REVIEWED]
+                    reviewerWildcard: "NONE",
+                    onlyReviewerUsername: ::Users::Internal.duo_code_review_bot.username,
+                    reviewStates: %w[REVIEWED REQUESTED_CHANGES]
                   },
                   perPage: 10
                 }

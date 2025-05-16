@@ -865,6 +865,28 @@ CREATE FUNCTION sync_organization_push_rules_on_insert_update() RETURNS trigger
   END;
  $$;
 
+CREATE FUNCTION sync_project_authorizations_to_migration_table() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') THEN
+  INSERT INTO project_authorizations_for_migration (project_id, user_id, access_level)
+  VALUES (NEW.project_id, NEW.user_id, NEW.access_level::smallint)
+  ON CONFLICT (project_id, user_id) DO UPDATE
+    SET access_level = NEW.access_level::smallint;
+  RETURN NEW;
+
+ELSIF (TG_OP = 'DELETE') THEN
+  DELETE FROM project_authorizations_for_migration
+  WHERE project_id = OLD.project_id AND user_id = OLD.user_id;
+  RETURN OLD;
+END IF;
+
+RETURN NULL;
+
+END
+$$;
+
 CREATE FUNCTION sync_redirect_routes_namespace_id() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -20570,6 +20592,12 @@ CREATE TABLE project_authorizations (
     is_unique boolean
 );
 
+CREATE TABLE project_authorizations_for_migration (
+    user_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    access_level smallint NOT NULL
+);
+
 CREATE TABLE project_auto_devops (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -30488,6 +30516,9 @@ ALTER TABLE ONLY project_aliases
 ALTER TABLE ONLY project_audit_events
     ADD CONSTRAINT project_audit_events_pkey PRIMARY KEY (id, created_at);
 
+ALTER TABLE ONLY project_authorizations_for_migration
+    ADD CONSTRAINT project_authorizations_for_migration_pkey PRIMARY KEY (user_id, project_id);
+
 ALTER TABLE ONLY project_authorizations
     ADD CONSTRAINT project_authorizations_pkey PRIMARY KEY (user_id, project_id, access_level);
 
@@ -36582,6 +36613,8 @@ CREATE UNIQUE INDEX index_project_aliases_on_name ON project_aliases USING btree
 
 CREATE INDEX index_project_aliases_on_project_id ON project_aliases USING btree (project_id);
 
+CREATE INDEX index_project_authorizations_for_migration_on_project_user ON project_authorizations_for_migration USING btree (project_id, user_id);
+
 CREATE UNIQUE INDEX index_project_authorizations_on_project_user_access_level ON project_authorizations USING btree (project_id, user_id, access_level);
 
 CREATE UNIQUE INDEX index_project_auto_devops_on_project_id ON project_auto_devops USING btree (project_id);
@@ -41138,6 +41171,8 @@ CREATE TRIGGER projects_loose_fk_trigger AFTER DELETE ON projects REFERENCING OL
 
 CREATE TRIGGER push_rules_loose_fk_trigger AFTER DELETE ON push_rules REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
+CREATE TRIGGER sync_project_authorizations_to_migration AFTER INSERT OR DELETE OR UPDATE ON project_authorizations FOR EACH ROW EXECUTE FUNCTION sync_project_authorizations_to_migration_table();
+
 CREATE TRIGGER table_sync_trigger_4ea4473e79 AFTER INSERT OR DELETE OR UPDATE ON uploads FOR EACH ROW EXECUTE FUNCTION table_sync_function_40ecbfb353();
 
 CREATE TRIGGER tags_loose_fk_trigger AFTER DELETE ON tags REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
@@ -45301,6 +45336,9 @@ ALTER TABLE ONLY approval_project_rules_protected_branches
 
 ALTER TABLE ONLY abuse_trust_scores
     ADD CONSTRAINT fk_rails_b903079eb4 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_authorizations_for_migration
+    ADD CONSTRAINT fk_rails_b91fc9995e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY virtual_registries_packages_maven_registry_upstreams
     ADD CONSTRAINT fk_rails_b991fff0be FOREIGN KEY (registry_id) REFERENCES virtual_registries_packages_maven_registries(id) ON DELETE CASCADE;

@@ -174,5 +174,4 @@ Style/SuperArguments:
     - 'qa/qa/service/docker_run/smocker.rb'
     - 'spec/lib/gitlab/database/no_overrides_for_through_associations_spec.rb'
     - 'spec/support/shared_examples/graphql/sorted_paginated_query_shared_examples.rb'
-    - 'tooling/lib/tooling/crystalball/coverage_lines_strategy.rb'
     - 'tooling/lib/tooling/debug.rb'
