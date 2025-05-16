@@ -2,7 +2,9 @@
 stage: none
 group: none
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Learn how to deploy and manage dependencies.
 title: Get started deploying and releasing your application
+description: Overview of how features fit together.
 ---
 
 Start with previewing your application, and end with deploying

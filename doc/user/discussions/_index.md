@@ -4,6 +4,7 @@ group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Use comments to discuss work, mention users, and suggest changes.
 title: Comments and threads
+description: Mentions, locked discussions, internal notes, and thread resolution.
 ---
 
 {{< details >}}

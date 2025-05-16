@@ -3,6 +3,7 @@ stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Connecting a Kubernetes cluster with GitLab
+description: Kubernetes integration, GitOps, CI/CD, agent deployment, and cluster management.
 ---
 
 {{< history >}}

@@ -4,6 +4,7 @@ group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Use this tutorial to build a protected workflow for your GitLab project.
 title: 'Tutorial: Build a protected workflow for your project'
+description: Security, approval rules, and branch protection.
 ---
 
 <!-- vale gitlab_base.FutureTense = NO -->

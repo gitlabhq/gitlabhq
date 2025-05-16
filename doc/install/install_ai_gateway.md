@@ -2,7 +2,7 @@
 stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Set up your self-hosted model GitLab AI gateway
+description: Gateway between GitLab and large language models.
 title: Install the GitLab AI gateway
 ---
 

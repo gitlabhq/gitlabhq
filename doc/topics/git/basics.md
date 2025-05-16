@@ -4,6 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Common Git commands and workflows.
 title: Basic Git operations
+description: Create a project, clone a repository, stash changes, branches, and forks.
 ---
 
 Basic Git operations help you to manage your Git repositories and to make changes to your code.

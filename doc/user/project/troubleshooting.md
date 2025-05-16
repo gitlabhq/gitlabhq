@@ -3,6 +3,7 @@ stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Troubleshooting projects
+description: Problem solving, common issues, debugging, and error resolution.
 ---
 
 When working with projects, you might encounter the following issues, or require alternate methods to complete specific tasks.

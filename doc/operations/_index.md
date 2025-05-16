@@ -8,6 +8,10 @@ title: Monitor your application
 
 Visualize and analyze errors and incidents related to your application and its infrastructure.
 
-| | | |
-|--|--|--|
-| [**Getting started**](../user/get_started/get_started_monitoring.md)<br>Overview of how features fit together. | [**Error tracking**](error_tracking.md)<br>Error tracking, logging, debugging, data retention. | [**Incident management**](incident_management/_index.md)<br>Alert handling, response coordination, escalation procedures. |
+{{< cards >}}
+
+- [Getting started](../user/get_started/get_started_monitoring.md)
+- [Error tracking](error_tracking.md)
+- [Incident management](incident_management/_index.md)
+
+{{< /cards >}}

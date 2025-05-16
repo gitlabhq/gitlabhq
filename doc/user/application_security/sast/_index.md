@@ -3,6 +3,7 @@ stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Static Application Security Testing (SAST)
+description: Scanning, configuration, analyzers, vulnerabilities, reporting, customization, and integration.
 ---
 
 <style>
@@ -870,7 +871,7 @@ flags are added to the scanner's CLI options.
         <code>--multi-core</code>
       </td>
       <td>
-        Multi-core scanning is enabled by default, automatically detecting and utilizing available CPU cores based on container information. On self-hosted runners, the maximum number of cores is capped at 4. You can override the automatic core detection by explicitly setting <code>--multi-core</code> to a specific value. Multi-core execution requires proportionally more memory than single-core execution. To disable multi-core scanning, set the environment variable <code>DISABLE_MULTI_CORE</code>. Note that exceeding available cores or memory resources may lead to resource contention and suboptimal performance.
+        Multi-core scanning is enabled by default, automatically detecting and utilizing available CPU cores based on container information. On self-hosted runners, the maximum number of cores is capped at 4. You can override the automatic core detection by explicitly setting <code>--multi-core</code> to a specific value. Multi-core execution requires proportionally more memory than single-core execution. To disable multi-core scanning, set the environment variable <code>DISABLE_MULTI_CORE</code>. Exceeding available cores or memory resources may lead to resource contention and suboptimal performance.
       </td>
     </tr>
     <tr>

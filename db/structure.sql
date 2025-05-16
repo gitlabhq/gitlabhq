@@ -21706,7 +21706,8 @@ CREATE TABLE protected_tag_create_access_levels (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     deploy_key_id bigint,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_e56dc4b33a CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE protected_tag_create_access_levels_id_seq

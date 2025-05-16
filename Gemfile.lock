@@ -1500,7 +1500,7 @@ GEM
       coderay
       parser
       unparser
-    prometheus-client-mmap (1.2.9)
+    prometheus-client-mmap (1.2.10)
       base64
       bigdecimal
       logger

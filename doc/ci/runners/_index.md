@@ -3,6 +3,7 @@ stage: Verify
 group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Runners
+description: Configuration and job execution.
 ---
 
 Runners are the agents that run the [GitLab Runner](https://docs.gitlab.com/runner/) application, to execute GitLab CI/CD jobs in a pipeline.

@@ -17,6 +17,9 @@ workflow:
 
 .rules:test:gdk-gitaly-version-change:
   rules:
+    - if: '$PARENT_PIPELINE_SOURCE == "schedule"'
+      when: manual
+      allow_failure: true
     - changes:
         - "GITALY_SERVER_VERSION"
     - when: manual

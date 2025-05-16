@@ -3,6 +3,7 @@ stage: Foundations
 group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Searching in GitLab
+description: Basic, advanced, exact, search scope, and commit SHA search.
 ---
 
 {{< details >}}

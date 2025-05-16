@@ -3,6 +3,7 @@ stage: Application Security Testing
 group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Dependency Scanning
+description: Vulnerabilities, remediation, configuration, analyzers, and reports.
 ---
 
 <style>
