@@ -12,8 +12,9 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
   let(:partitioned_table_name) { :_test_gitlab_main_my_model_example_table }
 
   context 'creating partitions (mocked)' do
-    subject(:sync_partitions) { described_class.new(model).sync_partitions }
+    subject(:sync_partitions) { manager.sync_partitions }
 
+    let(:manager) { described_class.new(model) }
     let(:model) { double(partitioning_strategy: partitioning_strategy, table_name: table, connection: connection) }
     let(:connection) { ActiveRecord::Base.connection }
     let(:table) { partitioned_table_name }
@@ -23,8 +24,18 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
 
     let(:partitions) do
       [
-        instance_double(Gitlab::Database::Partitioning::TimePartition, table: 'bar', partition_name: 'foo', to_sql: "SELECT 1"),
-        instance_double(Gitlab::Database::Partitioning::TimePartition, table: 'bar', partition_name: 'foo2', to_sql: "SELECT 2")
+        instance_double(Gitlab::Database::Partitioning::TimePartition,
+          table: 'bar',
+          partition_name: 'foo',
+          to_sql: "SELECT 1",
+          to_create_sql: "CREATE TABLE _partition_1",
+          to_attach_sql: "ALTER TABLE foo ATTACH PARTITION _partition_1"),
+        instance_double(Gitlab::Database::Partitioning::TimePartition,
+          table: 'bar',
+          partition_name: 'foo2',
+          to_sql: "SELECT 2",
+          to_create_sql: "CREATE TABLE _partition_2",
+          to_attach_sql: "ALTER TABLE foo2 ATTACH PARTITION _partition_2")
       ]
     end
 
@@ -38,6 +49,21 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
         expect(partitioning_strategy).to receive(:validate_and_fix)
 
         stub_exclusive_lease(described_class::MANAGEMENT_LEASE_KEY % table, timeout: described_class::LEASE_TIMEOUT)
+        stub_feature_flags(reduce_lock_usage_during_partition_creation: false)
+      end
+
+      context 'with reduce_lock_usage_during_partition_creation feature flag enabled' do
+        before do
+          stub_feature_flags(reduce_lock_usage_during_partition_creation: true)
+        end
+
+        it 'creates and attaches the partition in 2 steps', :aggregate_failures do
+          expect(connection).not_to receive(:execute).with("LOCK TABLE \"#{table}\" IN ACCESS EXCLUSIVE MODE")
+          expect(manager).to receive(:create_partition_tables).with(partitions)
+          expect(manager).to receive(:attach_partition_tables).with(partitions)
+
+          sync_partitions
+        end
       end
 
       it 'creates the partition' do

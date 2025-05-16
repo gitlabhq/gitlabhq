@@ -6,6 +6,13 @@ description: Instance, group, and project analytics.
 title: Analyze GitLab usage
 ---
 
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 {{< history >}}
 
 - Group-level analytics moved to GitLab Premium in 13.9.

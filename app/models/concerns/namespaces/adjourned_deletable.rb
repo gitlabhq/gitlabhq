@@ -9,6 +9,11 @@ module Namespaces
   module AdjournedDeletable
     extend ActiveSupport::Concern
 
+    # Models need to define this method, usually based on the value of a database attribute
+    def self_deletion_in_progress?
+      raise NotImplementedError
+    end
+
     # Returns an array of records that are scheduled for deletion in the hierarchy chain of the current record.
     # This method can be overriden.
     def all_scheduled_for_deletion_in_hierarchy_chain
@@ -49,6 +54,11 @@ module Namespaces
     # Returns true if the record or any of its ancestors is scheduled for deletion.
     def scheduled_for_deletion_in_hierarchy_chain?
       first_scheduled_for_deletion_in_hierarchy_chain.present?
+    end
+
+    # Returns true if the record or any of its ancestors is being deleted or scheduled for deletion.
+    def deletion_in_progress_or_scheduled_in_hierarchy_chain?
+      self_deletion_in_progress? || scheduled_for_deletion_in_hierarchy_chain?
     end
 
     def deletion_adjourned_period

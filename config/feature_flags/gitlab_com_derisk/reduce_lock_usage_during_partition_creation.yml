@@ -1,0 +1,10 @@
+---
+name: reduce_lock_usage_during_partition_creation
+description: Reduce the lock contention used by the partition manager to create new partitions
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/538988
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190634
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/541890
+milestone: '18.1'
+group: group::database frameworks
+type: gitlab_com_derisk
+default_enabled: false

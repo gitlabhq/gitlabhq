@@ -35966,6 +35966,8 @@ CREATE INDEX index_mr_metrics_on_target_project_id_merged_at_nulls_last ON merge
 
 CREATE INDEX index_mr_metrics_on_target_project_id_merged_at_time_to_merge ON merge_request_metrics USING btree (target_project_id, merged_at, created_at) WHERE (merged_at > created_at);
 
+CREATE INDEX index_mrdc_on_merge_request_commits_metadata_id ON merge_request_diff_commits USING btree (merge_request_commits_metadata_id) WHERE (merge_request_commits_metadata_id IS NOT NULL);
+
 CREATE INDEX index_mrs_approval_rules_approver_users_on_project_id ON merge_requests_approval_rules_approver_users USING btree (project_id);
 
 CREATE INDEX index_mrs_approval_rules_mrs_on_mr_id ON merge_requests_approval_rules_merge_requests USING btree (merge_request_id);

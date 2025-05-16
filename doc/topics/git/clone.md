@@ -114,7 +114,13 @@ prompted to open Xcode.
 
 All projects can be cloned into Visual Studio Code from the GitLab user interface, but you
 can also install the [GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/_index.md) to clone from
-Visual Studio Code:
+Visual Studio Code.
+
+Prerequisites:
+
+- [Visual Studio Code](https://code.visualstudio.com/) must be installed on your local machine.
+  Other versions of VS Code, like VS Code Insiders and VSCodium, are not supported.
+- [Configure your browser for IDE protocols](#configure-browsers-for-ide-protocols).
 
 - From the GitLab interface:
   1. Go to the project's overview page.
@@ -133,13 +139,45 @@ from the GitLab user interface.
 
 Prerequisites:
 
-- The [JetBrains Toolbox App](https://www.jetbrains.com/toolbox-app/) must be also be installed.
+- [IntelliJ IDEA](https://www.jetbrains.com/idea/) must be installed on your local machine.
+- [Configure your browser for IDE protocols](#configure-browsers-for-ide-protocols).
 
 To do this:
 
 1. Go to the project's overview page.
 1. In the upper-right corner, select **Code**.
 1. Under **Open in your IDE**, select **IntelliJ IDEA (SSH)** or **IntelliJ IDEA (HTTPS)**.
+
+## Configure browsers for IDE protocols
+
+To ensure that the **Open in IDE** feature is working, you must configure your browsers to handle
+custom application protocols, such as `vscode://` or `jetbrains://`.
+
+### Firefox
+
+Firefox handles custom protocols automatically if the required application is installed on your system.
+When you first select a custom protocol link, a dialog opens and requests if you want
+to open the application. Select **Open link** to allow Firefox to open the application.
+
+If you don't want to be prompted again, select the checkbox to remember your choice.
+
+If the prompt dialog does not open, you need to manually configure Firefox:
+
+1. Open Firefox.
+1. On the top right, select the **Open application menu** ({{< icon name="hamburger" >}}).
+1. Search for or go to the **Applications** section.
+1. Find and select your desired application in the list. For example, `vscode` or `jetbrains`.
+1. Select Visual Studio Code or IntelliJ IDEA from the dropdown list, or select **Use other...** to locate the executable.
+
+If your preferred IDE is not listed, you are prompted to choose an application the first time you select the corresponding link.
+
+### Chrome
+
+Chrome handles custom protocols automatically if the required application is installed on your system.
+When you first select a custom protocol link in Chrome, a dialog opens and requests if you want
+to open the application. Select **Open** to allow Chrome to open the application.
+
+If you don't want to be prompted again, select the checkbox to remember your choice.
 
 ## Reduce clone size
 

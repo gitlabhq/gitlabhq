@@ -77,7 +77,9 @@ module QA
       def has_file?(file_path)
         response = get Runtime::API::Request.new(api_client, api_get_path).url
 
-        raise ResourceNotFoundError, "Request returned (#{response.code}): `#{response}`." if response.code == HTTP_STATUS_NOT_FOUND
+        if response.code == HTTP_STATUS_NOT_FOUND
+          raise ResourceNotFoundError, "Request returned (#{response.code}): `#{response}`."
+        end
 
         file_output = parse_body(response)[:files]
         file_output.any? { |file| file[:path] == file_path }
@@ -88,12 +90,20 @@ module QA
         response = post Runtime::API::Request.new(api_client, "/snippets/#{id}/repository_storage_moves").url, post_body
 
         unless response.code.between?(200, 300)
-          raise ResourceUpdateFailedError, "Could not change repository storage to #{new_storage}. Request returned (#{response.code}): `#{response}`."
+          raise(
+            ResourceUpdateFailedError,
+            "Could not change repository storage to #{new_storage}. Request returned (#{response.code}): `#{response}`."
+          )
         end
 
-        wait_until(sleep_interval: 1) { Runtime::API::RepositoryStorageMoves.has_status?(self, 'finished', new_storage) }
+        wait_until(sleep_interval: 1) do
+          Runtime::API::RepositoryStorageMoves.has_status?(self, 'finished', new_storage)
+        end
       rescue Support::Repeater::RepeaterConditionExceededError
-        raise Runtime::API::RepositoryStorageMoves::RepositoryStorageMovesError, 'Timed out while waiting for the snippet repository storage move to finish'
+        raise(
+          Runtime::API::RepositoryStorageMoves::RepositoryStorageMovesError,
+          'Timed out while waiting for the snippet repository storage move to finish'
+        )
       end
     end
   end

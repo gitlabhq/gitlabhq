@@ -3363,8 +3363,14 @@ class Project < ApplicationRecord
       end
   end
 
-  def pending_delete_or_hidden?
-    pending_delete? || hidden?
+  # Overriding of Namespaces::AdjournedDeletable method
+  override :self_deletion_in_progress?
+  def self_deletion_in_progress?
+    pending_delete?
+  end
+
+  def self_deletion_in_progress_or_hidden?
+    self_deletion_in_progress? || hidden?
   end
 
   def work_items_feature_flag_enabled?

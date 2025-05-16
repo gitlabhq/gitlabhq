@@ -9182,7 +9182,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#pending_delete_or_hidden?' do
+  describe '#self_deletion_in_progress_or_hidden?' do
     let_it_be(:project) { create(:project, name: 'test-project') }
 
     where(:pending_delete, :hidden, :expected_result) do
@@ -9198,7 +9198,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         project.hidden = hidden
         project.save!
 
-        expect(project.pending_delete_or_hidden?).to eq(expected_result)
+        expect(project.self_deletion_in_progress_or_hidden?).to eq(expected_result)
       end
     end
   end

@@ -23,6 +23,8 @@ class Namespace < ApplicationRecord
   include SafelyChangeColumnDefault
   include Todoable
 
+  extend Gitlab::Utils::Override
+
   ignore_column :unlock_membership_to_ldap, remove_with: '18.1', remove_after: '2025-05-20'
 
   cross_database_ignore_tables %w[routes redirect_routes], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424277'
@@ -174,7 +176,7 @@ class Namespace < ApplicationRecord
     to: :package_settings
 
   delegate :add_creator, :deleted_at, :deleted_at=,
-    to: :namespace_details
+    to: :namespace_details, allow_nil: true
 
   with_options to: :namespace_settings do
     delegate :show_diff_preview_in_email, :show_diff_preview_in_email?, :show_diff_preview_in_email=
@@ -788,7 +790,9 @@ class Namespace < ApplicationRecord
     Gitlab::UrlBuilder.build(self, only_path: only_path)
   end
 
-  def deleted?
+  # Overriding of Namespaces::AdjournedDeletable method
+  override :self_deletion_in_progress?
+  def self_deletion_in_progress?
     !!deleted_at
   end
 

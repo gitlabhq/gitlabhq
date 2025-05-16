@@ -350,6 +350,43 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         end
       end
 
+      context 'when projects is in a subgroup' do
+        let_it_be(:group) { create(:group) }
+        let_it_be(:group_member) { create(:group_member, :developer, group: group, user: user) }
+
+        let_it_be(:subgroup) { create(:group, parent: group) }
+        let_it_be(:project) { create(:project, group: subgroup) }
+
+        before do
+          get api(path, user)
+        end
+
+        it_behaves_like 'projects response without N + 1 queries', 1 do
+          let(:current_user) { user }
+          let(:additional_project) { project }
+        end
+
+        it 'returns the correct group access', :aggregate_failures do
+          project_response = json_response.find { |p| p['id'] == project.id }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(project_response['permissions']['group_access']['access_level'])
+            .to eq(Gitlab::Access::DEVELOPER)
+        end
+
+        context 'when user has multiple group membership' do
+          let_it_be(:subgroup_member) { create(:group_member, :owner, group: subgroup, user: user) }
+
+          it 'returns the highest access level', :aggregate_failures do
+            project_response = json_response.find { |p| p['id'] == project.id }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(project_response['permissions']['group_access']['access_level'])
+              .to eq(Gitlab::Access::OWNER)
+          end
+        end
+      end
+
       it 'includes correct value of container_registry_enabled' do
         project.project_feature.update!(container_registry_access_level: ProjectFeature::DISABLED)
 

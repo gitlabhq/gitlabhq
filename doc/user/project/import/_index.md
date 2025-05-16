@@ -300,6 +300,12 @@ Instead, contributions are mapped automatically to the user.
 
 #### Placeholder user deletion
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/473256) in GitLab 18.0.
+
+{{< /history >}}
+
 When you delete a top-level group that contains placeholder users, those placeholder users are
 automatically removed. However, placeholder users remain in the system if they are also associated
 with projects or groups outside the deleted top-level group.

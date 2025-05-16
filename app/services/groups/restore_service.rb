@@ -4,8 +4,8 @@ module Groups # rubocop:disable Gitlab/BoundedContexts -- existing top-level mod
   class RestoreService < Groups::BaseService
     def execute
       return error(_('You are not authorized to perform this action')) unless can?(current_user, :remove_group, group)
-      return error(_('Group has not been marked for deletion')) unless group.marked_for_deletion?
-      return error(_('Group deletion is in progress')) if group.deleted?
+      return error(_('Group has not been marked for deletion')) unless group.self_deletion_scheduled?
+      return error(_('Group deletion is in progress')) if group.self_deletion_in_progress?
 
       result = remove_deletion_schedule
 

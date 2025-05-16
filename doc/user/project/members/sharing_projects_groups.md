@@ -40,11 +40,11 @@ The following table provides an overview of the group members that get access to
 
 | Group member source                                                 | Access to shared project |
 |---------------------------------------------------------------------|--------------------------|
-| Direct member of the group that is shared                           | {{< icon name="check-circle" >}} Yes   |
-| Inherited member of the group that is shared                        | {{< icon name="check-circle" >}} Yes   |
-| Shared member of the group that is shared <sup>1</sup>              | {{< icon name="dotted-circle" >}} Yes  |
-| Direct member of a subgroup, but not of the group that is shared    | {{< icon name="dotted-circle" >}} No   |
-| Inherited member of a subgroup, but not of the group that is shared | {{< icon name="dotted-circle" >}} No   |
+| Direct member of the group that is invited                           | {{< icon name="check-circle" >}} Yes   |
+| Inherited member of the group that is invited                        | {{< icon name="check-circle" >}} Yes   |
+| Shared member of the group that is invited <sup>1</sup>              | {{< icon name="dotted-circle" >}} Yes  |
+| Direct member of a subgroup, but not of the group that is invited    | {{< icon name="dotted-circle" >}} No   |
+| Inherited member of a subgroup, but not of the group that is invited | {{< icon name="dotted-circle" >}} No   |
 
 **Footnotes**:
 

@@ -13,6 +13,7 @@ module API
         end
 
         helpers do
+          include Gitlab::Utils::StrongMemoize
           def package_files(finder_params)
             ::Packages::Conan::PackageFilesFinder
               .new(package, **finder_params)
@@ -20,6 +21,16 @@ module API
               .limit(MAX_FILES_COUNT)
               .select(:file_name)
           end
+
+          def track_conan_package_event(event)
+            track_package_event(event, :conan, category: 'API::ConanPackages', project: project,
+              namespace: project.namespace)
+          end
+
+          def recipe_revision
+            package.conan_recipe_revisions.find_by_revision(params[:recipe_revision])
+          end
+          strong_memoize_attr :recipe_revision
         end
 
         params do
@@ -97,6 +108,56 @@ module API
                     desc: 'Recipe revision', documentation: { example: 'df28fd816be3a119de5ce4d374436b25' }
                 end
                 namespace ':recipe_revision' do
+                  desc 'Delete Recipe Revision' do
+                    detail 'This feature was introduced in GitLab 18.1'
+                    success code: 200
+                    failure [
+                      { code: 400, message: 'Bad Request' },
+                      { code: 401, message: 'Unauthorized' },
+                      { code: 403, message: 'Forbidden' },
+                      { code: 404, message: 'Not Found' }
+                    ]
+                    tags %w[conan_packages]
+                  end
+
+                  route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+                  route_setting :authorization, job_token_policies: :admin_packages
+
+                  delete urgency: :low do
+                    authorize_destroy_package!(project)
+
+                    not_found!('Package') unless package
+
+                    not_found!('Revision') unless recipe_revision
+
+                    if package.conan_recipe_revisions.one?
+                      track_conan_package_event('delete_package')
+                      destroy_conditionally!(package) do |package|
+                        ::Packages::MarkPackageForDestructionService.new(container: package,
+                          current_user: current_user).execute
+
+                        # Conan cli expects 200 status code when deleting a recipe revision
+                        status 200
+                      end
+                    else
+                      track_conan_package_event('delete_recipe_revision')
+
+                      if recipe_revision.package_files.size > MAX_FILES_COUNT
+                        unprocessable_entity! "Cannot delete more than #{MAX_FILES_COUNT} files"
+                      end
+
+                      recipe_revision.transaction do
+                        ::Packages::MarkPackageFilesForDestructionService.new(recipe_revision.package_files).execute
+                        destroy_conditionally!(recipe_revision) do |recipe_revision|
+                          recipe_revision.destroy
+
+                          # Conan cli expects 200 status code when deleting a recipe revision
+                          status 200
+                        end
+                      end
+                    end
+                  end
+
                   namespace 'files' do
                     desc 'List recipe files' do
                       detail 'This feature was introduced in GitLab 17.11'

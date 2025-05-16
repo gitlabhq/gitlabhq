@@ -40,6 +40,40 @@ RSpec.describe GroupMember, feature_category: :cell do
     end
   end
 
+  describe '.max_access_members' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: group) }
+
+    let_it_be(:user) { create(:user) }
+    let_it_be(:developer_member) { create(:group_member, :developer, group: group, user: user) }
+
+    let(:group_ids) { [group.id] }
+
+    subject { described_class.max_access_members(group_ids, user) }
+
+    it "returns user's max access level" do
+      is_expected.to contain_exactly(developer_member)
+    end
+
+    describe 'when user has different member access level in a group hierarchy' do
+      let_it_be(:owner_member) { create(:group_member, :owner, group: subgroup, user: user) }
+
+      describe 'when group has no inherited access level' do
+        it "returns user's max access level" do
+          is_expected.to contain_exactly(developer_member)
+        end
+      end
+
+      describe 'when group has inherited access level' do
+        let(:group_ids) { [subgroup.id] }
+
+        it "returns user's max access level" do
+          is_expected.to contain_exactly(owner_member)
+        end
+      end
+    end
+  end
+
   describe '#permissible_access_level_roles' do
     let_it_be(:group) { create(:group) }
 

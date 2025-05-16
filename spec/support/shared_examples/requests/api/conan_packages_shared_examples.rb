@@ -312,16 +312,16 @@ RSpec.shared_examples 'handling validation error for package' do
   end
 end
 
-RSpec.shared_examples 'handling empty values for username and channel' do
+RSpec.shared_examples 'handling empty values for username and channel' do |success_status: :ok|
   using RSpec::Parameterized::TableSyntax
 
   let(:recipe_path) { "#{package.name}/#{package.version}/#{package_username}/#{channel}" }
 
   where(:username, :channel, :status) do
-    'username' | 'channel' | :ok
+    'username' | 'channel' | success_status
     'username' | '_'       | :bad_request
     '_'        | 'channel' | :bad_request_or_not_found
-    '_'        | '_'       | :ok_or_not_found
+    '_'        | '_'       | :success_status_or_not_found
   end
 
   with_them do
@@ -341,15 +341,15 @@ RSpec.shared_examples 'handling empty values for username and channel' do
       project_level = example.full_description.include?('api/v4/projects')
 
       expected_status = case status
-                        when :ok_or_not_found
-                          project_level ? :ok : :not_found
+                        when :success_status_or_not_found
+                          project_level ? success_status : :not_found
                         when :bad_request_or_not_found
                           project_level ? :bad_request : :not_found
                         else
                           status
                         end
 
-      if expected_status == :ok
+      if expected_status == success_status
         package.conan_metadatum.update!(package_username: package_username, package_channel: channel)
       end
 

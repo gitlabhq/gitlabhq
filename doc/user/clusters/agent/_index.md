@@ -6,6 +6,13 @@ title: Connecting a Kubernetes cluster with GitLab
 description: Kubernetes integration, GitOps, CI/CD, agent deployment, and cluster management.
 ---
 
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 {{< history >}}
 
 - Flux [recommended](https://gitlab.com/gitlab-org/gitlab/-/issues/357947#note_1253489000) as GitOps solution in GitLab 15.10.

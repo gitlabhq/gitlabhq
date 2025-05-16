@@ -902,6 +902,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="queryjobscompatiblerunnerid"></a>`compatibleRunnerId` {{< icon name="warning-solid" >}} | [`CiRunnerID`](#cirunnerid) | **Introduced** in GitLab 18.1. **Status**: Experiment. ID of a runner that matches the requirements of the jobs returned (normally used when filtering pending jobs). |
 | <a id="queryjobsfailurereason"></a>`failureReason` {{< icon name="warning-solid" >}} | [`CiJobFailureReason`](#cijobfailurereason) | **Introduced** in GitLab 16.4. **Status**: Experiment. Filter jobs by failure reason. Currently only `RUNNER_SYSTEM_FAILURE` together with `runnerTypes: INSTANCE_TYPE` is supported. |
 | <a id="queryjobsrunnertypes"></a>`runnerTypes` {{< icon name="warning-solid" >}} | [`[CiRunnerType!]`](#cirunnertype) | **Introduced** in GitLab 16.4. **Status**: Experiment. Filter jobs by runner type if feature flag `:admin_jobs_filter_runner_type` is enabled. |
 | <a id="queryjobsstatuses"></a>`statuses` | [`[CiJobStatus!]`](#cijobstatus) | Filter jobs by status. |

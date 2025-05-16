@@ -61,6 +61,32 @@ module Gitlab
 
         attr_reader :model, :connection
 
+        # Create all partition tables (doesn't take any lock on parent)
+        def create_partition_tables(partitions)
+          partitions.each do |partition|
+            connection.execute(partition.to_create_sql)
+          end
+        end
+
+        # Attach all partitions (takes SHARE UPDATE EXCLUSIVE lock)
+        def attach_partition_tables(partitions)
+          partitions.each do |partition|
+            connection.execute(partition.to_attach_sql)
+            process_created_partition(partition)
+          end
+        end
+
+        def process_created_partition(partition)
+          Gitlab::AppLogger.info(message: "Created partition",
+            partition_name: partition.partition_name,
+            table_name: partition.table,
+            connection_name: @connection_name)
+
+          lock_partitions_for_writes(partition) if should_lock_for_writes?
+
+          attach_loose_foreign_key_trigger(partition) if parent_table_has_loose_foreign_key?
+        end
+
         def missing_partitions
           return [] unless connection.table_exists?(model.table_name)
 
@@ -85,21 +111,19 @@ module Gitlab
           # with_lock_retries starts a requires_new transaction most of the time, but not on the last iteration
           with_lock_retries do
             connection.transaction(requires_new: false) do # so we open a transaction here if not already in progress
-              # Partitions might not get created (IF NOT EXISTS) so explicit locking will not happen.
-              # This LOCK TABLE ensures to have exclusive lock as the first step.
-              connection.execute "LOCK TABLE #{connection.quote_table_name(model.table_name)} IN ACCESS EXCLUSIVE MODE"
+              if Feature.enabled?(:reduce_lock_usage_during_partition_creation)
+                create_partition_tables(partitions)
+                attach_partition_tables(partitions)
+              else
+                # Partitions might not get created (IF NOT EXISTS) so explicit locking will not happen.
+                # This LOCK TABLE ensures to have exclusive lock as the first step.
+                quoted_table_name = connection.quote_table_name(model.table_name)
+                connection.execute("LOCK TABLE #{quoted_table_name} IN ACCESS EXCLUSIVE MODE")
 
-              partitions.each do |partition|
-                connection.execute partition.to_sql
-
-                Gitlab::AppLogger.info(message: "Created partition",
-                  partition_name: partition.partition_name,
-                  table_name: partition.table,
-                  connection_name: @connection_name)
-
-                lock_partitions_for_writes(partition) if should_lock_for_writes?
-
-                attach_loose_foreign_key_trigger(partition) if parent_table_has_loose_foreign_key?
+                partitions.each do |partition|
+                  connection.execute(partition.to_sql)
+                  process_created_partition(partition)
+                end
               end
 
               model.partitioning_strategy.after_adding_partitions

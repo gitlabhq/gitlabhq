@@ -212,6 +212,29 @@ Example response:
 }
 ```
 
+## Delete a recipe revision
+
+Delete the recipe revision from the registry. If the package has only one recipe revision, the package is deleted as well.
+
+```plaintext
+DELETE /projects/:id/packages/conan/conans/:package_name/package_version/:package_username/:package_channel/revisions/:recipe_revision
+```
+
+| Attribute          | Type   | Required | Description                                                                                 |
+| ------------------ | ------ | -------- | ------------------------------------------------------------------------------------------- |
+| `id`               | string | yes      | The project ID or full project path.                                                        |
+| `package_name`     | string | yes      | Name of a package.                                                                          |
+| `package_version`  | string | yes      | Version of a package.                                                                       |
+| `package_username` | string | yes      | Conan username of a package. This attribute is the `+`-separated full path of your project. |
+| `package_channel`  | string | yes      | Channel of a package.                                                                       |
+| `recipe_revision`  | string | yes      | Revision hash of the recipe revision to delete.                                                |
+
+```shell
+curl --request DELETE \
+     --header "Authorization: Bearer <authenticate_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions/2be19f5a69b2cb02ab576755252319b9"
+```
+
 ## List all recipe files
 
 Lists all recipe files from the package registry.

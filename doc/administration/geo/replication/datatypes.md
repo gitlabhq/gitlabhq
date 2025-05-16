@@ -161,8 +161,6 @@ Elasticsearch is not supported in Geo.
 
 ### Replicated data types behind a feature flag
 
-The replication for some data types is behind a corresponding feature flag:
-
 {{< history >}}
 
 - They're deployed behind a feature flag, enabled by default.
@@ -172,6 +170,13 @@ The replication for some data types is behind a corresponding feature flag:
 - For a GitLab Self-Managed instance, GitLab administrators can opt to [disable them](#enable-or-disable-replication-for-some-data-types).
 
 {{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
 
 #### Enable or disable replication (for some data types)
 

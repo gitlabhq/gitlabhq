@@ -2286,7 +2286,6 @@ Layout/LineLength:
     - 'qa/qa/resource/file.rb'
     - 'qa/qa/resource/protected_branch.rb'
     - 'qa/qa/resource/registry_repository.rb'
-    - 'qa/qa/resource/snippet.rb'
     - 'qa/qa/resource/user_runners.rb'
     - 'qa/qa/resource/wiki/group_page.rb'
     - 'qa/qa/runtime/api/repository_storage_moves.rb'

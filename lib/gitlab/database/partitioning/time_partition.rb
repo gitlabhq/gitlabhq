@@ -30,6 +30,24 @@ module Gitlab
           @partition_name = partition_name
         end
 
+        def to_create_sql
+          <<~SQL
+            CREATE TABLE IF NOT EXISTS #{fully_qualified_partition}
+            (LIKE #{conn.quote_table_name(table)} INCLUDING ALL)
+          SQL
+        end
+
+        def to_attach_sql
+          from_sql = from ? conn.quote(from.to_date.iso8601) : 'MINVALUE'
+          to_sql = conn.quote(to.to_date.iso8601)
+
+          <<~SQL
+            ALTER TABLE #{conn.quote_table_name(table)}
+            ATTACH PARTITION #{fully_qualified_partition}
+            FOR VALUES FROM (#{from_sql}) TO (#{to_sql})
+          SQL
+        end
+
         def to_sql
           from_sql = from ? conn.quote(from.to_date.iso8601) : 'MINVALUE'
           to_sql = conn.quote(to.to_date.iso8601)
