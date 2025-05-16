@@ -21,7 +21,6 @@ import blobControlsQuery from '~/repository/queries/blob_controls.query.graphql'
 import userGitpodInfo from '~/repository/queries/user_gitpod_info.query.graphql';
 import applicationInfoQuery from '~/blob/queries/application_info.query.graphql';
 import createRouter from '~/repository/router';
-import { updateElementsVisibility } from '~/repository/utils/dom';
 import OpenMrBadge from '~/repository/components/header_area/open_mr_badge.vue';
 import ForkSuggestionModal from '~/repository/components/header_area/fork_suggestion_modal.vue';
 import {
@@ -90,7 +89,6 @@ describe('Blob controls component', () => {
     currentUserResolver = currentUserSuccessResolver,
     applicationInfoResolver = applicationInfoSuccessResolver,
     glFeatures = { blobOverflowMenu: false },
-    routerOverride = {},
   } = {}) => {
     const projectPath = 'some/project';
     router = createRouter(projectPath, refMock);
@@ -98,7 +96,6 @@ describe('Blob controls component', () => {
     await router.push({
       name: 'blobPathDecoded',
       params: { path: '/some/file.js' },
-      ...routerOverride,
     });
 
     await resetShortcutsForTests();
@@ -149,40 +146,6 @@ describe('Blob controls component', () => {
   afterEach(() => {
     fakeApollo = null;
   });
-
-  describe('showBlobControls', () => {
-    it('should not render blob controls when filePath does not exist', async () => {
-      await createComponent({
-        routerOverride: { name: 'blobPathDecoded', params: null },
-      });
-      expect(wrapper.element).not.toBeVisible();
-    });
-
-    it('should not render blob controls when route name is not blobPathDecoded', async () => {
-      await createComponent({
-        routerOverride: { name: 'blobPath', params: { path: '/some/file.js' } },
-      });
-      expect(wrapper.element).not.toBeVisible();
-    });
-  });
-
-  it.each`
-    name                 | path
-    ${'blobPathDecoded'} | ${null}
-    ${'treePathDecoded'} | ${'myFile.js'}
-  `(
-    'does not render any buttons if router name is $name and router path is $path',
-    async ({ name, path }) => {
-      await router.replace({ name, params: { path } });
-
-      await nextTick();
-
-      expect(findFindButton().exists()).toBe(false);
-      expect(findBlameButton().exists()).toBe(false);
-      expect(findPermalinkButton().exists()).toBe(false);
-      expect(updateElementsVisibility).toHaveBeenCalledWith('.tree-controls', true);
-    },
-  );
 
   it('loads the ShortcutsBlob', () => {
     expect(ShortcutsBlob).toHaveBeenCalled();

@@ -43,6 +43,7 @@ describe('HeaderArea', () => {
   const findFileIcon = () => wrapper.findComponent(FileIcon);
   const findRepositoryOverflowMenu = () => wrapper.findComponent(RepositoryOverflowMenu);
   const findBlobControls = () => wrapper.findComponent(BlobControls);
+  const findTreeControls = () => wrapper.findByTestId('tree-controls-container');
 
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
@@ -72,6 +73,10 @@ describe('HeaderArea', () => {
         $route: {
           ...defaultMockRoute,
           ...route,
+          params: {
+            ...defaultMockRoute.params,
+            ...(route.params || {}),
+          },
         },
       },
     });
@@ -95,6 +100,13 @@ describe('HeaderArea', () => {
 
   it('renders PageHeading component', () => {
     expect(findPageHeading().exists()).toBe(true);
+  });
+
+  describe('showTreeControls', () => {
+    it('should not render tree controls for blob view', () => {
+      wrapper = createComponent({}, { name: 'blobPathDecoded' });
+      expect(findTreeControls().exists()).toBe(false);
+    });
   });
 
   describe('when rendered for tree view', () => {
@@ -236,6 +248,20 @@ describe('HeaderArea', () => {
   });
 
   describe('when rendered for blob view', () => {
+    describe('showBlobControls', () => {
+      it('should not render blob controls when filePath does not exist', () => {
+        wrapper = createComponent({ route: { name: 'blobPathDecoded', params: { path: null } } });
+        expect(findBlobControls().exists()).toBe(false);
+      });
+
+      it('should not render blob controls when route name is not blobPathDecoded', () => {
+        wrapper = createComponent({
+          route: { name: 'blobPath', params: { path: '/some/file.js' } },
+        });
+        expect(findBlobControls().exists()).toBe(false);
+      });
+    });
+
     it('renders BlobControls component with correct props', () => {
       wrapper = createComponent({ props: { refType: 'branch' } });
       expect(findBlobControls().exists()).toBe(true);

@@ -1109,6 +1109,46 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
       end
     end
 
+    describe 'AutoMerge::TitleDescriptionUpdateEvent' do
+      let(:auto_merge_enabled) { true }
+      let(:title_regex) { 'test' }
+
+      before do
+        merge_request.update!(auto_merge_enabled: true, merge_user: user) if auto_merge_enabled
+        project.update!(merge_request_title_regex: title_regex)
+      end
+
+      context 'when the title changes' do
+        let(:update_params) { { title: 'New title' } }
+
+        context 'when project has a required regex' do
+          context 'when auto merge is enabled' do
+            it_behaves_like 'it publishes the AutoMerge::TitleDescriptionUpdateEvent once'
+
+            context 'when merge_request_title_regex ff is off' do
+              before do
+                stub_feature_flags(merge_request_title_regex: false)
+              end
+
+              it_behaves_like 'it does not publish the AutoMerge::TitleDescriptionUpdateEvent'
+            end
+          end
+
+          context 'when auto merge is not enabled' do
+            let(:auto_merge_enabled) { false }
+
+            it_behaves_like 'it does not publish the AutoMerge::TitleDescriptionUpdateEvent'
+          end
+        end
+
+        context 'when project has no required regex' do
+          let(:title_regex) { nil }
+
+          it_behaves_like 'it does not publish the AutoMerge::TitleDescriptionUpdateEvent'
+        end
+      end
+    end
+
     context 'while saving references to issues that the updated merge request closes', :aggregate_failures do
       let_it_be(:user) { create(:user) }
       let_it_be(:group) { create(:group, :public) }

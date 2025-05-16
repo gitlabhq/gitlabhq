@@ -65,7 +65,7 @@ class Cli
         3) Define metric (using CLI)
         4) View data in Tableau (after merge & deploy)
 
-      This CLI will help you create the correct defintion files, then provide code examples for instrumentation and testing.
+      This CLI will help you create the correct definition files, then provide code examples for instrumentation and testing.
 
       Learn more: https://docs.gitlab.com/ee/development/internal_analytics/#fundamental-concepts
 

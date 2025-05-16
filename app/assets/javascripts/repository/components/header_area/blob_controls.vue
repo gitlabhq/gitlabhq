@@ -23,7 +23,6 @@ import {
 import { sanitize } from '~/lib/dompurify';
 import { InternalEvents } from '~/tracking';
 import { FIND_FILE_BUTTON_CLICK, BLAME_BUTTON_CLICK } from '~/tracking/constants';
-import { updateElementsVisibility } from '~/repository/utils/dom';
 import {
   showSingleFileEditorForkSuggestion,
   showWebIdeForkSuggestion,
@@ -148,9 +147,6 @@ export default {
     filePath() {
       return this.$route.params.path;
     },
-    showBlobControls() {
-      return this.filePath && this.$route.name === 'blobPathDecoded';
-    },
     blobInfo() {
       return this.project?.repository?.blobs?.nodes[0] || {};
     },
@@ -219,9 +215,6 @@ export default {
     },
   },
   watch: {
-    showBlobControls(shouldShow) {
-      updateElementsVisibility('.tree-controls', !shouldShow);
-    },
     blobInfo() {
       initSourcegraph();
       this.$nextTick(() => {
@@ -281,7 +274,6 @@ export default {
 </script>
 <template>
   <div
-    v-if="showBlobControls"
     class="gl-flex gl-flex-wrap gl-items-center gl-gap-3 gl-self-end"
     data-testid="blob-controls"
   >

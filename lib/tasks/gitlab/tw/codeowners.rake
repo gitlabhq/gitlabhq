@@ -50,7 +50,7 @@ namespace :tw do
       CodeOwnerRule.new('Dynamic Analysis', '@phillipwells'),
       CodeOwnerRule.new('Editor Extensions', '@aqualls'),
       # CodeOwnerRule.new('Environment Automation', ''),
-      CodeOwnerRule.new('Environments', '@z_painter'),
+      # CodeOwnerRule.new('Environments', ''),
       # CodeOwnerRule.new('Fulfillment Platform', ''),
       CodeOwnerRule.new('Fuzz Testing', '@rdickenson'),
       CodeOwnerRule.new('Geo', '@axil'),

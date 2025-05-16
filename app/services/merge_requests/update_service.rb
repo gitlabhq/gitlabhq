@@ -38,6 +38,7 @@ module MergeRequests
       if merge_request.previous_changes.include?('title') ||
           merge_request.previous_changes.include?('description')
         todo_service.update_merge_request(merge_request, current_user, old_mentioned_users)
+        handle_title_and_desc_edits(merge_request, merge_request.previous_changes.keys)
       end
 
       handle_target_branch_change(merge_request, changed_fields)
@@ -132,6 +133,24 @@ module MergeRequests
       end
 
       update_task_event(merge_request) || update(merge_request)
+    end
+
+    def handle_title_and_desc_edits(merge_request, changed_fields)
+      fields = %w[title description]
+
+      return unless changed_fields.any? { |field| fields.include?(field) }
+      return unless merge_request.auto_merge_enabled?
+      return unless should_publish_update_event?(merge_request, changed_fields)
+
+      ::Gitlab::EventStore.publish(
+        ::MergeRequests::AutoMerge::TitleDescriptionUpdateEvent.new(data: { current_user_id: current_user.id, merge_request_id: merge_request.id })
+      )
+    end
+
+    def should_publish_update_event?(merge_request, changed_fields)
+      ::Feature.enabled?(:merge_request_title_regex, merge_request.project) &&
+        changed_fields.include?('title') &&
+        merge_request.project.merge_request_title_regex.present?
     end
 
     def track_title_and_desc_edits(changed_fields)
