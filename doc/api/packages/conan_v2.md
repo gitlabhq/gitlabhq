@@ -49,7 +49,7 @@ These endpoints all return `404 Not Found`.
 Creates a JSON Web Token (JWT) for use as a Bearer header in other requests.
 
 ```shell
-"Authorization: Bearer <token>
+"Authorization: Bearer <authenticate_token>
 ```
 
 The Conan 2 package manager client automatically uses this token.
@@ -65,14 +65,14 @@ GET /projects/:id/packages/conan/v2/users/authenticate
 Generate a base64-encoded Basic Auth token:
 
 ```shell
-echo -n "<username>:<personal_access_token>"|base64
+echo -n "<username>:<your_access_token>"|base64
 ```
 
 Use the base64-encoded Basic Auth token to get a JWT token:
 
 ```shell
 curl --request GET \
-     --header 'Authorization: Basic <base64-encoded-token>' \
+     --header 'Authorization: Basic <base64_encoded_token>' \
      --url "https://gitlab.example.com/api/v4/packages/conan/v2/users/authenticate"
 ```
 
@@ -158,8 +158,7 @@ GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:packa
 | `package_channel`  | string | yes      | Channel of a package.                                                                       |
 
 ```shell
-curl --request GET \
-     --header "Authorization: Bearer <authenticate_token>" \
+curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/latest"
 ```
 
@@ -189,8 +188,7 @@ GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:packa
 | `package_channel`  | string | yes      | Channel of a package.                                                                       |
 
 ```shell
-curl --request GET \
-     --header "Authorization: Bearer <authenticate_token>" \
+curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions"
 ```
 
@@ -253,8 +251,7 @@ GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:packa
 | `recipe_revision`  | string | yes      | Revision of the recipe. Does not accept a value of `0`.                                     |
 
 ```shell
-curl --request GET \
-     --header "Authorization: Bearer <authenticate_token>" \
+curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-username/stable/revisions/df28fd816be3a119de5ce4d374436b25/files"
 ```
 
@@ -289,16 +286,14 @@ GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:packa
 | `file_name`        | string | yes      | The name and file extension of the requested file.                                          |
 
 ```shell
-curl --request GET \
-     --header "Authorization: Bearer <authenticate_token>" \
+curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-username/stable/revisions/df28fd816be3a119de5ce4d374436b25/files/conanfile.py"
 ```
 
 You can also write the output to a file by using:
 
 ```shell
-curl --request GET \
-     --header "Authorization: Bearer <authenticate_token>" \
+curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-username/stable/revisions/df28fd816be3a119de5ce4d374436b25/files/conanfile.py" \
      >> conanfile.py
 ```
@@ -380,8 +375,7 @@ GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:packa
 | `conan_package_reference` | string | yes      | Reference hash of a Conan package. Conan generates this value.                              |
 
 ```shell
-curl --request GET \
-     --header "Authorization: Bearer <authenticate_token>" \
+curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions/75151329520e7685dcf5da49ded2fec0/packages/103f6067a947f366ef91fc1b7da351c588d1827f/revisions"
 ```
 
@@ -456,16 +450,14 @@ GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:packa
 | `file_name`               | string | yes      | The name and file extension of the requested file.                                          |
 
 ```shell
-curl --request GET \
-     --header "Authorization: Bearer <authenticate_token>" \
+curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions/75151329520e7685dcf5da49ded2fec0/packages/103f6067a947f366ef91fc1b7da351c588d1827f/revisions/3bdd2d8c8e76c876ebd1ac0469a4e72c/files/conaninfo.txt"
 ```
 
 You can also write the output to a file by using:
 
 ```shell
-curl --request GET \
-     --header "Authorization: Bearer <authenticate_token>" \
+curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions/75151329520e7685dcf5da49ded2fec0/packages/103f6067a947f366ef91fc1b7da351c588d1827f/revisions/3bdd2d8c8e76c876ebd1ac0469a4e72c/files/conaninfo.txt" \
      >> conaninfo.txt
 ```

@@ -100,10 +100,10 @@ module IssuableCollections
   end
 
   def default_sort_order
-    case params[:state]
-    when 'opened', 'all'    then sort_value_created_date
-    when 'merged', 'closed' then sort_value_recently_updated
-    else sort_value_created_date
+    if %w[merged closed].include?(params[:state])
+      sort_value_recently_updated
+    else
+      sort_value_created_date
     end
   end
 

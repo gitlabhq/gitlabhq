@@ -2,7 +2,6 @@ import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { GlButton, GlAlert } from '@gitlab/ui';
 
-import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import RegistrationDropdown from '~/ci/runner/components/registration/registration_dropdown.vue';
 import RunnersTabs from '~/ci/runner/project_runners_settings/components/runners_tabs.vue';
@@ -30,7 +29,7 @@ describe('ProjectRunnersSettingsApp', () => {
     });
   };
 
-  const findAlert = () => wrapper.findComponent(GlAlert);
+  const findAlerts = () => wrapper.findAllComponents(GlAlert);
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
   const findNewRunnerButton = () => wrapper.findComponent(GlButton);
   const findRegistrationDropdown = () => wrapper.findComponent(RegistrationDropdown);
@@ -70,7 +69,7 @@ describe('ProjectRunnersSettingsApp', () => {
   });
 
   it('does not show error alert by default', () => {
-    expect(findAlert().exists()).toBe(false);
+    expect(findAlerts()).toHaveLength(0);
   });
 
   describe('when an error occurs', () => {
@@ -83,17 +82,16 @@ describe('ProjectRunnersSettingsApp', () => {
     });
 
     it('shows error alert', () => {
-      expect(findAlert().text()).toBe('Something went wrong while fetching runner data.');
-      expect(Sentry.captureException).toHaveBeenCalledWith(error);
+      expect(findAlerts().at(0).text()).toBe('Test error');
     });
 
     it('dismisses error alert', async () => {
-      expect(findAlert().exists()).toBe(true);
+      expect(findAlerts()).toHaveLength(1);
 
-      findAlert().vm.$emit('dismiss');
+      findAlerts().at(0).vm.$emit('dismiss');
       await nextTick();
 
-      expect(findAlert().exists()).toBe(false);
+      expect(findAlerts()).toHaveLength(0);
     });
   });
 });

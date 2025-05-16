@@ -2,12 +2,14 @@
 import { GlTabs } from '@gitlab/ui';
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '~/ci/runner/constants';
 import RunnersTab from './runners_tab.vue';
+import RunnerToggleAssignButton from './runner_toggle_assign_button.vue';
 
 export default {
   name: 'RunnersTabs',
   components: {
     GlTabs,
     RunnersTab,
+    RunnerToggleAssignButton,
   },
   props: {
     projectFullPath: {
@@ -17,8 +19,13 @@ export default {
   },
   emits: ['error'],
   methods: {
-    onError(error) {
-      this.$emit('error', error);
+    onError(event) {
+      this.$emit('error', event);
+    },
+    onRunnerToggleAssign({ message }) {
+      this.$toast?.show(message);
+
+      this.$refs.assignedRunners.refresh();
     },
   },
   INSTANCE_TYPE,
@@ -29,7 +36,8 @@ export default {
 <template>
   <gl-tabs>
     <runners-tab
-      :title="s__('Runners|Project')"
+      ref="assignedRunners"
+      :title="s__('Runners|Assigned project runners')"
       :runner-type="$options.PROJECT_TYPE"
       :project-full-path="projectFullPath"
       @error="onError"
@@ -40,6 +48,16 @@ export default {
             'Runners|No project runners found, you can create one by selecting "New project runner".',
           )
         }}
+      </template>
+      <template #other-runner-actions="{ runner }">
+        <runner-toggle-assign-button
+          v-if="runner.ownerProject.fullPath !== projectFullPath"
+          :project-full-path="projectFullPath"
+          :runner="runner"
+          :assigns="false"
+          @done="onRunnerToggleAssign"
+          @error="onError"
+        />
       </template>
     </runners-tab>
     <runners-tab

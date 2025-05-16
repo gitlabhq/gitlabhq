@@ -56,7 +56,7 @@ If your AI gateway URL points to a local network or private IP address (for exam
 Prerequisites:
 
 - You must be an administrator.
-- You must have an Ultimate license.
+- You must have a Premium or Ultimate license.
 - You must have a GitLab Duo Enterprise license add-on.
 
 To configure a self-hosted model:
@@ -112,7 +112,7 @@ For more information about:
 Prerequisites:
 
 - You must be an administrator.
-- You must have an Ultimate license.
+- You must have an Premium or Ultimate license.
 - You must have a GitLab Duo Enterprise license add-on.
 
 To enable self-hosted [beta](../../policy/development_stages_support.md#beta) models and features:
@@ -136,7 +136,7 @@ For more information, see the [list of available beta models](supported_models_a
 Prerequisites:
 
 - You must be an administrator.
-- You must have an Ultimate license.
+- You must have an Premium or Ultimate license.
 - You must have a GitLab Duo Enterprise license add-on.
 
 ### View configured features

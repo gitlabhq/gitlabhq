@@ -52627,7 +52627,13 @@ msgstr ""
 msgid "Runners|Runner"
 msgstr ""
 
+msgid "Runners|Runner %{name} was assigned to this project."
+msgstr ""
+
 msgid "Runners|Runner %{name} was deleted"
+msgstr ""
+
+msgid "Runners|Runner %{name} was unassigned from this project."
 msgstr ""
 
 msgid "Runners|Runner %{runnerName} failed to delete"
@@ -53020,6 +53026,9 @@ msgid_plural "Runner|%d days selected"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Runner|Assign to project"
+msgstr ""
+
 msgid "Runner|Assigned Projects"
 msgstr ""
 
@@ -53029,6 +53038,12 @@ msgstr ""
 msgid "Runner|Export runner usage for selected dates"
 msgstr ""
 
+msgid "Runner|Failed to assign runner to project."
+msgstr ""
+
+msgid "Runner|Failed to unassign runner from project."
+msgstr ""
+
 msgid "Runner|Runner actions"
 msgstr ""
 
@@ -53036,6 +53051,9 @@ msgid "Runner|Something went wrong while generating the CSV export. Please try a
 msgstr ""
 
 msgid "Runner|The CSV export contains a list of projects, the number of minutes used by instance runners, and the number of jobs that ran. When the export is completed, it is sent as an attachment to your email."
+msgstr ""
+
+msgid "Runner|Unassign from project"
 msgstr ""
 
 msgid "Runner|Your CSV export has started. It will be sent to your email inbox when its ready."

@@ -1,7 +1,6 @@
 ---
 Lint/DuplicateBranch:
   Exclude:
-    - 'app/controllers/concerns/issuable_collections.rb'
     - 'app/controllers/concerns/sorting_preference.rb'
     - 'app/helpers/icons_helper.rb'
     - 'app/helpers/labels_helper.rb'

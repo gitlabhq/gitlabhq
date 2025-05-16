@@ -1,0 +1,5 @@
+mutation runnerUnassignFromProject($projectPath: ID!, $runnerId: CiRunnerID!) {
+  runnerUnassignFromProject(input: { projectPath: $projectPath, runnerId: $runnerId }) {
+    errors
+  }
+}

@@ -11,7 +11,9 @@ export function validationMessageFor(importTarget, field) {
 }
 
 export function isFinished(group) {
-  return [STATUSES.FINISHED, STATUSES.FAILED, STATUSES.TIMEOUT].includes(group.progress?.status);
+  return [STATUSES.FINISHED, STATUSES.FAILED, STATUSES.TIMEOUT, STATUSES.CANCELED].includes(
+    group.progress?.status,
+  );
 }
 
 export function isAvailableForImport(group) {

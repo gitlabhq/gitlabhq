@@ -1,8 +1,6 @@
 <script>
 import { GlButton, GlAlert } from '@gitlab/ui';
-import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
-import { I18N_FETCH_ERROR } from '~/ci/runner/constants';
 import RegistrationDropdown from '~/ci/runner/components/registration/registration_dropdown.vue';
 import RunnersTabs from '~/ci/runner/project_runners_settings/components/runners_tabs.vue';
 
@@ -41,25 +39,31 @@ export default {
   },
   data() {
     return {
-      hasFetchError: false,
+      errors: [],
     };
   },
   methods: {
-    onError(error) {
-      this.hasFetchError = true;
-      Sentry.captureException(error);
+    onError({ message }) {
+      if (this.errors.indexOf(message) === -1) {
+        this.errors.push(message);
+      }
     },
-    onDismissError() {
-      this.hasFetchError = false;
+    onDismissError(message) {
+      this.errors = this.errors.filter((m) => m !== message);
     },
   },
-  I18N_FETCH_ERROR,
 };
 </script>
 <template>
   <div>
-    <gl-alert v-if="hasFetchError" class="gl-mb-4" variant="danger" @dismiss="onDismissError">
-      {{ $options.I18N_FETCH_ERROR }}
+    <gl-alert
+      v-for="error in errors"
+      :key="error"
+      class="gl-mb-4"
+      variant="danger"
+      @dismiss="onDismissError(error)"
+    >
+      {{ error }}
     </gl-alert>
     <crud-component :title="s__('Runners|Available Runners')" body-class="!gl-m-0">
       <template #actions>

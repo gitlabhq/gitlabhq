@@ -1,0 +1,5 @@
+mutation runnerAssignToProject($projectPath: ID!, $runnerId: CiRunnerID!) {
+  runnerAssignToProject(input: { projectPath: $projectPath, runnerId: $runnerId }) {
+    errors
+  }
+}
