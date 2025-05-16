@@ -104,14 +104,14 @@ describe('TabView', () => {
 
   describe.each`
     tab                | handler                                                                                     | expectedVariables                                                                          | expectedProjects
-    ${CONTRIBUTED_TAB} | ${[CONTRIBUTED_TAB.query, jest.fn().mockResolvedValue(contributedProjectsGraphQlResponse)]} | ${{ contributed: true, starred: false, sort: defaultPropsData.sort.toUpperCase() }}        | ${contributedProjectsGraphQlResponse.data.currentUser.contributedProjects.nodes}
-    ${PERSONAL_TAB}    | ${[PERSONAL_TAB.query, jest.fn().mockResolvedValue(personalProjectsGraphQlResponse)]}       | ${{ personal: true, membership: false, archived: 'EXCLUDE', sort: defaultPropsData.sort }} | ${personalProjectsGraphQlResponse.data.projects.nodes}
-    ${MEMBER_TAB}      | ${[MEMBER_TAB.query, jest.fn().mockResolvedValue(membershipProjectsGraphQlResponse)]}       | ${{ personal: false, membership: true, archived: 'EXCLUDE', sort: defaultPropsData.sort }} | ${membershipProjectsGraphQlResponse.data.projects.nodes}
-    ${STARRED_TAB}     | ${[STARRED_TAB.query, jest.fn().mockResolvedValue(starredProjectsGraphQlResponse)]}         | ${{ contributed: false, starred: true, sort: defaultPropsData.sort.toUpperCase() }}        | ${starredProjectsGraphQlResponse.data.currentUser.starredProjects.nodes}
-    ${INACTIVE_TAB}    | ${[INACTIVE_TAB.query, jest.fn().mockResolvedValue(inactiveProjectsGraphQlResponse)]}       | ${{ personal: false, membership: true, archived: 'ONLY', sort: defaultPropsData.sort }}    | ${inactiveProjectsGraphQlResponse.data.projects.nodes}
+    ${CONTRIBUTED_TAB} | ${[CONTRIBUTED_TAB.query, jest.fn().mockResolvedValue(contributedProjectsGraphQlResponse)]} | ${{ contributed: true, starred: false, sort: defaultPropsData.sort.toUpperCase() }}        | ${contributedProjectsGraphQlResponse.data.currentUser.contributedProjects}
+    ${PERSONAL_TAB}    | ${[PERSONAL_TAB.query, jest.fn().mockResolvedValue(personalProjectsGraphQlResponse)]}       | ${{ personal: true, membership: false, archived: 'EXCLUDE', sort: defaultPropsData.sort }} | ${personalProjectsGraphQlResponse.data.projects}
+    ${MEMBER_TAB}      | ${[MEMBER_TAB.query, jest.fn().mockResolvedValue(membershipProjectsGraphQlResponse)]}       | ${{ personal: false, membership: true, archived: 'EXCLUDE', sort: defaultPropsData.sort }} | ${membershipProjectsGraphQlResponse.data.projects}
+    ${STARRED_TAB}     | ${[STARRED_TAB.query, jest.fn().mockResolvedValue(starredProjectsGraphQlResponse)]}         | ${{ contributed: false, starred: true, sort: defaultPropsData.sort.toUpperCase() }}        | ${starredProjectsGraphQlResponse.data.currentUser.starredProjects}
+    ${INACTIVE_TAB}    | ${[INACTIVE_TAB.query, jest.fn().mockResolvedValue(inactiveProjectsGraphQlResponse)]}       | ${{ personal: false, membership: true, archived: 'ONLY', sort: defaultPropsData.sort }}    | ${inactiveProjectsGraphQlResponse.data.projects}
   `(
     'onMount when route name is $tab.value',
-    ({ tab, handler, expectedVariables, expectedProjects }) => {
+    ({ tab, handler, expectedVariables, expectedProjects: { nodes, count } }) => {
       describe('when GraphQL request is loading', () => {
         beforeEach(() => {
           createComponent({ handlers: [handler], propsData: { tab } });
@@ -147,8 +147,12 @@ describe('TabView', () => {
           expect(wrapper.emitted('query-complete')).toEqual([[]]);
         });
 
+        it('emits update-count event', () => {
+          expect(wrapper.emitted('update-count')).toEqual([[tab, count]]);
+        });
+
         it('passes items to `ProjectsList` component', () => {
-          expect(findProjectsList().props('items')).toEqual(formatProjects(expectedProjects));
+          expect(findProjectsList().props('items')).toEqual(formatProjects(nodes));
         });
 
         it('passes `timestampType` prop to `ProjectsList` component', () => {
@@ -325,6 +329,7 @@ describe('TabView', () => {
             projects: {
               nodes: personalProjectsGraphQlResponse.data.projects.nodes,
               pageInfo: pageInfoMultiplePages,
+              count: personalProjectsGraphQlResponse.data.projects.count,
             },
           },
         }),

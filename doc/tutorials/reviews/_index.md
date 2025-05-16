@@ -317,7 +317,7 @@ First, write your comments you want to attach to specific lines or files:
    [select multiple lines](../../user/project/merge_requests/reviews/suggestions.md#multi-line-suggestions),
    or select an entire file to comment on:
 
-   ![Code diff interface showing a speech bubble button next to a line number with a tooltip for adding a comment to one or multiple lines](../../user/project/merge_requests/reviews/img/comment_on_any_diff_line_v16_6.png)
+   ![Code diff interface showing a speech bubble button next to a line number with a tooltip for adding a comment to one or multiple lines](img/comment_on_any_diff_line_v16_6.png)
 
 1. In the text area, write your first comment. To keep your comments private until
    the end of your review, select **Start a review** below your comment.

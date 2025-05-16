@@ -41,13 +41,9 @@
       - if @diff_file.stored_externally? && @diff_file.external_storage == :lfs
         = helpers.gl_badge_tag(_('LFS'), variant: :neutral)
   .rd-diff-file-info
-    .rd-diff-file-stats
-      %span.rd-lines-added
-        %span>= "+"
-        %span{ "data-testid" => "js-file-addition-line" }= @diff_file.added_lines
-      %span.rd-lines-removed
-        %span>= "&#x2212;".html_safe
-        %span{ "data-testid" => "js-file-deletion-line" }= @diff_file.removed_lines
+    .rd-diff-file-stats{ aria: { label: stats_label } }
+      %span.rd-lines-added +#{@diff_file.added_lines}
+      %span.rd-lines-removed −#{@diff_file.removed_lines}
     .rd-diff-file-options-menu
       %div{ data: { options_menu: true } }
         -# <script> here is likely the most effective way to minimize bytes:

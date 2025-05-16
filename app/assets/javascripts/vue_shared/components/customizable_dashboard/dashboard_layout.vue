@@ -1,6 +1,6 @@
 <script>
 import GridstackWrapper from './gridstack_wrapper.vue';
-import dashboardConfigValidator from './utils';
+import { dashboardConfigValidator } from './utils';
 
 export default {
   name: 'DashboardLayout',

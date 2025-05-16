@@ -1,11 +1,11 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlSprintf } from '@gitlab/ui';
 import { isNumber } from 'lodash';
 import { n__ } from '~/locale';
 import { isNotDiffable, stats } from '../utils/diff_file';
 
 export default {
-  components: { GlIcon },
+  components: { GlIcon, GlSprintf },
   props: {
     diffFile: {
       type: Object,
@@ -31,7 +31,7 @@ export default {
       return parseInt(this.diffsCount, 10);
     },
     filesText() {
-      return n__('file', 'files', this.diffFilesLength);
+      return n__('%{count} file', '%{count} files', this.diffFilesLength);
     },
     isCompareVersionsHeader() {
       return Boolean(this.diffsCount);
@@ -44,6 +44,18 @@ export default {
     },
     fileStats() {
       return stats(this.diffFile);
+    },
+    statsLabel() {
+      const counters = [];
+      if (this.addedLines > 0)
+        counters.push(
+          n__('RapidDiffs|Added %d line.', 'RapidDiffs|Added %d lines.', this.addedLines),
+        );
+      if (this.removedLines > 0)
+        counters.push(
+          n__('RapidDiffs|Removed %d line.', 'RapidDiffs|Removed %d lines.', this.removedLines),
+        );
+      return counters.join(' ');
     },
   },
 };
@@ -63,21 +75,27 @@ export default {
     <div v-else class="diff-stats-contents">
       <div v-if="hasDiffFiles" class="diff-stats-group">
         <gl-icon name="doc-code" class="diff-stats-icon" variant="subtle" />
-        <span class="gl-font-bold gl-text-subtle">{{ diffsCount }} {{ filesText }}</span>
+        <span class="gl-font-bold gl-text-subtle">
+          <gl-sprintf :message="filesText">
+            <template #count>{{ diffsCount }}</template>
+          </gl-sprintf>
+        </span>
       </div>
-      <div
-        class="diff-stats-group gl-flex gl-items-center gl-text-success"
-        :class="{ 'gl-font-bold': isCompareVersionsHeader }"
-      >
-        <span>+</span>
-        <span data-testid="js-file-addition-line">{{ addedLines }}</span>
-      </div>
-      <div
-        class="diff-stats-group gl-flex gl-items-center gl-text-danger"
-        :class="{ 'gl-font-bold': isCompareVersionsHeader }"
-      >
-        <span>−</span>
-        <span data-testid="js-file-deletion-line">{{ removedLines }}</span>
+      <div class="gl-flex" :aria-label="statsLabel">
+        <div
+          class="diff-stats-group gl-flex gl-items-center gl-text-success"
+          :class="{ 'gl-font-bold': isCompareVersionsHeader }"
+        >
+          <span>+</span>
+          <span data-testid="js-file-addition-line">{{ addedLines }}</span>
+        </div>
+        <div
+          class="diff-stats-group gl-flex gl-items-center gl-text-danger"
+          :class="{ 'gl-font-bold': isCompareVersionsHeader }"
+        >
+          <span>−</span>
+          <span data-testid="js-file-deletion-line">{{ removedLines }}</span>
+        </div>
       </div>
     </div>
   </div>

@@ -21,6 +21,11 @@ export default {
       required: true,
       type: Object,
     },
+    displayAsLink: {
+      required: false,
+      default: false,
+      type: Boolean,
+    },
   },
   data() {
     return {
@@ -50,7 +55,7 @@ export default {
   <gl-link
     ref="reference"
     class="gl-text-strong"
-    :class="`gfm gfm-${type}`"
+    :class="[`gfm gfm-${type}`, { '!gl-text-link': displayAsLink }]"
     :data-original="`${project || group}${data.reference}+`"
     :data-reference-type="type"
     :title="data.title"

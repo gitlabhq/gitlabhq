@@ -1902,6 +1902,45 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#last_owner_in_list?' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:user) { create(:user) }
+
+    context 'when user is nil' do
+      it 'returns false' do
+        expect(group.last_owner_in_list?(nil, [])).to be false
+      end
+    end
+
+    context 'with a single owner in the list' do
+      let(:owner_member) { build_stubbed(:group_member, user_id: user.id) }
+
+      it 'returns true when user matches the owner' do
+        expect(group.last_owner_in_list?(user, [owner_member])).to be true
+      end
+
+      it 'returns false when user does not match the owner' do
+        other_user = create(:user)
+        expect(group.last_owner_in_list?(other_user, [owner_member])).to be false
+      end
+    end
+
+    context 'with multiple owners in the list' do
+      let(:owner_member) { build_stubbed(:group_member, user_id: user.id) }
+      let(:another_owner) { build_stubbed(:group_member, user_id: create(:user).id) }
+
+      it 'returns false even if user is one of the owners' do
+        expect(group.last_owner_in_list?(user, [owner_member, another_owner])).to be false
+      end
+    end
+
+    context 'with an empty owners list' do
+      it 'returns false' do
+        expect(group.last_owner_in_list?(user, [])).to be false
+      end
+    end
+  end
+
   context 'when analyzing blocked owners' do
     let_it_be(:blocked_user) { create(:user, :blocked) }
 

@@ -72,8 +72,8 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
 
   it "renders line count" do
     render_component
-    expect(page.find('[data-testid="js-file-addition-line"]')).to have_text(diff_file.added_lines)
-    expect(page.find('[data-testid="js-file-deletion-line"]')).to have_text(diff_file.removed_lines)
+    selector = "[aria-label=\"Added #{diff_file.added_lines} lines. Removed #{diff_file.removed_lines} lines.\"]"
+    expect(page.find(selector)).to have_text("+#{diff_file.added_lines} −#{diff_file.removed_lines}")
   end
 
   describe 'menu items' do

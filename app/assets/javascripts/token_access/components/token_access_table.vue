@@ -8,7 +8,7 @@ import {
   GlSprintf,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { TYPENAME_GROUP } from '~/graphql_shared/constants';
+import { TYPENAME_CI_JOB_TOKEN_ACCESSIBLE_GROUP } from '~/graphql_shared/constants';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import { s__, __ } from '~/locale';
 import { JOB_TOKEN_POLICIES } from '../constants';
@@ -78,7 +78,7 @@ export default {
   methods: {
     itemType(item) {
       // eslint-disable-next-line no-underscore-dangle
-      return item.__typename === TYPENAME_GROUP ? 'group' : 'project';
+      return item.__typename === TYPENAME_CI_JOB_TOKEN_ACCESSIBLE_GROUP ? 'group' : 'project';
     },
     getPolicies(policyKeys) {
       return policyKeys?.map((key) => JOB_TOKEN_POLICIES[key]);

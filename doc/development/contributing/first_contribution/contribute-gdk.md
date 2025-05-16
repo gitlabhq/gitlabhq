@@ -11,6 +11,13 @@ In this example, I found some UI text I'd like to change.
 In the upper-right corner in GitLab, I selected my avatar and then **Preferences**.
 I want to change `Syntax highlighting theme` to `Code syntax highlighting theme`:
 
+{{< alert type="warning" >}}
+
+This tutorial is designed to be a general introduction to contributing to the GitLab project
+and is not an example of a change that should be submitted for review.
+
+{{< /alert >}}
+
 Use your local IDE to make changes to the code in the GDK directory.
 
 1. Create a new branch for your changes:

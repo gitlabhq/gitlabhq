@@ -119,11 +119,12 @@ export default {
           return transformedVariables;
         },
         update(response) {
-          const { nodes, pageInfo } = get(response, this.tab.queryPath);
+          const { nodes, pageInfo, count } = get(response, this.tab.queryPath);
 
           return {
             nodes: this.tab.formatter(nodes),
             pageInfo,
+            count,
           };
         },
         result() {
@@ -205,6 +206,11 @@ export default {
       }
 
       return baseProps;
+    },
+  },
+  watch: {
+    'items.count': function watchCount(newCount) {
+      this.$emit('update-count', this.tab, newCount);
     },
   },
   methods: {

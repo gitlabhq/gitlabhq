@@ -45,7 +45,7 @@ In this tutorial we're writing a login end-to-end test, even though it has been 
 
 The GitLab QA end-to-end tests are organized by the different [stages in the DevOps lifecycle](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa/qa/specs/features/browser_ui). Determine where the test should be placed by [stage](https://handbook.gitlab.com/handbook/product/categories/#devops-stages), determine which feature the test belongs to, and then place it in a subdirectory under the stage.
 
-![DevOps lifecycle by stages](../img/gl-devops-lifecycle-by-stage_v12_10.png)
+![DevOps lifecycle by stages](img/gl-devops-lifecycle-by-stage_v12_10.png)
 
 If the test is Enterprise Edition only, the test is created in the `features/ee` directory, but follow the same DevOps lifecycle format.
 

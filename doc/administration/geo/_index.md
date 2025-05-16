@@ -128,7 +128,7 @@ This is a brief summary of how Geo works in your GitLab environment. For more de
 
 Your Geo instance can be used for cloning and fetching projects, in addition to reading any data. This makes working with large repositories over large distances much faster.
 
-![Geo overview](replication/img/geo_overview_v11_5.png)
+![Geo overview](img/geo_overview_v11_5.png)
 
 When Geo is enabled, the:
 
@@ -149,7 +149,7 @@ Keep in mind that:
 
 The following diagram illustrates the underlying architecture of Geo.
 
-![Geo architecture](replication/img/geo_architecture_v13_8.png)
+![Geo architecture](img/geo_architecture_v13_8.png)
 
 In this diagram:
 

@@ -79,7 +79,7 @@ export const mockGroups = [
     defaultPermissions: false,
     jobTokenPolicies: ['READ_JOBS', 'ADMIN_DEPLOYMENTS'],
     autopopulated: true,
-    __typename: 'Group',
+    __typename: 'CiJobTokenAccessibleGroup',
   },
   {
     id: 2,
@@ -89,7 +89,7 @@ export const mockGroups = [
     defaultPermissions: true,
     jobTokenPolicies: [],
     autopopulated: true,
-    __typename: 'Group',
+    __typename: 'CiJobTokenAccessibleGroup',
   },
   {
     id: 3,
@@ -99,7 +99,7 @@ export const mockGroups = [
     defaultPermissions: false,
     jobTokenPolicies: [],
     autopopulated: false,
-    __typename: 'Group',
+    __typename: 'CiJobTokenAccessibleGroup',
   },
 ];
 

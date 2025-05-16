@@ -681,6 +681,14 @@ class Group < Namespace
     return false unless user
 
     all_owners = member_owners_excluding_project_bots
+    last_owner_in_list?(user, all_owners)
+  end
+
+  # This is used in BillableMember Entity to
+  # avoid multiple "member_owners_excluding_project_bots" calls
+  # for each billable members
+  def last_owner_in_list?(user, all_owners)
+    return false unless user
 
     all_owners.size == 1 && all_owners.first.user_id == user.id
   end

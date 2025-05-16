@@ -1,6 +1,5 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlLoadingIcon } from '@gitlab/ui';
 import PagesDeployments from '~/gitlab_pages/components/deployments.vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -248,8 +247,8 @@ describe('PagesDeployments', () => {
       createComponent();
     });
 
-    it('displays the loading icon', () => {
-      expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+    it('displays the loader', () => {
+      expect(wrapper.findComponent(CrudComponent).props('isLoading')).toBe(true);
     });
   });
 });

@@ -762,6 +762,11 @@ msgid_plural "%{count} events have ocurred"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{count} file"
+msgid_plural "%{count} files"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{count} files touched"
 msgstr ""
 
@@ -13502,6 +13507,9 @@ msgid "CloudSeed|Create MySQL Instance"
 msgstr ""
 
 msgid "CloudSeed|Create Postgres Instance"
+msgstr ""
+
+msgid "CloudSeed|Create SQL Server Instance"
 msgstr ""
 
 msgid "CloudSeed|Create cluster"
@@ -41772,6 +41780,9 @@ msgstr ""
 msgid "Object does not exist on the server or you don't have permissions to access it"
 msgstr ""
 
+msgid "Observability"
+msgstr ""
+
 msgid "ObservabilityLogs|Attribute"
 msgstr ""
 
@@ -50020,6 +50031,11 @@ msgstr ""
 msgid "Random"
 msgstr ""
 
+msgid "RapidDiffs|Added %d line."
+msgid_plural "RapidDiffs|Added %d lines."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "RapidDiffs|Added line %d"
 msgstr ""
 
@@ -50043,6 +50059,11 @@ msgstr ""
 
 msgid "RapidDiffs|Original line number"
 msgstr ""
+
+msgid "RapidDiffs|Removed %d line."
+msgid_plural "RapidDiffs|Removed %d lines."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "RapidDiffs|Removed line %d"
 msgstr ""

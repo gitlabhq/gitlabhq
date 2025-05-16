@@ -116,7 +116,8 @@ export default {
               :data-testid="`table-row-${itemIndex}`"
             >
               <td v-for="field in fields" :key="field.key">
-                <component :is="presenter.forField(item, field.key)" />
+                <!-- eslint-disable-next-line @gitlab/vue-no-new-non-primitive-in-template -->
+                <component :is="presenter.forField(item, field.key, { displayAsLink: true })" />
               </td>
             </tr>
           </template>

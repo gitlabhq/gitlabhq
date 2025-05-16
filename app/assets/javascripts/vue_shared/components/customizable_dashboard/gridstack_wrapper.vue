@@ -98,10 +98,13 @@ export default {
       this.mountGridComponents(this.gridPanels);
     },
     initGridStack() {
-      this.grid = GridStack.init({
-        ...GRIDSTACK_BASE_CONFIG,
-        staticGrid: !this.editing,
-      }).load(this.gridConfig);
+      this.grid = GridStack.init(
+        {
+          ...GRIDSTACK_BASE_CONFIG,
+          staticGrid: !this.editing,
+        },
+        this.$refs.grid,
+      ).load(this.gridConfig);
 
       // Sync Vue components array with gridstack items
       this.initGridPanelSlots(this.grid.getGridItems());
@@ -162,7 +165,7 @@ export default {
 </script>
 
 <template>
-  <div class="grid-stack" data-testid="gridstack-grid">
+  <div ref="grid" class="grid-stack" data-testid="gridstack-grid">
     <div
       v-for="panel in gridPanels"
       :id="panel.id"

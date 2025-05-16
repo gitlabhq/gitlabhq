@@ -22,6 +22,12 @@
     calc(#{$file-header-height} + #{$total-borders} + (#{constants.$code-row-height-target} * var(--total-rows)));
 }
 
+// content-visibility: auto; applies paint containment, which means you can not draw outside a diff file
+// we need to disable this when we show dropdowns and other elements which extend past a diff file
+.rd-diff-file[data-virtual]:has([data-options-toggle] button[aria-expanded='true']) {
+  --rd-content-visibility-auto: visible;
+}
+
 .rd-diff-file-header {
   @apply gl-text-default;
   position: sticky;

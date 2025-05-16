@@ -1,0 +1,8 @@
+- page_title _("Observability")
+- add_page_specific_style 'page_bundles/observability'
+
+.gl-mt-3
+  .gl-display-flex.gl-align-items-center.gl-mb-5
+    %h1.gl-heading-1= _("Observability")
+
+  #js-observability{ data: { o11y_url: @o11y_url, path: @path } }

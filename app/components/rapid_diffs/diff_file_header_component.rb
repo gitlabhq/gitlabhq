@@ -45,5 +45,14 @@ module RapidDiffs
         new: @diff_file.new_path
       )
     end
+
+    def stats_label
+      added = @diff_file.added_lines
+      removed = @diff_file.removed_lines
+      counters = []
+      counters << (ns_('RapidDiffs|Added %d line.', 'RapidDiffs|Added %d lines.', added) % added) if added > 0
+      counters << (ns_('RapidDiffs|Removed %d line.', 'RapidDiffs|Removed %d lines.', removed) % removed) if removed > 0
+      counters.join(' ')
+    end
   end
 end

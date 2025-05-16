@@ -72,14 +72,14 @@ export default class Presenter {
   #config;
   #component;
 
-  forField(item, fieldName) {
+  forField(item, fieldName, props) {
     const field = fieldName === 'title' || !fieldName ? item : item[fieldName];
     const component = componentForField(field, fieldName);
     const { source } = this.#config || {};
 
     return {
       render(h) {
-        return h(component, { props: { data: field, source } });
+        return h(component, { props: { data: field, source, ...props } });
       },
     };
   }

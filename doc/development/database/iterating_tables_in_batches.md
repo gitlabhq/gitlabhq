@@ -182,7 +182,7 @@ database query:
 SELECT "users"."id" FROM "users" ORDER BY "users"."id" ASC LIMIT 1
 ```
 
-![Reading the start ID value](../img/each_batch_users_table_iteration_1_v13_7.png)
+![Reading the start ID value](img/each_batch_users_table_iteration_1_v13_7.png)
 
 Notice that the query only reads data from the index (`INDEX ONLY SCAN`), the table is not
 accessed. Database indexes are sorted so taking out the first item is a very cheap operation.
@@ -195,7 +195,7 @@ to get a "shifted" `id` value.
 SELECT "users"."id" FROM "users" WHERE "users"."id" >= 1 ORDER BY "users"."id" ASC LIMIT 1 OFFSET 5
 ```
 
-![Reading the end ID value](../img/each_batch_users_table_iteration_2_v13_7.png)
+![Reading the end ID value](img/each_batch_users_table_iteration_2_v13_7.png)
 
 Again, the query only looks into the index. The `OFFSET 5` takes out the sixth `id` value: this
 query reads a maximum of six items from the index regardless of the table size or the iteration
@@ -208,7 +208,7 @@ for the `relation` block.
 SELECT "users".* FROM "users" WHERE "users"."id" >= 1 AND "users"."id" < 302
 ```
 
-![Reading the rows from the `users` table](../img/each_batch_users_table_iteration_3_v13_7.png)
+![Reading the rows from the `users` table](img/each_batch_users_table_iteration_3_v13_7.png)
 
 Notice the `<` sign. Previously six items were read from the index and in this query, the last
 value is "excluded". The query looks at the index to get the location of the five `user`
@@ -221,7 +221,7 @@ previous iteration to find out the next end `id` value.
 SELECT "users"."id" FROM "users" WHERE "users"."id" >= 302 ORDER BY "users"."id" ASC LIMIT 1 OFFSET 5
 ```
 
-![Reading the second end ID value](../img/each_batch_users_table_iteration_4_v13_7.png)
+![Reading the second end ID value](img/each_batch_users_table_iteration_4_v13_7.png)
 
 Now we can easily construct the `users` query for the second iteration.
 
@@ -229,7 +229,7 @@ Now we can easily construct the `users` query for the second iteration.
 SELECT "users".* FROM "users" WHERE "users"."id" >= 302 AND "users"."id" < 353
 ```
 
-![Reading the rows for the second iteration from the users table](../img/each_batch_users_table_iteration_5_v13_7.png)
+![Reading the rows for the second iteration from the users table](img/each_batch_users_table_iteration_5_v13_7.png)
 
 ### Example 2: Iteration with filters
 
@@ -255,7 +255,7 @@ index on the `id` (primary key index) column however, we also have an extra cond
 `sign_in_count` column. The column is not part of the index, so the database needs to look into
 the actual table to find the first matching row.
 
-![Reading the index with extra filter](../img/each_batch_users_table_filter_v13_7.png)
+![Reading the index with extra filter](img/each_batch_users_table_filter_v13_7.png)
 
 {{< alert type="note" >}}
 
@@ -282,7 +282,7 @@ CREATE INDEX index_on_users_never_logged_in ON users (id) WHERE sign_in_count = 
 
 This is how our table and the newly created index looks like:
 
-![Reading the specialized index](../img/each_batch_users_table_filtered_index_v13_7.png)
+![Reading the specialized index](img/each_batch_users_table_filtered_index_v13_7.png)
 
 This index definition covers the conditions on the `id` and `sign_in_count` columns thus makes the
 `each_batch` queries very effective (similar to the simple iteration example).
@@ -325,7 +325,7 @@ Executing the query above results in an `INDEX ONLY SCAN`. However, the query st
 iterate over an unknown number of entries in the index, and then find the first item where the
 `sign_in_count` is `0`.
 
-![Reading an ineffective index](../img/each_batch_users_table_bad_index_v13_7.png)
+![Reading an ineffective index](img/each_batch_users_table_bad_index_v13_7.png)
 
 We can improve the query significantly by swapping the columns in the index definition (prefer).
 
@@ -333,7 +333,7 @@ We can improve the query significantly by swapping the columns in the index defi
 CREATE INDEX index_on_users_never_logged_in ON users (sign_in_count, id)
 ```
 
-![Reading a good index](../img/each_batch_users_table_good_index_v13_7.png)
+![Reading a good index](img/each_batch_users_table_good_index_v13_7.png)
 
 The following index definition does not work well with `each_batch` (avoid).
 

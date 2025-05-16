@@ -548,10 +548,10 @@ database to help you troubleshoot issues. Where you run this command depends on 
 
 Modify the command as needed:
 
-- **Default path** - To run the command with the default folder path (`/var/opt/gitlab/gitlab-rails/tmp/sos.zip`), run `gitlab-rake gitlab:db:sos`.
-- **Custom path** - To change the folder path, run `gitlab-rake gitlab:db:sos["custom/path/to/folder"]`.
+- **Default path** - To run the command with the default file path (`/var/opt/gitlab/gitlab-rails/tmp/sos.zip`), run `gitlab-rake gitlab:db:sos`.
+- **Custom path** - To change the file path, run `gitlab-rake gitlab:db:sos["custom/path/to/file.zip"]`.
 - **Zsh users** - If you have not modified your Zsh configuration, you must add quotation marks
-  around the entire command, like this: `gitlab-rake "gitlab:db:sos[custom/path/to/folder]"`
+  around the entire command, like this: `gitlab-rake "gitlab:db:sos[custom/path/to/file.zip]"`
 
 The Rake task runs for five minutes. It creates a compressed folder in the path you specify.
 The compressed folder contains a large number of files.

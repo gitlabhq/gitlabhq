@@ -185,6 +185,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     resource :import_history, only: [:show]
 
+    resources :observability, only: [:show]
+
     post :preview_markdown
 
     post '/restore' => '/groups#restore', as: :restore

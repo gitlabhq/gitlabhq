@@ -158,9 +158,13 @@ describe('TabsWithList', () => {
 
   describe('template', () => {
     describe('when tab counts are loading', () => {
-      it('does not show count badges', async () => {
+      it('shows badges with -', async () => {
         await createComponent();
-        expect(findBadge().exists()).toBe(false);
+        expect(getTabCount('Contributed')).toBe('-');
+        expect(getTabCount('Starred')).toBe('-');
+        expect(getTabCount('Personal')).toBe('-');
+        expect(getTabCount('Member')).toBe('-');
+        expect(getTabCount('Inactive')).toBe('-');
       });
     });
 
@@ -170,12 +174,22 @@ describe('TabsWithList', () => {
         await waitForPromises();
       });
 
-      it('shows count badges', () => {
-        expect(getTabCount('Contributed')).toBe('2');
+      it('skips active tab count but shows count for other tabs', () => {
+        expect(getTabCount('Contributed')).toBe('-');
         expect(getTabCount('Starred')).toBe('0');
         expect(getTabCount('Personal')).toBe('0');
         expect(getTabCount('Member')).toBe('2');
         expect(getTabCount('Inactive')).toBe('0');
+      });
+
+      describe('when TabView component emits update-count event', () => {
+        beforeEach(() => {
+          findTabView().vm.$emit('update-count', CONTRIBUTED_TAB, 5);
+        });
+
+        it('updates count of active tab', () => {
+          expect(getTabCount('Contributed')).toBe('5');
+        });
       });
     });
 
@@ -213,13 +227,6 @@ describe('TabsWithList', () => {
             captureError: true,
           });
         });
-      });
-
-      it('does not show tab count badges', async () => {
-        await createComponent({ projectsCountHandler: jest.fn().mockRejectedValue(error) });
-        await waitForPromises();
-
-        expect(findBadge().exists()).toBe(false);
       });
     });
 

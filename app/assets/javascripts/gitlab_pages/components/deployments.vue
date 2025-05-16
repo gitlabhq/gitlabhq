@@ -1,5 +1,5 @@
 <script>
-import { GlToggle, GlLoadingIcon, GlAlert } from '@gitlab/ui';
+import { GlToggle, GlAlert } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import getProjectPagesDeployments from '../queries/get_project_pages_deployments.graphql';
@@ -13,7 +13,6 @@ export default {
     LoadMoreDeployments,
     PagesDeployment,
     GlToggle,
-    GlLoadingIcon,
     GlAlert,
   },
   inject: ['projectFullPath'],
@@ -157,9 +156,13 @@ export default {
       {{ message }}
     </gl-alert>
 
+    <gl-alert v-if="hasError" variant="danger" :dismissible="false">
+      {{ $options.i18n.loadErrorMessage }}
+    </gl-alert>
+
     <crud-component
-      v-if="loadedPrimaryDeploymentsCount > 0"
       :title="$options.i18n.title"
+      :is-loading="!primaryDeployments && $apollo.loading"
       data-testid="primary-deployment-list"
     >
       <template #actions>
@@ -171,7 +174,11 @@ export default {
         />
       </template>
 
-      <ul class="content-list">
+      <template v-if="!loadedPrimaryDeploymentsCount" #empty>
+        {{ $options.i18n.noDeploymentsMessage }}.
+      </template>
+
+      <ul v-if="loadedPrimaryDeploymentsCount" class="content-list">
         <pages-deployment
           v-for="node in primaryDeployments.nodes"
           :key="node.id"
@@ -195,9 +202,14 @@ export default {
     <crud-component
       v-if="loadedParallelDeploymentsCount > 0"
       :title="$options.i18n.parallelDeploymentsTitle"
+      :is-loading="!parallelDeployments && $apollo.loading"
       data-testid="parallel-deployment-list"
     >
-      <ul class="content-list">
+      <template v-if="!loadedParallelDeploymentsCount" #empty>
+        {{ $options.i18n.noDeploymentsMessage }}.
+      </template>
+
+      <ul v-if="loadedParallelDeploymentsCount" class="content-list">
         <pages-deployment
           v-for="node in parallelDeployments.nodes"
           :key="node.id"
@@ -217,18 +229,5 @@ export default {
         />
       </template>
     </crud-component>
-
-    <div v-if="!primaryDeployments && !parallelDeployments && $apollo.loading">
-      <gl-loading-icon size="sm" />
-    </div>
-    <div
-      v-else-if="!loadedPrimaryDeploymentsCount && !loadedParallelDeploymentsCount"
-      class="gl-text-center gl-text-subtle"
-    >
-      {{ $options.i18n.noDeploymentsMessage }}
-    </div>
-    <gl-alert v-if="hasError" variant="danger" :dismissible="false">
-      {{ $options.i18n.loadErrorMessage }}
-    </gl-alert>
   </div>
 </template>
