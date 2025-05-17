@@ -8,6 +8,7 @@ class StuckCiJobsWorker # rubocop:disable Scalability/IdempotentWorker
   # This is an instance-wide cleanup query, so there's no meaningful
   # scope to consider this in the context of.
   include CronjobQueue
+
   # rubocop:enable Scalability/CronWorkerContext
 
   data_consistency :always

@@ -270,6 +270,25 @@ module Projects
       end
 
       delete_commit_statuses
+      destroy_orphaned_ci_job_artifacts!
+    end
+
+    # This method will delete all orphaned CI Job artifacts for the project, which are job artifacts
+    # whose jobs do not exist anymore. The reason these artifacts might still exist is because of
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/508672.
+    # TODO: remove this method after we have a working & valid FK.
+    def destroy_orphaned_ci_job_artifacts!
+      orphaned_job_artifacts = ::Ci::JobArtifact.for_project(project)
+      return if orphaned_job_artifacts.none?
+
+      service = orphaned_job_artifacts.begin_fast_destroy
+      orphaned_job_artifacts.finalize_fast_destroy(service)
+
+      Gitlab::AppLogger.info(
+        class: self.class.name,
+        project_id: project.id,
+        message: 'Orphaned CI job artifacts deleted'
+      )
     end
 
     def delete_commit_statuses

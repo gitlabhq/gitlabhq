@@ -21,7 +21,6 @@ Layout/LineBreakAfterFinalMixin:
     - 'app/workers/purge_dependency_proxy_cache_worker.rb'
     - 'app/workers/remove_unreferenced_lfs_objects_worker.rb'
     - 'app/workers/repository_archive_cache_worker.rb'
-    - 'app/workers/stuck_ci_jobs_worker.rb'
     - 'app/workers/stuck_export_jobs_worker.rb'
     - 'app/workers/user_status_cleanup/batch_worker.rb'
     - 'app/workers/users/create_statistics_worker.rb'

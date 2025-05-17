@@ -978,6 +978,62 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     end
   end
 
+  describe '#destroy_orphaned_ci_job_artifacts!' do
+    let(:service) { described_class.new(project, user) }
+
+    context 'when there are no orphaned job artifacts' do
+      let(:no_job_artifacts) { Ci::JobArtifact.none }
+
+      before do
+        allow(Ci::JobArtifact).to receive(:for_project).with(project).and_return(no_job_artifacts)
+      end
+
+      it 'returns early without performing any destroy operations' do
+        expect(no_job_artifacts).not_to receive(:begin_fast_destroy)
+        expect(no_job_artifacts).not_to receive(:finalize_fast_destroy)
+
+        service.send(:destroy_orphaned_ci_job_artifacts!)
+      end
+    end
+
+    context 'when there are orphaned job artifacts' do
+      let(:job) { create(:ci_build, project: project) }
+      let(:orphaned_job_artifact) { create(:ci_job_artifact, job: job, project: project) }
+
+      before do
+        orphaned_job_artifact.connection.transaction do
+          orphaned_job_artifact.connection.execute(<<~SQL)
+            ALTER TABLE p_ci_job_artifacts DISABLE TRIGGER ALL;
+          SQL
+
+          orphaned_job_artifact.update_column(:job_id, non_existing_record_id)
+
+          orphaned_job_artifact.connection.execute(<<~SQL)
+            ALTER TABLE p_ci_job_artifacts ENABLE TRIGGER ALL;
+          SQL
+        end
+      end
+
+      it 'destroys orphaned artifacts' do
+        expect { destroy_project(project, user) }.to change { Ci::JobArtifact.count }.by(-1)
+
+        expect(Ci::JobArtifact.exists?(orphaned_job_artifact.id)).to be_falsey
+      end
+
+      it 'logs that the artifacts have been destroyed' do
+        allow(Gitlab::AppLogger).to receive(:info) # Logged during artifact deletion
+
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          class: described_class.name,
+          project_id: project.id,
+          message: 'Orphaned CI job artifacts deleted'
+        )
+
+        service.send(:destroy_orphaned_ci_job_artifacts!)
+      end
+    end
+  end
+
   def destroy_project(project, user, params = {})
     described_class.new(project, user, params).public_send(async ? :async_execute : :execute)
   end
