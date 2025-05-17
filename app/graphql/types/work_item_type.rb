@@ -27,6 +27,9 @@ module Types
       description: 'Global ID of the work item.'
     field :iid, GraphQL::Types::String, null: false,
       description: 'Internal ID of the work item.'
+    field :imported, GraphQL::Types::Boolean, null: false,
+      method: :imported?,
+      description: 'Indicates whether the work item was imported.'
     field :lock_version,
       GraphQL::Types::Int,
       null: false,

@@ -2,6 +2,7 @@
 
 class WorkItem < Issue
   include Gitlab::Utils::StrongMemoize
+  include Import::HasImportSource
 
   COMMON_QUICK_ACTIONS_COMMANDS = [
     :title, :reopen, :close, :cc, :tableflip, :shrug, :type, :promote_to, :checkin_reminder,

@@ -41656,6 +41656,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="workitemhidden"></a>`hidden` | [`Boolean`](#boolean) | Indicates the work item is hidden because the author has been banned. |
 | <a id="workitemid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
 | <a id="workitemiid"></a>`iid` | [`String!`](#string) | Internal ID of the work item. |
+| <a id="workitemimported"></a>`imported` | [`Boolean!`](#boolean) | Indicates whether the work item was imported. |
 | <a id="workitemlockversion"></a>`lockVersion` | [`Int!`](#int) | Lock version of the work item. Incremented each time the work item is updated. |
 | <a id="workitemmovedtoworkitemurl"></a>`movedToWorkItemUrl` | [`String`](#string) | URL of the work item that the work item was moved to. |
 | <a id="workitemname"></a>`name` | [`String`](#string) | Name or title of the object. |

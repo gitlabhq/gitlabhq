@@ -113,7 +113,8 @@ module SystemNotes
 
     def formatted_spent_at(spent_at)
       spent_at ||= DateTime.current
-      timezone = author.timezone || Time.zone.name
+      timezone = author.timezone
+      timezone = Time.zone.name if timezone.blank? || ActiveSupport::TimeZone[timezone].nil?
       spent_at.in_time_zone(timezone)
     end
 
