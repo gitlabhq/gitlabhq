@@ -5,12 +5,12 @@ import RunnerManagersTable from '~/ci/runner/components/runner_managers_table.vu
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { I18N_STATUS_NEVER_CONTACTED } from '~/ci/runner/constants';
 
-import { runnerManagersData } from '../mock_data';
+import { runnerData } from '../mock_data';
 
 jest.mock('~/alert');
 jest.mock('~/ci/runner/sentry_utils');
 
-const mockItems = runnerManagersData.data.runner.managers.nodes;
+const mockItems = runnerData.data.runner.managers.nodes;
 
 describe('RunnerJobs', () => {
   let wrapper;

@@ -19,7 +19,6 @@ import runnerData from 'test_fixtures/graphql/ci/runner/show/runner.query.graphq
 import runnerWithGroupData from 'test_fixtures/graphql/ci/runner/show/runner.query.graphql.with_group.json';
 import runnerProjectsData from 'test_fixtures/graphql/ci/runner/show/runner_projects.query.graphql.json';
 import runnerJobsData from 'test_fixtures/graphql/ci/runner/show/runner_jobs.query.graphql.json';
-import runnerManagersData from 'test_fixtures/graphql/ci/runner/show/runner_managers.query.graphql.json';
 
 // Edit runner queries
 import runnerFormData from 'test_fixtures/graphql/ci/runner/edit/runner_form.query.graphql.json';
@@ -479,7 +478,6 @@ export {
   runnerWithGroupData,
   runnerProjectsData,
   runnerJobsData,
-  runnerManagersData,
   runnerFormData,
   runnerCreateResult,
   runnerForRegistration,

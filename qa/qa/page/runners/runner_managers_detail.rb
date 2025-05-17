@@ -4,7 +4,7 @@ module QA
   module Page
     module Runners
       class RunnerManagersDetail < Page::Base
-        view "app/assets/javascripts/ci/runner/components/runner_managers_detail.vue" do
+        view "app/assets/javascripts/ci/runner/components/runner_managers.vue" do
           element "runner-managers"
         end
 

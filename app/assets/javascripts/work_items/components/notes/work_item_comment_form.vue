@@ -288,6 +288,12 @@ export default {
       }
     },
     async cancelEditing() {
+      // Don't cancel if autosuggest open in plain text editor
+      if (
+        this.$refs.markdownEditor.$el.querySelector('textarea')?.classList.contains('at-who-active')
+      ) {
+        return;
+      }
       if (this.commentText && this.commentText !== this.initialValue) {
         const msg = s__('WorkItem|Are you sure you want to cancel editing?');
 

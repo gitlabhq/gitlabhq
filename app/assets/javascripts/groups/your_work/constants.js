@@ -1,15 +1,25 @@
-import { __ } from '~/locale';
+import groupsEmptyStateIllustration from '@gitlab/svgs/dist/illustrations/empty-state/empty-groups-md.svg?url';
+import { s__, __ } from '~/locale';
 import {
   SORT_LABEL_NAME,
   SORT_LABEL_CREATED,
   SORT_LABEL_UPDATED,
 } from '~/groups_projects/constants';
 import NestedGroupsProjectsList from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list.vue';
+import ResourceListsEmptyState from '~/vue_shared/components/resource_lists/empty_state.vue';
 import { formatGroups } from './utils';
 import memberGroupsQuery from './graphql/queries/member_groups.query.graphql';
 
 const baseTab = {
   formatter: formatGroups,
+  emptyStateComponent: ResourceListsEmptyState,
+  emptyStateComponentProps: {
+    svgPath: groupsEmptyStateIllustration,
+    title: s__("Organization|You don't have any groups yet."),
+    description: s__(
+      'Organization|A group is a collection of several projects. If you organize your projects under a group, it works like a folder.',
+    ),
+  },
 };
 
 export const MEMBER_TAB = {

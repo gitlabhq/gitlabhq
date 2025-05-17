@@ -1,17 +1,13 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { s__, formatNumber } from '~/locale';
-import { createAlert } from '~/alert';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
-import runnerManagersQuery from '../graphql/show/runner_managers.query.graphql';
-import { I18N_FETCH_ERROR } from '../constants';
-import { captureException } from '../sentry_utils';
 import { tableField } from '../utils';
 import RunnerManagersTable from './runner_managers_table.vue';
 
 export default {
-  name: 'RunnerManagersDetail',
+  name: 'RunnerManagers',
   components: {
     GlLink,
     GlSprintf,
@@ -28,35 +24,15 @@ export default {
       },
     },
   },
-  data() {
-    return {
-      managers: [],
-    };
-  },
-  apollo: {
-    managers: {
-      query: runnerManagersQuery,
-      variables() {
-        return { runnerId: this.runner.id };
-      },
-      update({ runner }) {
-        return runner?.managers?.nodes || [];
-      },
-      error(error) {
-        createAlert({ message: I18N_FETCH_ERROR });
-        captureException({ error, component: this.$options.name });
-      },
-    },
-  },
   computed: {
-    runnerManagersCount() {
+    items() {
+      return this.runner?.managers?.nodes;
+    },
+    count() {
       return this.runner?.managers?.count || 0;
     },
-    runnerManagersCountFormatted() {
-      return formatNumber(this.runnerManagersCount);
-    },
-    loading() {
-      return this.$apollo?.queries.managers.loading;
+    formattedCount() {
+      return formatNumber(this.count);
     },
   },
   fields: [
@@ -73,11 +49,10 @@ export default {
 
 <template>
   <crud-component
-    v-if="runnerManagersCount > 0"
+    v-if="count > 0"
     :title="s__('Runners|Runners')"
     icon="container-image"
-    :count="runnerManagersCountFormatted"
-    :is-loading="loading"
+    :count="formattedCount"
     anchor-id="runner-managers"
     is-collapsible
     collapsed
@@ -103,6 +78,6 @@ export default {
       </help-popover>
     </template>
 
-    <runner-managers-table :items="managers" />
+    <runner-managers-table :items="items" />
   </crud-component>
 </template>

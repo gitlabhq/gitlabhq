@@ -473,6 +473,16 @@ export default {
         this.onInput();
       }
     },
+    handleEscape() {
+      // Don't cancel if autosuggest open in plain text editor
+      if (
+        !this.$refs.markdownEditor.$el
+          .querySelector('textarea')
+          ?.classList.contains('at-who-active')
+      ) {
+        this.cancelEditing();
+      }
+    },
   },
 };
 </script>
@@ -520,6 +530,7 @@ export default {
           </template>
         </gl-alert>
         <markdown-editor
+          ref="markdownEditor"
           :value="descriptionText"
           :render-markdown-path="markdownPreviewPath"
           :markdown-docs-path="$options.markdownDocsPath"
@@ -535,6 +546,7 @@ export default {
           @input="setDescriptionText"
           @keydown.meta.enter="updateWorkItem"
           @keydown.ctrl.enter="updateWorkItem"
+          @keydown.esc.stop="handleEscape"
         />
         <div class="gl-flex">
           <gl-alert

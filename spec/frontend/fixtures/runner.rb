@@ -143,22 +143,6 @@ RSpec.describe 'Runner (JavaScript fixtures)', feature_category: :fleet_visibili
       end
     end
 
-    describe 'runner_managers.query.graphql', type: :request do
-      runner_managers_query = 'show/runner_managers.query.graphql'
-
-      let_it_be(:query) do
-        get_graphql_query_as_string("#{query_path}#{runner_managers_query}")
-      end
-
-      it "#{fixtures_path}#{runner_managers_query}.json" do
-        post_graphql(query, current_user: admin, variables: {
-          runner_id: runner.to_global_id.to_s
-        })
-
-        expect_graphql_errors_to_be_empty
-      end
-    end
-
     describe 'runner_form.query.graphql', type: :request do
       runner_jobs_query = 'edit/runner_form.query.graphql'
 

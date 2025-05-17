@@ -1,4 +1,4 @@
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMount } from '@vue/test-utils';
 import YourWorkGroupsApp from '~/groups/your_work/components/app.vue';
 import {
   GROUP_DASHBOARD_TABS,
@@ -24,7 +24,7 @@ describe('YourWorkGroupsApp', () => {
   };
 
   const createComponent = () => {
-    wrapper = shallowMountExtended(YourWorkGroupsApp, { propsData: defaultPropsData });
+    wrapper = shallowMount(YourWorkGroupsApp, { propsData: defaultPropsData });
   };
 
   beforeEach(() => {

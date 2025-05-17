@@ -878,6 +878,19 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#groups_list_with_filtered_search_app_data' do
+    let_it_be(:endpoint) { '/groups' }
+
+    it 'returns expected json' do
+      expect(Gitlab::Json.parse(helper.groups_list_with_filtered_search_app_data(endpoint))).to eq(
+        {
+          'endpoint' => endpoint,
+          'initial_sort' => 'created_desc'
+        }
+      )
+    end
+  end
+
   describe '#group_merge_requests' do
     let_it_be(:user) { create(:user) }
     let_it_be(:group) { create(:group) }
