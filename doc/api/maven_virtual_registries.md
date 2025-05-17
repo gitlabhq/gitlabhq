@@ -258,6 +258,7 @@ Example response:
     "name": "Maven Central",
     "description": "Maven Central repository",
     "cache_validity_hours": 24,
+    "username": "user",
     "created_at": "2024-05-30T12:28:27.855Z",
     "updated_at": "2024-05-30T12:28:27.855Z",
     "registry_upstream": {
@@ -315,6 +316,7 @@ Example response:
   "name": "Maven Central",
   "description": "Maven Central repository",
   "cache_validity_hours": 48,
+  "username": "user",
   "created_at": "2024-05-30T12:28:27.855Z",
   "updated_at": "2024-05-30T12:28:27.855Z",
   "registry_upstream": {
@@ -362,6 +364,7 @@ Example response:
   "name": "Maven Central",
   "description": "Maven Central repository",
   "cache_validity_hours": 24,
+  "username": "user",
   "created_at": "2024-05-30T12:28:27.855Z",
   "updated_at": "2024-05-30T12:28:27.855Z"
 }
@@ -565,7 +568,7 @@ These endpoints are intended for internal use by GitLab, and generally not meant
 {{< alert type="note" >}}
 
 These endpoints do not adhere to the [REST API authentication methods](rest/authentication.md).
-For more information on which headers and token types are supported, 
+For more information on which headers and token types are supported,
 see [Maven package registry](../user/packages/maven_repository/_index.md). Undocumented authentication methods might be removed in the future.
 
 {{< /alert >}}
