@@ -43,7 +43,6 @@ class Project < ApplicationRecord
   include Subquery
   include WorkItems::Parent
   include UpdatedAtFilterable
-  include CrossDatabaseIgnoredTables
   include UseSqlFunctionForPrimaryKeyLookups
   include Importable
   include SafelyChangeColumnDefault
@@ -53,8 +52,6 @@ class Project < ApplicationRecord
   columns_changing_default :organization_id
 
   ignore_column :emails_disabled, remove_with: '16.3', remove_after: '2023-08-22'
-
-  cross_database_ignore_tables %w[routes redirect_routes], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424277'
 
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override

@@ -18,7 +18,6 @@ class Namespace < ApplicationRecord
   include BlocksUnsafeSerialization
   include Ci::NamespaceSettings
   include Referable
-  include CrossDatabaseIgnoredTables
   include UseSqlFunctionForPrimaryKeyLookups
   include SafelyChangeColumnDefault
   include Todoable
@@ -26,8 +25,6 @@ class Namespace < ApplicationRecord
   extend Gitlab::Utils::Override
 
   ignore_column :unlock_membership_to_ldap, remove_with: '18.1', remove_after: '2025-05-20'
-
-  cross_database_ignore_tables %w[routes redirect_routes], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424277'
 
   ignore_column :emails_disabled, remove_with: '18.1', remove_after: '2025-05-20'
 

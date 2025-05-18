@@ -30,22 +30,8 @@ class User < ApplicationRecord
   include StripAttribute
   include EachBatch
   include IgnorableColumns
-  include CrossDatabaseIgnoredTables
   include UseSqlFunctionForPrimaryKeyLookups
   include Todoable
-
-  # `ensure_namespace_correct` needs to be moved to an after_commit (?)
-  cross_database_ignore_tables %w[namespaces namespace_settings], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424279'
-
-  # `notification_settings_for` is called, and elsewhere `save` is then called.
-  cross_database_ignore_tables %w[notification_settings], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424284'
-
-  # Associations with dependent: option
-  cross_database_ignore_tables(
-    %w[namespaces projects project_authorizations issues merge_requests merge_requests issues issues merge_requests events],
-    url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424285',
-    on: :destroy
-  )
 
   ignore_column :last_access_from_pipl_country_at, remove_after: '2024-11-17', remove_with: '17.7'
 
@@ -603,19 +589,11 @@ class User < ApplicationRecord
     end
 
     after_transition any => :active do |user|
-      user.class.temporary_ignore_cross_database_tables(
-        %w[projects], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424278'
-      ) do
-        user.starred_projects.update_counters(star_count: 1)
-      end
+      user.starred_projects.update_counters(star_count: 1)
     end
 
     after_transition active: any do |user|
-      user.class.temporary_ignore_cross_database_tables(
-        %w[projects], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424278'
-      ) do
-        user.starred_projects.where('star_count > 0').update_counters(star_count: -1)
-      end
+      user.starred_projects.where('star_count > 0').update_counters(star_count: -1)
     end
   end
 

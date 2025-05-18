@@ -784,7 +784,6 @@ Gitlab/BoundedContexts:
     - 'app/models/concerns/counter_attribute.rb'
     - 'app/models/concerns/created_at_filterable.rb'
     - 'app/models/concerns/cron_schedulable.rb'
-    - 'app/models/concerns/cross_database_ignored_tables.rb'
     - 'app/models/concerns/cross_database_modification.rb'
     - 'app/models/concerns/database_reflection.rb'
     - 'app/models/concerns/delete_with_limit.rb'
