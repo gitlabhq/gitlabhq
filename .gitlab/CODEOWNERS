@@ -576,30 +576,31 @@ lib/gitlab/checks/**
 /data/deprecations/
 # This block is managed by the rake script at lib/tasks/gitlab/tw/codeowners.rake, manual updates will be overwritten!
 # Begin rake-managed-docs-block
-/doc/administration/_index.md @axil
+/doc/administration/_index.md @axil @eread
 /doc/administration/analytics.md @lciutacu
 /doc/administration/analytics/ @lciutacu
 /doc/administration/application_settings_cache.md @jglassman1
 /doc/administration/auditor_users.md @idurham
 /doc/administration/auth/ @idurham
 /doc/administration/broadcast_messages.md @sselhorn
+/doc/administration/cells.md @emily.sahlani
 /doc/administration/cicd/ @lyspin
 /doc/administration/cicd/job_logs.md @rsarangadharan
 /doc/administration/compliance/ @eread
-/doc/administration/configure.md @axil
-/doc/administration/consul.md @axil
+/doc/administration/configure.md @axil @eread
+/doc/administration/consul.md @axil @eread
 /doc/administration/credentials_inventory.md @idurham
 /doc/administration/custom_html_header_tags.md @eread
 /doc/administration/custom_project_templates.md @brendan777
 /doc/administration/dedicated/ @lyspin
 /doc/administration/dedicated/hosted_runners.md @rsarangadharan
 /doc/administration/diff_limits.md @brendan777
-/doc/administration/docs_self_host.md @axil
+/doc/administration/docs_self_host.md @axil @eread
 /doc/administration/duo_add_on_seat_management_with_ldap.md @lciutacu
-/doc/administration/encrypted_configuration.md @axil
-/doc/administration/environment_variables.md @axil
+/doc/administration/encrypted_configuration.md @axil @eread
+/doc/administration/environment_variables.md @axil @eread
 /doc/administration/external_users.md @idurham
-/doc/administration/feature_flags.md @axil
+/doc/administration/feature_flags.md @axil @eread
 /doc/administration/file_hooks.md @ashrafkhamis
 /doc/administration/geo/ @axil
 /doc/administration/geo_sites.md @axil
@@ -611,7 +612,7 @@ lib/gitlab/checks/**
 /doc/administration/housekeeping.md @eread
 /doc/administration/inactive_project_deletion.md @phillipwells
 /doc/administration/incoming_email.md @msedlakjakubowski
-/doc/administration/instance_limits.md @axil
+/doc/administration/instance_limits.md @axil @eread
 /doc/administration/integration/diagrams_net.md @brendan777
 /doc/administration/integration/kroki.md @msedlakjakubowski
 /doc/administration/integration/mailgun.md @msedlakjakubowski
@@ -621,11 +622,11 @@ lib/gitlab/checks/**
 /doc/administration/issue_closing_pattern.md @aqualls
 /doc/administration/labels.md @msedlakjakubowski
 /doc/administration/lfs/ @brendan777
-/doc/administration/libravatar.md @axil
+/doc/administration/libravatar.md @axil @eread
 /doc/administration/license.md @lciutacu
 /doc/administration/license_file.md @lciutacu
-/doc/administration/load_balancer.md @axil
-/doc/administration/logs/ @axil
+/doc/administration/load_balancer.md @axil @eread
+/doc/administration/logs/ @axil @eread
 /doc/administration/logs/_index.md @lciutacu
 /doc/administration/maintenance_mode/ @axil
 /doc/administration/merge_request_diffs.md @aqualls
@@ -636,36 +637,36 @@ lib/gitlab/checks/**
 /doc/administration/monitoring/ip_allowlist.md @jglassman1
 /doc/administration/monitoring/performance/ @jglassman1
 /doc/administration/monitoring/performance/grafana_configuration.md @lciutacu
-/doc/administration/monitoring/prometheus/_index.md @axil
+/doc/administration/monitoring/prometheus/_index.md @axil @eread
 /doc/administration/monitoring/prometheus/gitlab_exporter.md @jglassman1
 /doc/administration/monitoring/prometheus/registry_exporter.md @z_painter
 /doc/administration/monitoring/prometheus/web_exporter.md @jglassman1
-/doc/administration/nfs.md @axil
-/doc/administration/object_storage.md @axil
-/doc/administration/operations/ @axil
+/doc/administration/nfs.md @axil @eread
+/doc/administration/object_storage.md @axil @eread
+/doc/administration/operations/ @axil @eread
 /doc/administration/operations/fast_ssh_key_lookup.md @brendan777
 /doc/administration/operations/gitlab_sshd.md @brendan777
 /doc/administration/operations/moving_repositories.md @eread
-/doc/administration/package_information/ @axil
+/doc/administration/package_information/ @axil @eread
 /doc/administration/packages/ @z_painter
 /doc/administration/pages/ @msedlakjakubowski
-/doc/administration/polling.md @axil
-/doc/administration/raketasks/ @axil
+/doc/administration/polling.md @axil @eread
+/doc/administration/raketasks/ @axil @eread
 /doc/administration/raketasks/ldap.md @idurham
 /doc/administration/raketasks/praefect.md @eread
 /doc/administration/raketasks/spdx.md @rdickenson
 /doc/administration/raketasks/tokens/ @idurham
 /doc/administration/raketasks/x509_signatures.md @brendan777
-/doc/administration/read_only_gitlab.md @axil
-/doc/administration/redis/ @axil
-/doc/administration/reference_architectures/ @axil
+/doc/administration/read_only_gitlab.md @axil @eread
+/doc/administration/redis/ @axil @eread
+/doc/administration/reference_architectures/ @axil @eread
 /doc/administration/reply_by_email.md @lciutacu
-/doc/administration/reply_by_email_postfix_setup.md @axil
+/doc/administration/reply_by_email_postfix_setup.md @axil @eread
 /doc/administration/reporting/ @idurham
-/doc/administration/reporting/spamcheck.md @axil
+/doc/administration/reporting/spamcheck.md @axil @eread
 /doc/administration/repository_checks.md @eread
 /doc/administration/repository_storage_paths.md @eread
-/doc/administration/restart_gitlab.md @axil
+/doc/administration/restart_gitlab.md @axil @eread
 /doc/administration/review_abuse_reports.md @idurham
 /doc/administration/review_spam_logs.md @idurham
 /doc/administration/server_hooks.md @eread
@@ -703,22 +704,22 @@ lib/gitlab/checks/**
 /doc/administration/settings/third_party_offers.md @phillipwells
 /doc/administration/settings/visibility_and_access_controls.md @brendan777
 /doc/administration/settings/vscode_extension_marketplace.md @brendan777
-/doc/administration/sidekiq/ @axil
+/doc/administration/sidekiq/ @axil @eread
 /doc/administration/sidekiq/sidekiq_memory_killer.md @jglassman1
 /doc/administration/silent_mode/ @axil
-/doc/administration/smime_signing_email.md @axil
+/doc/administration/smime_signing_email.md @axil @eread
 /doc/administration/snippets/ @brendan777
 /doc/administration/static_objects_external_storage.md @brendan777
 /doc/administration/system_hooks.md @ashrafkhamis
-/doc/administration/timezone.md @axil
-/doc/administration/troubleshooting/ @axil
-/doc/administration/uploads.md @axil
+/doc/administration/timezone.md @axil @eread
+/doc/administration/troubleshooting/ @axil @eread
+/doc/administration/uploads.md @axil @eread
 /doc/administration/user_settings.md @idurham
 /doc/administration/wikis/ @msedlakjakubowski
 /doc/api/_index.md @ashrafkhamis
 /doc/api/access_requests.md @idurham
 /doc/api/admin/ @idurham
-/doc/api/admin_sidekiq_queues.md @axil
+/doc/api/admin_sidekiq_queues.md @axil @eread
 /doc/api/alert_management_alerts.md @lciutacu
 /doc/api/api_resources.md @ashrafkhamis
 /doc/api/appearance.md @idurham
@@ -868,7 +869,7 @@ lib/gitlab/checks/**
 /doc/api/search_admin.md @ashrafkhamis
 /doc/api/secure_files.md @marcel.amirault
 /doc/api/settings.md @idurham
-/doc/api/sidekiq_metrics.md @axil
+/doc/api/sidekiq_metrics.md @axil @eread
 /doc/api/snippet_repository_storage_moves.md @brendan777
 /doc/api/snippets.md @brendan777
 /doc/api/statistics.md @idurham
@@ -985,10 +986,10 @@ lib/gitlab/checks/**
 /doc/development/spam_protection_and_captcha/ @gitlab-org/software-supply-chain-security/authorization/approvers
 /doc/development/stage_group_observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/tracing.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
-/doc/downgrade_ee_to_ce/ @axil
+/doc/downgrade_ee_to_ce/ @axil @eread
 /doc/drawers/ @ashrafkhamis
 /doc/editor_extensions/ @aqualls
-/doc/install/ @axil
+/doc/install/ @axil @eread
 /doc/install/install_ai_gateway.md @sselhorn
 /doc/integration/ @idurham
 /doc/integration/_index.md @ashrafkhamis
@@ -1002,12 +1003,12 @@ lib/gitlab/checks/**
 /doc/integration/gmail_action_buttons_for_gitlab.md @ashrafkhamis
 /doc/integration/jenkins.md @lyspin
 /doc/integration/jira/ @ashrafkhamis
-/doc/integration/mattermost/ @axil
+/doc/integration/mattermost/ @axil @eread
 /doc/integration/snowflake.md @eread
 /doc/integration/sourcegraph.md @brendan777
 /doc/integration/trello_power_up.md @ashrafkhamis
 /doc/operations/ @lciutacu
-/doc/policy/ @axil
+/doc/policy/ @axil @eread
 /doc/security/ @idurham
 /doc/security/asset_proxy.md @msedlakjakubowski
 /doc/solutions/ @jfullam @Darwinjs @sbrightwell
@@ -1018,7 +1019,7 @@ lib/gitlab/checks/**
 /doc/topics/ @msedlakjakubowski
 /doc/topics/git/ @brendan777
 /doc/topics/git/project.md @phillipwells
-/doc/topics/offline/ @axil
+/doc/topics/offline/ @axil @eread
 /doc/topics/runner_fleet_design_guides/ @rsarangadharan
 /doc/tutorials/ @gl-docsteam
 /doc/tutorials/boards_for_standups/ @msedlakjakubowski
@@ -1033,7 +1034,7 @@ lib/gitlab/checks/**
 /doc/tutorials/fuzz_testing/ @phillipwells
 /doc/tutorials/hugo/ @msedlakjakubowski
 /doc/tutorials/idea_management/ @msedlakjakubowski
-/doc/tutorials/install_gitlab_single_node/ @axil
+/doc/tutorials/install_gitlab_single_node/ @axil @eread
 /doc/tutorials/issue_triage/ @msedlakjakubowski
 /doc/tutorials/issue_triage_group/ @msedlakjakubowski
 /doc/tutorials/kanban/ @msedlakjakubowski
@@ -1051,7 +1052,7 @@ lib/gitlab/checks/**
 /doc/tutorials/update_commit_messages/ @brendan777
 /doc/tutorials/update_git_remote_url/ @brendan777
 /doc/tutorials/website_project_with_analytics/ @lciutacu
-/doc/update/ @axil
+/doc/update/ @axil @eread
 /doc/user/analytics/ @lciutacu
 /doc/user/application_security/ @rdickenson
 /doc/user/application_security/api_fuzzing/ @phillipwells

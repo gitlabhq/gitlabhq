@@ -3653,6 +3653,7 @@ You must:
 
 - Define `pages: true` to publish a directory named `public`
 - Alternatively, define [`pages.publish`](#pagespublish) if want to use a different content directory.
+- Have a non-empty `index.html` file in the root of the content directory.
 
 **Keyword type**: Job keyword or Job name (deprecated). You can use it only as part of a job.
 

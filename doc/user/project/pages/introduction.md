@@ -402,3 +402,11 @@ However, in the Pages session, only the most recent `state` value is stored for 
 As a result, after submitting credentials, one of the tabs returns a `401 Unauthorized` error.
 
 To resolve the `401` error, refresh the page.
+
+### Failing `pages:deploy` job
+
+To deploy with GitLab Pages, the root content directory must contain a non-empty `index.html` file,
+or the `pages:deploy` job fails.
+
+The content directory is `public/` by default, or a directory specified with the
+`pages.publish` keyword in your `.gitlab-ci.yml` file.
