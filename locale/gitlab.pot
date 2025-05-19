@@ -54784,6 +54784,9 @@ msgstr ""
 msgid "SecurityInventory|Infrastructure as code scanning (IaC)"
 msgstr ""
 
+msgid "SecurityInventory|Load more"
+msgstr ""
+
 msgid "SecurityInventory|Manage security configuration"
 msgstr ""
 

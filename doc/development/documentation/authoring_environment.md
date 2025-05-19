@@ -16,6 +16,8 @@ Use this guidance to help ensure you have the tools you need.
 - Install documentation [linters](testing/_index.md) and configure them in your code editor:
   - [markdownlint](testing/markdownlint.md)
   - [Vale](testing/vale.md)
+- If you're using VS Code, [install the GitLab Workflow extension](../../editor_extensions/visual_studio_code/setup.md)
+  to get GitLab Duo Chat and other GitLab features in your editor.
 - [Set up the docs site to build locally](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/doc/setup.md).
 - Optional. Install the [Conventional Comments](https://gitlab.com/conventionalcomments/conventional-comments-button) extension for Chrome.
   The plugin adds **Conventional Comment** buttons to GitLab comments.

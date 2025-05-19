@@ -16186,6 +16186,9 @@ CREATE TABLE issue_tracker_data (
     encrypted_new_issue_url_iv character varying,
     integration_id bigint,
     instance_integration_id bigint,
+    project_id bigint,
+    group_id bigint,
+    organization_id bigint,
     CONSTRAINT check_d525c6d20b CHECK ((num_nonnulls(instance_integration_id, integration_id) = 1))
 );
 
@@ -16399,6 +16402,9 @@ CREATE TABLE jira_tracker_data (
     project_keys text[] DEFAULT '{}'::text[] NOT NULL,
     customize_jira_issue_enabled boolean DEFAULT false,
     instance_integration_id bigint,
+    project_id bigint,
+    group_id bigint,
+    organization_id bigint,
     CONSTRAINT check_0bf84b76e9 CHECK ((char_length(vulnerabilities_issuetype) <= 255)),
     CONSTRAINT check_160e0f9fe2 CHECK ((num_nonnulls(instance_integration_id, integration_id) = 1)),
     CONSTRAINT check_214cf6a48b CHECK ((char_length(project_key) <= 255)),
@@ -26090,6 +26096,9 @@ CREATE TABLE zentao_tracker_data (
     encrypted_api_token bytea,
     encrypted_api_token_iv bytea,
     instance_integration_id bigint,
+    project_id bigint,
+    group_id bigint,
+    organization_id bigint,
     CONSTRAINT check_500f588095 CHECK ((num_nonnulls(instance_integration_id, integration_id) = 1))
 );
 
@@ -35413,8 +35422,6 @@ CREATE INDEX index_issuable_metric_images_on_issue_id ON issuable_metric_images 
 
 CREATE INDEX index_issuable_metric_images_on_namespace_id ON issuable_metric_images USING btree (namespace_id);
 
-CREATE INDEX index_issuable_resource_links_on_issue_id ON issuable_resource_links USING btree (issue_id);
-
 CREATE INDEX index_issuable_resource_links_on_namespace_id ON issuable_resource_links USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_issuable_severities_on_issue_id ON issuable_severities USING btree (issue_id);
@@ -35465,9 +35472,15 @@ CREATE INDEX index_issue_metrics_on_namespace_id ON issue_metrics USING btree (n
 
 CREATE INDEX index_issue_on_project_id_state_id_and_blocking_issues_count ON issues USING btree (project_id, state_id, blocking_issues_count);
 
+CREATE INDEX index_issue_tracker_data_on_group_id ON issue_tracker_data USING btree (group_id);
+
 CREATE INDEX index_issue_tracker_data_on_instance_integration_id ON issue_tracker_data USING btree (instance_integration_id);
 
 CREATE INDEX index_issue_tracker_data_on_integration_id ON issue_tracker_data USING btree (integration_id);
+
+CREATE INDEX index_issue_tracker_data_on_organization_id ON issue_tracker_data USING btree (organization_id);
+
+CREATE INDEX index_issue_tracker_data_on_project_id ON issue_tracker_data USING btree (project_id);
 
 CREATE INDEX index_issue_user_mentions_on_namespace_id ON issue_user_mentions USING btree (namespace_id);
 
@@ -35537,9 +35550,15 @@ CREATE INDEX index_jira_imports_on_project_id_and_jira_project_key ON jira_impor
 
 CREATE INDEX index_jira_imports_on_user_id ON jira_imports USING btree (user_id);
 
+CREATE INDEX index_jira_tracker_data_on_group_id ON jira_tracker_data USING btree (group_id);
+
 CREATE INDEX index_jira_tracker_data_on_instance_integration_id ON jira_tracker_data USING btree (instance_integration_id);
 
 CREATE INDEX index_jira_tracker_data_on_integration_id ON jira_tracker_data USING btree (integration_id);
+
+CREATE INDEX index_jira_tracker_data_on_organization_id ON jira_tracker_data USING btree (organization_id);
+
+CREATE INDEX index_jira_tracker_data_on_project_id ON jira_tracker_data USING btree (project_id);
 
 CREATE INDEX index_job_artifact_states_failed_verification ON ci_job_artifact_states USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
 
@@ -37519,7 +37538,7 @@ CREATE UNIQUE INDEX index_unique_ci_runner_projects_on_runner_id_and_project_id 
 
 CREATE UNIQUE INDEX index_unique_epics_on_issue_id ON epics USING btree (issue_id);
 
-CREATE UNIQUE INDEX index_unique_issuable_resource_links_on_unique_issue_link ON issuable_resource_links USING btree (issue_id, link) WHERE is_unique;
+CREATE UNIQUE INDEX index_unique_issuable_resource_links_on_issue_id_and_link ON issuable_resource_links USING btree (issue_id, link);
 
 CREATE UNIQUE INDEX index_unique_issue_link_id_on_related_epic_links ON related_epic_links USING btree (issue_link_id);
 
@@ -38067,9 +38086,15 @@ CREATE UNIQUE INDEX index_xray_reports_on_project_id_and_lang ON xray_reports US
 
 CREATE INDEX index_zens_on_last_rollout_failed_at ON zoekt_enabled_namespaces USING btree (last_rollout_failed_at);
 
+CREATE INDEX index_zentao_tracker_data_on_group_id ON zentao_tracker_data USING btree (group_id);
+
 CREATE INDEX index_zentao_tracker_data_on_instance_integration_id ON zentao_tracker_data USING btree (instance_integration_id);
 
 CREATE INDEX index_zentao_tracker_data_on_integration_id ON zentao_tracker_data USING btree (integration_id);
+
+CREATE INDEX index_zentao_tracker_data_on_organization_id ON zentao_tracker_data USING btree (organization_id);
+
+CREATE INDEX index_zentao_tracker_data_on_project_id ON zentao_tracker_data USING btree (project_id);
 
 CREATE INDEX index_zoekt_indices_on_id_conditional_watermark_level_state ON zoekt_indices USING btree (id) WHERE (((watermark_level = 10) AND (state = 10)) OR (watermark_level = 60));
 
@@ -41705,6 +41730,9 @@ ALTER TABLE ONLY project_requirement_compliance_statuses
 ALTER TABLE ONLY requirements_management_test_reports
     ADD CONSTRAINT fk_05094e3d87 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY jira_tracker_data
+    ADD CONSTRAINT fk_05895afb4c FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY analytics_dashboards_pointers
     ADD CONSTRAINT fk_05d96922bd FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -41891,6 +41919,9 @@ ALTER TABLE ONLY user_achievements
 ALTER TABLE ONLY internal_ids
     ADD CONSTRAINT fk_162941d509 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY jira_tracker_data
+    ADD CONSTRAINT fk_16ddb573de FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY incident_management_timeline_events
     ADD CONSTRAINT fk_17a5fafbd4 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
@@ -41998,6 +42029,9 @@ ALTER TABLE ONLY bulk_import_export_uploads
 
 ALTER TABLE ONLY audit_events_streaming_http_instance_namespace_filters
     ADD CONSTRAINT fk_23f3ab7df0 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY zentao_tracker_data
+    ADD CONSTRAINT fk_2417fd4262 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY import_failures
     ADD CONSTRAINT fk_24b824da43 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -42445,6 +42479,9 @@ ALTER TABLE ONLY packages_tags
 
 ALTER TABLE ONLY security_policy_project_links
     ADD CONSTRAINT fk_5a5eba6f88 FOREIGN KEY (security_policy_id) REFERENCES security_policies(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY zentao_tracker_data
+    ADD CONSTRAINT fk_5a5f50a792 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY project_export_jobs
     ADD CONSTRAINT fk_5ab0242530 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
@@ -43076,6 +43113,9 @@ ALTER TABLE ONLY operations_strategies
 ALTER TABLE ONLY work_item_custom_lifecycle_statuses
     ADD CONSTRAINT fk_a546eef539 FOREIGN KEY (lifecycle_id) REFERENCES work_item_custom_lifecycles(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY issue_tracker_data
+    ADD CONSTRAINT fk_a54bddafd2 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY lfs_objects_projects
     ADD CONSTRAINT fk_a56e02279c FOREIGN KEY (lfs_object_id) REFERENCES lfs_objects(id) ON DELETE RESTRICT NOT VALID;
 
@@ -43189,6 +43229,9 @@ ALTER TABLE ONLY related_epic_links
 
 ALTER TABLE ONLY projects_branch_rules_merge_request_approval_settings
     ADD CONSTRAINT fk_b322a941f9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY issue_tracker_data
+    ADD CONSTRAINT fk_b33e816ada FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_b37be69be6 FOREIGN KEY (work_item_type_id) REFERENCES work_item_types(id);
@@ -43358,6 +43401,9 @@ ALTER TABLE ONLY wiki_repository_states
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_c63cbf6c25 FOREIGN KEY (closed_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY issue_tracker_data
+    ADD CONSTRAINT fk_c65b54013d FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY sbom_occurrences_vulnerabilities
     ADD CONSTRAINT fk_c677cb859e FOREIGN KEY (sbom_occurrence_id) REFERENCES sbom_occurrences(id) ON DELETE CASCADE;
 
@@ -43472,6 +43518,9 @@ ALTER TABLE ONLY issue_user_mentions
 ALTER TABLE ONLY user_group_member_roles
     ADD CONSTRAINT fk_d222d57eec FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY jira_tracker_data
+    ADD CONSTRAINT fk_d24014171d FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY boards_epic_user_preferences
     ADD CONSTRAINT fk_d32c3d693c FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -43516,6 +43565,9 @@ ALTER TABLE ONLY system_note_metadata
 
 ALTER TABLE ONLY sbom_occurrences
     ADD CONSTRAINT fk_d857c6edc1 FOREIGN KEY (component_id) REFERENCES sbom_components(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY zentao_tracker_data
+    ADD CONSTRAINT fk_d8eda829f4 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY todos
     ADD CONSTRAINT fk_d94154aa95 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

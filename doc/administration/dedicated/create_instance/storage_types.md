@@ -42,7 +42,7 @@ is distributed among the Gitaly nodes in your instance based on your reference a
 #### Repository storage per Gitaly node
 
 Each Gitaly node in your instance has a specific storage capacity. This capacity affects how large individual
-repositories can be, as no single repository can exceed the capacity of a single Gitaly node.
+repositories can be, because no single repository can exceed the capacity of a single Gitaly node.
 
 For example, if each Gitaly node has 100 GB of storage capacity and there are 3 Gitaly nodes, your instance
 can store a total of 300 GB of repository data, but no single repository can exceed 100 GB.

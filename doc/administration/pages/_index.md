@@ -811,7 +811,7 @@ archive. You can modify the cache behavior by changing the following configurati
 | `zip_cache_expiration` | The cache expiration interval of ZIP archives. Must be greater than zero to avoid serving stale content. Default is `60s`. |
 | `zip_cache_cleanup` | The interval at which archives are cleaned from memory if they have already expired. Default is `30s`. |
 | `zip_cache_refresh` | The time interval in which an archive is extended in memory if accessed before `zip_cache_expiration`. This works together with `zip_cache_expiration` to determine if an archive is extended in memory. See the [example below](#zip-cache-refresh-example) for important details. Default is `30s`. |
-| `zip_open_timeout` | The maximum time allowed to open a ZIP archive. Increase this time for big archives or slow network connections, as doing so may affect the latency of serving Pages. Default is 30 s. |
+| `zip_open_timeout` | The maximum time allowed to open a ZIP archive. Increase this time for big archives or slow network connections because doing so may affect the latency of serving Pages. Default is 30 s. |
 | `zip_http_client_timeout` | The maximum time for the ZIP HTTP client. Default is `30m`. |
 
 #### ZIP cache refresh example

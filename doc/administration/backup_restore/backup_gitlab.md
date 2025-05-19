@@ -1590,10 +1590,11 @@ For manually backing up the Git repository data on disk, there are multiple poss
 
 #### Prevent writes and copy the Git repository data
 
-Git repositories must be copied in a consistent way. They should not be copied during concurrent write
-operations, as this can lead to inconsistencies or corruption issues. For more details,
-[issue #270422](https://gitlab.com/gitlab-org/gitlab/-/issues/270422 "Provide documentation on preferred method of migrating Gitaly servers")
-has a longer discussion explaining the potential problems.
+Git repositories must be copied in a consistent way. If repositories
+are copied during concurrent write operations,
+inconsistencies or corruption issues can occur. For more details,
+[issue 270422](https://gitlab.com/gitlab-org/gitlab/-/issues/270422)
+has a longer discussion that explains the potential problems.
 
 To prevent writes to the Git repository data, there are two possible approaches:
 

@@ -136,7 +136,7 @@ You should use the
 
 ## Alternative in-database storage
 
-Enabling external diffs may reduce the performance of merge requests, as they
+Enabling external diffs may reduce the performance of merge requests because they
 must be retrieved in a separate operation to other data. A compromise may be
 reached by only storing outdated diffs externally, while keeping current diffs
 in the database.

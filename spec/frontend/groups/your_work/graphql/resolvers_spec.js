@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import dashboardGroupsWithChildrenResponse from 'test_fixtures/groups/dashboard/index_with_children.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { resolvers } from '~/groups/your_work/graphql/resolvers';
-import memberGroupsQuery from '~/groups/your_work/graphql/queries/member_groups.query.graphql';
+import groupsQuery from '~/groups/your_work/graphql/queries/groups.query.graphql';
 import axios from '~/lib/utils/axios_utils';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -15,7 +15,7 @@ describe('your work groups resolver', () => {
 
   const makeQuery = () => {
     return mockApollo.clients.defaultClient.query({
-      query: memberGroupsQuery,
+      query: groupsQuery,
       variables: { search: 'foo', sort: 'created_desc', page: 2 },
     });
   };
@@ -42,6 +42,7 @@ describe('your work groups resolver', () => {
     await makeQuery();
 
     expect(mockAxios.history.get[0].params).toEqual({
+      active: true,
       filter: 'foo',
       sort: 'created_desc',
       page: 2,

@@ -8,7 +8,7 @@ import {
 import NestedGroupsProjectsList from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list.vue';
 import ResourceListsEmptyState from '~/vue_shared/components/resource_lists/empty_state.vue';
 import { formatGroups } from './utils';
-import memberGroupsQuery from './graphql/queries/member_groups.query.graphql';
+import groupsQuery from './graphql/queries/groups.query.graphql';
 
 const baseTab = {
   formatter: formatGroups,
@@ -20,15 +20,22 @@ const baseTab = {
       'Organization|A group is a collection of several projects. If you organize your projects under a group, it works like a folder.',
     ),
   },
+  query: groupsQuery,
+  queryPath: 'groups',
+  listComponent: NestedGroupsProjectsList,
 };
 
 export const MEMBER_TAB = {
   ...baseTab,
   text: __('Member'),
   value: 'member',
-  query: memberGroupsQuery,
-  queryPath: 'groups',
-  listComponent: NestedGroupsProjectsList,
+};
+
+export const INACTIVE_TAB = {
+  ...baseTab,
+  text: __('Inactive'),
+  value: 'inactive',
+  variables: { active: false },
 };
 
 export const SORT_OPTION_NAME = {
@@ -48,7 +55,7 @@ export const SORT_OPTION_UPDATED = {
 
 export const SORT_OPTIONS = [SORT_OPTION_NAME, SORT_OPTION_CREATED, SORT_OPTION_UPDATED];
 
-export const GROUP_DASHBOARD_TABS = [MEMBER_TAB];
+export const GROUP_DASHBOARD_TABS = [MEMBER_TAB, INACTIVE_TAB];
 
 export const BASE_ROUTE = '/dashboard/groups';
 

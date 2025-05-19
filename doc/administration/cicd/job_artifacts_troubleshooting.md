@@ -28,7 +28,7 @@ reasons are:
   removes these.
 - Artifact files might be left on disk and not deleted by housekeeping. Run the
   [Rake task for _orphaned_ artifact files](../raketasks/cleanup.md#remove-orphan-artifact-files)
-  to remove these. This script should always find work to do, as it also removes empty directories (see above).
+  to remove these. This script should always find work to do because it also removes empty directories (see above).
 - [Artifact housekeeping was changed significantly](#housekeeping-disabled-in-gitlab-150-to-152), and you might need to enable a feature flag to use the updated system.
 - The [keep latest artifacts from most recent success jobs](../../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)
   feature is enabled.

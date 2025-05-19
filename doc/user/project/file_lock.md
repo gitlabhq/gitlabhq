@@ -100,7 +100,11 @@ To lock a file:
 
 If you do not have permission to lock the file, the menu item is disabled.
 
-## View and remove locks
+## View locked files
+
+Prerequisites:
+
+- You must have at least the Developer role for the project.
 
 To view locked files:
 
@@ -109,10 +113,13 @@ To view locked files:
 
 The **Locked files** page displays all files locked with either Git LFS exclusive locks or the GitLab UI.
 
+## Remove file locks
+
 Prerequisites:
 
-- You must be the user who created the lock.
-- You must have at least the Maintainer role for the project.
+- You must either:
+  - Be the user who created the lock.
+  - Have at least the Maintainer role for the project.
 
 To remove a lock:
 

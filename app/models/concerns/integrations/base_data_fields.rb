@@ -8,6 +8,9 @@ module Integrations
       include Gitlab::EncryptedAttribute
 
       belongs_to :integration, inverse_of: self.table_name.to_sym, foreign_key: :integration_id, optional: true
+      belongs_to :project, inverse_of: self.table_name.to_sym, foreign_key: :project_id, optional: true
+      belongs_to :group, inverse_of: self.table_name.to_sym, foreign_key: :group_id, optional: true
+      belongs_to :organization, inverse_of: self.table_name.to_sym, foreign_key: :organization_id, optional: true
 
       belongs_to :instance_integration,
         inverse_of: self.table_name.to_sym,
@@ -15,9 +18,12 @@ module Integrations
         class_name: 'Integrations::Instance::Integration',
         optional: true
 
+      before_validation :set_sharding_key
+
       validates :integration, absence: true, if: :instance_integration
       validates :instance_integration, absence: true, if: :integration
       validate :validate_mutual_exclusion
+      validate :validate_sharding_key
     end
 
     class_methods do
@@ -38,7 +44,17 @@ module Integrations
     def to_database_hash
       as_json(
         only: self.class.column_names
-      ).except('id', 'service_id', 'integration_id', 'created_at', 'updated_at', 'instance_integration_id')
+      ).except(
+        'id',
+        'service_id',
+        'integration_id',
+        'created_at',
+        'updated_at',
+        'instance_integration_id',
+        'group_id',
+        'project_id',
+        'organization_id'
+      )
     end
 
     private
@@ -47,6 +63,20 @@ module Integrations
       return if integration.present? ^ instance_integration.present?
 
       errors.add(:base, :blank, message: 'one of integration or instance_integration must be present')
+    end
+
+    def set_sharding_key
+      return if project_id || group_id || organization_id || integration.nil?
+
+      self.project_id = integration.project_id if integration.project_id
+      self.group_id = integration.group_id if integration.group_id
+      self.organization_id = integration.organization_id if integration.organization_id
+    end
+
+    def validate_sharding_key
+      return if project_id.present? || group_id.present? || organization_id.present?
+
+      errors.add(:base, :blank, message: 'one of project_id, group_id or organization_id must be present')
     end
   end
 end

@@ -73,7 +73,10 @@ RSpec.describe Integrations::Propagation::BulkUpdateService, feature_category: :
 
     context 'with integration with data fields' do
       let(:excluded_attributes) do
-        %w[id integration_id created_at updated_at encrypted_properties encrypted_properties_iv]
+        %w[
+          id integration_id created_at updated_at encrypted_properties encrypted_properties_iv
+          group_id project_id
+        ]
       end
 
       it 'updates the data fields from the integration', :aggregate_failures do
