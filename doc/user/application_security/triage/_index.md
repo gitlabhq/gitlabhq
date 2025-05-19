@@ -3,6 +3,7 @@ stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Triage
+description: Vulnerability separation by status.
 ---
 
 Triage is the second phase of the vulnerability management lifecycle: detect, triage, analyze,

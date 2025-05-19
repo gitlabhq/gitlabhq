@@ -171,16 +171,19 @@ and [groups](../../../api/group_relations_export.md#export-status) on the source
 
 ## Error: `duplicate key value violates unique constraint`
 
-You might get the following error when importing records:
+When importing records, you might get the following error:
 
 ```plaintext
 PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint
 ```
 
-This error occurs when a Sidekiq worker processing the import
-restarts due to high CPU or memory usage during import.
-To configure workers for imports, see
-[Sidekiq configuration](../../project/import/_index.md#sidekiq-configuration).
+This error might occur when a Sidekiq worker processing the import
+restarts due to high memory or CPU usage during import.
+
+To reduce Sidekiq memory or CPU issues during import:
+
+- Optimize [Sidekiq configuration](../../project/import/_index.md#sidekiq-configuration) for imports.
+- Limit the number of concurrent jobs in the `bulk_import_concurrent_pipeline_batch_limit` application setting.
 
 ## Error: `BulkImports::FileDownloadService::ServiceError Invalid content type`
 

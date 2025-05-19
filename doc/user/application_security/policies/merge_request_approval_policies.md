@@ -311,9 +311,6 @@ This rule enforces the defined actions for any merge request based on the commit
 
 ## `require_approval` action type
 
-This action sets an approval rule to be required when conditions are met for at least one rule in
-the defined policy.
-
 {{< history >}}
 
 - [Added](https://gitlab.com/groups/gitlab-org/-/epics/12319) support for up to five separate `require_approval` actions in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `multiple_approval_actions`.
@@ -322,6 +319,11 @@ the defined policy.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/505742) in GitLab 17.10. Feature flag `security_policy_custom_roles` removed.
 
 {{< /history >}}
+
+This action makes an approval rule required when the conditions are met for at least one rule in
+the defined policy.
+
+If you specify multiple approvers in the same `require_approval` block, any of the eligible approvers can satisfy the approval requirement. For example, if you specify two `group_approvers` and `approvals_required` as `2`, both of the approvals can come from the same group. To require multiple approvals from unique approver types, use multiple `require_approval` actions.
 
 | Field | Type | Required | Possible values | Description |
 |-------|------|----------|-----------------|-------------|
@@ -615,7 +617,7 @@ In this example:
 - Every MR that contains new `critical` vulnerabilities identified by container scanning requires
   one approval from `alberto.dare`.
 - Every MR that contains more than one preexisting `low` or `unknown` vulnerability older than 30 days identified by
-  container scanning requires one approval from a project member with the Owner role and one approval from a user with the custom role "AppSec Engineer".
+  container scanning requires one approval from either a project member with the Owner role or a user with the custom role `AppSec Engineer`.
 
 ## Example for Merge Request Approval Policy editor
 
