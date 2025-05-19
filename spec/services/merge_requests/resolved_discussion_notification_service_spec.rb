@@ -51,6 +51,14 @@ RSpec.describe MergeRequests::ResolvedDiscussionNotificationService, feature_cat
         subject.execute(merge_request)
       end
 
+      context 'when send_notification flag is false' do
+        it "does not send a notification email" do
+          expect_any_instance_of(NotificationService).not_to receive(:resolve_all_discussions)
+
+          subject.execute(merge_request, send_notifications: false)
+        end
+      end
+
       it "sends a webhook" do
         expect_any_instance_of(MergeRequests::BaseService).to receive(:execute_hooks).with(merge_request, 'update')
 

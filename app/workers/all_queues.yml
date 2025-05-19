@@ -4241,6 +4241,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: merge_requests_process_draft_note_published
+  :worker_name: MergeRequests::ProcessDraftNotePublishedWorker
+  :feature_category: :code_review_workflow
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: merge_requests_resolve_todos
   :worker_name: MergeRequests::ResolveTodosWorker
   :feature_category: :code_review_workflow

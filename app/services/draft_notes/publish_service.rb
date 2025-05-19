@@ -7,15 +7,15 @@ module DraftNotes
 
       return error('Not allowed to create notes') unless can?(executing_user, :create_note, merge_request)
 
+      review = nil
       if draft
         publish_draft_note(draft, executing_user)
       else
-        publish_draft_notes(executing_user)
+        review = create_review(executing_user)
         merge_request_activity_counter.track_publish_review_action(user: current_user)
       end
 
-      todo_service.new_review(merge_request, current_user)
-
+      handle_notifications(current_user, merge_request, review)
       success
     rescue ActiveRecord::RecordInvalid => e
       message = "Unable to save #{e.record.class.name}: #{e.record.errors.full_messages.join(', ')} "
@@ -27,11 +27,9 @@ module DraftNotes
     def publish_draft_note(draft, executing_user)
       create_note_from_draft(draft, executing_user)
       draft.delete
-
-      MergeRequests::ResolvedDiscussionNotificationService.new(project: project, current_user: current_user).execute(merge_request)
     end
 
-    def publish_draft_notes(executing_user)
+    def create_review(executing_user)
       return if draft_notes.blank?
 
       review = Review.create!(author: current_user, merge_request: merge_request, project: project)
@@ -52,10 +50,10 @@ module DraftNotes
       capture_diff_note_positions(created_notes)
       keep_around_commits(created_notes)
       draft_notes.delete_all
-      notification_service.async.new_review(review)
-      MergeRequests::ResolvedDiscussionNotificationService.new(project: project, current_user: current_user).execute(merge_request)
       GraphqlTriggers.merge_request_merge_status_updated(merge_request)
       after_publish
+
+      review
     end
 
     def create_note_from_draft(draft, executing_user, skip_capture_diff_note_position: false, skip_keep_around_commits: false, skip_merge_status_trigger: false)
@@ -118,6 +116,33 @@ module DraftNotes
 
         assignee.invalidate_merge_request_cache_counts
       end
+    end
+
+    def handle_notifications(current_user, merge_request, review)
+      pub_sub_flag = Feature.enabled?(:notification_event_store_migration_draft_published, current_user)
+
+      if pub_sub_flag
+        create_draft_published_event(merge_request, current_user, review)
+      else
+        todo_service.new_review(merge_request, current_user)
+        notification_service.async.new_review(review) if review
+      end
+
+      MergeRequests::ResolvedDiscussionNotificationService
+        .new(project: project, current_user: current_user)
+        .execute(merge_request, send_notifications: !pub_sub_flag)
+    end
+
+    def create_draft_published_event(merge_request, current_user, review)
+      review_id = review&.id
+      data = { current_user_id: current_user.id, merge_request_id: merge_request.id }
+      data[:review_id] = review_id if review_id
+
+      Gitlab::EventStore.publish(
+        MergeRequests::DraftNotePublishedEvent.new(
+          data: data
+        )
+      )
     end
   end
 end

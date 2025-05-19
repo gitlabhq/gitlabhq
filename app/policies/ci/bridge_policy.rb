@@ -13,6 +13,6 @@ module Ci
                             .can_update_branch?(@subject.target_revision_ref)
     end
 
-    rule { can_update_downstream_branch }.enable :play_job
+    rule { can?(:update_build) & can_update_downstream_branch }.enable :play_job
   end
 end

@@ -16021,7 +16021,8 @@ CREATE TABLE issuable_severities (
     id bigint NOT NULL,
     issue_id bigint NOT NULL,
     severity smallint DEFAULT 0 NOT NULL,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_34d8321a84 CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE issuable_severities_id_seq

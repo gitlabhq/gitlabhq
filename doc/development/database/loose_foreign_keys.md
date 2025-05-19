@@ -199,13 +199,15 @@ ci_pipelines:
 
 ### Track record changes
 
+#### On normal non-partitioned tables
+
 To know about deletions in the `projects` table, configure a `DELETE` trigger
 using a [post-deployment migration](post_deployment_migrations.md). The
 trigger needs to be configured only once. If the model already has at least one
 `loose_foreign_key` definition, then this step can be skipped:
 
 ```ruby
-class TrackProjectRecordChanges < Gitlab::Database::Migration[2.1]
+class TrackProjectRecordChanges < Gitlab::Database::Migration[2.3]
   include Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
 
   def up
@@ -214,6 +216,29 @@ class TrackProjectRecordChanges < Gitlab::Database::Migration[2.1]
 
   def down
     untrack_record_deletions(:projects)
+  end
+end
+```
+
+#### On partitioned tables
+
+To track deletions on partitioned tables, we need to use the helper `track_record_deletions_override_table_name`
+instead. It's because we need to make sure that when `DELETE` statements run against the partitioned
+table or its partitions, we are always registering the parent (partitioned) table instead of the partition
+(child) table name.
+
+Here is an example:
+
+```ruby
+class TrackWorkloadDeletions < Gitlab::Database::Migration[2.3]
+  include Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
+
+  def up
+    track_record_deletions_override_table_name(:p_ci_workloads)
+  end
+
+  def down
+    untrack_record_deletions(:p_ci_workloads)
   end
 end
 ```
@@ -237,7 +262,7 @@ trigger. If the foreign key is deleted earlier, there is a good chance of
 introducing data inconsistency which needs manual cleanup:
 
 ```ruby
-class RemoveProjectsCiPipelineFk < Gitlab::Database::Migration[2.1]
+class RemoveProjectsCiPipelineFk < Gitlab::Database::Migration[2.3]
   disable_ddl_transaction!
 
   def up
@@ -272,7 +297,7 @@ If the model still has at least one `loose_foreign_key` definition remaining, th
 Migration for removing the trigger:
 
 ```ruby
-class UnTrackProjectRecordChanges < Gitlab::Database::Migration[2.1]
+class UnTrackProjectRecordChanges < Gitlab::Database::Migration[2.3]
   include Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
 
   def up
@@ -290,7 +315,7 @@ table however, there is still a chance for having leftover pending records in th
 must be removed with an inline data migration.
 
 ```ruby
-class RemoveLeftoverProjectDeletions < Gitlab::Database::Migration[2.1]
+class RemoveLeftoverProjectDeletions < Gitlab::Database::Migration[2.3]
   disable_ddl_transaction!
 
   def up
