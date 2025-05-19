@@ -16,6 +16,7 @@ RSpec.describe 'searching groups', :with_license, feature_category: :groups_and_
       nodes {
         #{all_graphql_fields_for('Group', excluded: %w[runners ciQueueingHistory])}
       }
+      count
     FIELDS
   end
 
@@ -30,6 +31,12 @@ RSpec.describe 'searching groups', :with_license, feature_category: :groups_and_
   end
 
   subject { post_graphql(query, current_user: user) }
+
+  it 'is countable' do
+    subject
+
+    expect(graphql_data_at(:groups, :count)).to eq(1)
+  end
 
   describe "Query groups(search)" do
     let(:groups) { graphql_data_at(:groups, :nodes) }
@@ -92,6 +99,59 @@ RSpec.describe 'searching groups', :with_license, feature_category: :groups_and_
         subject
 
         expect(names).to contain_exactly(owned_group.name)
+      end
+    end
+  end
+
+  describe 'active argument' do
+    let_it_be(:group_pending_deletion) { create(:group_with_deletion_schedule, owners: user) }
+
+    context 'when active argument is nil' do
+      it 'returns all groups' do
+        subject
+
+        expect(graphql_data_at(:groups,
+          :nodes)).to match_array([a_graphql_entity_for(public_group), a_graphql_entity_for(group_pending_deletion)])
+      end
+    end
+
+    context 'when active argument is true' do
+      let(:query) do
+        <<~QUERY
+          query {
+            groups(active: true) {
+              nodes {
+                id
+              }
+            }
+          }
+        QUERY
+      end
+
+      it 'returns only groups that are not pending deletion' do
+        subject
+
+        expect(graphql_data_at(:groups, :nodes)).to match_array([a_graphql_entity_for(public_group)])
+      end
+    end
+
+    context 'when active argument is false' do
+      let(:query) do
+        <<~QUERY
+          query {
+            groups(active: false) {
+              nodes {
+                id
+              }
+            }
+          }
+        QUERY
+      end
+
+      it 'returns only groups that are pending deletion' do
+        subject
+
+        expect(graphql_data_at(:groups, :nodes)).to match_array([a_graphql_entity_for(group_pending_deletion)])
       end
     end
   end

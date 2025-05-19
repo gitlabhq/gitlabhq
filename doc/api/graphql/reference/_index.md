@@ -747,6 +747,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="querygroupsactive"></a>`active` | [`Boolean`](#boolean) | When `nil` (default value), returns all groups. When `true`, returns only groups that are not pending deletion. When `false`, only returns groups that are pending deletion. |
 | <a id="querygroupsallavailable"></a>`allAvailable` | [`Boolean`](#boolean) | When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member. Unauthenticated requests always return all public groups. The `owned_only` argument takes precedence. |
 | <a id="querygroupsids"></a>`ids` | [`[ID!]`](#id) | Filter groups by IDs. |
 | <a id="querygroupsmarkedfordeletionon"></a>`markedForDeletionOn` | [`Date`](#date) | Date when the group was marked for deletion. |
@@ -2164,6 +2165,34 @@ Input type: `AiFeatureSettingUpdateInput`
 | <a id="mutationaifeaturesettingupdateaifeaturesettings"></a>`aiFeatureSettings` | [`[AiFeatureSetting!]!`](#aifeaturesetting) | List of AI feature settings after mutation. |
 | <a id="mutationaifeaturesettingupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaifeaturesettingupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
+### `Mutation.aiModelSelectionNamespaceUpdate`
+
+Updates or creates settings for AI features for a namespace.
+
+{{< details >}}
+**Introduced** in GitLab 18.1.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `AiModelSelectionNamespaceUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaimodelselectionnamespaceupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaimodelselectionnamespaceupdatefeatures"></a>`features` | [`[AiModelSelectionFeatures!]!`](#aimodelselectionfeatures) | Array of AI features being configured (for single or batch update). |
+| <a id="mutationaimodelselectionnamespaceupdategroupid"></a>`groupId` | [`GroupID!`](#groupid) | Group for the model selection. |
+| <a id="mutationaimodelselectionnamespaceupdateofferedmodelref"></a>`offeredModelRef` | [`String!`](#string) | Identifier of the selected model for the feature. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaimodelselectionnamespaceupdateaifeaturesettings"></a>`aiFeatureSettings` {{< icon name="warning-solid" >}} | [`[AiModelSelectionNamespaceFeatureSetting!]!`](#aimodelselectionnamespacefeaturesetting) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 18.1. |
+| <a id="mutationaimodelselectionnamespaceupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaimodelselectionnamespaceupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
 ### `Mutation.aiSelfHostedModelConnectionCheck`
 
@@ -16389,6 +16418,7 @@ The connection type for [`Group`](#group).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="groupconnectionedges"></a>`edges` | [`[GroupEdge]`](#groupedge) | A list of edges. |
 | <a id="groupconnectionnodes"></a>`nodes` | [`[Group]`](#group) | A list of nodes. |
 | <a id="groupconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
@@ -21210,6 +21240,33 @@ Returns [`codeSuggestionMetrics`](#codesuggestionmetrics).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aimetricscodesuggestionslanguages"></a>`languages` | [`[String!]`](#string) | Filter code suggestion metrics by one or more languages. |
+
+### `AiModelSelectionNamespaceFeatureSetting`
+
+Model Selection feature setting for namespaces.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aimodelselectionnamespacefeaturesettingdefaultmodel"></a>`defaultModel` | [`AiModelSelectionOfferedModel`](#aimodelselectionofferedmodel) | LLMs Compatible with the feature. |
+| <a id="aimodelselectionnamespacefeaturesettingfeature"></a>`feature` | [`String!`](#string) | Identifier for the AI feature. |
+| <a id="aimodelselectionnamespacefeaturesettingmainfeature"></a>`mainFeature` | [`String`](#string) | Displayed name of the main feature. |
+| <a id="aimodelselectionnamespacefeaturesettingnamespace"></a>`namespace` | [`Group!`](#group) | Namespace that the feature setting is set for. |
+| <a id="aimodelselectionnamespacefeaturesettingselectablemodels"></a>`selectableModels` | [`[AiModelSelectionOfferedModel!]!`](#aimodelselectionofferedmodel) | LLMs Compatible with the feature. |
+| <a id="aimodelselectionnamespacefeaturesettingselectedmodel"></a>`selectedModel` | [`AiModelSelectionOfferedModel`](#aimodelselectionofferedmodel) | Identifier of the current model selected. |
+| <a id="aimodelselectionnamespacefeaturesettingtitle"></a>`title` | [`String`](#string) | Displayed AI feature name. |
+
+### `AiModelSelectionOfferedModel`
+
+Model offered for Model Selection.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aimodelselectionofferedmodelname"></a>`name` | [`String!`](#string) | Humanized name for the offered model, e.g "Chat GPT 4o". |
+| <a id="aimodelselectionofferedmodelref"></a>`ref` | [`String!`](#string) | Identifier for the offered model. |
 
 ### `AiSelfHostedModel`
 
@@ -33973,6 +34030,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="organizationgroupsactive"></a>`active` | [`Boolean`](#boolean) | When `nil` (default value), returns all groups. When `true`, returns only groups that are not pending deletion. When `false`, only returns groups that are pending deletion. |
 | <a id="organizationgroupsallavailable"></a>`allAvailable` | [`Boolean`](#boolean) | When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member. Unauthenticated requests always return all public groups. The `owned_only` argument takes precedence. |
 | <a id="organizationgroupsids"></a>`ids` | [`[ID!]`](#id) | Filter groups by IDs. |
 | <a id="organizationgroupsmarkedfordeletionon"></a>`markedForDeletionOn` | [`Date`](#date) | Date when the group was marked for deletion. |
@@ -42757,6 +42815,26 @@ Types of messages returned from AI features.
 | Value | Description |
 | ----- | ----------- |
 | <a id="aimessagetypetool"></a>`TOOL` | Tool selection message. |
+
+### `AiModelSelectionFeatures`
+
+AI features that can be configured through the Model Selection feature settings.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aimodelselectionfeaturescode_completions"></a>`CODE_COMPLETIONS` | Code completion feature setting. |
+| <a id="aimodelselectionfeaturescode_generations"></a>`CODE_GENERATIONS` | Code generation feature setting. |
+| <a id="aimodelselectionfeaturesduo_chat"></a>`DUO_CHAT` | Duo Chat feature setting. |
+| <a id="aimodelselectionfeaturesduo_chat_explain_code"></a>`DUO_CHAT_EXPLAIN_CODE` | Duo chat explain code feature setting. |
+| <a id="aimodelselectionfeaturesduo_chat_explain_vulnerability"></a>`DUO_CHAT_EXPLAIN_VULNERABILITY` | Duo chat explain vulnerability feature setting. |
+| <a id="aimodelselectionfeaturesduo_chat_fix_code"></a>`DUO_CHAT_FIX_CODE` | Duo chat fix code feature setting. |
+| <a id="aimodelselectionfeaturesduo_chat_refactor_code"></a>`DUO_CHAT_REFACTOR_CODE` | Duo chat refactor code feature setting. |
+| <a id="aimodelselectionfeaturesduo_chat_troubleshoot_job"></a>`DUO_CHAT_TROUBLESHOOT_JOB` | Duo chat troubleshoot job feature setting. |
+| <a id="aimodelselectionfeaturesduo_chat_write_tests"></a>`DUO_CHAT_WRITE_TESTS` | Duo chat write test feature setting. |
+| <a id="aimodelselectionfeaturesgenerate_commit_message"></a>`GENERATE_COMMIT_MESSAGE` | Generate commit message feature setting. |
+| <a id="aimodelselectionfeaturesresolve_vulnerability"></a>`RESOLVE_VULNERABILITY` | Resolve vulnerability feature setting. |
+| <a id="aimodelselectionfeaturessummarize_new_merge_request"></a>`SUMMARIZE_NEW_MERGE_REQUEST` | Summarize new merge request feature setting. |
+| <a id="aimodelselectionfeaturessummarize_review"></a>`SUMMARIZE_REVIEW` | Summarize review feature setting. |
 
 ### `AiSelfHostedModelReleaseState`
 

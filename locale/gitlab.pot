@@ -39466,6 +39466,9 @@ msgstr ""
 msgid "Model registry"
 msgstr ""
 
+msgid "Model selection is only available for top-level namespaces."
+msgstr ""
+
 msgid "Model version not found"
 msgstr ""
 

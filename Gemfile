@@ -755,4 +755,4 @@ gem 'paper_trail', '~> 16.0', feature_category: :shared
 
 gem "i18n_data", "~> 0.13.1", feature_category: :system_access
 
-gem "gitlab-cloud-connector", "~> 1.11", require: 'gitlab/cloud_connector', feature_category: :cloud_connector
+gem "gitlab-cloud-connector", "~> 1.13", require: 'gitlab/cloud_connector', feature_category: :cloud_connector

@@ -99,6 +99,11 @@ Amazon Q can analyze your merge request and suggest improvements to your code.
 It can find things like security issues, quality issues, inefficiencies,
 and other errors.
 
+[You can have Amazon Q review automatically](setup.md#enter-the-arn-in-gitlab-and-enable-amazon-q)
+when you open or reopen a merge request, or you can manually start a review.
+
+To manually start:
+
 1. Open your merge request.
 1. On the **Overview** tab, in a comment, type `/q review`.
 1. Select **Comment**.

@@ -22079,9 +22079,7 @@ CREATE TABLE resource_label_events (
     label_id bigint,
     user_id bigint,
     created_at timestamp with time zone NOT NULL,
-    cached_markdown_version integer,
     reference text,
-    reference_html text,
     imported_from smallint DEFAULT 0 NOT NULL
 );
 
