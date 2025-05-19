@@ -8,7 +8,7 @@ module IdeHelper
       'sign-in-path' => new_session_path(current_user),
       'sign-out-path' => destroy_user_session_path,
       'user-preferences-path' => profile_preferences_path
-    }.merge(new_ide_data(project: project))
+    }.merge(extend_ide_data(project: project))
 
     return base_data unless project
 
@@ -32,7 +32,7 @@ module IdeHelper
 
   private
 
-  def new_ide_fonts
+  def ide_fonts
     {
       fallback_font_family: 'monospace',
       font_faces: [{
@@ -54,11 +54,11 @@ module IdeHelper
     }
   end
 
-  def new_ide_code_suggestions_data
+  def ide_code_suggestions_data
     {}
   end
 
-  def new_ide_oauth_data
+  def ide_oauth_data
     return {} unless ::WebIde::DefaultOauthApplication.oauth_application
 
     client_id = ::WebIde::DefaultOauthApplication.oauth_application.uid
@@ -70,7 +70,7 @@ module IdeHelper
     }
   end
 
-  def new_ide_data(project:)
+  def extend_ide_data(project:)
     extension_marketplace_settings = WebIde::ExtensionMarketplace.webide_extension_marketplace_settings(
       user: current_user
     )
@@ -81,10 +81,10 @@ module IdeHelper
     {
       'project-path' => project&.path_with_namespace,
       'csp-nonce' => content_security_policy_nonce,
-      'editor-font' => new_ide_fonts.to_json,
+      'editor-font' => ide_fonts.to_json,
       'extension-marketplace-settings' => extension_marketplace_settings.to_json,
       'settings-context-hash' => settings_context_hash
-    }.merge(new_ide_code_suggestions_data).merge(new_ide_oauth_data)
+    }.merge(ide_code_suggestions_data).merge(ide_oauth_data)
   end
 
   def has_dismissed_ide_environments_callout?

@@ -90,8 +90,14 @@ class ApplicationRecord < ActiveRecord::Base
     # When calling this method on an association, just calling `self.create` would call `ActiveRecord::Persistence.create`
     # and that skips some code that adds the newly created record to the association.
     transaction(requires_new: true) { all.create(*args, &block) } # rubocop:disable Performance/ActiveRecordSubtransactions
-  rescue ActiveRecord::RecordNotUnique
-    find_by(*args)
+  rescue ActiveRecord::RecordNotUnique => e
+    find_by(*args).tap do |result|
+      # It's unusual if the find_by was not able to find the record that the
+      # database claimed already existed. There could be some underlying issue,
+      # such as a database trigger that inserts a record into another table.
+      # Log this error so that the full database error can be investigated.
+      Gitlab::ErrorTracking.track_exception(e, args: args) unless result
+    end
   end
 
   def create_or_load_association(association_name)

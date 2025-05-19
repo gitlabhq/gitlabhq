@@ -265,7 +265,6 @@ Style/GuardClause:
     - 'ee/app/services/ee/projects/create_service.rb'
     - 'ee/app/services/ee/projects/gitlab_projects_import_service.rb'
     - 'ee/app/services/ee/protected_branches/loggable.rb'
-    - 'ee/app/services/epics/create_service.rb'
     - 'ee/app/services/epics/tree_reorder_service.rb'
     - 'ee/app/services/epics/update_service.rb'
     - 'ee/app/services/geo/metrics_update_service.rb'

@@ -4,7 +4,7 @@ class PersonalProjectsFinder < UnionFinder
   include Gitlab::Allowable
 
   def initialize(user, params = {})
-    @user = user
+    @user = find_user(user)
     @params = params
   end
 
@@ -18,6 +18,7 @@ class PersonalProjectsFinder < UnionFinder
   #
   # Returns an ActiveRecord::Relation.
   def execute(current_user = nil)
+    return Project.none if @user.nil?
     return Project.none unless can?(current_user, :read_user_profile, @user)
 
     segments = all_projects(current_user)
@@ -45,5 +46,11 @@ class PersonalProjectsFinder < UnionFinder
 
   def min_access_level?
     @params[:min_access_level].present?
+  end
+
+  def find_user(user)
+    return user if user.is_a?(User)
+
+    User.find_by_username(user) if user.is_a?(String)
   end
 end

@@ -5651,3 +5651,55 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
     end
   end
 end
+
+RSpec.describe API::Users, '(API behavior when Current.organization is nil)', feature_category: :user_management do
+  # This block intentionally does NOT use :with_current_organization
+
+  let_it_be(:admin_no_org_context) { create(:admin) }
+  let_it_be(:user_no_org_context) { create(:user, username: 'user_no_org_test') }
+  let_it_be(:pat_target_user_no_org_context) { create(:user, username: 'pattarget_no_org_test') }
+
+  before do
+    allow(Current).to receive(:organization).and_return(nil)
+  end
+
+  describe 'POST /users (when Current.organization is nil)' do
+    let(:user_creation_params) { attributes_for(:user, username: 'newly_created_user_no_org', email: 'newly_created_user_no_org@example.com', name: 'Newly Created User No Org') }
+
+    it 'returns 500 Internal Server Error and does not call Users::CreateService.new' do
+      expect(::Users::CreateService).not_to receive(:new)
+
+      post api("/users", admin_no_org_context, admin_mode: true), params: user_creation_params
+
+      expect(response).to have_gitlab_http_status(:internal_server_error)
+      expect(json_response['message']).to match(/NoMethodError \(undefined method `id' for nil\)/)
+    end
+  end
+
+  describe 'POST /users/:id/personal_access_tokens (when Current.organization is nil)' do
+    it 'returns 500 Internal Server Error and does not create PersonalAccessTokens::CreateService' do
+      expect(::PersonalAccessTokens::CreateService).not_to receive(:new)
+
+      post api("/users/#{pat_target_user_no_org_context.id}/personal_access_tokens", admin_no_org_context, admin_mode: true),
+        params: { name: 'Test Token For Target No Org', scopes: ['api'] }
+
+      expect(response).to have_gitlab_http_status(:internal_server_error)
+      expect(json_response['message']).to match(/NoMethodError \(undefined method `id' for nil\)/)
+    end
+  end
+
+  describe 'POST /user/personal_access_tokens (when Current.organization is nil)' do
+    it 'returns 500 Internal Server Error and does not create PersonalAccessTokens::CreateService' do
+      expect(::PersonalAccessTokens::CreateService).not_to receive(:new)
+
+      post api("/user/personal_access_tokens", user_no_org_context),
+        params: {
+          name: 'My Test Token No Org',
+          scopes: [::Gitlab::Auth::K8S_PROXY_SCOPE.to_s]
+        }
+
+      expect(response).to have_gitlab_http_status(:internal_server_error)
+      expect(json_response['message']).to match(/NoMethodError \(undefined method `id' for nil\)/)
+    end
+  end
+end

@@ -22108,7 +22108,8 @@ CREATE TABLE resource_link_events (
     child_work_item_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     system_note_metadata_id bigint,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_47e459b05e CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE resource_link_events_id_seq

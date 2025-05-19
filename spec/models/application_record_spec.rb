@@ -49,6 +49,13 @@ RSpec.describe ApplicationRecord do
         expect(Suggestion.safe_find_or_create_by(suggestion_attributes)).to eq(existing_suggestion)
       end
 
+      it 'logs an exception if RecordNotUnique triggered but no result returned' do
+        expect(Suggestion).to receive(:find_by).twice.and_return(nil)
+        expect(Suggestion).to receive(:create).and_raise(ActiveRecord::RecordNotUnique)
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
+        expect(Suggestion.safe_find_or_create_by(suggestion_attributes)).to be_nil
+      end
+
       it 'passes a block to find_or_create_by' do
         expect do |block|
           Suggestion.safe_find_or_create_by(suggestion_attributes, &block)
