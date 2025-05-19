@@ -57,6 +57,11 @@ export default {
       required: false,
       default: null,
     },
+    contextualViewEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -232,6 +237,7 @@ export default {
             'gl-border-default gl-bg-blue-50 hover:gl-bg-blue-50':
               activeChildItemId === linkedItem.workItem.id,
           }"
+          :contextual-view-enabled="contextualViewEnabled"
           @click="handleLinkedItemClick($event, linkedItem)"
           @removeChild="$emit('removeLinkedItem', linkedItem.workItem)"
         />

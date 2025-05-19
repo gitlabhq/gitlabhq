@@ -119,7 +119,6 @@ RSpec/ReturnFromStub:
     - 'spec/models/environment_spec.rb'
     - 'spec/models/integrations/jira_spec.rb'
     - 'spec/models/internal_id_spec.rb'
-    - 'spec/models/issue_spec.rb'
     - 'spec/models/merge_request_spec.rb'
     - 'spec/models/project_spec.rb'
     - 'spec/models/project_statistics_spec.rb'

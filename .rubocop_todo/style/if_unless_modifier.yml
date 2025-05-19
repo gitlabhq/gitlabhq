@@ -642,7 +642,6 @@ Style/IfUnlessModifier:
     - 'qa/qa/page/page_concern.rb'
     - 'qa/qa/page/view.rb'
     - 'qa/qa/resource/registry_repository.rb'
-    - 'qa/qa/resource/snippet.rb'
     - 'qa/qa/scenario/bootable.rb'
     - 'qa/qa/service/praefect_manager.rb'
     - 'qa/qa/tools/generate_perf_testdata.rb'

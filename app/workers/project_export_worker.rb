@@ -8,6 +8,7 @@ class ProjectExportWorker # rubocop:disable Scalability/IdempotentWorker
 
   feature_category :importers
   worker_resource_boundary :memory
+  tags :import_shared_storage
   urgency :low
   loggable_arguments 2, 3
   sidekiq_options retry: false, dead: false

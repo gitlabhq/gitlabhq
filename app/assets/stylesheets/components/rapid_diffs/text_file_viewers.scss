@@ -36,16 +36,16 @@
   display: grid;
 }
 
-.rd-text-view-content tr:last-child {
+.rd-text-view-content > tr:last-child {
   --rd-row-bottom-left-radius: var(--rd-diff-file-border-radius);
   --rd-row-bottom-right-radius: var(--rd-diff-file-border-radius);
 }
 
-.rd-text-view-content tr:last-child td:not(:last-child) {
+.rd-text-view-content > tr:last-child td:not(:last-child) {
   --rd-row-bottom-right-radius: 0;
 }
 
-.rd-text-view-content tr:last-child td:not(:first-child) {
+.rd-text-view-content > tr:last-child > td:not(:first-child) {
   --rd-row-bottom-left-radius: 0;
 }
 
@@ -131,11 +131,9 @@
   background-color: var(--code-line-nubmer-background-color, $white);
 }
 
-// Do not use nesting here to allow quick jump to code based on the selector
-.rd-line-number:hover:not(:empty),
-.rd-hunk-lines-inline:hover .rd-line-number:not([data-change=meta]),
-.rd-hunk-lines:has(.rd-line-content[data-position=new]:hover:not(:empty)) .rd-line-number[data-position=new],
-.rd-hunk-lines:has(.rd-line-content[data-position=old]:hover:not(:empty)) .rd-line-number[data-position=old] {
+// child combinator improves performance of the selector
+.rd-hunk-lines-parallel:hover > .rd-line-number:not(:empty),
+.rd-hunk-lines-inline:hover > .rd-line-number {
   --rd-line-border-color: var(--code-line-nubmer-hover-border-color, #{$gl-color-purple-200});
   --rd-adjacent-line-border-color: var(--rd-line-border-color);
   --rd-line-background-color: var(--code-line-nubmer-hover-background-color, #{$gl-color-purple-100});
@@ -193,7 +191,7 @@
 }
 
 // table cells can't overflow to the right, we have to reserve space on the neighbouring cell
-.rd-line-content[data-change=removed] + :not(.rd-line-number[data-change=added]) {
+.rd-hunk-lines-parallel > .rd-line-number[data-position=new]:empty {
   border-left: 0;
   margin-left: 1px;
 }

@@ -89,7 +89,6 @@ RSpec/ChangeByZero:
     - 'spec/services/merge_requests/create_from_issue_service_spec.rb'
     - 'spec/services/merge_requests/refresh_service_spec.rb'
     - 'spec/services/packages/composer/create_package_service_spec.rb'
-    - 'spec/services/packages/generic/create_package_file_service_spec.rb'
     - 'spec/services/packages/npm/create_metadata_cache_service_spec.rb'
     - 'spec/services/packages/nuget/sync_metadatum_service_spec.rb'
     - 'spec/services/packages/nuget/update_package_from_metadata_service_spec.rb'

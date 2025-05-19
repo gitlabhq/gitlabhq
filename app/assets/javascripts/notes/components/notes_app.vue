@@ -2,6 +2,7 @@
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapActions } from 'vuex';
 import { v4 as uuidv4 } from 'uuid';
+import DuoCodeReviewSystemNote from 'ee_component/vue_shared/components/notes/duo_code_review_system_note.vue';
 import { InternalEvents } from '~/tracking';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_NOTE } from '~/graphql_shared/constants';
@@ -47,6 +48,7 @@ export default {
     DraftNote,
     TimelineEntryItem,
     AiSummary: () => import('ee_component/notes/components/ai_summary.vue'),
+    DuoCodeReviewSystemNote,
   },
   mixins: [InternalEvents.mixin()],
   provide() {
@@ -404,11 +406,14 @@ export default {
               <placeholder-note v-else :key="discussion.id" :note="discussion.notes[0]" />
             </template>
             <template v-else-if="discussionIsIndividualNoteAndNotConverted(discussion)">
-              <system-note
-                v-if="discussion.notes[0].system"
-                :key="discussion.id"
-                :note="discussion.notes[0]"
-              />
+              <template v-if="discussion.notes[0].system">
+                <duo-code-review-system-note
+                  v-if="discussion.notes[0].author.user_type === 'duo_code_review_bot'"
+                  :key="discussion.id"
+                  :note="discussion.notes[0]"
+                />
+                <system-note v-else :key="discussion.id" :note="discussion.notes[0]" />
+              </template>
               <noteable-note
                 v-else
                 :key="discussion.id"

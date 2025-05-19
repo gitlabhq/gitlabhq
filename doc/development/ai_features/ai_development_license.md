@@ -147,6 +147,13 @@ gdk restart
 
 - For self-managed mode, you need to configure environment variables for self-signing tokens:
 
+{{< alert type="warning" >}}
+
+Engineers working on [Self-Hosted Duo](../../administration/gitlab_duo_self_hosted/_index.md) should not set the `CLOUD_CONNECTOR_SELF_SIGN_TOKENS` environment variable.
+Historically, setting this variable during the development phase has caused bugs and customer facing issues in Self-Hosted Duo.
+
+{{< /alert >}}
+
 ```shell
 # <GDK-root>/env.runit
 

@@ -49,6 +49,7 @@ describe('WorkItemLinkChildContents', () => {
   const findScopedLabel = () => findAllLabels().at(1);
   const findRemoveButton = () => wrapper.findComponent(GlButton);
   const findRelationshipIconsComponent = () => wrapper.findComponent(WorkItemRelationshipIcons);
+  const findIssuableCardLinkOverlay = () => wrapper.findByTestId('issuable-card-link-overlay');
 
   const createComponent = ({
     canUpdate = true,
@@ -57,6 +58,7 @@ describe('WorkItemLinkChildContents', () => {
     workItemFullPath = 'test-project-path',
     isGroup = false,
     getRoutesMock = defaultGetRoutesMock,
+    contextualViewEnabled = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemLinkChildContents, {
       propsData: {
@@ -64,6 +66,7 @@ describe('WorkItemLinkChildContents', () => {
         childItem,
         showLabels,
         workItemFullPath,
+        contextualViewEnabled,
       },
       provide: {
         isGroup,
@@ -274,6 +277,22 @@ describe('WorkItemLinkChildContents', () => {
       createComponent({ showLabels, childItem: workItemObjectiveWithChild });
 
       expect(findAllLabels().exists()).toBe(showLabels);
+    });
+  });
+
+  describe('Anchor overlay rendering based on contextual view state', () => {
+    it('renders anchor overlay on card when contextual view is enabled', () => {
+      createComponent({
+        contextualViewEnabled: true,
+      });
+      expect(findIssuableCardLinkOverlay().exists()).toBe(true);
+      expect(findIssuableCardLinkOverlay().element.tagName).toBe('A');
+      expect(findIssuableCardLinkOverlay().attributes('href')).toBe(workItemTask.webUrl);
+    });
+
+    it('does not render anchor overlay when contextual view is disabled', () => {
+      createComponent();
+      expect(findIssuableCardLinkOverlay().exists()).toBe(false);
     });
   });
 });

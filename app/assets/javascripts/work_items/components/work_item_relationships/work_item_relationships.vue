@@ -83,6 +83,11 @@ export default {
       required: false,
       default: false,
     },
+    contextualViewEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   apollo: {
     linkedWorkItems: {
@@ -409,6 +414,7 @@ export default {
         :show-labels="showLabels"
         :work-item-full-path="workItemFullPath"
         :active-child-item-id="activeChildItemId"
+        :contextual-view-enabled="contextualViewEnabled"
         @showModal="
           $emit('showModal', {
             event: $event.event,
@@ -429,6 +435,7 @@ export default {
         :show-labels="showLabels"
         :work-item-full-path="workItemFullPath"
         :active-child-item-id="activeChildItemId"
+        :contextual-view-enabled="contextualViewEnabled"
         @showModal="
           $emit('showModal', {
             event: $event.event,
@@ -449,6 +456,7 @@ export default {
         :show-labels="showLabels"
         :work-item-full-path="workItemFullPath"
         :active-child-item-id="activeChildItemId"
+        :contextual-view-enabled="contextualViewEnabled"
         @showModal="
           $emit('showModal', {
             event: $event.event,

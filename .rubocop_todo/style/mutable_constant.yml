@@ -7,7 +7,6 @@ Style/MutableConstant:
     - 'app/models/ci/build_trace_chunks/redis_base.rb'
     - 'app/models/integrations/datadog.rb'
     - 'app/presenters/packages/helm/index_presenter.rb'
-    - 'app/services/import/validate_remote_git_endpoint_service.rb'
     - 'app/services/packages/maven/metadata/append_package_file_service.rb'
     - 'app/workers/concerns/worker_context.rb'
     - 'danger/architecture/Dangerfile'

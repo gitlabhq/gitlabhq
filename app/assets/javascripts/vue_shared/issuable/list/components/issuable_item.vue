@@ -290,6 +290,9 @@ export default {
       const availableFullPath = this.workItemFullPath || this.fullPath;
       return `listItem-${availableFullPath}/${getIdFromGraphQLId(this.issuable.id)}`;
     },
+    isClickableLink() {
+      return this.preventRedirect && !this.showCheckbox;
+    },
   },
   methods: {
     hasSlotContents(slotName) {
@@ -309,7 +312,7 @@ export default {
       return `?${this.labelFilterParam}[]=${value}`;
     },
     handleIssuableItemClick(e) {
-      if (e.metaKey || e.ctrlKey || this.showCheckbox || e.button === 1) {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || this.showCheckbox || e.button === 1) {
         return;
       }
       e.preventDefault();
@@ -365,14 +368,21 @@ export default {
     :class="{
       closed: issuable.closedAt,
       '!gl-bg-feedback-info': isActive,
-      'gl-cursor-pointer': preventRedirect && !showCheckbox,
-      'hover:gl-bg-subtle': preventRedirect && !isActive && !showCheckbox,
+      'issue-clickable gl-relative gl-cursor-pointer': isClickableLink,
+      'hover:gl-bg-subtle': isClickableLink && !isActive,
     }"
     :data-labels="labelIdsString"
     :data-qa-issue-id="issuableId"
     data-testid="issuable-item-wrapper"
     @click="handleRowClick"
   >
+    <a
+      v-if="isClickableLink && issuableLinkHref"
+      :href="issuableLinkHref"
+      class="!gl-absolute gl-left-0 gl-top-0 !gl-z-1 !gl-flex gl-h-full gl-w-full"
+      data-testid="issuable-card-link-overlay"
+    ></a>
+
     <gl-form-checkbox
       v-if="showCheckbox"
       class="gl-pr-3 gl-pt-2"

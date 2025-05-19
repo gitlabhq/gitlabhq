@@ -123,7 +123,6 @@ RSpec/ContainExactly:
     - 'spec/lib/atlassian/jira_connect/serializers/deployment_entity_spec.rb'
     - 'spec/lib/gitlab/application_context_spec.rb'
     - 'spec/lib/gitlab/background_migration/redis/backfill_project_pipeline_status_ttl_spec.rb'
-    - 'spec/lib/gitlab/background_migration/resolve_vulnerabilities_for_removed_analyzers_spec.rb'
     - 'spec/lib/gitlab/ci/reports/test_suite_spec.rb'
     - 'spec/lib/gitlab/ci/variables/builder/group_spec.rb'
     - 'spec/lib/gitlab/ci/variables/builder/pipeline_spec.rb'

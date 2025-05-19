@@ -68,7 +68,6 @@ Style/SuperArguments:
     - 'ee/app/finders/ee/group_projects_finder.rb'
     - 'ee/app/finders/ee/groups_finder.rb'
     - 'ee/app/finders/ee/issuables/label_filter.rb'
-    - 'ee/app/finders/ee/issues_finder.rb'
     - 'ee/app/finders/ee/merge_requests_finder.rb'
     - 'ee/app/finders/ee/namespaces/projects_finder.rb'
     - 'ee/app/finders/ee/projects_finder.rb'

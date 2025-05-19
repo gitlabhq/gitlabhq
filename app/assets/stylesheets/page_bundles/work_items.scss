@@ -446,3 +446,11 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
 @-moz-document url-prefix() {
   @include browser-specific-overrides;
 }
+
+ul.content-list {
+  .issue-clickable {
+    a, span {
+      @apply gl-relative gl-z-2;
+    }
+  }
+}

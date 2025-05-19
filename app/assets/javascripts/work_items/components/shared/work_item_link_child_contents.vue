@@ -85,6 +85,11 @@ export default {
       required: false,
       default: true,
     },
+    contextualViewEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     labels() {
@@ -168,7 +173,7 @@ export default {
     },
     handleItemClick(e) {
       const workItem = this.childItem;
-      if (e.metaKey || e.ctrlKey) {
+      if (e.metaKey || e.ctrlKey || e.shiftKey) {
         return;
       }
       const shouldDefaultNavigate =
@@ -198,11 +203,18 @@ export default {
 
 <template>
   <div
-    class="item-body work-item-link-child gl-relative gl-flex gl-min-w-0 gl-grow gl-gap-3 gl-hyphens-auto gl-break-words gl-rounded-base gl-p-3"
     data-testid="links-child"
+    class="item-body work-item-link-child gl-relative gl-flex gl-min-w-0 gl-grow gl-gap-3 gl-hyphens-auto gl-break-words gl-rounded-base gl-p-3"
     @click="handleItemClick"
   >
-    <div ref="stateIcon" class="gl-cursor-help">
+    <a
+      v-if="contextualViewEnabled"
+      :href="childItemWebUrl"
+      class="!gl-absolute gl-left-0 gl-top-0 !gl-z-1 !gl-flex gl-h-full gl-w-full"
+      data-testid="issuable-card-link-overlay"
+      :aria-label="__('Work item')"
+    ></a>
+    <div ref="stateIcon" class="gl-z-2 gl-cursor-help">
       <work-item-type-icon
         :icon-variant="childItemTypeIconVariant"
         :work-item-type="childItemType"
@@ -211,7 +223,12 @@ export default {
         {{ childItemType }}
       </gl-tooltip>
     </div>
-    <div class="gl-flex gl-min-w-0 gl-grow gl-flex-col gl-flex-wrap">
+    <div
+      class="gl-flex gl-min-w-0 gl-grow gl-flex-col gl-flex-wrap"
+      :class="{
+        'issue-clickable': contextualViewEnabled,
+      }"
+    >
       <div class="gl-mb-2 gl-min-w-0 gl-justify-between gl-gap-3 sm:gl-flex">
         <div class="item-title gl-mb-2 gl-min-w-0 sm:gl-mb-0">
           <span v-if="childItem.confidential">
@@ -301,7 +318,7 @@ export default {
     <div v-if="canUpdate">
       <gl-button
         v-gl-tooltip
-        class="-gl-mr-2 -gl-mt-1"
+        class="gl-relative gl-z-2 -gl-mr-2 -gl-mt-1"
         category="tertiary"
         size="small"
         icon="close"

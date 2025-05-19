@@ -321,48 +321,54 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
   end
 
   context 'multi-line suggestions' do
+    let(:last_change) { sample_compare.changes[1] }
+    let(:hash) { Digest::SHA1.hexdigest(last_change[:file_path]) }
+
     before do
-      click_diff_line(find_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']"))
+      container = find_by_scrolling("[id='#{hash}']")
 
-      page.within('.js-discussion-note-form') do
-        fill_in('note_note', with: "```suggestion:-3+5\n# change to a\n# comment\n# with\n# broken\n# lines\n```")
-        click_button('Add comment now')
+      page.within(container) do
+        click_diff_line(find("[id='#{last_change[:line_code]}']"))
+
+        page.within('.js-discussion-note-form') do
+          fill_in('note_note', with: "```suggestion:-3+5\n# change to a\n# comment\n# with\n# broken\n# lines\n```")
+          click_button('Add comment now')
+          wait_for_requests
+        end
       end
-
-      wait_for_requests
     end
 
-    it 'suggestion is presented', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/268240' do
-      page.within('.diff-discussions') do
+    it 'suggestion is presented' do
+      page.within("[id='#{hash}']") do
         expect(page).to have_button('Apply suggestion')
         expect(page).to have_content('Suggested change')
-      end
 
-      page.within('.md-suggestion-diff') do
-        expected_changing_content = [
-          "3 url = git://github.com/randx/six.git",
-          "4 [submodule \"gitlab-shell\"]",
-          "5 path = gitlab-shell",
-          "6 url = https://github.com/gitlabhq/gitlab-shell.git",
-          "7 [submodule \"gitlab-grack\"]",
-          "8 path = gitlab-grack",
-          "9 url = https://gitlab.com/gitlab-org/gitlab-grack.git"
-        ]
+        page.within('.md-suggestion-diff') do
+          expected_changing_content = [
+            "3 url = git://github.com/randx/six.git",
+            "4 [submodule \"gitlab-shell\"]",
+            "5 path = gitlab-shell",
+            "6 url = https://github.com/gitlabhq/gitlab-shell.git",
+            "7 [submodule \"gitlab-grack\"]",
+            "8 path = gitlab-grack",
+            "9 url = https://gitlab.com/gitlab-org/gitlab-grack.git"
+          ]
 
-        expected_suggested_content = [
-          "3 # change to a",
-          "4 # comment",
-          "5 # with",
-          "6 # broken",
-          "7 # lines"
-        ]
+          expected_suggested_content = [
+            "3 # change to a",
+            "4 # comment",
+            "5 # with",
+            "6 # broken",
+            "7 # lines"
+          ]
 
-        expect_suggestion_has_content(page, expected_changing_content, expected_suggested_content)
+          expect_suggestion_has_content(page, expected_changing_content, expected_suggested_content)
+        end
       end
     end
 
     it 'suggestion is appliable' do
-      page.within('.diff-discussions') do
+      page.within("[id='#{hash}']") do
         expect(page).not_to have_content('Applied')
 
         click_button('Apply suggestion')
@@ -374,7 +380,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
     end
 
     it 'resolves discussion when applied' do
-      page.within('.diff-discussions') do
+      page.within("[id='#{hash}']") do
         expect(page).not_to have_content('Unresolve thread')
 
         click_button('Apply suggestion')

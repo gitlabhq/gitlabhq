@@ -9,5 +9,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177239
 milestone: '17.9'
 gitlab_schema: gitlab_main_cell
 sharding_key:
-  personal_namespace_id: namespaces
+  organization_id: organizations
 table_size: small

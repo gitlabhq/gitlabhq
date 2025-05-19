@@ -89,6 +89,11 @@ export default {
       required: false,
       default: '',
     },
+    contextualViewEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -286,6 +291,7 @@ export default {
           :show-labels="showLabels"
           :work-item-full-path="workItemFullPath"
           :show-weight="shouldShowWeight"
+          :contextual-view-enabled="contextualViewEnabled"
           @click="$emit('click', $event)"
           @removeChild="$emit('removeChild', childItem)"
         />
@@ -309,6 +315,7 @@ export default {
         :allowed-children-by-type="allowedChildrenByType"
         :active-child-item-id="activeChildItemId"
         :parent-id="parentId"
+        :contextual-view-enabled="contextualViewEnabled"
         @drag="$emit('drag', $event)"
         @drop="$emit('drop')"
         @removeChild="$emit('removeChild', childItem)"

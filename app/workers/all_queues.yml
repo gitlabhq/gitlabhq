@@ -4471,7 +4471,8 @@
   :resource_boundary: :memory
   :weight: 1
   :idempotent: false
-  :tags: []
+  :tags:
+  - :import_shared_storage
   :queue_namespace:
 - :name: projects_after_import
   :worker_name: Projects::AfterImportWorker
@@ -4571,7 +4572,8 @@
   :resource_boundary: :memory
   :weight: 1
   :idempotent: true
-  :tags: []
+  :tags:
+  - :import_shared_storage
   :queue_namespace:
 - :name: projects_import_export_relation_import
   :worker_name: Projects::ImportExport::RelationImportWorker

@@ -75,6 +75,7 @@ describe('IssuableItem', () => {
   const findStatusEl = () => wrapper.findByTestId('issuable-status');
   const findRelationshipIcons = () => wrapper.findComponent(WorkItemRelationshipIcons);
   const findIssuableTitleLink = () => wrapper.findByTestId('issuable-title-link');
+  const findIssuableCardLinkOverlay = () => wrapper.findByTestId('issuable-card-link-overlay');
 
   describe('computed', () => {
     describe('author', () => {
@@ -773,6 +774,26 @@ describe('IssuableItem', () => {
       });
 
       expect(findIssuablePrefetchTrigger().exists()).toBe(true);
+    });
+
+    it('keeps card without link overlay when redirection is allowed and checkbox is hidden', () => {
+      wrapper = createComponent({
+        preventRedirect: false,
+        showCheckbox: false,
+      });
+
+      expect(findIssuableCardLinkOverlay().exists()).toBe(false);
+    });
+
+    it('wraps card with anchor element pointing to issuable URL when redirect is prevented and checkbox is hidden', () => {
+      wrapper = createComponent({
+        preventRedirect: true,
+        showCheckbox: false,
+      });
+
+      expect(findIssuableCardLinkOverlay().exists()).toBe(true);
+      expect(findIssuableCardLinkOverlay().element.tagName).toBe('A');
+      expect(findIssuableCardLinkOverlay().attributes('href')).toBe(mockIssuable.webUrl);
     });
   });
 

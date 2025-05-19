@@ -1,6 +1,7 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapActions } from 'vuex';
+import DuoCodeReviewSystemNote from 'ee_component/vue_shared/components/notes/duo_code_review_system_note.vue';
 import { __ } from '~/locale';
 import PlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
 import PlaceholderSystemNote from '~/vue_shared/components/notes/placeholder_system_note.vue';
@@ -98,7 +99,9 @@ export default {
       }
 
       if (note.system) {
-        return SystemNote;
+        return note.author?.user_type === 'duo_code_review_bot'
+          ? DuoCodeReviewSystemNote
+          : SystemNote;
       }
 
       return NoteableNote;

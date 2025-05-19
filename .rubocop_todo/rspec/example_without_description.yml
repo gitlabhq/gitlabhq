@@ -438,7 +438,6 @@ RSpec/ExampleWithoutDescription:
     - 'spec/models/project_auto_devops_spec.rb'
     - 'spec/models/project_spec.rb'
     - 'spec/models/repository_spec.rb'
-    - 'spec/models/resource_label_event_spec.rb'
     - 'spec/models/snippet_spec.rb'
     - 'spec/models/system/broadcast_message_spec.rb'
     - 'spec/models/user_custom_attribute_spec.rb'

@@ -119,13 +119,10 @@
 }
 
 .rd-diff-file-body {
+  --rd-content-border-radius: 0 0 var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius);
   border: constants.$diff-file-border-width solid var(--gl-border-color-default);
   border-top: 0;
-  border-radius: 0 0 var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius);
-
-  > :only-child {
-    border-radius: inherit;
-  }
+  border-radius: var(--rd-content-border-radius);
 }
 
 @supports (content-visibility: hidden) {

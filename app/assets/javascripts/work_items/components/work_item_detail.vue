@@ -1191,6 +1191,7 @@ export default {
               :confidential="workItem.confidential"
               :allowed-child-types="allowedChildTypes"
               :is-drawer="isDrawer"
+              :contextual-view-enabled="contextualViewEnabled"
               @show-modal="openContextualView"
               @addChild="$emit('addChild')"
             />
@@ -1204,6 +1205,7 @@ export default {
               :can-admin-work-item-link="canAdminWorkItemLink"
               :active-child-item-id="activeChildItemId"
               :has-blocked-work-items-feature="hasBlockedWorkItemsFeature"
+              :contextual-view-enabled="contextualViewEnabled"
               @showModal="openContextualView"
             />
 

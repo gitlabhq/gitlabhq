@@ -227,6 +227,7 @@ describe('WorkItemLinkChild', () => {
           showLabels: true,
           workItemFullPath,
           showWeight: true,
+          contextualViewEnabled: false,
         });
       });
 

@@ -135,7 +135,7 @@ RSpec.describe 'Pipeline Schedules', :js, feature_category: :continuous_integrat
           expect(page).to have_content('Schedule a new pipeline')
         end
 
-        it 'changes ownership of the pipeline' do
+        it 'changes ownership of the pipeline', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/541745' do
           find_by_testid('take-ownership-pipeline-schedule-btn').click
 
           send_keys [:tab, :enter]

@@ -122,6 +122,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    contextualViewEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -487,6 +492,7 @@ export default {
           :dragged-item-type="draggedItemType"
           :active-child-item-id="activeChildItemId"
           :parent-id="workItemId"
+          :contextual-view-enabled="contextualViewEnabled"
           @drag="draggedItemType = $event"
           @drop="draggedItemType = null"
           @error="error = $event"

@@ -4354,14 +4354,15 @@ CREATE TABLE ai_duo_chat_events (
     id bigint NOT NULL,
     "timestamp" timestamp with time zone NOT NULL,
     user_id bigint NOT NULL,
-    personal_namespace_id bigint NOT NULL,
+    personal_namespace_id bigint,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     event smallint NOT NULL,
     namespace_path text,
     payload jsonb,
     organization_id bigint,
-    CONSTRAINT check_628cdfbf3f CHECK ((char_length(namespace_path) <= 255))
+    CONSTRAINT check_628cdfbf3f CHECK ((char_length(namespace_path) <= 255)),
+    CONSTRAINT check_f759f45177 CHECK ((organization_id IS NOT NULL))
 )
 PARTITION BY RANGE ("timestamp");
 
@@ -44808,6 +44809,9 @@ ALTER TABLE ONLY merge_request_context_commit_diff_files
 
 ALTER TABLE ONLY audit_events_streaming_http_group_namespace_filters
     ADD CONSTRAINT fk_rails_74a28d2432 FOREIGN KEY (external_audit_event_destination_id) REFERENCES audit_events_external_audit_event_destinations(id) ON DELETE CASCADE;
+
+ALTER TABLE ai_duo_chat_events
+    ADD CONSTRAINT fk_rails_74ddd0b91f FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE p_ci_workloads
     ADD CONSTRAINT fk_rails_74f339da60 FOREIGN KEY (partition_id, pipeline_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;

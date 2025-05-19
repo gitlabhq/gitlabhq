@@ -943,7 +943,6 @@ RSpec/NamedSubject:
     - 'ee/spec/services/projects/create_from_template_service_spec.rb'
     - 'ee/spec/services/projects/disable_legacy_inactive_projects_service_spec.rb'
     - 'ee/spec/services/projects/fork_service_spec.rb'
-    - 'ee/spec/services/projects/gitlab_projects_import_service_spec.rb'
     - 'ee/spec/services/projects/group_links/create_service_spec.rb'
     - 'ee/spec/services/projects/group_links/destroy_service_spec.rb'
     - 'ee/spec/services/projects/import_export/export_service_spec.rb'

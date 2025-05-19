@@ -56,7 +56,7 @@ GET /projects/:id/repository/commits
 | `until` | string | no | Only commits before or on this date are returned in ISO 8601 format `YYYY-MM-DDTHH:MM:SSZ` |
 | `path` | string | no | The file path |
 | `author` | string | no | Search commits by commit author.|
-| `all` | boolean | no | Retrieve every commit from the repository |
+| `all` | boolean | no | Retrieve every commit from the repository. When set to `true`, the `ref_name` parameter is ignored |
 | `with_stats` | boolean | no | Stats about each commit are added to the response |
 | `first_parent` | boolean | no | Follow only the first parent commit upon seeing a merge commit |
 | `order` | string | no | List commits in order. Possible values: `default`, [`topo`](https://git-scm.com/docs/git-log#Documentation/git-log.txt---topo-order). Defaults to `default`, the commits are shown in reverse chronological order. |
