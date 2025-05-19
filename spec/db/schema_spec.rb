@@ -122,7 +122,6 @@ RSpec.describe 'Database schema',
       group_type_ci_runners: %w[creator_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners routing table.
       project_type_ci_runners: %w[creator_id sharding_key_id], # No need for LFKs on partition, already handled on ci_runners routing table.
       ci_runner_machines: %w[runner_id sharding_key_id], # The runner_id and sharding_key_id fields are only used in the partitions, and have the appropriate FKs. The runner_id field will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/503749.
-      ci_runner_machines_archived: %w[runner_id sharding_key_id], # The sharding_key_id field is only used in the partitions, and has the appropriate FKs. The runner_id field will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/503749.
       instance_type_ci_runner_machines: %w[sharding_key_id], # This field is always NULL in this partition.
       group_type_ci_runner_machines: %w[sharding_key_id], # No need for LFK, rows will be deleted by the FK to ci_runners.
       project_type_ci_runner_machines: %w[sharding_key_id], # No need for LFK, rows will be deleted by the FK to ci_runners.
