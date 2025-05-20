@@ -187,14 +187,14 @@ module Gitlab
         timeouts: {},
         response_statuses: {},
         response_headers: {},
-        allowed_uris: [],
+        allowed_endpoints: [],
         restrict_forwarded_response_headers: {}
       )
         params = {
           'URL' => url,
           'AllowRedirects' => allow_redirects,
           'AllowLocalhost' => allow_localhost,
-          'AllowedURIs' => allowed_uris,
+          'AllowedEndpoints' => allowed_endpoints,
           'SSRFFilter' => ssrf_filter,
           'Body' => body.to_s,
           'Header' => headers.transform_values { |v| Array.wrap(v) },
@@ -244,11 +244,11 @@ module Gitlab
         upload_config: {},
         response_headers: {},
         ssrf_filter: false,
-        allowed_uris: [],
+        allowed_endpoints: [],
         restrict_forwarded_response_headers: {})
         params = {
           'AllowLocalhost' => allow_localhost,
-          'AllowedURIs' => allowed_uris,
+          'AllowedEndpoints' => allowed_endpoints,
           'Headers' => headers.transform_values { |v| Array.wrap(v) },
           'ResponseHeaders' => response_headers.transform_values { |v| Array.wrap(v) },
           'SSRFFilter' => ssrf_filter,

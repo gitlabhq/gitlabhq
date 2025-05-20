@@ -201,7 +201,7 @@ class Groups::DependencyProxyForContainersController < ::Groups::DependencyProxy
     {
       ssrf_filter: true,
       allow_localhost: allow_localhost?,
-      allowed_uris: ObjectStoreSettings.enabled_endpoint_uris
+      allowed_endpoints: ObjectStoreSettings.enabled_endpoint_uris
     }
   end
 
