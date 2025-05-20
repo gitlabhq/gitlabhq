@@ -265,7 +265,7 @@ specifies the name for the Identity alias created by Vault upon a successful log
 configures the interpretation of the `bound_claims` values. If set to `glob`, the values are interpreted as globs,
 with `*` matching any number of characters.
 
-The claim fields listed in [the table above](#hashicorp-vault-secrets-integration) can also be accessed for
+The claim fields listed in [the previous table](#hashicorp-vault-secrets-integration) can also be accessed for
 [Vault's policy path templating](https://developer.hashicorp.com/vault/tutorials/policies/policy-templating?in=vault%2Fpolicies)
 purposes by using the accessor name of the JWT auth in Vault.
 The [mount accessor name](https://developer.hashicorp.com/vault/tutorials/auth-methods/identity#step-1-create-an-entity-with-alias)
@@ -279,7 +279,7 @@ path "secret/data/{{identity.entity.aliases.ACCESSOR_NAME.metadata.project_path}
 }
 ```
 
-Role example to support the templated policy above, mapping the claim field `project_path`
+Role example to support the previous templated policy mapping the claim field, `project_path`,
 as a metadata field through use of [`claim_mappings`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#claim_mappings)
 configuration:
 

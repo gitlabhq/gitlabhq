@@ -551,6 +551,28 @@
     CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
     CLICKHOUSE_DB: gitlab_clickhouse_test
 
+.use-pg16-clickhouse24:
+  extends: .use-pg16
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - name: clickhouse/clickhouse-server:24.9.1.3278-alpine
+      alias: clickhouse
+  variables:
+    CLICKHOUSE_USER: default
+    CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    CLICKHOUSE_DB: gitlab_clickhouse_test
+
+.use-pg16-clickhouse25:
+  extends: .use-pg16
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - name: clickhouse/clickhouse-server:25.4-alpine
+      alias: clickhouse
+  variables:
+    CLICKHOUSE_USER: default
+    CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    CLICKHOUSE_DB: gitlab_clickhouse_test
+
 .as-if-foss:
   variables:
     FOSS_ONLY: '1'

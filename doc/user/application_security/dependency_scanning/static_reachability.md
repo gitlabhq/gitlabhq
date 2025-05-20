@@ -54,15 +54,29 @@ Prerequisites:
   Make sure you follow the [pip](dependency_scanning_sbom/_index.md#pip) or [pipenv](dependency_scanning_sbom/_index.md#pipenv)
   related instructions for dependency scanning using SBOM. You can also use any other Python package manager that is [supported](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning#supported-files) by the DS analyzer.
 
-To enable static reachability analysis:
+To enable static reachability analysis from GitLab 18.0 and later:
 
-- Set the CI/CD variable DS_STATIC_REACHABILITY_ENABLED to `true`
+- Set the CI/CD variable `DS_STATIC_REACHABILITY_ENABLED` to `true`
 
-<details><summary>If you are using GitLab release `17.11.x` continue with these instructions</summary>
+Static reachability is integrated into the `dependency-scanning` job of the latest Dependency-Scanning template.
+Alternatively you can enable Static Reachability by including the [Dependency Scanning component](https://gitlab.com/components/dependency-scanning) rather than using the standard Dependency-Scanning template.
+
+```yaml
+include:
+  - component: ${CI_SERVER_FQDN}/components/dependency-scanning/main@0
+    inputs:
+      enable_static_reachability: true
+    rules:
+      - if: $CI_SERVER_HOST == "gitlab.com"
+```
+
+Please notice that to use GitLab.com components on a GitLab Self-Managed instance, you [must mirror](../../../ci/components/_index.md#use-a-gitlabcom-component-on-gitlab-self-managed) the component project.
+
+Static reachability analysis functionality is supported in [Dependency Scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning) version `0.23.0` and all subsequent versions.
+
+<details><summary>If you are using GitLab 17.11 follow these instructions to enable Static Reachability Analysis</summary>
 
 - Make sure you extend `dependency-scanning-with-reachability` needs section to depend on the build job that creates the artifact required by the DS analyzer.
-
-Enabling static reachability for non SaaS users using `17.11.x` release:
 
 ```yaml
 stages:
@@ -100,7 +114,7 @@ dependency-scanning-with-reachability:
       artifacts: true
 ```
 
-Static reachability introduces two key jobs:
+Static reachability in 17.11 introduces two key jobs:
 
 - `gitlab-static-reachability`: Performs Static Reachability Analysis (SRA) on your Python files.
 - `dependency-scanning-with-reachability`: Executes dependency scanning and generates an SBOM report enriched with reachability data. This job requires the artifact output from the `gitlab-static-reachability` job.
@@ -115,16 +129,6 @@ dependency scanning without adding reachability data to the SBOM.
 {{< /alert >}}
 
 </details>
-
-Static reachability is currently integrated into the `dependency-scanning` job of the latest dependency scanning template for GitLab.com users, and will be available to all GitLab users with the 18.0 release.
-
-Static reachability analysis functionality is supported in [Dependency Scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning) version `0.23.0` and all subsequent versions.
-
-{{< alert type="warning" >}}
-
-Changes to the CI/CD configuration for static reachability integration are proposed for the GA release.
-
-{{< /alert >}}
 
 ## How static reachability analysis works
 

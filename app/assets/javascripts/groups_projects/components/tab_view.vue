@@ -21,11 +21,6 @@ export default {
   PAGINATION_TYPE_KEYSET,
   PAGINATION_TYPE_OFFSET,
   name: 'TabView',
-  i18n: {
-    errorMessage: __(
-      'An error occurred loading the projects. Please refresh the page to try again.',
-    ),
-  },
   components: {
     GlLoadingIcon,
     GlKeysetPagination,
@@ -131,7 +126,7 @@ export default {
           this.$emit('query-complete');
         },
         error(error) {
-          createAlert({ message: this.$options.i18n.errorMessage, error, captureError: true });
+          createAlert({ message: this.queryErrorMessage, error, captureError: true });
         },
       };
     },
@@ -207,6 +202,9 @@ export default {
 
       return baseProps;
     },
+    queryErrorMessage() {
+      return this.tab.queryErrorMessage || __('An error occurred. Refresh the page to try again.');
+    },
   },
   watch: {
     'items.count': function watchCount(newCount) {
@@ -275,7 +273,7 @@ export default {
 
         item.children = this.tab.formatter(nodes);
       } catch (error) {
-        createAlert({ message: this.$options.i18n.errorMessage, error, captureError: true });
+        createAlert({ message: this.queryErrorMessage, error, captureError: true });
       } finally {
         item.childrenLoading = false;
       }

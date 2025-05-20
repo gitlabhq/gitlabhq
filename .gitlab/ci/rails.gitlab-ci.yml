@@ -393,17 +393,39 @@ rspec ci-config-validation mr-pipelines:
     - !reference [.base-script, script]
     - rspec_section rspec_simple_job "--tag ci_config_validation -- spec/dot_gitlab_ci/ci_configuration_validation/merge_request_pipeline_spec.rb"
 
-gitlab:clickhouse:rollback:main:
+gitlab:clickhouse-23:rollback:main:
   extends:
     - .rspec-base
-    - .production  # Disable webmock from test environment
+    - .production
     - .use-pg16-clickhouse23
     - .rails:rules:clickhouse-changes
   script:
-    - cp config/click_house.yml.example config/click_house.yml
-    - 'sed -i "s|url:.*$|url: http://clickhouse:8123|g" config/click_house.yml'
+    - !reference [.clickhouse-setup, script]
     - 'sed -i "s|test:$|production:|g" config/click_house.yml'
-    - !reference [.base-script, script]
+    - bundle exec rake gitlab:clickhouse:migrate &&
+      bundle exec rake gitlab:clickhouse:rollback:main VERSION=0
+
+gitlab:clickhouse-24:rollback:main:
+  extends:
+    - .rspec-base
+    - .production
+    - .use-pg16-clickhouse24
+    - .rails:rules:clickhouse-changes
+  script:
+    - !reference [.clickhouse-setup, script]
+    - 'sed -i "s|test:$|production:|g" config/click_house.yml'
+    - bundle exec rake gitlab:clickhouse:migrate &&
+      bundle exec rake gitlab:clickhouse:rollback:main VERSION=0
+
+gitlab:clickhouse-25:rollback:main:
+  extends:
+    - .rspec-base
+    - .production
+    - .use-pg16-clickhouse25
+    - .rails:rules:clickhouse-changes
+  script:
+    - !reference [.clickhouse-setup, script]
+    - 'sed -i "s|test:$|production:|g" config/click_house.yml'
     - bundle exec rake gitlab:clickhouse:migrate &&
       bundle exec rake gitlab:clickhouse:rollback:main VERSION=0
 

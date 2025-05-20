@@ -34,6 +34,12 @@ include:
   variables:
     USE_REDIS_CLUSTER: "false"
 
+.clickhouse-setup:
+  script:
+    - !reference [.base-script, script]
+    - cp config/click_house.yml.example config/click_house.yml
+    - 'sed -i "s|url:.*$|url: http://clickhouse:8123|g" config/click_house.yml'
+
 .single-db:
   variables:
     DECOMPOSED_DB: "false"
@@ -248,9 +254,23 @@ include:
     - .rspec-base
     - .use-pg16-clickhouse23
   script:
-    - cp config/click_house.yml.example config/click_house.yml
-    - 'sed -i "s|url:.*$|url: http://clickhouse:8123|g" config/click_house.yml'
-    - !reference [.base-script, script]
+    - !reference [.clickhouse-setup, script]
+    - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag click_house"
+
+.rspec-base-pg16-clickhouse24:
+  extends:
+    - .rspec-base
+    - .use-pg16-clickhouse24
+  script:
+    - !reference [.clickhouse-setup, script]
+    - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag click_house"
+
+.rspec-base-pg16-clickhouse25:
+  extends:
+    - .rspec-base
+    - .use-pg16-clickhouse25
+  script:
+    - !reference [.clickhouse-setup, script]
     - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag click_house"
 
 .rspec-base-pg14:

@@ -172,8 +172,8 @@ $ vault write auth/jwt/role/myproject-staging - <<EOF
 EOF
 ```
 
-You do not need to alter any existing role configurations except for the `bound_claims` section
-Make sure to add the `iss` configuration as shown above to ensure Vault accepts
+You do not need to alter any existing role configurations except for the `bound_claims` section.
+Make sure to add the `iss` configuration as shown previously, to ensure Vault accepts
 the prefixed and non-prefixed `iss` claim for this role.
 
 You must apply this change to all JWT roles used for the GitLab integration before moving on to the next step.

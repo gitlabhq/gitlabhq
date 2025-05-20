@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Govern', :requires_admin, :skip_live_env,
+  RSpec.describe 'Software Supply Chain Security', :requires_admin, :skip_live_env,
     product_group: :authentication do
     describe '2FA' do
       let!(:user) { Runtime::User::Store.test_user }

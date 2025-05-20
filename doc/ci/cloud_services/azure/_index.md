@@ -67,7 +67,7 @@ Instead of the Azure CLI, you can [use the Azure Portal to create these resource
 
 ## Create Azure AD federated identity credentials
 
-To create the federated identity credentials for the above Azure AD application
+To create the federated identity credentials for the previous Azure AD application
 for a specific branch in `<mygroup>/<myproject>`:
 
 ```shell
@@ -157,7 +157,7 @@ az rest --method POST --uri "https://graph.microsoft.com/beta/applications/$obje
 ## Grant permissions for the service principal
 
 After you create the credentials, use [`role assignment`](https://learn.microsoft.com/en-us/cli/azure/role/assignment?view=azure-cli-latest#az-role-assignment-create)
-to grant permissions to the above service principal to access to Azure resources:
+to grant permissions to the previous service principal so it gets access to the Azure resources:
 
 ```shell
 az role assignment create --assignee $appId --role Reader --scope /subscriptions/<subscription-id>
@@ -168,7 +168,7 @@ You can find your subscription ID in:
 - The [Azure Portal](https://learn.microsoft.com/en-us/azure/azure-portal/get-subscription-tenant-id#find-your-azure-subscription).
 - The [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/manage-azure-subscriptions-azure-cli#get-the-active-subscription).
 
-The command above grants read-only permissions to the entire subscription. For more information on applying the principle of least privilege in the context of your organization, read [Best practices for Azure AD roles](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/best-practices).
+The previous command grants read-only permissions to the entire subscription. For more information on applying the principle of least privilege in the context of your organization, read [Best practices for Azure AD roles](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/best-practices).
 
 ## Retrieve a temporary credential
 

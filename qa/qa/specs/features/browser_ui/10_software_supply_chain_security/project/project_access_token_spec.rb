@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Govern' do
+  RSpec.describe 'Software Supply Chain Security' do
     describe 'Project access tokens', :smoke, :health_check, product_group: :authentication do
       let(:project_access_token) { QA::Resource::ProjectAccessToken.fabricate_via_browser_ui! }
 

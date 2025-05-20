@@ -17,7 +17,7 @@ class CreateDuoChatEventsTable < ClickHouse::Migration
 
   def down
     execute <<~SQL
-      DROP VIEW IF EXISTS duo_chat_events
+      DROP TABLE IF EXISTS duo_chat_events
     SQL
   end
 end

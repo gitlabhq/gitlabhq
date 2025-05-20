@@ -23,6 +23,7 @@ const baseTab = {
   query: groupsQuery,
   queryPath: 'groups',
   listComponent: NestedGroupsProjectsList,
+  queryErrorMessage: __("Your groups couldn't be loaded. Refresh the page to try again."),
 };
 
 export const MEMBER_TAB = {

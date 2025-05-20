@@ -364,7 +364,7 @@ To use Docker-in-Docker with TLS enabled in Kubernetes:
 
 ##### Docker-in-Docker with TLS disabled in Kubernetes
 
-To use Docker-in-Docker with TLS disabled in Kubernetes, you must adapt the example above to:
+To use Docker-in-Docker with TLS disabled in Kubernetes, you must adapt the previous example to:
 
 - Remove the `[[runners.kubernetes.volumes.empty_dir]]` section from the `values.yml` file.
 - Change the port from `2376` to `2375` with `DOCKER_HOST: tcp://docker:2375`.

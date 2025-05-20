@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Govern', :requires_admin, product_group: :authentication do
+  RSpec.describe 'Software Supply Chain Security', :requires_admin, product_group: :authentication do
     describe '2FA' do
       let!(:owner_user) { create(:user, :with_personal_access_token, username: "owner_user_#{SecureRandom.hex(4)}") }
       let!(:owner_api_client) { owner_user.api_client }

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Govern' do
+  RSpec.describe 'Software Supply Chain Security' do
     describe 'Group access token', product_group: :authentication do
       include QA::Support::Helpers::Project
 

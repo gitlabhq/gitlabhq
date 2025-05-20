@@ -4048,6 +4048,9 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|Feature"
 msgstr ""
 
+msgid "AdminAIPoweredFeatures|GitLab Default"
+msgstr ""
+
 msgid "AdminAIPoweredFeatures|GitLab Duo Chat"
 msgstr ""
 
@@ -6995,9 +6998,6 @@ msgstr ""
 msgid "An error occurred loading the project counts."
 msgstr ""
 
-msgid "An error occurred loading the projects. Please refresh the page to try again."
-msgstr ""
-
 msgid "An error occurred loading the tab counts."
 msgstr ""
 
@@ -7344,6 +7344,9 @@ msgid "An error occurred. Please sign in again."
 msgstr ""
 
 msgid "An error occurred. Please try again."
+msgstr ""
+
+msgid "An error occurred. Refresh the page to try again."
 msgstr ""
 
 msgid "An error occurred. Unable to reopen this merge request."
@@ -35539,6 +35542,9 @@ msgstr ""
 msgid "LDAP|Default, minimum permission level for LDAP group members of %{group_name}."
 msgstr ""
 
+msgid "LDAP|Group cn"
+msgstr ""
+
 msgid "LDAP|If you do not belong to this LDAP user filter you will lose ownership of %{group_name}."
 msgstr ""
 
@@ -35573,6 +35579,9 @@ msgid "LDAP|Synchronize %{group_name}'s members with this LDAP group."
 msgstr ""
 
 msgid "LDAP|This query must use valid %{ldap_link_start}LDAP Search Filter Syntax%{ldap_link_end}. Synchronize %{group_name}'s members with this LDAP user filter."
+msgstr ""
+
+msgid "LDAP|User filter"
 msgstr ""
 
 msgid "LDAP|You can manage permission levels for individual group members in the Members tab."
@@ -39512,6 +39521,12 @@ msgid "ModelRegistry|version"
 msgstr ""
 
 msgid "ModelRegistry|versions"
+msgstr ""
+
+msgid "ModelSelection|Manage GitLab Duo by configuring and assigning models to AI-native features."
+msgstr ""
+
+msgid "ModelSelection|Model Selection"
 msgstr ""
 
 msgid "Modified"
@@ -71325,6 +71340,9 @@ msgstr[1] ""
 msgid "Your group %{group_name} has been marked for deletion and will be removed in %{days}."
 msgstr ""
 
+msgid "Your groups couldn't be loaded. Refresh the page to try again."
+msgstr ""
+
 msgid "Your instance has %{remaining_user_count} users remaining of the %{total_user_count} in your subscription. When there are no more seats, users cannot be invited or added to the instance."
 msgstr ""
 
@@ -71434,6 +71452,9 @@ msgid "Your project %{project_name} has been marked for deletion and will be rem
 msgstr ""
 
 msgid "Your projects"
+msgstr ""
+
+msgid "Your projects couldn't be loaded. Refresh the page to try again."
 msgstr ""
 
 msgid "Your public email will be displayed on your public profile."

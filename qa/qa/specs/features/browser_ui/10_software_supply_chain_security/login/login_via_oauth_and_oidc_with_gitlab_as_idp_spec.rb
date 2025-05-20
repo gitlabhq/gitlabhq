@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Govern', :skip_live_env, requires_admin: 'creates users and instance OAuth application',
+  RSpec.describe 'Software Supply Chain Security', :skip_live_env,
+    requires_admin: 'creates users and instance OAuth application',
     only: { condition: -> { Runtime::Env.release } },
     product_group: :authentication, quarantine: {
       type: :investigating,

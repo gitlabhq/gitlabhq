@@ -190,8 +190,7 @@ describe('TabView', () => {
 
         it('displays error alert', () => {
           expect(createAlert).toHaveBeenCalledWith({
-            message:
-              'An error occurred loading the projects. Please refresh the page to try again.',
+            message: "Your projects couldn't be loaded. Refresh the page to try again.",
             error,
             captureError: true,
           });
@@ -199,6 +198,26 @@ describe('TabView', () => {
       });
     },
   );
+
+  describe('when queryErrorMessage is not defined', () => {
+    const error = new Error();
+
+    beforeEach(async () => {
+      createComponent({
+        handlers: [[CONTRIBUTED_TAB.query, jest.fn().mockRejectedValue(error)]],
+        propsData: { tab: { ...CONTRIBUTED_TAB, queryErrorMessage: undefined } },
+      });
+      await waitForPromises();
+    });
+
+    it('displays error alert with fallback message', () => {
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'An error occurred. Refresh the page to try again.',
+        error,
+        captureError: true,
+      });
+    });
+  });
 
   describe('when tab.listComponent is NestedGroupsProjectsList', () => {
     beforeEach(() => {
@@ -290,8 +309,7 @@ describe('TabView', () => {
 
         it('displays error alert', () => {
           expect(createAlert).toHaveBeenCalledWith({
-            message:
-              'An error occurred loading the projects. Please refresh the page to try again.',
+            message: "Your groups couldn't be loaded. Refresh the page to try again.",
             error: new Error('Network Error'),
             captureError: true,
           });
