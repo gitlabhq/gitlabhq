@@ -129,6 +129,10 @@ export default {
         packageTypeOptions.push({ value: 'HELM', text: s__('PackageRegistry|Helm') });
       }
 
+      if (this.glFeatures.packagesProtectedPackagesGeneric) {
+        packageTypeOptions.push({ value: 'GENERIC', text: s__('PackageRegistry|Generic') });
+      }
+
       return packageTypeOptions.sort((a, b) => a.text.localeCompare(b.text));
     },
     minimumAccessLevelForPushOptions() {

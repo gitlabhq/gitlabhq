@@ -4,6 +4,7 @@
 - read_only_help_text = readonly ? s_("Profiles|Your email address was automatically set based on your %{provider_label} account") % { provider_label: attribute_provider_label(:email) } : user_email_help_text(@user)
 - help_text = email_change_disabled ? s_("Your account uses dedicated credentials for the \"%{group_name}\" group and can only be updated through SSO.") % { group_name: @user.managing_group.name } : read_only_help_text
 - password_automatically_set = @user.password_automatically_set?
+- password_authentication_disabled_by_enterprise_group = local_assigns.fetch(:password_authentication_disabled_by_enterprise_group, false)
 
 .form-group.gl-form-group
   = form.label :email, _('Email')
@@ -11,7 +12,7 @@
   .form-text.gl-text-subtle
     = help_text.html_safe
 
-  - unless password_automatically_set
+  - unless password_automatically_set || password_authentication_disabled_by_enterprise_group
     = hidden_field_tag 'user[validation_password]', :validation_password, class: 'js-password-prompt-field', help: s_("Profiles|Enter your password to confirm the email change")
 
 .form-group.gl-form-group

@@ -12,8 +12,8 @@ export default {
      * The dashboard configuration object.
      *
      * @typedef {Object} Dashboard
-     * @property {Object} title - The dashboard title to render. Expected if no #title slot is provided.
-     * @property {Object} description - Optional: The dashboard description to render.
+     * @property {string} title - The dashboard title to render. Expected if no #title slot is provided.
+     * @property {string} description - Optional: The dashboard description to render.
      * @property {Array<Object>} panels - Optional: The dashboard panels. The entire object is passed to the #panel slot.
      * @property {string} panels[].id - Each panel must have a unique ID.
      * @property {string} panels[].title - The panel title to render.

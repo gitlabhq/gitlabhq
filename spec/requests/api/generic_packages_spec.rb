@@ -202,6 +202,82 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       end
     end
 
+    context 'with package protection rule for different roles and package_name_patterns' do
+      let_it_be(:pat_developer) { create(:personal_access_token, user: create(:user, developer_of: project)) }
+      let_it_be(:pat_developer_auth_header) { personal_access_token_header(pat_developer.token) }
+      let_it_be(:pat_maintainer) { create(:personal_access_token, user: create(:user, maintainer_of: project)) }
+      let_it_be(:pat_maintainer_auth_header) { personal_access_token_header(pat_maintainer.token) }
+      let_it_be(:pat_owner) { create(:personal_access_token, user: create(:user, owner_of: project)) }
+      let_it_be(:pat_owner_auth_header) { personal_access_token_header(pat_owner.token) }
+      let_it_be(:pat_admin_mode) { create(:personal_access_token, :admin_mode, user: create(:admin)) }
+      let_it_be(:pat_admin_mode_auth_header) { personal_access_token_header(pat_admin_mode.token) }
+      let_it_be(:deploy_token_rw_auth_header) { deploy_token_header(deploy_token_rw.token) }
+
+      let_it_be_with_reload(:package_protection_rule) do
+        create(:package_protection_rule, package_type: :generic, project: project)
+      end
+
+      let(:protected_package_name) { 'mypackage' }
+      let(:unprotected_package_name) { "other-#{protected_package_name}" }
+
+      let(:request_headers) { workhorse_headers.merge(auth_header) }
+
+      subject do
+        authorize_upload_file(request_headers, package_name: protected_package_name)
+        response
+      end
+
+      before do
+        package_protection_rule.update!(
+          package_name_pattern: package_name_pattern,
+          minimum_access_level_for_push: minimum_access_level_for_push
+        )
+      end
+
+      shared_examples 'authorized package' do
+        it { is_expected.to have_gitlab_http_status(:ok) }
+      end
+
+      shared_examples 'protected package' do
+        it 'responds with forbidden' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response).to include 'message' => '403 Forbidden - Package protected.'
+        end
+
+        context 'when feature flag :packages_protected_packages_generic is disabled' do
+          before do
+            stub_feature_flags(packages_protected_packages_generic: false)
+          end
+
+          it_behaves_like 'authorized package'
+        end
+      end
+
+      where(:package_name_pattern, :minimum_access_level_for_push, :auth_header, :shared_examples_name) do
+        ref(:protected_package_name)   | :admin      | ref(:deploy_token_rw_auth_header) | 'protected package'
+        ref(:protected_package_name)   | :admin      | ref(:pat_admin_mode_auth_header)  | 'authorized package'
+        ref(:protected_package_name)   | :admin      | ref(:pat_owner_auth_header)       | 'protected package'
+        ref(:protected_package_name)   | :maintainer | ref(:deploy_token_rw_auth_header) | 'protected package'
+        ref(:protected_package_name)   | :maintainer | ref(:pat_developer_auth_header)   | 'protected package'
+        ref(:protected_package_name)   | :maintainer | ref(:pat_maintainer_auth_header)  | 'authorized package'
+        ref(:protected_package_name)   | :owner      | ref(:deploy_token_rw_auth_header) | 'protected package'
+        ref(:protected_package_name)   | :owner      | ref(:pat_developer_auth_header)   | 'protected package'
+        ref(:protected_package_name)   | :owner      | ref(:pat_owner_auth_header)       | 'authorized package'
+
+        ref(:unprotected_package_name) | :admin      | ref(:deploy_token_rw_auth_header) | 'authorized package'
+        ref(:unprotected_package_name) | :admin      | ref(:pat_owner_auth_header)       | 'authorized package'
+        ref(:unprotected_package_name) | :maintainer | ref(:deploy_token_rw_auth_header) | 'authorized package'
+        ref(:unprotected_package_name) | :maintainer | ref(:pat_developer_auth_header)   | 'authorized package'
+        ref(:unprotected_package_name) | :maintainer | ref(:pat_maintainer_auth_header)  | 'authorized package'
+      end
+
+      with_them do
+        it_behaves_like params[:shared_examples_name]
+      end
+    end
+
     def authorize_upload_file(request_headers, package_name: 'mypackage', file_name: 'myfile.tar.gz')
       url = "/projects/#{project.id}/packages/generic/#{package_name}/0.0.1/#{file_name}/authorize"
 

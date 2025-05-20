@@ -60,7 +60,7 @@ export default {
         availability: isUserBusy(this.currentAvailability),
         clearStatusAfter: null,
       },
-      timezone: this.userTimezone,
+      timezone: this.userTimezone || '',
       userMainSetting: this.userMainSettings,
     };
   },

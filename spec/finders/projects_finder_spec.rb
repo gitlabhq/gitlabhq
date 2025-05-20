@@ -410,6 +410,12 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
 
           it { is_expected.to match_array([public_project, internal_project]) }
         end
+
+        describe 'filter by archived is present and is nil' do
+          let(:params) { { archived: nil } }
+
+          it { is_expected.to match_array([public_project, internal_project, archived_project]) }
+        end
       end
 
       describe 'filter by trending' do

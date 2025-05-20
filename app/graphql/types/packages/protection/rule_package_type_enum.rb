@@ -15,6 +15,12 @@ module Types
           value: 'helm',
           description: 'Packages of the Helm format.'
 
+        value 'GENERIC',
+          value: 'generic',
+          experiment: { milestone: '18.1' },
+          description: 'Packages of the Generic format. ' \
+            'Available only when feature flag `packages_protected_packages_generic` is enabled.'
+
         value 'MAVEN',
           value: 'maven',
           description: 'Packages of the Maven format.'

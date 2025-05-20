@@ -148,7 +148,7 @@ RSpec.describe Projects::PagesDomainsController, feature_category: :pages do
         patch(:update, params: params)
 
         expect(flash[:notice]).to eq 'Domain was updated'
-        expect(response).to redirect_to(project_pages_path(project))
+        expect(response).to redirect_to(project_pages_path(project, anchor: 'domains-settings'))
       end
     end
 
@@ -251,7 +251,7 @@ RSpec.describe Projects::PagesDomainsController, feature_category: :pages do
           domain: pages_domain.domain
         )
 
-      expect(response).to redirect_to(project_pages_path(project))
+      expect(response).to redirect_to(project_pages_path(project, anchor: 'domains-settings'))
     end
   end
 

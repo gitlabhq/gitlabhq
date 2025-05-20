@@ -89,7 +89,8 @@ RSpec.describe 'getting a collection of projects', feature_category: :source_cod
         .to contain_exactly(
           *projects.map { |project| a_graphql_entity_for(project) },
           a_graphql_entity_for(other_project),
-          a_graphql_entity_for(project_with_owner_access)
+          a_graphql_entity_for(project_with_owner_access),
+          a_graphql_entity_for(archived_project)
         )
       end
     end

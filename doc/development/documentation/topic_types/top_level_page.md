@@ -21,8 +21,8 @@ title: Title (The name of the top-level page, like "Manage your organization")
 
 Briefly describe the workflow's key features. Use the active voice, for example, "Manage projects to track issues, plan work, and collaborate on code."
 
-| | | |
-|--|--|--|
+|   |   |   |
+|---|---|---|
 | [**Getting started**](../../user/get_started/get_started_projects.md)<br>Overview of how features fit together. | [**Page name**](file.md)<br>Keyword, keyword, keyword, keyword. | [**Page name**](file.md)<br>Keyword, keyword, keyword, keyword. |
 | [**Page name**](file.md)<br>Keyword, keyword, keyword, keyword. | [**Page name**](file.md)<br>Keyword, keyword, keyword, keyword. | [**Page name**](file.md)<br>Keyword, keyword, keyword, keyword. |
 

@@ -26,14 +26,14 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
       end
 
       it 'renders Access pages' do
-        visit project_pages_path(project)
+        visit_domains_tab(project)
 
         expect(page).to have_content('Access pages')
       end
 
       shared_examples 'does not render access control warning' do
         it 'does not render access control warning' do
-          visit project_pages_path(project)
+          visit_domains_tab(project)
 
           expect(page).not_to have_content('Access Control is enabled for this Pages website')
         end
@@ -47,7 +47,7 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
         end
 
         it 'renders access control warning' do
-          visit project_pages_path(project)
+          visit_domains_tab(project)
 
           expect(page).to have_content('Access Control is enabled for this Pages website')
         end
@@ -63,7 +63,7 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
 
       context 'when support for external domains is disabled' do
         it 'renders message that support is disabled' do
-          visit project_pages_path(project)
+          visit_domains_tab(project)
 
           expect(page).to have_content('Support for domains and certificates is disabled')
         end
@@ -119,7 +119,8 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
     end
 
     it 'tries to change the setting' do
-      visit project_pages_path(project)
+      visit_domains_tab(project)
+
       expect(page).to have_content("Force HTTPS (requires valid certificates)")
 
       uncheck :project_pages_https_only
@@ -139,7 +140,7 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
       end
 
       it 'tries to change the setting' do
-        visit project_pages_path(project)
+        visit_domains_tab(project)
 
         uncheck :project_pages_https_only
 
@@ -157,7 +158,7 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
       end
 
       it 'the setting is disabled' do
-        visit project_pages_path(project)
+        visit_domains_tab(project)
 
         expect(page).to have_field(:project_pages_https_only, disabled: true)
         expect(page).to have_button('Save')
@@ -166,7 +167,7 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
 
     context 'HTTPS pages are disabled', :https_pages_disabled do
       it 'the setting is unavailable' do
-        visit project_pages_path(project)
+        visit_domains_tab(project)
 
         expect(page).not_to have_field(:project_pages_https_only)
         expect(page).not_to have_content('Force HTTPS (requires valid certificates)')
@@ -177,7 +178,7 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
       let_it_be_with_reload(:project) { create(:project, namespace: create(:namespace, path: 'subdomain.namespace')) }
 
       it 'shows warning message' do
-        visit project_pages_path(project)
+        visit_domains_tab(project)
 
         expect(page).to have_content("you cannot use HTTPS with subdomains")
       end
@@ -191,7 +192,7 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
       end
 
       it 'removes the pages', :sidekiq_inline do
-        visit project_pages_path(project)
+        visit_domains_tab(project)
 
         expect(page).to have_link('Remove pages')
 
@@ -201,5 +202,10 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
         expect(project.reload.pages_deployed?).to be_falsey
       end
     end
+  end
+
+  def visit_domains_tab(project)
+    visit project_pages_path(project)
+    click_link('Domains & settings')
   end
 end

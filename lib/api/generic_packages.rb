@@ -49,7 +49,12 @@ module API
 
           put 'authorize' do
             authorize_job_token_policies!(authorized_user_project)
-            authorize_workhorse!(**authorize_workhorse_params)
+
+            authorize_workhorse!(**authorize_workhorse_params).tap do
+              if Feature.enabled?(:packages_protected_packages_generic, authorized_user_project)
+                protect_package!(declared_params[:package_name], :generic)
+              end
+            end
           end
 
           desc 'Upload package file' do

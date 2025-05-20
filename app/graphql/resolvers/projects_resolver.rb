@@ -51,6 +51,10 @@ module Resolvers
       required: false,
       description: 'Date when the project was marked for deletion.'
 
+    argument :active, GraphQL::Types::Boolean,
+      required: false,
+      description: "Filters by projects that are not archived and not marked for deletion."
+
     before_connection_authorization do |projects, current_user|
       ::Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects, current_user).execute
     end
@@ -90,6 +94,7 @@ module Resolvers
         aimed_for_deletion: args[:aimed_for_deletion],
         not_aimed_for_deletion: args[:not_aimed_for_deletion],
         marked_for_deletion_on: args[:marked_for_deletion_on],
+        active: args[:active],
         current_organization: ::Current.organization
       }
     end

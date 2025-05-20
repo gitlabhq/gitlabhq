@@ -275,6 +275,22 @@ To learn more about producing human-friendly output and writing data to log file
 
 ## Troubleshooting
 
+### Database connection is refused
+
+If you encounter the following errors, check if `max_connections` is high enough to ensure stable connections.
+
+```shell
+connection to server at "xxx.xxx.xxx.xxx", port 5432 failed: Connection refused
+      Is the server running on that host and accepting TCP/IP connections?
+```
+
+```shell
+psql: error: connection to server on socket "/var/opt/gitlab/postgresql/.s.PGSQL.5432" failed: 
+FATAL:  sorry, too many clients already
+```
+
+To adjust `max_connections`, see [configuring multiple database connections](https://docs.gitlab.com/omnibus/settings/database/#configuring-multiple-database-connections).
+
 ### Database is not accepting commands to avoid wraparound data loss
 
 This error likely means that `autovacuum` is failing to complete its run:

@@ -151,7 +151,9 @@ export default {
     },
     scopes: {
       label: s__('AccessTokens|Select scopes'),
-      validators: [formValidators.required(s__('AccessTokens|At least one scope is required.'))],
+      validators: [
+        (value) => (value?.length ? '' : s__('AccessTokens|At least one scope is required.')),
+      ],
     },
   },
 };

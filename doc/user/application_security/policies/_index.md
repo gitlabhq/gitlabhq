@@ -24,11 +24,11 @@ Security teams can ensure:
 - Vulnerabilities that are no longer detected are resolved automatically, reducing the workload of
   triaging vulnerabilities.
 
-Compliance teams can:
+Compliance teams can enforce:
 
-- Centrally enforce multiple approvers on all merge requests
-- Enforce various settings on projects in scope of organizational requirements, such as enabling or
-  locking merge request and repository settings.
+- Multiple approvers on all merge requests
+- Projects settings based on organizational requirements, such as enabling or
+  locking merge request settings or repository settings.
 
 The following policy types are available:
 

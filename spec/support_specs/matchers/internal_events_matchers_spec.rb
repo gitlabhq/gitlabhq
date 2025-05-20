@@ -225,8 +225,8 @@ RSpec.describe 'Internal Events matchers', :clean_gitlab_redis_shared_state, fea
 
         subject(:assertion) do
           expect do
-            Gitlab::InternalEvents.track_event('g_edit_by_sfe', **tracked_params)
-          end.to trigger_internal_events('g_edit_by_sfe')
+            Gitlab::InternalEvents.track_event('register_agent_at_kas', **tracked_params) # event that has all 3 params
+          end.to trigger_internal_events('register_agent_at_kas')
               .with(expected_params)
               .once
         end
@@ -243,7 +243,7 @@ RSpec.describe 'Internal Events matchers', :clean_gitlab_redis_shared_state, fea
         end
 
         context 'with extra attributes' do
-          let(:extra_track_params) { { other_property: 'other_prop' } }
+          let(:extra_track_params) { { kubernetes_version: 'other_prop' } }
 
           it 'accepts correct extra attributes' do
             assertion
@@ -263,8 +263,9 @@ RSpec.describe 'Internal Events matchers', :clean_gitlab_redis_shared_state, fea
         end
 
         context 'with extra attributes tracked but not expected' do
-          let(:expected_params) { { user: user_1, namespace: group_1, additional_properties: additional_properties } }
-          let(:tracked_params) { expected_params.deep_merge(additional_properties: { other_property: 'other_prop' }) }
+          let(:expected_params) do
+            { user: user_1, namespace: group_1, additional_properties: { kubernetes_version: '1' } }
+          end
 
           it_behaves_like 'raises error for unexpected event args'
         end
@@ -490,7 +491,7 @@ RSpec.describe 'Internal Events matchers', :clean_gitlab_redis_shared_state, fea
     end
 
     context 'with additional properties' do
-      let(:event) { 'g_edit_by_sfe' }
+      let(:event) { 'click_delete_pod' } # event with label property
       let(:user) { user_1 }
       let(:project) { project_1 }
       let(:expected_label) { 'Awesome label value' }

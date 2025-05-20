@@ -281,7 +281,7 @@ class ProjectsFinder < UnionFinder
   def by_archived(projects)
     if params[:non_archived]
       projects.non_archived
-    elsif params.key?(:archived)
+    elsif params.key?(:archived) && !params[:archived].nil?
       if params[:archived] == 'only'
         projects.archived
       elsif Gitlab::Utils.to_boolean(params[:archived])

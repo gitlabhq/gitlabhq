@@ -3,6 +3,8 @@
 module Resolvers
   module WorkItems
     class DescriptionTemplatesResolver < BaseResolver
+      include Gitlab::Graphql::Authorize::AuthorizeResource
+
       type ::Types::WorkItems::DescriptionTemplateType.connection_type, null: true
 
       argument :name, GraphQL::Types::String,
@@ -19,9 +21,13 @@ module Resolvers
 
       alias_method :namespace, :object
 
+      authorize :read_templates
+
       def resolve(**_args)
         project = fetch_root_templates_project(namespace)
         return unless project
+
+        authorize!(project)
 
         templates = Array.wrap(::TemplateFinder.new(:issues, project).execute)
 

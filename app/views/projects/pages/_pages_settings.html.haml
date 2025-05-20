@@ -1,4 +1,4 @@
-= gitlab_ui_form_for @project, url: project_pages_path(@project), html: { class: 'gl-inline-block', title: pages_https_only_title } do |f|
+= gitlab_ui_form_for @project, url: project_pages_path(@project, anchor: 'domains-settings'), html: { class: 'gl-inline-block', title: pages_https_only_title } do |f|
   = render_if_exists 'shared/pages/max_pages_size_input', form: f
 
   - if Gitlab.config.pages.external_http || Gitlab.config.pages.external_https

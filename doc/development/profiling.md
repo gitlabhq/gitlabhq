@@ -244,22 +244,22 @@ Ruby's garbage collector (GC) can be tuned via a variety of environment variable
 
 The following table lists these variables along with their default values.
 
-| Environment variable | Default value |
-|--|--|
-| `RUBY_GC_HEAP_INIT_SLOTS` | `10000` |
-| `RUBY_GC_HEAP_FREE_SLOTS` | `4096` |
-| `RUBY_GC_HEAP_FREE_SLOTS_MIN_RATIO` | `0.20` |
-| `RUBY_GC_HEAP_FREE_SLOTS_GOAL_RATIO` | `0.40` |
-| `RUBY_GC_HEAP_FREE_SLOTS_MAX_RATIO` | `0.65` |
-| `RUBY_GC_HEAP_GROWTH_FACTOR` | `1.8` |
-| `RUBY_GC_HEAP_GROWTH_MAX_SLOTS` | `0 (disable)` |
-| `RUBY_GC_HEAP_OLDOBJECT_LIMIT_FACTOR` | `2.0` |
-| `RUBY_GC_MALLOC_LIMIT(_MIN)` | `(16 * 1024 * 1024 /* 16MB */)` |
-| `RUBY_GC_MALLOC_LIMIT_MAX` | `(32 * 1024 * 1024 /* 32MB */)` |
-| `RUBY_GC_MALLOC_LIMIT_GROWTH_FACTOR` | `1.4` |
-| `RUBY_GC_OLDMALLOC_LIMIT(_MIN)` | `(16 * 1024 * 1024 /* 16MB */)` |
-| `RUBY_GC_OLDMALLOC_LIMIT_MAX` | `(128 * 1024 * 1024 /* 128MB */)` |
-| `RUBY_GC_OLDMALLOC_LIMIT_GROWTH_FACTOR` | `1.2` |
+| Environment variable                    | Default value |
+|-----------------------------------------|---------------|
+| `RUBY_GC_HEAP_INIT_SLOTS`               | `10000`       |
+| `RUBY_GC_HEAP_FREE_SLOTS`               | `4096`        |
+| `RUBY_GC_HEAP_FREE_SLOTS_MIN_RATIO`     | `0.20`        |
+| `RUBY_GC_HEAP_FREE_SLOTS_GOAL_RATIO`    | `0.40`        |
+| `RUBY_GC_HEAP_FREE_SLOTS_MAX_RATIO`     | `0.65`        |
+| `RUBY_GC_HEAP_GROWTH_FACTOR`            | `1.8`         |
+| `RUBY_GC_HEAP_GROWTH_MAX_SLOTS`         | `0 (disable)` |
+| `RUBY_GC_HEAP_OLDOBJECT_LIMIT_FACTOR`   | `2.0`         |
+| `RUBY_GC_MALLOC_LIMIT(_MIN)`            | `(16 * 1024 * 1024 /* 16MB */)` |
+| `RUBY_GC_MALLOC_LIMIT_MAX`              | `(32 * 1024 * 1024 /* 32MB */)` |
+| `RUBY_GC_MALLOC_LIMIT_GROWTH_FACTOR`    | `1.4`         |
+| `RUBY_GC_OLDMALLOC_LIMIT(_MIN)`         | `(16 * 1024 * 1024 /* 16MB */)` |
+| `RUBY_GC_OLDMALLOC_LIMIT_MAX`           | `(128 * 1024 * 1024 /* 128MB */)` |
+| `RUBY_GC_OLDMALLOC_LIMIT_GROWTH_FACTOR` | `1.2`         |
 
 ([Source](https://github.com/ruby/ruby/blob/45b29754cfba8435bc4980a87cd0d32c648f8a2e/gc.c#L254-L308))
 

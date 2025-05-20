@@ -128,9 +128,6 @@ To add a group or project to the allowlist:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Job token permissions**.
-1. Ensure the **Authorized groups and projects** toggle is enabled. Enabled by default in new projects.
-   It is a [security risk to disable this feature](#allow-any-project-to-access-your-project),
-   so project maintainers or owners should keep this setting enabled at all times.
 1. Select **Add group or project**.
 1. Input the path to the group or project to add to the allowlist, and select **Add**.
 
@@ -294,6 +291,12 @@ To set a feature to be only visible to project members:
 
 ### Allow any project to access your project
 
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 {{< history >}}
 
 - **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
@@ -309,26 +312,29 @@ your maintainers, the job token could be used in an attempt to access your proje
 
 {{< /alert >}}
 
-If you disable the **Limit access _to_ this project** setting, the allowlist is ignored.
-Jobs from any project could access your project with a job token if the user that
-triggers the pipeline has permission to access your project.
-
+If you disable the CI/CD job token allowlist, jobs from any project can access your project
+with a job token. The user that triggers the pipeline must have permission to access your project.
 You should only disable this setting for testing or a similar reason,
 and you should enable it again as soon as possible.
+
+This option is only available on GitLab Self-Managed or GitLab Dedicated instances with the
+[**Enable and enforce job token allowlist for all projects** setting](../../administration/settings/continuous_integration.md#enforce-job-token-allowlist)
+disabled.
 
 Prerequisites:
 
 - You must have at least the Maintainer role for the project.
 
-To disable the job token scope allowlist:
+To disable the job token allowlist:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Job token permissions**.
-1. Toggle **Authorized groups and projects** to disabled.
-   Enabled by default in new projects.
+1. Under **Authorized groups and projects**, select **All groups and projects**.
+1. Recommended. When finished testing, select **This project and any groups and projects in the allowlist** to re-enable the job token allowlist.
 
-You can also enable and disable the setting with the [GraphQL](../../api/graphql/reference/_index.md#mutationprojectcicdsettingsupdate) (`inboundJobTokenScopeEnabled`) and [REST](../../api/project_job_token_scopes.md#patch-a-projects-cicd-job-token-access-settings) API.
+You can also modify this setting with the [GraphQL](../../api/graphql/reference/_index.md#mutationprojectcicdsettingsupdate)
+(`inboundJobTokenScopeEnabled`) or [REST](../../api/project_job_token_scopes.md#patch-a-projects-cicd-job-token-access-settings) API.
 
 ### Allow Git push requests to your project repository
 
@@ -406,9 +412,10 @@ curl --verbose --request POST --form "token=$CI_JOB_TOKEN" --form ref=master "ht
 
 Additionally, there are multiple valid methods for passing the job token in the request:
 
-- `--form "token=$CI_JOB_TOKEN"`
-- `--header "JOB-TOKEN: $CI_JOB_TOKEN"`
-- `--data "job_token=$CI_JOB_TOKEN"`
+- Form: `--form "token=$CI_JOB_TOKEN"`
+- Header: `--header "JOB-TOKEN: $CI_JOB_TOKEN"`
+- Data: `--data "job_token=$CI_JOB_TOKEN"`
+- Query string in the URL: `?job_token=$CI_JOB_TOKEN`
 
 <!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
 
@@ -482,7 +489,7 @@ in an authentication log. To check the log:
 1. Select **Settings > CI/CD**.
 1. Expand **Job token permissions**. The **Authentication log** section displays the
    list of other projects that accessed your project by authenticating with a job token.
-1. Optional. Select **Download CSV** to download the full authentication log in CSV format.
+1. Optional. Select **Download CSV** to download the full authentication log, in CSV format.
 
 The authentication log displays a maximum of 100 authentication events. If the number of events
 is more than 100, download the CSV file to view the log.

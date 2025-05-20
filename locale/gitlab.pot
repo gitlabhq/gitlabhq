@@ -12366,6 +12366,9 @@ msgstr ""
 msgid "Change confidentiality"
 msgstr ""
 
+msgid "Change display preferences"
+msgstr ""
+
 msgid "Change failure rate"
 msgstr ""
 
@@ -22848,9 +22851,6 @@ msgstr ""
 msgid "Display name"
 msgstr ""
 
-msgid "Display preferences"
-msgstr ""
-
 msgid "Display progress of child issues"
 msgstr ""
 
@@ -28336,13 +28336,13 @@ msgstr ""
 msgid "GitLabPagesDomains|Retry"
 msgstr ""
 
-msgid "GitLabPages|%{domain} is not verified. To learn how to verify ownership, visit your %{link_start}domain details%{link_end}."
-msgstr ""
-
 msgid "GitLabPages|Access Control is enabled for this Pages website; only authorized users will be able to access it. To make your website publicly available, navigate to your project's %{strong_start}Settings &gt; General &gt; Visibility%{strong_end} and select %{strong_start}Everyone%{strong_end} in pages section. Read the %{link_start}documentation%{link_end} for more information."
 msgstr ""
 
 msgid "GitLabPages|Access pages"
+msgstr ""
+
+msgid "GitLabPages|Add domain"
 msgstr ""
 
 msgid "GitLabPages|Are you sure you want to regenerate the unique domain? The previous URL will stop working."
@@ -28354,16 +28354,25 @@ msgstr ""
 msgid "GitLabPages|Can be overridden per project. For no limit, enter 0. To inherit the value, leave empty."
 msgstr ""
 
-msgid "GitLabPages|Certificate: %{subject}"
-msgstr ""
-
 msgid "GitLabPages|Check the Pipeline Status"
 msgstr ""
 
 msgid "GitLabPages|Configure pages"
 msgstr ""
 
+msgid "GitLabPages|DNS check successful"
+msgstr ""
+
+msgid "GitLabPages|DNS check unsuccessful"
+msgstr ""
+
+msgid "GitLabPages|Domain ownership verification required. Add a TXT record to verify ownership at your domain provider."
+msgstr ""
+
 msgid "GitLabPages|Domains"
+msgstr ""
+
+msgid "GitLabPages|Domains & settings"
 msgstr ""
 
 msgid "GitLabPages|Don’t enforce a primary domain"
@@ -28372,7 +28381,7 @@ msgstr ""
 msgid "GitLabPages|Edit"
 msgstr ""
 
-msgid "GitLabPages|Expired"
+msgid "GitLabPages|Edit domain"
 msgstr ""
 
 msgid "GitLabPages|Force HTTPS (requires valid certificates)"
@@ -28429,16 +28438,10 @@ msgstr ""
 msgid "GitLabPages|Support for domains and certificates is disabled. Ask your GitLab administrator to enable it."
 msgstr ""
 
-msgid "GitLabPages|Unverified"
-msgstr ""
-
 msgid "GitLabPages|Updating your Pages configuration…"
 msgstr ""
 
 msgid "GitLabPages|Use unique domain"
-msgstr ""
-
-msgid "GitLabPages|Verified"
 msgstr ""
 
 msgid "GitLabPages|Waiting for the Pages Pipeline to complete…"
@@ -29780,9 +29783,6 @@ msgstr ""
 msgid "Group membership expiration date removed"
 msgstr ""
 
-msgid "Group merge requests by workflow or by your role ('Reviews and Your Merge Requests'), and manage label visibility."
-msgstr ""
-
 msgid "Group milestone"
 msgstr ""
 
@@ -29832,6 +29832,9 @@ msgid "Group wikis"
 msgstr ""
 
 msgid "Group work item bulk edit is a licensed feature not available for this group."
+msgstr ""
+
+msgid "Group your merge requests by %{boldStart}workflow%{boldEnd} or your %{boldStart}role%{boldEnd}, and manage label visibility."
 msgstr ""
 
 msgid "Group-level MFA enforcement"

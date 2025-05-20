@@ -6,7 +6,7 @@ RSpec.shared_examples 'enforcing job token policies' do |policies, expected_succ
   shared_examples 'capturing job token policies' do
     it 'captures the policies' do
       expect(::Ci::JobToken::Authorization).to receive(:capture_job_token_policies)
-        .with(Array(policies)).and_call_original
+        .with(Array(policies)).at_least(:once).and_call_original
 
       do_request
     end

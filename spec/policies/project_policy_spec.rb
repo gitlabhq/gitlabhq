@@ -4162,6 +4162,76 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  describe 'read_templates' do
+    context 'when user is a member' do
+      %w[guest planner reporter developer].each do |role|
+        context "and user is a #{role}" do
+          let(:current_user) { send(role) }
+
+          context 'and issues and repository access is private' do
+            before do
+              project.project_feature.update!(
+                issues_access_level: ProjectFeature::PRIVATE,
+                merge_requests_access_level: ProjectFeature::PRIVATE,
+                repository_access_level: ProjectFeature::PRIVATE,
+                builds_access_level: ProjectFeature::PRIVATE,
+                forking_access_level: ProjectFeature::PRIVATE
+              )
+            end
+
+            it { is_expected.to be_allowed(:read_templates) }
+          end
+
+          context 'and only issues feature is disabled' do
+            before do
+              project.project_feature.update!(
+                issues_access_level: ProjectFeature::DISABLED,
+                merge_requests_access_level: ProjectFeature::ENABLED,
+                repository_access_level: ProjectFeature::ENABLED,
+                builds_access_level: ProjectFeature::ENABLED,
+                forking_access_level: ProjectFeature::ENABLED
+              )
+            end
+
+            it { is_expected.to be_disallowed(:read_templates) }
+          end
+
+          context 'and only repository feature is disabled' do
+            before do
+              project.project_feature.update!(
+                issues_access_level: ProjectFeature::ENABLED,
+                merge_requests_access_level: ProjectFeature::DISABLED,
+                repository_access_level: ProjectFeature::DISABLED,
+                builds_access_level: ProjectFeature::DISABLED,
+                forking_access_level: ProjectFeature::DISABLED
+              )
+            end
+
+            it { is_expected.to be_disallowed(:read_templates) }
+          end
+        end
+      end
+    end
+
+    context 'when user is not a member' do
+      let(:current_user) { non_member }
+
+      context 'and issues and repository features are private' do
+        before do
+          project.project_feature.update!(
+            issues_access_level: ProjectFeature::PRIVATE,
+            merge_requests_access_level: ProjectFeature::PRIVATE,
+            repository_access_level: ProjectFeature::PRIVATE,
+            builds_access_level: ProjectFeature::PRIVATE,
+            forking_access_level: ProjectFeature::PRIVATE
+          )
+        end
+
+        it { is_expected.to be_disallowed(:read_templates) }
+      end
+    end
+  end
+
   private
 
   def project_subject(project_type)

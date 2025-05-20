@@ -1,5 +1,5 @@
 <script>
-import { GlCollapsibleListbox, GlToggle, GlPopover } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlToggle, GlPopover, GlSprintf } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { InternalEvents } from '~/tracking';
 import { createAlert } from '~/alert';
@@ -29,6 +29,7 @@ export default {
     GlCollapsibleListbox,
     GlToggle,
     GlPopover,
+    GlSprintf,
     LocalStorageSync,
     UserCalloutDismisser,
   },
@@ -135,8 +136,8 @@ export default {
       icon="preferences"
       no-caret
       text-sr-only
-      :header-text="listTypeToggleEnabled ? __('Display preferences') : null"
-      :toggle-text="__('Display preferences')"
+      :header-text="listTypeToggleEnabled ? __('Change display preferences') : null"
+      :toggle-text="__('Change display preferences')"
       placement="bottom-end"
       :loading="savingPreferences"
       :toggle-class="{ '!gl-px-3': savingPreferences }"
@@ -180,15 +181,22 @@ export default {
           target="display-prefences-dropdown"
           show
           placement="bottomleft"
-          :content="
-            __(
-              `Group merge requests by workflow or by your role ('Reviews and Your Merge Requests'), and manage label visibility.`,
-            )
-          "
-          :title="__('Display preferences')"
+          :title="__('Change display preferences')"
           show-close-button
           @hidden="dismiss"
-        />
+        >
+          <gl-sprintf
+            :message="
+              __(
+                `Group your merge requests by %{boldStart}workflow%{boldEnd} or your %{boldStart}role%{boldEnd}, and manage label visibility.`,
+              )
+            "
+          >
+            <template #bold="{ content }">
+              <strong>{{ content }}</strong>
+            </template>
+          </gl-sprintf>
+        </gl-popover>
       </template>
     </user-callout-dismisser>
   </div>

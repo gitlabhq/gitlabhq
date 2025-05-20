@@ -243,6 +243,12 @@ A group Owner can also use the [group and project members API](../../api/members
 to access users' information. For enterprise users of the group, this information
 includes users' email addresses.
 
+### Change the email addresses for an enterprise user
+
+Enterprise users can follow the same process as other GitLab users to [change their primary email address](../../user/profile/_index.md#change-your-primary-email). The new email address must be from a verified domain. If your organization has no verified domains, your enterprise users cannot change their primary email address.
+
+Only GitLab support can change the primary email address to an email address from a non-verified domain. Doing this [releases the enterprise user](#release-an-enterprise-user).
+
 ### Release an enterprise user
 
 It's possible to remove enterprise management features from a user account. This might be required if, for

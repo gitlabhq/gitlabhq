@@ -59370,6 +59370,7 @@ definitions:
         description: Package type protected by the rule. For example npm.
         enum:
         - conan
+        - generic
         - helm
         - maven
         - npm
@@ -59412,6 +59413,7 @@ definitions:
         description: Package type protected by the rule. For example npm.
         enum:
         - conan
+        - generic
         - helm
         - maven
         - npm

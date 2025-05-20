@@ -5,47 +5,39 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Metrics for measuring monorepo performance
 ---
 
-The following metrics can be used to measure server side performance of your
-monorepo. These metrics are not limited to monorepo performance and are more
-general metrics to measure Gitaly performance, but they are especially relevant
-when running a monorepo.
+To measure server-side performance of your monorepo, use these metrics. While they are general metrics
+to measure the performance of Gitaly, they are especially relevant to large repositories.
 
-## Clones and Fetches
+Clones and fetches are the most frequent expensive operations. When taken as a percentage of system resources
+consumed, these operations often contribute to 90% or more of system resources on Gitaly nodes.
+Your logs and metrics provide clues to the health of your repository.
 
-The most frequent expensive operation are clones and fetches. When taken as a
-percentage of system resources consumed, these operations often contribute to
-90% or more of system resources on Gitaly nodes. Here are some logs and metrics
-that can provide useful signals.
+## CPU and memory
 
-### CPU and Memory
+Two main RPCs (remote procedure calls) handle clones and fetches. Use these fields in your Gitaly
+logs to inspect how much repository clones and fetches are consuming system resources.
+Filter your Gitaly logs by any of these fields to learn more:
 
-There are two main RPCs that handle clones/fetches. The following log entry
-fields can be used to inspect how much system resources are consumed by
-clones/fetches for a given repository.
+| Log field                         | Values to filter on                                                                          | Description |
+|:----------------------------------|:---------------------------------------------------------------------------------------------|:------------|
+| `json.grpc.method`                | `PostReceivePack`                                                                            | The RPC that handles HTTP clones and fetches. |
+| `json.grpc.method`                | `SSHReceivePack`                                                                             | The RPC that handles SSH clones and fetches. |
+| `json.grpc.code`                  | `OK`                                                                                         | Whether the RPC served its request successfully. |
+| `json.grpc.code`                  | `Canceled`                                                                                   | Can show if the client killed the connection. Often due to a timeout. |
+| `json.grpc.code`                  | `ResourceExhausted`                                                                          | Indicates if the machine is spawning too many Git processes simultaneously. |
+| `json.user_id`                    | The `user_id` initiating the clone or fetch, in the form `user-<user_id>`, like `user-22345` | Find excessive clone or fetch operations spawned by a single user. |
+| `json.username`                   | The username who initiated the clone or fetch.                                               | Find excessive clone or fetch operations spawned by a single user. |
+| `json.grpc.request.glRepository`  | A repository, in the form of `project-<project_id>`, like `project-214`                      | Find the total clones and fetches for a single repository. |
+| `json.grpc.request.glProjectPath` | A repository, in the form of a project path, like `my-org/coolproject`                       | Find the total clones and fetches for a given repository. |
 
-The following are log entry fields in the Gitaly logs that can be filtered on:
+These log entry fields give information about CPU and memory:
 
-| Log field        | Values to filter on | Why?                                                                                          |
-|------------------|---------------------|-----------------------------------------------------------------------------------------------|
-| `json.grpc.method` | `PostReceivePack`     | This is the RPC that handles HTTP clones/fetches                                              |
-| `json.grpc.method` | SSHReceivePack      | This is the RPC that handles SSH clones/fetches                                               |
-| `json.grpc.code`   | OK                  | Indicates the RPC has successfully served its request                                         |
-| `json.grpc.code`   | Canceled            | Often times indicates the client killed the connection, usually due to a timeout of some sort |
-| `json.grpc.code`   | ResourceExhausted   | Indicates there are too many Git processes being spawned on the machine simultaneously        |
-| `json.user_id`     | A `user_id` who initiated the clone/fetch. This is in the form of `user-<user_id>`. For example: `user-22345` | Indicates there are too many Git processes being spawned on the machine simultaneously        |
-| `json.username`     | A username who initiated the clone/fetch. For example: `ilovecoding` | In order to see how many clones/fetches were from a given user. This is sometimes helpful to find excessive clone operations by a single user |
-| `json.grpc.request.glRepository`     | A repository in question. In the form of `project-<project_id>`. For example: `project-214` | In order to see how many clones/fetches were for a given repository. |
-| `json.grpc.request.glProjectPath`    | A repository in question. In the form of a project path. For example: `my-org/coolproject` | In order to see how many clones/fetches were for a given repository. |
+| Log field to inspect       | Description |
+|:---------------------------|:------------|
+| `json.command.cpu_time_ms` | CPU time used by subprocesses spawned from this RPC. |
+| `json.command.maxrss`      | Memory consumption from subprocesses spawned from this RPC. |
 
-The following are log entry fields that give useful information about CPU and
-memory:
-
-| Log field to inspect     | What does it tell you?                                          |
-|--------------------------|-----------------------------------------------------------------|
-| `json.command.cpu_time_ms` | How much CPU time used by subprocesses this RPC spawned         |
-| `json.command.maxrss`      | How much memory was consumed from subprocesses this RPC spawned |
-
-Example log message:
+In this example, log message `json.command.cpu_time_ms` was `420`, and `json.command.maxrss` was `3342152`:
 
 ```json
 {
@@ -80,7 +72,7 @@ Example log message:
     "grpc.request.payload_bytes":911,
     "grpc.request.repoPath":"@hashed/db/ab/dbabf83f57affedc9a001dc6c6f6b47bb431bd47d7254edd1daf24f0c38793a9.git",
     "grpc.request.repoStorage":"nfs-file99",
-    "grpc.response.payload_bytes":54
+    "grpc.response.payload_bytes":54,
     "grpc.service":"gitaly.SmartHTTPService",
     "grpc.start_time":"2023-10-16T20:40:08.836",
     "grpc.time_ms":631.486,
@@ -103,34 +95,33 @@ Example log message:
   }
 ```
 
-### Read distribution
+## Read distribution
 
-The `gitaly_praefect_read_distribution` Prometheus metric is a
-[counter](https://prometheus.io/docs/concepts/metric_types/#counter) that
-indicates how many reads have gone to which Gitaly nodes. This metric has two
-vectors:
+To check the number of reads to each Gitaly node, check `gitaly_praefect_read_distribution`.
+This Prometheus metric is a [counter](https://prometheus.io/docs/concepts/metric_types/#counter),
+and has two vectors:
 
-| Metric Name                         | Vector           | What is it?                                                                                         |
-|-------------------------------------|------------------------------------------------------------------------------------------------------------------------|
-| `gitaly_praefect_read_distribution` | `virtual_storage`| The [virtual storage](../../../../administration/gitaly/praefect.md) name |
-| `gitaly_praefect_read_distribution` | `storage`        | The Gitaly storage name                                                                             |
+| Metric name                         | Vector            | Description |
+|-------------------------------------|-------------------|-------------|
+| `gitaly_praefect_read_distribution` | `virtual_storage` | The [virtual storage](../../../../administration/gitaly/praefect.md) name. |
+| `gitaly_praefect_read_distribution` | `storage`         | The Gitaly storage name. |
 
-### Pack objects cache
+## Pack objects cache
 
-The [pack objects cache](../../../../administration/gitaly/configure_gitaly.md#pack-objects-cache)
-can be observed through both logs as well as Prometheus metrics.
+To check the [pack objects cache](../../../../administration/gitaly/configure_gitaly.md#pack-objects-cache),
+check your logs and your Prometheus metrics:
 
-| Log field name | Description |
-|:---|:---|
-| `pack_objects_cache.hit` | Indicates whether the current pack-objects cache was hit (`true` or `false`) |
-| `pack_objects_cache.key` | Cache key used for the pack-objects cache |
-| `pack_objects_cache.generated_bytes` | Size (in bytes) of the new cache being written |
-| `pack_objects_cache.served_bytes` | Size (in bytes) of the cache being served |
-| `pack_objects.compression_statistics` | Statistics regarding pack-objects generation |
-| `pack_objects.enumerate_objects_ms` | Total time (in ms) spent enumerating objects sent by clients |
-| `pack_objects.prepare_pack_ms` | Total time (in ms) spent preparing the packfile before sending it back to the client |
-| `pack_objects.write_pack_file_ms` | Total time (in ms) spent sending back the packfile to the client. Highly dependent on the client's internet connection |
-| `pack_objects.written_object_count` | Total number of objects Gitaly sends back to the client |
+| Log field name                        | Description |
+|:--------------------------------------|:------------|
+| `pack_objects_cache.hit`              | Whether the current pack-objects cache was hit. (`true` or `false`) |
+| `pack_objects_cache.key`              | Cache key used for the pack-objects cache. |
+| `pack_objects_cache.generated_bytes`  | Size in bytes of the new cache being written. |
+| `pack_objects_cache.served_bytes`     | Size in bytes of the cache being served. |
+| `pack_objects.compression_statistics` | Statistics for pack-objects generation. |
+| `pack_objects.enumerate_objects_ms`   | Total time, in ms, spent enumerating objects sent by clients. |
+| `pack_objects.prepare_pack_ms`        | Total time, in ms, spent preparing the packfile before sending it back to the client |
+| `pack_objects.write_pack_file_ms`     | Total time, in ms, spent sending the packfile back to the client. Highly dependent on the client's internet connection. |
+| `pack_objects.written_object_count`   | Total number of objects Gitaly sent back to the client. |
 
 Example log message:
 
@@ -169,7 +160,7 @@ Example log message:
 }
 ```
 
-| Prometheus metric name | Vector | Description |
-|:---|:---|
-| `gitaly_pack_objects_served_bytes_total` | | Size (in bytes) of the cache being served|
-| `gitaly_pack_objects_cache_lookups_total` | `result` | `hit` or `miss`,indicating whether or not a cache lookup resulted in a cache hit or miss |
+| Prometheus metric name                    | Vector   | Description |
+|:------------------------------------------|:---------|:------------|
+| `gitaly_pack_objects_served_bytes_total`  |          | Size (in bytes) of the cache being served. |
+| `gitaly_pack_objects_cache_lookups_total` | `result` | Whether a cache lookup resulted in a `hit` or `miss`. |

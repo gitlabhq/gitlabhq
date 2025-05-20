@@ -384,9 +384,11 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
         end
 
         context 'when author timezone is blank' do
-          let(:author) { create(:user, timezone: '') }
+          let(:author) { build(:user, timezone: '') }
 
           it 'sets the note text using default timezone' do
+            author.save!(validate: false)
+
             spend_time!(277200)
 
             expect(subject.note).to eq "added 1w 4d 5h of time spent at 2019-12-30 14:05:12 UTC"
@@ -394,9 +396,11 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
         end
 
         context 'when author timezone is invalid' do
-          let(:author) { create(:user, timezone: 'GitLab') }
+          let(:author) { build(:user, timezone: 'GitLab') }
 
           it 'sets the note text using default timezone' do
+            author.save!(validate: false)
+
             spend_time!(277200)
 
             expect(subject.note).to eq "added 1w 4d 5h of time spent at 2019-12-30 14:05:12 UTC"

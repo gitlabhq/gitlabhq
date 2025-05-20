@@ -85,8 +85,12 @@ RSpec.shared_examples 'contains instance prefix when enabled' do
       stub_application_setting(instance_token_prefix: instance_prefix)
     end
 
+    it 'starts with gl' do
+      expect(default_prefix).to start_with('gl')
+    end
+
     it 'can be identified by prefix' do
-      expect(token.class.prefix?('glffct-')).to be_truthy
+      expect(token.class.prefix?(default_prefix)).to be_truthy
     end
   end
 
@@ -99,6 +103,10 @@ RSpec.shared_examples 'contains instance prefix when enabled' do
 
     it 'starts with the instance prefix' do
       expect(plaintext).to start_with(instance_prefix)
+    end
+
+    it 'keeps gl as part of the prefix' do
+      expect(plaintext).to start_with("#{instance_prefix}gl")
     end
 
     it 'can be identified by prefix' do

@@ -56,7 +56,7 @@ could also manage CI/CD variables added by other Maintainers or Owners for the g
 
 ## Create a custom member role
 
-To create a custom member role, add [permissions](abilities.md) to a base role. Each custom role has
+To create a custom member role, add [permissions](abilities.md) to a base role. Each custom role can
 have one or more permissions. For example, you might base the custom member role on the Reporter role,
 but also include permission to view vulnerability reports, change the status of vulnerabilities,
 and approve merge requests.
@@ -88,8 +88,8 @@ You can also [use the API](../../api/graphql/reference/_index.md#mutationmemberr
 
 ## Create a custom admin role
 
-To create a custom admin role, add [permissions](abilities.md) to a base role. Each custom role has
-have one or more permissions.
+To create a custom admin role, you add [permissions](abilities.md) that allow actions typically
+limited to administrators. Each custom admin role can have one or more permissions.
 
 Prerequisites:
 
@@ -102,7 +102,6 @@ To create a custom admin role:
 1. Select **New role**.
 1. Select **Admin role**.
 1. Enter a name and description for the custom role.
-1. From the **Base role** dropdown list, select a default role.
 1. Select any permissions for the custom role.
 1. Select **Create role**.
 

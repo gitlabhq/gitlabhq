@@ -26,6 +26,7 @@ class UserPreference < ApplicationRecord
   validates :diffs_deletion_color, :diffs_addition_color,
     format: { with: ColorsHelper::HEX_COLOR_PATTERN },
     allow_blank: true
+  validate :timezone_valid, if: -> { timezone_changed? }
 
   validates :time_display_relative, allow_nil: false, inclusion: { in: [true, false] }
   validates :render_whitespace_in_code, allow_nil: false, inclusion: { in: [true, false] }
@@ -125,6 +126,12 @@ class UserPreference < ApplicationRecord
     self.text_editor = value ? "rich_text_editor" : "not_set"
   end
 
+  def timezone=(value)
+    value = nil if value == ''
+
+    super(value)
+  end
+
   private
 
   def user_belongs_to_home_organization
@@ -146,6 +153,14 @@ class UserPreference < ApplicationRecord
       end
 
     "#{field_key}_notes_filter"
+  end
+
+  def timezone_valid
+    return if timezone.nil?
+
+    return if ActiveSupport::TimeZone[timezone].present?
+
+    errors.add(:timezone, "timezone is not valid")
   end
 end
 

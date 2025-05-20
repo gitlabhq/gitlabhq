@@ -1092,7 +1092,13 @@ class User < ApplicationRecord
     end
 
     def generate_incoming_mail_token
-      "#{INCOMING_MAIL_TOKEN_PREFIX}#{SecureRandom.hex.to_i(16).to_s(36)}"
+      "#{prefix_for_incoming_mail_token}#{SecureRandom.hex.to_i(16).to_s(36)}"
+    end
+
+    def prefix_for_incoming_mail_token
+      return INCOMING_MAIL_TOKEN_PREFIX unless Feature.enabled?(:custom_prefix_for_all_token_types, :instance)
+
+      ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(INCOMING_MAIL_TOKEN_PREFIX)
     end
 
     def username_exists?(username)

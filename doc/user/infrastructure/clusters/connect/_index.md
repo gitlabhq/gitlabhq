@@ -33,10 +33,10 @@ in GitLab 14.5.
 
 Choose your cluster's level according to its purpose:
 
-| Level | Purpose |
-|--|--|
-| [Project level](../../../project/clusters/_index.md) | Use your cluster for a single project. |
-| [Group level](../../../group/clusters/_index.md) | Use the same cluster across multiple projects within your group. |
+| Level                                                  | Purpose |
+|--------------------------------------------------------|---------|
+| [Project level](../../../project/clusters/_index.md)   | Use your cluster for a single project. |
+| [Group level](../../../group/clusters/_index.md)       | Use the same cluster across multiple projects within your group. |
 | [Instance level](../../../instance/clusters/_index.md) | Use the same cluster across groups and projects within your instance. |
 
 ### View your clusters

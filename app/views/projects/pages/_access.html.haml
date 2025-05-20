@@ -5,7 +5,7 @@
   = render ::Layouts::CrudComponent.new(s_('GitLabPages|Access pages'),
     icon: 'doc-text',
     count: @project.pages_domains.size + (pages_url ? 1 : 0),
-    options: { class: 'gl-mt-5', data: { testid: 'access-page-container' } },
+    options: { data: { testid: 'access-page-container' } },
     footer_options: { class: 'gl-bg-red-50' }) do |content|
     - if @project.project_setting.pages_unique_domain_enabled?
       - content.with_actions do
