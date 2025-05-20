@@ -38,7 +38,7 @@ module Ci
     end
 
     def last_used
-      pipelines.last&.created_at
+      pipelines.order(id: :desc).pick(:created_at)
     end
 
     def short_token

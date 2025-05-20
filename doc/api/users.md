@@ -210,6 +210,7 @@ Example response:
     "linkedin": "",
     "twitter": "",
     "discord": "",
+    "github": "",
     "website_url": "",
     "organization": "",
     "job_title": "",
@@ -254,6 +255,7 @@ Example response:
     "linkedin": "",
     "twitter": "",
     "discord": "",
+    "github": "",
     "website_url": "",
     "organization": "",
     "job_title": "",
@@ -408,6 +410,7 @@ Example response:
   "linkedin": "",
   "twitter": "",
   "discord": "",
+  "github": "",
   "website_url": "",
   "organization": "",
   "job_title": "Operations Specialist",
@@ -469,6 +472,7 @@ Example response:
   "linkedin": "",
   "twitter": "",
   "discord": "",
+  "github": "",
   "website_url": "",
   "organization": "",
   "job_title": "Operations Specialist",
@@ -607,6 +611,7 @@ Example response:
   "linkedin": "",
   "twitter": "",
   "discord": "",
+  "github": "",
   "website_url": "",
   "organization": "",
   "job_title": "",
@@ -686,6 +691,7 @@ Supported attributes:
   "linkedin": "",
   "twitter": "",
   "discord": "",
+  "github": "",
   "website_url": "",
   "organization": "",
   "job_title": "",
@@ -804,6 +810,7 @@ Supported attributes:
 | `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-color-theme) for more information) |
 | `twitter`                            | No       | X (formerly Twitter) account |
 | `discord`                            | No       | Discord account |
+| `github`                             | No       | GitHub username |
 | `username`                           | Yes      | Username    |
 | `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page |
 | `website_url`                        | No       | Website URL |
@@ -870,6 +877,7 @@ Supported attributes:
 | `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-color-theme) for more information) |
 | `twitter`                            | No       | X (formerly Twitter) account |
 | `discord`                            | No       | Discord account |
+| `github`                             | No       | GitHub username |
 | `username`                           | No       | Username    |
 | `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page |
 | `website_url`                        | No       | Website URL |

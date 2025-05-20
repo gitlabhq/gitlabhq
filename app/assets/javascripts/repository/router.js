@@ -97,7 +97,9 @@ export default function createRouter(base, baseRef, fullName) {
       ),
     );
 
-    setTitle(normalizedPath, baseRef, fullName);
+    const titlePath = Array.isArray(path) ? joinPaths(...path) : path; // Vue 3 returns an array of strings for the path
+
+    setTitle(titlePath || '', baseRef, fullName);
   });
 
   return router;

@@ -408,6 +408,12 @@ module ApplicationHelper
     end
   end
 
+  def github_url(user)
+    return '' if user.github.blank?
+
+    "https://github.com/#{user.github}"
+  end
+
   def collapsed_super_sidebar?
     return false if @force_desktop_expanded_sidebar
 

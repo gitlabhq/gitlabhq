@@ -27,8 +27,6 @@ group_icon:
   file: app/helpers/avatars_helper.rb
 topic_icon:
   file: app/helpers/avatars_helper.rb
-project_branches:
-  file: app/helpers/branches_helper.rb
 can_view_namespace_catalog?:
   file: app/helpers/ci/catalog/resources_helper.rb
 js_ci_catalog_data:

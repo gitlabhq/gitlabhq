@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'with container for work items service' do |container_type|
-  let_it_be_with_reload(:project) { create(:project) }
   let_it_be_with_reload(:group) { create(:group) }
+  let_it_be_with_reload(:project) { create(:project, group: group) }
 
   let_it_be(:container) do
     case container_type

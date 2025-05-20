@@ -24092,6 +24092,7 @@ CREATE TABLE user_details (
     bluesky text DEFAULT ''::text NOT NULL,
     bot_namespace_id bigint,
     orcid text DEFAULT ''::text NOT NULL,
+    github text DEFAULT ''::text NOT NULL,
     CONSTRAINT check_18a53381cd CHECK ((char_length(bluesky) <= 256)),
     CONSTRAINT check_245664af82 CHECK ((char_length(webauthn_xid) <= 100)),
     CONSTRAINT check_444573ee52 CHECK ((char_length(skype) <= 500)),
@@ -24103,6 +24104,7 @@ CREATE TABLE user_details (
     CONSTRAINT check_8a7fcf8a60 CHECK ((char_length(location) <= 500)),
     CONSTRAINT check_99b0365865 CHECK ((char_length(orcid) <= 256)),
     CONSTRAINT check_a73b398c60 CHECK ((char_length(phone) <= 50)),
+    CONSTRAINT check_bbe110f371 CHECK ((char_length(github) <= 500)),
     CONSTRAINT check_eeeaf8d4f0 CHECK ((char_length(pronouns) <= 50)),
     CONSTRAINT check_f1a8a05b9a CHECK ((char_length(mastodon) <= 500)),
     CONSTRAINT check_f932ed37db CHECK ((char_length(pronunciation) <= 255))

@@ -4,7 +4,7 @@ module Organizations
   class GroupsController < ApplicationController
     include ::Groups::Params
 
-    feature_category :cell
+    feature_category :organization
     urgency :low, [:create, :new, :destroy]
 
     before_action :authorize_create_group!, only: [:new]

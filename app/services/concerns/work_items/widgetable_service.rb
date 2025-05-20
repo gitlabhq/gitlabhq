@@ -21,7 +21,7 @@ module WorkItems
           callback_params.reverse_merge!(params.slice(*callback_class::ALLOWED_PARAMS))
         end
 
-        next if callback_params.blank?
+        next if callback_params.blank? && !execute_without_params(callback_class)
 
         callback_class.new(issuable: work_item, current_user: current_user, params: callback_params)
       end

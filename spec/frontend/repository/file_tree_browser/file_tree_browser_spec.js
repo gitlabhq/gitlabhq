@@ -9,8 +9,14 @@ describe('FileTreeBrowser', () => {
   const findFileBrowserHeight = () => wrapper.findComponent(FileBrowserHeight);
   const findTreeList = () => wrapper.findComponent(TreeList);
 
-  const createComponent = (props = {}) => {
-    wrapper = shallowMount(FileTreeBrowser, { propsData: props });
+  const createComponent = () => {
+    wrapper = shallowMount(FileTreeBrowser, {
+      propsData: {
+        projectPath: 'group/project',
+        currentRef: 'main',
+        refType: 'branch',
+      },
+    });
   };
 
   beforeEach(() => createComponent());
@@ -20,6 +26,6 @@ describe('FileTreeBrowser', () => {
   });
 
   it('renders the tree list component when not loading', () => {
-    expect(findTreeList().props('totalFilesCount')).toBe(0);
+    expect(findTreeList().exists()).toBe(true);
   });
 });

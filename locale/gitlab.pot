@@ -20981,9 +20981,6 @@ msgstr ""
 msgid "Delete label: %{labelName}"
 msgstr ""
 
-msgid "Delete offline nodes after %{label}"
-msgstr ""
-
 msgid "Delete one-time password authenticator"
 msgstr ""
 
@@ -26605,6 +26602,9 @@ msgstr ""
 msgid "File tree"
 msgstr ""
 
+msgid "File tree browser"
+msgstr ""
+
 msgid "File upload error."
 msgstr ""
 
@@ -28103,6 +28103,9 @@ msgid "GitHub import"
 msgstr ""
 
 msgid "GitHub repository URL."
+msgstr ""
+
+msgid "GitHub:"
 msgstr ""
 
 msgid "GitHubImporter|*Merged by: %{author} at %{timestamp}*"
@@ -39742,6 +39745,9 @@ msgstr ""
 msgid "Must be in the following format: `30m`, `2h`, or `1d`. Set to `%{val}` for no retries."
 msgstr ""
 
+msgid "Must be in the following format: `30m`, `2h`, or `1d`. Set to `%{val}` to disable."
+msgstr ""
+
 msgid "Must start with letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses."
 msgstr ""
 
@@ -42093,6 +42099,9 @@ msgid "Offline"
 msgstr ""
 
 msgid "Offline license"
+msgstr ""
+
+msgid "Offline nodes automatically deleted after"
 msgstr ""
 
 msgid "Oh no!"
@@ -51342,6 +51351,9 @@ msgstr ""
 msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / Pipeline Artifacts: %{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads}"
 msgstr ""
 
+msgid "Repository|Filter (e.g. *.vue)"
+msgstr ""
+
 msgid "Repository|New branch"
 msgstr ""
 
@@ -51352,9 +51364,6 @@ msgid "Repository|New file"
 msgstr ""
 
 msgid "Repository|New tag"
-msgstr ""
-
-msgid "Repository|Search (e.g. *.vue) (%{modifierKey}P)"
 msgstr ""
 
 msgid "Repository|This directory"

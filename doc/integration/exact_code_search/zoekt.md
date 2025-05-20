@@ -169,28 +169,6 @@ When you disable this setting:
 - Existing root namespaces remain indexed.
 - New root namespaces are no longer indexed.
 
-## Delete offline nodes automatically
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/487162) in GitLab 17.5.
-
-{{< /history >}}
-
-Prerequisites:
-
-- You must have administrator access to the instance.
-
-You can automatically delete Zoekt nodes that are offline for more than 12 hours
-and their related indices, repositories, and tasks.
-To delete offline nodes automatically:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Search**.
-1. Expand **Exact code search configuration**.
-1. Select the **Delete offline nodes after 12 hours** checkbox.
-1. Select **Save changes**.
-
 ## Cache search results
 
 {{< history >}}
@@ -294,6 +272,34 @@ To set the number of namespaces per indexing rollout:
 1. Expand **Exact code search configuration**.
 1. In the **Number of namespaces per indexing rollout** text box,
    enter a number greater than zero.
+1. Select **Save changes**.
+
+## Define when offline nodes are automatically deleted
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/487162) in GitLab 17.5.
+- **Delete offline nodes after 12 hours** checkbox [updated](https://gitlab.com/gitlab-org/gitlab/-/issues/536178) to **Offline nodes automatically deleted after** text box in GitLab 18.1.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+You can delete offline Zoekt nodes automatically after a specific period of time
+along with their related indices, repositories, and tasks.
+The default value is `12h` (12 hours).
+
+Use this setting to manage your Zoekt infrastructure and prevent orphaned resources.
+To define when offline nodes are automatically deleted:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Search**.
+1. Expand **Exact code search configuration**.
+1. In the **Offline nodes automatically deleted after** text box, enter a value
+   (for example, `30m` (30 minutes), `2h` (two hours), or `1d` (one day)).
+   To disable automatic deletion, set to `0`.
 1. Select **Save changes**.
 
 ## Define the retry interval for failed namespaces

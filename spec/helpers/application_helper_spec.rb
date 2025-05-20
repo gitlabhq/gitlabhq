@@ -281,6 +281,28 @@ RSpec.describe ApplicationHelper do
     end
   end
 
+  describe '#github_url?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:user) { build_stubbed(:user) }
+
+    subject { helper.github_url(user) }
+
+    before do
+      user.github = github_name
+    end
+
+    where(:github_name, :github_url) do
+      nil      | ''
+      ''       | ''
+      'dosire' | 'https://github.com/dosire'
+    end
+
+    with_them do
+      it { is_expected.to eq(github_url) }
+    end
+  end
+
   unless Gitlab.jh?
     describe '#promo_host' do
       subject { helper.promo_host }

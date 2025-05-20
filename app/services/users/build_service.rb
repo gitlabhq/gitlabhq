@@ -210,7 +210,8 @@ module Users
         :user_type,
         :username,
         :view_diffs_file_by_file,
-        :website_url
+        :website_url,
+        :github
       ]
     end
 

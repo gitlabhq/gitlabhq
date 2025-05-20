@@ -361,6 +361,9 @@ export default {
       const autoSaveKey = getAutoSaveKeyFromDiscussion(discussion);
       return Boolean(getDraft(autoSaveKey));
     },
+    isDuoCodeReviewBotAuthor(discussion) {
+      return discussion.notes[0].author?.user_type === 'duo_code_review_bot';
+    },
   },
   systemNote: constants.SYSTEM_NOTE,
 };
@@ -408,7 +411,7 @@ export default {
             <template v-else-if="discussionIsIndividualNoteAndNotConverted(discussion)">
               <template v-if="discussion.notes[0].system">
                 <duo-code-review-system-note
-                  v-if="discussion.notes[0].author.user_type === 'duo_code_review_bot'"
+                  v-if="isDuoCodeReviewBotAuthor(discussion)"
                   :key="discussion.id"
                   :note="discussion.notes[0]"
                 />

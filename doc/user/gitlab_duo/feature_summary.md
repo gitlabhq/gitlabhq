@@ -28,11 +28,17 @@ They require a Premium or Ultimate subscription and one of the available add-ons
 | [Vulnerability Resolution](../application_security/vulnerabilities/_index.md#vulnerability-resolution) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
 | [AI Impact Dashboard](../analytics/ai_impact_analytics.md) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
 
-In addition:
+## Features available in GitLab Duo Self-Hosted
 
-- All GitLab Duo Core and Pro features include generally available support for
- [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md).
-- All GitLab Duo Enterprise-only features include beta support for GitLab Duo Self-Hosted.
+Your organization can use [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md)
+to self-host the AI gateway and language models if you:
+
+- Have the GitLab Duo Enterprise add-on.
+- Are a GitLab Self-Managed customer.
+
+To check which GitLab Duo features are available for use with GitLab Duo Self-Hosted,
+and the status of those features, see the
+[supported GitLab Duo features for GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md#supported-gitlab-duo-features).
 
 ## Beta and experimental features
 

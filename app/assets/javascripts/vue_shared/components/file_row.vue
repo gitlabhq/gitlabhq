@@ -82,6 +82,7 @@ export default {
     },
     clickFile() {
       // Manual Action if a tree is selected/opened
+      if (this.isTree) this.$emit('clickTree', this.file.path);
       if (this.isTree && this.hasUrlAtCurrentRoute()) {
         this.toggleTreeOpen(this.file.path);
       }
@@ -116,7 +117,7 @@ export default {
     hasUrlAtCurrentRoute() {
       if (!this.$router || !this.$router.currentRoute) return true;
 
-      return this.$router.currentRoute.path === escapeFileUrl(this.fileRouterUrl);
+      return escapeFileUrl(this.$router.currentRoute.path) === escapeFileUrl(this.fileRouterUrl);
     },
   },
 };

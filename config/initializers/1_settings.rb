@@ -1365,7 +1365,8 @@ Settings.prometheus['server_address'] ||= nil
 # Bullet settings
 #
 Settings['bullet'] ||= {}
-Settings.bullet['enabled'] ||= Rails.env.development?
+Settings.bullet['enabled'] = Gitlab::Utils.to_boolean(ENV['ENABLE_BULLET'], default: Settings.bullet['enabled'])
+Settings.bullet['enabled'] = Rails.env.development? if Settings.bullet['enabled'].nil?
 
 #
 # Shutdown settings

@@ -5,6 +5,7 @@ fragment TreeEntry on Entry {
   name
   flatPath
   type
+  path
 }
 
 query getPaginatedTree(

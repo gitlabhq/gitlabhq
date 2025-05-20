@@ -45556,6 +45556,8 @@ definitions:
         type: string
       website_url:
         type: string
+      github:
+        type: string
       organization:
         type: string
       job_title:
@@ -49946,6 +49948,8 @@ definitions:
       discord:
         type: string
       website_url:
+        type: string
+      github:
         type: string
       organization:
         type: string
@@ -65121,6 +65125,8 @@ definitions:
       discord:
         type: string
       website_url:
+        type: string
+      github:
         type: string
       organization:
         type: string

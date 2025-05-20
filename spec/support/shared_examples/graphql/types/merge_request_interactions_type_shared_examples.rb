@@ -51,6 +51,7 @@ RSpec.shared_examples "a user type with merge request interaction type" do
       linkedin
       twitter
       discord
+      github
       organization
       jobTitle
       createdAt

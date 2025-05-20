@@ -61,17 +61,17 @@ describe('Repository router spec', () => {
     const branch = 'main';
 
     it.each`
-      path                         | expectedPath
-      ${'/'}                       | ${'/'}
-      ${'/tree/main'}              | ${'/'}
+      path                         | expectedPathParam
+      ${'/'}                       | ${''}
+      ${'/tree/main'}              | ${''}
       ${'/-/tree/main/app/assets'} | ${'app/assets'}
       ${'/-/blob/main/file.md'}    | ${'file.md'}
-    `('sets title with correct parameters for $path', async ({ path, expectedPath }) => {
+    `('sets title with correct parameters for $path', async ({ path, expectedPathParam }) => {
       const router = createRouter(projectPath, branch, projectName);
 
       await router.push(path);
 
-      expect(setTitle).toHaveBeenCalledWith(expectedPath, branch, projectName);
+      expect(setTitle).toHaveBeenCalledWith(expectedPathParam, branch, projectName);
     });
   });
 });

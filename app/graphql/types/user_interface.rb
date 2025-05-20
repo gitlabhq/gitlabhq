@@ -207,6 +207,11 @@ module Types
       null: true,
       description: 'Discord ID of the user.'
 
+    field :github,
+      type: ::GraphQL::Types::String,
+      null: true,
+      description: 'GitHub profile name of the user.'
+
     field :organization,
       type: ::GraphQL::Types::String,
       null: true,

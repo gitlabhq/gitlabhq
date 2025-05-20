@@ -16,7 +16,7 @@ class IssuableBaseService < ::BaseContainerService
     @callbacks = available_callbacks.filter_map do |callback_class|
       callback_params = params.slice(*callback_class::ALLOWED_PARAMS)
 
-      next if callback_params.empty?
+      next if callback_params.empty? && !execute_without_params(callback_class)
 
       callback_class.new(issuable: issuable, current_user: current_user, params: callback_params)
     end
@@ -29,6 +29,23 @@ class IssuableBaseService < ::BaseContainerService
     available_callbacks.each do |callback_class|
       callback_class::ALLOWED_PARAMS.each { |p| params.delete(p) }
     end
+  end
+
+  # Helper method, that is being used when we initialize the callbacks,
+  # to dynamically determine if a callback class can be executed without params
+  def execute_without_params(callback_class)
+    # We should update execute without params only during creation.
+    # During update the services are not build to run without params.
+    return false unless create_service?
+
+    callback_class.execute_without_params?
+  end
+
+  # Method to determine if this is a create service for a WorkItem or Issue
+  def create_service?
+    class_name = self.class.name
+
+    class_name.include?('WorkItems::CreateService') || class_name.include?('Issues::CreateService')
   end
 
   def self.constructor_container_arg(value)

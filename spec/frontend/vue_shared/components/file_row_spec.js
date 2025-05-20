@@ -2,7 +2,6 @@ import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { file } from 'jest/ide/helpers';
-import { escapeFileUrl } from '~/lib/utils/url_utility';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import FileHeader from '~/vue_shared/components/file_row_header.vue';
@@ -86,6 +85,16 @@ describe('File row component', () => {
     expect(wrapper.emitted('toggleTreeOpen')[0][0]).toEqual(fileName);
   });
 
+  it('emits clickTree on tree click with file path', () => {
+    const fileName = 'folder';
+    const filePath = 'path/to/folder';
+    createComponent({ file: { ...file(fileName), type: 'tree', path: filePath }, level: 0 });
+
+    wrapper.element.click();
+
+    expect(wrapper.emitted('clickTree')[0][0]).toEqual(filePath);
+  });
+
   it('emits clickFile on blob click', () => {
     const fileName = 't3';
     const fileProp = {
@@ -136,16 +145,14 @@ describe('File row component', () => {
 
   it('matches the current route against encoded file URL', () => {
     const fileName = 'with space';
-    const rowFile = { ...file(fileName), url: `/${fileName}` };
-    const routerPath = `/project/${escapeFileUrl(fileName)}`;
     createComponent(
       {
-        file: rowFile,
+        file: { ...file(fileName), url: `/${fileName}` },
         level: 0,
       },
       {
         currentRoute: {
-          path: routerPath,
+          path: `/project/${fileName}`,
         },
       },
     );

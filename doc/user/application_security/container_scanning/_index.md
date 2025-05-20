@@ -276,6 +276,7 @@ positives.
 | `CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` | `"true"` | Disable scanning for language-specific packages installed in the scanned image. |
 | `CS_DOCKER_INSECURE`           | `"false"`     | Allow access to secure Docker registries using HTTPS without validating the certificates. |
 | `CS_DOCKERFILE_PATH`           | `Dockerfile`  | The path to the `Dockerfile` to use for generating remediations. By default, the scanner looks for a file named `Dockerfile` in the root directory of the project. You should configure this variable only if your `Dockerfile` is in a non-standard location, such as a subdirectory. See [Solutions for vulnerabilities](#solutions-for-vulnerabilities-auto-remediation) for more details. |
+| `CS_INCLUDE_LICENSES`           | `""` | If set, this variable includes licenses for each component. It is only applicable to cyclonedx reports and those licenses are provided by [trivy](https://trivy.dev/v0.60/docs/scanner/license/)|
 | `CS_IGNORE_STATUSES`           | `""` | Force the analyzer to ignore findings with specified statuses in a comma-delimited list. The following values are allowed: `unknown,not_affected,affected,fixed,under_investigation,will_not_fix,fix_deferred,end_of_life`. <sup>1</sup> |
 | `CS_IGNORE_UNFIXED`            | `"false"`     | Ignore findings that are not fixed. Ignored findings are not included in the report. |
 | `CS_IMAGE`                 | `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG` | The Docker image to be scanned. If set, this variable overrides the `$CI_APPLICATION_REPOSITORY` and `$CI_APPLICATION_TAG` variables. |
@@ -772,6 +773,32 @@ In addition to the [JSON report file](#reports-json-format), the [Container Scan
 This report can be viewed in the [Dependency List](../dependency_list/_index.md).
 
 You can download CycloneDX SBOMs [the same way as other job artifacts](../../../ci/jobs/job_artifacts.md#download-job-artifacts).
+
+#### License Information in CycloneDX Reports
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/472064) in GitLab 18.0.
+
+{{< /history >}}
+
+Container scanning can include license information in CycloneDX reports. This feature is disabled by default to maintain backward compatibility.
+
+To enable license scanning in your container scanning results:
+
+- Set the `CS_INCLUDE_LICENSES` variable in your `.gitlab-ci.yml` file:
+
+```yaml
+container_scanning:
+  variables:
+    CS_INCLUDE_LICENSES: "true"
+```
+
+- After enabling this feature, the generated CycloneDX report will include license information for components detected in your container images.
+
+- You can view this license information in the dependency list page or as part of the downloadable CycloneDX job artifact.
+
+It is important to mention that only SPDX licenses are supported. However, licenses that are non-compliant with SPDX will still be ingested without any user-facing error.
 
 ## Container Scanning for Registry
 

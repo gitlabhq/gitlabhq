@@ -4,7 +4,7 @@ module Organizations
   class ProjectsController < ApplicationController
     before_action :authorize_project_view_edit_page!, only: [:edit]
 
-    feature_category :cell
+    feature_category :organization
 
     def edit; end
 

@@ -9271,6 +9271,24 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#work_item_status_transitions_enabled?' do
+    let_it_be(:group_project) { create(:project, :in_subgroup) }
+
+    subject { group_project.work_item_status_transitions_enabled? }
+
+    context "when FF is enabled" do
+      it { is_expected.to eq(true) }
+    end
+
+    context "when the FF is diabled" do
+      before do
+        stub_feature_flags(work_item_status_transitions: false)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
   describe 'serialization' do
     let(:object) { build(:project) }
 

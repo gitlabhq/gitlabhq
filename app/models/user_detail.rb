@@ -63,12 +63,13 @@ class UserDetail < ApplicationRecord
   validates :twitter, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
   validates :website_url, length: { maximum: DEFAULT_FIELD_LENGTH }, url: true, allow_blank: true, if: :website_url_changed?
   validates :onboarding_status, json_schema: { filename: 'user_detail_onboarding_status' }
+  validates :github, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
 
   before_validation :sanitize_attrs
   before_save :prevent_nil_fields
 
   def sanitize_attrs
-    %i[bluesky discord linkedin mastodon orcid skype twitter website_url].each do |attr|
+    %i[bluesky discord linkedin mastodon orcid skype twitter website_url github].each do |attr|
       value = self[attr]
       self[attr] = Sanitize.clean(value) if value.present?
     end
@@ -92,6 +93,7 @@ class UserDetail < ApplicationRecord
     self.skype = '' if skype.nil?
     self.twitter = '' if twitter.nil?
     self.website_url = '' if website_url.nil?
+    self.github = '' if github.nil?
   end
 
   def bot_namespace_user_type

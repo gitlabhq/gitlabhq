@@ -278,7 +278,7 @@ export default {
           ref="workItemUrl"
           data-testid="work-item-drawer-ref-link"
           :href="activeItem.webUrl"
-          class="gl-text-sm gl-font-bold gl-text-default"
+          class="gl-mr-2 gl-text-sm gl-font-bold gl-text-default"
           @click="redirectToWorkItem"
         >
           {{ headerReference }}

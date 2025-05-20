@@ -2,7 +2,7 @@
 
 module Organizations
   class SettingsController < ApplicationController
-    feature_category :cell
+    feature_category :organization
 
     before_action :authorize_admin_organization!
 

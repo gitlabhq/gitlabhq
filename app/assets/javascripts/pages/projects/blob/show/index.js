@@ -96,7 +96,7 @@ if (viewBlobEl) {
     ...dataset
   } = viewBlobEl.dataset;
   const router = createRouter(projectPath, originalBranch);
-  initFileTreeBrowser(router);
+  initFileTreeBrowser(router, { projectPath, ref: originalBranch, refType });
 
   initHeaderApp({ router, isBlobView: true });
 

@@ -406,6 +406,7 @@ class Admin::UsersController < Admin::ApplicationController
       :twitter,
       :username,
       :website_url,
+      :github,
       { credit_card_validation_attributes: [:credit_card_validated_at] },
       { organization_users_attributes: [:id, :organization_id, :access_level] }
     ]

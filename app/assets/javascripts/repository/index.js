@@ -45,9 +45,10 @@ export default function setupVueRepositoryList() {
     userId,
     explainCodeAvailable,
     targetBranch,
+    refType,
   } = dataset;
   const router = createRouter(projectPath, escapedRef, fullName);
-  initFileTreeBrowser(router);
+  initFileTreeBrowser(router, { projectPath, ref, refType });
 
   apolloProvider.clients.defaultClient.cache.writeQuery({
     query: commitsQuery,
@@ -159,7 +160,7 @@ export default function setupVueRepositoryList() {
 
     if (!refSwitcherEl) return false;
 
-    const { projectId, projectRootPath, refType } = refSwitcherEl.dataset;
+    const { projectId, projectRootPath, refType: switcherRefType } = refSwitcherEl.dataset;
 
     return new Vue({
       el: refSwitcherEl,
@@ -167,7 +168,7 @@ export default function setupVueRepositoryList() {
         return createElement(RefSelector, {
           props: {
             projectId,
-            value: refType ? joinPaths('refs', refType, ref) : ref,
+            value: switcherRefType ? joinPaths('refs', switcherRefType, ref) : ref,
             useSymbolicRefNames: true,
             queryParams: { sort: 'updated_desc' },
           },

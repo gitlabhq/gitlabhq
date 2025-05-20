@@ -1,0 +1,4 @@
+@function rem-to-px($rem-value) {
+  $base-font-size: 16px;
+  @return (strip-unit($rem-value) * $base-font-size);
+}
