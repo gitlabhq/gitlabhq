@@ -48,9 +48,9 @@ GitLab supports the following authorization flows:
 - **Authorization code with [Proof Key for Code Exchange (PKCE)](https://www.rfc-editor.org/rfc/rfc7636):**
   Most secure. Without PKCE, you'd have to include client secrets on mobile clients,
   and is recommended for both client and server apps.
-- **Authorization code:** Secure and common flow. Recommended option for secure
+- **Authorization code**: Secure and common flow. Recommended option for secure
   server-side apps.
-- **Resource owner password credentials:** To be used **only** for securely
+- **Resource owner password credentials**: To be used **only** for securely
   hosted, first-party services. GitLab recommends against use of this flow.
 - **Device Authorization Grant** (GitLab 17.1 and later) Secure flow oriented toward devices without browser access. Requires a secondary device to complete the authorization flow.
 

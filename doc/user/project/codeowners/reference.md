@@ -18,7 +18,8 @@ The key elements are:
 
 - File paths: Specific files, directories, or wildcards.
 - Code Owners: Use `@mentions` for users, groups, or roles.
-- Comments: Lines starting with `#` are ignored.
+- Comments: Lines starting with `#` are ignored. Inline comments are unsupported.
+  Any Code Owners listed in a comment are parsed.
 - Sections: Optional groupings of rules, defined using `[Section name]`.
 
 {{< alert type="note" >}}

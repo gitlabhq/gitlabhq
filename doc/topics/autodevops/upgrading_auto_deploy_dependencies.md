@@ -105,7 +105,7 @@ If your Auto DevOps project has an active environment that was deployed with the
 
    - `MIGRATE_HELM_2TO3` to `true`. If this variable is not present, migration jobs do not run.
    - `AUTO_DEVOPS_FORCE_DEPLOY_V2` to `1`.
-   - **Optional:** `BACKUP_HELM2_RELEASES` to `1`. If you set this variable, the migration
+   - **Optional**: `BACKUP_HELM2_RELEASES` to `1`. If you set this variable, the migration
      job saves a backup for 1 week in a job artifact called `helm-2-release-backups`.
      If you accidentally delete the Helm v2 releases before you are ready, you can restore
      this backup from a Kubernetes manifest file by using `kubectl apply -f $backup`.

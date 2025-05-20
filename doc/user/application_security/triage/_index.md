@@ -28,7 +28,7 @@ and effectively.
 The scope of the triage phase is all those vulnerabilities that have not been triaged. To list these
 vulnerabilities, use the following filter criteria in the vulnerability report:
 
-- **Status:** Needs triage
+- **Status**: Needs triage
 
 ## Risk analysis
 
@@ -46,8 +46,8 @@ threshold for vulnerabilities.
 
 After you triage a vulnerability you should change its status to either:
 
-- **Confirmed:** You have triaged this vulnerability and decided it requires analysis.
-- **Dismissed:** You have triaged this vulnerability and decided against analysis.
+- **Confirmed**: You have triaged this vulnerability and decided it requires analysis.
+- **Dismissed**: You have triaged this vulnerability and decided against analysis.
 
 When you dismiss a vulnerability you must provide a brief comment that states why it has been
 dismissed. Dismissed vulnerabilities are ignored if detected in subsequent scans. Vulnerability

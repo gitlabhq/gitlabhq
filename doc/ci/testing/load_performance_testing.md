@@ -69,8 +69,7 @@ Configuring your Load Performance Testing job can be broken down into several di
 The first thing you need to do is determine the [type of load test](https://grafana.com/load-testing/types-of-load-testing/)
 you want to run, and how you want it to run (for example, the number of users, throughput, and so on).
 
-Refer to the [k6 docs](https://k6.io/docs/), especially the [k6 testing guides](https://k6.io/docs/testing-guides),
-for guidance on the above and more.
+Refer to the [k6 docs](https://k6.io/docs/), especially the [k6 testing guides](https://k6.io/docs/testing-guides) for guidance.
 
 ### Test Environment setup
 
@@ -125,7 +124,7 @@ An example configuration workflow:
        K6_TEST_FILE: <PATH TO K6 TEST FILE IN PROJECT>
    ```
 
-The above example creates a `load_performance` job in your CI/CD pipeline that runs
+The previous example creates a `load_performance` job in your CI/CD pipeline that runs
 the k6 test.
 
 {{< alert type="note" >}}
@@ -160,7 +159,7 @@ If [GitLab Pages](../../user/project/pages/_index.md) is enabled, you can view t
 
 ### Load Performance testing in review apps
 
-The CI/CD YAML configuration example above works for testing against static environments,
+The previous CI/CD YAML configuration example works for testing against static environments,
 but it can be extended to work with [review apps](../review_apps/_index.md) or
 [dynamic environments](../environments/_index.md) with a few extra steps.
 

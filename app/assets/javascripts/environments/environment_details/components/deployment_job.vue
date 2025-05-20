@@ -1,11 +1,12 @@
 <script>
-import { GlTruncate, GlLink, GlBadge } from '@gitlab/ui';
+import { GlTruncate, GlLink, GlBadge, GlIcon } from '@gitlab/ui';
 
 export default {
   components: {
     GlBadge,
     GlTruncate,
     GlLink,
+    GlIcon,
   },
   props: {
     job: {
@@ -14,11 +15,26 @@ export default {
       default: null,
     },
   },
+  computed: {
+    jobPath() {
+      return this.job?.webPath;
+    },
+    pipelinePath() {
+      return this.job?.pipeline?.path;
+    },
+  },
 };
 </script>
 <template>
-  <gl-link v-if="job" :href="job.webPath">
-    <gl-truncate :text="job.label" />
-  </gl-link>
+  <div v-if="job" class="gl-mb-2 gl-flex gl-flex-wrap gl-justify-end gl-gap-2 lg:gl-justify-start">
+    <component :is="jobPath ? 'gl-link' : 'span'" :href="jobPath">
+      <gl-truncate :text="job.label" />
+    </component>
+
+    <gl-link v-if="pipelinePath" :href="pipelinePath">
+      <gl-icon name="pipeline" />
+      {{ job.pipeline.label }}
+    </gl-link>
+  </div>
   <gl-badge v-else variant="info">{{ __('API') }}</gl-badge>
 </template>

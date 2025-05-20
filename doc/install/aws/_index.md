@@ -285,8 +285,8 @@ On the EC2 dashboard, look for **Load Balancers** in the left navigation bar:
    | TLS | 443 | `gitlab-loadbalancer-http-target` |
 
    1. For the TLS listener on port `443`, under **Security Policy** settings:
-      1. **Policy name:** Pick a predefined security policy from the dropdown list. You can see a breakdown of [Predefined SSL Security Policies for Network Load Balancers](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/create-tls-listener.html#describe-ssl-policies) in the AWS documentation. Check the GitLab codebase for a list of [supported SSL ciphers and protocols](https://gitlab.com/gitlab-org/gitlab/-/blob/9ee7ad433269b37251e0dd5b5e00a0f00d8126b4/lib/support/nginx/gitlab-ssl#L97-99).
-      1. **Default SSL/TLS server certificate:** Select an SSL/TLS certificate from ACM or upload a certificate to IAM.
+      1. **Policy name**: Pick a predefined security policy from the dropdown list. You can see a breakdown of [Predefined SSL Security Policies for Network Load Balancers](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/create-tls-listener.html#describe-ssl-policies) in the AWS documentation. Check the GitLab codebase for a list of [supported SSL ciphers and protocols](https://gitlab.com/gitlab-org/gitlab/-/blob/9ee7ad433269b37251e0dd5b5e00a0f00d8126b4/lib/support/nginx/gitlab-ssl#L97-99).
+      1. **Default SSL/TLS server certificate**: Select an SSL/TLS certificate from ACM or upload a certificate to IAM.
 
 1. For each listener we created, we need to create a target group and assign them based on the table earlier. We haven't created any EC2 instances yet so you don't need to register targets. The EC2 instances are created and assigned as part of the [auto scaling group setup](#create-an-auto-scaling-group) later on.
    1. Select `Create target group`.on. Select **Instances** as the target type.
@@ -316,14 +316,14 @@ On the Route 53 dashboard, select **Hosted zones** in the left navigation bar:
 
 1. Select an existing hosted zone or, if you do not already have one for your domain, select **Create Hosted Zone**, enter your domain name, and select **Create**.
 1. Select **Create record** and provide the following values:
-   1. **Name:** Use the domain name (the default value) or enter a subdomain.
-   1. **Type:** Select **A - IPv4 address**.
-   1. **Alias:** Defaults to **disabled**. Enable this option.
-   1. **Route traffic to:** Select **Alias to Network Load Balancer**.
-   1. **Region:** Select the region where the Network Load Balancer resides.
-   1. **Choose network load balancer:** Select the Network Load Balancer we created earlier.
-   1. **Routing Policy:** We use **Simple** but you can choose a different policy based on your use case.
-   1. **Evaluate Target Health:** We set this to **No** but you can choose to have the load balancer route traffic based on target health.
+   1. **Name**: Use the domain name (the default value) or enter a subdomain.
+   1. **Type**: Select **A - IPv4 address**.
+   1. **Alias**: Defaults to **disabled**. Enable this option.
+   1. **Route traffic to**: Select **Alias to Network Load Balancer**.
+   1. **Region**: Select the region where the Network Load Balancer resides.
+   1. **Choose network load balancer**: Select the Network Load Balancer we created earlier.
+   1. **Routing Policy**: We use **Simple** but you can choose a different policy based on your use case.
+   1. **Evaluate Target Health**: We set this to **No** but you can choose to have the load balancer route traffic based on target health.
    1. Select **Create**.
 1. If you registered your domain through Route 53, you're done. If you used a different domain registrar, you must update your DNS records with your domain registrar. You must:
    1. Select **Hosted zones** and select the domain you added previously.
@@ -345,9 +345,9 @@ We need a security group for our database that allows inbound traffic from the i
 1. Select **Create security group**.
 1. Give it a name (we use `gitlab-rds-sec-group`), a description, and select the `gitlab-vpc` from the **VPC** dropdown list.
 1. In the **Inbound rules** section, select **Add rule** and set the following:
-   1. **Type:** search for and select the **PostgreSQL** rule.
-   1. **Source type:** set as "Custom".
-   1. **Source:** select the `gitlab-loadbalancer-sec-group` we created earlier.
+   1. **Type**: search for and select the **PostgreSQL** rule.
+   1. **Source type**: set as "Custom".
+   1. **Source**: select the `gitlab-loadbalancer-sec-group` we created earlier.
 1. When done, select **Create security group**.
 
 ### RDS Subnet Group
@@ -441,8 +441,8 @@ persistence and is used to store session data, temporary cache information, and 
    1. Leave the port as `6379` because this is what we previously used in our Redis security group.
    1. Select the node type (at least `cache.t3.medium`, but adjust to your needs) and the number of replicas.
 1. In the Connectivity settings section:
-   1. **Network type:** IPv4
-   1. **Subnet groups:** Select **Choose existing subnet group** and choose the `gitlab-redis-group` we had previously created.
+   1. **Network type**: IPv4
+   1. **Subnet groups**: Select **Choose existing subnet group** and choose the `gitlab-redis-group` we had previously created.
 1. In the Availability Zone placements section:
    1. Manually select the preferred availability zones, and under "Replica 2"
       choose a different zone than the other two.
@@ -537,10 +537,10 @@ From the EC2 dashboard:
 1. In the **Key pair** section, select **Create new key pair**.
    1. Give the key pair a name (we use `gitlab`) and save the `gitlab.pem` file for later use.
 1. In the **Network settings** section:
-   1. **VPC:** Select `gitlab-vpc`, the VPC we created earlier.
-   1. **Subnet:** Select `gitlab-private-10.0.1.0` from the list of subnets we created earlier.
-   1. **Auto-assign Public IP:** Select `Disable`.
-   1. **Firewall:** Chose **Select existing security group** and select the `gitlab-loadbalancer-sec-group` we created earlier.
+   1. **VPC**: Select `gitlab-vpc`, the VPC we created earlier.
+   1. **Subnet**: Select `gitlab-private-10.0.1.0` from the list of subnets we created earlier.
+   1. **Auto-assign Public IP**: Select `Disable`.
+   1. **Firewall**: Chose **Select existing security group** and select the `gitlab-loadbalancer-sec-group` we created earlier.
 1. For storage, the root volume is 8 GiB by default and should be enough given that we do not store any data there.
 1. Review all your settings and, if you're happy, select **Launch Instance**.
 
@@ -836,9 +836,9 @@ From the EC2 dashboard:
 1. The root volume is 8 GiB by default and should be enough given that we do not store any data there. Select **Configure Security Group**.
 1. Check **Select and existing security group** and select the `gitlab-loadbalancer-sec-group` we created earlier.
 1. In the **Network settings** section:
-   1. **Firewall:** Choose **Select existing security group** and select the `gitlab-loadbalancer-sec-group` we created earlier.
+   1. **Firewall**: Choose **Select existing security group** and select the `gitlab-loadbalancer-sec-group` we created earlier.
 1. In the **Advanced details** section:
-   1. **IAM instance profile:** Select the `GitLabS3Access` role we [created earlier](#create-an-iam-role).
+   1. **IAM instance profile**: Select the `GitLabS3Access` role we [created earlier](#create-an-iam-role).
 1. Review all your settings and, if you're happy, select **Create launch template**.
 
 ### Create an auto scaling group
@@ -860,8 +860,8 @@ From the EC2 dashboard:
 1. For **Group size**, set **Desired capacity** to `2`.
 1. In the Scaling settings section:
    1. Select **No scaling policies**. The policies are configured later one.
-   1. **Min desired capacity:** Set to `2`.
-   1. **Max desired capacity:** Set to `4`.
+   1. **Min desired capacity**: Set to `2`.
+   1. **Max desired capacity**: Set to `4`.
    1. Select **Next**.
 1. Finally, configure notifications and tags as you see fit, review your changes, and create the
    auto scaling group.

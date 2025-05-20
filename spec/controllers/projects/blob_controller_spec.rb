@@ -366,6 +366,31 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
       expect(response).to redirect_to(blob_after_edit_path)
     end
 
+    context "when user doesn't have permission to push" do
+      before do
+        create(:protected_branch, :no_one_can_push, project: mutable_project, name: '*')
+      end
+
+      context 'when branch_name is not provided' do
+        let(:params) do
+          {
+            project_id: mutable_project,
+            namespace_id: mutable_project.namespace,
+            id: 'master/CHANGELOG',
+            content: 'Added changes',
+            commit_message: 'Update CHANGELOG'
+          }
+        end
+
+        it 'handles missing branch_name gracefully and returns permission error' do
+          put :update, params: params, format: :json
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['error']).to eq('You are not allowed to push into this branch')
+        end
+      end
+    end
+
     context 'when file is renamed' do
       let(:default_params) do
         {

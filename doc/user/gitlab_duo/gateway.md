@@ -50,9 +50,9 @@ It's important to acknowledge the current limitations regarding strict data sove
 
 The following factors influence where data is routed.
 
-- **Network latency:** The primary routing mechanism focuses on minimizing latency, meaning data might be processed in a region other than the nearest one if network conditions dictate.
-- **Service availability:** In case of regional outages or service disruptions, requests might be automatically rerouted to ensure uninterrupted service.
-- **Third-Party dependencies:** The GitLab AI infrastructure relies on third-party model providers, like Google Vertex AI, which have their own data handling practices.
+- **Network latency**: The primary routing mechanism focuses on minimizing latency, meaning data might be processed in a region other than the nearest one if network conditions dictate.
+- **Service availability**: In case of regional outages or service disruptions, requests might be automatically rerouted to ensure uninterrupted service.
+- **Third-Party dependencies**: The GitLab AI infrastructure relies on third-party model providers, like Google Vertex AI, which have their own data handling practices.
 
 ### AI gateway deployment regions
 

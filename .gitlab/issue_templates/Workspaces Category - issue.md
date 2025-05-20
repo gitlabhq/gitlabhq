@@ -52,5 +52,4 @@ TODO: Fill out or delete (optional)
 /label ~"section::dev"
 /label ~"devops::create"
 /label ~"group::remote development"
-/label ~"workspaces-workflow::unprioritized"
 /label ~"workflow::refinement"

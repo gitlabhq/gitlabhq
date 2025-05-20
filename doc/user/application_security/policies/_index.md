@@ -89,9 +89,9 @@ When designing your policies, your goals should be to:
 
 To enforce policies to meet your requirements, consider the following factors:
 
-- **Inheritance:** By default, a policy is enforced on the organizational units it's linked to, and
+- **Inheritance**: By default, a policy is enforced on the organizational units it's linked to, and
   all their descendent subgroups and their projects.
-- **Scope:** To customize policy enforcement, you can define a policy's scope to match your needs.
+- **Scope**: To customize policy enforcement, you can define a policy's scope to match your needs.
 
 #### Inheritance
 

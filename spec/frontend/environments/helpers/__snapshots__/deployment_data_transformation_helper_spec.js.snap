@@ -32,6 +32,7 @@ exports[`deployment_data_transformation_helper convertToDeploymentTableRow shoul
   "id": "31",
   "job": {
     "label": "deploy-prod (#860)",
+    "pipeline": undefined,
     "webPath": "/gitlab-org/pipelinestest/-/jobs/860",
   },
   "rollback": {
@@ -70,6 +71,150 @@ exports[`deployment_data_transformation_helper convertToDeploymentTableRow shoul
 
 exports[`deployment_data_transformation_helper convertToDeploymentTableRow should be converted to proper table row data 2`] = `
 {
+  "actions": [
+    {
+      "name": "deploy-staging",
+      "playPath": "https://gdk.test:3000/redeploy/play",
+      "playable": true,
+      "scheduledAt": "2023-01-17T11:02:41.369Z",
+    },
+  ],
+  "commit": {
+    "author": {
+      "avatar_url": "/uploads/-/system/user/avatar/1/avatar.png",
+      "path": "http://gdk.test:3000/root",
+      "username": "Administrator",
+    },
+    "commitRef": {
+      "name": "main",
+    },
+    "commitUrl": "http://gdk.test:3000/gitlab-org/pipelinestest/-/commit/0cb48dd5deddb7632fd7c3defb16075fc6c3ca74",
+    "shortSha": "0cb48dd5",
+    "tag": false,
+    "title": "Update .gitlab-ci.yml file",
+  },
+  "created": "2022-10-17T07:44:17Z",
+  "deploymentApproval": {
+    "isApprovalActionAvailable": false,
+  },
+  "finished": "2022-10-17T07:44:43Z",
+  "id": "31",
+  "job": {
+    "label": "deploy-prod (#860)",
+    "pipeline": {
+      "label": "#101",
+      "path": "/gitlab-org/pipelinestest/-/pipelines/101",
+    },
+    "webPath": null,
+  },
+  "rollback": {
+    "id": "gid://gitlab/Deployment/76",
+    "lastDeployment": {
+      "commit": {
+        "author": {
+          "avatarUrl": "/uploads/-/system/user/avatar/1/avatar.png",
+          "id": "gid://gitlab/User/1",
+          "name": "Administrator",
+          "webUrl": "http://gdk.test:3000/root",
+        },
+        "authorEmail": "admin@example.com",
+        "authorGravatar": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+        "authorName": "Administrator",
+        "id": "gid://gitlab/CommitPresenter/0cb48dd5deddb7632fd7c3defb16075fc6c3ca74",
+        "message": "Update .gitlab-ci.yml file",
+        "shortId": "0cb48dd5",
+        "webUrl": "http://gdk.test:3000/gitlab-org/pipelinestest/-/commit/0cb48dd5deddb7632fd7c3defb16075fc6c3ca74",
+      },
+      "isLast": false,
+    },
+    "name": undefined,
+    "retryUrl": "null/retry",
+  },
+  "status": "success",
+  "triggerer": {
+    "avatarUrl": "/uploads/-/system/user/avatar/1/avatar.png",
+    "id": "gid://gitlab/User/1",
+    "name": "Administrator",
+    "webUrl": "http://gdk.test:3000/root",
+  },
+  "webPath": "",
+}
+`;
+
+exports[`deployment_data_transformation_helper convertToDeploymentTableRow should be converted to proper table row data 3`] = `
+{
+  "actions": [
+    {
+      "name": "deploy-staging",
+      "playPath": "https://gdk.test:3000/redeploy/play",
+      "playable": true,
+      "scheduledAt": "2023-01-17T11:02:41.369Z",
+    },
+  ],
+  "commit": {
+    "author": {
+      "avatar_url": "/uploads/-/system/user/avatar/1/avatar.png",
+      "path": "http://gdk.test:3000/root",
+      "username": "Administrator",
+    },
+    "commitRef": {
+      "name": "main",
+    },
+    "commitUrl": "http://gdk.test:3000/gitlab-org/pipelinestest/-/commit/0cb48dd5deddb7632fd7c3defb16075fc6c3ca74",
+    "shortSha": "0cb48dd5",
+    "tag": false,
+    "title": "Update .gitlab-ci.yml file",
+  },
+  "created": "2022-10-17T07:44:17Z",
+  "deploymentApproval": {
+    "isApprovalActionAvailable": false,
+  },
+  "finished": "2022-10-17T07:44:43Z",
+  "id": "31",
+  "job": {
+    "label": "deploy-prod (#860)",
+    "pipeline": {
+      "label": "#101",
+      "path": "/gitlab-org/pipelinestest/-/pipelines/101",
+    },
+    "webPath": null,
+  },
+  "rollback": {
+    "id": "gid://gitlab/Deployment/76",
+    "lastDeployment": {
+      "commit": {
+        "author": {
+          "avatarUrl": "/uploads/-/system/user/avatar/1/avatar.png",
+          "id": "gid://gitlab/User/1",
+          "name": "Administrator",
+          "webUrl": "http://gdk.test:3000/root",
+        },
+        "authorEmail": "admin@example.com",
+        "authorGravatar": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+        "authorName": "Administrator",
+        "id": "gid://gitlab/CommitPresenter/0cb48dd5deddb7632fd7c3defb16075fc6c3ca74",
+        "message": "Update .gitlab-ci.yml file",
+        "shortId": "0cb48dd5",
+        "webUrl": "http://gdk.test:3000/gitlab-org/pipelinestest/-/commit/0cb48dd5deddb7632fd7c3defb16075fc6c3ca74",
+      },
+      "isLast": false,
+    },
+    "name": undefined,
+    "retryUrl": "null/retry",
+  },
+  "status": "success",
+  "triggerer": {
+    "avatarUrl": "/uploads/-/system/user/avatar/1/avatar.png",
+    "id": "gid://gitlab/User/1",
+    "name": "Administrator",
+    "webUrl": "http://gdk.test:3000/root",
+  },
+  "webPath": "",
+}
+`;
+
+exports[`deployment_data_transformation_helper convertToDeploymentTableRow should be converted to proper table row data 4`] = `
+{
   "actions": [],
   "commit": {
     "author": {
@@ -104,7 +249,7 @@ exports[`deployment_data_transformation_helper convertToDeploymentTableRow shoul
 }
 `;
 
-exports[`deployment_data_transformation_helper convertToDeploymentTableRow should be converted to proper table row data 3`] = `
+exports[`deployment_data_transformation_helper convertToDeploymentTableRow should be converted to proper table row data 5`] = `
 {
   "actions": [],
   "commit": {

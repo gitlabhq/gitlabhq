@@ -242,7 +242,7 @@ module Types
       end
 
       def web_path
-        ::Gitlab::Routing.url_helpers.project_job_path(object.project, object)
+        ::Gitlab::Routing.url_helpers.project_job_path(object.project, object) unless object.is_a?(::Ci::Bridge)
       end
 
       def play_path

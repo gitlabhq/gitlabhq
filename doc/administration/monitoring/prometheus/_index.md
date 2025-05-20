@@ -390,11 +390,11 @@ These are only examples and may not work on all setups. Further adjustments may 
 
 {{< /alert >}}
 
-- **% CPU utilization:** `1 - avg without (mode,cpu) (rate(node_cpu_seconds_total{mode="idle"}[5m]))`
-- **% Memory available:** `((node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) or ((node_memory_MemFree_bytes + node_memory_Buffers_bytes + node_memory_Cached_bytes) / node_memory_MemTotal_bytes)) * 100`
-- **Data transmitted:** `rate(node_network_transmit_bytes_total{device!="lo"}[5m])`
-- **Data received:** `rate(node_network_receive_bytes_total{device!="lo"}[5m])`
-- **Disk read IOPS:** `sum by (instance) (rate(node_disk_reads_completed_total[1m]))`
+- **% CPU utilization**: `1 - avg without (mode,cpu) (rate(node_cpu_seconds_total{mode="idle"}[5m]))`
+- **% Memory available**: `((node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) or ((node_memory_MemFree_bytes + node_memory_Buffers_bytes + node_memory_Cached_bytes) / node_memory_MemTotal_bytes)) * 100`
+- **Data transmitted**: `rate(node_network_transmit_bytes_total{device!="lo"}[5m])`
+- **Data received**: `rate(node_network_receive_bytes_total{device!="lo"}[5m])`
+- **Disk read IOPS**: `sum by (instance) (rate(node_disk_reads_completed_total[1m]))`
 - **Disk write IOPS**: `sum by (instance) (rate(node_disk_writes_completed_total[1m]))`
 - **RPS via GitLab transaction count**: `sum(irate(gitlab_transaction_duration_seconds_count{controller!~'HealthController|MetricsController|'}[1m])) by (controller, action)`
 

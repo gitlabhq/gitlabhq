@@ -413,13 +413,13 @@ A scanner profile defines the configuration details of a security scanner.
 
 A scanner profile contains:
 
-- **Profile name:** A name you give the scanner profile. For example, "Spider_15". While a scanner
+- **Profile name**: A name you give the scanner profile. For example, "Spider_15". While a scanner
   profile is referenced in either `.gitlab-ci.yml` or an on-demand scan, it **cannot** be renamed.
-- **Scan mode:** A passive scan monitors all HTTP messages (requests and responses) sent to the target. An active scan attacks the target to find potential vulnerabilities.
-- **Crawl timeout:** The maximum number of minutes allowed for the crawler to traverse the site.
-- **Target timeout:** The maximum number of seconds DAST waits for the site to be available before
+- **Scan mode**: A passive scan monitors all HTTP messages (requests and responses) sent to the target. An active scan attacks the target to find potential vulnerabilities.
+- **Crawl timeout**: The maximum number of minutes allowed for the crawler to traverse the site.
+- **Target timeout**: The maximum number of seconds DAST waits for the site to be available before
   starting the scan.
-- **Debug messages:** Include debug messages in the DAST console output.
+- **Debug messages**: Include debug messages in the DAST console output.
 
 You can reference a scanner profile in `.gitlab-ci.yml` and
 on-demand scans.

@@ -16,10 +16,10 @@ error tracking increases efficiency and awareness. Users can choose between
 
 For error tracking to work, you need:
 
-- **Your application configured with the Sentry SDK:** When the error happens, Sentry SDK captures information
+- **Your application configured with the Sentry SDK**: When the error happens, Sentry SDK captures information
   about it and sends it over the network to the backend. The backend stores information about all
   errors.
-- **Error tracking backend:** The backend can be either GitLab itself or Sentry.
+- **Error tracking backend**: The backend can be either GitLab itself or Sentry.
   - To use the GitLab backend, see [GitLab integrated error tracking](integrated_error_tracking.md).
     Integrated error tracking is available only on GitLab.com.
   - To use Sentry as the backend, see [Sentry error tracking](sentry_error_tracking.md).

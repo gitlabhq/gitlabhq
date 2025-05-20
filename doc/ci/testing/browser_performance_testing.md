@@ -89,7 +89,7 @@ using Docker-in-Docker.
        URL: https://example.com
    ```
 
-The above example:
+The previous example:
 
 - Creates a `browser_performance` job in your CI/CD pipeline and runs sitespeed.io against the webpage you
   defined in `URL` to gather key metrics.
@@ -144,7 +144,7 @@ The `Total Score` metric is based on sitespeed.io's [coach performance score](ht
 
 ### Performance testing on review apps
 
-The above CI YAML configuration is great for testing against static environments, and it can
+The previous CI YAML configuration is great for testing against static environments, and it can
 be extended for dynamic environments, but a few extra steps are required:
 
 1. The `browser_performance` job should run after the dynamic environment has started.

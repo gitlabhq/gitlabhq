@@ -56,10 +56,10 @@ number of false positives.
 
 Most of the GitLab application security tools have two template editions:
 
-- **Stable:** The stable template is the default. It offers a reliable and consistent application
+- **Stable**: The stable template is the default. It offers a reliable and consistent application
   security experience. You should use the stable template for most users and projects that require
   stability and predictable behavior in their CI/CD pipelines.
-- **Latest:** The latest template is for those who want to access and test cutting-edge features. It
+- **Latest**: The latest template is for those who want to access and test cutting-edge features. It
   is identified by the word `latest` in the template's name. It is not considered stable and may
   include breaking changes that are planned for the next major release. This template allows you to
   try new features and updates before they become part of the stable release.

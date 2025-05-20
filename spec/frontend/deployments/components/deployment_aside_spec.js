@@ -31,6 +31,7 @@ describe('~/deployments/components/deployment_aside.vue', () => {
   const findTriggererItem = () => wrapper.findByTestId('deployment-triggerer-item');
   const findPipelineSection = () => wrapper.findByTestId('deployment-pipeline');
   const findPipelineLink = () => wrapper.findByTestId('deployment-pipeline-link');
+  const findJobLink = () => wrapper.findByTestId('deployment-job');
 
   const createComponent = ({ propsData = {} } = {}) => {
     wrapper = mountExtended(DeploymentAside, {
@@ -109,6 +110,30 @@ describe('~/deployments/components/deployment_aside.vue', () => {
       const ref = wrapper.findByTestId('deployment-ref');
 
       expect(ref.find('span').text()).toBe('Branch');
+    });
+  });
+
+  describe('link to the job page', () => {
+    it('displays a link when webPath is available', () => {
+      createComponent();
+
+      expect(findJobLink().attributes('href')).toBe(deployment.job.webPath);
+      expect(findJobLink().text()).toBe(deployment.job.name);
+    });
+
+    it('displays job name without a link when webPath is not available', () => {
+      const deploymentWithNoJobPath = {
+        ...deployment,
+        job: {
+          ...deployment.job,
+          webPath: null,
+        },
+      };
+
+      createComponent({ propsData: { deployment: deploymentWithNoJobPath } });
+
+      expect(findJobLink().attributes('href')).toBeUndefined();
+      expect(findJobLink().text()).toBe(deploymentWithNoJobPath.job.name);
     });
   });
 

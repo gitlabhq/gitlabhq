@@ -18,7 +18,7 @@ GitLab Duo is designed to provide contextually relevant information during the l
 - Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Self-Managed
 - Status: Beta
-- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+- LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
 
 {{< /details >}}
 
@@ -27,6 +27,7 @@ GitLab Duo is designed to provide contextually relevant information during the l
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10401) in GitLab 16.2 as an [experiment](../../../policy/development_stages_support.md#experiment).
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/429882) to beta in GitLab 16.10.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
+- LLM [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186862) to Claude 3.7 Sonnet in GitLab 17.10
 - Feature flag `add_ai_summary_for_new_mr` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186108) in GitLab 17.11.
 - Changed to include Premium in GitLab 18.0.
 
@@ -137,7 +138,7 @@ To enable `@GitLabDuo` to automatically review merge requests:
 - Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Experiment
-- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+- LLM: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)
 
 {{< /details >}}
 
@@ -145,6 +146,7 @@ To enable `@GitLabDuo` to automatically review merge requests:
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10466) in GitLab 16.0 as an [experiment](../../../policy/development_stages_support.md#experiment).
 - Feature flag `summarize_my_code_review` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182448) in GitLab 17.10.
+- LLM [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183873) to Claude 3.7 Sonnet in GitLab 17.11.
 - Changed to include Premium in GitLab 18.0.
 
 {{< /history >}}

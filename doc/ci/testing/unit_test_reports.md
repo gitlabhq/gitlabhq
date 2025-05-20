@@ -47,11 +47,11 @@ is not available, the panel shows only the list of failed tests for the source b
 
 The types of results are:
 
-- **Newly failed tests:** Test cases which passed on the base branch and failed on the head branch.
-- **Newly encountered errors:** Test cases which passed on the base branch and failed due to a
+- **Newly failed tests**: Test cases which passed on the base branch and failed on the head branch.
+- **Newly encountered errors**: Test cases which passed on the base branch and failed due to a
   test error on the head branch.
-- **Existing failures:** Test cases which failed on the base branch and failed on the head branch.
-- **Resolved failures:** Test cases which failed on the base branch and passed on the head branch.
+- **Existing failures**: Test cases which failed on the base branch and failed on the head branch.
+- **Resolved failures**: Test cases which failed on the base branch and passed on the head branch.
 
 ### View failed tests
 

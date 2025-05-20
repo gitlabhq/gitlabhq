@@ -17,7 +17,7 @@ module CreatesCommit
     else
       @project_to_commit_into = current_user.fork_of(target_project)
       @different_project = true
-      @branch_name ||= @project_to_commit_into.repository.next_branch('patch')
+      @branch_name ||= generated_branch_name(@project_to_commit_into)
     end
 
     @start_branch ||= @ref || @branch_name
@@ -91,6 +91,12 @@ module CreatesCommit
     else
       format_flash_notice(result[:message])
     end
+  end
+
+  def generated_branch_name(project)
+    return unless project
+
+    project.repository.next_branch('patch')
   end
 
   def update_flash_notice(success_notice, success_path)

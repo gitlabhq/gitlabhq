@@ -365,7 +365,7 @@ To use private runners:
      --non-interactive
    ```
 
-1. **Optional, but recommended:** Set the builds directory to `/tmp/builds`,
+1. **Optional, but recommended**: Set the builds directory to `/tmp/builds`,
    so job artifacts are periodically purged from the runner host. If you skip
    this step, you must clean up the default builds directory (`/builds`) yourself.
    You can do this by adding the following two flags to `gitlab-runner register`
@@ -529,9 +529,9 @@ name = "docker:20.10.12-dind"
 {{< alert type="note" >}}
 
 If you use the [GitLab Runner Helm Chart](https://docs.gitlab.com/runner/install/kubernetes.html), you can use
-the above Kubernetes configuration in the [`config` field](https://docs.gitlab.com/runner/install/kubernetes_helm_chart_configuration.html)
-in the `values.yaml` file.
-
+the previous Kubernetes configuration in the [`config` field](https://docs.gitlab.com/runner/install/kubernetes_helm_chart_configuration.html)
+of the `values.yaml` file.
+x
 {{< /alert >}}
 
 To ensure that you use the `overlay2` [storage driver](https://docs.docker.com/storage/storagedriver/select-storage-driver/), which offers the best overall performance:

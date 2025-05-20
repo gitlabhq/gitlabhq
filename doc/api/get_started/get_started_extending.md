@@ -18,10 +18,10 @@ GitLab has several major integrations that can help streamline your development 
 
 These integrations cover a variety of areas, including:
 
-- **Authentication:** OAuth, SAML, LDAP
-- **Planning:** Jira, Bugzilla, Redmine, Pivotal Tracker
-- **Communication:** Slack, Microsoft Teams, Mattermost
-- **Security:** Checkmarx, Veracode, Fortify
+- **Authentication**: OAuth, SAML, LDAP
+- **Planning**: Jira, Bugzilla, Redmine, Pivotal Tracker
+- **Communication**: Slack, Microsoft Teams, Mattermost
+- **Security**: Checkmarx, Veracode, Fortify
 
 For more information, see:
 

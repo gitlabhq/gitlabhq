@@ -113,8 +113,8 @@ When this feature is enabled for instances with more than 20,000 projects, your 
 
 GitLab has two search modes:
 
-- **Exact match mode:** returns results that exactly match the query.
-- **Regular expression mode:** supports regular and boolean expressions.
+- **Exact match mode**: returns results that exactly match the query.
+- **Regular expression mode**: supports regular and boolean expressions.
 
 The exact match mode is used by default.
 To switch to the regular expression mode, to the right of the search box,

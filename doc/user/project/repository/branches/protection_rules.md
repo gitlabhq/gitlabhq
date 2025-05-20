@@ -59,10 +59,10 @@ level of protection for the branch. For example, consider these rules, which inc
 A branch named `v1.x` is a case-sensitive match for all three branch name patterns: `v1.x`, `v1.*`, and `v*`.
 As the most permissive option determines the behavior, the resulting permissions for branch `v1.x` are:
 
-- **Allowed to merge:** Of the three settings, `Maintainer + Developer` is most permissive,
+- **Allowed to merge**: Of the three settings, `Maintainer + Developer` is most permissive,
   and controls branch behavior as a result. Even though the branch also matched `v1.x` and `v*`
   (which each have stricter permissions), users with the Developer role can merge into the branch.
-- **Allowed to push and merge:** Of the three settings, `Maintainer` is the most permissive, and controls
+- **Allowed to push and merge**: Of the three settings, `Maintainer` is the most permissive, and controls
   branch behavior as a result. Even though branches matching `v*` are set to `No one`, branches
   that _also_ match `v1.x` or `v1.*` receive the more permissive `Maintainer` permission.
 
@@ -93,7 +93,7 @@ force push is allowed. For example, consider these rules, which include
 A branch named `v1.x` matches all three branch name patterns: `v1.x`, `v1.*`, and `v*`.
 As the most permissive option determines the behavior, the resulting permissions for branch `v1.x` are:
 
-- **Allow force push:** Of the three settings, `Yes` is most permissive,
+- **Allow force push**: Of the three settings, `Yes` is most permissive,
   and controls branch behavior as a result. Even though the branch also matched `v1.x` and `v*`
   (which each have stricter permissions), any user that can push to this branch can also force push.
 

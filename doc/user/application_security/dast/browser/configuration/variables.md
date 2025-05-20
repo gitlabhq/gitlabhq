@@ -75,7 +75,7 @@ These variables tell the scanner where to look for certain elements, which actio
 | `DAST_TARGET_PATHS_FILE` | string | `/builds/project/urls.txt` | Ensures that the provided paths are always scanned. Set to a file path containing a list of URL paths relative to `DAST_TARGET_URL`. The file must be plain text with one path per line. |
 | `DAST_TARGET_PATHS` | string | `/page1.html,/category1/page3.html` | Ensures that the provided paths are always scanned. Set to a comma-separated list of URL paths relative to `DAST_TARGET_URL`. |
 | `DAST_TARGET_URL` | URL | `https://site.com` | The URL of the website to scan. |
-| `DAST_USE_CACHE` | boolean | `true` | Set to `false` to disable caching. Default: `true`. **Note:** Disabling cache can cause OOM events or DAST job timeouts. |
+| `DAST_USE_CACHE` | boolean | `true` | Set to `false` to disable caching. Default: `true`. **Note**: Disabling cache can cause OOM events or DAST job timeouts. |
 
 ### Authentication
 

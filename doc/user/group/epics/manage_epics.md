@@ -555,8 +555,8 @@ Prerequisites:
 
 To make an epic confidential:
 
-- **When creating an epic:** select the checkbox under **Confidentiality**.
-- **In an existing epic:** on the right sidebar, select **Edit** next to **Confidentiality**, and then
+- **When creating an epic**: select the checkbox under **Confidentiality**.
+- **In an existing epic**: on the right sidebar, select **Edit** next to **Confidentiality**, and then
   select **Turn on**.
 
 In GitLab 15.6 and later, you can also use the `/confidential` [quick action](../../project/quick_actions.md).

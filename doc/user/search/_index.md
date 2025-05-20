@@ -20,9 +20,9 @@ Choose from three types of search to match your needs: **basic search**,
 
 For code search, GitLab uses these types in this order:
 
-- **Exact code search:** where you can use exact match and regular expression modes.
-- **Advanced search:** when exact code search is not available.
-- **Basic search:** when exact code search and advanced search are not available
+- **Exact code search**: where you can use exact match and regular expression modes.
+- **Advanced search**: when exact code search is not available.
+- **Basic search**: when exact code search and advanced search are not available
   or when you search against a non-default branch.
   This type does not support group or global search.
 

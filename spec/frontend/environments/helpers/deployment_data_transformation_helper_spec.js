@@ -77,6 +77,94 @@ describe('deployment_data_transformation_helper', () => {
     finishedAt: '2022-10-17T07:44:43Z',
   };
 
+  const deploymentNodeWithPipeline = {
+    id: 'gid://gitlab/Deployment/76',
+    iid: '31',
+    status: 'SUCCESS',
+    createdAt: '2022-10-17T07:44:17Z',
+    ref: 'main',
+    tag: false,
+    job: {
+      name: 'deploy-prod',
+      refName: 'main',
+      id: 'gid://gitlab/Ci::Bridge/860',
+      webPath: null,
+      deploymentPipeline: {
+        id: 'gid://gitlab/Ci::Pipeline/101',
+        path: '/gitlab-org/pipelinestest/-/pipelines/101',
+        jobs: {
+          nodes: [
+            {
+              name: 'deploy-staging',
+              playable: true,
+              scheduledAt: '2023-01-17T11:02:41.369Z',
+              webPath: 'https://gdk.test:3000/redeploy',
+            },
+          ],
+        },
+      },
+    },
+    commit: commitWithAuthor,
+    triggerer: {
+      id: 'gid://gitlab/User/1',
+      webUrl: 'http://gdk.test:3000/root',
+      name: 'Administrator',
+      avatarUrl: '/uploads/-/system/user/avatar/1/avatar.png',
+    },
+    finishedAt: '2022-10-17T07:44:43Z',
+  };
+
+  const deploymentNodeWithDownstreamPipeline = {
+    id: 'gid://gitlab/Deployment/76',
+    iid: '31',
+    status: 'SUCCESS',
+    createdAt: '2022-10-17T07:44:17Z',
+    ref: 'main',
+    tag: false,
+    job: {
+      name: 'deploy-prod',
+      refName: 'main',
+      id: 'gid://gitlab/Ci::Bridge/860',
+      webPath: null,
+      deploymentPipeline: {
+        id: 'gid://gitlab/Ci::Pipeline/101',
+        path: '/gitlab-org/pipelinestest/-/pipelines/101',
+        jobs: {
+          nodes: [
+            {
+              name: 'deploy-staging',
+              playable: true,
+              scheduledAt: '2023-01-17T11:02:41.369Z',
+              webPath: 'https://gdk.test:3000/redeploy',
+            },
+          ],
+        },
+      },
+      downStreamPipeline: {
+        id: 'gid://gitlab/Ci::Pipeline/102',
+        path: '/gitlab-org/pipelinestest/-/pipelines/102',
+        jobs: {
+          nodes: [
+            {
+              name: 'deploy-staging',
+              playable: true,
+              scheduledAt: '2023-01-17T11:02:41.369Z',
+              webPath: 'https://gdk.test:3000/redeploy',
+            },
+          ],
+        },
+      },
+    },
+    commit: commitWithAuthor,
+    triggerer: {
+      id: 'gid://gitlab/User/1',
+      webUrl: 'http://gdk.test:3000/root',
+      name: 'Administrator',
+      avatarUrl: '/uploads/-/system/user/avatar/1/avatar.png',
+    },
+    finishedAt: '2022-10-17T07:44:43Z',
+  };
+
   const deploymentNodeWithNoJob = {
     ...deploymentNode,
     job: null,
@@ -111,11 +199,14 @@ describe('deployment_data_transformation_helper', () => {
   describe('convertToDeploymentTableRow', () => {
     const deploymentNodeWithEmptyJob = { ...deploymentNode, job: undefined };
 
-    it.each([deploymentNode, deploymentNodeWithEmptyJob, deploymentNodeWithNoJob])(
-      'should be converted to proper table row data',
-      (node) => {
-        expect(convertToDeploymentTableRow(node, environment)).toMatchSnapshot();
-      },
-    );
+    it.each([
+      deploymentNode,
+      deploymentNodeWithPipeline,
+      deploymentNodeWithDownstreamPipeline,
+      deploymentNodeWithEmptyJob,
+      deploymentNodeWithNoJob,
+    ])('should be converted to proper table row data', (node) => {
+      expect(convertToDeploymentTableRow(node, environment)).toMatchSnapshot();
+    });
   });
 });

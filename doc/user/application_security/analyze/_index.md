@@ -22,7 +22,7 @@ The scope of the analysis phase is all those vulnerabilities that have been thro
 and confirmed as needing further action. To list these vulnerabilities, use the following filter
 criteria in the vulnerability report:
 
-- **Status:** Confirmed
+- **Status**: Confirmed
 
 ## Risk analysis
 
@@ -61,9 +61,9 @@ To help identify vulnerabilities of highest severity:
   to help prioritize vulnerabilities for analysis.
 - For each group, use the following filter criteria in the vulnerability report to prioritize
   analysis of vulnerabilities by severity:
-  - **Status:** Confirmed
-  - **Activity:** Still detected
-  - **Group by:** Severity
+  - **Status**: Confirmed
+  - **Activity**: Still detected
+  - **Group by**: Severity
 - Prioritize vulnerability triage on your highest-priority projects - for example, applications
   deployed to customers.
 
@@ -77,11 +77,11 @@ Use the following filter criteria in the vulnerability report to identify vulner
 a solution available.
 
 - For vulnerabilities detected by SBOM scanning, use the criteria:
-  - **Status:** Confirmed
-  - **Activity:** Has a solution
+  - **Status**: Confirmed
+  - **Activity**: Has a solution
 - For vulnerabilities detected by SAST, use the criteria:
-  - **Status:** Confirmed
-  - **Activity:** Vulnerability Resolution available
+  - **Status**: Confirmed
+  - **Activity**: Vulnerability Resolution available
 
 ## Vulnerability details and action
 

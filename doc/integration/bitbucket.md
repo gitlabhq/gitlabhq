@@ -37,10 +37,10 @@ you to use.
 1. Select **Add consumer**.
 1. Provide the required details:
 
-   - **Name:** This can be anything. Consider something like `<Organization>'s GitLab`
+   - **Name**: This can be anything. Consider something like `<Organization>'s GitLab`
      or `<Your Name>'s GitLab` or something else descriptive.
-   - **Application description:** Optional. Fill this in if you wish.
-   - **Callback URL:** (Required in GitLab versions 8.15 and greater)
+   - **Application description**: Optional. Fill this in if you wish.
+   - **Callback URL**: (Required in GitLab versions 8.15 and greater)
      The URL to your GitLab installation, such as
      `https://gitlab.example.com/users/auth`.
      Leaving this field empty
@@ -54,7 +54,7 @@ you to use.
 
      {{< /alert >}}
 
-   - **URL:** The URL to your GitLab installation, such as `https://gitlab.example.com`.
+   - **URL**: The URL to your GitLab installation, such as `https://gitlab.example.com`.
 
 1. Grant at least the following permissions:
 

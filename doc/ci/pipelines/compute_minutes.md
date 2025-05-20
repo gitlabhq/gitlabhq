@@ -112,9 +112,9 @@ GitLab-hosted runners have different cost factors depending on the runner type
 | Linux Arm64                | `small`                | `1`                     |
 | Linux Arm64                | `medium`               | `2`                     |
 | Linux Arm64                | `large`                | `3`                     |
-| macOS M1                   | `medium`               | `6` (**Status:** Beta)  |
-| macOS M2 Pro               | `large`                | `12` (**Status:** Beta) |
-| Windows                    | `medium`               | `1` (**Status:** Beta)  |
+| macOS M1                   | `medium`               | `6` (**Status**: Beta)  |
+| macOS M2 Pro               | `large`                | `12` (**Status**: Beta) |
+| Windows                    | `medium`               | `1` (**Status**: Beta)  |
 
 These cost factors apply to GitLab-hosted runners on GitLab.com and GitLab Dedicated.
 

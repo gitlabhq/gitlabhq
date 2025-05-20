@@ -4242,7 +4242,7 @@ However, enabling the bundled Grafana will no longer work from GitLab 16.3.
 
 </div>
 
-**Update:** We previously announced we would remove the existing License Compliance CI template in GitLab 16.0. However, due to performance issues with the [license scanning of CycloneDX files](https://docs.gitlab.com/user/compliance/license_scanning_of_cyclonedx_files/) we will do this in 16.3 instead.
+**Update**: We previously announced we would remove the existing License Compliance CI template in GitLab 16.0. However, due to performance issues with the [license scanning of CycloneDX files](https://docs.gitlab.com/user/compliance/license_scanning_of_cyclonedx_files/) we will do this in 16.3 instead.
 
 The GitLab [**License Compliance**](https://docs.gitlab.com/user/compliance/license_approval_policies/) CI/CD template is now deprecated and is scheduled for removal in the GitLab 16.3 release.
 
@@ -4441,7 +4441,7 @@ When using the native HashiCorp Vault integration, CI/CD jobs will fail when no 
 
 </div>
 
-**Update:** We previously announced a change to how the MobSF-based GitLab SAST analyzer would scan multi-module Android projects.
+**Update**: We previously announced a change to how the MobSF-based GitLab SAST analyzer would scan multi-module Android projects.
 We've canceled that change, and no action is required.
 
 Instead of changing which single module would be scanned, we [improved multi-module support](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf/-/merge_requests/73).
@@ -5389,7 +5389,7 @@ See [Vulnerability translation documentation](https://docs.gitlab.com/user/appli
 
 If you applied customizations to the affected analyzer, or if you currently disable the Semgrep-based analyzer in your pipelines, you must take action as detailed in the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/390416#breaking-change).
 
-**Update:** We've reduced the scope of this change. We will no longer make the following changes in GitLab 16.0:
+**Update**: We've reduced the scope of this change. We will no longer make the following changes in GitLab 16.0:
 
 1. Remove support for the analyzer based on [PHPCS Security Audit](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit) and replace it with GitLab-managed detection rules in the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
 1. Remove Scala from the scope of the [SpotBugs-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) and replace it with GitLab-managed detection rules in the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
@@ -5475,7 +5475,7 @@ The following templates will be updated:
 
 We recommend that you test your pipelines before the 16.0 release if you use one of the templates listed above and you use the `_DISABLED` variables but set a value other than `"true"`.
 
-**Update:** We previously announced that we would update the `rules` on the affected templates to run in [merge request pipelines](https://docs.gitlab.com/ci/pipelines/merge_request_pipelines/) by default.
+**Update**: We previously announced that we would update the `rules` on the affected templates to run in [merge request pipelines](https://docs.gitlab.com/ci/pipelines/merge_request_pipelines/) by default.
 However, due to compatibility issues [discussed in the deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388988#note_1372629948), we will no longer make this change in GitLab 16.0. We will still release the changes to the `_DISABLED` variables as described above.
 
 </div>

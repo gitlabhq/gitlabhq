@@ -190,7 +190,7 @@ Each object in that array must have at least the following properties:
 
 The format is different from the [CodeClimate report format](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#data-types) in the following ways:
 
-- Although the [CodeClimate report format](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#data-types) supports more properties, Code Quality only processes the fields listed above.
+- Although the [CodeClimate report format](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#data-types) supports more properties, Code Quality only processes the fields listed previously.
 - The GitLab parser does not allow a [byte order mark](https://en.wikipedia.org/wiki/Byte_order_mark) at the beginning of the file.
 
 For example, this is a compliant report:

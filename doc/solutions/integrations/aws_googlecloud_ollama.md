@@ -147,12 +147,12 @@ Ollama is a streamlined, open-source framework for running Large Language Models
 
 Key Highlights:
 
-1. **Simplified Deployment:** A user-friendly command-line interface ensures quick setup and hassle-free installation.
-1. **Wide Model Support:** Compatible with popular open-source models like Llama 2, Mistral, and Code Llama.
-1. **Optimized Performance:** Operates seamlessly across both GPU and CPU environments for resource efficiency.
-1. **Integration-Ready:** Features an OpenAI-compatible API for easy integration with existing tools and workflows.
-1. **No Containers Needed:** Runs directly on host systems, eliminating the need for Docker or containerized environments.
-1. **Versatile Hosting Options:** Deployable on local machines, on-premises servers, or cloud GPU instances.
+1. **Simplified Deployment**: A user-friendly command-line interface ensures quick setup and hassle-free installation.
+1. **Wide Model Support**: Compatible with popular open-source models like Llama 2, Mistral, and Code Llama.
+1. **Optimized Performance**: Operates seamlessly across both GPU and CPU environments for resource efficiency.
+1. **Integration-Ready**: Features an OpenAI-compatible API for easy integration with existing tools and workflows.
+1. **No Containers Needed**: Runs directly on host systems, eliminating the need for Docker or containerized environments.
+1. **Versatile Hosting Options**: Deployable on local machines, on-premises servers, or cloud GPU instances.
 
 Designed for simplicity and performance, Ollama empowers users to harness the power of LLMs without the complexity of traditional AI infrastructure. Further details on setup and supported models will be covered later in the documentation.
 

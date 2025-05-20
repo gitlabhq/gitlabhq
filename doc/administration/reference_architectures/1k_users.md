@@ -17,11 +17,11 @@ This reference architecture targets a peak load of 20 requests per second (RPS).
 For a full list of reference architectures, see
 [available reference architectures](_index.md#available-reference-architectures).
 
-> - **Target Load:** API: 20 RPS, Web: 2 RPS, Git (Pull): 2 RPS, Git (Push): 1 RPS
-> - **High Availability:** No. For a high availability environment,
+> - **Target Load**: API: 20 RPS, Web: 2 RPS, Git (Pull): 2 RPS, Git (Push): 1 RPS
+> - **High Availability**: No. For a high availability environment,
 >   follow a modified [3K reference architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
-> - **Cost calculator template:** For more information, see [cost calculator templates](_index.md#cost-calculator-templates).
-> - **Cloud Native Hybrid:** No. For a cloud native hybrid environment, you
+> - **Cost calculator template**: For more information, see [cost calculator templates](_index.md#cost-calculator-templates).
+> - **Cloud Native Hybrid**: No. For a cloud native hybrid environment, you
 >   can follow a [modified hybrid reference architecture](#cloud-native-hybrid-reference-architecture-with-helm-charts).
 > - **Unsure which Reference Architecture to use?** For more information, see [deciding which architecture to start with](_index.md#deciding-which-architecture-to-start-with).
 

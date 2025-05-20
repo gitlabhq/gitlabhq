@@ -380,9 +380,9 @@ These constructions are more casual than the alternatives:
 
 If you use an acronym, spell it out on first use on a page. You do not need to spell it out more than once on a page.
 
-- **Titles:** Try to avoid acronyms in topic titles, especially if the acronym is not widely used.
-- **Plurals:** Try not to make acronyms plural. For example, use `YAML files`, not `YAMLs`. If you must make an acronym plural, do not use an apostrophe. For example, use `APIs`, not `API's`.
-- **Possessives:** Use caution when making an acronym possessive. If possible,
+- **Titles**: Try to avoid acronyms in topic titles, especially if the acronym is not widely used.
+- **Plurals**: Try not to make acronyms plural. For example, use `YAML files`, not `YAMLs`. If you must make an acronym plural, do not use an apostrophe. For example, use `APIs`, not `API's`.
+- **Possessives**: Use caution when making an acronym possessive. If possible,
   write the sentence to avoid making the acronym possessive. If you must make the
   acronym possessive, consider spelling out the words.
 

@@ -23,11 +23,11 @@ In this document, we focus on the TFVC to Git migration.
 
 The main differences between TFVC and Git are:
 
-- **Git is distributed:** While TFVC is centralized using a client-server architecture,
+- **Git is distributed**: While TFVC is centralized using a client-server architecture,
   Git is distributed. This translates to Git having a more flexible workflow because
   you work with a copy of the entire repository. This allows you to quickly
   switch branches or merge, for example, without needing to communicate with a remote server.
-- **Storage:** Changes in a centralized version control system are per file (changeset),
+- **Storage**: Changes in a centralized version control system are per file (changeset),
   while in Git a committed file is stored in its entirety (snapshot). That means that it is
   very easy to revert or undo a whole change in Git.
 
@@ -40,10 +40,10 @@ For more information, see:
 
 Advantages of migrating to Git/GitLab:
 
-- **No licensing costs:** Git is open source, while TFVC is proprietary.
-- **Shorter learning curve:** Git has a big community and a vast number of
+- **No licensing costs**: Git is open source, while TFVC is proprietary.
+- **Shorter learning curve**: Git has a big community and a vast number of
   tutorials to get you started (see our [Git topic](../../../topics/git/_index.md)).
-- **Integration with modern tools:** After migrating to Git and GitLab, you have
+- **Integration with modern tools**: After migrating to Git and GitLab, you have
   an open source, end-to-end software development platform with built-in version
   control, issue tracking, code review, CI/CD, and more.
 

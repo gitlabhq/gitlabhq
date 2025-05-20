@@ -76,13 +76,13 @@ To create a rotation:
 1. Select the **Add a rotation** link.
 1. Enter the following information:
 
-   - **Name:** Your rotation's name.
-   - **Participants:** The people you want in the rotation.
-   - **Rotation length:** The rotation's duration.
-   - **Starts on:** The date and time the rotation begins.
-   - **Enable end date:** With the toggle on, you can select the date and time your rotation
+   - **Name**: Your rotation's name.
+   - **Participants**: The people you want in the rotation.
+   - **Rotation length**: The rotation's duration.
+   - **Starts on**: The date and time the rotation begins.
+   - **Enable end date**: With the toggle on, you can select the date and time your rotation
      ends.
-   - **Restrict to time intervals:** With the toggle on, you can restrict your rotation to the
+   - **Restrict to time intervals**: With the toggle on, you can restrict your rotation to the
      time period you select.
 
 ### Edit a rotation

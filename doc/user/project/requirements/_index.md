@@ -279,17 +279,17 @@ to you after the import is complete.
 
 When importing requirements from a CSV file, it must be formatted in a certain way:
 
-- **Header row:** CSV files must include the following headers:
+- **Header row**: CSV files must include the following headers:
   `title` and `description`. The headers are case-insensitive.
-- **Columns:** data from columns other than `title` and `description` is not imported.
-- **Separators:** the column separator is automatically detected from the header row.
+- **Columns**: data from columns other than `title` and `description` is not imported.
+- **Separators**: the column separator is automatically detected from the header row.
   Supported separator characters are: commas (`,`), semicolons (`;`), and tabs (`\t`).
   The row separator can be either `CRLF` or `LF`.
-- **Double-quote character:** the double-quote (`"`) character is used to quote fields,
+- **Double-quote character**: the double-quote (`"`) character is used to quote fields,
   enabling the use of the column separator in a field (see the third line in the
   sample CSV data below). To insert a double-quote (`"`) in a quoted
   field, use two double-quote characters in succession (`""`).
-- **Data rows:** below the header row, succeeding rows must follow the same column
+- **Data rows**: below the header row, succeeding rows must follow the same column
   order. The title text is required, while the description is optional and can be left empty.
 
 Sample CSV data:

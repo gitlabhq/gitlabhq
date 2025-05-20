@@ -29,8 +29,8 @@ The scope of the remediation phase is all those vulnerabilities that have been t
 phase and confirmed as needing further action. To list these vulnerabilities, use the following
 filter criteria in the vulnerability report:
 
-- **Status:** Confirmed
-- **Activity:** Has issue
+- **Status**: Confirmed
+- **Activity**: Has issue
 
 ## Document the vulnerability
 

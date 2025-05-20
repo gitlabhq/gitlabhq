@@ -55,7 +55,7 @@ staging:
   environment: staging
 ```
 
-In the above example we use Dpl to deploy `my-app-staging` to Heroku server with API key stored in `HEROKU_STAGING_API_KEY` secure variable.
+In the previous example we use Dpl to deploy `my-app-staging` to Heroku server with API key stored in `HEROKU_STAGING_API_KEY` secure variable.
 
 To use different provider take a look at long list of [Supported Providers](https://github.com/travis-ci/dpl#supported-providers).
 
@@ -81,7 +81,7 @@ staging:
 
 The first line `apt-get update -yq` updates the list of available packages,
 where second `apt-get install -y ruby-dev` installs the Ruby runtime on system.
-The above example is valid for all Debian-compatible systems.
+The previous example is valid for all Debian-compatible systems.
 
 ## Usage in staging and production
 
