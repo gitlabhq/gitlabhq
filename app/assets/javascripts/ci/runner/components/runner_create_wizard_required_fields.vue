@@ -26,15 +26,27 @@ export default {
       type: Number,
       required: true,
     },
+    isRunUntagged: {
+      type: Boolean,
+      required: true,
+    },
+    tagList: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
-      runUntagged: false,
-      tags: '',
+      runUntagged: this.isRunUntagged,
+      tags: this.tagList,
       isValidationAlertVisible: false,
     };
   },
-  computed: {},
+  computed: {
+    runUntaggedSelectorDefaultSelection() {
+      return this.runUntagged ? ['untagged'] : [];
+    },
+  },
   methods: {
     onNext() {
       if (this.runUntagged || this.tags !== '') {
@@ -106,7 +118,11 @@ export default {
         />
       </gl-form-group>
 
-      <multiple-choice-selector data-testid="runner-untagged-checkbox" @input="onUntaggedInput">
+      <multiple-choice-selector
+        data-testid="runner-untagged-checkbox"
+        :checked="runUntaggedSelectorDefaultSelection"
+        @input="onUntaggedInput"
+      >
         <multiple-choice-selector-item
           value="untagged"
           :title="__('Run untagged jobs')"

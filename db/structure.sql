@@ -178,21 +178,6 @@ RETURN NULL;
 END
 $$;
 
-CREATE FUNCTION ensure_lists_sharding_key() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-IF NEW."project_id" IS NULL AND NEW."group_id" IS NULL THEN
-  SELECT "boards"."project_id", "boards"."group_id"
-  INTO NEW."project_id", NEW."group_id"
-  FROM "boards"
-  WHERE "boards"."id" = NEW."board_id";
-END IF;
-RETURN NEW;
-
-END
-$$;
-
 CREATE TABLE namespaces (
     id bigint NOT NULL,
     name character varying NOT NULL,
@@ -16686,7 +16671,8 @@ CREATE TABLE lists (
     limit_metric character varying(20),
     iteration_id bigint,
     group_id bigint,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_6dadb82d36 CHECK ((num_nonnulls(group_id, project_id) = 1))
 );
 
 CREATE SEQUENCE lists_id_seq
@@ -29106,9 +29092,6 @@ ALTER TABLE ONLY instance_type_ci_runners
 
 ALTER TABLE ONLY project_type_ci_runners
     ADD CONSTRAINT check_619c71f3a2 UNIQUE (id);
-
-ALTER TABLE lists
-    ADD CONSTRAINT check_6dadb82d36 CHECK ((num_nonnulls(group_id, project_id) = 1)) NOT VALID;
 
 ALTER TABLE ONLY group_type_ci_runners
     ADD CONSTRAINT check_81b90172a6 UNIQUE (id);
@@ -41599,8 +41582,6 @@ CREATE TRIGGER trigger_efb9d354f05a BEFORE INSERT OR UPDATE ON incident_manageme
 
 CREATE TRIGGER trigger_eff80ead42ac BEFORE INSERT OR UPDATE ON ci_unit_test_failures FOR EACH ROW EXECUTE FUNCTION trigger_eff80ead42ac();
 
-CREATE TRIGGER trigger_ensure_lists_sharding_key BEFORE INSERT OR UPDATE ON lists FOR EACH ROW EXECUTE FUNCTION ensure_lists_sharding_key();
-
 CREATE TRIGGER trigger_f6c61cdddf31 BEFORE INSERT OR UPDATE ON ml_model_metadata FOR EACH ROW EXECUTE FUNCTION trigger_f6c61cdddf31();
 
 CREATE TRIGGER trigger_f6f59d8216b3 BEFORE INSERT OR UPDATE ON protected_environment_deploy_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_f6f59d8216b3();
@@ -42595,7 +42576,7 @@ ALTER TABLE ONLY routes
     ADD CONSTRAINT fk_679ff8213d FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY lists
-    ADD CONSTRAINT fk_67f2498cc9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_67f2498cc9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_requests_approval_rules_approver_groups
     ADD CONSTRAINT fk_67fa93ad4b FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -43870,7 +43851,7 @@ ALTER TABLE ONLY protected_tag_create_access_levels
     ADD CONSTRAINT fk_f7dfda8c51 FOREIGN KEY (protected_tag_id) REFERENCES protected_tags(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY lists
-    ADD CONSTRAINT fk_f8b2e8680c FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_f8b2e8680c FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_requirement_compliance_statuses
     ADD CONSTRAINT fk_f9109a4712 FOREIGN KEY (compliance_framework_id) REFERENCES compliance_management_frameworks(id) ON DELETE CASCADE;

@@ -50090,6 +50090,15 @@ msgstr[1] ""
 msgid "RapidDiffs|Added line %d"
 msgstr ""
 
+msgid "RapidDiffs|Changes view"
+msgstr ""
+
+msgid "RapidDiffs|Diff file controls"
+msgstr ""
+
+msgid "RapidDiffs|Diff files"
+msgstr ""
+
 msgid "RapidDiffs|Diff line"
 msgstr ""
 
@@ -50129,6 +50138,9 @@ msgid "RapidDiffs|Show lines before"
 msgstr ""
 
 msgid "RapidDiffs|Show options"
+msgstr ""
+
+msgid "RapidDiffs|View controls"
 msgstr ""
 
 msgid "Rate Limits"
@@ -52543,6 +52555,9 @@ msgid "Runners|Only administrators can view this."
 msgstr ""
 
 msgid "Runners|Operating systems"
+msgstr ""
+
+msgid "Runners|Optional configuration details"
 msgstr ""
 
 msgid "Runners|Other projects"
@@ -55549,6 +55564,9 @@ msgstr ""
 msgid "SecurityOrchestration|Project cannot be deleted because it is linked as a security policy project"
 msgstr ""
 
+msgid "SecurityOrchestration|Reason for snoozing policy (optional)"
+msgstr ""
+
 msgid "SecurityOrchestration|Require %{approvals} %{plural} from %{approvers}"
 msgstr ""
 
@@ -55657,6 +55675,9 @@ msgstr ""
 msgid "SecurityOrchestration|Select a variable"
 msgstr ""
 
+msgid "SecurityOrchestration|Select date"
+msgstr ""
+
 msgid "SecurityOrchestration|Select days"
 msgstr ""
 
@@ -55703,6 +55724,12 @@ msgid "SecurityOrchestration|Show more projects"
 msgstr ""
 
 msgid "SecurityOrchestration|Show only linked security policy projects"
+msgstr ""
+
+msgid "SecurityOrchestration|Snooze policy"
+msgstr ""
+
+msgid "SecurityOrchestration|Snooze the policy until %{until} because %{reason}"
 msgstr ""
 
 msgid "SecurityOrchestration|Some settings may be affected by policy %{policyName} based on its rules."

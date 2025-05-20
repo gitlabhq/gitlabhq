@@ -46623,8 +46623,8 @@ Values for sorting work items.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="workitemsortblocking_items_asc"></a>`BLOCKING_ITEMS_ASC` | Blocking items count by ascending order. |
-| <a id="workitemsortblocking_items_desc"></a>`BLOCKING_ITEMS_DESC` | Blocking items count by descending order. |
+| <a id="workitemsortblocking_issues_asc"></a>`BLOCKING_ISSUES_ASC` | Blocking items count by ascending order. |
+| <a id="workitemsortblocking_issues_desc"></a>`BLOCKING_ISSUES_DESC` | Blocking items count by descending order. |
 | <a id="workitemsortclosed_at_asc"></a>`CLOSED_AT_ASC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.10. **Status**: Experiment. Closed time by ascending order. |
 | <a id="workitemsortclosed_at_desc"></a>`CLOSED_AT_DESC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.10. **Status**: Experiment. Closed time by descending order. |
 | <a id="workitemsortcreated_asc"></a>`CREATED_ASC` | Created at ascending order. |

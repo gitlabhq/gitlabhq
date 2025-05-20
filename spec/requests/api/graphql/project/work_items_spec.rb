@@ -7,11 +7,14 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
 
   let_it_be(:label1) { create(:label, project: project) }
   let_it_be(:label2) { create(:label, project: project) }
-  let_it_be(:milestone1) { create(:milestone, project: project) }
-  let_it_be(:milestone2) { create(:milestone, project: project) }
+  let_it_be(:milestone1) { create(:milestone, project: project, due_date: 5.days.ago) }
+  let_it_be(:milestone2) { create(:milestone, project: project, due_date: 3.days.from_now) }
 
   let_it_be_with_reload(:item1) do
-    create(:work_item, project: project, discussion_locked: true, title: 'item1', labels: [label1])
+    create(
+      :work_item, project: project, discussion_locked: true,
+      title: 'item1', milestone: milestone2, labels: [label1]
+    )
   end
 
   let_it_be_with_reload(:item2) do
@@ -374,6 +377,14 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
         let(:sort_param) { :TITLE_DESC }
         let(:first_param) { 2 }
         let(:all_records) { [confidential_item, item2, item1].map { |item| item.to_global_id.to_s } }
+      end
+    end
+
+    context 'when sorting by MILESTONE_DUE_ASC' do
+      it_behaves_like 'sorted paginated query' do
+        let(:sort_param) { :MILESTONE_DUE_ASC }
+        let(:first_param) { 2 }
+        let(:all_records) { [item2, item1, confidential_item].map { |item| item.to_global_id.to_s } }
       end
     end
   end

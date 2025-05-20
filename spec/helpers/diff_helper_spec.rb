@@ -858,4 +858,10 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
       end
     end
   end
+
+  describe "#file_heading_id" do
+    subject { helper.file_heading_id(diff_file) }
+
+    it { is_expected.to eq("#{diff_file.file_hash}-heading") }
+  end
 end

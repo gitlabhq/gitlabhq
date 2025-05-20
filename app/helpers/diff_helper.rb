@@ -301,6 +301,10 @@ module DiffHelper
     hide_whitespace? ? safe_params.except(:w) : safe_params.merge(w: 1)
   end
 
+  def file_heading_id(diff_file)
+    "#{diff_file.file_hash}-heading"
+  end
+
   private
 
   def cached_conflicts_with_types

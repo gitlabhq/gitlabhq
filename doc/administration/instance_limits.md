@@ -560,13 +560,13 @@ Instead of increasing the limit, restructure your CI/CD configuration by splitti
 
 {{< /alert >}}
 
-To modify this limit on your instance, run the following command in the GitLab Rails console:
+To modify this limit on your instance use the GitLab UI in the [Admin area](settings/continuous_integration.md#set-cicd-limits) or the [Plan Limits API](../api/plan_limits.md).
+
+You can also run the following command in the GitLab Rails console:
 
 ```ruby
 Plan.default.actual_limits.update!(pipeline_hierarchy_size: 500)
 ```
-
-You can also set this limit by using the GitLab UI in the [Admin area](settings/continuous_integration.md#set-cicd-limits).
 
 This limit is enabled on GitLab.com and cannot be changed.
 

@@ -13,6 +13,7 @@ RSpec.describe Boards::Lists::ListService, feature_category: :portfolio_manageme
       let_it_be(:milestone) { create(:milestone, group: group) }
       let_it_be(:assignee_list) do
         list = build(:list, board: board, user_id: user.id, list_type: List.list_types[:assignee], position: 0)
+        list.send(:ensure_group_or_project) # Necessary as this is called on a before_validation callback
         list.save!(validate: false)
         list
       end
@@ -20,6 +21,7 @@ RSpec.describe Boards::Lists::ListService, feature_category: :portfolio_manageme
       let_it_be(:milestone_list) do
         list = build(:list, board: board, milestone_id: milestone.id, list_type: List.list_types[:milestone],
           position: 1)
+        list.send(:ensure_group_or_project) # Necessary as this is called on a before_validation callback
         list.save!(validate: false)
         list
       end

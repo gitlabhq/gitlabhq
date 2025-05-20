@@ -363,7 +363,7 @@ GEM
     wisper (2.0.1)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.7.2)
+    zeitwerk (2.7.3)
 
 PLATFORMS
   ruby
@@ -404,7 +404,7 @@ DEPENDENCIES
   slack-notifier (~> 2.4)
   terminal-table (~> 4.0.0)
   warning (~> 1.5)
-  zeitwerk (~> 2.7, >= 2.7.2)
+  zeitwerk (~> 2.7, >= 2.7.3)
 
 BUNDLED WITH
    2.6.5

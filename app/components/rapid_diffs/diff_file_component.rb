@@ -3,6 +3,7 @@
 module RapidDiffs
   class DiffFileComponent < ViewComponent::Base
     include TreeHelper
+    include DiffHelper
 
     renders_one :header
 
@@ -58,6 +59,10 @@ module RapidDiffs
     # enables virtual rendering through content-visibility: auto, significantly boosts client performance
     def virtual?
       total_rows > 0
+    end
+
+    def heading_id
+      file_heading_id(@diff_file)
     end
   end
 end

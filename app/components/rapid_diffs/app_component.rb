@@ -65,5 +65,17 @@ module RapidDiffs
       styles << "display: none;" unless browser_visible?
       styles.join(' ')
     end
+
+    def root_label
+      s_('RapidDiffs|Changes view')
+    end
+
+    def header_label
+      s_('RapidDiffs|View controls')
+    end
+
+    def content_label
+      s_('RapidDiffs|Diff files')
+    end
   end
 end

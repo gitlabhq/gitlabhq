@@ -5,6 +5,7 @@ module Resolvers
     prepend ::WorkItems::LookAheadPreloads
     include SearchArguments
     include ::WorkItems::SharedFilterArguments
+    include ::WorkItems::NonStableCursorSortOptions
 
     argument :iid,
       GraphQL::Types::String,
@@ -23,9 +24,17 @@ module Resolvers
 
       finder = choose_finder(args)
 
-      Gitlab::Graphql::Loaders::IssuableLoader
+      items = Gitlab::Graphql::Loaders::IssuableLoader
         .new(resource_parent, finder)
         .batching_find_all { |q| apply_lookahead(q) }
+
+      if non_stable_cursor_sort?(args[:sort])
+        # Certain complex sorts are not supported by the stable cursor pagination yet.
+        # In these cases, we use offset pagination, so we return the correct connection.
+        offset_pagination(items)
+      else
+        items
+      end
     end
 
     private

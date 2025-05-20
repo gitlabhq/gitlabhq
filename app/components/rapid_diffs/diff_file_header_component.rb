@@ -3,6 +3,7 @@
 module RapidDiffs
   class DiffFileHeaderComponent < ViewComponent::Base
     include ButtonHelper
+    include DiffHelper
 
     def initialize(diff_file:, additional_menu_items: [])
       @diff_file = diff_file
@@ -36,6 +37,14 @@ module RapidDiffs
       ]
 
       [*base_items, *@additional_menu_items].sort_by { |item| item[:position] || Float::INFINITY }
+    end
+
+    def heading_id
+      file_heading_id(@diff_file)
+    end
+
+    def root_label
+      s_('RapidDiffs|Diff file controls')
     end
 
     def moved_title_label

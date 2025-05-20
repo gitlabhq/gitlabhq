@@ -12,6 +12,8 @@ describe('Create Runner Required Fields', () => {
       propsData: {
         currentStep: 1,
         stepsTotal: 3,
+        isRunUntagged: false,
+        tagList: '',
       },
       stubs: {
         GlFormInput,
