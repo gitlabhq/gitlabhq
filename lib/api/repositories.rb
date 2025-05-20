@@ -10,6 +10,7 @@ module API
     content_type :txt, 'text/plain'
 
     helpers ::API::Helpers::HeadersHelpers
+    helpers ::API::Helpers::BlobHelpers
 
     helpers do
       params :release_params do
@@ -142,7 +143,6 @@ module API
           desc: 'The commit hash', documentation: { example: '7d70e02340bac451f281cecf0a980907974bd8be' }
       end
       get ':id/repository/blobs/:sha/raw' do
-        # Load metadata enough to ask Workhorse to load the whole blob
         assign_blob_vars!(limit: 0)
 
         no_cache_headers
@@ -156,6 +156,14 @@ module API
           desc: 'The commit hash', documentation: { example: '7d70e02340bac451f281cecf0a980907974bd8be' }
       end
       get ':id/repository/blobs/:sha' do
+        # Load metadata for @blob, but not not the actual data
+        #
+        assign_blob_vars!(limit: 0)
+        check_rate_limit_for_blob(@blob)
+
+        # If #check_rate_limit_for_blob hasn't stopped the request, allow data
+        #   to actually be loaded without limit.
+        #
         assign_blob_vars!(limit: -1)
 
         {

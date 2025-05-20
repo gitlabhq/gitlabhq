@@ -280,6 +280,7 @@ FactoryBot.define do
     project
     active { true }
     type { 'Integrations::Discord' }
+    webhook { 'https://discord.com/api/webhooks/12345/token_12-34' }
   end
 
   factory :mattermost_integration, class: 'Integrations::Mattermost' do
