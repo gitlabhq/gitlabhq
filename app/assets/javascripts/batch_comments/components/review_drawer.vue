@@ -236,6 +236,7 @@ export default {
       try {
         await this.discardDrafts();
 
+        this.setDrawerOpened(false);
         toast(__('Review discarded'));
       } finally {
         this.discarding = false;
@@ -396,6 +397,8 @@ export default {
       :action-primary="$options.modal.primaryAction"
       :action-cancel="$options.modal.cancelAction"
       data-testid="discard-review-modal"
+      static
+      lazy
       @primary="discardReviews"
     >
       {{

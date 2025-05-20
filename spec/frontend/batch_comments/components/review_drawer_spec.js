@@ -1,5 +1,5 @@
 import { GlDrawer } from '@gitlab/ui';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { createTestingPinia } from '@pinia/testing';
@@ -18,6 +18,9 @@ import { useBatchComments } from '~/batch_comments/store';
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '~/vue_shared/constants';
 import userCanApproveQuery from '~/batch_comments/queries/can_approve.query.graphql';
+import toast from '~/vue_shared/plugins/global_toast';
+
+jest.mock('~/vue_shared/plugins/global_toast');
 
 jest.mock('~/autosave');
 jest.mock('~/vue_shared/components/markdown/eventhub');
@@ -38,6 +41,8 @@ describe('ReviewDrawer', () => {
   const findSubmitButton = () => wrapper.findByTestId('submit-review-button');
   const findForm = () => wrapper.findByTestId('submit-gl-form');
   const findPlaceholderField = () => wrapper.findByTestId('placeholder-input-field');
+  const findDiscardReviewButton = () => wrapper.findByTestId('discard-review-btn');
+  const findDiscardReviewModal = () => wrapper.findByTestId('discard-review-modal');
 
   const submitForm = async () => {
     await findPlaceholderField().vm.$emit('focus');
@@ -298,4 +303,63 @@ describe('ReviewDrawer', () => {
       expect(wrapper.findAll('input').at(1).attributes('disabled')).toBe(exists);
     },
   );
+
+  describe('when discarding a review', () => {
+    beforeEach(() => {
+      useBatchComments().drawerOpened = true;
+      useBatchComments().drafts = [{ id: 1, file_path: 'foo' }];
+    });
+
+    it('shows modal when clicking discard button', async () => {
+      createComponent();
+
+      expect(findDiscardReviewModal().exists()).toBe(false);
+
+      findDiscardReviewButton().vm.$emit('click');
+
+      await nextTick();
+
+      expect(findDiscardReviewModal().props('visible')).toBe(true);
+    });
+
+    it('calls discardReviews when primary action on modal is triggered', async () => {
+      createComponent();
+
+      findDiscardReviewButton().vm.$emit('click');
+
+      await nextTick();
+
+      findDiscardReviewModal().vm.$emit('primary');
+
+      expect(useBatchComments().discardDrafts).toHaveBeenCalled();
+    });
+
+    it('creates a toast message when finished', async () => {
+      createComponent();
+
+      findDiscardReviewButton().vm.$emit('click');
+
+      await nextTick();
+
+      findDiscardReviewModal().vm.$emit('primary');
+
+      await nextTick();
+
+      expect(toast).toHaveBeenCalledWith('Review discarded');
+    });
+
+    it('calls setDrawerOpened when primary action on modal is triggered', async () => {
+      createComponent();
+
+      findDiscardReviewButton().vm.$emit('click');
+
+      await nextTick();
+
+      findDiscardReviewModal().vm.$emit('primary');
+
+      await nextTick();
+
+      expect(useBatchComments().setDrawerOpened).toHaveBeenCalledWith(false);
+    });
+  });
 });

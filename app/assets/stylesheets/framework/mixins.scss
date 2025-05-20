@@ -450,5 +450,9 @@
   @media (prefers-reduced-transparency: no-preference) {
     background-color: rgb(from #{$bgcolor} r g b / 92%) !important;
     backdrop-filter: blur(24px);
+
+    .gl-dark & {
+      background-color: rgb(from #{$bgcolor} r g b / 84%) !important;
+    }
   }
 }

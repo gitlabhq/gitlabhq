@@ -38,18 +38,19 @@ For a click-through demo, see [Compliance frameworks](https://gitlab.navattic.co
 
 ## Create, edit, or delete a compliance framework
 
-You can create, edit, or delete a compliance framework from a compliance framework report. For more information, see:
+You can create, edit, or delete a compliance framework by using either a compliance frameworks report or a compliance projects report.
+
+For more information on using a compliance frameworks report, see:
 
 - [Create a new compliance framework](compliance_center/compliance_frameworks_report.md#create-a-new-compliance-framework).
 - [Edit a compliance framework](compliance_center/compliance_frameworks_report.md#edit-a-compliance-framework).
 - [Delete a compliance framework](compliance_center/compliance_frameworks_report.md#delete-a-compliance-framework).
 
-You can create, edit, or delete a compliance framework from a compliance projects report. For more information, see:
+For more information on using a compliance projects report, see:
 
 - [Create a new compliance framework](compliance_center/compliance_projects_report.md#create-a-new-compliance-framework).
 - [Edit a compliance framework](compliance_center/compliance_projects_report.md#edit-a-compliance-framework).
 - [Delete a compliance framework](compliance_center/compliance_projects_report.md#delete-a-compliance-framework).
-
 Subgroups and projects have access to all compliance frameworks created on their top-level group. However, compliance frameworks cannot be created, edited,
 or deleted by using subgroups or projects. Project owners can choose a framework to apply to their projects.
 
