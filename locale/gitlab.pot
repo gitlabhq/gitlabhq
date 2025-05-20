@@ -4537,7 +4537,7 @@ msgstr ""
 msgid "AdminSettings|Configure product analytics to track events within your project applications."
 msgstr ""
 
-msgid "AdminSettings|Configure when inactive projects should be automatically deleted. %{linkStart}What are inactive projects?%{linkEnd}"
+msgid "AdminSettings|Configure when dormant projects should be automatically deleted. %{linkStart}What are dormant projects?%{linkEnd}"
 msgstr ""
 
 msgid "AdminSettings|Cube API URL"
@@ -4546,10 +4546,10 @@ msgstr ""
 msgid "AdminSettings|Default expiration time for parallel deployments (in seconds)"
 msgstr ""
 
-msgid "AdminSettings|Delete inactive projects"
+msgid "AdminSettings|Delete dormant projects"
 msgstr ""
 
-msgid "AdminSettings|Delete inactive projects that exceed"
+msgid "AdminSettings|Delete dormant projects that exceed"
 msgstr ""
 
 msgid "AdminSettings|Delete project after"
@@ -4568,6 +4568,9 @@ msgid "AdminSettings|Display a banner on merge requests in projects with no pipe
 msgstr ""
 
 msgid "AdminSettings|Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled. %{link_start}Learn more%{link_end}."
+msgstr ""
+
+msgid "AdminSettings|Dormant project deletion"
 msgstr ""
 
 msgid "AdminSettings|Download payload"
@@ -4667,9 +4670,6 @@ msgid "AdminSettings|Import sources"
 msgstr ""
 
 msgid "AdminSettings|Improve non-code indexing throughput by enqueuing Sidekiq jobs until all documents are processed."
-msgstr ""
-
-msgid "AdminSettings|Inactive project deletion"
 msgstr ""
 
 msgid "AdminSettings|Include optional data in Service Ping."
@@ -4810,7 +4810,7 @@ msgstr ""
 msgid "AdminSettings|Select to disable public access for Pages sites, which requires users to sign in for access to the Pages sites in your instance. %{link_start}Learn more%{link_end}."
 msgstr ""
 
-msgid "AdminSettings|Send email to maintainers after project is inactive for"
+msgid "AdminSettings|Send email to maintainers after project is dormant for"
 msgstr ""
 
 msgid "AdminSettings|Send event data to GitLab."
@@ -4948,7 +4948,7 @@ msgstr ""
 msgid "AdminSettings|When disabled, runner registration tokens are disabled from runner pages, and maintainers and owners cannot use registration tokens to register runners. They can use runner authentication tokens instead as the more secure runner registration method."
 msgstr ""
 
-msgid "AdminSettings|When to delete inactive projects"
+msgid "AdminSettings|When to delete dormant projects"
 msgstr ""
 
 msgid "AdminSettings|You can enable Registration Features because Service Ping is enabled."

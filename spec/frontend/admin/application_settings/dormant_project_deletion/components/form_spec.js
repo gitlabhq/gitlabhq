@@ -1,13 +1,13 @@
 import { GlFormCheckbox } from '@gitlab/ui';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
-import SettingsForm from '~/admin/application_settings/inactive_project_deletion/components/form.vue';
+import SettingsForm from '~/admin/application_settings/dormant_project_deletion/components/form.vue';
 
 describe('Form component', () => {
   let wrapper;
 
   const findEnabledCheckbox = () => wrapper.findComponent(GlFormCheckbox);
   const findProjectDeletionSettings = () =>
-    wrapper.findByTestId('inactive-project-deletion-settings');
+    wrapper.findByTestId('dormant-project-deletion-settings');
   const findMinSizeGroup = () => wrapper.findByTestId('min-size-group');
   const findMinSizeInputGroupText = () => wrapper.findByTestId('min-size-input-group-text');
   const findMinSizeInput = () => wrapper.findByTestId('min-size-input');
@@ -24,12 +24,12 @@ describe('Form component', () => {
 
   const createComponent = (
     mountFn = shallowMountExtended,
-    propsData = { deleteInactiveProjects: true },
+    propsData = { deleteDormantProjects: true },
   ) => {
     wrapper = mountFn(SettingsForm, { propsData });
   };
 
-  describe('Enable inactive project deletion', () => {
+  describe('Enable dormant project deletion', () => {
     it('has the checkbox', () => {
       createComponent();
 
@@ -39,7 +39,7 @@ describe('Form component', () => {
     it.each([[true], [false]])(
       'when the checkbox is %s then the project deletion settings visibility is set to %s',
       (visible) => {
-        createComponent(shallowMountExtended, { deleteInactiveProjects: visible });
+        createComponent(shallowMountExtended, { deleteDormantProjects: visible });
 
         expect(findProjectDeletionSettings().exists()).toBe(visible);
       },
@@ -56,7 +56,7 @@ describe('Form component', () => {
     });
 
     it('has the field description', () => {
-      expect(findMinSizeGroup().text()).toContain('Delete inactive projects that exceed');
+      expect(findMinSizeGroup().text()).toContain('Delete dormant projects that exceed');
     });
 
     it('has the appended text on the field', () => {
@@ -119,7 +119,7 @@ describe('Form component', () => {
 
     it('has the field description', () => {
       expect(findSendWarningEmailAfterMonthsGroup().text()).toContain(
-        'Send email to maintainers after project is inactive for',
+        'Send email to maintainers after project is dormant for',
       );
     });
 
@@ -145,9 +145,9 @@ describe('Form component', () => {
   describe('HTML validity', () => {
     beforeEach(() => {
       createComponent(mountExtended, {
-        inactiveProjectsDeleteAfterMonths: 3,
-        inactiveProjectsSendWarningEmailAfterMonths: 2,
-        deleteInactiveProjects: true,
+        dormantProjectsDeleteAfterMonths: 3,
+        dormantProjectsSendWarningEmailAfterMonths: 2,
+        deleteDormantProjects: true,
       });
 
       findDeleteAfterMonthsInput().vm.$el.setCustomValidity = jest.fn();

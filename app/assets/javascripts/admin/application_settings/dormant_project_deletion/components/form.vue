@@ -11,7 +11,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { __, s__ } from '~/locale';
 
 export default {
-  name: 'InactiveProjectDeletionForm',
+  name: 'DormantProjectDeletionForm',
   components: {
     GlFormCheckbox,
     GlFormGroup,
@@ -21,22 +21,22 @@ export default {
     GlSprintf,
   },
   props: {
-    deleteInactiveProjects: {
+    deleteDormantProjects: {
       type: Boolean,
       required: false,
       default: false,
     },
-    inactiveProjectsDeleteAfterMonths: {
+    dormantProjectsDeleteAfterMonths: {
       type: Number,
       required: false,
       default: 2,
     },
-    inactiveProjectsMinSizeMb: {
+    dormantProjectsMinSizeMb: {
       type: Number,
       required: false,
       default: 0,
     },
-    inactiveProjectsSendWarningEmailAfterMonths: {
+    dormantProjectsSendWarningEmailAfterMonths: {
       type: Number,
       required: false,
       default: 1,
@@ -44,10 +44,10 @@ export default {
   },
   data() {
     return {
-      enabled: this.deleteInactiveProjects,
-      deleteAfterMonths: this.inactiveProjectsDeleteAfterMonths,
-      minSizeMb: this.inactiveProjectsMinSizeMb,
-      sendWarningEmailAfterMonths: this.inactiveProjectsSendWarningEmailAfterMonths,
+      enabled: this.deleteDormantProjects,
+      deleteAfterMonths: this.dormantProjectsDeleteAfterMonths,
+      minSizeMb: this.dormantProjectsMinSizeMb,
+      sendWarningEmailAfterMonths: this.dormantProjectsSendWarningEmailAfterMonths,
     };
   },
   computed: {
@@ -92,13 +92,13 @@ export default {
     },
   },
   i18n: {
-    checkboxLabel: s__('AdminSettings|Delete inactive projects'),
+    checkboxLabel: s__('AdminSettings|Delete dormant projects'),
     checkboxHelp: s__(
-      'AdminSettings|Configure when inactive projects should be automatically deleted. %{linkStart}What are inactive projects?%{linkEnd}',
+      'AdminSettings|Configure when dormant projects should be automatically deleted. %{linkStart}What are dormant projects?%{linkEnd}',
     ),
     checkboxHelpDocLink: helpPagePath('administration/inactive_project_deletion'),
-    minSizeMbLabel: s__('AdminSettings|When to delete inactive projects'),
-    minSizeMbDescription: s__('AdminSettings|Delete inactive projects that exceed'),
+    minSizeMbLabel: s__('AdminSettings|When to delete dormant projects'),
+    minSizeMbDescription: s__('AdminSettings|Delete dormant projects that exceed'),
     minSizeMbInvalidFeedback: s__('AdminSettings|Minimum size must be at least 0.'),
     deleteAfterMonthsLabel: s__('AdminSettings|Delete project after'),
     deleteAfterMonthsInvalidFeedback: s__(
@@ -106,7 +106,7 @@ export default {
     ),
     sendWarningEmailAfterMonthsLabel: s__('AdminSettings|Send warning email'),
     sendWarningEmailAfterMonthsDescription: s__(
-      'AdminSettings|Send email to maintainers after project is inactive for',
+      'AdminSettings|Send email to maintainers after project is dormant for',
     ),
     sendWarningEmailAfterMonthsHelp: s__(
       'AdminSettings|Requires %{linkStart}email notifications%{linkEnd}',
@@ -139,7 +139,7 @@ export default {
       </gl-form-checkbox>
     </gl-form-group>
 
-    <div v-if="enabled" class="gl-ml-6" data-testid="inactive-project-deletion-settings">
+    <div v-if="enabled" class="gl-ml-6" data-testid="dormant-project-deletion-settings">
       <gl-form-group
         :label="$options.i18n.minSizeMbLabel"
         :label-description="$options.i18n.minSizeMbDescription"
@@ -181,7 +181,7 @@ export default {
       <div class="gl-border-l gl-pl-6">
         <gl-form-group
           :label="$options.i18n.deleteAfterMonthsLabel"
-          label-for="inactive_projects_delete_after_months"
+          label-for="dormant_projects_delete_after_months"
           :state="isDeleteAfterMonthsValid"
           data-testid="delete-after-months-group"
         >
@@ -190,7 +190,7 @@ export default {
           </template>
           <gl-form-input-group>
             <gl-form-input
-              id="inactive_projects_delete_after_months"
+              id="dormant_projects_delete_after_months"
               ref="deleteAfterMonthsInput"
               v-model="deleteAfterMonths"
               :state="isDeleteAfterMonthsValid"
@@ -212,7 +212,7 @@ export default {
         <gl-form-group
           :label="$options.i18n.sendWarningEmailAfterMonthsLabel"
           :label-description="$options.i18n.sendWarningEmailAfterMonthsDescription"
-          label-for="inactive_projects_send_warning_email_after_months"
+          label-for="dormant_projects_send_warning_email_after_months"
           :state="isSendWarningEmailAfterMonthsValid"
           class="gl-max-w-26"
           data-testid="send-warning-email-after-months-group"
@@ -224,7 +224,7 @@ export default {
           </template>
           <gl-form-input-group>
             <gl-form-input
-              id="inactive_projects_send_warning_email_after_months"
+              id="dormant_projects_send_warning_email_after_months"
               ref="sendWarningEmailAfterMonthsInput"
               v-model="sendWarningEmailAfterMonths"
               :state="isSendWarningEmailAfterMonthsValid"

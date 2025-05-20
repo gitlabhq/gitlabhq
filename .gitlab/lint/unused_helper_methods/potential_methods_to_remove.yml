@@ -7,8 +7,6 @@
 #
 tag_pair_for_link:
   file: ee/app/helpers/admin/application_settings_helper.rb
-start_free_trial_data:
-  file: ee/app/helpers/billing_plans_helper.rb
 compliance_frameworks_list_data:
   file: ee/app/helpers/compliance_management/compliance_framework/group_settings_helper.rb
 project_vulnerability_path:
