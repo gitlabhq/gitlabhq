@@ -117,6 +117,9 @@ class Note < ApplicationRecord
 
   validate :does_not_exceed_notes_limit?, on: :create, unless: [:system?, :importing?]
 
+  validates :position, :original_position, :change_position,
+    'notes/position_serialized_size': { max_bytesize: 100.kilobytes }
+
   # @deprecated attachments are handled by the Upload model.
   #
   # https://gitlab.com/gitlab-org/gitlab/-/issues/20830
