@@ -35572,6 +35572,9 @@ msgstr ""
 msgid "LDAP|Server"
 msgstr ""
 
+msgid "LDAP|Start typing"
+msgstr ""
+
 msgid "LDAP|Sync method"
 msgstr ""
 
@@ -35582,6 +35585,9 @@ msgid "LDAP|This query must use valid %{ldap_link_start}LDAP Search Filter Synta
 msgstr ""
 
 msgid "LDAP|User filter"
+msgstr ""
+
+msgid "LDAP|View more information on %{linkStart}user filters%{linkEnd}."
 msgstr ""
 
 msgid "LDAP|You can manage permission levels for individual group members in the Members tab."

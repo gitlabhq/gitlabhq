@@ -5,6 +5,13 @@ export default {
   components: {
     GlBreadcrumb,
   },
+  props: {
+    staticBreadcrumbs: {
+      type: Object,
+      required: false,
+      default: () => ({ items: [] }),
+    },
+  },
   computed: {
     rootRoute() {
       const rootName = this.$route.meta.environmentName;
@@ -30,7 +37,7 @@ export default {
       if (!this.isLoaded) {
         return [];
       }
-      const breadCrumbs = [this.rootRoute];
+      const breadCrumbs = [...this.staticBreadcrumbs.items, this.rootRoute];
 
       if (!this.isRootRoute) {
         breadCrumbs.push(this.logsRoute);

@@ -108,12 +108,8 @@ RSpec.describe Projects::Settings::AccessTokensController, feature_category: :sy
   describe '#index' do
     let_it_be(:resource_access_tokens) { create_list(:personal_access_token, 3, user: access_token_user) }
 
-    let(:virtual_registry_maven_enabled) { true }
-    let(:dependency_proxy_enabled) { true }
-
     before do
-      stub_feature_flags(virtual_registry_maven: virtual_registry_maven_enabled)
-      stub_config(dependency_proxy: { enabled: dependency_proxy_enabled })
+      stub_config(dependency_proxy: { enabled: true })
 
       get project_settings_access_tokens_path(resource)
     end

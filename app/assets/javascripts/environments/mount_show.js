@@ -109,7 +109,7 @@ export const initPage = async () => {
     },
   });
 
-  injectVueAppBreadcrumbs(router, EnvironmentBreadcrumbs);
+  injectVueAppBreadcrumbs(router, EnvironmentBreadcrumbs, null, {}, { singleNavOptIn: true });
 
   return new Vue({
     el,

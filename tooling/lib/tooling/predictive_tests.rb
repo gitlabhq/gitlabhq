@@ -8,6 +8,7 @@ require_relative 'mappings/js_to_system_specs_mappings'
 require_relative 'mappings/partial_to_views_mappings'
 require_relative 'mappings/view_to_js_mappings'
 require_relative 'mappings/view_to_system_specs_mappings'
+require_relative 'events/track_pipeline_events'
 
 module Tooling
   class PredictiveTests
@@ -30,6 +31,7 @@ module Tooling
       @rspec_views_including_partials_path = ENV['RSPEC_VIEWS_INCLUDING_PARTIALS_PATH']
       @frontend_fixtures_mapping_path      = ENV['FRONTEND_FIXTURES_MAPPING_PATH']
       @rspec_matching_js_files_path        = ENV['RSPEC_MATCHING_JS_FILES_PATH']
+      @predictive_tests_strategy           = ENV['PREDICTIVE_TESTS_STRATEGY'] || 'described_class'
     end
 
     def execute
@@ -52,11 +54,28 @@ module Tooling
         frontend_fixtures_mapping_pathname: frontend_fixtures_mapping_path
       ).execute
       Tooling::Mappings::ViewToJsMappings.new(rspec_changed_files_path, rspec_matching_js_files_path).execute
+
+      record_selected_test_count
     end
 
     private
 
-    attr_reader :rspec_changed_files_path, :rspec_matching_tests_path, :rspec_views_including_partials_path,
-      :frontend_fixtures_mapping_path, :rspec_matching_js_files_path
+    attr_reader :rspec_changed_files_path,
+      :rspec_matching_tests_path,
+      :rspec_views_including_partials_path,
+      :frontend_fixtures_mapping_path,
+      :rspec_matching_js_files_path,
+      :predictive_tests_strategy
+
+    def record_selected_test_count
+      test_count = File.read(rspec_matching_tests_path).lines.length
+
+      Tooling::Events::TrackPipelineEvents.new.send_event(
+        "glci_predictive_tests_count",
+        label: "test-count",
+        value: test_count,
+        property: predictive_tests_strategy
+      )
+    end
   end
 end

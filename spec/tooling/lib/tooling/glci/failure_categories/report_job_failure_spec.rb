@@ -11,10 +11,12 @@ RSpec.describe Tooling::Glci::FailureCategories::ReportJobFailure, feature_categ
 
   let(:job_id)           { '12345'         }
   let(:failure_category) { 'test_failures' }
-  let(:track_pipeline_events_instance) { instance_double(Tooling::Events::TrackPipelineEvents) }
+  let(:track_pipeline_events_instance) { instance_double(Tooling::Events::TrackPipelineEvents, send_event: nil) }
 
   before do
     stub_env('CI_JOB_ID', nil)
+
+    allow(Tooling::Events::TrackPipelineEvents).to receive(:new).and_return(track_pipeline_events_instance)
   end
 
   describe '#initialize' do
@@ -42,36 +44,14 @@ RSpec.describe Tooling::Glci::FailureCategories::ReportJobFailure, feature_categ
   describe '#report' do
     subject(:reporter) { described_class.new(job_id: job_id, failure_category: failure_category) }
 
-    before do
-      allow(Tooling::Events::TrackPipelineEvents).to receive(:new).and_return(track_pipeline_events_instance)
-      allow(track_pipeline_events_instance).to receive(:send_event)
-    end
-
-    it 'initializes TrackPipelineEvents with correct event name' do
+    it 'sends event with correct attributes' do
       reporter.report
 
-      expect(Tooling::Events::TrackPipelineEvents).to have_received(:new).with(
-        hash_including(event_name: "glci_job_failed")
+      expect(track_pipeline_events_instance).to have_received(:send_event).with(
+        "glci_job_failed",
+        label: job_id,
+        property: failure_category
       )
-    end
-
-    it 'passes the correct properties structure to TrackPipelineEvents' do
-      reporter.report
-
-      expect(Tooling::Events::TrackPipelineEvents).to have_received(:new).with(
-        hash_including(
-          properties: {
-            label: job_id,
-            property: failure_category
-          }
-        )
-      )
-    end
-
-    it 'calls send_event on the TrackPipelineEvents instance' do
-      reporter.report
-
-      expect(track_pipeline_events_instance).to have_received(:send_event)
     end
   end
 end

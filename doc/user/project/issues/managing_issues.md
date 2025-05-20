@@ -64,6 +64,9 @@ To edit an issue:
 
 Generate a detailed description for an issue based on a short summary you provide.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=-BWBQat7p5M)
+<!-- Video published on 2024-12-18 -->
+
 Prerequisites:
 
 - You must belong to at least one group with the [experiment and beta features setting](../../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) enabled.

@@ -60,7 +60,8 @@ module Gitlab
             :start_and_due_date,
             :time_tracking,
             :vulnerabilities,
-            [:weight, { editable: true, rollup: false }]
+            [:weight, { editable: true, rollup: false }],
+            :status
           ],
           incident: [
             :assignees,

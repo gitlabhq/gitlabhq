@@ -68,3 +68,5 @@ You can also access issue analytics from the [Value Streams Dashboard](../../ana
 
 Enhanced issue analytics display the additional metric `Issues closed`, which represents the total number of resolved issues in your group over a selected period.
 You can use this metric to improve the overall turn-around time and value delivered to your customers.
+
+![Enhanced issue analytics bar chart and table for a group](img/enhanced_issue_analytics_v17_8.png)

@@ -13545,7 +13545,8 @@ CREATE TABLE description_versions (
     epic_id bigint,
     description text,
     deleted_at timestamp with time zone,
-    namespace_id bigint NOT NULL
+    namespace_id bigint NOT NULL,
+    CONSTRAINT check_76c1eb7122 CHECK ((num_nonnulls(epic_id, issue_id, merge_request_id) = 1))
 );
 
 CREATE SEQUENCE description_versions_id_seq
@@ -29107,9 +29108,6 @@ ALTER TABLE ONLY project_type_ci_runners
 ALTER TABLE lists
     ADD CONSTRAINT check_6dadb82d36 CHECK ((num_nonnulls(group_id, project_id) = 1)) NOT VALID;
 
-ALTER TABLE description_versions
-    ADD CONSTRAINT check_76c1eb7122 CHECK ((num_nonnulls(epic_id, issue_id, merge_request_id) = 1)) NOT VALID;
-
 ALTER TABLE ONLY group_type_ci_runners
     ADD CONSTRAINT check_81b90172a6 UNIQUE (id);
 
@@ -33138,6 +33136,8 @@ CREATE INDEX idx_deletions_on_project_id_and_id_where_pending ON ONLY p_batched_
 CREATE INDEX idx_dep_proxy_pkgs_settings_enabled_maven_on_project_id ON dependency_proxy_packages_settings USING btree (project_id) WHERE ((enabled = true) AND (maven_external_registry_url IS NOT NULL));
 
 CREATE INDEX idx_deployment_clusters_on_cluster_id_and_kubernetes_namespace ON deployment_clusters USING btree (cluster_id, kubernetes_namespace);
+
+CREATE INDEX idx_description_versions_on_namespace_id ON description_versions USING btree (namespace_id);
 
 CREATE INDEX idx_devops_adoption_segments_namespace_end_time ON analytics_devops_adoption_snapshots USING btree (namespace_id, end_time);
 
@@ -43266,6 +43266,9 @@ ALTER TABLE ONLY packages_conan_file_metadata
 
 ALTER TABLE ONLY catalog_resource_versions
     ADD CONSTRAINT fk_b670eae96b FOREIGN KEY (catalog_resource_id) REFERENCES catalog_resources(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY description_versions
+    ADD CONSTRAINT fk_b688e93ee1 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY bulk_import_entities
     ADD CONSTRAINT fk_b69fa2b2df FOREIGN KEY (bulk_import_id) REFERENCES bulk_imports(id) ON DELETE CASCADE;

@@ -35,9 +35,10 @@ title: Code Suggestions
 
 Use GitLab Duo Code Suggestions to write code more efficiently by using generative AI to suggest code while you're developing.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-[View a click-through demo](https://gitlab.navattic.com/code-suggestions).
-<!-- Video published on 2023-12-09 --> <!-- Demo published on 2024-02-01 -->
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+  [View a click-through demo](https://gitlab.navattic.com/code-suggestions).
+  <!-- Video published on 2023-12-09 --> <!-- Demo published on 2024-02-01 -->
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://youtu.be/ds7SG1wgcVM)
 
 ## Prerequisites
 

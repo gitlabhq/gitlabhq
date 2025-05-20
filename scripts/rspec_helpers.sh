@@ -16,13 +16,16 @@ function update_tests_metadata() {
 }
 
 function retrieve_tests_mapping() {
-  mkdir -p $(dirname "$RSPEC_PACKED_TESTS_MAPPING_PATH")
+  local mapping_archive="${1:-$RSPEC_PACKED_TESTS_MAPPING_PATH}"
+  local mapping_path="${2:-$RSPEC_TESTS_MAPPING_PATH}"
 
-  if [[ ! -f "${RSPEC_PACKED_TESTS_MAPPING_PATH}" ]]; then
-    (curl --fail --location  -o "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz" "https://gitlab-org.gitlab.io/gitlab/${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz" && gzip -d "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz") || echo "{}" > "${RSPEC_PACKED_TESTS_MAPPING_PATH}"
+  mkdir -p $(dirname "$mapping_archive")
+
+  if [[ ! -f "${mapping_archive}" ]]; then
+    (curl --fail --location  -o "${mapping_archive}.gz" "https://gitlab-org.gitlab.io/gitlab/${mapping_archive}.gz" && gzip -d "${mapping_archive}.gz") || echo "{}" > "${mapping_archive}"
   fi
 
-  scripts/unpack-test-mapping "${RSPEC_PACKED_TESTS_MAPPING_PATH}" "${RSPEC_TESTS_MAPPING_PATH}"
+  scripts/unpack-test-mapping "${mapping_archive}" "${mapping_path}"
 }
 
 function retrieve_frontend_fixtures_mapping() {

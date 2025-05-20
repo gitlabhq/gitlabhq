@@ -26,7 +26,7 @@ and gain deeper insights across your projects.
 Three add-ons are available: GitLab Duo Core, Pro, and Enterprise.
 
 Each add-on provides access to
-[a set of GitLab Duo features](../user/gitlab_duo/_index.md#summary-of-gitlab-duo-features).
+[a set of GitLab Duo features](../user/gitlab_duo/feature_summary.md).
 
 ## GitLab Duo Core
 

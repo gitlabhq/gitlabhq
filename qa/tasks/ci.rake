@@ -85,13 +85,13 @@ namespace :ci do
         label: tests_from_mapping.nil? || tests_from_mapping.empty? ? 'non-selective' : 'selective',
         value: tests_from_mapping.nil? || tests_from_mapping.empty? ? 0 : tests_from_mapping.count
       }
-      Tooling::Events::TrackPipelineEvents.new(
-        event_name: "e2e_tests_selected_for_execution_gitlab_pipeline",
-        properties: properties
-      ).send_event
+      Tooling::Events::TrackPipelineEvents.new(logger: logger).send_event(
+        "e2e_tests_selected_for_execution_gitlab_pipeline",
+        **properties
+      )
     rescue StandardError => e
-      logger.warn("*** Error while creating pipeline with selected specs: #{e.backtrace} ****")
-      logger.info("*** Running full suite ***")
+      logger.warn("*** Error while creating pipeline with selected specs: #{e.backtrace} ***")
+      logger.info("*** Defaulting to running full suite ***")
       QA::Tools::Ci::PipelineCreator.new([], **creator_args).create
     end
   end

@@ -136,15 +136,16 @@ detect-tests:
   stage: prepare
   variables:
     RSPEC_TESTS_MAPPING_ENABLED: "true"
+    MAPPING_ARCHIVE: $RSPEC_PACKED_TESTS_MAPPING_PATH
   before_script:
     - apt update && apt install -y curl
-  script:
     - source ./scripts/utils.sh
     - source ./scripts/rspec_helpers.sh
     - install_gitlab_gem
     - install_tff_gem
-    - retrieve_tests_mapping
+    - retrieve_tests_mapping "$MAPPING_ARCHIVE"
     - retrieve_frontend_fixtures_mapping
+  script:
     - |
       # $FIND_CHANGES_MERGE_REQUEST_IID is defined in as-if-foss.gitlab-ci.yml
       if [ -n "$CI_MERGE_REQUEST_IID" ] || [ -n "$FIND_CHANGES_MERGE_REQUEST_IID" ]; then
@@ -181,6 +182,14 @@ detect-tests:
       - ${RSPEC_MATCHING_TESTS_FOSS_PATH}
       - ${RSPEC_MATCHING_TESTS_PATH}
       - ${RSPEC_VIEWS_INCLUDING_PARTIALS_PATH}
+
+# This job is used for evaluating rspec test mappings created based on coverage strategy
+# See: https://gitlab.com/groups/gitlab-org/quality/analytics/-/epics/13
+detect-tests-alt:
+  extends: detect-tests
+  variables:
+    MAPPING_ARCHIVE: $RSPEC_PACKED_TESTS_MAPPING_ALT_PATH
+    PREDICTIVE_TESTS_STRATEGY: coverage
 
 detect-previous-failed-tests:
   extends:

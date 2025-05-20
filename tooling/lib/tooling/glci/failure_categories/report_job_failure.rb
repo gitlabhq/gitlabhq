@@ -22,13 +22,11 @@ module Tooling
         end
 
         def report
-          Tooling::Events::TrackPipelineEvents.new(
-            event_name: "glci_job_failed",
-            properties: {
-              label: @job_id,
-              property: @failure_category
-            }
-          ).send_event
+          Tooling::Events::TrackPipelineEvents.new.send_event(
+            "glci_job_failed",
+            label: @job_id,
+            property: @failure_category
+          )
         end
       end
     end

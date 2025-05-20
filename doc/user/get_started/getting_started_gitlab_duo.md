@@ -28,7 +28,7 @@ can check the health of the installation.
 
 For more information, see:
 
-- [GitLab Duo features by add-on](../gitlab_duo/_index.md#summary-of-gitlab-duo-features).
+- [GitLab Duo features by add-on](../gitlab_duo/feature_summary.md).
 - [How to purchase an add-on](../../subscriptions/subscription-add-ons.md).
 - [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md).
 - [Health check details](../gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo).

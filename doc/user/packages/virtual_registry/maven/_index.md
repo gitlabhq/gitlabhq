@@ -9,13 +9,15 @@ title: Maven virtual registry
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14137) in GitLab 18.0 [with a flag](../../../../administration/feature_flags.md) named `virtual_registry_maven`. Disabled by default.
+- Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
 
 {{< /history >}}
 
@@ -23,7 +25,7 @@ title: Maven virtual registry
 
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
-This feature is available in [experiment](../../../../policy/development_stages_support.md#experiment).
+This feature is available in [beta](../../../../policy/development_stages_support.md#beta).
 Review the documentation carefully before you use this feature.
 
 {{< /alert >}}

@@ -386,6 +386,9 @@ such as:
 
 Generate a summary of discussions on an issue.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=IcdxLfTIUgc)
+<!-- Video published on 2024-03-28 -->
+
 Prerequisites:
 
 - You must have permission to view the issue.

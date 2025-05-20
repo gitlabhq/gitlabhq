@@ -267,6 +267,9 @@ If you spend a lot of time trying to understand code that others have created, o
 you struggle to understand code written in a language you are not familiar with,
 you can ask GitLab Duo to explain the code to you.
 
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://youtu.be/1izKaLmmaCA?si=O2HDokLLujRro_3O)
+<!-- Video published on 2023-11-18 -->
+
 Prerequisites:
 
 - You must belong to at least one group with the

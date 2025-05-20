@@ -13,7 +13,10 @@ module Packages
       INVALID_METADATA_ERROR_SYMBOL_MESSAGE = 'package name, version and/or description not found in metadata'
       MISSING_MATCHING_PACKAGE_ERROR_MESSAGE = 'symbol package is invalid, matching package does not exist'
 
-      InvalidMetadataError = ZipError = DuplicatePackageError = ProtectedPackageError = Class.new(StandardError)
+      DuplicatePackageError = Class.new(StandardError)
+      InvalidMetadataError = Class.new(StandardError)
+      ProtectedPackageError = Class.new(StandardError)
+      ZipError = Class.new(StandardError)
 
       def initialize(package_file, package_zip_file)
         @package_file = package_file

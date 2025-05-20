@@ -43,6 +43,8 @@ to create a merge request description.
 
 The description is inserted where your cursor was.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=CKjkVsfyFd8&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
+
 Provide feedback on this feature in [issue 443236](https://gitlab.com/gitlab-org/gitlab/-/issues/443236).
 
 Data usage: The diff of changes between the source branch's head and the target branch is sent to the large language model.
@@ -156,6 +158,8 @@ When you've completed your review of a merge request and are ready to [submit yo
 
 The summary is displayed in the comment box. You can edit and refine the summary prior to submitting your review.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=Bx6Zajyuy9k)
+
 Provide feedback on this experimental feature in [issue 408991](https://gitlab.com/gitlab-org/gitlab/-/issues/408991).
 
 Data usage: When you use this feature, the following data is sent to the large language model referenced above:
@@ -190,6 +194,8 @@ by using GitLab Duo Merge Commit Message Generation.
 1. Select the **Edit commit message** checkbox on the merge widget.
 1. Select **Generate commit message**.
 1. Review the commit message provided and choose **Insert** to add it to the commit.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=fUHPNT4uByQ)
 
 Data usage: When you use this feature, the following data is sent to the large language model:
 

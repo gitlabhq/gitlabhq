@@ -65,7 +65,7 @@ Follow these guidelines when you document GitLab Duo features.
 
 When documenting a GitLab Duo experiment:
 
-- On the [top-level GitLab Duo page](../../user/gitlab_duo/_index.md#summary-of-gitlab-duo-features):
+- On the [top-level GitLab Duo page](../../user/gitlab_duo/feature_summary.md):
   - Add a row to the table.
   - Add the feature to an area at the top of the page, near other features that are available
     during a similar stage of the software development lifecycle.
@@ -80,7 +80,7 @@ When documenting a GitLab Duo experiment:
 
 When a GitLab Duo experiment moves to beta:
 
-- On the [top-level GitLab Duo page](../../user/gitlab_duo/_index.md#summary-of-gitlab-duo-features),
+- On the [top-level GitLab Duo page](../../user/gitlab_duo/feature_summary.md),
   update the row in the table.
 - Make sure you update the history and status values, including any
   [add-on information](styleguide/availability_details.md#add-ons).
@@ -92,7 +92,7 @@ When a GitLab Duo experiment moves to beta:
 
 When a GitLab Duo feature becomes generally available:
 
-- On the [top-level GitLab Duo page](../../user/gitlab_duo/_index.md#summary-of-gitlab-duo-features),
+- On the [top-level GitLab Duo page](../../user/gitlab_duo/feature_summary.md),
   update the row in the table.
 - Make sure you update the history and status values, including any
   [add-on information](styleguide/availability_details.md#add-ons).
