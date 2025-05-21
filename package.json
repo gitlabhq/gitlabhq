@@ -155,7 +155,7 @@
     "fuzzaldrin-plus": "^0.6.0",
     "gettext-parser": "^6.0.0",
     "graphiql": "^3.7.1",
-    "graphql": "^15.7.2",
+    "graphql": "16.11.0",
     "graphql-tag": "^2.11.0",
     "gridstack": "^11.1.2",
     "highlight.js": "^11.11.1",

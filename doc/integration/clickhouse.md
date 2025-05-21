@@ -28,6 +28,18 @@ You can connect ClickHouse to GitLab either:
 - Recommended. With [ClickHouse Cloud](https://clickhouse.com/cloud).
 - By [bringing your own ClickHouse](https://clickhouse.com/docs/en/install). For more information, see [ClickHouse recommendations for GitLab Self-Managed](https://clickhouse.com/docs/en/install#recommendations-for-self-managed-clickhouse).
 
+## Supported ClickHouse versions
+
+| First GitLab version | ClickHouse versions |
+|-|-|
+|18.1.0 | 23.x, 24.x, 25.x |
+
+{{< alert type="note" >}}
+
+[ClickHouse Cloud](https://clickhouse.com/cloud) is supported. Compatibility is generally ensured with the latest major GitLab release and newer versions.
+
+{{< /alert >}}
+
 ## Set up ClickHouse
 
 To set up ClickHouse with GitLab:

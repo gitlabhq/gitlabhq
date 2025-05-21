@@ -164,7 +164,6 @@ RSpec/BeEq:
     - 'ee/spec/lib/gitlab/pagination/keyset/simple_order_builder_spec.rb'
     - 'ee/spec/lib/gitlab/product_analytics/developments/setup_spec.rb'
     - 'ee/spec/lib/gitlab/search/client_spec.rb'
-    - 'ee/spec/lib/gitlab/search/zoekt/multi_node_response_spec.rb'
     - 'ee/spec/lib/gitlab/search/zoekt/response_spec.rb'
     - 'ee/spec/lib/gitlab/spdx/license_spec.rb'
     - 'ee/spec/lib/gitlab/status_page/storage/s3_client_spec.rb'

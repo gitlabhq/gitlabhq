@@ -14,7 +14,7 @@ title: Docker integration
 
 You can incorporate [Docker](https://www.docker.com) into your CI/CD workflow in two primary ways:
 
-- **[Run your CI/CD jobs](using_docker_images.md) in Docker containers.**
+- **[Run your CI/CD jobs](using_docker_images.md) in Docker containers**.
 
   You can create CI/CD jobs to do things like test, build, or publish
   an application. These jobs can run in Docker containers.
@@ -23,7 +23,7 @@ You can incorporate [Docker](https://www.docker.com) into your CI/CD workflow in
   or in the GitLab container registry. Your job then runs in a container that's based on the image.
   The container has all the Node dependencies you need to build your app.
 
-- **Use [Docker](using_docker_build.md) to build Docker images.**
+- **Use [Docker](using_docker_build.md) to build Docker images**.
 
   You can create CI/CD jobs to build Docker images and publish
   them to a container registry.

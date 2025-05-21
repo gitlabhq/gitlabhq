@@ -150,7 +150,8 @@ To access the database lab instances, you must:
 
 ```plaintext
 Host lb-bastion.db-lab.gitlab.com
-  # Typically, the username is `name` in `name@gitlab.com`.
+  # Typically, the username is `name` in `name@gitlab.com`
+  # or your GitLab's username.
   # Check with the access provisioner if it is not working.
   # If not provided, defaults to your system username.
   User YOUR_USERNAME_HERE
@@ -179,6 +180,12 @@ To connect to a clone using `psql`:
       Clones are removed after 12 hours.
 1. In the **Clone details** page of the Postgres.ai web interface, copy and run
    the command to start SSH port forwarding for the clone.
+    1. You may notice that it's suggested to run the command with the `-N` flag, meaning no shell will be started,
+    so you should not expect any output if it runs successfully.
+    1. Optionally, you can add `LogLevel DEBUG3` to your `~/.ssh/config`
+    to output detailed debugging information.
+    1. After running the command, leave it running to keep the port forwarding active,
+    and then you can open a new terminal tab to do the next step.
 1. In the **Clone details** page of the Postgres.ai web interface, copy and run the `psql` connection string.
    Use the password provided at setup and set the `dbname` to `gitlabhq_dblab` (or check what databases are available by using `psql -l` with the same query string but `dbname=postgres`).
 

@@ -397,8 +397,8 @@ Prerequisites:
 1. In the lower-right corner, select **Change configuration**.
 1. In the **GitLab Duo Chat conversation expiration** section, select either of the following options:
 
-   - **Expire conversation based on time conversation was last updated.**
-   - **Expire conversation based on time conversation was created.**
+   - **Expire conversation based on time conversation was last updated**.
+   - **Expire conversation based on time conversation was created**.
 1. Select **Save changes**.
 
 ## Available language models

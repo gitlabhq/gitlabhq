@@ -13,7 +13,7 @@ title: Troubleshooting repository mirroring
 
 {{< /details >}}
 
-When mirroring fails, project maintainers can see a link similar to {{< icon name="warning-solid" >}} **Pull mirroring failed 1 hour ago.**
+When mirroring fails, project maintainers can see a link similar to {{< icon name="warning-solid" >}} **Pull mirroring failed 1 hour ago**.
 on the project details page. Select this link to go directly to the mirroring settings,
 where GitLab displays an **Error** badge for the mirrored repository. You can hover your mouse cursor
 over the badge to display the text of the error:

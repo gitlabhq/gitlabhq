@@ -384,7 +384,7 @@ multiple machines with the Sentinel daemon.
 
 1. SSH into the server that hosts Redis Sentinel.
 1. **You can omit this step if the Sentinels is hosted in the same node as
-   the other Redis instances.**
+   the other Redis instances**.
 
    [Download and install](https://about.gitlab.com/install/) the
    Linux Enterprise Edition package using **steps 1 and 2** from the

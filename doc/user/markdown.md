@@ -964,7 +964,7 @@ When rendered, the example looks similar to:
 
 To add [task lists](#task-lists) with checkboxes, use HTML formatting. Using either:
 
-- **An HTML table with Markdown in the cells.** Tables formatted this way result in fully functioning
+- **An HTML table with Markdown in the cells**. Tables formatted this way result in fully functioning
   task lists.
 
   ```html
@@ -990,7 +990,7 @@ To add [task lists](#task-lists) with checkboxes, use HTML formatting. Using eit
   </table>
   ```
 
-- **A Markdown table with HTML list tags.** These tasks don't save their state when selected.
+- **A Markdown table with HTML list tags**. These tasks don't save their state when selected.
   Tables formatted this way do not render properly on `docs.gitlab.com`.
 
   ```markdown

@@ -196,22 +196,6 @@ RSpec.shared_examples 'create environment for job' do
           expect(subject.cluster_agent).to eq(agent)
         end
 
-        context 'when the gitlab_managed_cluster_resources feature flag is disabled' do
-          before do
-            stub_feature_flags(gitlab_managed_cluster_resources: false)
-          end
-
-          it 'creates an environment without the specified cluster agent' do
-            expect(Clusters::Agents::Authorizations::CiAccess::Finder).not_to receive(:new)
-
-            expect { subject }.to change { Environment.count }.by(1)
-
-            expect(subject).to be_a(Environment)
-            expect(subject).to be_persisted
-            expect(subject.cluster_agent).to be_nil
-          end
-        end
-
         context 'when the agent is not configured for resource_management' do
           let(:ci_access_authorization) do
             create(:agent_ci_access_project_authorization,

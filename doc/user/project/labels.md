@@ -424,7 +424,7 @@ Filtering by scoped labels not available on the issues or merge requests dashboa
 
 ### Scoped labels examples
 
-**Example 1.** Updating issue priority:
+**Example 1**. Updating issue priority:
 
 1. You decide that an issue is of low priority, and assign it the `priority::low` label.
 1. After more review, you realize the issue's priority is higher increased, and you assign it the
@@ -432,7 +432,7 @@ Filtering by scoped labels not available on the issues or merge requests dashboa
 1. Because an issue shouldn't have two priority labels at the same time, GitLab removes the
    `priority::low` label.
 
-**Example 2.** You want a custom field in issues to track the operating system platform
+**Example 2**. You want a custom field in issues to track the operating system platform
 that your features target, where each issue should only target one platform.
 
 You create three labels:
@@ -444,7 +444,7 @@ You create three labels:
 If you assign any of these labels to an issue automatically removes any other existing label that
 starts with `platform::`.
 
-**Example 3.** You can use scoped labels to represent the workflow states of your teams.
+**Example 3**. You can use scoped labels to represent the workflow states of your teams.
 
 Suppose you have the following labels:
 

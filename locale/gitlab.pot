@@ -39538,6 +39538,9 @@ msgstr ""
 msgid "ModelRegistry|versions"
 msgstr ""
 
+msgid "ModelSelection|An error occurred while loading the AI feature settings. Please try again."
+msgstr ""
+
 msgid "ModelSelection|Manage GitLab Duo by configuring and assigning models to AI-native features."
 msgstr ""
 

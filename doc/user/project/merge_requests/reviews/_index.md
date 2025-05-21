@@ -212,7 +212,7 @@ When you submit your review, GitLab:
 
 A reviewer [requesting changes](#submit-a-review) blocks a merge request from merging.
 When this happens, the merge request reports area shows the message
-**The change requests must be completed or resolved.** To unblock the merge request,
+**The change requests must be completed or resolved**. To unblock the merge request,
 the reviewer who requested changes should [re-review and approve](#re-request-a-review) the merge request.
 
 ### Remove a change request

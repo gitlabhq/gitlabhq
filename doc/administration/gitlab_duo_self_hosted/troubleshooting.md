@@ -515,7 +515,7 @@ If a feature is not working or a feature button (for example, **`/troubleshoot`*
 
    {{< alert type="warning" >}}
 
-   **Do not use `CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1` in production.** Development environments should closely mirror production, with no hidden flags or internal-only workarounds.
+   **Do not use `CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1` in production**. Development environments should closely mirror production, with no hidden flags or internal-only workarounds.
 
    {{< /alert >}}
 

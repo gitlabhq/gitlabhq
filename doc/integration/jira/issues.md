@@ -72,7 +72,7 @@ To enable this feature:
 
 After you enable this feature, a merge request that doesn't reference an associated
 Jira issue can't be merged. The merge request displays the message
-**To merge, a Jira issue key must be mentioned in the title or description.**
+**To merge, a Jira issue key must be mentioned in the title or description**.
 
 ## Customize Jira issue matching in GitLab
 

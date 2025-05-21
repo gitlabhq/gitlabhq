@@ -57,7 +57,7 @@ to roll back GitLab to a working state if there's a problem with the upgrade:
   Don't forget to back up the [secrets and configuration files](../administration/backup_restore/backup_gitlab.md#storing-configuration-files).
 - Alternatively, create a snapshot of your instance. If this is a multi-node
   installation, you must snapshot every node.
-  **This process is out of scope for GitLab Support.**
+  **This process is out of scope for GitLab Support**.
 
 ### Restore GitLab
 
@@ -72,4 +72,4 @@ To restore your GitLab backup:
   Make sure to follow the instructions based on your installation method.
   Confirm that the [secrets and configuration files](../administration/backup_restore/backup_gitlab.md#storing-configuration-files) are also restored.
 - If restoring from a snapshot, know the steps to do this.
-  **This process is out of scope for GitLab Support.**
+  **This process is out of scope for GitLab Support**.

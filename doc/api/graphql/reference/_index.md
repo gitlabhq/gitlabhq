@@ -11089,6 +11089,7 @@ Input type: `TodoDeleteAllDoneInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationtododeletealldoneclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationtododeletealldoneupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | To-do items marked as done before the timestamp will be deleted. |
 
 #### Fields
 

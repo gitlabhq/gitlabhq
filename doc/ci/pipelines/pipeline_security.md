@@ -201,6 +201,11 @@ include:
   - local: '/ci/security-scan.yml'  # Verified and stored in the repository
 ```
 
+### Automatic SLSA attestation generation
+
+GitLab offers a SLSA Level 1 compliant attestation that can be [automatically generated for all build artifacts produced by the GitLab Runner](../runners/configure_runners.md#artifact-provenance-metadata).
+This attestation is produced by the runner itself.
+
 ### Related topics
 
 1. [CIS Docker Benchmarks](https://www.cisecurity.org/benchmark/docker)

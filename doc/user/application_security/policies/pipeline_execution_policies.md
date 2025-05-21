@@ -297,7 +297,7 @@ If you don't see the **CI/CD** settings, go to **Settings > General > Visibility
 #### Configuration
 
 1. In the policy project, select **Settings** > **General** > **Visibility, project features, permissions**.
-1. Enable the setting **Pipeline execution policies: Grant access to the CI/CD configurations for projects linked to this security policy project as the source for security policies.**
+1. Enable the setting **Pipeline execution policies: Grant access to the CI/CD configurations for projects linked to this security policy project as the source for security policies**.
 1. In the policy project, create a file for the policy CI/CD configuration.
 
    ```yaml

@@ -263,7 +263,7 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
 
   To safely resolve this issue, follow these steps:
 
-  1. **Only do this if you got this error when trying to upgrade to 17.8.**
+  1. **Only do this if you got this error when trying to upgrade to 17.8**.
      Run the following SQL query in your `gitlab_main` database:
 
       ```sql

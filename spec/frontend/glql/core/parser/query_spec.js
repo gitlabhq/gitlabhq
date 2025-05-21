@@ -45,8 +45,7 @@ describe('GLQL Query Parser', () => {
       hasPreviousPage
     }
   }
-}
-"
+}"
 `);
     });
 
@@ -85,8 +84,7 @@ describe('GLQL Query Parser', () => {
       hasPreviousPage
     }
   }
-}
-"
+}"
 `);
     });
 

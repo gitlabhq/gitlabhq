@@ -361,7 +361,7 @@ See [Recommended cloud providers and services](#recommended-cloud-providers-and-
 
 The architectures were tested with repositories of varying sizes that follow best practices.
 
-**However, [large monorepos](../../user/project/repository/monorepos/_index.md) (several gigabytes or more) can significantly impact the performance of Git and in turn the environment itself.**
+**However, [large monorepos](../../user/project/repository/monorepos/_index.md) (several gigabytes or more) can significantly impact the performance of Git and in turn the environment itself**.
 Their presence and how they are used can put a significant strain on the entire system from Gitaly to the underlying infrastructure.
 
 The performance implications are largely software in nature. Additional hardware resources lead to diminishing returns.

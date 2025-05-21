@@ -30,7 +30,7 @@ module Environments
         environment.merge_request = job.pipeline.merge_request
       end
 
-      if resource_management_feature_enabled?(job) && environment.cluster_agent.nil?
+      if environment.cluster_agent.nil?
         authorization = matching_authorization(job)
         if authorization && authorization.agent.resource_management_enabled?
           environment.update(cluster_agent: authorization.agent)
@@ -75,10 +75,6 @@ module Environments
       return unless cluster_agent_path(job)
 
       ExpandVariables.expand(cluster_agent_path(job), -> { job.simple_variables.sort_and_expand_all })
-    end
-
-    def resource_management_feature_enabled?(job)
-      ::Feature.enabled?(:gitlab_managed_cluster_resources, job.project)
     end
   end
 end

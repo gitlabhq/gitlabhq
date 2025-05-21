@@ -263,7 +263,7 @@ See [issue 39503](https://gitlab.com/gitlab-org/gitlab/-/issues/39503) for more 
 
 Deleting a pipeline expires all pipeline caches, and deletes all immediately
 related objects, such as jobs, logs, artifacts, and triggers.
-**This action cannot be undone.**
+**This action cannot be undone**.
 
 {{< /alert >}}
 

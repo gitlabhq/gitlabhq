@@ -15,6 +15,7 @@ title: GitLab-managed Kubernetes resources
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16130) in GitLab 17.9 [with a flag](../../../administration/feature_flags.md) named `gitlab_managed_cluster_resources`. Disabled by default.
+- Feature flag `gitlab_managed_cluster_resources` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/520042) in GitLab 18.1.
 
 {{< /history >}}
 

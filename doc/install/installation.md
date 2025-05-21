@@ -79,7 +79,7 @@ The following directories are created as you go through the installation steps:
 - `/home/git/repositories` - Bare repositories for all projects organized by
   namespace. This directory is where the Git repositories which are pushed/pulled are
   maintained for all projects. **This area contains critical data for projects.
-  [Keep a backup](../administration/backup_restore/_index.md).**
+  [Keep a backup](../administration/backup_restore/_index.md)**.
 
 The default locations for repositories can be configured in `config/gitlab.yml`
 of GitLab and `config.yml` of GitLab Shell.

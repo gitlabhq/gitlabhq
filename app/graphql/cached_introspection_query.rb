@@ -7,12 +7,15 @@ module CachedIntrospectionQuery
         __schema {
           queryType {
             name
+            kind
           }
           mutationType {
             name
+            kind
           }
           subscriptionType {
             name
+            kind
           }
           types {
             ...FullType
@@ -27,7 +30,6 @@ module CachedIntrospectionQuery
           }
         }
       }
-
       fragment FullType on __Type {
         kind
         name
@@ -60,7 +62,6 @@ module CachedIntrospectionQuery
           ...TypeRef
         }
       }
-
       fragment InputValue on __InputValue {
         name
         description
@@ -71,7 +72,6 @@ module CachedIntrospectionQuery
         isDeprecated
         deprecationReason
       }
-
       fragment TypeRef on __Type {
         kind
         name
@@ -96,6 +96,14 @@ module CachedIntrospectionQuery
                     ofType {
                       kind
                       name
+                      ofType {
+                        kind
+                        name
+                        ofType {
+                          kind
+                          name
+                        }
+                      }
                     }
                   }
                 }
@@ -104,6 +112,7 @@ module CachedIntrospectionQuery
           }
         }
       }
+
     QUERY
   end
 end

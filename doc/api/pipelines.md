@@ -568,7 +568,7 @@ Response:
 
 Deleting a pipeline expires all pipeline caches, and deletes all immediately
 related objects, such as builds, logs, artifacts, and triggers.
-**This action cannot be undone.**
+**This action cannot be undone**.
 
 Deleting a pipeline does not automatically delete its
 [child pipelines](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines).

@@ -99,7 +99,7 @@ It may take up to a minute to take effect. [Issue 405433](https://gitlab.com/git
 
 This section documents the current behavior of GitLab when Silent Mode is enabled. The work for the first iteration of Silent Mode is tracked by [Epic 9826](https://gitlab.com/groups/gitlab-org/-/epics/9826).
 
-When Silent Mode is enabled, a banner is displayed at the top of the page for all users stating the setting is enabled and **All outbound communications are blocked.**.
+When Silent Mode is enabled, a banner is displayed at the top of the page for all users stating the setting is enabled and **All outbound communications are blocked**.
 
 ### Outbound communications that are silenced
 
