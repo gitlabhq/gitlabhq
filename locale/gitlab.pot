@@ -13734,7 +13734,7 @@ msgstr ""
 msgid "ClusterAgents|Allow configuring agents in receptive mode."
 msgstr ""
 
-msgid "ClusterAgents|Allow configuring agents to be authorized for the entire instance."
+msgid "ClusterAgents|Allow configuring agents to be authorized for the entire instance and across top level groups."
 msgstr ""
 
 msgid "ClusterAgents|An error occurred while loading your agent"

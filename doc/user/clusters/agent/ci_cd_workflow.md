@@ -70,6 +70,7 @@ Authorization configuration can take one or two minutes to propagate.
 
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/346566) to remove hierarchy restrictions in GitLab 15.6.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/356831) to allow authorizing projects in a user namespace in GitLab 15.7.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/377932) to allow the authorization of groups that belong to different top-level groups in GitLab 18.1.
 
 {{< /history >}}
 
@@ -85,7 +86,8 @@ To authorize the GitLab project where you keep Kubernetes manifests to access th
        - id: path/to/project
    ```
 
-   - Authorized projects must have the same top-level group or user namespace as the agent's configuration project.
+   - Authorized projects must have the same top-level group or user namespace as the agent's configuration project, unless the
+     [instance level authorization](#authorize-all-projects-in-your-gitlab-instance-to-access-the-agent) application setting is enabled.
    - You can install additional agents into the same cluster to accommodate additional hierarchies.
    - You can authorize up to 500 projects.
 
@@ -100,6 +102,7 @@ After making these changes:
 {{< history >}}
 
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/346566) to remove hierarchy restrictions in GitLab 15.6.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/377932) to allow the authorization of groups that belong to different top-level groups in GitLab 18.1.
 
 {{< /history >}}
 
@@ -115,7 +118,8 @@ To authorize all of the GitLab projects in a group or subgroup to access the age
        - id: path/to/group/subgroup
    ```
 
-   - Authorized groups must have the same top-level group as the agent's configuration project.
+   - Authorized groups must have the same top-level group as the agent's configuration project, unless the
+     [instance level authorization](#authorize-all-projects-in-your-gitlab-instance-to-access-the-agent) application setting is enabled.
    - You can install additional agents into the same cluster to accommodate additional hierarchies.
    - All of the subgroups of an authorized group also have access to the same agent (without being specified individually).
    - You can authorize up to 500 groups.

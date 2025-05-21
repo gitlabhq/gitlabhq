@@ -24,9 +24,9 @@ for a milestone when:
 
 Documentation is not typically required when a **backend feature** is added or changed.
 
-## Branch naming
+## Pipelines and branch naming
 
-The [CI/CD pipeline for the main GitLab project](../pipelines/_index.md) is configured to
+The [CI/CD pipelines for the `gitlab` and `gitlab-runner` projects](../pipelines/_index.md) are configured to
 run shorter, faster pipelines on merge requests that contain only documentation changes.
 
 If you submit documentation-only changes to Omnibus, Charts, or Operator,
@@ -37,6 +37,17 @@ to make the shorter pipeline run, you must follow these guidelines when naming y
 | Starting with `docs/` | `docs/update-api-issues`     |
 | Starting with `docs-` | `docs-update-api-issues`     |
 | Ending in `-docs`     | `123-update-api-issues-docs` |
+
+Additionally, changes to these files in the `gitlab` project automatically trigger a long pipeline
+because some code tests use these files as examples:
+
+- `doc/_index.md`
+- `doc/api/settings.md`
+
+When you edit these pages, the long pipeline appears the same as in a code MR,
+but you do not need any additional approvals. If the `pre-merge-checks` job fails on merge with a
+`Expected latest pipeline (link) to be a tier-3 pipeline!` message, add the `~"pipeline::tier-3"`
+label to the MR and run a new pipeline.
 
 ## Moving content
 

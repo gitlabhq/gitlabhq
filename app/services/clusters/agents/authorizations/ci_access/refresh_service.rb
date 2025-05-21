@@ -10,7 +10,7 @@ module Clusters
           AUTHORIZED_ENTITY_LIMIT = 500
 
           delegate :project, to: :agent, private: true
-          delegate :root_ancestor, to: :project, private: true
+          delegate :root_ancestor, :organization, to: :project, private: true
 
           def initialize(agent, config:)
             @agent = agent
@@ -59,10 +59,8 @@ module Clusters
             return unless organization_agents_enabled?
 
             if organization_configuration
-              organization_id = agent.project.organization_id
-
               agent.ci_access_organization_authorizations.upsert_all(
-                [{ agent_id: agent.id, organization_id: organization_id, config: organization_configuration }],
+                [{ agent_id: agent.id, organization_id: organization.id, config: organization_configuration }],
                 unique_by: [:agent_id]
               )
             else
@@ -107,11 +105,17 @@ module Clusters
           end
 
           def allowed_projects
-            root_ancestor.all_projects
+            if organization_agents_enabled?
+              organization.projects
+            else
+              root_ancestor.all_projects
+            end
           end
 
           def allowed_groups
-            if group_root_ancestor?
+            if organization_agents_enabled?
+              organization.groups
+            elsif group_root_ancestor?
               root_ancestor.self_and_descendants
             else
               ::Group.none

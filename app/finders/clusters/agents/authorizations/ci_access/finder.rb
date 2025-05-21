@@ -38,8 +38,11 @@ module Clusters
               .where(project_id: project.id)
               .joins(agent: :project)
               .preload(agent: :project)
-              .where(cluster_agents: { projects: { namespace_id: namespace_ids } })
               .with_available_ci_access_fields(project)
+
+            unless organization_agents_enabled?
+              query = query.where(cluster_agents: { projects: { namespace_id: namespace_ids } })
+            end
 
             query = query.where(agent_id: agent.id) if agent
             query.to_a
@@ -64,7 +67,6 @@ module Clusters
               .joins(cte_join_sources)
               .joins(agent: :project)
               .with_available_ci_access_fields(project)
-              .where(projects: { namespace_id: all_namespace_ids })
               .order(
                 Arel.sql(
                   'agent_id, array_position(ARRAY(SELECT id FROM ordered_ancestors)::bigint[], ' \
@@ -74,6 +76,7 @@ module Clusters
               .select('DISTINCT ON (agent_id) agent_group_authorizations.*')
               .preload(agent: :project)
 
+            query = query.where(projects: { namespace_id: all_namespace_ids }) unless organization_agents_enabled?
             query = query.where(agent_id: agent.id) if agent
             query.to_a
           end

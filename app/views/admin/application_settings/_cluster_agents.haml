@@ -11,7 +11,7 @@
       = render_if_exists 'admin/application_settings/cluster_agents_receptive_enabled', form: f
 
       .form-group
-        - help_text = s_('ClusterAgents|Allow configuring agents to be authorized for the entire instance.')
+        - help_text = s_('ClusterAgents|Allow configuring agents to be authorized for the entire instance and across top level groups.')
         - help_link = link_to _('Learn more.'), help_page_path('user/clusters/agent/ci_cd_workflow.md', anchor: 'authorize-all-projects-in-your-gitlab-instance-to-access-the-agent'), target: '_blank', rel: 'noopener noreferrer'
         = f.gitlab_ui_checkbox_component :organization_cluster_agent_authorization_enabled, s_('ClusterAgents|Enable instance level authorization'),
             help_text: '%{help_text} %{help_link}'.html_safe % { help_text: help_text, help_link: help_link }

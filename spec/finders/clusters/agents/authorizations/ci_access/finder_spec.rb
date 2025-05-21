@@ -54,13 +54,18 @@ RSpec.describe Clusters::Agents::Authorizations::CiAccess::Finder, feature_categ
     describe 'project authorizations' do
       context 'when initialized without an agent' do
         context 'agent configuration project does not share a root namespace with the given project' do
-          let(:unrelated_agent) { create(:cluster_agent) }
-
-          before do
-            create(:agent_ci_access_project_authorization, agent: unrelated_agent, project: requesting_project)
-          end
+          let_it_be(:unrelated_agent) { create(:cluster_agent) }
+          let_it_be(:project_authorization) { create(:agent_ci_access_project_authorization, agent: unrelated_agent, project: requesting_project) }
 
           it { is_expected.to be_empty }
+
+          context 'when the organization authorization application setting is enabled' do
+            before do
+              stub_application_setting(organization_cluster_agent_authorization_enabled: true)
+            end
+
+            it { is_expected.to match_array([project_authorization]) }
+          end
         end
 
         context 'agent configuration project shares a root namespace, but does not belong to an ancestor of the given project' do
@@ -135,13 +140,18 @@ RSpec.describe Clusters::Agents::Authorizations::CiAccess::Finder, feature_categ
     describe 'authorized groups' do
       context 'when initialized without an agent' do
         context 'agent configuration project is outside the requesting project hierarchy' do
-          let(:unrelated_agent) { create(:cluster_agent) }
-
-          before do
-            create(:agent_ci_access_group_authorization, agent: unrelated_agent, group: top_level_group)
-          end
+          let_it_be(:unrelated_agent) { create(:cluster_agent) }
+          let_it_be(:project_authorization) { create(:agent_ci_access_group_authorization, agent: unrelated_agent, group: top_level_group) }
 
           it { is_expected.to be_empty }
+
+          context 'when the organization authorization application setting is enabled' do
+            before do
+              stub_application_setting(organization_cluster_agent_authorization_enabled: true)
+            end
+
+            it { is_expected.to match_array([project_authorization]) }
+          end
         end
 
         context 'multiple agents are authorized for the same group' do
