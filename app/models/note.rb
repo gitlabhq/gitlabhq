@@ -116,6 +116,9 @@ class Note < ApplicationRecord
 
   validate :does_not_exceed_notes_limit?, on: :create, unless: [:system?, :importing?]
 
+  validates :position, :original_position, :change_position,
+    'notes/position_serialized_size': { max_bytesize: 100.kilobytes }
+
   # Scopes
   scope :for_commit_id, ->(commit_id) { where(noteable_type: "Commit", commit_id: commit_id) }
   scope :system, -> { where(system: true) }

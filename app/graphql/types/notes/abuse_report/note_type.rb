@@ -10,6 +10,8 @@ module Types
 
         implements Types::Notes::BaseNoteInterface
 
+        present_using NotePresenter
+
         authorize :read_note
 
         field :id, ::Types::GlobalIDType[::AntiAbuse::Reports::Note],
@@ -19,10 +21,6 @@ module Types
         field :discussion, Types::Notes::AbuseReport::DiscussionType,
           null: true,
           description: 'Discussion the note is a part of.'
-
-        def note_project
-          nil
-        end
       end
     end
   end

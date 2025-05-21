@@ -23,6 +23,7 @@ module Gitlab
           autocomplete_users_unauthenticated: { threshold: -> { application_settings.autocomplete_users_unauthenticated_limit }, interval: 1.minute },
           github_import: { threshold: 6, interval: 1.minute },
           issues_create: { threshold: -> { application_settings.issues_create_limit }, interval: 1.minute },
+          large_blob_download: { threshold: 5, interval: 1.minute },
           notes_create: { threshold: -> { application_settings.notes_create_limit }, interval: 1.minute },
           project_export: { threshold: -> { application_settings.project_export_limit }, interval: 1.minute },
           project_download_export: { threshold: -> { application_settings.project_download_export_limit }, interval: 1.minute },
