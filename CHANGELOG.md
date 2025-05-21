@@ -2,6 +2,29 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.0.1 (2025-05-21)
+
+### Fixed (1 change)
+
+- [Apply Rails 7-1-stable patches to fix type map init issues](https://gitlab.com/gitlab-org/security/gitlab/-/commit/883fb9273c7cd961249d5dbe6bee4df76d704aaf)
+
+### Changed (1 change)
+
+- [Add outbound allowlist to allowed endpoints for SSRF filter](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f64186f3e141c6ca8485b451cb1e264364beaa7a) **GitLab Enterprise Edition**
+
+### Security (10 changes)
+
+- [Use CI::VariableValue in BasicEntity to prevent exposing hidden values in collapsible UI element](https://gitlab.com/gitlab-org/security/gitlab/-/commit/75c84787120ca99c5e385d566207a1b1e5aa3bd1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5021))
+- [Show full path of project in create MR dropdown](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2a2faab0bbb53af58aaf76725f9afb1a732c4349) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5002))
+- [Remove trace field as it is already added in the interface](https://gitlab.com/gitlab-org/security/gitlab/-/commit/95cf66aa590556b28884371332175a28c8a934fd) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5004))
+- [Security 479168 discord zip vulnerability](https://gitlab.com/gitlab-org/security/gitlab/-/commit/766fab2ac7e498efda2561ee15a68e59af83e633) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5018))
+- [Limit length of certificate cluster text fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5f61b3d9430ff69c0a69032485c1e8065c7ef1b6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4999))
+- [Check rate limit for over-sized blobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b920b5eb587da918a3925cfcc2c16217ee12b79c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5008))
+- [Added size constraint validation to notes position fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/08ea9082a91765c13c2b63b3161dcd4185a24af2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5005))
+- [Obfuscate emails in note.bodyFirstLineHtml](https://gitlab.com/gitlab-org/security/gitlab/-/commit/eaf7702da8bab8041f84d5a24742576342ba2ecc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5003))
+- [Need to update 2fa requirement after accepting request](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dd5abda5785fd824b7056513695a3a17d7555697) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4997))
+- [Ensure SAML authn context comes from signed portion of SAML response](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c641624daf734ee6f61adac4a0cc898b894590af) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5010))
+
 ## 18.0.0 (2025-05-14)
 
 ### Added (177 changes)

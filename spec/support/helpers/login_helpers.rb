@@ -56,7 +56,7 @@ module LoginHelpers
   end
 
   def gitlab_enable_admin_mode_sign_in_via(provider, user, uid, saml_response: nil, additional_info: {})
-    response_object = { document: saml_xml(saml_response) } if saml_response.present?
+    response_object = saml_xml(saml_response) if saml_response.present?
     mock_auth_hash(provider, uid, user.email, response_object: response_object, additional_info: additional_info)
 
     visit new_admin_session_path
@@ -150,7 +150,7 @@ module LoginHelpers
   end
 
   def mock_auth_hash_with_saml_xml(provider, uid, email, saml_response)
-    response_object = { document: saml_xml(saml_response) }
+    response_object = saml_xml(saml_response)
     mock_auth_hash(provider, uid, email, response_object: response_object)
   end
 
@@ -200,7 +200,7 @@ module LoginHelpers
   def saml_xml(raw_saml_response)
     return '' if raw_saml_response.blank?
 
-    XMLSecurity::SignedDocument.new(raw_saml_response, [])
+    OneLogin::RubySaml::Response.new(raw_saml_response)
   end
 
   def mock_saml_config

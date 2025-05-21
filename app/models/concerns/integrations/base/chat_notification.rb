@@ -40,6 +40,16 @@ module Integrations
         def requires_webhook?
           true
         end
+
+        # Allows chat integrations to indicate there are specific addressable_url
+        # validation options to use instead of using default public_url options
+        def has_public_url_validation_options?
+          false
+        end
+
+        def event_channel_name(event)
+          EVENT_CHANNEL[event]
+        end
       end
 
       included do
@@ -54,8 +64,14 @@ module Integrations
 
         validates :webhook,
           presence: true,
-          public_url: true,
           if: ->(integration) { integration.activated? && integration.class.requires_webhook? }
+        validates :webhook,
+          public_url: true,
+          if: ->(integration) {
+            !integration.class.has_public_url_validation_options? &&
+              integration.activated? &&
+              integration.class.requires_webhook?
+          }
         validates :labels_to_be_notified_behavior,
           inclusion: { in: LABEL_NOTIFICATION_BEHAVIOURS },
           allow_blank: true,
@@ -129,7 +145,7 @@ module Integrations
       def event_channel_names
         return [] unless configurable_channels?
 
-        supported_events.map { |event| event_channel_name(event) }
+        supported_events.map { |event| self.class.event_channel_name(event) }
       end
 
       override :api_field_names
@@ -159,12 +175,8 @@ module Integrations
         false
       end
 
-      def event_channel_name(event)
-        EVENT_CHANNEL[event]
-      end
-
       def event_channel_value(event)
-        field_name = event_channel_name(event)
+        field_name = self.class.event_channel_name(event)
 
         public_send(field_name) # rubocop:disable GitlabSecurity/PublicSend -- Legacy use
       end
@@ -343,7 +355,7 @@ module Integrations
           next unless count > channel_limit_per_event
 
           errors.add(
-            event_channel_name(event).to_sym,
+            self.class.event_channel_name(event).to_sym,
             format(
               s_('SlackIntegration|cannot have more than %{limit} channels'),
               limit: channel_limit_per_event

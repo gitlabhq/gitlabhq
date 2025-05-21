@@ -33,6 +33,8 @@ Allows you to receive information about file in repository like name, size, and
 content. File content is Base64 encoded. You can access this endpoint
 without authentication, if the repository is publicly accessible.
 
+For blobs larger than 10 MB, this endpoint has a rate limit of 5 requests per minute.
+
 ```plaintext
 GET /projects/:id/repository/files/:file_path
 ```

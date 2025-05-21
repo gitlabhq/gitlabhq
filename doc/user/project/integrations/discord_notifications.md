@@ -33,8 +33,13 @@ and configure it in GitLab.
 {{< history >}}
 
 - Event webhook overrides [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125621) in GitLab 16.3.
+- Webhook URL validation introduced in GitLab 18.0.
 
 {{< /history >}}
+
+Prerequisites:
+
+- You must use a Discord URL (`https://discord.com/api/webhooks/webhook-snowflake/webhook-token`).
 
 With the webhook URL created in the Discord channel, you can set up the Discord Notifications integration in GitLab.
 

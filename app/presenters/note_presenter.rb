@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class NotePresenter < Gitlab::View::Presenter::Delegated # rubocop:disable Gitlab/NamespacedClass -- Note is not namespaced
+  include ActionView::Helpers::SanitizeHelper
   include MarkupHelper
 
   presents ::Note, as: :object # because we also have a #note method
@@ -17,6 +18,11 @@ class NotePresenter < Gitlab::View::Presenter::Delegated # rubocop:disable Gitla
     obfuscate_participants_emails_in_system_note(text)
   end
 
+  def note_first_line_html
+    text = first_line_in_markdown(object, :note, 125)
+    obfuscate_participants_emails_in_system_note(text)
+  end
+
   def external_author
     return unless object.note_metadata&.external_author
 
@@ -30,7 +36,7 @@ class NotePresenter < Gitlab::View::Presenter::Delegated # rubocop:disable Gitla
   private
 
   def obfuscate_participants_emails_in_system_note(text)
-    return text unless object.system?
+    return text unless object.try(:system?)
     return text if can?(current_user, :read_external_emails, object.project)
     return text if object.system_note_metadata&.action != 'issue_email_participants'
 
