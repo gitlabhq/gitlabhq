@@ -28,9 +28,12 @@ export default {
           if (!mergeRequest) return;
 
           const isAssignee = mergeRequest.assignees.nodes.some((u) => u.id === this.currentUserId);
+          const isAuthor = mergeRequest.author.id === this.currentUserId;
           const isReviewer = mergeRequest.reviewers.nodes.some((u) => u.id === this.currentUserId);
 
           if (isAssignee) eventHub.$emit('refetch.mergeRequests', 'assignedMergeRequests');
+          if (isAssignee || isAuthor)
+            eventHub.$emit('refetch.mergeRequests', 'authorOrAssigneeMergeRequests');
           if (isReviewer) eventHub.$emit('refetch.mergeRequests', 'reviewRequestedMergeRequests');
         },
       },

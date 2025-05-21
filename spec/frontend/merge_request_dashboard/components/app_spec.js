@@ -219,12 +219,17 @@ describe('Merge requests app component', () => {
                 },
               ],
             },
+            author: { id: 'gid://gitlab/User/1' },
             reviewers: { nodes: [] },
           },
         },
       });
 
       expect(eventHub.$emit).toHaveBeenCalledWith('refetch.mergeRequests', 'assignedMergeRequests');
+      expect(eventHub.$emit).toHaveBeenCalledWith(
+        'refetch.mergeRequests',
+        'authorOrAssigneeMergeRequests',
+      );
     });
 
     it('emits refetch.mergeRequests with assignedMergeRequests when current user is a reviewer', async () => {
@@ -243,6 +248,7 @@ describe('Merge requests app component', () => {
                 },
               ],
             },
+            author: { id: 'gid://gitlab/User/1' },
             assignees: { nodes: [] },
           },
         },

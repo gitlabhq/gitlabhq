@@ -4817,9 +4817,23 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         create(:ci_build, :artifacts, pipeline: pipeline)
       end
 
-      let(:pipeline) { create(:ci_pipeline, :success) }
+      let_it_be(:pipeline) { create(:ci_pipeline, :success) }
 
       it { expect(subject).to be_falsey }
+
+      context 'when the child pipeline has code quality reports' do
+        let_it_be(:child_pipeline) { create(:ci_pipeline, :with_codequality_report, child_of: pipeline) }
+
+        it { expect(subject).to be_truthy }
+
+        context 'with FF show_child_reports_in_mr_page disabled' do
+          before do
+            stub_feature_flags(show_child_reports_in_mr_page: false)
+          end
+
+          it { expect(subject).to be_falsey }
+        end
+      end
     end
   end
 
@@ -4987,6 +5001,24 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     context 'when pipeline does not have any builds with codequality reports' do
       it 'returns codequality reports without degradations' do
         expect(codequality_reports.degradations).to be_empty
+      end
+
+      context 'when child pipeline has codequality reports' do
+        let_it_be(:child_pipeline) { create(:ci_pipeline, :with_codequality_report, child_of: pipeline) }
+
+        it 'returns codequality report with collected data' do
+          expect(codequality_reports.degradations_count).to eq(3)
+        end
+
+        context 'with FF show_child_reports_in_mr_page disabled' do
+          before do
+            stub_feature_flags(show_child_reports_in_mr_page: false)
+          end
+
+          it 'returns codequality reports without degradations' do
+            expect(codequality_reports.degradations).to be_empty
+          end
+        end
       end
     end
   end

@@ -328,7 +328,7 @@ Commit this pipeline configuration to the default branch, and view the pipeline 
 
 ## Start using merge request pipelines
 
-With the pipeline configurations above, the site deploys every time a pipeline completes
+With the previous pipeline configurations, the site deploys every time a pipeline completes
 successfully, but this is not an ideal development workflow. It's better to work from
 feature branches and merge requests, and only deploy the site when changes merge
 to the default branch.

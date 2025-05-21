@@ -167,7 +167,7 @@ build-job:
 
 The `workflow:rules` templates were [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/456394)
 in GitLab 17.0 and are planned for removal in 18.0. This change is a breaking change.
-To configure `workflow:rules` in your pipeline, add the keyword explicitly. See the examples above for options.
+To configure `workflow:rules` in your pipeline, add the keyword explicitly. See the previous examples for options.
 
 {{< /alert >}}
 

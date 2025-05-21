@@ -84,6 +84,23 @@ Emergency maintenance is initiated when urgent actions are required on a GitLab 
 
 GitLab prioritizes stability and security while minimizing customer impact during emergency maintenance. The specific maintenance procedures follow established internal processes, and all changes undergo appropriate review and approval before they are applied.
 
-GitLab provides advance emergency maintenance notice when possible and sends complete details after the issue is resolved. The GitLab Support team creates a support ticket and notifies all [Switchboard users](create_instance/_index.md#step-1-get-access-to-switchboard) by email.
+GitLab provides advance notice when possible and sends complete details
+after the issue is resolved. The GitLab Support team:
 
-You cannot postpone emergency maintenance, because the same process must be applied to all GitLab Dedicated instances to ensure their security and availability.
+- Creates a support ticket for tracking.
+- Sends email notifications only to addresses listed as **Operational email addresses** in the
+  **Customer communication** section of Switchboard.
+- Copies your Customer Success Manager (CSM) on all communications.
+
+You cannot postpone emergency maintenance, because the same process must be applied to all
+GitLab Dedicated instances to ensure their security and availability.
+
+### Verify your operational contacts
+
+To ensure you receive maintenance notifications:
+
+1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. Select your tenant.
+1. In the **Customer communication** section, review the email addresses listed under **Operational email addresses**.
+
+To update these contacts, submit a support ticket.

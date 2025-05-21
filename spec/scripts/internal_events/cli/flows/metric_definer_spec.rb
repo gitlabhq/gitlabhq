@@ -477,6 +477,35 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
     end
 
     context "when creating a multiple metrics" do
+      it 'displays the metric paths based on the time frames' do
+        queue_cli_inputs([
+          "2\n", # Enum-select: New Metric   -- calculate how often one or more existing events occur over time
+          "2\n", # Enum-select: Multiple events -- count occurrences of several separate events or interactions
+          'internal_events_cli', # Filters to the relevant events
+          ' ', # Multi-select: internal_events_cli_closed
+          "\e[B", # Arrow down to: internal_events_cli_used
+          ' ', # Multi-select: internal_events_cli_used
+          "\n", # Submit selections
+          "\n", # Select: Monthly/Weekly/Total count
+          "where a definition file was created with the CLI\n", # Input description
+          "1\n", # Select: Copy & continue
+          "\e[B \n" # Skip product categories
+          # "y\n" # Create file
+        ])
+
+        expected_output = <<~TEXT.chomp
+          This would create 3 metrics with the following key paths:
+
+          monthly: counts.count_total_internal_events_cli_closed_and_internal_events_cli_used_monthly
+          weekly: counts.count_total_internal_events_cli_closed_and_internal_events_cli_used_weekly
+          total: counts.count_total_internal_events_cli_closed_and_internal_events_cli_used
+        TEXT
+
+        with_cli_thread do
+          expect { plain_last_lines }.to eventually_include_cli_text(expected_output)
+        end
+      end
+
       it 'shows link to the metric dashboard' do
         queue_cli_inputs([
           "2\n", # Enum-select: New Metric   -- calculate how often one or more existing events occur over time

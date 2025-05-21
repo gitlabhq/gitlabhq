@@ -1186,7 +1186,11 @@ module Ci
     end
 
     def can_generate_codequality_reports?
-      complete_and_has_reports?(Ci::JobArtifact.of_report_type(:codequality))
+      if Feature.enabled?(:show_child_reports_in_mr_page, project)
+        complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:codequality))
+      else
+        complete_and_has_reports?(Ci::JobArtifact.of_report_type(:codequality))
+      end
     end
 
     def test_report_summary
@@ -1212,9 +1216,17 @@ module Ci
     end
 
     def codequality_reports
-      Gitlab::Ci::Reports::CodequalityReports.new.tap do |codequality_reports|
-        latest_report_builds(Ci::JobArtifact.of_report_type(:codequality)).each do |build|
-          build.collect_codequality_reports!(codequality_reports)
+      if Feature.enabled?(:show_child_reports_in_mr_page, project)
+        Gitlab::Ci::Reports::CodequalityReports.new.tap do |codequality_reports|
+          latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:codequality)).each do |build|
+            build.collect_codequality_reports!(codequality_reports)
+          end
+        end
+      else
+        Gitlab::Ci::Reports::CodequalityReports.new.tap do |codequality_reports|
+          latest_report_builds(Ci::JobArtifact.of_report_type(:codequality)).each do |build|
+            build.collect_codequality_reports!(codequality_reports)
+          end
         end
       end
     end

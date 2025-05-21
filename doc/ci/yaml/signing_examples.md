@@ -108,8 +108,7 @@ To learn more about verifying signed images/artifacts, see [Cosign Verifying doc
 
 #### Container images
 
-The example below demonstrates how to verify a signed container image in GitLab CI. The command-line arguments are
-described [above](#verification).
+The following example demonstrates how to verify a signed container image in GitLab CI. Use the previously described [command-line arguments](#verification).
 
 ```yaml
 verify_image:
@@ -130,8 +129,7 @@ verify_image:
 #### Build artifacts
 
 The example below demonstrates how to verify a signed build artifact in GitLab CI. Verifying an artifact requires both
-the artifact itself and the `cosign.bundle` file produced by `cosign sign-blob`. The command-line arguments are
-described [above](#verification).
+the artifact itself and the `cosign.bundle` file produced by `cosign sign-blob`. Use the previously described [command-line arguments](#verification).
 
 ```yaml
 verify_artifact:
@@ -175,7 +173,7 @@ needed to make it safer to distribute and use open source software.
 
 ### Generating provenance in GitLab CI/CD
 
-Now that Sigstore supports GitLab OIDC as described above, you can use npm provenance together with GitLab CI/CD and Sigstore to
+Now that Sigstore supports GitLab OIDC as previously described, you can use npm provenance together with GitLab CI/CD and Sigstore to
 generate and sign provenance for your npm packages in a GitLab CI/CD pipeline.
 
 #### Prerequisites

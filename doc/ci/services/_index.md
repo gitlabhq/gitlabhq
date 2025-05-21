@@ -294,8 +294,8 @@ However, both of them would be added to the job's container with the `mysql` ali
 the [default hostname naming](#accessing-the-services). This would end with one
 of the services not being accessible.
 
-After the new extended Docker configuration options, the above example would
-look like:
+After the new extended Docker configuration options, the previous example would
+look like this:
 
 ```yaml
 services:
@@ -496,7 +496,7 @@ For this solution to work, you must:
 
 - Use [the networking mode that creates a new network for each job](https://docs.gitlab.com/runner/executors/docker.html#create-a-network-for-each-job).
 - [Not use the Docker executor with Docker socket binding](../docker/using_docker_build.md#use-the-docker-executor-with-docker-socket-binding).
-  If you must, then in the above example, instead of `host`, use the dynamic network name created for this job.
+  If you must, then in the previous example, instead of `host`, use the dynamic network name created for this job.
 
 ## How Docker integration works
 
@@ -505,7 +505,7 @@ time.
 
 1. Create any service container: `mysql`, `postgresql`, `mongodb`, `redis`.
 1. Create a cache container to store all volumes as defined in `config.toml` and
-   `Dockerfile` of build image (`ruby:2.6` as in above example).
+   `Dockerfile` of build image (`ruby:2.6` as in the previous examples).
 1. Create a build container and link any service container to build container.
 1. Start the build container, and send a job script to the container.
 1. Run the job script.
@@ -598,7 +598,7 @@ Finally, create a build container by executing the `build_script` file we create
 docker run --name build -i --link=service-redis:redis golang:latest /bin/bash < build_script
 ```
 
-The above command creates a container named `build` that is spawned from the `golang:latest` image and has one service
+The previous command creates a container named `build` that is spawned from the `golang:latest` image and has one service
 linked to it. The `build_script` is piped using `stdin` to the bash interpreter which in turn executes the
 `build_script` in the `build` container.
 

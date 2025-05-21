@@ -73,7 +73,7 @@ describe('WorkItemChangeTypeModal component', () => {
   const createComponent = ({
     hasParent = false,
     hasChildren = false,
-    workItemsAlpha = false,
+    workItemEpicMilestones = false,
     widgets = [],
     workItemType = WORK_ITEM_TYPE_NAME_TASK,
     convertWorkItemMutationHandler = convertWorkItemMutationSuccessHandler,
@@ -100,7 +100,7 @@ describe('WorkItemChangeTypeModal component', () => {
       },
       provide: {
         glFeatures: {
-          workItemsAlpha,
+          workItemEpicMilestones,
         },
         hasSubepicsFeature,
       },
@@ -232,7 +232,7 @@ describe('WorkItemChangeTypeModal component', () => {
       createComponent({
         workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
         widgets: [workItemChangeTypeWidgets.MILESTONE],
-        workItemsAlpha: true,
+        workItemEpicMilestones: true,
         allowedConversionTypesEE,
       });
 

@@ -7,7 +7,7 @@
     = sprite_icon('chevron-lg-right', size: 12)
   = gl_tabs_nav({ class: %w[scrolling-tabs js-milestone-tabs] }) do
     = gl_tab_link_to '#tab-issues', item_active: true, data: { endpoint: milestone_tab_path(milestone, 'issues', show_project_name: show_project_name) } do
-      - if Feature.enabled?(:work_items_alpha, current_user)
+      - if Feature.enabled?(:work_item_epic_milestones, current_user)
         = _('Work items')
         = gl_tab_counter_badge milestone.sorted_issues(current_user).length
       - else

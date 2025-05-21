@@ -188,16 +188,9 @@ module InternalEventsCli
   class Metric
     TimeFrame = Struct.new(:value) do
       def description
-        case value
-        when Array
-          nil # array time_frame metrics have no description prefix
-        when '7d'
-          'weekly'
-        when '28d'
-          'monthly'
-        when 'all'
-          'total'
-        end
+        return if value.is_a? Array # array time_frame metrics have no description prefix
+
+        TimeFramedKeyPath::METRIC_TIME_FRAME_DESC[value]
       end
 
       def directory_name

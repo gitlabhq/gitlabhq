@@ -681,7 +681,7 @@ script:
   - ls -al cache/
 ```
 
-The configuration above results in `git fetch` being called this way:
+The previous configuration results in `git fetch` being called this way:
 
 ```shell
 git fetch origin $REFSPECS --depth 50  --prune
@@ -752,7 +752,7 @@ script:
   - ls -al .git/modules/
 ```
 
-The configuration above results in `git submodule update` being called this way:
+The previous configuration results in `git submodule update` being called this way:
 
 ```shell
 git submodule update --init --depth 50 --recursive --remote --jobs 4
@@ -1132,7 +1132,7 @@ can be controlled with `FASTZIP_ARCHIVER_BUFFER_SIZE`. The default size for this
 concurrency of 16 allocates 32 MiB. Data that exceeds the buffer size is written to and read back from disk.
 Therefore, using no buffer, `FASTZIP_ARCHIVER_BUFFER_SIZE: 0`, and only scratch space is a valid option.
 
-`FASTZIP_ARCHIVER_CONCURRENCY` controls how many files are compressed concurrency. As mentioned above, this setting
+`FASTZIP_ARCHIVER_CONCURRENCY` controls how many files are compressed concurrency. As previously mentioned, this setting
 therefore can increase how much memory is being used. It can also increase the temporary data written to the scratch space.
 The default is the number of CPUs available, but given the memory ramifications, this may not always be the best
 setting.

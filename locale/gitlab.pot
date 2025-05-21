@@ -5374,6 +5374,9 @@ msgstr ""
 msgid "AdminUsers|There are no more seats left in your subscription. New users cannot be approved for this instance."
 msgstr ""
 
+msgid "AdminUsers|This user's access level is managed with LDAP. Remove user's mapping or change group's role in %{linkStart}LDAP synchronization%{linkEnd} to modify access."
+msgstr ""
+
 msgid "AdminUsers|To confirm, type %{name}"
 msgstr ""
 
@@ -68503,7 +68506,7 @@ msgstr ""
 msgid "Webhooks|URL preview"
 msgstr ""
 
-msgid "Webhooks|Used to validate received payloads. Sent with the request in the %{code_start}X-Gitlab-Token%{code_end} HTTP header."
+msgid "Webhooks|Used to validate received payloads. Sent with the request in the %{codeStart}X-Gitlab-Token%{codeEnd} HTTP header."
 msgstr ""
 
 msgid "Webhooks|Vulnerability events"

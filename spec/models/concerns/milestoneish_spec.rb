@@ -28,7 +28,7 @@ RSpec.describe Milestone, 'Milestoneish', factory_default: :keep do
   before do
     project.add_developer(member)
     project.add_guest(guest)
-    stub_feature_flags(work_items_alpha: false)
+    stub_feature_flags(work_item_epic_milestones: false)
   end
 
   describe '#sorted_issues' do

@@ -37,7 +37,7 @@ A few things that organizations have reported as helping:
 - Set and communicate a clear vision of what your migration goals are, which helps
   your users understand why the effort is worth it. The value is clear when
   the work is done, but people need to be aware while it's in progress too.
-- Sponsorship and alignment from the relevant leadership teams helps with the point above.
+- Sponsorship and alignment from the relevant leadership teams helps with the previous point.
 - Spend time educating your users on what's different, and share this guide
   with them.
 - Finding ways to sequence or delay parts of the migration can help a lot. Importantly though,

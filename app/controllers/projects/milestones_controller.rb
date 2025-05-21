@@ -20,7 +20,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   before_action :authorize_promote_milestone!, only: :promote
 
   before_action do
-    push_force_frontend_feature_flag(:work_items_alpha, !!@project&.work_items_alpha_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:work_item_epic_milestones, !!@project&.work_item_epic_milestones_feature_flag_enabled?)
   end
 
   respond_to :html

@@ -161,7 +161,7 @@ job:
       echo "Third command line."
 ```
 
-The example above renders in the job log as:
+The previous example renders in the job log as:
 
 ```shell
 $ echo First command line # collapsed multiline command
@@ -195,7 +195,7 @@ job:
       echo "Second command line."
 ```
 
-Both examples above render in the job log as:
+The previous two examples render in the job log as:
 
 ```shell
 $ echo First command line is split over two lines. # collapsed multiline command
@@ -248,7 +248,7 @@ job:
 You can define the color codes in Shell environment variables, or even [CI/CD variables](../variables/_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file),
 which makes the commands easier to read and reusable.
 
-For example, using the same example as above and environment variables defined in a `before_script`:
+For example, using the previous example and environment variables defined in a `before_script`:
 
 ```yaml
 job:

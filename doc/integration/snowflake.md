@@ -56,4 +56,4 @@ requires both Snowflake and GitLab configuration.
 
 1. Sign in to Snowflake.
 1. Select **Data > Databases**.
-1. Select the warehouse configured above.
+1. Select the warehouse previously configured.

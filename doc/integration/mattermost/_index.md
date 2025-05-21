@@ -149,7 +149,7 @@ http://mattermost.example.com/login/gitlab/complete
 Make sure to select the **Trusted** and **Confidential** settings. Under **Scopes**, select `read_user`. Then, choose **Save application**.
 
 Once the application is created you are provided with an `Application ID` and `Secret`. One other piece of information needed is the URL of GitLab instance.
-Return to the server running GitLab Mattermost and edit the `/etc/gitlab/gitlab.rb` configuration file as follows using the values you received above:
+Return to the server running GitLab Mattermost and edit the `/etc/gitlab/gitlab.rb` configuration file as follows using the values you previously received:
 
 ```ruby
 mattermost['gitlab_enable'] = true

@@ -162,8 +162,8 @@ export default {
       });
       return selectOptions;
     },
-    workItemsAlphaEnabled() {
-      return this.glFeatures.workItemsAlpha;
+    workItemEpicMilestonesEnabled() {
+      return this.glFeatures.workItemEpicMilestones;
     },
     isSelectedWorkItemTypeEpic() {
       return this.selectedWorkItemType?.name === WORK_ITEM_TYPE_NAME_EPIC;
@@ -228,7 +228,7 @@ export default {
       return this.widgetsWithExistingDataList.reduce((widgets, item) => {
         // Skip adding milestone to widget difference if upgrading to epic
         if (
-          this.workItemsAlphaEnabled &&
+          this.workItemEpicMilestonesEnabled &&
           this.isSelectedWorkItemTypeEpic &&
           item.type === WIDGET_TYPE_MILESTONE
         ) {
@@ -244,7 +244,7 @@ export default {
     noValuePresentWidgets() {
       return this.widgetsWithExistingDataList.reduce((acc, item) => {
         if (
-          this.workItemsAlphaEnabled &&
+          this.workItemEpicMilestonesEnabled &&
           this.isSelectedWorkItemTypeEpic &&
           this.milestoneWidget?.projectMilestone &&
           item.type === WIDGET_TYPE_MILESTONE

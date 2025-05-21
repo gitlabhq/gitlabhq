@@ -2175,8 +2175,8 @@ In this example:
 
 1. GitLab checks the job log for a match with the regular expression. A line
    like `Code coverage: 67.89% of lines covered` would match.
-1. GitLab then checks the matched fragment to find a match to `\d+(?:\.\d+)?`.
-   The sample matching line above gives a code coverage of `67.89`.
+1. GitLab then checks the matched fragment to find a match to the regular expression: `\d+(?:\.\d+)?`.
+   The sample regex can match a code coverage of `67.89`.
 
 **Additional details**:
 
@@ -2642,7 +2642,7 @@ rubocop:
 - You can use multiple parents for `extends`.
 - The `extends` keyword supports up to eleven levels of inheritance, but you should
   avoid using more than three levels.
-- In the example above, `.tests` is a [hidden job](../jobs/_index.md#hide-a-job),
+- In the previous example, `.tests` is a [hidden job](../jobs/_index.md#hide-a-job),
   but you can extend configuration from regular jobs as well.
 
 **Related topics**:
@@ -3611,7 +3611,7 @@ linux:rspec:
   script: echo "Running rspec on linux..."
 ```
 
-The above example generates the following jobs:
+The previous example generates the following jobs:
 
 ```plaintext
 linux:build: [aws, monitoring]
@@ -3630,7 +3630,7 @@ The `linux:rspec` job runs as soon as the `linux:build: [aws, app1]` job finishe
 
 - The order of the matrix variables in `needs:parallel:matrix` must match the order
   of the matrix variables in the needed job. For example, reversing the order of
-  the variables in the `linux:rspec` job in the earlier example above would be invalid:
+  the variables in the `linux:rspec` job in the previous example would be invalid:
 
   ```yaml
   linux:rspec:
@@ -4634,7 +4634,7 @@ any subkeys. All additional details and related topics are the same.
 
 **Supported values**:
 
-- Same as `rules:changes` above.
+- Same as `rules:changes`.
 
 **Example of `rules:changes:paths`**:
 

@@ -1,5 +1,5 @@
 <script>
-import { GlFormGroup, GlFormInput, GlFormTextarea } from '@gitlab/ui';
+import { GlFormGroup, GlFormInput, GlFormTextarea, GlSprintf } from '@gitlab/ui';
 
 import FormUrlApp from './form_url_app.vue';
 import FormCustomHeaders from './form_custom_headers.vue';
@@ -9,6 +9,7 @@ export default {
     GlFormGroup,
     GlFormInput,
     GlFormTextarea,
+    GlSprintf,
     FormUrlApp,
     FormCustomHeaders,
   },
@@ -38,11 +39,17 @@ export default {
       required: false,
       default: '',
     },
+    initialSecretToken: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
       name: this.initialName,
       description: this.initialDescription,
+      secretToken: this.initialSecretToken,
     };
   },
 };
@@ -73,6 +80,32 @@ export default {
     </gl-form-group>
 
     <form-url-app :initial-url="initialUrl" :initial-url-variables="initialUrlVariables" />
+
+    <gl-form-group :label="s__('Webhooks|Secret token')" label-for="webhook-secret-token">
+      <template #description>
+        <gl-sprintf
+          :message="
+            s__(
+              'Webhooks|Used to validate received payloads. Sent with the request in the %{codeStart}X-Gitlab-Token%{codeEnd} HTTP header.',
+            )
+          "
+        >
+          <template #code="{ content }">
+            <code>{{ content }}</code>
+          </template>
+        </gl-sprintf>
+      </template>
+      <gl-form-input
+        id="webhook-secret-token"
+        v-model="secretToken"
+        name="hook[token]"
+        type="password"
+        autocomplete="new-password"
+        class="gl-form-input-xl"
+        data-testid="webhook-secret-token"
+      />
+    </gl-form-group>
+
     <form-custom-headers :initial-custom-headers="initialCustomHeaders" />
   </div>
 </template>

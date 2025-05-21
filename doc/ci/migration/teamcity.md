@@ -104,7 +104,7 @@ object BuildTest : BuildType({
 In GitLab CI/CD, you define jobs with the tasks to execute as part of the pipeline.
 Each job can have one or more build steps defined in it.
 
-The equivalent GitLab CI/CD `.gitlab-ci.yml` file for the example above would be:
+The equivalent GitLab CI/CD `.gitlab-ci.yml` file for the previous example would be:
 
 ```yaml
 workflow:

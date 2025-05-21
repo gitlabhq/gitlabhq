@@ -35,7 +35,7 @@ RSpec.describe "User creates milestone", :js, feature_category: :team_planning d
 
   before do
     sign_in(user)
-    stub_feature_flags(work_items_alpha: false)
+    stub_feature_flags(work_item_epic_milestones: false)
     visit(new_project_milestone_path(project))
   end
 

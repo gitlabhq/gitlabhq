@@ -2,13 +2,6 @@
 
 .js-vue-webhook-form{ data: webhook_form_data(hook) }
 .form-group
-  = form.label :token, s_('Webhooks|Secret token'), class: 'label-bold'
-  = form.password_field :token, value: hook.masked_token, autocomplete: 'new-password', class: 'form-control gl-form-input gl-form-input-xl'
-  %p.form-text.gl-text-subtle
-    - code_start = '<code>'.html_safe
-    - code_end = '</code>'.html_safe
-    = s_('Webhooks|Used to validate received payloads. Sent with the request in the %{code_start}X-Gitlab-Token%{code_end} HTTP header.').html_safe % { code_start: code_start, code_end: code_end }
-.form-group
   = form.label :url, s_('Webhooks|Trigger'), class: 'label-bold'
   %ul.list-unstyled
     %li.gl-pb-3

@@ -133,7 +133,7 @@ For multi-node architectures, the Bitbucket provider configuration must also be 
 
 ## Bitbucket project import
 
-After the above configuration is set up, you can use Bitbucket to sign in to
+After the previous configuration is set up, you can use Bitbucket to sign in to
 GitLab and [start importing your projects](../user/project/import/bitbucket.md).
 
 If you want to import projects from Bitbucket, but don't want to enable signing in,
