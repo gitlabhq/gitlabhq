@@ -339,10 +339,9 @@ Returns [`BlobSearch`](#blobsearch).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="queryblobsearchchunkcount"></a>`chunkCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Maximum chunks per file. |
-| <a id="queryblobsearchexcludeforks"></a>`excludeForks` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.11. **Status**: Experiment. Excludes forked projects in the search. Always false for project search. |
+| <a id="queryblobsearchexcludeforks"></a>`excludeForks` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.11. **Status**: Experiment. Excludes forked projects in the search. Always false for project search. Default is true. |
 | <a id="queryblobsearchgroupid"></a>`groupId` {{< icon name="warning-solid" >}} | [`GroupID`](#groupid) | **Introduced** in GitLab 17.2. **Status**: Experiment. Group to search in. |
 | <a id="queryblobsearchincludearchived"></a>`includeArchived` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.7. **Status**: Experiment. Includes archived projects in the search. Always true for project search. Default is false. |
-| <a id="queryblobsearchincludeforked"></a>`includeForked` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.7. **Status**: Experiment. Includes forked projects in the search. Always true for project search. Not available for global search. |
 | <a id="queryblobsearchpage"></a>`page` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Page number to fetch the results. |
 | <a id="queryblobsearchperpage"></a>`perPage` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Number of results per page. |
 | <a id="queryblobsearchprojectid"></a>`projectId` {{< icon name="warning-solid" >}} | [`ProjectID`](#projectid) | **Introduced** in GitLab 17.2. **Status**: Experiment. Project to search in. |
@@ -6262,7 +6261,10 @@ Input type: `GeoRegistriesBulkUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationgeoregistriesbulkupdateaction"></a>`action` | [`GeoRegistriesBulkAction!`](#georegistriesbulkaction) | Action to be executed on Geo registries. |
 | <a id="mutationgeoregistriesbulkupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationgeoregistriesbulkupdateids"></a>`ids` | [`[GeoBaseRegistryID!]`](#geobaseregistryid) | Execute the action on registries selected by their ID. |
 | <a id="mutationgeoregistriesbulkupdateregistryclass"></a>`registryClass` | [`GeoRegistryClass!`](#georegistryclass) | Class of the Geo registries to be updated. |
+| <a id="mutationgeoregistriesbulkupdatereplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Execute the action on registries selected by their replication state. |
+| <a id="mutationgeoregistriesbulkupdateverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Execute the action on registries selected by their verification state. |
 
 #### Fields
 
@@ -22724,6 +22726,7 @@ Check user's permission for the car.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="cicatalogresourcearchived"></a>`archived` | [`Boolean`](#boolean) | Indicates the archived status of the project. |
 | <a id="cicatalogresourcedescription"></a>`description` | [`String`](#string) | Description of the catalog resource. |
 | <a id="cicatalogresourcefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Introduced** in GitLab 16.11. **Status**: Experiment. Full project path of the catalog resource. |
 | <a id="cicatalogresourceicon"></a>`icon` | [`String`](#string) | Icon for the catalog resource. |
@@ -22765,6 +22768,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="cicatalogresourcecomponentid"></a>`id` | [`CiCatalogResourcesComponentID!`](#cicatalogresourcescomponentid) | ID of the component. |
 | <a id="cicatalogresourcecomponentincludepath"></a>`includePath` | [`String`](#string) | Path used to include the component. |
 | <a id="cicatalogresourcecomponentinputs"></a>`inputs` | [`[CiInputsSpec!]`](#ciinputsspec) | Inputs for the component. |
+| <a id="cicatalogresourcecomponentlast30dayusagecount"></a>`last30DayUsageCount` | [`Int`](#int) | Number of times the component has been used in the last 30 days in a pipeline using `include`. |
 | <a id="cicatalogresourcecomponentname"></a>`name` | [`String`](#string) | Name of the component. |
 
 ### `CiCatalogResourceComponentUsage`
@@ -45477,7 +45481,7 @@ Package type of a package protection rule resource.
 | ----- | ----------- |
 | <a id="packagesprotectionrulepackagetypeconan"></a>`CONAN` | Packages of the Conan format. |
 | <a id="packagesprotectionrulepackagetypegeneric"></a>`GENERIC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 18.1. **Status**: Experiment. Packages of the Generic format. Available only when feature flag `packages_protected_packages_generic` is enabled. |
-| <a id="packagesprotectionrulepackagetypehelm"></a>`HELM` | Packages of the Helm format. |
+| <a id="packagesprotectionrulepackagetypehelm"></a>`HELM` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 18.1. **Status**: Experiment. Packages of the Helm format.Available only when feature flag `packages_protected_packages_helm` is enabled. |
 | <a id="packagesprotectionrulepackagetypemaven"></a>`MAVEN` | Packages of the Maven format. |
 | <a id="packagesprotectionrulepackagetypenpm"></a>`NPM` | Packages of the npm format. |
 | <a id="packagesprotectionrulepackagetypenuget"></a>`NUGET` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 18.0. **Status**: Experiment. Packages of the NuGet format. Available only when feature flag `packages_protected_packages_nuget` is enabled. |

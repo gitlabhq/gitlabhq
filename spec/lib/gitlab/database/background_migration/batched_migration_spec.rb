@@ -25,6 +25,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
     subject { build(:batched_background_migration) }
 
     it { is_expected.to validate_uniqueness_of(:job_arguments).scoped_to(:job_class_name, :table_name, :column_name) }
+    it { is_expected.to validate_numericality_of(:pause_ms).is_greater_than_or_equal_to(described_class::MINIMUM_PAUSE_MS) }
 
     context 'when there are failed jobs' do
       let(:batched_migration) { create(:batched_background_migration, :active, total_tuple_count: 100) }

@@ -219,6 +219,7 @@ describe('IssuableListRoot component', () => {
         preventRedirect: false,
         isActive: false,
         fullPath: null,
+        detailLoading: false,
       });
     });
 

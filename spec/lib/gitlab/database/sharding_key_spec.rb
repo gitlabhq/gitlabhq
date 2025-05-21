@@ -107,7 +107,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'p_catalog_resource_sync_events.project_id',
       'project_data_transfers.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/439201
       'value_stream_dashboard_counts.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/439555
-      'zoekt_tasks.project_identifier',
       'project_audit_events.project_id',
       'group_audit_events.group_id',
       # aggregated table, a worker ensures eventual consistency

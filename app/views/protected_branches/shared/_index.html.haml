@@ -11,7 +11,7 @@
 
     - if @project.present?
       - branch_rules_docs_link_url = help_page_path('user/project/repository/branches/branch_rules.md')
-      - branch_rules_link_url = project_settings_repository_path(@project, anchor: 'js-branch-rules')
+      - branch_rules_link_url = project_settings_repository_path(@project, anchor: 'branch-rules')
       - branch_rules_link_start = '<a href="%{url}" rel="noopener noreferrer">'.html_safe % { url: branch_rules_link_url }
 
       = render Pajamas::AlertComponent.new( alert_options: { class: 'gl-mr-7 gl-mt-5' },

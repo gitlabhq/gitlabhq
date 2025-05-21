@@ -20,7 +20,7 @@ module Gitlab
 
           connection.execute(insert_sql)
 
-          pause_ms = 0 if pause_ms < 0
+          pause_ms = [pause_ms, 100].max
           sleep(pause_ms * 0.001)
         end
       end

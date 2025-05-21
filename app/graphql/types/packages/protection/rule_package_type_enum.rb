@@ -13,7 +13,9 @@ module Types
 
         value 'HELM',
           value: 'helm',
-          description: 'Packages of the Helm format.'
+          experiment: { milestone: '18.1' },
+          description: 'Packages of the Helm format.' \
+            'Available only when feature flag `packages_protected_packages_helm` is enabled.'
 
         value 'GENERIC',
           value: 'generic',

@@ -12,6 +12,16 @@ module QA
       DEFAULT_WAIT_BEFORE_APPROVE = 30
       DEFAULT_WAIT_BEFORE_MERGE = 120
 
+      MR_LABELS = [
+        "group::development analytics",
+        "type::maintenance",
+        "maintenance::pipelines",
+        "automation:bot-authored",
+        "automation:bot-no-updates",
+        # force tier-3 label so it can be approved and set to mwps immediately
+        "pipeline::tier-3"
+      ].freeze
+
       def self.run(wait_before_approve: DEFAULT_WAIT_BEFORE_APPROVE, wait_before_merge: DEFAULT_WAIT_BEFORE_MERGE)
         new(wait_before_approve: wait_before_approve, wait_before_merge: wait_before_merge).update_master_report
       end
@@ -160,7 +170,7 @@ module QA
           remove_source_branch: true,
           squash: true,
           reviewer_ids: approver_user_valid? ? [approver_user_id] : nil,
-          labels: "group::development analytics,type::maintenance,maintenance::pipelines,automation:bot-authored",
+          labels: MR_LABELS.join(","),
           description: "Update fallback knapsack report and example runtime data report.".then do |description|
             next description if approver_user_valid?
 

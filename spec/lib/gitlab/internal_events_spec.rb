@@ -10,6 +10,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     allow(Gitlab::AppJsonLogger).to receive(:warn)
     allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
     allow(redis).to receive(:expire)
+    allow(redis).to receive(:hincrby)
     allow(redis).to receive(:incr)
     allow(redis).to receive(:incrbyfloat)
     allow(redis).to receive(:multi).and_yield(redis)
@@ -40,6 +41,21 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
 
     expect(redis).to have_received(:pfadd).with(key_expectations, [expected_value])
     expect(redis).to have_received(:expire).with(key_expectations, described_class::KEY_EXPIRY_LENGTH)
+  end
+
+  def expect_redis_hash_counter_tracking(value_override = nil, property_name_override = nil)
+    expected_value = value_override || additional_properties[:label]
+    expected_property_name = property_name_override || :label
+
+    key_expectations = satisfy do |key|
+      key.include?(event_name) &&
+        key.include?(expected_property_name.to_s) &&
+        key.include?('operator:total') &&
+        key.end_with?(week_suffix)
+    end
+
+    expect(redis).to have_received(:hincrby).with(key_expectations, expected_value, 1)
+    expect(redis).to have_received(:ttl).with(key_expectations)
   end
 
   def expect_no_redis_hll_tracking
@@ -788,6 +804,149 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
         expect(custom_tracking_class).to receive(:track_event).with(event_name, **event_kwargs)
 
         described_class.track_event(event_name, additional_properties: additional_properties, **event_kwargs)
+      end
+    end
+  end
+
+  context 'when unique total counter is defined' do
+    let(:event_selection_rules) do
+      [
+        Gitlab::Usage::EventSelectionRule.new(name: event_name, time_framed: false),
+        Gitlab::Usage::EventSelectionRule.new(name: event_name, time_framed: true),
+        Gitlab::Usage::EventSelectionRule.new(
+          name: event_name,
+          time_framed: true,
+          unique_identifier_name: :label,
+          operator: 'total'
+        )
+      ]
+    end
+
+    let(:additional_properties) { { label: 'label_value' } }
+
+    it 'updates Redis hash counter, standard Redis counter and Snowplow', :aggregate_failures do
+      described_class.track_event(
+        event_name,
+        additional_properties: additional_properties,
+        user: user,
+        project: project
+      )
+
+      expect_redis_tracking
+      expect_redis_hash_counter_tracking
+      expect_snowplow_tracking(project.namespace, additional_properties)
+    end
+
+    context 'when no expiry is needed' do
+      let(:event_selection_rules) do
+        [
+          Gitlab::Usage::EventSelectionRule.new(
+            name: event_name,
+            time_framed: false,
+            unique_identifier_name: :label,
+            operator: 'total'
+          )
+        ]
+      end
+
+      it 'does not set expiry' do
+        described_class.track_event(
+          event_name,
+          additional_properties: additional_properties,
+          user: user,
+          project: project
+        )
+
+        expect(redis).to have_received(:hincrby).with(a_string_including(event_name), 'label_value', 1)
+        expect(redis).not_to have_received(:ttl)
+        expect(redis).not_to have_received(:expire)
+      end
+    end
+
+    context 'when property is missing' do
+      let(:additional_properties) { {} }
+
+      it 'does not update Redis hash counter' do
+        described_class.track_event(
+          event_name,
+          additional_properties: additional_properties,
+          user: user,
+          project: project
+        )
+
+        expect(redis).not_to have_received(:hincrby)
+      end
+    end
+
+    context 'with a filter defined' do
+      let(:event_selection_rules) do
+        [
+          Gitlab::Usage::EventSelectionRule.new(
+            name: event_name,
+            time_framed: true,
+            unique_identifier_name: :label,
+            operator: 'total',
+            filter: { category: 'package' }
+          )
+        ]
+      end
+
+      context 'when event matches the filter' do
+        let(:additional_properties) do
+          {
+            label: 'label_value',
+            category: 'package'
+          }
+        end
+
+        it 'updates Redis hash counter' do
+          described_class.track_event(
+            event_name,
+            additional_properties: additional_properties,
+            user: user,
+            project: project
+          )
+
+          expect(redis).to have_received(:hincrby)
+        end
+      end
+
+      context 'when event does not match the filter' do
+        let(:additional_properties) do
+          {
+            label: 'label_value',
+            category: 'not_package'
+          }
+        end
+
+        it 'does not update Redis hash counter' do
+          described_class.track_event(
+            event_name,
+            additional_properties: additional_properties,
+            user: user,
+            project: project
+          )
+
+          expect(redis).not_to have_received(:hincrby)
+        end
+      end
+    end
+
+    context 'when existing TTL is present' do
+      before do
+        allow(redis).to receive(:ttl).and_return(1)
+      end
+
+      it 'does not override the existing expiry' do
+        described_class.track_event(
+          event_name,
+          additional_properties: additional_properties,
+          user: user,
+          project: project
+        )
+
+        expect(redis).to have_received(:hincrby)
+        expect(redis).not_to have_received(:expire)
       end
     end
   end

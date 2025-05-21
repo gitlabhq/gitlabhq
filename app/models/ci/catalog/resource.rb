@@ -63,7 +63,7 @@ module Ci
       scope :order_by_last_30_day_usage_count_desc, -> { reorder(last_30_day_usage_count: :desc) }
       scope :order_by_last_30_day_usage_count_asc, -> { reorder(last_30_day_usage_count: :asc) }
 
-      delegate :avatar_path, :star_count, :full_path, to: :project
+      delegate :avatar_path, :star_count, :full_path, :archived, to: :project
 
       enum :state, { unpublished: 0, published: 1 }
 

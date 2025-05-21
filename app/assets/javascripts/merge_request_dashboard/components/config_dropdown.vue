@@ -1,5 +1,11 @@
 <script>
-import { GlCollapsibleListbox, GlToggle, GlPopover, GlSprintf } from '@gitlab/ui';
+import {
+  GlCollapsibleListbox,
+  GlToggle,
+  GlPopover,
+  GlSprintf,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { InternalEvents } from '~/tracking';
 import { createAlert } from '~/alert';
@@ -32,6 +38,9 @@ export default {
     GlSprintf,
     LocalStorageSync,
     UserCalloutDismisser,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [InternalEvents.mixin()],
   inject: { listTypeToggleEnabled: { default: false } },
@@ -131,9 +140,11 @@ export default {
   <div>
     <gl-collapsible-listbox
       id="display-prefences-dropdown"
+      v-gl-tooltip
       :selected="preferences.listType"
       :items="listTypeItems"
       icon="preferences"
+      :title="__('Change display preferences')"
       no-caret
       text-sr-only
       :header-text="listTypeToggleEnabled ? __('Change display preferences') : null"

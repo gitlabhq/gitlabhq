@@ -11,6 +11,7 @@ RSpec.describe Types::Ci::Catalog::Resources::ComponentType, feature_category: :
       inputs
       name
       include_path
+      last_30_day_usage_count
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

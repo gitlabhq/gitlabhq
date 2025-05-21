@@ -11,6 +11,7 @@ module Gitlab
       include Gitlab::Utils::StrongMemoize
       include Gitlab::UsageDataCounters::RedisCounter
       include Gitlab::UsageDataCounters::RedisSum
+      include Gitlab::UsageDataCounters::RedisHashCounter
 
       def track_event(event_name, category: nil, additional_properties: {}, **kwargs)
         unless Gitlab::Tracking::EventDefinition.internal_event_exists?(event_name)
@@ -75,7 +76,9 @@ module Gitlab
 
           next unless matches_filter
 
-          if event_selection_rule.total_counter?
+          if event_selection_rule.unique_total?
+            update_unique_hash_totals_counter(event_selection_rule, **kwargs, **additional_properties)
+          elsif event_selection_rule.total_counter?
             update_total_counter(event_selection_rule)
           elsif event_selection_rule.sum?
             update_sums(event_selection_rule, **kwargs, **additional_properties)
@@ -104,6 +107,15 @@ module Gitlab
         expiry = event_selection_rule.time_framed? ? KEY_EXPIRY_LENGTH : nil
 
         increment_sum_by(event_selection_rule.redis_key_for_date, properties[:value], expiry: expiry)
+      end
+
+      def update_unique_hash_totals_counter(event_selection_rule, properties)
+        return unless properties.has_key?(event_selection_rule.unique_identifier_name)
+
+        value = properties[event_selection_rule.unique_identifier_name]
+        expiry = event_selection_rule.time_framed? ? KEY_EXPIRY_LENGTH : nil
+
+        hash_increment(event_selection_rule.redis_key_for_date, value, expiry: expiry)
       end
 
       def update_unique_counter(event_selection_rule, properties)

@@ -10024,6 +10024,7 @@ CREATE TABLE batched_background_migration_jobs (
     min_cursor jsonb,
     max_cursor jsonb,
     CONSTRAINT check_18d498ea58 CHECK (((jsonb_typeof(min_cursor) = 'array'::text) AND (jsonb_typeof(max_cursor) = 'array'::text))),
+    CONSTRAINT check_ba39c36ddb CHECK ((pause_ms >= 100)),
     CONSTRAINT check_c1ce96fe3b CHECK (((num_nonnulls(min_value, max_value) = 2) OR (num_nonnulls(min_cursor, max_cursor) = 2)))
 );
 
@@ -10064,6 +10065,7 @@ CREATE TABLE batched_background_migrations (
     CONSTRAINT check_0406d9776f CHECK ((char_length(gitlab_schema) <= 255)),
     CONSTRAINT check_122750e705 CHECK (((jsonb_typeof(min_cursor) = 'array'::text) AND (jsonb_typeof(max_cursor) = 'array'::text))),
     CONSTRAINT check_5bb0382d6f CHECK ((char_length(column_name) <= 63)),
+    CONSTRAINT check_69e4fcc53b CHECK ((pause_ms >= 100)),
     CONSTRAINT check_6b6a06254a CHECK ((char_length(table_name) <= 63)),
     CONSTRAINT check_713f147aea CHECK ((char_length(queued_migration_version) <= 14)),
     CONSTRAINT check_batch_size_in_range CHECK ((batch_size >= sub_batch_size)),
@@ -16195,7 +16197,8 @@ CREATE TABLE issue_user_mentions (
     mentioned_projects_ids bigint[],
     mentioned_groups_ids bigint[],
     note_id bigint,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_34b2c10b9c CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE issue_user_mentions_id_seq

@@ -54,6 +54,7 @@
             "operator": {
               "type": "string",
               "enum": [
+                "total",
                 "sum(value)"
               ]
             }

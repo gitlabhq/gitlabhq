@@ -137,17 +137,19 @@ RSpec.describe Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJo
     context 'pause interval between sub-batches' do
       let(:pause_ms) { 5 }
 
-      it 'sleeps for the specified time between sub-batches' do
-        expect(copy_job).to receive(:sleep).with(0.005)
+      context 'when pause_ms is below the default value' do
+        it 'sleeps for the specified time between sub-batches' do
+          expect(copy_job).to receive(:sleep).with(0.1)
 
-        copy_job.perform
+          copy_job.perform
+        end
       end
 
       context 'when pause_ms value is negative' do
         let(:pause_ms) { -5 }
 
-        it 'treats it as a 0' do
-          expect(copy_job).to receive(:sleep).with(0)
+        it 'defaults to 0.1' do
+          expect(copy_job).to receive(:sleep).with(0.1)
 
           copy_job.perform
         end

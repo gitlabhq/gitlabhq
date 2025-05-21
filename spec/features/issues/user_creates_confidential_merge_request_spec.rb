@@ -46,7 +46,7 @@ RSpec.describe 'User creates confidential merge request on issue page', :js, fea
       click_button 'Create confidential merge request'
 
       page.within '.create-confidential-merge-request-dropdown-menu' do
-        expect(page).to have_button(forked_project.name_with_namespace)
+        expect(page).to have_button(forked_project.full_path)
         click_button 'Create confidential merge request'
       end
 

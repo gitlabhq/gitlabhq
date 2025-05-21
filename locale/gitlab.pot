@@ -33086,6 +33086,9 @@ msgstr ""
 msgid "Integrations|Trigger"
 msgstr ""
 
+msgid "Integrations|URL must point to discord.com"
+msgstr ""
+
 msgid "Integrations|Unable to post to %{channel_list}, please add the GitLab Slack app to any private Slack channels"
 msgstr ""
 

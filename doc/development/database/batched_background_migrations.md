@@ -1248,6 +1248,106 @@ for more details.
    end
    ```
 
+### Use of scope_to
+
+When writing a batched background migration class, you have the option to define a `scope_to` block. This block adds an additional qualifier to the query that determines the minimum and maximum range for each batch.
+
+By default, the batching range is determined using the primary key index, which is highly efficient. However, using `scope_to` means the query must consider only rows matching the given condition, potentially impacting performance.
+
+Consider the following simple query:
+
+```sql
+SELECT id FROM users WHERE id BETWEEN 1 AND 3000;
+```
+
+This query is fast because the `id` column is indexed. PostgreSQL can use an index-only scan to return results efficiently. The query plan might look like this:
+
+```plain
+QUERY PLAN
+---------------------------------------------------------------------------------------------------------------------------------
+Index Only Scan using users_pkey on users  (cost=0.44..307.24 rows=2751 width=4) (actual time=0.016..177.028 rows=2654 loops=1)
+  Index Cond: ((id >= 1) AND (id <= 3000))
+  Heap Fetches: 219
+Planning Time: 0.183 ms
+Execution Time: 177.158 ms
+```
+
+Now, let's apply a scope:
+
+```ruby
+scope_to ->(relation) { relation.where(theme_id: 4) }
+```
+
+This results in the following query:
+
+```sql
+SELECT id FROM users WHERE id BETWEEN 1 AND 3000 AND theme_id = 4;
+```
+
+The associated query plan is less efficient:
+
+```plain
+QUERY PLAN
+--------------------------------------------------------------------------------------------------------------------------
+Index Scan using users_pkey on users  (cost=0.44..3773.66 rows=10 width=4) (actual time=8.047..2290.528 rows=28 loops=1)
+  Index Cond: ((id >= 1) AND (id <= 3000))
+  Filter: (theme_id = 4)
+  Rows Removed by Filter: 2626
+Planning Time: 1.292 ms
+Execution Time: 2290.582 ms
+```
+
+In this case, PostgreSQL uses an index scan on `id` but applies the `theme_id` filter after row access. This causes many rows to be discarded after retrieval, resulting in degraded performance, over 12x slower in this case.
+
+#### When to override
+
+Use `scope_to` **only when the scoped column is indexed**, and ideally, the batching query avoids filtering out rows.
+
+A strong indicator of good performance is the absence of the `Rows Removed by Filter` line in the query plan.
+
+Let’s improve performance by indexing the `theme_id` column:
+
+```sql
+CREATE INDEX idx_users_theme_id ON users (theme_id);
+```
+
+Re-running the same query produces this plan:
+
+```plain
+QUERY PLAN
+--------------------------------------------------------------------------------------------------------------------------------
+Bitmap Heap Scan on users  (cost=691.28..706.53 rows=10 width=4) (actual time=13.532..13.578 rows=28 loops=1)
+  Recheck Cond: ((id >= 1) AND (id <= 3000) AND (theme_id = 4))
+  Heap Blocks: exact=28
+  Buffers: shared hit=41 read=62
+  I/O Timings: shared read=0.721
+  ->  BitmapAnd  (cost=691.28..691.28 rows=10 width=0) (actual time=13.509..13.511 rows=0 loops=1)
+        Buffers: shared hit=13 read=62
+        I/O Timings: shared read=0.721
+        ->  Bitmap Index Scan on users_pkey  (cost=0.00..45.95 rows=2751 width=0) (actual time=0.390..0.390 rows=2654 loops=1)
+              Index Cond: ((id >= 1) AND (id <= 3000))
+              Buffers: shared hit=10
+        ->  Bitmap Index Scan on idx_users_theme_id  (cost=0.00..645.08 rows=73352 width=0) (actual time=12.933..12.933 rows=69872 loops=1)
+              Index Cond: (theme_id = 4)
+              Buffers: shared hit=3 read=62
+              I/O Timings: shared read=0.721
+Planning:
+  Buffers: shared hit=35 read=1 dirtied=2
+  I/O Timings: shared read=0.045
+Planning Time: 0.514 ms
+Execution Time: 13.634 ms
+```
+
+#### Summary
+
+Use `scope_to` **only** when:
+
+- The scoped column is backed by an index.
+- Query plans avoid significant row filtering (`Rows Removed by Filter` is low or absent).
+- Batching remains efficient under real data loads.
+
+Otherwise, scoping can drastically reduce performance.
+
 ## Examples
 
 ### Routes use-case

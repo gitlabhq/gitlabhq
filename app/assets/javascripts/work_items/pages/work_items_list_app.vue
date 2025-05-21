@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlFilteredSearchToken, GlLoadingIcon } from '@gitlab/ui';
-import { isEmpty } from 'lodash';
+import { isEmpty, unionBy } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
@@ -155,7 +155,12 @@ export default {
       required: false,
       default: 0,
     },
-    eeEpicListQuery: {
+    eeEpicListFullQuery: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+    eeEpicListSlimQuery: {
       type: Object,
       required: false,
       default: null,
@@ -189,7 +194,8 @@ export default {
       showBulkEditSidebar: false,
       sortKey: CREATED_DESC,
       state: STATUS_OPEN,
-      workItems: [],
+      workItemsFull: [],
+      workItemsSlim: [],
       workItemStateCounts: {},
       activeItem: null,
       isRefetching: false,
@@ -199,9 +205,11 @@ export default {
     };
   },
   apollo: {
-    workItems: {
+    workItemsFull: {
       query() {
-        return this.isEpicsList && this.eeEpicListQuery ? this.eeEpicListQuery : getWorkItemsQuery;
+        return this.isEpicsList && this.eeEpicListFullQuery
+          ? this.eeEpicListFullQuery
+          : getWorkItemsQuery;
       },
       variables() {
         return this.queryVariables;
@@ -213,16 +221,30 @@ export default {
         return isEmpty(this.pageParams);
       },
       result({ data }) {
-        this.pageInfo = data?.[this.namespace].workItems.pageInfo ?? {};
-
-        if (data?.[this.namespace]) {
-          document.title = this.calculateDocumentTitle(data);
-        }
-        if (!this.withTabs) {
-          this.hasAnyIssues = Boolean(data?.[this.namespace].workItems.nodes);
-          this.isInitialLoadComplete = true;
-        }
-        this.checkDrawerParams();
+        this.handleListDataResults(data);
+      },
+      error(error) {
+        this.error = s__(
+          'WorkItem|Something went wrong when fetching work items. Please try again.',
+        );
+        Sentry.captureException(error);
+      },
+    },
+    workItemsSlim: {
+      query() {
+        return this.eeEpicListSlimQuery;
+      },
+      variables() {
+        return this.queryVariables;
+      },
+      update(data) {
+        return data?.[this.namespace].workItems.nodes ?? [];
+      },
+      skip() {
+        return !this.isEpicsList || this.eeEpicListSlimQuery === null || isEmpty(this.pageParams);
+      },
+      result({ data }) {
+        this.handleListDataResults(data);
       },
       error(error) {
         this.error = s__(
@@ -258,6 +280,18 @@ export default {
     },
   },
   computed: {
+    workItems() {
+      if (this.isEpicsList) {
+        if (this.workItemsFull.length > 0 && this.workItemsSlim.length > 0 && !this.detailLoading) {
+          return this.combineSlimAndFullLists(this.workItemsSlim, this.workItemsFull);
+        }
+        return this.workItemsSlim;
+      }
+      return this.workItemsFull;
+    },
+    detailLoading() {
+      return this.$apollo.queries.workItemsFull.loading;
+    },
     isItemSelected() {
       return !isEmpty(this.activeItem);
     },
@@ -308,7 +342,10 @@ export default {
       return Boolean(this.searchQuery);
     },
     isLoading() {
-      return this.$apollo.queries.workItems.loading && !this.isRefetching;
+      if (this.isEpicsList) {
+        return this.$apollo.queries.workItemsSlim.loading && !this.isRefetching;
+      }
+      return this.detailLoading && !this.isRefetching;
     },
     isOpenTab() {
       return this.state === STATUS_OPEN;
@@ -599,13 +636,14 @@ export default {
       if (!this.hasAnyIssues) {
         this.isInitialLoadComplete = false;
       }
-      this.$apollo.queries.workItems.refetch();
+      this.$apollo.queries.workItemsFull.refetch();
+      this.$apollo.queries.workItemsSlim.refetch();
     },
     $route(newValue, oldValue) {
       if (newValue.fullPath !== oldValue.fullPath) {
         this.updateData(getParameterByName(PARAM_SORT));
       }
-      if (newValue.query[DETAIL_VIEW_QUERY_PARAM_NAME] && !this.$apollo.queries.workItems.loading) {
+      if (newValue.query[DETAIL_VIEW_QUERY_PARAM_NAME] && !this.detailLoading) {
         this.checkDrawerParams();
       } else {
         this.activeItem = null;
@@ -622,6 +660,37 @@ export default {
     window.removeEventListener('popstate', this.checkDrawerParams);
   },
   methods: {
+    combineSlimAndFullLists(slim, full) {
+      const findSlimItem = (id) => slim.find((item) => item.id === id);
+      return full.map((fullItem) => {
+        const slimVersion = findSlimItem(fullItem.id);
+        const combinedWidgets = unionBy(fullItem.widgets, slimVersion.widgets, 'type');
+        return {
+          ...fullItem,
+          widgets: combinedWidgets.reduce((acc, widget) => {
+            const slimWidget = slimVersion.widgets.find((w) => w.type === widget.type);
+            if (slimWidget && Object.keys(slimWidget).length > Object.keys(widget).length) {
+              acc.push(slimWidget);
+            } else {
+              acc.push(widget);
+            }
+            return acc;
+          }, []),
+        };
+      });
+    },
+    handleListDataResults(listData) {
+      this.pageInfo = listData?.[this.namespace].workItems.pageInfo ?? {};
+
+      if (listData?.[this.namespace]) {
+        document.title = this.calculateDocumentTitle(listData);
+      }
+      if (!this.withTabs) {
+        this.hasAnyIssues = Boolean(listData?.[this.namespace].workItems.nodes);
+        this.isInitialLoadComplete = true;
+      }
+      this.checkDrawerParams();
+    },
     handleToggle(item) {
       if (item && this.activeItem?.iid === item.iid) {
         this.activeItem = null;
@@ -681,7 +750,7 @@ export default {
     },
     async handleBulkEditSuccess(event) {
       this.showBulkEditSidebar = false;
-      await this.refetchItems(event);
+      this.refetchItems(event);
     },
     handleClickTab(state) {
       if (this.state === state) {
@@ -769,9 +838,10 @@ export default {
     },
     async refetchItems({ refetchCounts = false } = {}) {
       this.isRefetching = true;
-      await this.$apollo.queries.workItems.refetch();
+      this.$apollo.queries.workItemsFull.refetch();
+      this.$apollo.queries.workItemsSlim.refetch();
       if (refetchCounts) {
-        await this.$apollo.queries.workItemStateCounts.refetch();
+        this.$apollo.queries.workItemStateCounts.refetch();
       }
       this.isRefetching = false;
     },
@@ -849,8 +919,7 @@ export default {
     },
     handleWorkItemCreated() {
       this.isInitialLoadComplete = false;
-      this.$apollo.queries.workItems.refetch();
-      this.$apollo.queries.workItemStateCounts.refetch();
+      this.refetchItems({ refetchCounts: true });
     },
   },
 };
@@ -903,6 +972,7 @@ export default {
         :tabs="tabs"
         use-keyset-pagination
         :prevent-redirect="workItemDrawerEnabled"
+        :detail-loading="detailLoading"
         @click-tab="handleClickTab"
         @dismiss-alert="error = undefined"
         @filter="handleFilter"
@@ -941,7 +1011,11 @@ export default {
         </template>
 
         <template #timeframe="{ issuable = {} }">
-          <issue-card-time-info :issue="issuable" :is-work-item-list="true" />
+          <issue-card-time-info
+            :issue="issuable"
+            :is-work-item-list="true"
+            :detail-loading="detailLoading"
+          />
         </template>
 
         <template #status="{ issuable }">

@@ -4437,20 +4437,37 @@ RSpec.describe Repository, feature_category: :source_code_management do
     let_it_be(:project) { create(:project, :repository) }
     let(:target_sha) { repository.commit('master').sha }
     let(:expected_params) do
-      [user, 'master', 'commit message', [], 'author email', 'author name', nil, nil, true, nil, false, target_sha]
+      [
+        user,
+       'master', # branch_name
+       'commit message', # commit_message
+       [], # actions
+       'author email', # author_email
+       'author name', # author_name
+       nil, # start_branch_name
+       nil, # start_repository
+       true, # force
+       nil, # start_sha
+       true, # sign
+       target_sha # target_sha
+      ]
     end
 
-    subject do
-      repository.commit_files(
-        user,
+    let(:params) do
+      {
         branch_name: 'master',
         message: 'commit message',
         author_name: 'author name',
         author_email: 'author email',
         actions: [],
-        force: true,
-        sign: false
-      )
+        force: true
+      }
+    end
+
+    let(:expected_sign) { true }
+
+    subject(:commit_files) do
+      repository.commit_files(user, **params)
     end
 
     it 'finds and passes the branches target_sha' do
@@ -4458,7 +4475,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
         expect(client).to receive(:user_commit_files).with(*expected_params)
       end
 
-      subject
+      commit_files
     end
 
     context 'with an empty branch' do
@@ -4476,7 +4493,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
             expect(client).to receive(:user_commit_files).with(*expected_params)
           end
 
-          subject
+          commit_files
         end
       end
 
@@ -4493,7 +4510,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
             expect(client).to receive(:user_commit_files).with(*expected_params)
           end
 
-          subject
+          commit_files
         end
       end
     end

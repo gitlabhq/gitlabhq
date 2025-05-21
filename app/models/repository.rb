@@ -900,7 +900,6 @@ class Repository
 
   def commit_files(user, **options)
     start_project = options.delete(:start_project)
-
     if start_project
       options[:start_repository] = start_project.repository.raw_repository
     end
@@ -914,7 +913,7 @@ class Repository
       end
     end
 
-    with_cache_hooks { raw.commit_files(user, **options) }
+    with_cache_hooks { raw.commit_files(user, **options.merge(sign: sign_commits?)) }
   end
 
   def merge(user, source_sha, merge_request, message)
@@ -1420,6 +1419,10 @@ class Repository
       container.full_path,
       container: container
     )
+  end
+
+  def sign_commits?
+    true
   end
 end
 

@@ -525,6 +525,17 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         let(:expected_status) { :ok }
       end
     end
+
+    context 'when a large file/blob is requested' do
+      it 'rate limits user when thresholds hit' do
+        stub_const("API::Helpers::BlobHelpers::MAX_BLOB_SIZE", 5)
+        allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled_request?).and_return(true)
+
+        get api(route(file_path), user), params: params
+
+        expect(response).to have_gitlab_http_status(:too_many_requests)
+      end
+    end
   end
 
   describe 'GET /projects/:id/repository/files/:file_path/blame' do

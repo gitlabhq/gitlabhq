@@ -77,7 +77,14 @@ RSpec.describe QA::Tools::KnapsackReportUpdater, :aggregate_failures do
       remove_source_branch: true,
       squash: true,
       reviewer_ids: reviewer_ids,
-      labels: "group::development analytics,type::maintenance,maintenance::pipelines,automation:bot-authored",
+      labels: [
+        "group::development analytics",
+        "type::maintenance",
+        "maintenance::pipelines",
+        "automation:bot-authored",
+        "automation:bot-no-updates",
+        "pipeline::tier-3"
+      ].join(","),
       description: "Update fallback knapsack report and example runtime data report.".then do |description|
         next description unless reviewer_ids.nil?
 

@@ -1348,3 +1348,8 @@ Rails/EnumSyntax:
     - 'ee/app/models/**/*.rb'
     - 'lib/**/*.rb'
     - 'ee/lib/**/*.rb'
+
+Database/AvoidScopeTo:
+  Enabled: true
+  Include:
+    - 'lib/gitlab/background_migration/**/*.rb'

@@ -58,7 +58,7 @@ RSpec.describe 'Cursor based batched background migrations', feature_category: :
         table_name: table_name,
         batch_size: 10,
         sub_batch_size: 5,
-        pause_ms: 0,
+        pause_ms: 100,
         min_cursor: [0, 0],
         max_cursor: [100, 9]
       )
@@ -87,7 +87,7 @@ RSpec.describe 'Cursor based batched background migrations', feature_category: :
           table_name: table_name,
           batch_size: 10,
           sub_batch_size: 1,
-          pause_ms: 0,
+          pause_ms: 100,
           min_cursor: [98, 9],
           max_cursor: [100, 1]
         )

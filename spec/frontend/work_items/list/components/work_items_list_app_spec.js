@@ -64,9 +64,12 @@ import {
 import { createRouter } from '~/work_items/router';
 import {
   groupWorkItemsQueryResponse,
+  groupWorkItemsQueryResponseNoLabels,
+  groupWorkItemsQueryResponseNoAssignees,
   groupWorkItemStateCountsQueryResponse,
+  combinedQueryResultExample,
 } from '../../mock_data';
-import mockQuery from '../../graphql/mock_query.query.graphql';
+import { mockQueryFactory, mockListQueryFactory } from '../../graphql/mock_query_factory';
 
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
 jest.mock('~/sentry/sentry_browser_wrapper');
@@ -303,6 +306,7 @@ describeSkipVue3(skipReason, () => {
 
     it('uses the eeEpicListQuery prop rather than the regular query', async () => {
       const handler = jest.fn();
+      const mockQuery = mockQueryFactory('eeQuery');
       const mockEEQueryHandler = [mockQuery, handler];
       mountComponent({
         provide: {
@@ -310,13 +314,60 @@ describeSkipVue3(skipReason, () => {
         },
         additionalHandlers: [mockEEQueryHandler],
         props: {
-          eeEpicListQuery: mockQuery,
+          eeEpicListFullQuery: mockQuery,
         },
       });
 
       await waitForPromises();
 
       expect(handler).toHaveBeenCalled();
+    });
+
+    it('calls the slim EE query as well as the full EE query', async () => {
+      const fullHandler = jest.fn();
+      const fullMockQuery = mockQueryFactory('eeFullQuery');
+      const fullEEQueryHandler = [fullMockQuery, fullHandler];
+      const slimHandler = jest.fn();
+      const slimMockQuery = mockQueryFactory('eeSlimQuery');
+      const slimEEQueryHandler = [slimMockQuery, slimHandler];
+      mountComponent({
+        provide: {
+          workItemType: WORK_ITEM_TYPE_NAME_EPIC,
+        },
+        additionalHandlers: [fullEEQueryHandler, slimEEQueryHandler],
+        props: {
+          eeEpicListFullQuery: fullMockQuery,
+          eeEpicListSlimQuery: slimMockQuery,
+        },
+      });
+
+      await waitForPromises();
+
+      expect(fullHandler).toHaveBeenCalled();
+      expect(slimHandler).toHaveBeenCalled();
+    });
+
+    it('combines the slim and full results correctly and passes the to the list component', async () => {
+      const fullHandler = jest.fn().mockResolvedValue(groupWorkItemsQueryResponseNoLabels);
+      const fullMockQuery = mockListQueryFactory('eeFullQuery');
+      const fullEEQueryHandler = [fullMockQuery, fullHandler];
+      const slimHandler = jest.fn().mockResolvedValue(groupWorkItemsQueryResponseNoAssignees);
+      const slimMockQuery = mockListQueryFactory('eeSlimQuery');
+      const slimEEQueryHandler = [slimMockQuery, slimHandler];
+      mountComponent({
+        provide: {
+          workItemType: WORK_ITEM_TYPE_NAME_EPIC,
+        },
+        additionalHandlers: [fullEEQueryHandler, slimEEQueryHandler],
+        props: {
+          eeEpicListFullQuery: fullMockQuery,
+          eeEpicListSlimQuery: slimMockQuery,
+        },
+      });
+
+      await waitForPromises();
+
+      expect(findIssuableList().props('issuables')).toEqual(combinedQueryResultExample);
     });
   });
 
