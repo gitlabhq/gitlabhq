@@ -116,6 +116,8 @@ Allows you to receive information, such as size and content, about blobs in a re
 Blob content is Base64 encoded. This endpoint can be accessed without authentication,
 if the repository is publicly accessible.
 
+For blobs larger than 10 MB, this endpoint has a rate limit of 5 requests per minute.
+
 ```plaintext
 GET /projects/:id/repository/blobs/:sha
 ```

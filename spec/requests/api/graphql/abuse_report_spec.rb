@@ -84,6 +84,7 @@ RSpec.describe 'Querying an Abuse Report', feature_category: :insider_threat do
             id
             body
             bodyHtml
+            bodyFirstLineHtml
           }
         }
       GRAPHQL

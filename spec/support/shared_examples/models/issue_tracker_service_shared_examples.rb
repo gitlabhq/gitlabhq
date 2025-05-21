@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'issue tracker integration URL attribute' do |url_attr|
-  it { is_expected.to allow_value('https://example.com').for(url_attr) }
+  let(:valid_webhook_url) { defined?(webhook_url) ? webhook_url : 'https://example.com' }
+
+  it { is_expected.to allow_value(valid_webhook_url).for(url_attr) }
 
   it { is_expected.not_to allow_value('example.com').for(url_attr) }
   it { is_expected.not_to allow_value('ftp://example.com').for(url_attr) }

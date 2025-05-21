@@ -5,8 +5,6 @@ module Types
     class NoteType < BaseObject
       graphql_name 'Note'
 
-      include ActionView::Helpers::SanitizeHelper
-
       connection_type_class Types::CountableConnectionType
 
       authorize :read_note
@@ -82,10 +80,6 @@ module Types
 
         # object is a presenter, so object.object returns the concrete note object.
         ::Gitlab::GlobalId.build(object, model_name: object.object.class.to_s, id: object.discussion_id)
-      end
-
-      def note_project
-        object.project
       end
 
       def position

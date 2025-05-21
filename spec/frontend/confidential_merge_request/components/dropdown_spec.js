@@ -5,15 +5,15 @@ import Dropdown from '~/confidential_merge_request/components/dropdown.vue';
 const TEST_PROJECTS = [
   {
     id: 7,
-    name: 'test',
+    pathWithNamespace: 'group/test-fork',
   },
   {
     id: 9,
-    name: 'lorem ipsum',
+    pathWithNamespace: 'group2/test-fork',
   },
   {
     id: 11,
-    name: 'dolar sit',
+    pathWithNamespace: 'group3/test-fork',
   },
 ];
 
@@ -42,9 +42,9 @@ describe('~/confidential_merge_request/components/dropdown.vue', () => {
         selected: [],
         toggleText: 'Select private project',
         block: true,
-        items: TEST_PROJECTS.map(({ id, name }) => ({
+        items: TEST_PROJECTS.map(({ id, pathWithNamespace }) => ({
           value: String(id),
-          text: name,
+          text: pathWithNamespace,
         })),
       });
     });
@@ -72,7 +72,7 @@ describe('~/confidential_merge_request/components/dropdown.vue', () => {
     it('shows selected project', () => {
       expect(findListbox().props()).toMatchObject({
         selected: String(TEST_PROJECTS[1].id),
-        toggleText: TEST_PROJECTS[1].name,
+        toggleText: TEST_PROJECTS[1].pathWithNamespace,
       });
     });
   });

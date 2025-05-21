@@ -6,7 +6,11 @@
 class ClusterNameValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
     if record.provided_by_user?
-      record.errors.add(attribute, 'has to be present') unless value.present?
+      if value.blank?
+        record.errors.add(attribute, 'has to be present')
+      elsif record.name_changed? && value.length > 2048
+        record.errors.add(attribute, 'is too long')
+      end
     else
       if record.persisted? && record.name_changed?
         record.errors.add(attribute, "can not be changed because it's synchronized with provider")

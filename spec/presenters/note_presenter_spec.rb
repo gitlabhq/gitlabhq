@@ -37,6 +37,43 @@ RSpec.describe NotePresenter, feature_category: :team_planning do
     end
   end
 
+  describe '#note_first_line_html' do
+    subject { presenter.note_first_line_html }
+
+    it_behaves_like 'a field with obfuscated email address'
+
+    it 'runs post processing pipeline' do
+      # Ensure post process pipeline runs
+      expect(Banzai).to receive(:render_field).with(note, :note, {}).and_call_original
+      expect(Banzai).to receive(:post_process).and_call_original
+
+      is_expected.to include(obfuscated_email)
+    end
+
+    context 'when the note body is shorter than 125 characters' do
+      before do
+        note.note = 'note body content'
+      end
+
+      it 'returns the content unchanged' do
+        is_expected.to eq('<p>note body content</p>')
+      end
+    end
+
+    context 'when the note body is longer than 125 characters' do
+      before do
+        note.note = 'this is a note body content which is very, very, very, veeery, long and is supposed ' \
+          'to be longer that 125 characters in length, with a few extra'
+      end
+
+      it 'returns the content trimmed with an ellipsis' do
+        is_expected.to eq(
+          '<p>this is a note body content which is very, very, very, veeery, long and is supposed ' \
+            'to be longer that 125 characters in le...</p>')
+      end
+    end
+  end
+
   describe '#external_author' do
     let!(:note_text) { "note body" }
     let!(:note) { build(:note, :system, author: Users::Internal.support_bot, note: note_text) }
