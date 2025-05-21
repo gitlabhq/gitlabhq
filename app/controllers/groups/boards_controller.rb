@@ -9,6 +9,10 @@ class Groups::BoardsController < Groups::ApplicationController
     push_frontend_feature_flag(:board_multi_select, group)
     push_frontend_feature_flag(:issues_list_drawer, group)
     push_force_frontend_feature_flag(:work_items_beta, !!group&.work_items_beta_feature_flag_enabled?)
+    push_frontend_feature_flag(:notifications_todos_buttons)
+    push_force_frontend_feature_flag(:glql_integration, !!group&.glql_integration_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:continue_indented_text, !!group&.continue_indented_text_feature_flag_enabled?)
+    push_frontend_feature_flag(:work_item_status_feature_flag, group&.root_ancestor)
   end
 
   feature_category :team_planning

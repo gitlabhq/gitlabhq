@@ -21,6 +21,7 @@ RSpec.describe 'Project issue boards sidebar', :js, feature_category: :portfolio
   context 'when issues drawer is disabled' do
     before do
       stub_feature_flags(issues_list_drawer: false)
+      stub_feature_flags(notifications_todos_buttons: false)
       sign_in(user)
 
       visit project_board_path(project, board)

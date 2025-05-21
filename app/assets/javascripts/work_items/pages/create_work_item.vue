@@ -10,6 +10,7 @@ import {
   BASE_ALLOWED_CREATE_TYPES,
   WORK_ITEM_TYPE_NAME_ISSUE,
   WORK_ITEM_TYPE_NAME_INCIDENT,
+  WORK_ITEM_TYPE_NAME_TASK,
 } from '../constants';
 import workItemRelatedItemQuery from '../graphql/work_item_related_item.query.graphql';
 import { convertTypeEnumToName } from '../utils';
@@ -69,14 +70,17 @@ export default {
     },
   },
   computed: {
-    isIssue() {
-      return this.workItemType === WORK_ITEM_TYPE_NAME_ISSUE;
-    },
     isIncident() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_INCIDENT;
     },
     allowedWorkItemTypes() {
-      if (this.isIssue || this.isIncident) {
+      if (
+        [
+          WORK_ITEM_TYPE_NAME_ISSUE,
+          WORK_ITEM_TYPE_NAME_INCIDENT,
+          WORK_ITEM_TYPE_NAME_TASK,
+        ].includes(this.workItemType)
+      ) {
         return BASE_ALLOWED_CREATE_TYPES;
       }
 
@@ -150,7 +154,7 @@ export default {
       :is-group="isGroup"
       :related-item="relatedItem"
       :should-discard-draft="shouldDiscardDraft"
-      :always-show-work-item-type-select="isIncident || isIssue"
+      :always-show-work-item-type-select="!isGroup"
       :allowed-work-item-types="allowedWorkItemTypes"
       @updateType="updateWorkItemType($event)"
       @confirmCancel="handleConfirmCancellation"

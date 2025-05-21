@@ -74,18 +74,32 @@ validates :new_setting,
 ## Migrate a database column to a JSONB column
 
 To migrate a column to JSONB, add the new setting under the JSONB accessor.
-Follow the [process to add a new application setting](#add-a-new-application-setting).
 
-You can use the same name as the existing column to maintain consistency. During the
-transition period, Rails writes the same information to both the existing database
+### Adding the JSONB setting
+
+- Follow the [process to add a new application setting](#add-a-new-application-setting).
+- Use the same name as the existing column to maintain consistency.
+- During transition, Rails writes the same information to both the existing database
 column and the field under the new JSONB column. This ensures data consistency and
 prevents downtime.
 
-You must follow the [process for dropping columns](database/avoiding_downtime_in_migrations.md#dropping-columns) to remove the original column.
-This a required multi-milestone process that involves:
+### Required cleanup steps
+
+You must follow the [process for dropping columns](database/avoiding_downtime_in_migrations.md#dropping-columns)
+to remove the original column. This a required multi-milestone process that involves:
 
 1. Ignoring the column.
 1. Dropping the column.
 1. Removing the ignore rule.
 
+{{< alert type="warning" >}}
+
 Dropping the original column before ignoring it in the model can cause problems with zero-downtime migrations.
+
+{{< /alert >}}
+
+### Default values
+
+When migrating settings to JSONB columns with `jsonb_accessor` defaults,
+remove them from `ApplicationSettingImplementation.defaults` because
+JSONB accessors take precedence over the `defaults` method.

@@ -81,6 +81,16 @@ describe('Create work item page component', () => {
     });
   });
 
+  it('passes alwaysShowWorkItemTypeSelect prop as `true` to the CreateWorkItem component when isGroup is false', () => {
+    const pushMock = jest.fn();
+    createComponent({ push: pushMock }, false);
+
+    expect(findCreateWorkItem().props()).toMatchObject({
+      alwaysShowWorkItemTypeSelect: true,
+      allowedWorkItemTypes: ['Incident', 'Issue', 'Task'],
+    });
+  });
+
   it('visits work item detail page after create if router is not present', () => {
     createComponent();
 

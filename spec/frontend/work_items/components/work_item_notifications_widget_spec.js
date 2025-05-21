@@ -131,6 +131,18 @@ describe('WorkItemActions component', () => {
       expect(findNotificationsButton().findComponent(GlIcon).props('name')).toBe(icon);
     });
 
+    it.each`
+      scenario                   | subscribedToNotifications | dataSubscribed
+      ${'notifications are off'} | ${false}                  | ${'false'}
+      ${'notifications are on'}  | ${true}                   | ${'true'}
+    `(
+      'has the correct data-subscribed attribute when $scenario',
+      ({ subscribedToNotifications, dataSubscribed }) => {
+        createComponent({ subscribedToNotifications });
+        expect(findNotificationsButton().attributes('data-subscribed')).toBe(dataSubscribed);
+      },
+    );
+
     it('emits error when the update notification mutation fails', async () => {
       createComponent({
         notificationsMutationHandler: toggleNotificationsFailureHandler,

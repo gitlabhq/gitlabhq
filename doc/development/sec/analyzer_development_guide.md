@@ -322,6 +322,10 @@ The `GITLAB_TOKEN` for the [@gl-service-dev-secure-analyzers-automation](https:/
 
       The `ci-templates` project requires the `GITLAB_TOKEN` to allow certain scripts to execute API calls. This step can be removed after [allow JOB-TOKEN access to CI/lint endpoint](https://gitlab.com/gitlab-org/gitlab/-/issues/438781) has been completed.
 
+   1. `GITLAB_TOKEN` CI/CD variable for the [`gitlab-org/secure/tools/security-triage-automation`](https://gitlab.com/gitlab-org/secure/tools/security-triage-automation) project.
+
+      This must be explicitly configured because the `security-triage-automation` project is not nested under the `gitlab-org/security-products/analyzers` namespace, and therefore _does not inherit_ the `GITLAB_TOKEN` value.
+
    1. `SEC_REGISTRY_PASSWORD` CI/CD variable for [`gitlab-advanced-sast`](https://gitlab.com/gitlab-org/security-products/analyzers/gitlab-advanced-sast/-/settings/ci_cd#js-cicd-variables-settings).
 
       This allows our [tagging script](https://gitlab.com/gitlab-org/security-products/ci-templates/blob/cfe285a/scripts/tag_image.sh) to pull from the private container registry in the development project `registry.gitlab.com/gitlab-org/security-products/analyzers/<analyzer-name>/tmp`, and push to the publicly accessible container registry `registry.gitlab.com/security-products/<analyzer-name>`.

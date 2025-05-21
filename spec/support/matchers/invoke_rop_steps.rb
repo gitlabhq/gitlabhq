@@ -111,6 +111,7 @@ module InvokeRopSteps
     context_passed_along_steps:
   )
     expected_rop_steps = []
+    skip_unless_inspect = false
 
     rop_steps.each do |rop_step|
       step_class = rop_step[0]
@@ -121,13 +122,11 @@ module InvokeRopSteps
         step_action: step_action
       }
 
+      next if skip_unless_inspect && [:inspect_ok, :inspect_err].freeze.exclude?(step_action)
+
       if err_results_for_steps.key?(step_class)
         expected_rop_step[:returned_object] = err_results_for_steps[step_class]
-
-        # Currently, only a single error step is supported, so we assign expected_rop_step as the last entry
-        # in expected_rop_steps, break out of the loop early, and do not add any more steps
-        expected_rop_steps << expected_rop_step
-        break
+        skip_unless_inspect = true
       elsif ok_results_for_steps.key?(step_class)
         expected_rop_step[:returned_object] = ok_results_for_steps[step_class]
       elsif step_action == :and_then
@@ -169,7 +168,9 @@ module InvokeRopSteps
     context_passed_along_steps:,
     returned_object:
   )
-    expect(step_class).to receive(step_class_method).with(context_passed_along_steps).ordered do
+    expectation = expect(step_class).to receive(step_class_method)
+    expectation = expectation.with(context_passed_along_steps) if step_class_method != :observe
+    expectation.ordered do
       returned_object
     end
   end
