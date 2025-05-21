@@ -2,6 +2,33 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.11.3 (2025-05-21)
+
+### Fixed (1 change)
+
+- [Merge branch 'bwill/fix-auto-resolve-misalignment' into 'master'](https://gitlab.com/gitlab-org/security/gitlab/-/commit/45c7b8836ebe00032c1c12c319b3a38df58a1330) **GitLab Enterprise Edition**
+
+### Changed (2 changes)
+
+- [Add outbound allowlist to allowed endpoints for SSRF filter](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1e69af7ba0add6b581cf68d1cbb25bdae59fcda6) **GitLab Enterprise Edition**
+- [Add backport to fix shortSHA uniqueness](https://gitlab.com/gitlab-org/security/gitlab/-/commit/56f834658d280f32c1c491d18561a6d7fdb18dc2)
+
+### Security (9 changes)
+
+- [Use CI::VariableValue in BasicEntity to prevent exposing hidden values in collapsible UI element](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3ce5ec566dddc9dab96ef984184685c25fc69f41) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4951))
+- [Show full path of project in create MR dropdown](https://gitlab.com/gitlab-org/security/gitlab/-/commit/428aa73cd69a5133c8e726eba6631d47ca9faab6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4972))
+- [Security 479168 discord zip vulnerability](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cd8d42946d4f13b91cdf0e68fb74c13fa3566512) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4945))
+- [Limit length of certificate cluster text fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/47af9186f2460faf4382815af35da81bc163eeba) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5000))
+- [Check rate limit for over-sized blobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0e992167ee000e8fb7de00ae5feaa059c5cfb9c8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4970))
+- [Added size constraint validation to notes position fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/db0ce6860c09da1bec9773fc9a4f6cc4550fdbad) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5006))
+- [Obfuscate emails in note.bodyFirstLineHtml](https://gitlab.com/gitlab-org/security/gitlab/-/commit/16877dbcebf3a666e5a62ab1dc556a8de7777930) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4992))
+- [Need to update 2fa requirement after accepting request](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6283ed9ef3438bbd06108df0c2dca4ce6ad5ecd1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4984))
+- [Ensure SAML authn context comes from signed portion of SAML response](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0a0a136eced16e4513ee7130d9331aad01590770) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4978))
+
+### Other (1 change)
+
+- [Drop ci_runner_machines_archived table](https://gitlab.com/gitlab-org/security/gitlab/-/commit/61e11b320c03d843cc656321710dc643d692f60f)
+
 ## 17.11.2 (2025-05-07)
 
 ### Fixed (3 changes)
