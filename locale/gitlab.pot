@@ -44801,6 +44801,12 @@ msgstr ""
 msgid "PipelineScheduleIntervalPattern|Custom"
 msgstr ""
 
+msgid "PipelineScheduleIntervalPattern|Learn more."
+msgstr ""
+
+msgid "PipelineScheduleIntervalPattern|Pipelines cannot run more frequently than the pipeline schedule worker cron setting (%{workerCronExpression}) allows."
+msgstr ""
+
 msgid "PipelineScheduleIntervalPattern|Set a custom interval with Cron syntax."
 msgstr ""
 

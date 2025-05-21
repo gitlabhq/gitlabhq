@@ -168,7 +168,7 @@ RSpec.shared_examples 'POST resource access tokens available' do
     expect(created_token.name).to eq(access_token_params[:name])
     expect(created_token.description).to eq(access_token_params[:description])
     expect(created_token.scopes).to eq(access_token_params[:scopes])
-    expect(created_token.expires_at).to eq(access_token_params[:expires_at])
+    expect(created_token.expires_at).to eq(access_token_params[:expires_at].to_date)
     expect(resource.member(created_token.user).access_level).to eq(access_level)
   end
 

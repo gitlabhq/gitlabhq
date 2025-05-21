@@ -26,6 +26,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  inject: ['workerCronExpression'],
   props: {
     initialCronInterval: {
       type: String,
@@ -54,6 +55,7 @@ export default {
       radioValue: this.initialCronInterval ? KEY_CUSTOM : KEY_EVERY_DAY,
       cronInterval: this.initialCronInterval,
       cronSyntaxUrl: `${DOCS_URL_IN_EE_DIR}/topics/cron/`,
+      pipelineScheduleWorkerUrl: `${DOCS_URL_IN_EE_DIR}/administration/cicd/#change-maximum-scheduled-pipeline-frequency`,
     };
   },
   computed: {
@@ -149,12 +151,22 @@ export default {
   i18n: {
     learnCronSyntax: s__('PipelineScheduleIntervalPattern|Set a custom interval with Cron syntax.'),
     cronSyntaxLink: s__('PipelineScheduleIntervalPattern|What is Cron syntax?'),
+    pipelineScheduleWorkerExplanation: s__(
+      'PipelineScheduleIntervalPattern|Pipelines cannot run more frequently than the pipeline schedule worker cron setting (%{workerCronExpression}) allows.',
+    ),
+    pipelineScheduleWorkerLink: s__('PipelineScheduleIntervalPattern|Learn more.'),
   },
 };
 </script>
 
 <template>
   <div>
+    <p class="gl-mb-3 gl-mt-0 gl-text-subtle" data-testid="worker-cron-expression-hint">
+      {{ sprintf($options.i18n.pipelineScheduleWorkerExplanation, { workerCronExpression }) }}
+      <gl-link :href="pipelineScheduleWorkerUrl" target="_blank">
+        {{ $options.i18n.pipelineScheduleWorkerLink }}
+      </gl-link>
+    </p>
     <gl-form-radio-group v-model="radioValue" :name="inputNameAttribute">
       <gl-form-radio
         v-for="option in radioOptions"

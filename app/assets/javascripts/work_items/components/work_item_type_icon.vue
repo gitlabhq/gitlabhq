@@ -67,6 +67,8 @@ export default {
       :variant="iconVariant"
       :class="iconClass"
     />
-    <span v-if="workItemTypeText" :class="{ 'gl-sr-only': !showText }">{{ workItemTypeText }}</span>
+    <span v-if="workItemTypeText" :class="{ 'gl-sr-only !gl-absolute': !showText }">{{
+      workItemTypeText
+    }}</span>
   </span>
 </template>

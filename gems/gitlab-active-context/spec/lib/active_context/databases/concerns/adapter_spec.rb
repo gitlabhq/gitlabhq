@@ -33,7 +33,7 @@ RSpec.describe ActiveContext::Databases::Concerns::Adapter do
   end
 
   let(:connection) { double('Connection') }
-  let(:options) { { host: 'localhost' } }
+  let(:options) { { 'host' => 'localhost' } }
 
   subject(:adapter) { test_class.new(connection, options: options) }
 

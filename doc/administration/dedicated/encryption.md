@@ -54,12 +54,12 @@ standards for encryption across all storage services.
 
 The following table summarizes the functional differences between these options:
 
-| Encryption key source | AWS-managed keys | Bring your own key (BYOK) |
-|---|---|---|
-| **Key generation** | Generated automatically if BYOK not provided. | You create your own AWS KMS keys. |
-| **Ownership** | AWS manages on your behalf. | You own and manage your keys. |
-| **Access control** | Only AWS services using the keys can decrypt and access them. You don't have direct access. | You control access through IAM policies in your AWS account. |
-| **Setup** | No setup required. | Must be set up before onboarding. Cannot be enabled later. |
+| Encryption key source | AWS-managed keys                                                                            | Bring your own key (BYOK) |
+|-----------------------|---------------------------------------------------------------------------------------------|---------------------------|
+| **Key generation**    | Generated automatically if BYOK not provided.                                               | You create your own AWS KMS keys. |
+| **Ownership**         | AWS manages on your behalf.                                                                 | You own and manage your keys. |
+| **Access control**    | Only AWS services using the keys can decrypt and access them. You don't have direct access. | You control access through IAM policies in your AWS account. |
+| **Setup**             | No setup required.                                                                          | Must be set up before onboarding. Cannot be enabled later. |
 
 ### AWS-managed keys
 

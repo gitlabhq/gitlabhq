@@ -82,5 +82,92 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
         end
       end
     end
+
+    context 'when using parent_ids filter' do
+      let(:scope) { 'all' }
+
+      context 'when user has access to child item' do
+        let_it_be(:child_item1) { create(:work_item, project: project1) }
+        let_it_be(:parent_item1) { create(:work_item, :epic, project: project1) }
+
+        let(:params) { { work_item_parent_ids: [parent_item1.id] } }
+
+        before do
+          create(:parent_link, work_item_parent: parent_item1, work_item: child_item1)
+        end
+
+        it 'returns corresponding child work items' do
+          expect(items).to contain_exactly(child_item1)
+        end
+      end
+
+      context 'when filtering by parent item from different project' do
+        let_it_be(:another_project) { create(:project) }
+        let_it_be(:child_item2) { create(:work_item, project: project1) }
+        let_it_be(:parent_item2) { create(:work_item, :epic, project: another_project) }
+
+        let(:params) { { work_item_parent_ids: [parent_item2.id] } }
+
+        before do
+          create(:parent_link, work_item_parent: parent_item2, work_item: child_item2)
+        end
+
+        it 'returns corresponding child work items' do
+          expect(items).to contain_exactly(child_item2)
+        end
+      end
+
+      context 'when filtering by multiple parent items' do
+        let_it_be(:child_item3) { create(:work_item, project: project1) }
+        let_it_be(:child_item4) { create(:work_item, project: project1) }
+
+        let_it_be(:parent_item3) { create(:work_item, :epic, project: project1) }
+        let_it_be(:parent_item4) { create(:work_item, :epic, project: project1) }
+
+        let(:params) { { work_item_parent_ids: [parent_item3.id, parent_item4.id] } }
+
+        before do
+          create(:parent_link, work_item_parent: parent_item3, work_item: child_item3)
+          create(:parent_link, work_item_parent: parent_item4, work_item: child_item4)
+        end
+
+        it 'returns corresponding child work items' do
+          expect(items).to contain_exactly(child_item3, child_item4)
+        end
+      end
+
+      context 'when user does not have access to child items' do
+        let_it_be(:confidential_work_item) { create(:work_item, confidential: true, project: project1) }
+        let_it_be(:parent_item5) { create(:work_item, :epic, confidential: true, project: project1) }
+
+        let(:search_user) { user2 }
+        let(:params) { { work_item_parent_ids: [parent_item5.id] } }
+
+        before do
+          create(:parent_link, work_item_parent: parent_item5, work_item: confidential_work_item)
+        end
+
+        it 'does not return those items' do
+          expect(items).to be_empty
+        end
+      end
+
+      context 'when user does not have access to child and parent items' do
+        let_it_be(:private_project) { create(:project, :private) }
+        let_it_be(:private_work_item) { create(:work_item, project: private_project) }
+        let_it_be(:private_parent_item) { create(:work_item, :epic, project: private_project) }
+
+        let(:search_user) { user2 }
+        let(:params) { { work_item_parent_ids: [private_parent_item.id] } }
+
+        before do
+          create(:parent_link, work_item_parent: private_parent_item, work_item: private_work_item)
+        end
+
+        it 'does not return those items' do
+          expect(items).to be_empty
+        end
+      end
+    end
   end
 end

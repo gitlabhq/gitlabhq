@@ -113,11 +113,11 @@ The result of a [database migration pipeline](database/database_migration_pipeli
 includes the timing information for migrations.
 {{< /alert >}}
 
-| Migration Type | Recommended Duration | Notes |
-|----|----|---|
-| Regular migrations | `<= 3 minutes` | A valid exception are changes without which application functionality or performance would be severely degraded and which cannot be delayed. |
-| Post-deployment migrations | `<= 10 minutes` | A valid exception are schema changes, since they must not happen in background migrations. |
-| Background migrations | `> 10 minutes` | Since these are suitable for larger tables, it's not possible to set a precise timing guideline, however, any single query must stay below [`1 second` execution time](database/query_performance.md#timing-guidelines-for-queries) with cold caches. |
+| Migration Type             | Recommended Duration | Notes |
+|----------------------------|----------------------|-------|
+| Regular migrations         | `<= 3 minutes`       | A valid exception are changes without which application functionality or performance would be severely degraded and which cannot be delayed. |
+| Post-deployment migrations | `<= 10 minutes`      | A valid exception are schema changes, since they must not happen in background migrations. |
+| Background migrations      | `> 10 minutes`       | Since these are suitable for larger tables, it's not possible to set a precise timing guideline, however, any single query must stay below [`1 second` execution time](database/query_performance.md#timing-guidelines-for-queries) with cold caches. |
 
 ## Large Tables Limitations
 

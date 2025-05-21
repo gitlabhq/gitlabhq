@@ -102,6 +102,30 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
   end
 
+  describe '.with_parent_ids' do
+    let_it_be(:parent_item) { create(:work_item, :epic, project: reusable_project) }
+
+    context 'when given valid parent IDs' do
+      let_it_be(:child_item) { create(:work_item, project: reusable_project) }
+
+      before do
+        create(:parent_link, work_item_parent: parent_item, work_item: child_item)
+      end
+
+      it 'returns the work items with the specified parent IDs' do
+        expect(described_class.with_work_item_parent_ids([parent_item.id])).to contain_exactly(child_item)
+      end
+    end
+
+    context 'when work item does not have parent link' do
+      let_it_be(:work_item_without_parent) { create(:work_item, project: reusable_project) }
+
+      it 'does not return the work item' do
+        expect(described_class.with_work_item_parent_ids([parent_item.id])).to be_empty
+      end
+    end
+  end
+
   describe '#create_dates_source_from_current_dates' do
     let_it_be(:start_date) { nil }
     let_it_be(:due_date) { nil }

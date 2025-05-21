@@ -5007,7 +5007,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   describe 'POST /users/:user_id/personal_access_tokens', :with_current_organization do
     let(:name) { 'new pat' }
     let(:description) { 'new pat description' }
-    let(:expires_at) { 3.days.from_now.to_date.to_s }
+    let(:expires_at) { 3.days.from_now }
     let(:scopes) { %w[api read_user] }
     let(:path) { "/users/#{user.id}/personal_access_tokens" }
     let(:params) { { name: name, scopes: scopes, expires_at: expires_at, description: description } }
@@ -5049,7 +5049,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(json_response['name']).to eq(name)
       expect(json_response['description']).to eq(description)
       expect(json_response['scopes']).to eq(scopes)
-      expect(json_response['expires_at']).to eq(expires_at)
+      expect(json_response['expires_at']).to eq(expires_at.to_date.iso8601)
       expect(json_response['id']).to be_present
       expect(json_response['created_at']).to be_present
       expect(json_response['active']).to be_truthy

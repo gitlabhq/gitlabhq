@@ -4,6 +4,12 @@
 # with widgets support. Because WorkItems are internally Issues, WorkItemsFinder
 # can be almost identical to IssuesFinder, except it should return instances of
 # WorkItems instead of Issues
+# Arguments:
+#   klass - actual WorkItems class
+#   current_user - currently logged in user, if any
+#   params:
+#     work_item_parent_ids: integer[] (list of work item ids)
+#
 module WorkItems
   class WorkItemsFinder < IssuesFinder
     include Gitlab::Utils::StrongMemoize
@@ -25,8 +31,8 @@ module WorkItems
       # We require namespace_level_work_items to be true here, since we need the namespace_ids CTE provided by the
       # by_parent method for performance reasons see: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181904
       items = by_timeframe(items) if include_namespace_level_work_items?
-
-      by_widgets(items)
+      items = by_widgets(items)
+      by_work_item_parent_ids(items)
     end
 
     def by_widgets(items)
@@ -45,6 +51,14 @@ module WorkItems
       "WorkItems::Widgets::Filters::#{widget_class.name.demodulize.camelize}".constantize
     rescue NameError
       nil
+    end
+
+    def by_work_item_parent_ids(items)
+      work_item_parent_ids = params[:work_item_parent_ids]
+
+      return items unless work_item_parent_ids.present?
+
+      items.with_work_item_parent_ids(work_item_parent_ids)
     end
 
     override :use_full_text_search?

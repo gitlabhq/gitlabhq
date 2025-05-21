@@ -18,10 +18,6 @@ module ActiveContext
           @authorized_results ||= collection.redact_unauthorized_results!(self)
         end
 
-        def ids
-          each.pluck('ref_id')
-        end
-
         def each
           raise NotImplementedError
         end

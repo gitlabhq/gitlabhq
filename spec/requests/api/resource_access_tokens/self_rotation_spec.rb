@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::ResourceAccessTokens::SelfRotation, feature_category: :system_access do
   let(:token) { create(:personal_access_token, user: current_user) }
-  let(:expiry_date) { Time.zone.today + 1.week }
+  let(:expiry_date) { 1.week.from_now }
   let(:params) { {} }
 
   subject(:rotate_token) { post(api(path, personal_access_token: token), params: params) }
@@ -15,7 +15,7 @@ RSpec.describe API::ResourceAccessTokens::SelfRotation, feature_category: :syste
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['token']).not_to eq(token.token)
-      expect(json_response['expires_at']).to eq(expiry_date.to_s)
+      expect(json_response['expires_at']).to eq(expiry_date.to_date.iso8601)
       expect(token.reload).to be_revoked
     end
   end
@@ -123,7 +123,7 @@ RSpec.describe API::ResourceAccessTokens::SelfRotation, feature_category: :syste
         it_behaves_like 'rotating token succeeds'
 
         context 'when expiry is defined' do
-          let(:expiry_date) { Time.zone.today + 1.month }
+          let(:expiry_date) { 1.week.from_now }
           let(:params) { { expires_at: expiry_date } }
 
           it_behaves_like 'rotating token succeeds'

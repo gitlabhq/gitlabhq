@@ -240,7 +240,7 @@ The compaction algorithm:
    ```plaintext
    group1/group2/group3
    group1/group2/group4
-   group1/group2/group6
+   group1/group5/group6
    ```
 
 1. If the allowlist is over the 200 entry limit, the algorithm compacts again:

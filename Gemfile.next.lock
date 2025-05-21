@@ -1058,7 +1058,7 @@ GEM
     jaeger-client (1.1.0)
       opentracing (~> 0.3)
       thrift
-    jaro_winkler (1.6.0)
+    jaro_winkler (1.6.1)
     jira-ruby (2.3.0)
       activesupport
       atlassian-jwt
@@ -1831,12 +1831,12 @@ GEM
       hashie
       version_gem (~> 1.1)
     snowplow-tracker (0.8.0)
-    solargraph (0.54.2)
+    solargraph (0.54.4)
       backport (~> 1.2)
       benchmark (~> 0.4)
       bundler (~> 2.0)
       diff-lcs (~> 1.4)
-      jaro_winkler (~> 1.6)
+      jaro_winkler (~> 1.6, >= 1.6.1)
       kramdown (~> 2.3)
       kramdown-parser-gfm (~> 1.1)
       logger (~> 1.6)

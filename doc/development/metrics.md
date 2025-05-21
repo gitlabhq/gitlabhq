@@ -109,12 +109,12 @@ For example, if you search for more than seven days of data, the API returns onl
 
 The following table shows what type of aggregation is used for each search period:
 
-|Period|Aggregation used|
-|---|---|
-| Less than 30 minutes | Raw data as ingested |
-| More than 30 minutes and less than one hour | By minute |
-| More than one hour and less than 72 hours | Hourly |
-| More than 72 hours | Daily |
+| Period                                      | Aggregation used |
+|---------------------------------------------|------------------|
+| Less than 30 minutes                        | Raw data as ingested |
+| More than 30 minutes and less than one hour | By minute        |
+| More than one hour and less than 72 hours   | Hourly           |
+| More than 72 hours                          | Daily            |
 
 ### Metrics ingestion limits
 

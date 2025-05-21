@@ -27,7 +27,8 @@ RSpec.describe Ci::PipelineSchedulesHelper, feature_category: :continuous_integr
         schedules_path: pipeline_schedules_path(project),
         settings_link: project_settings_ci_cd_path(project),
         timezone_data: timezones.to_json,
-        can_set_pipeline_variables: 'false'
+        can_set_pipeline_variables: 'false',
+        worker_cron_expression: pipeline_schedule.worker_cron_expression
       })
     end
   end

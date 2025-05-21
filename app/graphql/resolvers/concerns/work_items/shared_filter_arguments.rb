@@ -98,8 +98,23 @@ module WorkItems
           value.to_h
         }
 
+      argument :parent_ids, [::Types::GlobalIDType[::WorkItem]],
+        description: 'Filter work items by global IDs of their parent items (maximum is 100 items).',
+        required: false,
+        prepare: ->(global_ids, _ctx) { GitlabSchema.parse_gids(global_ids, expected_type: ::WorkItem).map(&:model_id) }
+
       validates mutually_exclusive: [:assignee_usernames, :assignee_wildcard_id]
       validates mutually_exclusive: [:milestone_title, :milestone_wildcard_id]
+    end
+
+    MAX_PARENT_IDS = 100
+
+    def resolve(**args)
+      if args[:parent_ids].to_a.size > MAX_PARENT_IDS
+        raise GraphQL::ExecutionError, "You can only provide up to #{MAX_PARENT_IDS} parent IDs at once."
+      end
+
+      super
     end
 
     private
@@ -115,6 +130,8 @@ module WorkItems
 
       rewrite_param_name(params[:or], :author_usernames, :author_username)
       rewrite_param_name(params[:or], :label_names, :label_name)
+
+      rewrite_param_name(params, :parent_ids, :work_item_parent_ids)
 
       params
     end

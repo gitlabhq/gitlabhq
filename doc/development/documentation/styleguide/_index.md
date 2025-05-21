@@ -324,17 +324,17 @@ documentation even if the probability of a token being exploited is low.
 
 Use these fake tokens as examples:
 
-| Token type            | Token value                                                        |
-|:----------------------|:-------------------------------------------------------------------|
-| Personal access token | `<your_access_token>`                                             |
+| Token type            | Token value |
+|:----------------------|:------------|
+| Personal access token | `<your_access_token>` |
 | Application ID        | `2fcb195768c39e9a94cec2c2e32c59c0aad7a3365c10892e8116b5d83d4096b6` |
 | Application secret    | `04f294d1eaca42b8692017b426d53bbc8fe75f827734f0260710b83a556082df` |
-| CI/CD variable        | `Li8j-mLUVA3eZYjPfd_H`                                             |
-| Project runner token  | `yrnZW46BrtBFqM7xDzE7dddd`                                         |
-| Instance runner token | `6Vk7ZsosqQyfreAxXTZr`                                             |
-| Trigger token         | `be20d8dcc028677c931e04f3871a9b`                                   |
-| Webhook secret token  | `6XhDroRcYPM5by_h-HLY`                                             |
-| Health check token    | `Tu7BgjR9qeZTEyRzGG2P`                                             |
+| CI/CD variable        | `Li8j-mLUVA3eZYjPfd_H` |
+| Project runner token  | `yrnZW46BrtBFqM7xDzE7dddd` |
+| Instance runner token | `6Vk7ZsosqQyfreAxXTZr` |
+| Trigger token         | `be20d8dcc028677c931e04f3871a9b` |
+| Webhook secret token  | `6XhDroRcYPM5by_h-HLY` |
+| Health check token    | `Tu7BgjR9qeZTEyRzGG2P` |
 
 ### Contractions
 
@@ -346,12 +346,12 @@ Some contractions, however, should be avoided:
 
 <!-- vale gitlab_base.Possessive = NO -->
 
-| Do not use a contraction      | Example                                          | Use instead                                                      |
-|-------------------------------|--------------------------------------------------|------------------------------------------------------------------|
-| With a proper noun and a verb | **Terraform's** a helpful tool.                  | **Terraform** is a helpful tool.                                  |
-| To emphasize a negative       | **Don't** install X with Y.                      | **Do not** install X with Y.                                     |
-| In reference documentation    | **Don't** set a limit.                           | **Do not** set a limit.                                          |
-| In error messages             | Requests to localhost **aren't** allowed.        | Requests to localhost **are not** allowed.                       |
+| Do not use a contraction      | Example                                   | Use instead |
+|-------------------------------|-------------------------------------------|-------------|
+| With a proper noun and a verb | **Terraform's** a helpful tool.           | **Terraform** is a helpful tool. |
+| To emphasize a negative       | **Don't** install X with Y.               | **Do not** install X with Y. |
+| In reference documentation    | **Don't** set a limit.                    | **Do not** set a limit. |
+| In error messages             | Requests to localhost **aren't** allowed. | Requests to localhost **are not** allowed. |
 
 <!-- vale gitlab_base.Possessive = YES -->
 
@@ -745,6 +745,10 @@ To make tables easier to maintain:
   | Setting 3 | `0`     | Another short description. |
   ```
 
+Always align the delimiter (second) row of the table with the header (first) row.
+Avoid using shortened delimiter rows like `|-|-|-|` or `|--|--|`.
+If a large table does not auto-format well, you should still align the delimiter row with the header row.
+
 ### Editor extensions for table formatting
 
 To ensure consistent table formatting across all Markdown files, consider formatting your tables
@@ -775,7 +779,8 @@ plugin, but it does not have a **Follow header row length** setting.
 
 ### Updates to existing tables
 
-When you add or edit rows in an existing table, the cells in the new rows might be wider.
+When you add or edit rows in an existing table, some rows might not be aligned anymore.
+You do not need to realign the entire table if only changing a few rows.
 If you realign the columns to account for the width, the diff becomes difficult to read,
 because the entire table shows as modified.
 
@@ -793,9 +798,9 @@ When creating tables of lists of features (such the features
 available to each role on the [Permissions](../../../user/permissions.md#project-members-permissions)
 page), use these phrases:
 
-| Option | Markdown                 | Displayed result       |
-|--------|--------------------------|------------------------|
-| No     | `{{</* icon name="dash-circle" */>}} No` | {{< icon name="dash-circle" >}} No |
+| Option | Markdown                                          | Displayed result |
+|--------|---------------------------------------------------|------------------|
+| No     | `{{</* icon name="dash-circle" */>}} No`          | {{< icon name="dash-circle" >}} No |
 | Yes    | `{{</* icon name="check-circle-filled" */>}} Yes` | {{< icon name="check-circle-filled" >}} Yes |
 
 Do not use these SVG icons in API documentation.
@@ -817,8 +822,8 @@ Put the tag at the end of the sentence. Leave one space between the sentence and
 For example:
 
 ```markdown
-| App name | Description                    |
-|:---------|:-------------------------------|
+| App name | Description |
+|:---------|:------------|
 | App A    | Description text. <sup>1</sup> |
 | App B    | Description text. <sup>2</sup> |
 ```
@@ -838,8 +843,8 @@ For example:
 
 The table and footnotes would render as follows:
 
-| App name | Description                    |
-|:---------|:-------------------------------|
+| App name | Description |
+|:---------|:------------|
 | App A    | Description text. <sup>1</sup> |
 | App B    | Description text. <sup>2</sup> |
 
@@ -1493,15 +1498,15 @@ GUI diagramming tools can help authors overcome Mermaid's complexity and layout 
 the preferred GUI tool because, when using the editor, both the diagram and its definition are
 stored in the SVG file, so it can be easily edited. Draw.io is also integrated with the GitLab wiki.
 
-| Feature| Mermaid | Draw.io |
-|--------|---------|---------|
-| **Editor required** | Text editor | Draw.io editor |
-| **WYSIWYG editing** | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
-| **Text content findable by `grep`** | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
-| **Appearance controlled by** | Web site's CSS | Diagram's author |
-| **File format** | SVG | SVG |
+| Feature                                   | Mermaid                                                                 | Draw.io |
+|-------------------------------------------|-------------------------------------------------------------------------|---------|
+| **Editor required**                       | Text editor                                                             | Draw.io editor |
+| **WYSIWYG editing**                       | {{< icon name="dash-circle" >}} No                                      | {{< icon name="check-circle-filled" >}} Yes |
+| **Text content findable by `grep`**       | {{< icon name="check-circle-filled" >}} Yes                             | {{< icon name="dash-circle" >}} No |
+| **Appearance controlled by**              | Web site's CSS                                                          | Diagram's author |
+| **File format**                           | SVG                                                                     | SVG     |
 | **VS Code integration (with extensions)** | {{< icon name="check-circle-filled" >}} Yes (Preview and local editing) | {{< icon name="check-circle-filled" >}} Yes (Preview and local editing) |
-| **Generated dynamically** | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
+| **Generated dynamically**                 | {{< icon name="check-circle-filled" >}} Yes                             | {{< icon name="dash-circle" >}} No |
 
 #### Guidelines
 

@@ -28,6 +28,7 @@ export default (selector, editing = false) => {
     settingsLink,
     canSetPipelineVariables,
     timezoneData,
+    workerCronExpression,
   } = containerEl.dataset;
 
   return new Vue({
@@ -43,6 +44,7 @@ export default (selector, editing = false) => {
       projectPath,
       schedulesPath,
       settingsLink,
+      workerCronExpression,
     },
     render(createElement) {
       return createElement(PipelineSchedulesForm, {

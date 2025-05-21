@@ -39,7 +39,7 @@ const formatMessage = (findings, contentType) => {
   const header = sprintf(i18n.promptMessage(findings.length), { contentType });
 
   const matchedPatterns = findings.map(({ patternName, matchedString }) => {
-    return `<li>${escape(patternName)}: ${escape(matchedString)}</li>`;
+    return `<li class='gl-wrap-anywhere'>${escape(patternName)}: ${escape(matchedString)}</li>`;
   });
 
   const message = `

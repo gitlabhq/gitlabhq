@@ -20,6 +20,7 @@ describe('Interval Pattern Input Component', () => {
   const customKey = 'custom';
   const everyDayKey = 'everyDay';
   const cronIntervalNotInPreset = `0 12 * * *`;
+  const workerCronValue = '3-59/10 * * * *';
 
   const findEveryDayRadio = () => wrapper.findByTestId(everyDayKey);
   const findEveryWeekRadio = () => wrapper.findByTestId('everyWeek');
@@ -35,6 +36,7 @@ describe('Interval Pattern Input Component', () => {
   const selectEveryWeekRadio = () => findEveryWeekRadio().setChecked(true);
   const selectEveryMonthRadio = () => findEveryMonthRadio().setChecked(true);
   const selectCustomRadio = () => findCustomRadio().setChecked(true);
+  const findWorkerCronExpressionHint = () => wrapper.findByTestId('worker-cron-expression-hint');
 
   const createWrapper = (props = {}, data = {}) => {
     wrapper = mountExtended(IntervalPatternInput, {
@@ -46,6 +48,9 @@ describe('Interval Pattern Input Component', () => {
           randomWeekDayIndex: mockWeekDayIndex,
           randomDay: mockDay,
         };
+      },
+      provide: {
+        workerCronExpression: workerCronValue,
       },
     });
   };
@@ -62,6 +67,17 @@ describe('Interval Pattern Input Component', () => {
 
   afterEach(() => {
     window.gl = oldWindowGl;
+  });
+
+  describe('the worker cron expression hint', () => {
+    beforeEach(() => {
+      createWrapper();
+    });
+
+    it('displays the expected value', () => {
+      expect(findWorkerCronExpressionHint().exists()).toBe(true);
+      expect(findWorkerCronExpressionHint().text()).toContain(workerCronValue);
+    });
   });
 
   describe('the input field defaults', () => {

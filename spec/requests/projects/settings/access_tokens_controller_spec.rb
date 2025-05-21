@@ -54,7 +54,7 @@ RSpec.describe Projects::Settings::AccessTokensController, feature_category: :sy
   end
 
   describe 'POST /:namespace/:project/-/settings/access_tokens' do
-    let(:access_token_params) { { name: 'Nerd bot', description: 'Nerd bot description', scopes: ["api"], expires_at: Date.today + 1.month } }
+    let(:access_token_params) { { name: 'Nerd bot', description: 'Nerd bot description', scopes: ["api"], expires_at: 1.month.from_now } }
 
     subject do
       post project_settings_access_tokens_path(resource), params: { resource_access_token: access_token_params }
@@ -85,7 +85,7 @@ RSpec.describe Projects::Settings::AccessTokensController, feature_category: :sy
     end
 
     context 'with custom access level' do
-      let(:access_token_params) { { name: 'Nerd bot', scopes: ["api"], expires_at: Date.today + 1.month, access_level: 20 } }
+      let(:access_token_params) { { name: 'Nerd bot', scopes: ["api"], expires_at: 1.month.from_now, access_level: 20 } }
 
       subject { post project_settings_access_tokens_path(resource), params: { resource_access_token: access_token_params } }
 

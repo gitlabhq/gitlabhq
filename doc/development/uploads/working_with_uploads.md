@@ -136,11 +136,11 @@ metadata from the uploaded file. There are a couple of different ways
 you can implement this. The main choice is _where_ to implement the
 processing, or "who is the processor".
 
-|Processor|Direct Upload possible?|Can reject HTTP request?|Implementation|
-|---|---|---|---|
-|Sidekiq|yes|no|Straightforward|
-|Workhorse|yes|yes|Complex|
-|Rails|no|yes|Easy|
+| Processor | Direct Upload possible? | Can reject HTTP request? | Implementation |
+|-----------|-------------------------|--------------------------|----------------|
+| Sidekiq   | yes                     | no                       | Straightforward |
+| Workhorse | yes                     | yes                      | Complex        |
+| Rails     | no                      | yes                      | Easy           |
 
 Processing in Rails looks appealing but it tends to lead to scaling
 problems down the road because you cannot use direct upload. You are
@@ -210,10 +210,10 @@ pre-processing behaviors are skipped silently.
 
 CarrierWave has 2 storage engines:
 
-|CarrierWave class|GitLab name|Description|
-|---|---|---|
-|`CarrierWave::Storage::File`|`ObjectStorage::Store::LOCAL` |Local files, accessed through the Ruby `stdlib` |
-| `CarrierWave::Storage::Fog`|`ObjectStorage::Store::REMOTE`|Cloud files, accessed through the [Fog gem](https://github.com/fog/fog)|
+| CarrierWave class            | GitLab name                    | Description |
+|------------------------------|--------------------------------|-------------|
+| `CarrierWave::Storage::File` | `ObjectStorage::Store::LOCAL`  | Local files, accessed through the Ruby `stdlib` |
+| `CarrierWave::Storage::Fog`  | `ObjectStorage::Store::REMOTE` | Cloud files, accessed through the [Fog gem](https://github.com/fog/fog) |
 
 GitLab uses both of these engines, depending on configuration.
 

@@ -161,6 +161,35 @@ RSpec.describe Resolvers::WorkItemsResolver, feature_category: :team_planning do
 
         expect(batch_sync { resolve_items(iids: iids).to_a }).to contain_exactly(item1, item2)
       end
+
+      context 'with parent_ids filter' do
+        context 'when filtering by more than 100 parent ids' do
+          let(:too_many_parent_ids) { (1..101).to_a }
+
+          it 'throws an error' do
+            response = batch_sync { resolve_items(parent_ids: too_many_parent_ids) }
+
+            expect(response).to be_a(GraphQL::ExecutionError)
+            expect(response.message).to eq('You can only provide up to 100 parent IDs at once.')
+          end
+        end
+
+        context 'when converting global ids to work item ids' do
+          let_it_be(:work_item1) { create(:work_item) }
+          let_it_be(:work_item2) { create(:work_item) }
+
+          let(:global_ids) { [work_item1.to_global_id, work_item2.to_global_id] }
+          let(:context) { { arg_style: :internal_prepared } }
+
+          it 'correctly processes global IDs and maps to work item model_ids' do
+            expect(GitlabSchema).to receive(:parse_gids)
+              .with(global_ids, expected_type: ::WorkItem)
+              .and_call_original
+
+            batch_sync { resolve_items({ parent_ids: global_ids.map(&:to_s) }, context) }
+          end
+        end
+      end
     end
   end
 
@@ -214,7 +243,8 @@ RSpec.describe Resolvers::WorkItemsResolver, feature_category: :team_planning do
 
   def resolve_items(args = {}, context = {})
     context[:current_user] = current_user
+    arg_style = context[:arg_style] ||= :internal
 
-    resolve(described_class, obj: project, args: args, ctx: context, arg_style: :internal)
+    resolve(described_class, obj: project, args: args, ctx: context, arg_style: arg_style)
   end
 end

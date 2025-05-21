@@ -140,6 +140,13 @@ module Types
       method: :itself,
       experiment: { milestone: '18.1' }
 
+    field :user_level_permissions,
+      Types::Namespaces::UserLevelPermissions,
+      null: true,
+      description: 'User permissions on the namespace.',
+      method: :itself,
+      experiment: { milestone: '18.1' }
+
     markdown_field :description_html, null: true
 
     def achievements_path

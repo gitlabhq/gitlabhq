@@ -53,6 +53,11 @@ class WorkItem < Issue
       .merge(::WorkItems::WidgetDefinition.by_enabled_widget_type(type))
   end
 
+  scope :with_work_item_parent_ids, ->(parent_ids) {
+    joins("INNER JOIN work_item_parent_links ON work_item_parent_links.work_item_id = issues.id")
+      .where(work_item_parent_links: { work_item_parent_id: parent_ids })
+  }
+
   class << self
     def find_by_namespace_and_iid!(namespace, iid)
       find_by!(namespace: namespace, iid: iid)

@@ -83,13 +83,13 @@ For example, you can use code similar to the following to add the test coverage 
 
 The following table shows the default test coverage limits and badge colors:
 
-| Test coverage | Percentage limits | Badge color |
-|---|---|---|
-| Good | 95 up to and including 100% | <span style="color: #4c1">■</span> `#4c1` |
-| Acceptable | 90 up to 95% | <span style="color:#a3c51c"> ■</span> `#a3c51c` |
-| Medium | 75 up to 90% | <span style="color: #dfb317">■</span> `#dfb317` |
-| Low | 0 up to 75%  | <span style="color: #e05d44">■</span> `#e05d44` |
-| Unknown | No coverage | <span style="color: #9f9f9f">■</span> `#9f9f9f` |
+| Test coverage | Percentage limits           | Badge color |
+|---------------|-----------------------------|-------------|
+| Good          | 95 up to and including 100% | <span style="color: #4c1">■</span> `#4c1` |
+| Acceptable    | 90 up to 95%                | <span style="color:#a3c51c"> ■</span> `#a3c51c` |
+| Medium        | 75 up to 90%                | <span style="color: #dfb317">■</span> `#dfb317` |
+| Low           | 0 up to 75%                 | <span style="color: #e05d44">■</span> `#e05d44` |
+| Unknown       | No coverage                 | <span style="color: #9f9f9f">■</span> `#9f9f9f` |
 
 {{< alert type="note" >}}
 
@@ -101,11 +101,11 @@ The following table shows the default test coverage limits and badge colors:
 
 You can override the default limits by passing the following query parameters in the coverage report badge URL:
 
-| Query parameter | Acceptable values | Default |
-|---|---|---|
-| `min_good` | Any value between 3 and 100 | 95 |
-| `min_acceptable` | Any value between 2 and `min_good`−1 | 90 |
-| `min_medium` | Any value between 1 and `min_acceptable`−1 | 75 |
+| Query parameter  | Acceptable values                            | Default |
+|------------------|----------------------------------------------|---------|
+| `min_good`       | Any value between `3` and `100`              | `95`    |
+| `min_acceptable` | Any value between `2` and `min_good`−1       | `90`    |
+| `min_medium`     | Any value between `1` and `min_acceptable`−1 | `75`    |
 
 For example:
 
