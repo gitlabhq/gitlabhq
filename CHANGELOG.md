@@ -2,6 +2,24 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.10.7 (2025-05-21)
+
+### Security (9 changes)
+
+- [Use CI::VariableValue in BasicEntity to prevent exposing hidden values in collapsible UI element](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6e71c801f9fea1afe19de9911813d4921c98bbd4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4952))
+- [Show full path of project in create MR dropdown](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bb2266cdea6444523aa98a400f91a6c494391987) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4973))
+- [Security 479168 discord zip vulnerability](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1f913df837c85a447f5d3b1bb9e929dbf950c3db) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4946))
+- [Limit length of certificate cluster text fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/414468af6fd95eef1a2d9ec0161ddd361f6c4619) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5001))
+- [Check rate limit for over-sized blobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/63f67c5ca1c2ff013b2784786b4af92b675f9ea9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4976))
+- [Added size constraint validation to notes position fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7c430a29ae43c91ed0b01eb976e158be6c3847a7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5007))
+- [Obfuscate emails in note.bodyFirstLineHtml](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7f955b50aa72821f04ab8b7998c5260c13af9801) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4993))
+- [Need to update 2fa requirement after accepting request](https://gitlab.com/gitlab-org/security/gitlab/-/commit/68c6a45662755fb7c00935dbf588fe22d9275aad) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4983))
+- [Ensure SAML authn context comes from signed portion of SAML response](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3822ca4e9e5050a90908c933a56b266eca24e959) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4979))
+
+### Other (1 change)
+
+- [Drop ci_runner_machines_archived table](https://gitlab.com/gitlab-org/security/gitlab/-/commit/21e2e68dd2ad0bd83979243618b0ca0f79b7f578)
+
 ## 17.10.6 (2025-05-07)
 
 ### Fixed (2 changes)

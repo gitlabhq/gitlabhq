@@ -1308,6 +1308,19 @@ RSpec.describe Member, feature_category: :groups_and_projects do
         end
       end
     end
+
+    context 'when after accept request' do
+      let_it_be(:group) { create(:group, require_two_factor_authentication: true) }
+      let_it_be(:member, reload: true) { create(:group_member, :awaiting, source: group) }
+
+      it 'calls updates the two factor requirement' do
+        expect(member.user).to receive(:require_two_factor_authentication_from_group).and_call_original
+
+        member.accept_request(group.first_owner)
+
+        expect(member.user.require_two_factor_authentication_from_group).to be_truthy
+      end
+    end
   end
 
   describe '#decline_invite!' do

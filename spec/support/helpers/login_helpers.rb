@@ -148,7 +148,7 @@ module LoginHelpers
   end
 
   def mock_auth_hash_with_saml_xml(provider, uid, email, saml_response)
-    response_object = { document: saml_xml(saml_response) }
+    response_object = saml_xml(saml_response)
     mock_auth_hash(provider, uid, email, response_object: response_object)
   end
 
@@ -198,7 +198,7 @@ module LoginHelpers
   def saml_xml(raw_saml_response)
     return '' if raw_saml_response.blank?
 
-    XMLSecurity::SignedDocument.new(raw_saml_response, [])
+    OneLogin::RubySaml::Response.new(raw_saml_response)
   end
 
   def mock_saml_config

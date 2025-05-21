@@ -20,7 +20,7 @@ module Integrations
 
     expose :field, if: ->(_, _) { integration.try(:configurable_channels?) } do
       expose :name do |event|
-        integration.event_channel_name(event)
+        integration.class.event_channel_name(event)
       end
       expose :value do |event|
         value = integration.event_channel_value(event)
