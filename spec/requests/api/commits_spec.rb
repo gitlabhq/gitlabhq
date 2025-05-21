@@ -554,6 +554,20 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           end
         end
       end
+
+      context 'when authenticated with a token that has the ai_workflows scope' do
+        let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+        let(:commits) { project.repository.commits("master", limit: 2) }
+
+        before do
+          get api("/projects/#{project_id}/repository/commits", oauth_access_token: oauth_token)
+        end
+
+        it 'is successful' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.first["id"]).to eq(commits.first.id)
+        end
+      end
     end
   end
 
@@ -1010,6 +1024,16 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
             end
           end
         end
+      end
+
+      context 'when authenticated with a token that has the ai_workflows scope' do
+        let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+        before do
+          post api(url, user, oauth_access_token: oauth_token), params: valid_c_params
+        end
+
+        it_behaves_like 'successfully creates the commit'
       end
     end
 
@@ -1668,6 +1692,21 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         end
 
         it_behaves_like 'ref with unaccessible pipeline'
+      end
+    end
+
+    context 'when authenticated', 'with a token that has the ai_workflows scope' do
+      let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+      let(:commit) { project.repository.commit }
+      let(:commit_id) { commit.id }
+
+      before do
+        get api(route, oauth_access_token: oauth_token)
+      end
+
+      it 'is successful' do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['id']).to eq(commit.id)
       end
     end
   end

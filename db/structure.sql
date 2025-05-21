@@ -9388,7 +9388,8 @@ ALTER SEQUENCE approval_project_rules_id_seq OWNED BY approval_project_rules.id;
 CREATE TABLE approval_project_rules_protected_branches (
     approval_project_rule_id bigint NOT NULL,
     protected_branch_id bigint NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_3cae655261 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE TABLE approval_project_rules_users (

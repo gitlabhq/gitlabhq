@@ -529,7 +529,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'spec/views/admin/sessions/new.html.haml_spec.rb'
     - 'spec/views/admin/sessions/two_factor.html.haml_spec.rb'
     - 'spec/views/ci/status/_icon.html.haml_spec.rb'
-    - 'spec/views/dashboard/projects/_blank_state_admin_welcome.haml_spec.rb'
     - 'spec/views/dashboard/projects/_blank_state_welcome.html.haml_spec.rb'
     - 'spec/views/events/event/_common.html.haml_spec.rb'
     - 'spec/views/groups/_home_panel.html.haml_spec.rb'

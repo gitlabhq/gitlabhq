@@ -153,7 +153,7 @@ format `field operator value`.
 - Work item types like `Task` or `Objective`
 - `MergeRequest`
 
-**Additional details:**
+**Additional details**:
 
 - `List` values and the `in` operator are not supported for `MergeRequest` types.
 

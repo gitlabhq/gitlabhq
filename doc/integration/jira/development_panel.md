@@ -69,7 +69,7 @@ For the [GitLab for Jira Cloud app](connect-app.md), the following information i
 | Commit message                              | Link to the commit<br>Link to the deployment from up to 2,000 commits after the last successful deployment to the environment <sup>1</sup> <sup>2</sup> |
 | [Jira Smart Commit](#jira-smart-commits)    | Custom comment, logged time, or workflow transition   |
 
-**Footnotes:**
+**Footnotes**:
 
 1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300031) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `jira_deployment_issue_keys`. Enabled by default.
 1. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415025) in GitLab 16.3. Feature flag `jira_deployment_issue_keys` removed.

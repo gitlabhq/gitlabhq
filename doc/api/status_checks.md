@@ -20,7 +20,7 @@ You can request information about a project's external status check services usi
 GET /projects/:id/external_status_checks
 ```
 
-**Parameters:**
+**Parameters**:
 
 | Attribute           | Type    | Required | Description         |
 |---------------------|---------|----------|---------------------|
@@ -109,7 +109,7 @@ For a single merge request, list the external status check services that apply t
 GET /projects/:id/merge_requests/:merge_request_iid/status_checks
 ```
 
-**Parameters:**
+**Parameters**:
 
 | Attribute                | Type    | Required | Description                |
 | ------------------------ | ------- | -------- | -------------------------- |
@@ -151,7 +151,7 @@ Execute this API call as any user with rights to approve the merge request itsel
 POST /projects/:id/merge_requests/:merge_request_iid/status_check_responses
 ```
 
-**Parameters:**
+**Parameters**:
 
 | Attribute                  | Type    | Required | Description                                                                                       |
 | -------------------------- | ------- | -------- |---------------------------------------------------------------------------------------------------|
@@ -183,7 +183,7 @@ merge request to the defined external service.
 POST /projects/:id/merge_requests/:merge_request_iid/status_checks/:external_status_check_id/retry
 ```
 
-**Parameters:**
+**Parameters**:
 
 | Attribute                  | Type    | Required | Description                           |
 | -------------------------- | ------- | -------- | ------------------------------------- |

@@ -191,7 +191,7 @@ With the extended Docker configuration options, instead of:
 
 You can now define an `entrypoint` in the `.gitlab-ci.yml` file.
 
-**For Docker 17.06 and later:**
+**For Docker 17.06 and later**:
 
 ```yaml
 image:
@@ -199,7 +199,7 @@ image:
   entrypoint: [""]
 ```
 
-**For Docker 17.03 and earlier:**
+**For Docker 17.03 and earlier**:
 
 ```yaml
 image:

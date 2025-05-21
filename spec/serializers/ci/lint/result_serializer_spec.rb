@@ -8,7 +8,7 @@ RSpec.describe Ci::Lint::ResultSerializer, :aggregate_failures do
   let(:result) do
     Gitlab::Ci::Lint
       .new(project: project, current_user: project.first_owner)
-      .validate(yaml_content, dry_run: false)
+      .legacy_validate(yaml_content, dry_run: false)
   end
 
   let(:first_job) { linting_result[:jobs].first }
@@ -65,7 +65,7 @@ RSpec.describe Ci::Lint::ResultSerializer, :aggregate_failures do
       let(:result) do
         Gitlab::Ci::Lint
           .new(project: project, current_user: project.first_owner)
-          .validate(yaml_content, dry_run: true)
+          .legacy_validate(yaml_content, dry_run: true)
       end
 
       it_behaves_like 'matches schema'

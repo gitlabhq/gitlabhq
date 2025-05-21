@@ -115,7 +115,7 @@ The following examples imply you disabled the **Use unique domain** setting. If 
   After you enabled GitLab Pages for your project,
   your website is published under `https://websites.gitlab.io`.
 
-**General example:**
+**General example**:
 
 - On GitLab.com, a project site is always available under
   `https://namespace.gitlab.io/project-slug`

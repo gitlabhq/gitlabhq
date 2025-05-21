@@ -11,45 +11,46 @@
 -#  * toggle file comments
 -#  * submodule compare
 
-%header.rd-diff-file-header{ data: { testid: 'rd-diff-file-header' }, aria: { label: root_label } }
-  .rd-diff-file-toggle<
-    = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-down', button_options: { class: 'rd-diff-file-toggle-button', data: { opened: '', click: 'toggleFile' }, aria: { label: _('Hide file contents'), expanded: 'true' } })
-    = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-right', button_options: { class: 'rd-diff-file-toggle-button', data: { closed: '', click: 'toggleFile' }, aria: { label: _('Show file contents'), expanded: 'false' } })
-  .rd-diff-file-header-main
-    - if @diff_file.submodule?
-      %span{ data: { testid: 'rd-diff-file-header-submodule' } }
-        = helpers.sprite_icon('folder-git', file_icon: true)
-        %h2.rd-diff-file-title{ id: heading_id }
-          = helpers.submodule_link(@diff_file.blob, @diff_file.content_sha, @diff_file.repository)
-      = copy_path_button
-    - else
-      -# TODO: add icons for file types
-      - if @diff_file.renamed_file?
-        - old_path, new_path = helpers.mark_inline_diffs(@diff_file.old_path, @diff_file.new_path)
-        %h2.rd-diff-file-title{ id: heading_id, aria: { label: moved_title_label } }
-          = old_path
-          %span.rd-diff-file-moved →
-          = new_path
-      - else
-        %h2.rd-diff-file-title{ id: heading_id }
-          = @diff_file.file_path
-        - if @diff_file.deleted_file?
-          = _("deleted")
+.rd-diff-file-header-sticky
+  %header.rd-diff-file-header{ data: { testid: 'rd-diff-file-header' }, aria: { label: root_label } }
+    .rd-diff-file-toggle<
+      = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-down', button_options: { class: 'rd-diff-file-toggle-button', data: { opened: '', click: 'toggleFile' }, aria: { label: _('Hide file contents'), expanded: 'true' } })
+      = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-right', button_options: { class: 'rd-diff-file-toggle-button', data: { closed: '', click: 'toggleFile' }, aria: { label: _('Show file contents'), expanded: 'false' } })
+    .rd-diff-file-header-main
+      - if @diff_file.submodule?
+        %span{ data: { testid: 'rd-diff-file-header-submodule' } }
+          = helpers.sprite_icon('folder-git', file_icon: true)
+          %h2.rd-diff-file-title{ id: heading_id }
+            = helpers.submodule_link(@diff_file.blob, @diff_file.content_sha, @diff_file.repository)
         = copy_path_button
-      - if @diff_file.mode_changed?
-        %small #{@diff_file.a_mode} → #{@diff_file.b_mode}
-      - if @diff_file.stored_externally? && @diff_file.external_storage == :lfs
-        = helpers.gl_badge_tag(_('LFS'), variant: :neutral)
-  .rd-diff-file-info
-    .rd-diff-file-stats{ aria: { label: stats_label } }
-      %span.rd-lines-added +#{@diff_file.added_lines}
-      %span.rd-lines-removed −#{@diff_file.removed_lines}
-    .rd-diff-file-options-menu
-      %div{ data: { options_menu: true } }
-        -# <script> here is likely the most effective way to minimize bytes:
-        -# https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182850#note_2387011092
-        -# haml-lint:disable InlineJavaScript
-        %script{ type: "application/json" }
-          = menu_items.map { |item| item.except(:position) }.to_json.html_safe
-        - button_params = { icon: 'ellipsis_v', button_options: { data: { click: 'toggleOptionsMenu' }, aria: { label: s_('RapidDiffs|Show options') } } }
-        = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, **button_params)
+      - else
+        -# TODO: add icons for file types
+        - if @diff_file.renamed_file?
+          - old_path, new_path = helpers.mark_inline_diffs(@diff_file.old_path, @diff_file.new_path)
+          %h2.rd-diff-file-title{ id: heading_id, aria: { label: moved_title_label } }
+            = old_path
+            %span.rd-diff-file-moved →
+            = new_path
+        - else
+          %h2.rd-diff-file-title{ id: heading_id }
+            = @diff_file.file_path
+          - if @diff_file.deleted_file?
+            = _("deleted")
+          = copy_path_button
+        - if @diff_file.mode_changed?
+          %small #{@diff_file.a_mode} → #{@diff_file.b_mode}
+        - if @diff_file.stored_externally? && @diff_file.external_storage == :lfs
+          = helpers.gl_badge_tag(_('LFS'), variant: :neutral)
+    .rd-diff-file-info
+      .rd-diff-file-stats{ aria: { label: stats_label } }
+        %span.rd-lines-added +#{@diff_file.added_lines}
+        %span.rd-lines-removed −#{@diff_file.removed_lines}
+      .rd-diff-file-options-menu
+        %div{ data: { options_menu: true } }
+          -# <script> here is likely the most effective way to minimize bytes:
+          -# https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182850#note_2387011092
+          -# haml-lint:disable InlineJavaScript
+          %script{ type: "application/json" }
+            = menu_items.map { |item| item.except(:position) }.to_json.html_safe
+          - button_params = { icon: 'ellipsis_v', button_options: { data: { click: 'toggleOptionsMenu' }, aria: { label: s_('RapidDiffs|Show options') } } }
+          = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, **button_params)

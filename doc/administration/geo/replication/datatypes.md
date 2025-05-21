@@ -74,7 +74,7 @@ verification methods:
 | Container Repository | Container registry _(file system)_              | Geo with API/Docker API                      | SHA256 checksum               |
 | Container Repository | Container registry _(object storage)_           | Geo with API/Managed/Docker API <sup>2</sup> | SHA256 checksum <sup>3</sup>  |
 
-**Footnotes:**
+**Footnotes**:
 
 1. Redis replication can be used as part of HA with Redis sentinel. It's not used between Geo sites.
 1. Object storage replication can be performed by Geo or by your object storage provider/appliance
@@ -235,7 +235,7 @@ successfully, you must replicate their data using some other means.
 | [Vulnerability Export](../../../user/application_security/vulnerability_report/_index.md#exporting) | [Not planned](https://gitlab.com/groups/gitlab-org/-/epics/3111)              | No                                                                            | No                                                                              | No                                                                              | Not planned because they are ephemeral and sensitive information. They can be regenerated on demand. |
 | Packages NPM metadata cache                                                                                           | [Not planned](https://gitlab.com/gitlab-org/gitlab/-/issues/408278)           | No                                                                            | No                                                                              | No                                                                              | Not planned because it would not notably improve disaster recovery capabilities nor response times at secondary sites. |
 
-**Footnotes:**
+**Footnotes**:
 
 1. Migrated to self-service framework in 15.5. See GitLab issue [#337436](https://gitlab.com/gitlab-org/gitlab/-/issues/337436) for more details.
 1. Migrated to self-service framework in 15.11. Behind feature flag `geo_project_wiki_repository_replication`, enabled by default. See GitLab issue [#367925](https://gitlab.com/gitlab-org/gitlab/-/issues/367925) for more details.

@@ -297,6 +297,6 @@ export default {
       @next="onNext"
     />
 
-    <import-by-url-form v-if="currentStep === 3" @back="onBack" />
+    <import-by-url-form v-if="currentStep === 3" :namespace="namespace" @back="onBack" />
   </div>
 </template>

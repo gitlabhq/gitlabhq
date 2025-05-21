@@ -300,7 +300,7 @@ Vulnerability Resolution in a merge request sometimes cannot generate a suggeste
   - These errors may be caused by temporary problems with the AI provider or with GitLab Duo.
   - A new request may succeed, so you can try to resolve the vulnerability again.
   - If you continue to see these errors, contact GitLab for assistance.
-- **Resolution target could not be found in the merge request, unable to create suggestion:**
+- **Resolution target could not be found in the merge request, unable to create suggestion**:
   - This error may occur when the target branch has not run a full security scan pipeline. See the [merge request documentation](../detect/security_scan_results.md#merge-request).
 
 ## Vulnerability code flow

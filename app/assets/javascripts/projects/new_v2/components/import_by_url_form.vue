@@ -4,9 +4,11 @@ import axios from '~/lib/utils/axios_utils';
 import { s__, sprintf } from '~/locale';
 
 import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
+import SharedProjectCreationFields from './shared_project_creation_fields.vue';
 
 export default {
   components: {
+    SharedProjectCreationFields,
     GlButton,
     GlFormGroup,
     GlFormInput,
@@ -14,6 +16,12 @@ export default {
     MultiStepFormTemplate,
   },
   inject: ['importByUrlValidatePath'],
+  props: {
+    namespace: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
       repositoryUrl: '',
@@ -44,6 +52,9 @@ export default {
       } finally {
         this.isCheckingConnection = false;
       }
+    },
+    onSelectNamespace(newNamespace) {
+      this.$emit('onSelectNamespace', newNamespace);
     },
   },
   repositoryUrlPlaceholder: 'https://gitlab.company.com/group/project.git',
@@ -102,6 +113,11 @@ export default {
           />
         </gl-form-group>
       </div>
+
+      <shared-project-creation-fields
+        :namespace="namespace"
+        @onSelectNamespace="onSelectNamespace"
+      />
     </template>
 
     <template #next>

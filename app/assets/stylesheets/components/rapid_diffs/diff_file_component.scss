@@ -28,18 +28,26 @@
   --rd-content-visibility-auto: visible;
 }
 
-.rd-diff-file-header {
-  @apply gl-text-default;
+.rd-diff-file-header-sticky {
   position: sticky;
   // 1px offset to hide top border
   top: calc(var(--rd-app-sticky-top, 1px) - 1px);
+  z-index: 3;
+  container-type: scroll-state;
+}
+
+.rd-diff-file-header {
+  @apply gl-text-default;
   display: flex;
   background-color: var(--gl-background-color-subtle);
   border: 1px solid var(--gl-border-color-default);
   padding: constants.$diff-file-header-padding-y $gl-spacing-scale-4;
   border-radius: var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius) 0 0;
   word-break: break-word;
-  z-index: 3;
+
+  @container scroll-state(stuck: top) {
+    border-radius: 0 0 var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius);
+  }
 }
 
 .rd-diff-file-header:has([data-options-toggle] button[aria-expanded='true']) {

@@ -18,7 +18,7 @@
     .tab-pane#domains-settings
       .gl-flex.gl-flex-col.gl-gap-5
         = render 'ssl_limitations_warning' if pages_subdomain(@project).include?(".")
-        - if Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
+        - if Gitlab.config.pages.custom_domain_mode || Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
           = render 'list'
         - else
           = render 'no_domains'

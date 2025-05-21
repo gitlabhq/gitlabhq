@@ -525,7 +525,6 @@ RSpec/ReceiveMessages:
     - 'spec/views/devise/registrations/_signup_box_form.html.haml_spec.rb'
     - 'spec/views/devise/registrations/new.html.haml_spec.rb'
     - 'spec/views/devise/sessions/new.html.haml_spec.rb'
-    - 'spec/views/devise/shared/_tabs_ldap.haml_spec.rb'
     - 'spec/views/groups/edit.html.haml_spec.rb'
     - 'spec/views/groups/group_members/index.html.haml_spec.rb'
     - 'spec/views/groups/new.html.haml_spec.rb'

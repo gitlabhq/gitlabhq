@@ -55,7 +55,7 @@ All recommendations are for production configurations, including performance tes
 
 - The general GitLab Gitaly node recommendations for CPU and Memory assume relatively even loading across repositories. GitLab Performance Tool (GPT) testing of any non-characteristic repositories and/or SRE monitoring of Gitaly metrics may inform when to choose memory and/or CPU higher than general recommendations.
 
-**To accommodate:**
+**To accommodate**:
 
 - Git packfile operations are memory and CPU intensive.
 - If repository commit traffic is dense, large, or very frequent, then more CPU and Memory are required to handle the load. Patterns such as storing binaries and/or busy or large monorepos are examples that can cause high loading.
@@ -66,7 +66,7 @@ All recommendations are for production configurations, including performance tes
 - When not using provisioned EBS IO, EBS volume size determines the I/O level, so provisioning volumes that are much larger than needed can be the least expensive way to improve EBS IO.
 - If Gitaly performance monitoring shows signs of disk stress then one of the provisioned IOPS levels can be chosen. EBS IOPS levels also have enhanced durability which may be appealing for some implementations aside from performance considerations.
 
-**To accommodate:**
+**To accommodate**:
 
 - Gitaly storage is expected to be local (not NFS of any type including EFS).
 - Gitaly servers also need disk space for building and caching Git packfiles. This is above and beyond the permanent storage of your Git Repositories.
@@ -77,7 +77,7 @@ All recommendations are for production configurations, including performance tes
 - Use only instance types [from the list of ones that support Elastic Network Adapter (ENA) advanced networking](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html#instance-type-summary-table) to ensure that cluster replication latency is not due to instance level network I/O bottlenecks.
 - Choose instances with sizes with more than 10 Gbps - but only if needed and only when having proven a node level network bottleneck with monitoring and/or stress testing.
 
-**To accommodate:**
+**To accommodate**:
 
 - Gitaly nodes do the main work of streaming repositories for push and pull operations (to add development endpoints, and to CI/CD).
 - Gitaly servers need reasonable low latency between cluster nodes and with Praefect services in order for the cluster to maintain operational and data integrity.

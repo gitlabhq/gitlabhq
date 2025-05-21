@@ -929,7 +929,7 @@ This indicates the GitLab Runner does not have permission to start the
 
 There is a known incompatibility introduced by Docker Engine 20.10.
 
-When the host uses Docker Engine 20.10 or newer, then the `docker:dind` service in a version older than 20.10 does
+When the host uses Docker Engine 20.10 or later, then the `docker:dind` service in a version older than 20.10 does
 not work as expected.
 
 While the service itself will start without problems, trying to build the container image results in the error:

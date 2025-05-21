@@ -1,9 +1,10 @@
 <script>
-import { GlFormGroup } from '@gitlab/ui';
+import { GlSprintf, GlFormGroup } from '@gitlab/ui';
 
 export default {
   components: {
     GlFormGroup,
+    GlSprintf,
   },
   props: {
     label: {
@@ -32,6 +33,9 @@ export default {
       default: false,
     },
   },
+  placeholders: {
+    em: { em: ['em_start', 'em_end'] },
+  },
 };
 </script>
 
@@ -50,7 +54,11 @@ export default {
 
     <div>
       <span v-if="helpText" class="gl-text-subtle" data-testid="project-settings-row-help-text">
-        {{ helpText }}
+        <gl-sprintf :message="helpText" :placeholders="$options.placeholders.em">
+          <template #em="{ content }">
+            <em>{{ content }}</em>
+          </template>
+        </gl-sprintf>
       </span>
       <span v-if="helpPath"
         ><a :href="helpPath" target="_blank">{{ __('Learn more') }}</a

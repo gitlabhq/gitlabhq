@@ -5740,6 +5740,9 @@ msgstr ""
 msgid "AiImpactAnalytics|Duo Chat: Unique users"
 msgstr ""
 
+msgid "AiImpactAnalytics|Duo RCA: Unique users"
+msgstr ""
+
 msgid "AiImpactAnalytics|Duo seats: Assigned and used"
 msgstr ""
 
@@ -5750,6 +5753,9 @@ msgid "AiImpactAnalytics|Monthly user engagement with AI Code Suggestions. Perce
 msgstr ""
 
 msgid "AiImpactAnalytics|Monthly user engagement with AI Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors."
+msgstr ""
+
+msgid "AiImpactAnalytics|Monthly user engagement with Duo Root Cause Analysis. Percentage ratio calculated as total monthly unique Duo Root Cause Analysis users / monthly unique Duo Chat users."
 msgstr ""
 
 msgid "AiImpactAnalytics|Monthly user engagement with GitLab Duo Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors."
@@ -35548,6 +35554,9 @@ msgstr ""
 msgid "LDAP|Config for LDAP server %{provider} is not present in GitLab"
 msgstr ""
 
+msgid "LDAP|Could not fetch LDAP groups. Please try again."
+msgstr ""
+
 msgid "LDAP|Default, minimum permission level for LDAP group members of %{group_name}."
 msgstr ""
 
@@ -35573,6 +35582,9 @@ msgid "LDAP|LDAP user filter"
 msgstr ""
 
 msgid "LDAP|No LDAP synchronizations"
+msgstr ""
+
+msgid "LDAP|Select LDAP group"
 msgstr ""
 
 msgid "LDAP|Select server"
@@ -48606,7 +48618,7 @@ msgstr ""
 msgid "ProjectSettings|View and edit files in this project."
 msgstr ""
 
-msgid "ProjectSettings|View and edit files in this project. When set to **Everyone With Access** non-project members have only read access."
+msgid "ProjectSettings|View and edit files in this project. When set to %{em_start}Everyone With Access%{em_end} non-project members have only read access."
 msgstr ""
 
 msgid "ProjectSettings|View project analytics."

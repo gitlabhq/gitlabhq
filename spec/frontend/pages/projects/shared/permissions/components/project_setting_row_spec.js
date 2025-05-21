@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlIcon, GlFormGroup } from '@gitlab/ui';
+import { GlIcon, GlFormGroup, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import projectSettingRow from '~/pages/projects/shared/permissions/components/project_setting_row.vue';
 
@@ -14,7 +14,7 @@ describe('Project Setting Row', () => {
       propsData: {
         ...customProps,
       },
-      stubs: { GlFormGroup },
+      stubs: { GlFormGroup, GlSprintf },
     });
   };
 

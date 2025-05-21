@@ -1780,13 +1780,13 @@ class Project < ApplicationRecord
   end
 
   def pages_https_only
-    return false unless Gitlab.config.pages.external_https
+    return false unless Gitlab.config.pages.external_https || Gitlab.config.pages.custom_domain_mode == 'https'
 
     super
   end
 
   def pages_https_only?
-    return false unless Gitlab.config.pages.external_https
+    return false unless Gitlab.config.pages.external_https || Gitlab.config.pages.custom_domain_mode == 'https'
 
     super
   end

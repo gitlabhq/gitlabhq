@@ -10,13 +10,13 @@ You can create a cluster on Amazon Elastic Kubernetes Service (EKS) through
 Kubernetes Terraform providers to create EKS clusters. You connect the clusters to GitLab
 by using the GitLab agent for Kubernetes.
 
-**Before you begin:**
+**Before you begin**:
 
 - An Amazon Web Services (AWS) account, with a set of configured
   [security credentials](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-prereqs.html).
 - [A runner](https://docs.gitlab.com/runner/install/) you can use to run the GitLab CI/CD pipeline.
 
-**Steps:**
+**Steps**:
 
 1. [Import the example project](#import-the-example-project).
 1. [Register the agent for Kubernetes](#register-the-agent).
@@ -129,7 +129,7 @@ Set up your AWS credentials when you want to authenticate AWS with GitLab.
 
 Use CI/CD environment variables to configure your project.
 
-**Required configuration:**
+**Required configuration**:
 
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Variables**.
@@ -138,7 +138,7 @@ Use CI/CD environment variables to configure your project.
 1. Set the variable `TF_VAR_agent_token` to the agent token displayed in the previous task.
 1. Set the variable `TF_VAR_kas_address` to the agent server address displayed in the previous task.
 
-**Optional configuration:**
+**Optional configuration**:
 
 The file [`variables.tf`](https://gitlab.com/gitlab-org/configure/examples/gitlab-terraform-eks/-/blob/main/variables.tf)
 contains other variables that you can override according to your needs:

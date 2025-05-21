@@ -661,7 +661,7 @@ job3:
 
 In this example, if `job2` fails, `job1` is canceled if it is still running and `job3` does not start.
 
-**Related topics:**
+**Related topics**:
 
 - [Auto-cancel the parent pipeline from a downstream pipeline](../pipelines/downstream_pipelines.md#auto-cancel-the-parent-pipeline-from-a-downstream-pipeline)
 
@@ -5624,7 +5624,7 @@ job2:
     - echo "This job runs in the test stage."
 ```
 
-**Additional details:**
+**Additional details**:
 
 - If a pipeline has jobs with [`needs: []`](#needs) and jobs in the `.pre` stage, they will
   all start as soon as the pipeline is created. Jobs with `needs: []` start immediately,
@@ -5665,7 +5665,7 @@ job2:
     - echo "This job runs in the test stage."
 ```
 
-**Additional details:**
+**Additional details**:
 
 - A [pipeline execution policy](../../user/application_security/policies/pipeline_execution_policies.md) can define a `.pipeline-policy-post` stage which runs after `.post`.
 

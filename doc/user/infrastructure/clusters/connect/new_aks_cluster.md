@@ -10,13 +10,13 @@ You can create a cluster on Azure Kubernetes Service (AKS) through
 Kubernetes Terraform providers to create AKS clusters. You connect the clusters to GitLab
 by using the GitLab agent for Kubernetes.
 
-**Before you begin:**
+**Before you begin**:
 
 - A Microsoft Azure account, with a set of configured
   [security credentials](https://learn.microsoft.com/en-us/cli/azure/authenticate-azure-cli).
 - [A runner](https://docs.gitlab.com/runner/install/) you can use to run the GitLab CI/CD pipeline.
 
-**Steps:**
+**Steps**:
 
 1. [Import the example project](#import-the-example-project).
 1. [Register the agent for Kubernetes](#register-the-agent).
@@ -58,7 +58,7 @@ To create a GitLab agent for Kubernetes:
 
 Use CI/CD environment variables to configure your project.
 
-**Required configuration:**
+**Required configuration**:
 
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Variables**.
@@ -68,7 +68,7 @@ Use CI/CD environment variables to configure your project.
 1. Set the variable `TF_VAR_agent_token` to the agent token displayed in the previous task.
 1. Set the variable `TF_VAR_kas_address` to the agent server address displayed in the previous task.
 
-**Optional configuration:**
+**Optional configuration**:
 
 The file [`variables.tf`](https://gitlab.com/gitlab-org/ci-cd/deploy-stage/environments-group/examples/gitlab-terraform-aks/-/blob/main/variables.tf)
 contains other variables that you can override according to your needs:

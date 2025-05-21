@@ -328,7 +328,7 @@ This table shows default scopes per token. For some tokens, you can limit scopes
 | Runner authentication token | {{< icon name="dotted-circle" >}} No             | {{< icon name="dotted-circle" >}} No             | {{< icon name="check-circle-dashed" >}} Limited<sup>3</sup> |
 | Job token                   | {{< icon name="check-circle-dashed" >}} Limited<sup>4</sup> | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes |
 
-**Footnotes:**
+**Footnotes**:
 
 1. Limited to the one project.
 1. Limited to the one group.

@@ -357,6 +357,9 @@ Settings.pages['protocol'] ||= Settings.pages.https ? "https" : "http"
 Settings.pages['url'] ||= Settings.__send__(:build_pages_url)
 Settings.pages['external_http'] ||= false unless Settings.pages['external_http'].present?
 Settings.pages['external_https'] ||= false unless Settings.pages['external_https'].present?
+Settings.pages['custom_domain_mode'] = 'http' if Settings.pages['external_http'].present?
+Settings.pages['custom_domain_mode'] = 'https' if Settings.pages['external_https'].present?
+Settings.pages['custom_domain_mode'] = nil unless Settings.pages['custom_domain_mode'].present?
 Settings.pages['artifacts_server'] ||= Settings.pages['enabled'] if Settings.pages['artifacts_server'].nil?
 Settings.pages['secret_file'] ||= Rails.root.join('.gitlab_pages_secret')
 # We want pages zip archives to be stored on the same directory as old pages hierarchical structure

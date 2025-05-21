@@ -40,8 +40,8 @@ configure Git to begin using the key.
 
 Prerequisites:
 
-- Git 2.34.0 or newer.
-- OpenSSH 8.1 or newer.
+- Git 2.34.0 or later.
+- OpenSSH 8.1 or later.
 
   {{< alert type="note" >}}
 

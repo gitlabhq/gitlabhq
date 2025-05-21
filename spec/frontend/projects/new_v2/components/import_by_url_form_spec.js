@@ -5,6 +5,7 @@ import { HTTP_STATUS_OK, HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/h
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ImportByUrlForm from '~/projects/new_v2/components/import_by_url_form.vue';
+import SharedProjectCreationFields from '~/projects/new_v2/components/shared_project_creation_fields.vue';
 
 const $toast = {
   show: jest.fn(),
@@ -15,12 +16,20 @@ describe('Import Project by URL Form', () => {
   let mockAxios;
 
   const mockImportByUrlValidatePath = '/import/url/validate';
+  const defaultProps = {
+    namespace: {
+      id: '1',
+      fullPath: 'root',
+      isPersonal: true,
+    },
+  };
 
   const createComponent = () => {
     wrapper = shallowMountExtended(ImportByUrlForm, {
       provide: {
         importByUrlValidatePath: mockImportByUrlValidatePath,
       },
+      propsData: defaultProps,
       mocks: {
         $toast,
       },
@@ -45,6 +54,7 @@ describe('Import Project by URL Form', () => {
   const findUsernameInput = () => wrapper.findByTestId('repository-username');
   const findPasswordInput = () => wrapper.findByTestId('repository-password');
   const findCheckConnectionButton = () => wrapper.findByTestId('check-connection');
+  const findSharedFields = () => wrapper.findComponent(SharedProjectCreationFields);
 
   it('renders URL, username, password fields', () => {
     expect(findUrlInput().exists()).toBe(true);
@@ -110,6 +120,20 @@ describe('Import Project by URL Form', () => {
         expect($toast.show).toHaveBeenCalledWith(expect.stringContaining('Connection failed'));
       });
     });
+  });
+
+  it('renders shared fields', () => {
+    const sharedFields = findSharedFields();
+    expect(sharedFields.exists()).toBe(true);
+    expect(sharedFields.props('namespace')).toEqual(defaultProps.namespace);
+  });
+
+  it('emits onSelectNamespace event when shared fields emits it', () => {
+    const newNamespace = { id: '2', fullPath: 'new-namespace', isPersonal: false };
+
+    findSharedFields().vm.$emit('onSelectNamespace', newNamespace);
+
+    expect(wrapper.emitted('onSelectNamespace')).toEqual([[newNamespace]]);
   });
 
   it('renders the option to move to Next Step', () => {

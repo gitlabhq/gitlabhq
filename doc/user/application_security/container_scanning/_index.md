@@ -291,7 +291,7 @@ positives.
 | `SECURE_LOG_LEVEL`             | `info`        | Set the minimum logging level. Messages of this logging level or higher are output. From highest to lowest severity, the logging levels are: `fatal`, `error`, `warn`, `info`, `debug`. |
 | `TRIVY_TIMEOUT`                | `5m0s`        | Set the timeout for the scan. |
 
-**Footnotes:**
+**Footnotes**:
 
 1. Fix status information is highly dependent on accurate fix availability data from the software
    vendor and container image operating system package metadata. It is also subject to

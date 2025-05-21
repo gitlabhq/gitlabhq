@@ -18,11 +18,6 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
-    widget: {
-      type: String,
-      required: false,
-      default: '',
-    },
     tertiaryButtons: {
       type: Array,
       required: true,

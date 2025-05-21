@@ -1,7 +1,7 @@
 = gitlab_ui_form_for @project, url: project_pages_path(@project, anchor: 'domains-settings'), html: { class: 'gl-inline-block', title: pages_https_only_title } do |f|
   = render_if_exists 'shared/pages/max_pages_size_input', form: f
 
-  - if Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
+  - if Gitlab.config.pages.custom_domain_mode || Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
     .form-group
       = f.gitlab_ui_checkbox_component :pages_https_only,
         s_('GitLabPages|Force HTTPS (requires valid certificates)'),
@@ -20,7 +20,7 @@
       %p.gl-pl-6
         = s_("GitLabPages|When enabled, a unique domain is generated to access pages.").html_safe
 
-  - if Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
+  - if Gitlab.config.pages.custom_domain_mode || Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
     - if @project.pages_domains.present?
       .form-group
         = f.fields_for :project_setting do |settings|

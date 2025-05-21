@@ -75,4 +75,12 @@ RSpec.describe WorkItems::Widgets::StartAndDueDate, feature_category: :team_plan
       end
     end
   end
+
+  describe '.process_quick_action_param' do
+    it 'sets is_fixed to true when the due_date is set' do
+      due_date = Date.new(2025, 1, 1)
+      expect(described_class.process_quick_action_param(:due_date, due_date))
+        .to eq({ due_date: due_date, is_fixed: true })
+    end
+  end
 end

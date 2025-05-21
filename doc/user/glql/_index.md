@@ -53,7 +53,7 @@ For a full list of supported fields, supported operators, and value types, see [
 
 ### Operators
 
-**Comparison operators:**
+**Comparison operators**:
 
 | GLQL operator | Description                             | Equivalent in search   |
 |---------------|-----------------------------------------|------------------------|

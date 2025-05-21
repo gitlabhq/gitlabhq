@@ -241,6 +241,23 @@ RSpec.describe Gitlab::Ci::Config::Entry::Service do
         end
       end
 
+      context "with user option as int" do
+        let(:kubernetes_opts) { { user: 1001 } }
+
+        it { is_expected.to be_valid }
+
+        describe '#value' do
+          it "returns kubernetes hash in value" do
+            expect(entry.value).to eq(
+              name: 'postgresql:9.5',
+              executor_opts: {
+                kubernetes: kubernetes_opts
+              }
+            )
+          end
+        end
+      end
+
       context "with uid:gid set" do
         let(:kubernetes_opts) { { user: '1001:1001' } }
 
@@ -273,11 +290,13 @@ RSpec.describe Gitlab::Ci::Config::Entry::Service do
       end
 
       context 'when kubernetes options user is not string' do
-        let(:kubernetes_opts) { { user: 123 } }
+        let(:kubernetes_opts) { { user: true } }
 
         it 'is not valid' do
           expect(entry).not_to be_valid
-          expect(entry.errors.first).to match %r{service executor opts value at `/kubernetes/user` is not a string}
+          expect(entry.errors.first).to eq(
+            'service executor opts value at `/kubernetes/user` is not one of the types: ["string", "integer"]'
+          )
         end
       end
     end

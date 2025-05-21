@@ -34,7 +34,7 @@ Show the contents of the current SMTP secrets.
   bundle exec rake gitlab:smtp:secret:show RAILS_ENV=production
   ```
 
-**Example output:**
+**Example output**:
 
 ```plaintext
 password: '123'

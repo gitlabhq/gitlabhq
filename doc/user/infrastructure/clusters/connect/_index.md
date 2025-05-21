@@ -45,17 +45,17 @@ To view the Kubernetes clusters connected to your project,
 group, or instance, open the cluster's page according to
 your cluster's level.
 
-**Project-level clusters:**
+**Project-level clusters**:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Kubernetes clusters**.
 
-**Group-level clusters:**
+**Group-level clusters**:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Operate > Kubernetes clusters**.
 
-**Instance-level clusters:**
+**Instance-level clusters**:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Kubernetes**.

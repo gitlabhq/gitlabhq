@@ -793,7 +793,7 @@ update the Epic entry to use only the `#` symbol. -->
 | [Wiki page](project/wiki/_index.md) (if the page slug is the same as the title)       | `[[Home]]`                                            |                                                |                                    |
 | [Wiki page](project/wiki/_index.md) (if the page slug is different from the title)    | `[[How to use GitLab\|how-to-use-gitlab]]`            |                                                |                                    |
 
-**Footnotes:**
+**Footnotes**:
 
 1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384885) in GitLab 16.9.
    Iteration cadence references are always rendered following the format `[cadence:<ID>]`.

@@ -36,6 +36,13 @@ module WorkItems
         end
       end
 
+      def self.process_quick_action_param(param_name, value)
+        return super unless param_name.in?(quick_action_params) && value.present?
+
+        # Since we're explicitly setting a due_date, ensure the corresponding dates_source record is using fixed dates
+        { due_date: value, is_fixed: true }
+      end
+
       # rubocop:disable Gitlab/NoCodeCoverageComment -- overridden and tested in EE
       # :nocov:
       def fixed?

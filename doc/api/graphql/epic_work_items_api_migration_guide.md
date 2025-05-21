@@ -79,7 +79,7 @@ For example, an epic at `/gitlab-org/-/epics/123` has the same IID `123` as a wo
 
 {{< /alert >}}
 
-**Before (Epic API):**
+**Before (Epic API)**:
 
 ```graphql
 query Epics {
@@ -120,7 +120,7 @@ Example response:
 }
 ```
 
-**After (Work Item API):**
+**After (Work Item API)**:
 
 ```graphql
 query EpicsAsWorkItem {
@@ -163,7 +163,7 @@ Example response:
 
 ### Create an epic
 
-**Before (Epic API):**
+**Before (Epic API)**:
 
 ```graphql
 mutation CreateEpic {
@@ -191,7 +191,7 @@ Example response:
 }
 ```
 
-**After (Work Item API):**
+**After (Work Item API)**:
 
 To create an epic:
 
@@ -290,7 +290,7 @@ For all available widgets, see [Work Item widget reference](reference/_index.md#
 
 To query epics with widgets:
 
-**Before (Epic API):**
+**Before (Epic API)**:
 
 ```graphql
 query DetailedEpicQuery {
@@ -428,7 +428,7 @@ Example response:
 }
 ```
 
-**After (Work Item API):**
+**After (Work Item API)**:
 
 ```graphql
 query DetailedEpicWorkItem {

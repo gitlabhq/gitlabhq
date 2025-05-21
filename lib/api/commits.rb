@@ -3,10 +3,14 @@ require 'mime/types'
 
 module API
   class Commits < ::API::Base
+    include ::API::Concerns::AiWorkflowsAccess
+    include APIGuard
     include PaginationParams
     include Helpers::Unidiff
 
     helpers ::API::Helpers::NotesHelpers
+
+    allow_ai_workflows_access
 
     feature_category :source_code_management
 

@@ -184,7 +184,7 @@ sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:ldap:rename_provider
 
 {{< /tabs >}}
 
-**Example output:**
+**Example output**:
 
 ```plaintext
 What is the old provider? Ex. 'ldapmain': ldapmain
@@ -227,7 +227,7 @@ sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:ldap:secret:show
 
 {{< /tabs >}}
 
-**Example output:**
+**Example output**:
 
 ```plaintext
 main:

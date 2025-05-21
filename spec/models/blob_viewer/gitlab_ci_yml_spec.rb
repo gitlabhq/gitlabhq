@@ -24,9 +24,9 @@ RSpec.describe BlobViewer::GitlabCiYml, feature_category: :source_code_managemen
       validation_message
     end
 
-    it 'calls Gitlab::Ci::Lint#validate with proper parameters' do
+    it 'calls Gitlab::Ci::Lint#legacy_validate with proper parameters' do
       lint = instance_double(
-        Gitlab::Ci::Lint, validate: instance_double(Gitlab::Ci::Lint::Result, errors: [])
+        Gitlab::Ci::Lint, legacy_validate: instance_double(Gitlab::Ci::Lint::Result, errors: [])
       )
 
       expect(Gitlab::Ci::Lint).to receive(:new).with(

@@ -77,12 +77,12 @@ After enabling Advanced SAST scanning in the **default branch** (see [Enable Git
 
 #### Conditions for deduplication
 
-1. **Matching Identifier:**
+1. **Matching Identifier**:
    - At least one of the GitLab Advanced SAST vulnerability's identifiers (excluding CWE and OWASP) must match the **primary identifier** of an existing Semgrep vulnerability.
    - The primary identifier is the first identifier in the vulnerability's identifiers array in the [SAST report](_index.md#download-a-sast-report).
    - For example, if a GitLab Advanced SAST vulnerability has identifiers including `bandit.B506` and a Semgrep vulnerability's primary identifier is also `bandit.B506`, this condition is met.
 
-1. **Matching Location:**
+1. **Matching Location**:
    - The vulnerabilities must be associated with the **same location** in the code. This is determined using one of the following fields in a vulnerability in the [SAST report](_index.md#download-a-sast-report):
      - Tracking field (if present)
      - Location field (if the Tracking field is absent)

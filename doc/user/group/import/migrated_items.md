@@ -53,7 +53,7 @@ Group items that are migrated to the destination GitLab instance include:
 | Subgroups            | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938)  |
 | Uploads              | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938)  |
 
-**Footnotes:**
+**Footnotes**:
 
 1. State and state ID [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28203) in GitLab 13.7.
    Label associations [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62074) in GitLab 13.12.
@@ -154,7 +154,7 @@ Project items that are migrated to the destination GitLab instance include:
 
 <!-- vale gitlab_base.OutdatedVersions = YES -->
 
-**Footnotes:**
+**Footnotes**:
 
 1. Imported branches respect the [default branch protection settings](../../project/repository/branches/protected.md) of the destination group.
    These settings might cause an unprotected branch to be imported as protected.
@@ -238,6 +238,8 @@ Some project items are excluded from migration because they:
   - Environments
   - Feature flags
   - Infrastructure registry
+  - Instance administrators in branch protection rules when migrating
+    from GitLab Self-Managed to GitLab.com or GitLab Dedicated
   - Linked issues
   - Merge request approval rules
 

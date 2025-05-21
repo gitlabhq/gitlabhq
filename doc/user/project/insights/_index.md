@@ -168,7 +168,7 @@ The following table lists the chart parameters:
 
 Use `title` to update the chart title. The title displays on the insights report.
 
-**Example:**
+**Example**:
 
 ```yaml
 monthlyBugsCreated:
@@ -179,7 +179,7 @@ monthlyBugsCreated:
 
 Use `description` to add a description of the chart. The description displays above the chart, below the title.
 
-**Example:**
+**Example**:
 
 ```yaml
 monthlyBugsCreated:
@@ -191,7 +191,7 @@ monthlyBugsCreated:
 
 Use `type` to define the chart type.
 
-**Supported values:**
+**Supported values**:
 
 | Name  | Example: |
 | ----- | ------- |
@@ -202,7 +202,7 @@ Use `type` to define the chart type.
 
 The `dora` data source supports the `bar` and `line` [chart types](#type).
 
-**Example:**
+**Example**:
 
 ```yaml
 monthlyBugsCreated:
@@ -214,7 +214,7 @@ monthlyBugsCreated:
 
 Use `query` to define the data source and filtering conditions for the chart.
 
-**Example:**
+**Example**:
 
 ```yaml
 monthlyBugsCreated:
@@ -268,7 +268,7 @@ monthlyBugsCreated:
 
 Use `data_source` to define the data source that exposes the data.
 
-**Supported values:**
+**Supported values**:
 
 - `issuables`: Exposes merge request or issue data.
 - `dora`: Exposes DORA metrics.
@@ -279,7 +279,7 @@ Use `data_source` to define the data source that exposes the data.
 
 Use `query.params.issuable_type` to define the type of issuable to create a chart for.
 
-**Supported values:**
+**Supported values**:
 
 - `issue`: The chart displays issues' data.
 - `merge_request`: The chart displays merge requests' data.
@@ -290,7 +290,7 @@ Use `query.params.issuable_state` to filter by the current state of the queried 
 
 By default, the `opened` state filter is applied.
 
-**Supported values:**
+**Supported values**:
 
 - `opened`: Open issues or merge requests.
 - `closed`: Closed issues or merge requests.
@@ -326,7 +326,7 @@ monthlyBugsCreated:
 Use `query.params.collection_labels` to group issuables by the configured labels.
 Grouping is not applied by default.
 
-**Example:**
+**Example**:
 
 ```yaml
 weeklyBugsBySeverity:
@@ -350,7 +350,7 @@ weeklyBugsBySeverity:
 
 Use `query.group_by` to define the X-axis of the chart.
 
-**Supported values:**
+**Supported values**:
 
 - `day`: Group data per day.
 - `week`: Group data per week.
@@ -376,7 +376,7 @@ you defined.
 
 Use `query.period_field` to define the timestamp field by which to group issuables.
 
-**Supported values:**
+**Supported values**:
 
 - `created_at` (default): Group data using the `created_at` field.
 - `closed_at`: Group data using the `closed_at` field (for issues only).
@@ -405,7 +405,7 @@ you may see `created_at` in place of `merged_at`. `created_at` is used instead.
 
 Use DORA-specific queries with the `dora` data source to create a DORA chart definition.
 
-**Example:**
+**Example**:
 
 ```yaml
 dora:
@@ -439,7 +439,7 @@ dora:
 
 Use `query.metric` to define the [DORA metrics](../../../api/dora/metrics.md#the-value-field) to query.
 
-**Supported values:**
+**Supported values**:
 
 - `deployment_frequency` (default)
 - `lead_time_for_changes`
@@ -450,7 +450,7 @@ Use `query.metric` to define the [DORA metrics](../../../api/dora/metrics.md#the
 
 Use `query.group_by` to define the X-axis of your chart.
 
-**Supported values:**
+**Supported values**:
 
 - `day` (default): Group data per day.
 - `month`: Group data per month.
@@ -463,7 +463,7 @@ Use `query.period_limit` to define how far the metrics are queried in the past (
 
 Use `query.environment_tiers` to define an array of environments to include the calculation.
 
-**Supported values:**
+**Supported values**:
 
 - `production`(default)
 - `staging`
@@ -489,7 +489,7 @@ Projects listed in this parameter are ignored when:
 - The current user doesn't have sufficient permissions to read them.
 - They are outside the group.
 
-**Example:**
+**Example**:
 
 ```yaml
 monthlyBugsCreated:

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'dashboard/projects/_blank_state_admin_welcome.html.haml' do
-  let(:user) { create(:admin) }
+  let(:user) { build_stubbed(:admin) }
 
   before do
     allow(view).to receive(:current_user).and_return(user)

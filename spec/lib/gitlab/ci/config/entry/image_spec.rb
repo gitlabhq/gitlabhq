@@ -256,13 +256,33 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
           end
         end
 
+        context "when user is a UID as int" do
+          let(:config) { { name: 'image:1.0', kubernetes: { user: 1001 } } }
+
+          it 'is valid' do
+            expect(entry).to be_valid
+          end
+
+          describe '#value' do
+            it "returns value" do
+              expect(entry.value).to eq(
+                name: 'image:1.0',
+                executor_opts: {
+                  kubernetes: { user: 1001 }
+                }
+              )
+            end
+          end
+        end
+
         context "when invalid data type is specified for user option" do
-          let(:config) { { name: 'image:1.0', kubernetes: { user: 1 } } }
+          let(:config) { { name: 'image:1.0', kubernetes: { user: true } } }
 
           it 'raises an error' do
             expect(entry).not_to be_valid
-            expect(entry.errors.first)
-              .to match %r{image executor opts value at `/kubernetes/user` is not a string}
+            expect(entry.errors.first).to eq(
+              'image executor opts value at `/kubernetes/user` is not one of the types: ["string", "integer"]'
+            )
           end
         end
       end

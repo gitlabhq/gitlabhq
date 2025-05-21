@@ -338,6 +338,27 @@ RSpec.describe 'Internal Events matchers', :clean_gitlab_redis_shared_state, fea
           TEXT
         end
       end
+
+      context 'when failure may be due to a dirty redis state for unique metrics' do
+        subject(:assertion) do
+          expect { track_event }.to increment_usage_metrics(
+            'redis_hll_counters.ide_edit.g_edit_by_sfe_weekly'
+          )
+        end
+
+        before do
+          track_event # ensure event has already been tracked
+        end
+
+        it 'returns a meaningful failure message for :increment_usage_metrics with debugging tip' do
+          expect { assertion }.to raise_expectation_error_with <<~TEXT
+            expected metric redis_hll_counters.ide_edit.g_edit_by_sfe_weekly to be incremented by 1
+              ->  value went from 1 to 1
+
+            Debugging tip: Add the :clean_gitlab_redis_shared_state trait to reset event counters between examples.
+          TEXT
+        end
+      end
     end
 
     context 'when :not_increment_usage_metrics should fail' do

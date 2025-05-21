@@ -189,7 +189,7 @@ replicator.registry
 A Geo data type is a specific class of data that is required by one or more GitLab features to store
 relevant data and is replicated by Geo to secondary sites.
 
-- **Blob types:**
+- **Blob types**:
   - `Ci::JobArtifact`
   - `Ci::PipelineArtifact`
   - `Ci::SecureFile`
@@ -201,13 +201,13 @@ relevant data and is replicated by Geo to secondary sites.
   - `Upload`
   - `DependencyProxy::Manifest`
   - `DependencyProxy::Blob`
-- **Git Repository types:**
+- **Git Repository types**:
   - `DesignManagement::Repository`
   - `ProjectRepository`
   - `ProjectWikiRepository`
   - `SnippetRepository`
   - `GroupWikiRepository`
-- **Other types:**
+- **Other types**:
   - `ContainerRepository`
 
 The main kinds of classes are Registry, Model, and Replicator. If you have an instance of one of
@@ -222,7 +222,7 @@ the Geo tracking database. Each record tracks a single replicable in the main
 GitLab database, such as an LFS file, or a project Git repository. The Rails
 models that correspond to Geo registry tables that can be queried are:
 
-- **Blob types:**
+- **Blob types**:
   - `Geo::CiSecureFileRegistry`
   - `Geo::DependencyProxyBlobRegistry`
   - `Geo::DependencyProxyManifestRegistry`
@@ -236,13 +236,13 @@ models that correspond to Geo registry tables that can be queried are:
   - `Geo::SnippetRepositoryRegistry`
   - `Geo::TerraformStateVersionRegistry`
   - `Geo::UploadRegistry`
-- **Git Repository types:**
+- **Git Repository types**:
   - `Geo::DesignManagementRepositoryRegistry`
   - `Geo::ProjectRepositoryRegistry`
   - `Geo::ProjectWikiRepositoryRegistry`
   - `Geo::SnippetRepositoryRegistry`
   - `Geo::GroupWikiRepositoryRegistry`
-- **Other types:**
+- **Other types**:
   - `Geo::ContainerRepositoryRegistry`
 
 ### Resync and reverify multiple components

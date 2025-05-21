@@ -35,7 +35,7 @@ For a full list of reference architectures, see
 | Monitoring node                    | 1     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`  | `c5.large`   | `F2s v2` |
 | Object storage<sup>5</sup>         | -     | -                      | -               | -            | -        |
 
-**Footnotes:**
+**Footnotes**:
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
@@ -1198,7 +1198,7 @@ services where applicable):
 | Gitaly<sup>5</sup>          | 1     | 4 vCPU, 15 GB memory   | `n1-standard-4` | `m5.xlarge` |
 | Object storage<sup>4</sup>  | -     | -                      | -               | -           |
 
-**Footnotes:**
+**Footnotes**:
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->

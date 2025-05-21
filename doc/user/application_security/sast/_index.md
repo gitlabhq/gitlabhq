@@ -118,7 +118,7 @@ For more information about our plans for language support in SAST, see the [cate
 | YAML<sup><b><a href="#yaml-footnote">2</a></b></sup>                        | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
 | Java Properties                         | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
 
-**Footnotes:**
+**Footnotes**:
 
 1. <a id="spotbugs-footnote"></a>The SpotBugs-based analyzer supports [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/), and [SBT](https://www.scala-sbt.org/). It can also be used with variants like the [Gradle wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html), [Grails](https://grails.org/), and the [Maven wrapper](https://github.com/takari/maven-wrapper). However, SpotBugs has [limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/350801) when used against [Ant](https://ant.apache.org/)-based projects. You should use the GitLab Advanced SAST or Semgrep-based analyzer for Ant-based Java or Scala projects.
 1. <a id="yaml-footnote"></a>`YAML` support is restricted to the following file patterns:
@@ -749,7 +749,7 @@ The following are Docker image-related CI/CD variables.
   </tbody>
 </table>
 
-**Footnotes:**
+**Footnotes**:
 
 1. <a id="sast-excluded-paths-description"></a>You might need to exclude temporary directories used by your build tool as
    these can generate false positives. To exclude paths, copy and paste the default excluded paths, then **add** your

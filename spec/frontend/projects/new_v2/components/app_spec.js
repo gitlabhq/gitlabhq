@@ -1,11 +1,13 @@
 import { GlAlert } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { getLocationHash, setLocationHash } from '~/lib/utils/url_utility';
 import App from '~/projects/new_v2/components/app.vue';
 import FormBreadcrumb from '~/projects/new_v2/components/form_breadcrumb.vue';
 import CommandLine from '~/projects/new_v2/components/command_line.vue';
 import SingleChoiceSelector from '~/vue_shared/components/single_choice_selector.vue';
+import ImportByUrlForm from '~/projects/new_v2/components/import_by_url_form.vue';
 
 jest.mock('~/lib/utils/url_utility');
 
@@ -16,6 +18,7 @@ describe('New project creation app', () => {
     wrapper = shallowMountExtended(App, {
       provide: {
         userNamespaceId: '1',
+        userNamespaceFullPath: 'root',
         canCreateProject: true,
         projectsUrl: '/dashboard/projects',
         userProjectLimit: 10000,
@@ -38,6 +41,7 @@ describe('New project creation app', () => {
   const findCommandLine = () => wrapper.findComponent(CommandLine);
   const findNextButton = () => wrapper.findByTestId('new-project-next');
   const findStep2 = () => wrapper.findByTestId('new-project-step2');
+  const findImportByUrlForm = () => wrapper.findComponent(ImportByUrlForm);
 
   it('renders breadcrumbs', () => {
     createComponent();
@@ -216,6 +220,34 @@ describe('New project creation app', () => {
           expect(setLocationHash).toHaveBeenLastCalledWith();
         });
       });
+    });
+  });
+
+  describe('import by URL form', () => {
+    beforeEach(async () => {
+      createComponent();
+
+      findSingleChoiceSelector().vm.$emit('change', 'import_project');
+
+      findNextButton().vm.$emit('click');
+      await waitForPromises(); // wait for the dynamic component to be rendered
+      findStep2().vm.$emit('next');
+    });
+
+    it('renders import by URL form', () => {
+      expect(findImportByUrlForm().props('namespace')).toEqual({
+        id: '1',
+        fullPath: 'root',
+        isPersonal: true,
+      });
+    });
+
+    it('emits back event when import by URL form emits back', async () => {
+      findImportByUrlForm().vm.$emit('back');
+      await nextTick();
+
+      expect(findStep2().exists()).toBe(true);
+      expect(findImportByUrlForm().exists()).toBe(false);
     });
   });
 });

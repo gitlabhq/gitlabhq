@@ -89,7 +89,7 @@ We provide two debugging scripts to help administrators verify their self-hosted
       | `--model-identifier` | Model identifier. | - | `--model-identifier=custom_openai/Mixtral-8x7B-Instruct-v0.1` |
       | `--api-key` | Model API key. | - | `--api-key=your-api-key` |
 
-     **Examples:**
+     **Examples**:
 
      For a `claude_3` model running on AWS Bedrock:
 

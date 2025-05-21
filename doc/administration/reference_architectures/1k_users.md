@@ -29,7 +29,7 @@ For a full list of reference architectures, see
 |--------------|----------------------|----------------|--------------|----------|
 | Up to 1,000 or 20 RPS | 8 vCPU, 16 GB memory | `n1-standard-8`<sup>2</sup> | `c5.2xlarge` | `F8s v2` |
 
-**Footnotes:**
+**Footnotes**:
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->

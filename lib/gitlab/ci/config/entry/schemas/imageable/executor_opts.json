@@ -23,7 +23,7 @@
       "type": "object",
       "properties": {
         "user": {
-          "type": "string",
+          "type": ["string", "integer"],
           "minLength": 1,
           "maxLength": 255,
           "description": "Username or UID to use for the container. It also supports the UID:GID format"

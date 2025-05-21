@@ -279,7 +279,7 @@ rule 11: valid
 Most supported `_redirects` rules behave the same in both GitLab and Netlify.
 However, there are some minor differences:
 
-- **All rule URLs must begin with a slash:**
+- **All rule URLs must begin with a slash**:
 
   Netlify does not require URLs to begin with a forward slash:
 
@@ -296,7 +296,7 @@ However, there are some minor differences:
   /old/path /new/path 200
   ```
 
-- **All placeholder values are populated:**
+- **All placeholder values are populated**:
 
   Netlify only populates placeholder values that appear in the `to` path:
 

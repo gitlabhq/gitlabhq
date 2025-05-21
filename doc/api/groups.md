@@ -538,7 +538,7 @@ Parameters:
 | `with_custom_attributes`      | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 | `with_security_reports`       | boolean        | no       | Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false`. Ultimate only. |
 
-**Footnotes:**
+**Footnotes**:
 
 1. Orders the results by a similarity score calculated from the `search` URL parameter.
    When you use `order_by=similarity`, the `sort` parameter is ignored.

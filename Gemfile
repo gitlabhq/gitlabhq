@@ -346,7 +346,7 @@ gem 'ruby-fogbugz', '~> 0.3.0', feature_category: :importers
 gem 'kubeclient', '~> 4.11.0', feature_category: :shared
 
 # AI
-gem 'circuitbox', '2.0.0', feature_category: :ai_abstraction_layer
+gem 'circuitbox', '2.0.0', feature_category: :shared
 
 # Sanitize user input
 gem 'sanitize', '~> 6.0.2', feature_category: :shared

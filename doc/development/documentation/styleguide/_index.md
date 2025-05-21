@@ -830,12 +830,12 @@ For example:
 
 When you add a footnote, do not re-sort the existing tags in the table.
 
-For the footnotes below the table, use `**Footnotes:**` followed by an ordered list.
+For the footnotes below the table, use `**Footnotes**:` followed by an ordered list.
 
 For example:
 
 ```markdown
-**Footnotes:**
+**Footnotes**:
 
 1. This is the first footnote.
 1. This is the second footnote.
@@ -848,7 +848,7 @@ The table and footnotes would render as follows:
 | App A    | Description text. <sup>1</sup> |
 | App B    | Description text. <sup>2</sup> |
 
-**Footnotes:**
+**Footnotes**:
 
 1. This is the first footnote.
 1. This is the second footnote.
@@ -860,7 +860,7 @@ use consecutive numbers for the list items.
 If you use consecutive numbers, you must disable Markdown rule `029`:
 
 ```markdown
-**Footnotes:**
+**Footnotes**:
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->

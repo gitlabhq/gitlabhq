@@ -72,7 +72,7 @@ The following table lists the GitLab Duo features, and whether they are availabl
 | [Summarize New Merge Request](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes)          | {{< icon name="check-circle-dashed" >}} Beta <sup>1</sup>      | GitLab 17.11 and later |
 | [Issue Description Generation](../../user/project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation)              | {{< icon name="dash-circle" >}} No      | Not applicable |
 
-**Footnotes:**
+**Footnotes**:
 
 1. Features released to beta in GitLab 17.11 are experiencing a known bug. For more information, see [issue 541259](https://gitlab.com/gitlab-org/gitlab/-/issues/541259).
 

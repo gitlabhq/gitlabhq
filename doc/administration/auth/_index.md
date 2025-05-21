@@ -41,7 +41,7 @@ For more information, see the links shown on this page for each external provide
 | **Provider-to-GitLab Role Sync**                | SAML Group Sync                         | LDAP Group Sync<br>SAML Group Sync ([GitLab 15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/285150) and later) |
 | **User Removal**                                | SCIM (remove user from top-level group) | LDAP (remove user from groups and block from the instance)<br>SCIM |
 
-**Footnotes:**
+**Footnotes**:
 
 1. Using Just-In-Time (JIT) provisioning, user accounts are created when the user first signs in.
 

@@ -201,7 +201,7 @@ The following table provides attribute mappings that are required for GitLab.
 | `displayName` OR `Join(" ", [givenName], [surname])` <sup>2</sup>          | `name.formatted`               |                     |
 | `Switch([IsSoftDeleted], , "False", "True", "True", "False")` <sup>3</sup> | `active`                       |                     |
 
-**Footnotes:**
+**Footnotes**:
 
 1. Use `mail` as a source attribute when the `userPrincipalName` is not an email address or is not deliverable.
 1. Use the `Join` expression if your `displayName` does not match the format of `Firstname Lastname`.

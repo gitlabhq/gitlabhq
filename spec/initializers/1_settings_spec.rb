@@ -97,4 +97,37 @@ RSpec.describe '1_settings', feature_category: :shared do
       it { expect(Settings.cell.topology_service_client.private_key_file).to eq(config[:private_key_file]) }
     end
   end
+
+  describe 'Pages custom domains settings' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:external_http, :external_https, :initial_custom_domain_mode, :expected_custom_domain_mode) do
+      nil   | true  | nil     | 'https'
+      true  | nil   | nil     | 'http'
+      true  | true  | nil     | 'https'
+      nil   | nil   | 'https' | 'https'
+      false | false | 'http'  | 'http'
+      nil   | true  | 'http'  | 'https'
+      nil   | nil   | nil     | nil
+    end
+
+    with_them do
+      before do
+        stub_config(pages: {
+          enabled: true,
+          external_http: external_http,
+          external_https: external_https,
+          custom_domain_mode: initial_custom_domain_mode
+        })
+
+        allow(Settings.pages).to receive(:__getobj__).and_return(Settings.pages)
+      end
+
+      it 'sets the expected custom_domain_mode value' do
+        load_settings
+
+        expect(Settings.pages['custom_domain_mode']).to eq(expected_custom_domain_mode)
+      end
+    end
+  end
 end

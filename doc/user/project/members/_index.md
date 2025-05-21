@@ -338,7 +338,7 @@ The following table lists the membership and visibility rights of project member
 | Be imported into other projects | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Share the project with other members | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
 
-**Footnotes:**
+**Footnotes**:
 
 1. Users can view only issues of projects they have access to.
 

@@ -10,6 +10,11 @@ describe('Blank Project Form', () => {
     option: {
       title: 'Import project',
     },
+    namespace: {
+      id: '1',
+      fullPath: 'root',
+      isPersonal: true,
+    },
   };
 
   const createComponent = (props = {}) => {
