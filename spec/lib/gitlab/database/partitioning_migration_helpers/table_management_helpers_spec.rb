@@ -619,13 +619,8 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
       context 'when the table is not empty' do
         before do
-          if ::Gitlab.next_rails?
-            source_model.create!(id: [1, 2])
-            source_model.create!(id: [2, 3])
-          else
-            source_model.create!(id: 1, runner_type: 2)
-            source_model.create!(id: 2, runner_type: 3)
-          end
+          source_model.create!(id: [1, 2])
+          source_model.create!(id: [2, 3])
         end
 
         let(:opts) { {} }

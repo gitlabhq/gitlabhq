@@ -3,20 +3,10 @@
 require 'spec_helper'
 require 'generators/gitlab/click_house/migration_generator'
 require 'fileutils'
-
-if ::Gitlab.next_rails?
-  require 'rails/generators/testing/behavior'
-else
-  require 'rails/generators/testing/behaviour'
-end
+require 'rails/generators/testing/behavior'
 
 RSpec.describe Gitlab::ClickHouse::MigrationGenerator, feature_category: :database do
-  if ::Gitlab.next_rails?
-    include Rails::Generators::Testing::Behavior
-  else
-    include Rails::Generators::Testing::Behaviour
-  end
-
+  include Rails::Generators::Testing::Behavior
   include FileUtils
 
   let(:migration_name) { "CreateProjects" }

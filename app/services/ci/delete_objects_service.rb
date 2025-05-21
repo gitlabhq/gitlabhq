@@ -54,14 +54,7 @@ module Ci
       deleted = []
 
       objects.each do |object|
-        if object.delete_file_from_storage
-          deleted << object
-          ::Gitlab::Metrics::CiDeletedObjectProcessingSlis.record_error(error: false)
-          ::Gitlab::Metrics::CiDeletedObjectProcessingSlis.record_apdex(
-            success: object.created_at > ACCEPTABLE_DELAY.ago)
-        else
-          ::Gitlab::Metrics::CiDeletedObjectProcessingSlis.record_error(error: true)
-        end
+        deleted << object if delete_object(object)
       end
 
       Ci::DeletedObject.id_in(deleted.map(&:id)).delete_all
@@ -71,6 +64,17 @@ module Ci
 
     def transaction_open?
       Ci::DeletedObject.connection.transaction_open?
+    end
+
+    def delete_object(object)
+      if object.delete_file_from_storage
+        ::Gitlab::Metrics::CiDeletedObjectProcessingSlis.record_error(error: false)
+        ::Gitlab::Metrics::CiDeletedObjectProcessingSlis.record_apdex(success: object.created_at > ACCEPTABLE_DELAY.ago)
+        true
+      else
+        ::Gitlab::Metrics::CiDeletedObjectProcessingSlis.record_error(error: true)
+        false
+      end
     end
   end
 end

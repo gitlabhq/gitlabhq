@@ -136,7 +136,7 @@ The above methods make use of the [BulkAssignService](https://gitlab.com/gitlab-
 
 ### Setting up Duo on your **staging** GitLab.com account
 
-Please refer to [Instructions for setting up Duo add-ons on your **staging** GitLab.com account](ai_development_license.md).
+For more information, see [setting up Duo on your GitLab.com staging account](ai_development_license.md#setting-up-duo-on-your-gitlabcom-staging-account).
 
 ### Video demonstrations of installing and using Code Suggestions in IDEs
 

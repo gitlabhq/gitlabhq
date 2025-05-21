@@ -17,11 +17,7 @@ RSpec.describe StorageHelper, feature_category: :consumables_cost_management do
     end
 
     it "uses commas as thousands separator" do
-      if ::Gitlab.next_rails?
-        expect(helper.storage_counter(100_000_000_000_000_000_000_000_000)).to eq("84,703.3 ZB")
-      else
-        expect(helper.storage_counter(100_000_000_000_000_000_000_000)).to eq("86,736.2 EiB")
-      end
+      expect(helper.storage_counter(100_000_000_000_000_000_000_000_000)).to eq("84,703.3 ZB")
     end
   end
 

@@ -1195,11 +1195,6 @@ module Ci
     end
     strong_memoize_attr :source
 
-    # Can be removed in Rails 7.1. Related to: Gitlab.next_rails?
-    def to_partial_path
-      'jobs/job'
-    end
-
     def token
       return encoded_jwt if user&.has_composite_identity? || use_jwt_for_ci_cd_job_token?
 

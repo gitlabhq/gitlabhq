@@ -7,12 +7,7 @@
 # Can be removed with Rails 7.0.
 Warning.ignore(/PG::Coder.new\(hash\) is deprecated/)
 
-deprecators =
-  if ::Gitlab.next_rails?
-    Rails.application.deprecators
-  else
-    ActiveSupport::Deprecation
-  end
+deprecators = Rails.application.deprecators
 
 silenced = Rails.env.production? && !Gitlab::Utils.to_boolean(ENV['GITLAB_LOG_DEPRECATIONS'])
 deprecators.silenced = silenced
@@ -42,16 +37,12 @@ else
   view_component_3_warnings = []
   deprecators.disallowed_warnings = rails7_deprecation_warnings + view_component_3_warnings
 
-  if ::Gitlab.next_rails?
-    deprecators.behavior = ->(message, callstack, deprecator) do
-      if ignored_warnings.none? { |warning| warning.match?(message) }
-        ActiveSupport::Deprecation::DEFAULT_BEHAVIORS.slice(:stderr, :notify).each_value do |behavior|
-          behavior.call(message, callstack, deprecator)
-        end
+  deprecators.behavior = ->(message, callstack, deprecator) do
+    if ignored_warnings.none? { |warning| warning.match?(message) }
+      ActiveSupport::Deprecation::DEFAULT_BEHAVIORS.slice(:stderr, :notify).each_value do |behavior|
+        behavior.call(message, callstack, deprecator)
       end
     end
-  else
-    deprecators.behavior = [:stderr, :notify]
   end
 end
 
@@ -71,7 +62,7 @@ unless silenced
 
   # Log deprecation warnings emitted from Rails (see ActiveSupport::Deprecation).
   ActiveSupport::Notifications.subscribe('deprecation.rails') do |_name, _start, _finish, _id, payload|
-    if !::Gitlab.next_rails? || ignored_warnings.none? { |warning| warning.match?(payload[:message]) }
+    if ignored_warnings.none? { |warning| warning.match?(payload[:message]) }
       Gitlab::DeprecationJsonLogger.info(message: payload[:message].strip, source: 'rails')
     end
   end

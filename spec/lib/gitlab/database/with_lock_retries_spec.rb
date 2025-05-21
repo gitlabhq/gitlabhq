@@ -43,7 +43,7 @@ RSpec.describe Gitlab::Database::WithLockRetries, feature_category: :database do
           conn = ActiveRecord::Base.connection_pool.checkout
 
           # Set a new lock every time to allow multiple connections per thread
-          conn.lock_thread = ActiveSupport::Concurrency::ThreadLoadInterlockAwareMonitor.new if ::Gitlab.next_rails?
+          conn.lock_thread = ActiveSupport::Concurrency::ThreadLoadInterlockAwareMonitor.new
 
           conn.transaction do
             conn.execute("LOCK TABLE #{Project.table_name} in exclusive mode")

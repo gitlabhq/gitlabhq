@@ -10,12 +10,13 @@ RSpec.describe 'cross-database foreign keys', feature_category: :database do
   # The issue corresponding to the loose foreign key conversion
   # should be added as a comment along with the name of the column.
   let!(:allowed_cross_database_foreign_keys) do
-    keys = [
+    [
       'zoekt_indices.zoekt_enabled_namespace_id',
       'zoekt_repositories.project_id',
       'zoekt_replicas.zoekt_enabled_namespace_id',
       'zoekt_replicas.namespace_id',
       'system_access_microsoft_applications.namespace_id',
+      'ci_job_artifact_states.partition_id.job_artifact_id',
       'p_ci_build_tags.tag_id',                                          # https://gitlab.com/gitlab-org/gitlab/-/issues/470872
       'ci_secure_file_states.ci_secure_file_id',                         # https://gitlab.com/groups/gitlab-org/-/epics/17347
       'dependency_proxy_blob_states.dependency_proxy_blob_id',           # https://gitlab.com/groups/gitlab-org/-/epics/17347
@@ -46,14 +47,6 @@ RSpec.describe 'cross-database foreign keys', feature_category: :database do
       'appearance_uploads.namespace_id',                            # https://gitlab.com/gitlab-org/gitlab/-/issues/534207
       'appearance_uploads.organization_id'                          # https://gitlab.com/gitlab-org/gitlab/-/issues/534207
     ]
-
-    keys << if ::Gitlab.next_rails?
-              'ci_job_artifact_states.partition_id.job_artifact_id'
-            else
-              'ci_job_artifact_states.partition_id'
-            end
-
-    keys
   end
 
   def foreign_keys_for(table_name)

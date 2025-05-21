@@ -96,7 +96,7 @@ module Database
         .connection_pool_names
         .map(&:constantize)
 
-      connection_classes.delete(ActiveRecord::PendingMigrationConnection) if ::Gitlab.next_rails?
+      connection_classes.delete(ActiveRecord::PendingMigrationConnection)
 
       connection_class_to_config = connection_classes.index_with(&:connection_db_config)
 

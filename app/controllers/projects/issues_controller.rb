@@ -17,6 +17,8 @@ class Projects::IssuesController < Projects::ApplicationController
   prepend_before_action :store_uri, only: [:new, :show, :designs]
 
   before_action :disable_query_limiting, only: [:create_merge_request, :move, :bulk_update]
+  before_action :disable_show_query_limit!, only: :show
+
   before_action :check_issues_available!
   before_action :issue, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
   before_action :require_incident_for_incident_routes, only: :show
@@ -405,6 +407,10 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   private
+
+  def disable_show_query_limit!
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/544875', new_threshold: 120)
+  end
 
   def show_work_item?
     # Service Desk issues and incidents should not use the work item view

@@ -49,11 +49,7 @@ module ActionDispatch
           # - https://github.com/rails/rails/blob/v7.0.8.4/actionpack/lib/action_dispatch/journey/router.rb#L130
           #
           # After the upgrade, this method can be more like the v7.1.3.4 version
-          if Gitlab.next_rails?
-            yield [match_data, path_parameters, r]
-          else
-            [match_data, path_parameters, r]
-          end
+          yield [match_data, path_parameters, r]
         end.compact!
 
         routes

@@ -594,32 +594,6 @@ RSpec.describe Gitlab::Database, feature_category: :database do
         event = events.first
         expect(event).not_to be_nil
         expect(event.duration).to be > 0.0
-
-        unless ::Gitlab.next_rails?
-          expect(event.payload).to a_hash_including(
-            connection: be_a(Gitlab::Database::LoadBalancing::ConnectionProxy)
-          )
-        end
-      end
-    end
-
-    unless ::Gitlab.next_rails?
-      context 'within an empty transaction block' do
-        it 'publishes a transaction event' do
-          events = subscribe_events do
-            ApplicationRecord.transaction {}
-            Ci::ApplicationRecord.transaction {}
-          end
-
-          expect(events.length).to be(2)
-
-          event = events.first
-          expect(event).not_to be_nil
-          expect(event.duration).to be > 0.0
-          expect(event.payload).to a_hash_including(
-            connection: be_a(Gitlab::Database::LoadBalancing::ConnectionProxy)
-          )
-        end
       end
     end
 

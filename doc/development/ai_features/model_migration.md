@@ -425,7 +425,7 @@ Priority: [Priority level]
 
 ## Implementation Details
 
-Please follow the issues below with the associated rollout plans:
+Follow the issues below with the associated rollout plans:
 
 | Feature | DRI | ETA | Issue Link |
 |---------|-----|-----|------------|

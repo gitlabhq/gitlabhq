@@ -725,7 +725,7 @@ Exceptions to this general guideline should be motivated and documented.
 
 We're running Ruby 3.2 on GitLab.com, as well as for the default branch.
 To prepare for the next Ruby version, we run merge requests in Ruby 3.3.
-Please see the roadmap at
+See the roadmap at
 [Ruby 3.3 epic](https://gitlab.com/groups/gitlab-org/-/epics/12350)
 for more details.
 

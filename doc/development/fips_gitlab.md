@@ -126,7 +126,7 @@ Additionally, these package repositories are disabled in FIPS mode:
 
 ### Development guidelines
 
-Please refer to the information above and the GitLab [Cryptography Standard](https://handbook.gitlab.com/handbook/security/cryptographic-standard/). Reach out
+For more information, refer to the information above and see the [GitLab Cryptography Standard](https://handbook.gitlab.com/handbook/security/cryptographic-standard/). Reach out
 to `#sec-assurance` with questions or open an MR if something needs to be clarified.
 
 Here are some guidelines for developing GitLab FIPS-approved software:

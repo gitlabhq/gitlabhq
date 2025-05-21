@@ -60,4 +60,4 @@ The [CommonMark forum](https://talk.commonmark.org) is a good place to research 
 - [How to render GitLab-flavored Markdown on the frontend?](../fe_guide/frontend_faq.md#10-how-to-render-gitlab-flavored-markdown)
 - [Diagrams.net integration](../fe_guide/diagrams_net_integration.md)
 
-Please contact the [Plan:Knowledge team](https://handbook.gitlab.com/handbook/engineering/development/dev/plan/knowledge/) if you have any questions.
+Contact the [Plan:Knowledge team](https://handbook.gitlab.com/handbook/engineering/development/dev/plan/knowledge/) if you have any questions.

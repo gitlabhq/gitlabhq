@@ -126,7 +126,7 @@ track_internal_event(
 )
 ```
 
-Please add custom properties only in addition to the built-in properties. Additional properties can only have string or numeric values.
+Add custom properties only in addition to the built-in properties. Additional properties can only have string or numeric values.
 
 {{< alert type="warning" >}}
 

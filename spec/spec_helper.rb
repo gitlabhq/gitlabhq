@@ -78,12 +78,7 @@ quality_level = Quality::TestLevel.new
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
   config.use_instantiated_fixtures = false
-
-  if ::Gitlab.next_rails?
-    config.fixture_paths = [Rails.root]
-  else
-    config.fixture_path = Rails.root
-  end
+  config.fixture_paths = [Rails.root]
 
   config.verbose_retry = true
   config.display_try_failure_messages = true

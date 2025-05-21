@@ -485,12 +485,12 @@ This is necessary to provide compatibility with Red Hat OpenShift instances,
 which don't allow containers to run as an admin (root) user.
 There are certain limitations to keep in mind when running a container as an unprivileged user,
 such as the fact that any files that need to be written on the Docker filesystem will require the appropriate permissions for the `GitLab` user.
-Please see the following merge request for more details:
+See the following merge request for more details:
 [Use GitLab user instead of root in Docker image](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/merge_requests/130).
 
 #### Minimal vulnerability data
 
-Please see [our security-report-schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/src/security-report-format.json) for a full list of required fields.
+See [our security-report-schemas](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/src/security-report-format.json) for a full list of required fields.
 
 The [security-report-schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas) repository contains JSON schemas that list the required fields for each report type:
 

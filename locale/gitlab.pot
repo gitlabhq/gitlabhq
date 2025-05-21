@@ -23376,9 +23376,6 @@ msgstr ""
 msgid "DuoEnterpriseTrial|Start your free GitLab Duo Enterprise trial on %{group_name}"
 msgstr ""
 
-msgid "DuoEnterpriseTrial|Start your free GitLab Duo Pro trial"
-msgstr ""
-
 msgid "DuoEnterpriseTrial|Stay on top of regulatory requirements with self-hosted model deployment"
 msgstr ""
 

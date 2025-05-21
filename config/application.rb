@@ -86,15 +86,8 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/runtime')
     require_dependency Rails.root.join('lib/gitlab/patch/database_config')
     require_dependency Rails.root.join('lib/gitlab/patch/redis_cache_store')
-    require_dependency Rails.root.join('lib/gitlab/patch/old_redis_cache_store')
     require_dependency Rails.root.join('lib/gitlab/pdf')
     require_dependency Rails.root.join('lib/gitlab/exceptions_app')
-
-    unless ::Gitlab.next_rails?
-      config.active_support.disable_to_s_conversion = false # New default is true
-      config.active_support.use_rfc4122_namespaced_uuids = true
-      ActiveSupport.to_time_preserves_timezone = false
-    end
 
     config.exceptions_app = Gitlab::ExceptionsApp.new(Gitlab.jh? ? Rails.root.join('jh/public') : Rails.public_path)
 
@@ -126,12 +119,7 @@ module Gitlab
 
     config.generators.templates.push("#{config.root}/generator_templates")
 
-    foss_eager_load_paths =
-      if Gitlab.next_rails?
-        config.all_eager_load_paths.dup.freeze
-      else
-        config.eager_load_paths.dup.freeze
-      end
+    foss_eager_load_paths = config.all_eager_load_paths.dup.freeze
 
     load_paths = ->(dir:) do
       ext_paths = foss_eager_load_paths.each_with_object([]) do |path, memo|
@@ -541,11 +529,7 @@ module Gitlab
     end
 
     # Use caching across all environments
-    if ::Gitlab.next_rails?
-      ActiveSupport::Cache::RedisCacheStore.prepend(Gitlab::Patch::RedisCacheStore)
-    else
-      ActiveSupport::Cache::RedisCacheStore.prepend(Gitlab::Patch::OldRedisCacheStore)
-    end
+    ActiveSupport::Cache::RedisCacheStore.prepend(Gitlab::Patch::RedisCacheStore)
 
     config.cache_store = :redis_cache_store, Gitlab::Redis::Cache.active_support_config
 

@@ -74,15 +74,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
 
     let(:disconnect_method) { :disconnect! }
 
-    if ::Gitlab.next_rails?
-      it_behaves_like 'disconnects the pool'
-    else
-      context 'with Rails 7.0' do
-        let(:disconnect_method) { :disconnect_without_verify! }
-
-        it_behaves_like 'disconnects the pool'
-      end
-    end
+    it_behaves_like 'disconnects the pool'
   end
 
   describe '#release_connection' do
@@ -95,11 +87,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
 
   describe '#offline!' do
     it 'marks the host as offline' do
-      if ::Gitlab.next_rails?
-        expect(host.pool).to receive(:disconnect!)
-      else
-        expect(host.pool).to receive(:disconnect_without_verify!)
-      end
+      expect(host.pool).to receive(:disconnect!)
 
       expect(Gitlab::Database::LoadBalancing::Logger).to receive(:warn)
         .with(hash_including(event: :host_offline))

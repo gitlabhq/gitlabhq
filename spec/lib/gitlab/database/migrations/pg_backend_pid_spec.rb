@@ -44,41 +44,9 @@ RSpec.describe Gitlab::Database::Migrations::PgBackendPid, feature_category: :da
     end
   end
 
-  describe Gitlab::Database::Migrations::PgBackendPid::OldMigratorPgBackendPid do
-    let(:klass) do
-      Class.new do
-        def with_advisory_lock_connection
-          yield :conn
-        end
-      end
-    end
-
-    it 're-yields with same arguments and wraps it with calls to .say' do
-      patched_instance = klass.prepend(described_class).new
-      expect(Gitlab::Database::Migrations::PgBackendPid).to receive(:say).twice
-
-      expect { |b| patched_instance.with_advisory_lock_connection(&b) }.to yield_with_args(:conn)
-    end
-
-    it 're-yields with same arguments and wraps it with calls to .say even when error is raised' do
-      patched_instance = klass.prepend(described_class).new
-      expect(Gitlab::Database::Migrations::PgBackendPid).to receive(:say).twice
-
-      expect do
-        patched_instance.with_advisory_lock_connection do
-          raise ActiveRecord::ConcurrentMigrationError, 'test'
-        end
-      end.to raise_error ActiveRecord::ConcurrentMigrationError
-    end
-  end
-
   describe '.patch!' do
     it 'patches ActiveRecord::Migrator' do
-      if ::Gitlab.next_rails?
-        expect(ActiveRecord::Migrator).to receive(:prepend).with(described_class::MigratorPgBackendPid)
-      else
-        expect(ActiveRecord::Migrator).to receive(:prepend).with(described_class::OldMigratorPgBackendPid)
-      end
+      expect(ActiveRecord::Migrator).to receive(:prepend).with(described_class::MigratorPgBackendPid)
 
       described_class.patch!
     end
