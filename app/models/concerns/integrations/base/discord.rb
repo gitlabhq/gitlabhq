@@ -1,29 +1,15 @@
 # frozen_string_literal: true
 
+require "discordrb/webhooks"
+
 module Integrations
   module Base
     module Discord
       extend ActiveSupport::Concern
 
-      include Integrations::Base::ChatNotification
-
       ATTACHMENT_REGEX = Gitlab::UntrustedRegexp.new(': (?<entry>[^\n]*)\n - (?<name>[^\n]*)\n*')
-      DISCORD_URI_REGEX = %r{\Ahttps://discord\.com(/.*)?\z}
-      WEBHOOK_ADDRESSABLE_URL_OPTIONS = { schemes: %w[https] }.freeze
-      SUPPORTED_EVENTS = %w[
-        push
-        issue
-        confidential_issue
-        merge_request
-        note
-        confidential_note
-        tag_push
-        pipeline
-        wiki_page
-        deployment
-      ].freeze
-      GROUP_SUPPORTED_EVENTS = %w[group_mention group_confidential_mention].freeze
-      ALL_SUPPORTED_EVENTS = (SUPPORTED_EVENTS | GROUP_SUPPORTED_EVENTS).freeze
+
+      include Integrations::Base::ChatNotification
 
       class_methods do
         def title
@@ -47,15 +33,7 @@ module Integrations
         end
 
         def supported_events
-          SUPPORTED_EVENTS
-        end
-
-        def all_channel_fields
-          ALL_SUPPORTED_EVENTS.map { |event| event_channel_name(event) }
-        end
-
-        def has_public_url_validation_options?
-          true
+          %w[push issue confidential_issue merge_request note confidential_note tag_push pipeline wiki_page deployment]
         end
       end
 
@@ -81,27 +59,9 @@ module Integrations
           end,
           choices: -> { branch_choices }
 
-        validates :webhook,
-          format: {
-            with: DISCORD_URI_REGEX,
-            message: ->(_object, _data) { s_('Integrations|URL must point to discord.com') }
-          },
-          public_url: WEBHOOK_ADDRESSABLE_URL_OPTIONS, if: :validate_discord_url_field?
-
-        all_channel_fields.each do |channel_field|
-          validates channel_field,
-            format: {
-              with: DISCORD_URI_REGEX,
-              message: ->(_object, _data) { s_('Integrations|URL must point to discord.com') }
-            },
-            public_url: WEBHOOK_ADDRESSABLE_URL_OPTIONS, if: ->(integration) do
-              integration.validate_discord_url_field?(channel_field)
-            end
-        end
-
         override :supported_events
         def supported_events
-          additional = group_level? ? GROUP_SUPPORTED_EVENTS : []
+          additional = group_level? ? %w[group_mention group_confidential_mention] : []
 
           (self.class.supported_events + additional).freeze
         end
@@ -110,24 +70,29 @@ module Integrations
 
         def notify(message, opts)
           webhook_url = opts[:channel]&.first || webhook
+          client = Discordrb::Webhooks::Client.new(url: webhook_url)
 
-          payload = {
-            content: '',
-            embeds: Array.wrap(build_embed(message))
-          }
+          client.execute do |builder|
+            builder.add_embed do |embed|
+              embed.author = Discordrb::Webhooks::EmbedAuthor.new(
+                name: message.user_name,
+                icon_url: message.user_avatar
+              )
+              embed.description = "#{message.pretext}\n#{Array.wrap(message.attachments).join("\n")}"
 
-          response = Gitlab::HTTP.post(
-            webhook_url,
-            headers: { 'Content-Type' => 'application/json' },
-            body: Gitlab::Json.dump(payload)
-          )
+              if ATTACHMENT_REGEX.match?(embed.description)
+                embed.description = ATTACHMENT_REGEX.replace_gsub(embed.description) do |match|
+                  " #{match[:entry]} - #{match[:name]}\n"
+                end
+              end
 
-          return response if response.success?
-
-          log_error('Error notifying Discord',
-            response_body: response.body,
-            response_code: response.code
-          )
+              embed.colour = embed_color(message)
+              embed.timestamp = Time.now.utc
+            end
+          end
+        rescue RestClient::Exception => e
+          log_error(e.message)
+          false
         end
       end
 
@@ -147,47 +112,7 @@ module Integrations
         true
       end
 
-      # Prevents breaking changes for users with existing, active, and invalid discord webhooks or event
-      # webhook override URLs that were otherwise working for the user. This validation does not run on blank
-      # URL fields because presence validation will be done via the `required: true` on each field.
-      def validate_discord_url_field?(url_field = 'webhook')
-        return false unless activated?
-        return false unless properties[url_field.to_s].present?
-        return true if active_changed?(to: true)
-
-        # rubocop:disable GitlabSecurity/PublicSend -- url_field must be a field defined on the class, verified by accessing properties
-        url_was = public_send(:"#{url_field}_was")
-        url_changed = public_send(:"#{url_field}_changed?")
-        # rubocop:enable GitlabSecurity/PublicSend
-
-        return false unless url_changed
-        return true if url_was.blank?
-
-        url_was.match?(DISCORD_URI_REGEX)
-      end
-
       private
-
-      def build_embed(message)
-        embed = {
-          color: embed_color(message),
-          timestamp: Time.now.utc.iso8601,
-          author: {
-            name: message.user_name,
-            icon_url: message.user_avatar
-          }
-        }
-
-        description = "#{message.pretext}\n#{Array.wrap(message.attachments).join("\n")}"
-
-        if ATTACHMENT_REGEX.match?(description)
-          description = ATTACHMENT_REGEX.replace_gsub(description) do |match|
-            " #{match[:entry]} - #{match[:name]}\n"
-          end
-        end
-
-        embed.merge(description: description)
-      end
 
       COLOR_OVERRIDES = {
         'good' => '#0d532a',

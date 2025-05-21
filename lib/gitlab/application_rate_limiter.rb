@@ -51,7 +51,6 @@ module Gitlab
           import_source_user_notification: { threshold: 1, interval: 8.hours },
           issues_create: { threshold: -> { application_settings.issues_create_limit }, interval: 1.minute },
           jobs_index: { threshold: -> { application_settings.project_jobs_api_rate_limit }, interval: 1.minute },
-          large_blob_download: { threshold: 5, interval: 1.minute },
           members_delete: { threshold: -> { application_settings.members_delete_limit }, interval: 1.minute },
           namespace_exists: { threshold: 20, interval: 1.minute },
           notes_create: { threshold: -> { application_settings.notes_create_limit }, interval: 1.minute },

@@ -57,10 +57,7 @@ module Clusters
       # We expect to be `active?` only when enabled and cluster is created (the api_url is assigned)
       validates :api_url, public_url: true, presence: true
       validates :token, presence: true
-      validates :ca_cert, certificate: true, allow_blank: true, length: 1..65535, if: :ca_cert_changed?
-
-      validates :api_url, length: 1..2048, if: :api_url_changed?
-      validates :token, length: 1..8192, if: :token_changed?
+      validates :ca_cert, certificate: true, allow_blank: true, if: :ca_cert_changed?
 
       validate :prevent_modification, on: :update
 

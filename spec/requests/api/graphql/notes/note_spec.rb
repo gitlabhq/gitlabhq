@@ -85,7 +85,6 @@ RSpec.describe 'Query.note(id)', feature_category: :team_planning do
           expect(note_data['id']).to eq(global_id_of(issue_email_participants_system_note).to_s)
           expect(note_data['body']).to include(obfuscated_email)
           expect(note_data['bodyHtml']).to include(obfuscated_email)
-          expect(note_data['bodyFirstLineHtml']).to include(obfuscated_email)
         end
 
         context 'when user has at least the reporter role in project' do
@@ -95,7 +94,6 @@ RSpec.describe 'Query.note(id)', feature_category: :team_planning do
             expect(note_data['id']).to eq(global_id_of(issue_email_participants_system_note).to_s)
             expect(note_data['body']).to include(email)
             expect(note_data['bodyHtml']).to include(email)
-            expect(note_data['bodyFirstLineHtml']).to include(email)
           end
         end
       end

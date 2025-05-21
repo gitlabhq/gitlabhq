@@ -7,6 +7,8 @@ module Types
 
       implements Types::ResolvableInterface
 
+      include MarkupHelper
+
       field :author, Types::UserType,
         null: true,
         description: 'User who wrote the note.'
@@ -21,7 +23,6 @@ module Types
         description: 'Content of the note.'
 
       field :body_first_line_html, GraphQL::Types::String,
-        method: :note_first_line_html,
         null: false,
         description: 'First line of the note content.'
 
@@ -60,6 +61,10 @@ module Types
         return ::Gitlab::UrlBuilder.build(object) unless context[:noteable_url]
 
         context[:noteable_url] + "#note_#{object.id}"
+      end
+
+      def body_first_line_html
+        first_line_in_markdown(object, :note, 125, project: note_project)
       end
     end
   end

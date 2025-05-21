@@ -731,8 +731,6 @@ class Member < ApplicationRecord
   end
 
   def after_accept_request
-    update_two_factor_requirement
-
     post_create_member_hook
   end
 

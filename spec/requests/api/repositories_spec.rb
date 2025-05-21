@@ -190,17 +190,6 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
           let(:request) { get api(route, current_user) }
         end
       end
-
-      context 'when a large blob is requested' do
-        it 'rate limits user when thresholds hit' do
-          stub_const("API::Helpers::BlobHelpers::MAX_BLOB_SIZE", 5)
-          allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled_request?).and_return(true)
-
-          get api(route, current_user)
-
-          expect(response).to have_gitlab_http_status(:too_many_requests)
-        end
-      end
     end
 
     context 'when unauthenticated', 'and project is public' do

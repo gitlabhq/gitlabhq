@@ -6,10 +6,10 @@ class AddNotNullToForkNetworksOrganizationId < Gitlab::Database::Migration[2.2]
   milestone '18.0'
 
   def up
-    change_column_null :fork_networks, :organization_id, false
+    # no-op due to https://gitlab.com/gitlab-org/gitlab/-/issues/543167#note_2512131075
   end
 
   def down
-    change_column_null :fork_networks, :organization_id, true
+    # no-op due to https://gitlab.com/gitlab-org/gitlab/-/issues/543167#note_2512131075
   end
 end

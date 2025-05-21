@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Platforms::Kubernetes, feature_category: :kubernetes_managedment do
+RSpec.describe Clusters::Platforms::Kubernetes do
   include KubernetesHelpers
   include ReactiveCachingHelpers
 
@@ -13,10 +13,6 @@ RSpec.describe Clusters::Platforms::Kubernetes, feature_category: :kubernetes_ma
   it { is_expected.to validate_exclusion_of(:namespace).in_array(%w[gitlab-managed-apps]) }
   it { is_expected.to validate_presence_of(:api_url) }
   it { is_expected.to validate_presence_of(:token) }
-
-  it { is_expected.to validate_length_of(:api_url).is_at_most(2048) }
-  it { is_expected.to validate_length_of(:token).is_at_most(8192) }
-  it { is_expected.to validate_length_of(:ca_cert).is_at_most(65535) }
 
   it { is_expected.to delegate_method(:enabled?).to(:cluster) }
   it { is_expected.to delegate_method(:provided_by_user?).to(:cluster) }

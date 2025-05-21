@@ -4,13 +4,7 @@ module Ci
   class BasicVariableEntity < Grape::Entity
     expose :id
     expose :key
-    expose :value do |variable, _options|
-      if variable.respond_to?(:hidden)
-        ::Ci::VariableValue.new(variable).evaluate
-      else
-        variable.value
-      end
-    end
+    expose :value
     expose :description
     expose :variable_type
 

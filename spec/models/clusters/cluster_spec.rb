@@ -29,8 +29,6 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
   it { is_expected.to have_many(:deployment_clusters) }
   it { is_expected.to have_many(:environments).through(:deployments) }
 
-  it { is_expected.to validate_length_of(:environment_scope).is_at_most(255) }
-
   it { is_expected.to delegate_method(:status).to(:provider) }
   it { is_expected.to delegate_method(:status_reason).to(:provider) }
 
@@ -343,12 +341,6 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
 
         context 'when name is nil' do
           let(:name) { nil }
-
-          it { is_expected.to be_falsey }
-        end
-
-        context 'when name is too long' do
-          let(:name) { 'a' * 2049 }
 
           it { is_expected.to be_falsey }
         end

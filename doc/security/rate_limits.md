@@ -173,23 +173,6 @@ There is a rate limit for [removing project or group members using the API endpo
 
 The **rate limit** is 60 deletions per minute.
 
-### Repository blob and file access
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/security/gitlab/-/issues/1302) in GitLab 18.1.
-
-{{< /history >}}
-
-Rate limits apply when accessing large files through specific repository API endpoints.
-For files larger than 10 MB, the rate limit is 5 calls per minute per object per project for:
-
-- [Repository blob endpoint](../api/repositories.md#get-a-blob-from-repository): `/projects/:id/repository/blobs/:sha`
-- [Repository file endpoint](../api/repository_files.md#get-file-from-repository): `/projects/:id/repository/files/:file_path`
-
-These limits help prevent excessive resource usage when accessing large repository files through
-the API.
-
 ### Notification emails
 
 {{< history >}}

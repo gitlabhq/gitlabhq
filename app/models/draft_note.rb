@@ -28,9 +28,6 @@ class DraftNote < ApplicationRecord
   validates :discussion_id, allow_nil: true, format: { with: /\A\h{40}\z/ }
   validates :line_code, length: { maximum: 255 }, allow_nil: true
 
-  validates :position, :original_position, :change_position,
-    'notes/position_serialized_size': { max_bytesize: 100.kilobytes }
-
   enum :note_type, {
     Note: 0,
     DiffNote: 1,

@@ -35,13 +35,6 @@ RSpec.describe Integrations::Base::ChatNotification, feature_category: :integrat
       let(:active) { true }
 
       it { is_expected.to validate_presence_of :webhook }
-      it { is_expected.to allow_value('http://some-webhook-url.com').for(:webhook) }
-      it { is_expected.to allow_value('https://some-webhook-url.com').for(:webhook) }
-      it { is_expected.not_to allow_value('some-webhook-url.com').for(:webhook) }
-      it { is_expected.not_to allow_value('http://localhost:3000').for(:webhook) }
-      it { is_expected.not_to allow_value('').for(:webhook) }
-      it { is_expected.not_to allow_value(nil).for(:webhook) }
-
       it { is_expected.to allow_value(build_channel_list(10)).for(:push_channel) }
       it { is_expected.not_to allow_value(build_channel_list(11)).for(:push_channel) }
 
@@ -56,13 +49,6 @@ RSpec.describe Integrations::Base::ChatNotification, feature_category: :integrat
       let(:active) { false }
 
       it { is_expected.not_to validate_presence_of :webhook }
-      it { is_expected.to allow_value('http://some-webhook-url.com').for(:webhook) }
-      it { is_expected.to allow_value('https://some-webhook-url.com').for(:webhook) }
-      it { is_expected.to allow_value('some-webhook-url.com').for(:webhook) }
-      it { is_expected.to allow_value('http://localhost:3000').for(:webhook) }
-      it { is_expected.to allow_value('').for(:webhook) }
-      it { is_expected.to allow_value(nil).for(:webhook) }
-
       it { is_expected.to allow_value(build_channel_list(10)).for(:push_channel) }
       it { is_expected.to allow_value(build_channel_list(11)).for(:push_channel) }
 
@@ -401,9 +387,9 @@ RSpec.describe Integrations::Base::ChatNotification, feature_category: :integrat
     end
   end
 
-  describe '.event_channel_name' do
+  describe '#event_channel_name' do
     it 'returns the channel field name for the given event' do
-      expect(integration_class.event_channel_name(:event)).to eq('event_channel')
+      expect(integration.event_channel_name(:event)).to eq('event_channel')
     end
   end
 

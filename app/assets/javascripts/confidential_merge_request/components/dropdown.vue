@@ -23,13 +23,13 @@ export default {
       return this.selectedProject?.id && String(this.selectedProject.id);
     },
     toggleText() {
-      return this.selectedProject?.pathWithNamespace || __('Select private project');
+      return this.selectedProject?.name || __('Select private project');
     },
     listboxItems() {
-      return this.projects.map(({ id, pathWithNamespace }) => {
+      return this.projects.map(({ id, name }) => {
         return {
           value: String(id),
-          text: pathWithNamespace,
+          text: name,
         };
       });
     },
