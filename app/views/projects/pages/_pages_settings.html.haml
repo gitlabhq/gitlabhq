@@ -9,16 +9,21 @@
         label_options: { class: 'label-bold' }
       - docs_link_start = "<a href='#{help_page_path('user/project/pages/custom_domains_ssl_tls_certification/_index.md', anchor: 'force-https-for-gitlab-pages-websites')}' target='_blank' rel='noopener noreferrer'>".html_safe
       - link_end = '</a>'.html_safe
-      %p.gl-pl-6
-        = s_("GitLabPages|When enabled, all attempts to visit your website through HTTP are automatically redirected to HTTPS using a response with status code 301. Requires a valid certificate for all domains. %{docs_link_start}Learn more.%{link_end}").html_safe % { docs_link_start: docs_link_start, link_end: link_end }
+      %p.gl-text-subtle.gl-pl-6
+        = s_("GitLabPages|When enabled, all access to domains will use HTTPS with %{redirect_code} redirects. Requires valid certificates for all domains. %{docs_link_start}How does HTTPS redirection work?%{link_end}").html_safe % { docs_link_start: docs_link_start, link_end: link_end, redirect_code: tag.code('301') }
 
   .form-group
     = f.fields_for :project_setting do |settings|
       = settings.gitlab_ui_checkbox_component :pages_unique_domain_enabled,
         s_('GitLabPages|Use unique domain'),
         label_options: { class: 'label-bold' }
-      %p.gl-pl-6
-        = s_("GitLabPages|When enabled, a unique domain is generated to access pages.").html_safe
+      - docs_link_start = "<a href='#{help_page_path('user/project/pages/custom_domains_ssl_tls_certification/_index.md', anchor: 'set-up-a-custom-domain')}' target='_blank' rel='noopener noreferrer'>".html_safe
+      - link_end = '</a>'.html_safe
+      %p.gl-text-subtle.gl-pl-6
+        = s_("GitLabPages|When enabled, adds a unique identifier to your domain (for example: %{domain}). When disabled, uses your namespace (username/group name) as the domain (for example: %{unique_domain}). %{docs_link_start}How do Pages URLs work?%{link_end}").html_safe % { docs_link_start: docs_link_start,
+          link_end: link_end,
+          domain: tag.code('my-website-123456.gitlab.io'),
+          unique_domain: tag.code('testuser.gitlab.io/my-website') }
 
   - if Gitlab.config.pages.custom_domain_mode || Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
     - if @project.pages_domains.present?

@@ -28453,10 +28453,10 @@ msgstr ""
 msgid "GitLabPages|Waiting for the Pages Pipeline to complete…"
 msgstr ""
 
-msgid "GitLabPages|When enabled, a unique domain is generated to access pages."
+msgid "GitLabPages|When enabled, adds a unique identifier to your domain (for example: %{domain}). When disabled, uses your namespace (username/group name) as the domain (for example: %{unique_domain}). %{docs_link_start}How do Pages URLs work?%{link_end}"
 msgstr ""
 
-msgid "GitLabPages|When enabled, all attempts to visit your website through HTTP are automatically redirected to HTTPS using a response with status code 301. Requires a valid certificate for all domains. %{docs_link_start}Learn more.%{link_end}"
+msgid "GitLabPages|When enabled, all access to domains will use HTTPS with %{redirect_code} redirects. Requires valid certificates for all domains. %{docs_link_start}How does HTTPS redirection work?%{link_end}"
 msgstr ""
 
 msgid "GitLabPages|When enabled, all projects in the group and its subgroups become visible only to members."
@@ -39553,10 +39553,16 @@ msgstr ""
 msgid "ModelSelection|An error occurred while loading the AI feature settings. Please try again."
 msgstr ""
 
+msgid "ModelSelection|An error occurred while updating the feature setting. Please try again."
+msgstr ""
+
 msgid "ModelSelection|Manage GitLab Duo by configuring and assigning models to AI-native features."
 msgstr ""
 
 msgid "ModelSelection|Model Selection"
+msgstr ""
+
+msgid "ModelSelection|Successfully updated %{mainFeature} / %{title}"
 msgstr ""
 
 msgid "Modified"

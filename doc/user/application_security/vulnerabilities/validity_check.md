@@ -28,6 +28,10 @@ This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 
+<i class="fa-youtube-play" aria-hidden="true"></i>
+For a demonstration, see [Validity Checks Demo](https://www.youtube.com/watch?v=h0jR0CGNOhI).
+<!-- Video published on 2025-05-20 -->
+
 GitLab validity checks determines whether a secret, like an access token, is active.
 A secret is active when:
 
@@ -50,9 +54,9 @@ To enable validity checks for a project:
 
 - Contact your GitLab representative and ask them to enable validity checks.
 
-If validity checks are enabled, when the `secret_detection` CI/CD job is complete,
-GitLab checks the status of detected secrets. The statuses are displayed on the
-**Findings** page of the vulnerability report.
+If validity checks are enabled, GitLab checks the status of detected secrets when the `secret_detection`
+CI/CD job is complete. To view a secret's status, view the vulnerability details page. To update the
+status of a secret, for example after revoking it, re-run the `secret_detection` CI/CD job.
 
 ### Coverage
 

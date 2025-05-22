@@ -216,6 +216,7 @@ module Ci
 
     scope :with_pipeline_source_type, ->(pipeline_source_type) { joins(:pipeline).where(pipeline: { source: pipeline_source_type }) }
     scope :created_after, ->(time) { where(arel_table[:created_at].gt(time)) }
+    scope :created_before, ->(time) { where(arel_table[:created_at].lt(time)) }
     scope :updated_after, ->(time) { where(arel_table[:updated_at].gt(time)) }
     scope :for_project_ids, ->(project_ids) { where(project_id: project_ids) }
 

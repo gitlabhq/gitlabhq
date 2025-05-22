@@ -116,6 +116,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
     end
 
+    describe 'created_before' do
+      subject { described_class.created_before(1.day.ago) }
+
+      it 'returns the builds created before the given time' do
+        is_expected.to contain_exactly(old_build)
+      end
+    end
+
     describe 'updated_after' do
       subject { described_class.updated_after(1.day.ago) }
 

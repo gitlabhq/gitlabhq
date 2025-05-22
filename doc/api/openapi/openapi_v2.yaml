@@ -62249,11 +62249,24 @@ definitions:
       size:
         type: integer
         format: int32
-        description: Repository size in bytes.
       references:
         "$ref": "#/definitions/API_Entities_RepositoryHealth_References"
       objects:
         "$ref": "#/definitions/API_Entities_RepositoryHealth_Objects"
+      commit_graph:
+        "$ref": "#/definitions/API_Entities_RepositoryHealth_CommitGraph"
+      bitmap:
+        "$ref": "#/definitions/API_Entities_RepositoryHealth_Bitmap"
+      multi_pack_index:
+        "$ref": "#/definitions/API_Entities_RepositoryHealth_MultiPackIndex"
+      multi_pack_index_bitmap:
+        "$ref": "#/definitions/API_Entities_RepositoryHealth_Bitmap"
+      alternates:
+        type: object
+      is_object_pool:
+        type: boolean
+      last_full_repack:
+        "$ref": "#/definitions/API_Entities_RepositoryHealth_LastFullRepack"
       updated_at:
         type: string
         format: date-time
@@ -62265,36 +62278,87 @@ definitions:
       loose_count:
         type: integer
         format: int32
-        description: Number of loose references in the repository.
       packed_size:
         type: integer
         format: int32
-        description: Size in bytes of packed references in the repository.
       reference_backend:
         type: string
-        description: Type of backend used to store references. Either 'REFERENCE_BACKEND_REFTABLE'
-          or 'REFERENCE_BACKEND_FILES'.
   API_Entities_RepositoryHealth_Objects:
     type: object
     properties:
       size:
         type: integer
         format: int32
-        description: Size in bytes of all objects in the repository.
       recent_size:
         type: integer
         format: int32
-        description: Size in bytes of all recent objects in the repository. Recent
-          objects are those which are reachable.
       stale_size:
         type: integer
         format: int32
-        description: Size in bytes of all stale objects in the repository. Stale objects
-          are those which are unreachable and may be deleted during housekeeping.
       keep_size:
         type: integer
         format: int32
-        description: Size in bytes of all packfiles with the .keep extension.
+      packfile_count:
+        type: integer
+        format: int32
+      reverse_index_count:
+        type: integer
+        format: int32
+      cruft_count:
+        type: integer
+        format: int32
+      keep_count:
+        type: integer
+        format: int32
+      loose_objects_count:
+        type: integer
+        format: int32
+      stale_loose_objects_count:
+        type: integer
+        format: int32
+      loose_objects_garbage_count:
+        type: integer
+        format: int32
+  API_Entities_RepositoryHealth_CommitGraph:
+    type: object
+    properties:
+      commit_graph_chain_length:
+        type: integer
+        format: int32
+      has_bloom_filters:
+        type: boolean
+      has_generation_data:
+        type: boolean
+      has_generation_data_overflow:
+        type: boolean
+  API_Entities_RepositoryHealth_Bitmap:
+    type: object
+    properties:
+      has_hash_cache:
+        type: boolean
+      has_lookup_table:
+        type: boolean
+      version:
+        type: integer
+        format: int32
+  API_Entities_RepositoryHealth_MultiPackIndex:
+    type: object
+    properties:
+      packfile_count:
+        type: integer
+        format: int32
+      version:
+        type: integer
+        format: int32
+  API_Entities_RepositoryHealth_LastFullRepack:
+    type: object
+    properties:
+      seconds:
+        type: integer
+        format: int32
+      nanos:
+        type: integer
+        format: int32
   API_Entities_Contributor:
     type: object
     properties:

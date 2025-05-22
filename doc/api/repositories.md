@@ -536,6 +536,7 @@ Example response, with line breaks added for readability:
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182220) in GitLab 17.10. Guarded behind the
   [project_repositories_health](https://gitlab.com/gitlab-org/gitlab/-/issues/521115) feature flag.
+- New fields [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191263) in GitLab 18.1.
 
 {{< /history >}}
 
@@ -562,21 +563,54 @@ Example response:
 
 ```json
 {
-  "size": 42002816,
+  "size": 2619748827,
   "references": {
-    "loose_count": 3,
-    "packed_size": 315703,
+    "loose_count": 13,
+    "packed_size": 333978,
     "reference_backend": "REFERENCE_BACKEND_FILES"
   },
   "objects": {
-    "size": 39651458,
-    "recent_size": 39461265,
-    "stale_size": 190193,
-    "keep_size": 0
+    "size": 2180475409,
+    "recent_size": 2180453999,
+    "stale_size": 21410,
+    "keep_size": 0,
+    "packfile_count": 1,
+    "reverse_index_count": 1,
+    "cruft_count": 0,
+    "keep_count": 0,
+    "loose_objects_count": 36,
+    "stale_loose_objects_count": 36,
+    "loose_objects_garbage_count": 0
   },
-  "updated_at": "2025-02-26T03:42:13.015Z"
+  "commit_graph": {
+    "commit_graph_chain_length": 1,
+    "has_bloom_filters": true,
+    "has_generation_data": true,
+    "has_generation_data_overflow": false
+  },
+  "bitmap": null,
+  "multi_pack_index": {
+    "packfile_count": 1,
+    "version": 1
+  },
+  "multi_pack_index_bitmap": {
+    "has_hash_cache": true,
+    "has_lookup_table": true,
+    "version": 1
+  },
+  "alternates": null,
+  "is_object_pool": false,
+  "last_full_repack": {
+    "seconds": 1745892013,
+    "nanos": 0
+  },
+  "updated_at": "2025-05-14T02:31:08.022Z"
 }
 ```
+
+For a description of each field in the response, see the
+[`RepositoryInfoResponse`](https://gitlab.com/gitlab-org/gitaly/blob/fcb986a6482f82b088488db3ed7ca35adfa42fdc/proto/repository.proto#L444)
+protobuf message.
 
 ## Related topics
 

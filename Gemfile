@@ -635,7 +635,7 @@ gem 'ssh_data', '~> 1.3', feature_category: :shared
 gem 'spamcheck', '~> 1.3.0', feature_category: :insider_threat
 
 # Gitaly GRPC protocol definitions
-gem 'gitaly', '~> 17.8.0', feature_category: :gitaly
+gem 'gitaly', '~> 17.11.2', feature_category: :gitaly
 
 # KAS GRPC protocol definitions
 gem 'gitlab-kas-grpc', '~> 17.11.0', feature_category: :deployment_management

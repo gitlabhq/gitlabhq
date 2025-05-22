@@ -15,11 +15,11 @@ RSpec.describe MergeRequests::DeleteNonLatestDiffsService, :clean_gitlab_redis_s
       3.times { merge_request.create_merge_request_diff }
       merge_request.create_merge_head_diff
       merge_request.reset
+      merge_request.merge_request_diffs.reload
     end
 
-    it 'schedules non-latest merge request diffs removal',
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/426807' do
-      diffs = merge_request.merge_request_diffs
+    it 'schedules non-latest merge request diffs removal' do
+      diffs = merge_request.merge_request_diffs.order(:id)
 
       expect(diffs.count).to eq(4)
 
@@ -37,6 +37,7 @@ RSpec.describe MergeRequests::DeleteNonLatestDiffsService, :clean_gitlab_redis_s
 
     it 'schedules no removal if it is already cleaned' do
       merge_request.merge_request_diffs.each(&:clean!)
+      merge_request.merge_request_diffs.reload
 
       expect(DeleteDiffFilesWorker).not_to receive(:bulk_perform_in)
 
@@ -45,6 +46,7 @@ RSpec.describe MergeRequests::DeleteNonLatestDiffsService, :clean_gitlab_redis_s
 
     it 'schedules no removal if it is empty' do
       merge_request.merge_request_diffs.each { |diff| diff.update!(state: :empty) }
+      merge_request.merge_request_diffs.reload
 
       expect(DeleteDiffFilesWorker).not_to receive(:bulk_perform_in)
 
@@ -57,6 +59,7 @@ RSpec.describe MergeRequests::DeleteNonLatestDiffsService, :clean_gitlab_redis_s
         .merge_request_diffs
         .where.not(id: merge_request.latest_merge_request_diff_id)
         .destroy_all
+      merge_request.merge_request_diffs.reload
       # rubocop: enable Cop/DestroyAll
 
       expect(DeleteDiffFilesWorker).not_to receive(:bulk_perform_in)
