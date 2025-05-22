@@ -1327,18 +1327,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
             get api(path, current_user)
           end
         end
-
-        context 'when rate_limit_groups_and_projects_api feature flag is disabled' do
-          before do
-            stub_feature_flags(rate_limit_groups_and_projects_api: false)
-          end
-
-          it_behaves_like 'unthrottled endpoint'
-
-          def request
-            get api(path, current_user)
-          end
-        end
       end
 
       context 'when the user is not signed in' do
@@ -1866,18 +1854,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
     end
 
-    context 'when rate_limit_groups_and_projects_api feature flag is disabled' do
-      before do
-        stub_feature_flags(rate_limit_groups_and_projects_api: false)
-      end
-
-      it_behaves_like 'unthrottled endpoint'
-
-      def request
-        get api("/users/#{user4.id}/projects/")
-      end
-    end
-
     it 'includes container_registry_access_level' do
       get api("/users/#{user4.id}/projects/", user)
 
@@ -2025,18 +2001,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
     end
 
-    context 'when rate_limit_groups_and_projects_api feature flag is disabled' do
-      before do
-        stub_feature_flags(rate_limit_groups_and_projects_api: false)
-      end
-
-      it_behaves_like 'unthrottled endpoint'
-
-      def request
-        get api(path)
-      end
-    end
-
     context 'with a public profile' do
       it 'returns projects filtered by user' do
         get api(path, user)
@@ -2114,18 +2078,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     end
 
     it_behaves_like 'rate limited endpoint', rate_limit_key: :user_contributed_projects_api do
-      def request
-        get api(path)
-      end
-    end
-
-    context 'when rate_limit_groups_and_projects_api feature flag is disabled' do
-      before do
-        stub_feature_flags(rate_limit_groups_and_projects_api: false)
-      end
-
-      it_behaves_like 'unthrottled endpoint'
-
       def request
         get api(path)
       end
@@ -2644,18 +2596,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     end
 
     it_behaves_like 'rate limited endpoint', rate_limit_key: :project_api do
-      def request
-        get api(path)
-      end
-    end
-
-    context 'when rate_limit_groups_and_projects_api feature flag is disabled' do
-      before do
-        stub_feature_flags(rate_limit_groups_and_projects_api: false)
-      end
-
-      it_behaves_like 'unthrottled endpoint'
-
       def request
         get api(path)
       end

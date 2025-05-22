@@ -35560,6 +35560,9 @@ msgstr ""
 msgid "LDAP|Could not fetch LDAP groups. Please try again."
 msgstr ""
 
+msgid "LDAP|Custom admin role"
+msgstr ""
+
 msgid "LDAP|Default, minimum permission level for LDAP group members of %{group_name}."
 msgstr ""
 

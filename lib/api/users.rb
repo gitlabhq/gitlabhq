@@ -263,9 +263,7 @@ module API
         requires :user_id, type: String, desc: 'The ID or username of the user'
       end
       get ":user_id/status", requirements: API::USER_REQUIREMENTS, feature_category: :user_profile, urgency: :default do
-        if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
-          check_rate_limit_by_user_or_ip!(:user_status)
-        end
+        check_rate_limit_by_user_or_ip!(:user_status)
 
         user = find_user(params[:user_id])
 
@@ -327,11 +325,7 @@ module API
       get ':id/following', feature_category: :user_profile do
         forbidden!('Not authorized!') unless current_user
 
-        unless current_user.can_read_all_resources?
-          if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
-            check_rate_limit_by_user_or_ip!(:user_following)
-          end
-        end
+        check_rate_limit_by_user_or_ip!(:user_following) unless current_user.can_read_all_resources?
 
         user = find_user(params[:id])
         not_found!('User') unless user && can?(current_user, :read_user_profile, user)
@@ -349,11 +343,7 @@ module API
       get ':id/followers', feature_category: :user_profile do
         forbidden!('Not authorized!') unless current_user
 
-        unless current_user.can_read_all_resources?
-          if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
-            check_rate_limit_by_user_or_ip!(:user_followers)
-          end
-        end
+        check_rate_limit_by_user_or_ip!(:user_followers) unless current_user.can_read_all_resources?
 
         user = find_user(params[:id])
         not_found!('User') unless user && can?(current_user, :read_user_profile, user)
@@ -564,9 +554,7 @@ module API
         use :pagination
       end
       get ':user_id/keys', requirements: API::USER_REQUIREMENTS, feature_category: :system_access do
-        if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
-          check_rate_limit_by_user_or_ip!(:user_ssh_keys)
-        end
+        check_rate_limit_by_user_or_ip!(:user_ssh_keys)
 
         user = find_user(params[:user_id])
         not_found!('User') unless user && can?(current_user, :read_user, user)
@@ -583,9 +571,7 @@ module API
         requires :key_id, type: Integer, desc: 'The ID of the SSH key'
       end
       get ':id/keys/:key_id', requirements: API::USER_REQUIREMENTS, feature_category: :system_access do
-        if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
-          check_rate_limit_by_user_or_ip!(:user_ssh_key)
-        end
+        check_rate_limit_by_user_or_ip!(:user_ssh_key)
 
         user = find_user(params[:id])
         not_found!('User') unless user && can?(current_user, :read_user, user)
@@ -655,9 +641,7 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/gpg_keys', feature_category: :system_access do
-        if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
-          check_rate_limit_by_user_or_ip!(:user_gpg_keys)
-        end
+        check_rate_limit_by_user_or_ip!(:user_gpg_keys)
 
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
@@ -676,9 +660,7 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/gpg_keys/:key_id', feature_category: :system_access do
-        if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
-          check_rate_limit_by_user_or_ip!(:user_gpg_key)
-        end
+        check_rate_limit_by_user_or_ip!(:user_gpg_key)
 
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
@@ -813,7 +795,10 @@ module API
 
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
-        conflict!('User cannot be removed while is the sole-owner of a group') unless user.can_be_removed? || params[:hard_delete]
+
+        unless user.can_be_removed? || params[:hard_delete]
+          conflict!('User cannot be removed while is the sole-owner of a group')
+        end
 
         destroy_conditionally!(user) do
           user.delete_async(deleted_by: current_user, params: params)

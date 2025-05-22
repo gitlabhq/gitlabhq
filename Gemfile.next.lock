@@ -744,7 +744,7 @@ GEM
       terminal-table (>= 1.5.1)
     gitlab-chronic (0.10.6)
       numerizer (~> 0.2)
-    gitlab-cloud-connector (1.12.0)
+    gitlab-cloud-connector (1.13.0)
       activesupport (~> 7.0)
       jwt (~> 2.9.3)
     gitlab-crystalball (0.8.2)

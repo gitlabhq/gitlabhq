@@ -3,6 +3,7 @@
 module Projects
   class DestroyService < BaseService
     include Gitlab::ShellAdapter
+    include ContainerRegistry::Protection::Concerns::TagRule
 
     DestroyError = Class.new(StandardError)
     BATCH_SIZE = 100
@@ -364,7 +365,7 @@ module Projects
 
     def remove_registry_tags
       return true unless Gitlab.config.registry.enabled
-      return false if protected_by_tag_protection_rules?
+      return false if protected_for_delete?(project:, current_user:)
       return false unless remove_legacy_registry_tags
 
       results = []
@@ -373,19 +374,6 @@ module Projects
       end
 
       results.all?
-    end
-
-    def protected_by_tag_protection_rules?
-      return false if current_user.can_admin_all_resources?
-
-      return false unless project.has_container_registry_protected_tag_rules?(
-        action: 'delete',
-        access_level: project.team.max_member_access(current_user.id)
-      )
-
-      return false unless project.has_container_registry_tags?
-
-      true
     end
 
     ##

@@ -14,8 +14,6 @@ export const GROUP_FILTERS = {
   DESCENDANT_GROUPS: 'descendant_groups',
 };
 
-export const USERS_FILTER_ALL = 'all';
-export const USERS_FILTER_SAML_PROVIDER_ID = 'saml_provider_id';
 export const TRIGGER_ELEMENT_BUTTON = 'button';
 export const TOP_NAV_INVITE_MEMBERS_COMPONENT = 'invite_members';
 export const TRIGGER_ELEMENT_WITH_EMOJI = 'text-emoji';

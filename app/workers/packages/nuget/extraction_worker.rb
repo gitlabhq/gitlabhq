@@ -13,12 +13,15 @@ module Packages
       queue_namespace :package_repositories
       feature_category :package_registry
 
-      def perform(package_file_id)
+      def perform(package_file_id, params = {})
         package_file = ::Packages::PackageFile.find_by_id(package_file_id)
-
         return unless package_file
 
-        ::Packages::Nuget::ProcessPackageFileService.new(package_file).execute
+        user_or_deploy_token =
+          params[:user_id]&.then { |id| User.find_by_id(id) } ||
+          params[:deploy_token_id]&.then { |id| DeployToken.find_by_id(id) }
+
+        ::Packages::Nuget::ProcessPackageFileService.new(package_file, user_or_deploy_token).execute
       rescue StandardError => exception
         process_package_file_error(
           package_file: package_file,

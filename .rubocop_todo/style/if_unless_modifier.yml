@@ -436,7 +436,6 @@ Style/IfUnlessModifier:
     - 'lib/api/settings.rb'
     - 'lib/api/snippets.rb'
     - 'lib/api/tags.rb'
-    - 'lib/api/users.rb'
     - 'lib/backup/gitaly_backup.rb'
     - 'lib/banzai/filter/base_sanitization_filter.rb'
     - 'lib/banzai/filter/external_link_filter.rb'

@@ -8,8 +8,8 @@ class SetApiRateLimitsToZero < Gitlab::Database::Migration[2.3]
   def up
     return if Gitlab.com?
 
-    set_groups_and_projects_api_rate_limits_to_zero unless feature_flag_enabled?(:rate_limit_groups_and_projects_api)
-    set_users_api_rate_limits_to_zero unless feature_flag_enabled?(:rate_limiting_user_endpoints)
+    set_groups_and_projects_api_rate_limits_to_zero
+    set_users_api_rate_limits_to_zero
   end
 
   def down

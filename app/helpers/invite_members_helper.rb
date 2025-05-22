@@ -53,11 +53,6 @@ module InviteMembersHelper
       {}
     end
   end
-
-  # Overridden in EE
-  def users_filter_data(group)
-    {}
-  end
 end
 
 InviteMembersHelper.prepend_mod_with('InviteMembersHelper')

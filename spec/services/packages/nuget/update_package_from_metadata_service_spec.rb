@@ -353,12 +353,16 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
       let(:project_maintainer) { create(:user, maintainer_of: package.project) }
       let(:project_owner) { package.project.owner }
       let(:instance_admin) { create(:admin) }
+      let(:project_deploy_token) { create(:deploy_token, projects: [package.project], write_package_registry: true) }
+
+      let(:service) { described_class.new(package_file, package_zip_file, package_publishing_actor) }
 
       before do
         package_protection_rule.update!(
           package_name_pattern: package_name_pattern,
           minimum_access_level_for_push: minimum_access_level_for_push
         )
+
         package.update!(creator: package_creator)
       end
 
@@ -391,25 +395,30 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
         end
       end
 
-      where(:package_name_pattern, :minimum_access_level_for_push, :package_creator, :shared_examples_name) do
-        ref(:package_name)               | :maintainer | ref(:project_developer)  | 'protected package'
-        ref(:package_name)               | :maintainer | ref(:project_maintainer) | 'updates package and package file and creates metadatum'
-        ref(:package_name)               | :maintainer | ref(:project_owner)      | 'updates package and package file and creates metadatum'
-        ref(:package_name)               | :maintainer | ref(:instance_admin)     | 'updates package and package file and creates metadatum'
-        ref(:package_name)               | :maintainer | nil                      | 'protected package'
+      where(:package_name_pattern, :minimum_access_level_for_push, :package_creator, :package_publishing_actor, :shared_examples_name) do
+        ref(:package_name)               | :maintainer | ref(:project_developer)  | ref(:project_developer)    | 'protected package'
+        ref(:package_name)               | :maintainer | ref(:project_maintainer) | ref(:project_maintainer)   | 'updates package and package file and creates metadatum'
+        ref(:package_name)               | :maintainer | ref(:project_owner)      | ref(:project_owner)        | 'updates package and package file and creates metadatum'
+        ref(:package_name)               | :maintainer | ref(:instance_admin)     | ref(:instance_admin)       | 'updates package and package file and creates metadatum'
+        ref(:package_name)               | :maintainer | nil                      | ref(:project_deploy_token) | 'protected package'
+        ref(:package_name)               | :maintainer | nil                      | nil                        | 'protected package'
 
-        ref(:package_name)               | :owner      | ref(:project_maintainer) | 'protected package'
-        ref(:package_name)               | :owner      | ref(:project_owner)      | 'updates package and package file and creates metadatum'
-        ref(:package_name)               | :owner      | ref(:instance_admin)     | 'updates package and package file and creates metadatum'
-        ref(:package_name)               | :owner      | nil                      | 'protected package'
+        ref(:package_name)               | :owner      | ref(:project_maintainer) | ref(:project_maintainer)   | 'protected package'
+        ref(:package_name)               | :owner      | ref(:project_owner)      | ref(:project_owner)        | 'updates package and package file and creates metadatum'
+        ref(:package_name)               | :owner      | ref(:instance_admin)     | ref(:instance_admin)       | 'updates package and package file and creates metadatum'
+        ref(:package_name)               | :owner      | nil                      | ref(:project_deploy_token) | 'protected package'
+        ref(:package_name)               | :owner      | nil                      | nil                        | 'protected package'
 
-        ref(:package_name)               | :admin      | ref(:project_owner)      | 'protected package'
-        ref(:package_name)               | :admin      | ref(:instance_admin)     | 'updates package and package file and creates metadatum'
-        ref(:package_name)               | :admin      | nil                      | 'protected package'
+        ref(:package_name)               | :admin      | ref(:project_owner)      | ref(:project_owner)        | 'protected package'
+        ref(:package_name)               | :admin      | ref(:instance_admin)     | ref(:instance_admin)       | 'updates package and package file and creates metadatum'
+        ref(:package_name)               | :admin      | nil                      | ref(:project_deploy_token) | 'protected package'
+        ref(:package_name)               | :admin      | nil                      | nil                        | 'protected package'
 
-        lazy { "Other.#{package_name}" } | :maintainer | ref(:project_owner)      | 'updates package and package file and creates metadatum'
-        lazy { "Other.#{package_name}" } | :admin      | ref(:project_owner)      | 'updates package and package file and creates metadatum'
-        lazy { "Other.#{package_name}" } | :admin      | nil                      | 'updates package and package file and creates metadatum'
+        lazy { "Other.#{package_name}" } | :admin      | nil                      | nil                        | 'updates package and package file and creates metadatum'
+        lazy { "Other.#{package_name}" } | :admin      | nil                      | ref(:project_deploy_token) | 'updates package and package file and creates metadatum'
+        lazy { "Other.#{package_name}" } | :admin      | ref(:project_owner)      | ref(:project_owner)        | 'updates package and package file and creates metadatum'
+        lazy { "Other.#{package_name}" } | :maintainer | nil                      | ref(:project_deploy_token) | 'updates package and package file and creates metadatum'
+        lazy { "Other.#{package_name}" } | :maintainer | ref(:project_owner)      | ref(:project_owner)        | 'updates package and package file and creates metadatum'
       end
 
       with_them do

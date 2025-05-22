@@ -137,18 +137,6 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
     end
 
-    context 'when rate_limit_groups_and_projects_api feature flag is disabled' do
-      before do
-        stub_feature_flags(rate_limit_groups_and_projects_api: false)
-      end
-
-      it_behaves_like 'unthrottled endpoint'
-
-      def request
-        get api("/groups")
-      end
-    end
-
     context "when unauthenticated" do
       it "returns public groups", :aggregate_failures do
         get api("/groups")
@@ -649,18 +637,6 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     end
 
     it_behaves_like 'rate limited endpoint', rate_limit_key: :group_api do
-      def request
-        get api("/groups/#{group2.id}")
-      end
-    end
-
-    context 'when rate_limit_groups_and_projects_api feature flag is disabled' do
-      before do
-        stub_feature_flags(rate_limit_groups_and_projects_api: false)
-      end
-
-      it_behaves_like 'unthrottled endpoint'
-
       def request
         get api("/groups/#{group2.id}")
       end
@@ -1411,18 +1387,6 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
     end
 
-    context 'when rate_limit_groups_and_projects_api feature flag is disabled' do
-      before do
-        stub_feature_flags(rate_limit_groups_and_projects_api: false)
-      end
-
-      it_behaves_like 'unthrottled endpoint'
-
-      def request
-        get api("/groups/#{group1.id}/projects")
-      end
-    end
-
     context "when authenticated as user" do
       context 'with min access level' do
         it 'returns projects with min access level or higher' do
@@ -2033,18 +1997,6 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     end
 
     it_behaves_like 'rate limited endpoint', rate_limit_key: :group_shared_groups_api do
-      def request
-        get api(path)
-      end
-    end
-
-    context 'when rate_limit_groups_and_projects_api feature flag is disabled' do
-      before do
-        stub_feature_flags(rate_limit_groups_and_projects_api: false)
-      end
-
-      it_behaves_like 'unthrottled endpoint'
-
       def request
         get api(path)
       end

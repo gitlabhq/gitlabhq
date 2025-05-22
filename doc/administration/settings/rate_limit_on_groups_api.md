@@ -8,13 +8,14 @@ title: Rate limit on Groups API
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
 {{< history >}}
 
 - Rate limit for groups and projects API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152733) in GitLab 17.1. with a [flag](../feature_flags.md) named `rate_limit_groups_and_projects_api`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/461316) in GitLab 18.1. Feature flag `rate_limit_groups_and_projects_api` removed.
 
 {{< /history >}}
 
@@ -40,7 +41,6 @@ The rate limits:
 - Apply per user if the user is authenticated.
 - Apply per IP address if the user is unauthenticated.
 - Can be set to 0 to disable rate limiting.
-- Are behind the `rate_limit_groups_and_projects_api`.
 
 Requests over the rate limit are logged into the `auth.log` file.
 

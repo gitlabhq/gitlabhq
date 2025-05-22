@@ -240,7 +240,7 @@ class RegistrationsController < Devise::RegistrationsController
     @resource ||= Users::RegistrationsBuildService
                     .new(current_user, sign_up_params.merge({ skip_confirmation: skip_confirmation?,
                                                               preferred_language: preferred_language,
-                                                              organization_id: Current.organization&.id }))
+                                                              organization_id: Current.organization.id }))
                     .execute
   end
 

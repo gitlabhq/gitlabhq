@@ -1080,26 +1080,20 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       let(:path) { "/users/#{user.username}/status" }
       let(:request) { get api(path, current_user) }
 
-      context 'when the :rate_limiting_user_endpoints feature flag is enabled' do
-        before do
-          stub_feature_flags(rate_limiting_user_endpoints: true)
-        end
-
-        context 'when user is authenticated' do
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_status do
-            def request
-              get api(path, current_user)
-            end
+      context 'when user is authenticated' do
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :user_status do
+          def request
+            get api(path, current_user)
           end
         end
+      end
 
-        context 'when user is unauthenticated' do
-          let(:current_user) { nil }
+      context 'when user is unauthenticated' do
+        let(:current_user) { nil }
 
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_status do
-            def request
-              get api(path, current_user)
-            end
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :user_status do
+          def request
+            get api(path, current_user)
           end
         end
       end
@@ -1232,27 +1226,21 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       let(:current_user) { create(:user) }
       let(:request) { get api(path, current_user) }
 
-      context 'when the :rate_limiting_user_endpoints feature flag is enabled' do
-        before do
-          stub_feature_flags(rate_limiting_user_endpoints: true)
-        end
-
-        context 'when user is authenticated' do
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_followers do
-            def request
-              get api(path, current_user)
-            end
+      context 'when user is authenticated' do
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :user_followers do
+          def request
+            get api(path, current_user)
           end
         end
+      end
 
-        context 'when user is unauthenticated' do
-          let(:current_user) { nil }
+      context 'when user is unauthenticated' do
+        let(:current_user) { nil }
 
-          it 'returns 403' do
-            request
+        it 'returns 403' do
+          request
 
-            expect(response).to have_gitlab_http_status(:forbidden)
-          end
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
     end
@@ -1305,27 +1293,21 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       let(:current_user) { create(:user) }
       let(:request) { get api(path, current_user) }
 
-      context 'when the :rate_limiting_user_endpoints feature flag is enabled' do
-        before do
-          stub_feature_flags(rate_limiting_user_endpoints: true)
-        end
-
-        context 'when user is authenticated' do
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_following do
-            def request
-              get api(path, current_user)
-            end
+      context 'when user is authenticated' do
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :user_following do
+          def request
+            get api(path, current_user)
           end
         end
+      end
 
-        context 'when user is unauthenticated' do
-          let(:current_user) { nil }
+      context 'when user is unauthenticated' do
+        let(:current_user) { nil }
 
-          it 'returns 403' do
-            request
+        it 'returns 403' do
+          request
 
-            expect(response).to have_gitlab_http_status(:forbidden)
-          end
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
     end
@@ -2589,26 +2571,20 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       let(:current_user) { create(:user) }
       let(:request) { get api(path, current_user) }
 
-      context 'when the :rate_limiting_user_endpoints feature flag is enabled' do
-        before do
-          stub_feature_flags(rate_limiting_user_endpoints: true)
-        end
-
-        context 'when user is authenticated' do
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_keys do
-            def request
-              get api(path, current_user)
-            end
+      context 'when user is authenticated' do
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_keys do
+          def request
+            get api(path, current_user)
           end
         end
+      end
 
-        context 'when user is unauthenticated' do
-          let(:current_user) { nil }
+      context 'when user is unauthenticated' do
+        let(:current_user) { nil }
 
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_keys do
-            def request
-              get api(path, current_user)
-            end
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_keys do
+          def request
+            get api(path, current_user)
           end
         end
       end
@@ -2684,26 +2660,20 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       let(:current_user) { create(:user) }
       let(:request) { get api(path, current_user) }
 
-      context 'when the :rate_limiting_user_endpoints feature flag is enabled' do
-        before do
-          stub_feature_flags(rate_limiting_user_endpoints: true)
-        end
-
-        context 'when user is authenticated' do
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_key do
-            def request
-              get api(path, current_user)
-            end
+      context 'when user is authenticated' do
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_key do
+          def request
+            get api(path, current_user)
           end
         end
+      end
 
-        context 'when user is unauthenticated' do
-          let(:current_user) { nil }
+      context 'when user is unauthenticated' do
+        let(:current_user) { nil }
 
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_key do
-            def request
-              get api(path, current_user)
-            end
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_key do
+          def request
+            get api(path, current_user)
           end
         end
       end
@@ -2809,26 +2779,20 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       let(:current_user) { create(:user) }
       let(:request) { get api(path, current_user) }
 
-      context 'when the :rate_limiting_user_endpoints feature flag is enabled' do
-        before do
-          stub_feature_flags(rate_limiting_user_endpoints: true)
-        end
-
-        context 'when user is authenticated' do
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_gpg_keys do
-            def request
-              get api(path, current_user)
-            end
+      context 'when user is authenticated' do
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :user_gpg_keys do
+          def request
+            get api(path, current_user)
           end
         end
+      end
 
-        context 'when user is unauthenticated' do
-          let(:current_user) { nil }
+      context 'when user is unauthenticated' do
+        let(:current_user) { nil }
 
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_gpg_keys do
-            def request
-              get api(path, current_user)
-            end
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :user_gpg_keys do
+          def request
+            get api(path, current_user)
           end
         end
       end
@@ -2865,26 +2829,20 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       let(:current_user) { create(:user) }
       let(:request) { get api(path, current_user) }
 
-      context 'when the :rate_limiting_user_endpoints feature flag is enabled' do
-        before do
-          stub_feature_flags(rate_limiting_user_endpoints: true)
-        end
-
-        context 'when user is authenticated' do
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_gpg_key do
-            def request
-              get api(path, current_user)
-            end
+      context 'when user is authenticated' do
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :user_gpg_key do
+          def request
+            get api(path, current_user)
           end
         end
+      end
 
-        context 'when user is unauthenticated' do
-          let(:current_user) { nil }
+      context 'when user is unauthenticated' do
+        let(:current_user) { nil }
 
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_gpg_key do
-            def request
-              get api(path, current_user)
-            end
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :user_gpg_key do
+          def request
+            get api(path, current_user)
           end
         end
       end
