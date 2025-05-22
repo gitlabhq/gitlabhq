@@ -76,7 +76,7 @@ class TodosFinder
   private
 
   def action_id?
-    action_id.present? && Todo::ACTION_NAMES.key?(action_id.to_i)
+    action_id.present? && Todo.action_names.key?(action_id.to_i)
   end
 
   def action_id
@@ -88,14 +88,14 @@ class TodosFinder
   end
 
   def map_actions_to_ids
-    params[:action].map { |item| Todo::ACTION_NAMES.key(item.to_sym) }
+    params[:action].map { |item| Todo.action_names.key(item.to_sym) }
   end
 
   def to_action_id
     if action_array_provided?
       map_actions_to_ids
     else
-      Todo::ACTION_NAMES.key(action.to_sym)
+      Todo.action_names.key(action.to_sym)
     end
   end
 

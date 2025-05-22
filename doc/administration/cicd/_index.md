@@ -105,6 +105,11 @@ To change the frequency of the pipeline schedule worker:
 For example, to set the maximum frequency of pipelines to twice a day, set `pipeline_schedule_worker_cron`
 to a cron value of `0 */12 * * *` (`00:00` and `12:00` every day).
 
+When many pipeline schedules run at the same time, additional delays can occur.
+The pipeline schedule worker processes pipelines in [batches](https://gitlab.com/gitlab-org/gitlab/-/blob/3426be1b93852c5358240c5df40970c0ddfbdb2a/app/workers/pipeline_schedule_worker.rb#L13-14)
+with a small delay between each batch to distribute system load. This can cause pipeline 
+schedules to start several minutes after their scheduled time.
+
 ## Disaster recovery
 
 You can disable some important but computationally expensive parts of the application

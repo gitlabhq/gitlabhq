@@ -779,6 +779,82 @@ RETURN NULL;
 END
 $$;
 
+CREATE FUNCTION sync_namespace_to_group_push_rules() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  push_rule RECORD;
+BEGIN
+  IF NEW.type != 'Group' THEN
+    RETURN NEW;
+  END IF;
+
+  IF OLD.push_rule_id IS NOT NULL AND NEW.push_rule_id IS NULL THEN
+    DELETE FROM group_push_rules WHERE group_id = NEW.id;
+    RETURN NEW;
+  END IF;
+
+  IF NEW.push_rule_id IS NOT NULL AND (OLD.push_rule_id IS NULL OR OLD.push_rule_id != NEW.push_rule_id) THEN
+    SELECT * INTO push_rule FROM push_rules WHERE id = NEW.push_rule_id;
+
+    IF FOUND THEN
+      INSERT INTO group_push_rules (
+        group_id,
+        max_file_size,
+        member_check,
+        prevent_secrets,
+        commit_committer_name_check,
+        deny_delete_tag,
+        reject_unsigned_commits,
+        commit_committer_check,
+        reject_non_dco_commits,
+        commit_message_regex,
+        branch_name_regex,
+        commit_message_negative_regex,
+        author_email_regex,
+        file_name_regex,
+        created_at,
+        updated_at
+      ) VALUES (
+        NEW.id,
+        push_rule.max_file_size,
+        push_rule.member_check,
+        push_rule.prevent_secrets,
+        push_rule.commit_committer_name_check,
+        push_rule.deny_delete_tag,
+        push_rule.reject_unsigned_commits,
+        push_rule.commit_committer_check,
+        push_rule.reject_non_dco_commits,
+        push_rule.commit_message_regex,
+        push_rule.branch_name_regex,
+        push_rule.commit_message_negative_regex,
+        push_rule.author_email_regex,
+        push_rule.file_name_regex,
+        push_rule.created_at,
+        push_rule.updated_at
+      )
+      ON CONFLICT (group_id) DO UPDATE SET
+        max_file_size = push_rule.max_file_size,
+        member_check = push_rule.member_check,
+        prevent_secrets = push_rule.prevent_secrets,
+        reject_unsigned_commits = push_rule.reject_unsigned_commits,
+        commit_committer_check = push_rule.commit_committer_check,
+        deny_delete_tag = push_rule.deny_delete_tag,
+        reject_non_dco_commits = push_rule.reject_non_dco_commits,
+        commit_committer_name_check = push_rule.commit_committer_name_check,
+        commit_message_regex = push_rule.commit_message_regex,
+        branch_name_regex = push_rule.branch_name_regex,
+        commit_message_negative_regex = push_rule.commit_message_negative_regex,
+        author_email_regex = push_rule.author_email_regex,
+        file_name_regex = push_rule.file_name_regex,
+        updated_at = push_rule.updated_at;
+    END IF;
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION sync_organization_push_rules_on_delete() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -870,6 +946,36 @@ END IF;
 RETURN NULL;
 
 END
+$$;
+
+CREATE FUNCTION sync_push_rules_to_group_push_rules() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  UPDATE group_push_rules
+  SET
+    max_file_size = NEW.max_file_size,
+    member_check = NEW.member_check,
+    prevent_secrets = NEW.prevent_secrets,
+    commit_committer_name_check = NEW.commit_committer_name_check,
+    deny_delete_tag = NEW.deny_delete_tag,
+    reject_unsigned_commits = NEW.reject_unsigned_commits,
+    commit_committer_check = NEW.commit_committer_check,
+    reject_non_dco_commits = NEW.reject_non_dco_commits,
+    commit_message_regex = NEW.commit_message_regex,
+    branch_name_regex = NEW.branch_name_regex,
+    commit_message_negative_regex = NEW.commit_message_negative_regex,
+    author_email_regex = NEW.author_email_regex,
+    file_name_regex = NEW.file_name_regex,
+    updated_at = NEW.updated_at
+  FROM namespaces
+  WHERE
+    namespaces.push_rule_id = NEW.id
+    AND namespaces.type = 'Group'
+    AND group_push_rules.group_id = namespaces.id;
+
+  RETURN NEW;
+END;
 $$;
 
 CREATE FUNCTION sync_redirect_routes_namespace_id() RETURNS trigger
@@ -35233,7 +35339,7 @@ CREATE INDEX index_group_import_states_on_user_id ON group_import_states USING b
 
 CREATE UNIQUE INDEX index_group_microsoft_applications_on_temp_source_id ON system_access_group_microsoft_applications USING btree (temp_source_id);
 
-CREATE INDEX index_group_push_rules_on_group_id ON group_push_rules USING btree (group_id);
+CREATE UNIQUE INDEX index_group_push_rules_on_group_id ON group_push_rules USING btree (group_id);
 
 CREATE INDEX index_group_repository_storage_moves_on_group_id ON group_repository_storage_moves USING btree (group_id);
 
@@ -41653,9 +41759,13 @@ CREATE TRIGGER trigger_projects_parent_id_on_update AFTER UPDATE ON projects FOR
 
 CREATE TRIGGER trigger_sync_issues_dates_with_work_item_dates_sources AFTER INSERT OR UPDATE OF start_date, due_date ON work_item_dates_sources FOR EACH ROW EXECUTE FUNCTION sync_issues_dates_with_work_item_dates_sources();
 
+CREATE TRIGGER trigger_sync_namespace_to_group_push_rules AFTER UPDATE ON namespaces FOR EACH ROW WHEN ((old.push_rule_id IS DISTINCT FROM new.push_rule_id)) EXECUTE FUNCTION sync_namespace_to_group_push_rules();
+
 CREATE TRIGGER trigger_sync_organization_push_rules_delete BEFORE DELETE ON push_rules FOR EACH ROW EXECUTE FUNCTION sync_organization_push_rules_on_delete();
 
 CREATE TRIGGER trigger_sync_organization_push_rules_insert_update AFTER INSERT OR UPDATE ON push_rules FOR EACH ROW EXECUTE FUNCTION sync_organization_push_rules_on_insert_update();
+
+CREATE TRIGGER trigger_sync_push_rules_to_group_push_rules AFTER UPDATE ON push_rules FOR EACH ROW EXECUTE FUNCTION sync_push_rules_to_group_push_rules();
 
 CREATE TRIGGER trigger_sync_redirect_routes_namespace_id BEFORE INSERT OR UPDATE ON redirect_routes FOR EACH ROW WHEN ((new.namespace_id IS NULL)) EXECUTE FUNCTION sync_redirect_routes_namespace_id();
 

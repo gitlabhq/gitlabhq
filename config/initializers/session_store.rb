@@ -18,16 +18,18 @@ raw_config = if File.exist?(Rails.root.join('config/session_store.yml'))
                {}
              end
 
-# If session_cookie_token_prefix is not set, we fall back to cell id
-# only if the instance was enabled as a cell
-cell_id = Gitlab.config.cell.id if Gitlab.config.cell.enabled
-session_cookie_token_prefix = if raw_config.fetch(:session_cookie_token_prefix, '').present?
-                                raw_config.fetch(:session_cookie_token_prefix)
-                              elsif cell_id.present?
-                                "cell-#{cell_id}"
-                              else
-                                ""
-                              end
+# NOTE: `session_cookie_token_prefix` may be optionally injected into the environment
+session_cookie_token_prefix = raw_config.fetch(:session_cookie_token_prefix, '')
+if Gitlab.config.cell.enabled
+  # NOTE: in the context of cells, the `session_cookie_token_prefix` must adhere to a specific format
+  session_cookie_token_prefix_for_cell = "cell-#{Gitlab.config.cell.id}"
+  if session_cookie_token_prefix.present? && session_cookie_token_prefix != session_cookie_token_prefix_for_cell
+    raise "Given that cells are enabled, the session_cookie_token_prefix must be left blank or specifically set to " \
+      "'#{session_cookie_token_prefix_for_cell}'. Currently it is set to: '#{session_cookie_token_prefix}'."
+  end
+
+  session_cookie_token_prefix = session_cookie_token_prefix_for_cell
+end
 
 cookie_key = if Rails.env.development?
                cookie_key_prefix = raw_config.fetch(:cookie_key, "_gitlab_session")

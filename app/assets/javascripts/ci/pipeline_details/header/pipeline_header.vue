@@ -386,9 +386,8 @@ export default {
                 class="commit-sha-container"
                 data-testid="commit-link"
                 target="_blank"
+                >{{ content }}</gl-link
               >
-                {{ content }}
-              </gl-link>
             </template>
           </gl-sprintf>
           <clipboard-button

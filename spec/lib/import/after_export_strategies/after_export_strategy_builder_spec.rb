@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::AfterExportStrategyBuilder, feature_category: :importers do
-  let!(:strategies_namespace) { 'Gitlab::ImportExport::AfterExportStrategies' }
+RSpec.describe Import::AfterExportStrategies::AfterExportStrategyBuilder, feature_category: :importers do
+  let!(:strategies_namespace) { 'Import::AfterExportStrategies' }
 
   describe '.build!' do
     context 'when klass param is' do

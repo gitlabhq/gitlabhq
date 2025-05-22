@@ -44,7 +44,7 @@ module API
     resource :todos do
       helpers do
         params :todo_filters do
-          optional :action, type: String, values: Todo::ACTION_NAMES.values.map(&:to_s), desc: 'The action to be filtered'
+          optional :action, type: String, values: Todo.action_names.values.map(&:to_s), desc: 'The action to be filtered'
           optional :author_id, type: Integer, desc: 'The ID of an author'
           optional :project_id, type: Integer, desc: 'The ID of a project'
           optional :group_id, type: Integer, desc: 'The ID of a group'

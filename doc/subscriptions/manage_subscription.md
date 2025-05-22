@@ -147,6 +147,51 @@ On GitLab Self-Managed, the new tier takes effect on the next subscription sync.
 You can also [synchronize your subscription manually](#subscription-data-synchronization)
 to upgrade right away.
 
+## Expired subscription
+
+Subscriptions expire at the start of the expiration date, 00:00 server time.
+
+For example, if a subscription is valid from January 1, 2024 until January 1, 2025:
+
+- It expires at 11:59:59 PM UTC December 31, 2024.
+- It is considered expired from 12:00:00 AM UTC January 1, 2025.
+- The grace period of 14 days starts at 12:00:00 AM UTC January 1, 2025 and ends at 11:59:59 PM UTC January 14, 2025.
+
+### For GitLab.com
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
+When your subscription expires, you can continue to use paid features of GitLab for 14 days.
+After 14 days, paid features are no longer available, but you can continue to use free features.
+To resume paid feature functionality, purchase a new subscription.
+
+### For GitLab Self-Managed
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+When your license expires, after a 14 day grace period:
+
+- Your instance becomes read-only.
+- GitLab locks features, such as Git pushes and issue creation.
+- An expiration message is displayed to all instance administrators.
+
+After your license has expired:
+
+- To resume functionality,
+  [activate a new subscription](../administration/license_file.md#activate-subscription-during-installation).
+- To keep using Free tier features only,
+  [remove the expired license](../administration/license_file.md#remove-a-license).
+
 ## Subscription data synchronization
 
 {{< details >}}

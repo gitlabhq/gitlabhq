@@ -89,7 +89,7 @@ module API
           export_strategy = if after_export_params[:url].present?
                               params = after_export_params.slice(:url, :http_method).symbolize_keys
 
-                              Gitlab::ImportExport::AfterExportStrategies::WebUploadStrategy.new(**params)
+                              Import::AfterExportStrategies::WebUploadStrategy.new(**params)
                             end
 
           if export_strategy&.invalid?

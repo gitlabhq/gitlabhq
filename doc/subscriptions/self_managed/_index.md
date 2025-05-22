@@ -428,31 +428,6 @@ For information about how to transfer ownership of the Customers Portal account 
 
 To add another contact for your subscription, see [Add a billing account manager](../customers_portal.md#add-a-billing-account-manager).
 
-## Subscription expiry
-
-Licenses expire at the start of the expiration date, 00:00 server time.
-
-When your license expires, after a 14 day grace period:
-
-- Your instance becomes read-only.
-- GitLab locks features, such as Git pushes and issue creation.
-- An expiration message is displayed to all administrators.
-
-For example, if a license has an expiry date of January 1, 2025:
-
-- It expires at 11:59:59 PM server time December 31, 2024.
-- It is considered expired from 12:00:00 AM server time January 1, 2025.
-- The grace period of 14 days starts at 12:00:00 AM server time January 1, 2025
-  and ends at 11:59:59 PM server time January 14, 2025.
-- Your instance becomes read-only at 12:00:00 AM server time January 15, 2025.
-
-After your license has expired:
-
-- To resume functionality,
-  [activate a new license](../../administration/license_file.md).
-- To keep using Free tier features only,
-  [delete the expired license](../../administration/license_file.md#remove-a-license).
-
 ## Storage
 
 The amount of storage and transfer for GitLab Self-Managed instances has no application limits. Administrators are responsible for the underlying infrastructure costs and can set [repository size limits](../../administration/settings/account_and_limit_settings.md#repository-size-limit).

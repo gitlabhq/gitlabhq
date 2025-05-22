@@ -204,3 +204,27 @@ my-other-job:
   script:
     - echo "I want `my-test-job` to need this job"
 ```
+
+## Use `inputs` with `include` for more dynamic pipelines
+
+You can use `inputs` with `include` to select which additional pipeline configuration
+files to include.
+
+For example:
+
+```yaml
+spec:
+  inputs:
+    pipeline-type:
+      type: string
+      default: development
+      options: ['development', 'canary', 'production']
+      description: "The pipeline type, which determines which set of jobs to include."
+---
+
+include:
+  - local: .gitlab/ci/$[[ inputs.pipeline-type ]].gitlab-ci.yml
+```
+
+In this example, the `.gitlab/ci/development.gitlab-ci.yml` file is included by default.
+But if a different `pipeline-type` input option is used, a different configuration file is included.

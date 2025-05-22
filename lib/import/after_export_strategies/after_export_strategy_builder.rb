@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Gitlab
-  module ImportExport
+module Import
+  module AfterExportStrategies
     class AfterExportStrategyBuilder
       StrategyNotFoundError = Class.new(StandardError)
 
@@ -15,7 +15,7 @@ module Gitlab
           nil
         end
 
-        unless klass && klass < AfterExportStrategies::BaseAfterExportStrategy
+        unless klass && klass < BaseAfterExportStrategy
           raise StrategyNotFoundError, "Strategy #{strategy_klass} not found"
         end
 
@@ -23,7 +23,7 @@ module Gitlab
       end
 
       def self.default_strategy
-        AfterExportStrategies::DownloadNotificationStrategy
+        DownloadNotificationStrategy
       end
     end
   end

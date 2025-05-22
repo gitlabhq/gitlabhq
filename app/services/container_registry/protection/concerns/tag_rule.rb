@@ -11,9 +11,15 @@ module ContainerRegistry
         def protected_patterns_for_delete(project:, current_user: nil)
           tag_rules = ContainerRegistry::Protection::TagRule.tag_name_patterns_for_project(project.id)
 
-          if current_user
-            return if current_user.can_admin_all_resources?
+          if Feature.disabled?(:container_registry_immutable_tags, project)
+            return if current_user&.can_admin_all_resources?
 
+            tag_rules = tag_rules.mutable
+          end
+
+          if current_user&.can_admin_all_resources?
+            tag_rules = tag_rules.immutable
+          elsif current_user
             user_access_level = project.team.max_member_access(current_user.id)
             tag_rules = tag_rules.for_delete_and_access(user_access_level)
           end

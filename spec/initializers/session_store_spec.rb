@@ -41,6 +41,43 @@ RSpec.describe 'Session initializer for GitLab' do
 
         load_session_store
       end
+
+      context 'and session_cookie_token_prefix is pre-set' do
+        let(:config_path) { Rails.root.join('config/session_store.yml') }
+        let(:test_config) { { session_cookie_token_prefix: session_cookie_token_prefix } }
+
+        before do
+          stub_config(cell: { enabled: true, id: 3 })
+          allow(File).to receive(:exist?).with(config_path).and_return(true)
+          allow(Rails.application).to receive(:config_for).with(:session_store).and_return(test_config)
+        end
+
+        context 'when it does not align with the required format' do
+          let(:session_cookie_token_prefix) { 'custom-value' }
+
+          it 'raises an exception' do
+            message = 'Given that cells are enabled, the session_cookie_token_prefix must be left blank or ' \
+              "specifically set to 'cell-3'. Currently it is set to: '#{session_cookie_token_prefix}'."
+            expect { load_session_store }.to raise_error(RuntimeError, message)
+          end
+        end
+
+        context 'when it aligns with the required format' do
+          let(:session_cookie_token_prefix) { 'cell-3' }
+
+          it 'loads gracefully' do
+            expect(subject).to receive(:session_store).with(
+              ::Gitlab::Sessions::CacheStore,
+              a_hash_including(
+                cache: ActiveSupport::Cache::RedisCacheStore,
+                session_cookie_token_prefix: session_cookie_token_prefix
+              )
+            )
+
+            expect { load_session_store }.not_to raise_error
+          end
+        end
+      end
     end
 
     context 'when cell is disabled' do
@@ -58,6 +95,49 @@ RSpec.describe 'Session initializer for GitLab' do
         )
 
         load_session_store
+      end
+
+      context 'and session_cookie_token_prefix is pre-set' do
+        let(:config_path) { Rails.root.join('config/session_store.yml') }
+        let(:test_config) { { session_cookie_token_prefix: session_cookie_token_prefix } }
+
+        before do
+          stub_config(cell: { enabled: false, id: 3 })
+          allow(File).to receive(:exist?).with(config_path).and_return(true)
+          allow(Rails.application).to receive(:config_for).with(:session_store).and_return(test_config)
+        end
+
+        context 'when it does not align with the required format' do
+          let(:session_cookie_token_prefix) { 'custom-value' }
+
+          it 'loads gracefully' do
+            expect(subject).to receive(:session_store).with(
+              ::Gitlab::Sessions::CacheStore,
+              a_hash_including(
+                cache: ActiveSupport::Cache::RedisCacheStore,
+                session_cookie_token_prefix: session_cookie_token_prefix
+              )
+            )
+
+            expect { load_session_store }.not_to raise_error
+          end
+        end
+
+        context 'when it aligns with the required format' do
+          let(:session_cookie_token_prefix) { 'cell-3' }
+
+          it 'loads gracefully' do
+            expect(subject).to receive(:session_store).with(
+              ::Gitlab::Sessions::CacheStore,
+              a_hash_including(
+                cache: ActiveSupport::Cache::RedisCacheStore,
+                session_cookie_token_prefix: session_cookie_token_prefix
+              )
+            )
+
+            expect { load_session_store }.not_to raise_error
+          end
+        end
       end
     end
   end

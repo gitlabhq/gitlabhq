@@ -9,7 +9,7 @@ RSpec.describe Projects::ImportExport::ExportService, feature_category: :importe
     let_it_be_with_reload(:project) { create(:project, group: group) }
 
     let(:shared) { project.import_export_shared }
-    let!(:after_export_strategy) { Gitlab::ImportExport::AfterExportStrategies::DownloadNotificationStrategy.new }
+    let!(:after_export_strategy) { Import::AfterExportStrategies::DownloadNotificationStrategy.new }
 
     subject(:service) { described_class.new(project, user) }
 

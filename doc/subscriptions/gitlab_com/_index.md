@@ -66,21 +66,6 @@ but you can [disable automatic subscription renewal](../self_managed/_index.md#e
 The number of seats is adjusted to fit the [number of billable users in your group](#view-seat-usage) at the time of renewal,
 if that number is higher than the current subscription quantity.
 
-## Expired subscriptions
-
-When your subscription expires, you can continue to use paid features of GitLab for 14 days.
-On the 15th day, paid features are no longer available. You can
-continue to use free features.
-
-For example, if a subscription has a start date of January 1, 2024 and an end date of January 1, 2025:
-
-- It expires at 11:59:59 PM UTC December 31, 2024.
-- It is considered expired from 12:00:00 AM UTC January 1, 2025.
-- The grace period of 14 days starts at 12:00:00 AM UTC January 1, 2025 and ends at 11:59:59 PM UTC January 14, 2025.
-- Paid features are no longer available as of 12:00:00 AM UTC January 15, 2025.
-
-To resume paid feature functionality, purchase a new subscription.
-
 ## Add or change subscription contacts
 
 Contacts can renew a subscription, cancel a subscription, or transfer the subscription to a different namespace.

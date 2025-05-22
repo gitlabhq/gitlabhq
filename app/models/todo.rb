@@ -30,6 +30,7 @@ class Todo < ApplicationRecord
   DUO_ENTERPRISE_ACCESS_GRANTED = 17 # This is an EE-only feature
   DUO_CORE_ACCESS_GRANTED = 18 # This is an EE-only feature
 
+  # EE Action names should be defined in EE_ACTION_NAMES in ee/app/models/ee/todo.rb
   ACTION_NAMES = {
     ASSIGNED => :assigned,
     REVIEW_REQUESTED => :review_requested,
@@ -45,18 +46,13 @@ class Todo < ApplicationRecord
     OKR_CHECKIN_REQUESTED => :okr_checkin_requested,
     ADDED_APPROVER => :added_approver,
     SSH_KEY_EXPIRED => :ssh_key_expired,
-    SSH_KEY_EXPIRING_SOON => :ssh_key_expiring_soon,
-    DUO_PRO_ACCESS_GRANTED => :duo_pro_access_granted,
-    DUO_ENTERPRISE_ACCESS_GRANTED => :duo_enterprise_access_granted,
-    DUO_CORE_ACCESS_GRANTED => :duo_core_access_granted
+    SSH_KEY_EXPIRING_SOON => :ssh_key_expiring_soon
   }.freeze
 
   ACTIONS_MULTIPLE_ALLOWED = [Todo::MENTIONED, Todo::DIRECTLY_ADDRESSED, Todo::MEMBER_ACCESS_REQUESTED].freeze
 
+  # EE parentless action types should be defined in EE_PARENTLESS_ACTION_TYPES in ee/app/models/ee/todo.rb
   PARENTLESS_ACTION_TYPES = [
-    DUO_PRO_ACCESS_GRANTED,
-    DUO_ENTERPRISE_ACCESS_GRANTED,
-    DUO_CORE_ACCESS_GRANTED,
     SSH_KEY_EXPIRED,
     SSH_KEY_EXPIRING_SOON
   ].freeze
@@ -265,6 +261,14 @@ class Todo < ApplicationRecord
       select(arel_table[Arel.star], highest_priority).order(order)
     end
 
+    def action_names
+      ACTION_NAMES
+    end
+
+    def parentless_action_types
+      PARENTLESS_ACTION_TYPES
+    end
+
     def distinct_user_ids
       distinct.pluck(:user_id)
     end
@@ -329,7 +333,7 @@ class Todo < ApplicationRecord
   end
 
   def action_name
-    ACTION_NAMES[action]
+    self.class.action_names[action]
   end
 
   def body
@@ -362,12 +366,8 @@ class Todo < ApplicationRecord
     target_type == Key.name
   end
 
-  def for_duo_access_granted?
-    [DUO_PRO_ACCESS_GRANTED, DUO_ENTERPRISE_ACCESS_GRANTED, DUO_CORE_ACCESS_GRANTED].include?(action)
-  end
-
   def parentless_type?
-    PARENTLESS_ACTION_TYPES.include?(action)
+    self.class.parentless_action_types.include?(action)
   end
 
   # override to return commits, which are not active record
@@ -395,8 +395,6 @@ class Todo < ApplicationRecord
 
   def target_url
     return if target.nil?
-
-    return build_duo_getting_started_url if for_duo_access_granted?
 
     case target
     when WorkItem
@@ -431,10 +429,6 @@ class Todo < ApplicationRecord
   end
 
   private
-
-  def build_duo_getting_started_url
-    ::Gitlab::Routing.url_helpers.help_page_path('user/get_started/getting_started_gitlab_duo.md')
-  end
 
   def build_work_item_target_url
     ::Gitlab::UrlBuilder.build(

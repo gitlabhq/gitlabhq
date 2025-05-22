@@ -41,13 +41,17 @@ RSpec.describe ContainerRegistry::Protection::Concerns::TagRule, feature_categor
       let_it_be(:rule1) { create_rule(:owner, 'owner_pattern') }
       let_it_be(:rule2) { create_rule(:admin, 'admin_pattern') }
       let_it_be(:rule3) { create_rule(:maintainer, 'maintainer_pattern') }
+      let_it_be(:immutable_rule) do
+        create(:container_registry_protection_tag_rule, :immutable, project: project,
+          tag_name_pattern: 'immutable_pattern')
+      end
 
       context 'when current user is nil' do
         let_it_be(:current_user) { nil }
-        let(:expected_tag_name_pattern) { [rule1, rule2, rule3].map(&:tag_name_pattern) }
+        let(:expected_tag_name_pattern) { [rule1, rule2, rule3, immutable_rule].map(&:tag_name_pattern) }
 
         it 'returns all tag rules' do
-          expect(tag_name_patterns.all?(Gitlab::UntrustedRegexp)).to be(true)
+          expect(tag_name_patterns).to all(be_a(Gitlab::UntrustedRegexp))
           expect(tag_name_patterns.map(&:source)).to match_array(expected_tag_name_pattern)
         end
       end
@@ -56,13 +60,25 @@ RSpec.describe ContainerRegistry::Protection::Concerns::TagRule, feature_categor
         context 'when current user is an admin', :enable_admin_mode do
           let(:current_user) { build_stubbed(:admin) }
 
-          it { is_expected.to be_nil }
+          it 'returns immutable tag rules only' do
+            expect(tag_name_patterns.count).to eq(1)
+            expect(tag_name_patterns[0]).to be_a(Gitlab::UntrustedRegexp)
+              .and(have_attributes(source: 'immutable_pattern'))
+          end
+
+          context 'when feature container_registry_immutable_tags is disabled' do
+            before do
+              stub_feature_flags(container_registry_immutable_tags: false)
+            end
+
+            it { is_expected.to be_nil }
+          end
         end
 
         where(:user_role, :expected_patterns) do
-          :developer   | %w[admin_pattern maintainer_pattern owner_pattern]
-          :maintainer  | %w[admin_pattern owner_pattern]
-          :owner       | %w[admin_pattern]
+          :developer   | %w[admin_pattern maintainer_pattern owner_pattern immutable_pattern]
+          :maintainer  | %w[admin_pattern owner_pattern immutable_pattern]
+          :owner       | %w[admin_pattern immutable_pattern]
         end
 
         with_them do
@@ -71,8 +87,19 @@ RSpec.describe ContainerRegistry::Protection::Concerns::TagRule, feature_categor
           end
 
           it 'returns the tag name patterns with access levels that are above the user' do
-            expect(tag_name_patterns.all?(Gitlab::UntrustedRegexp)).to be(true)
+            expect(tag_name_patterns).to all(be_a(Gitlab::UntrustedRegexp))
             expect(tag_name_patterns.map(&:source)).to match_array(expected_patterns)
+          end
+
+          context 'when feature container_registry_immutable_tags is disabled' do
+            before do
+              stub_feature_flags(container_registry_immutable_tags: false)
+            end
+
+            it 'returns the tag name patterns with access levels that are above the user excluding immutable tags' do
+              expect(tag_name_patterns).to all(be_a(Gitlab::UntrustedRegexp))
+              expect(tag_name_patterns.map(&:source)).to match_array(expected_patterns - %w[immutable_pattern])
+            end
           end
         end
       end
