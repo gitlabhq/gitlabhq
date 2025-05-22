@@ -89,6 +89,7 @@ module MergeRequests
       merge_request_activity_counter.track_reviewers_changed_action(user: current_user)
       trigger_merge_request_reviewers_updated(merge_request)
 
+      set_reviewers_approved(merge_request, new_reviewers) if new_reviewers.any?
       set_first_reviewer_assigned_at_metrics(merge_request) if new_reviewers.any?
       trigger_user_merge_request_updated(merge_request)
     end
@@ -216,6 +217,13 @@ module MergeRequests
 
     def filter_suggested_reviewers
       # Implemented in EE
+    end
+
+    def set_reviewers_approved(merge_request, new_reviewers)
+      approval_users = merge_request.approvals_for_user_ids(new_reviewers.map(&:id))
+
+      merge_request.merge_request_reviewers_with(approval_users.select(:user_id))
+        .update_all(state: :approved)
     end
 
     def merge_request_metrics_service(merge_request)

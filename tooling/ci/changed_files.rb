@@ -45,7 +45,13 @@ module CI
         return 0
       end
 
-      command = ["yarn", "run", "lint:eslint", "--no-warn-ignored", "--format", "gitlab", *files]
+      command = [
+        "yarn", "run", "lint:eslint",
+        "--no-warn-ignored",
+        "--no-error-on-unmatched-pattern",
+        "--format", "gitlab",
+        *files
+      ]
       system(*command)
 
       last_command_status.exitstatus

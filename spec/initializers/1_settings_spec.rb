@@ -85,9 +85,21 @@ RSpec.describe '1_settings', feature_category: :shared do
       }
     end
 
-    context 'when legacy topology service config is provided' do
+    context 'when legacy topology service client config is provided as a top-level key' do
       before do
         stub_config({ cell: { enabled: true, id: 1 }, topology_service: config })
+        load_settings
+      end
+
+      it { expect(Settings.cell.topology_service_client.address).to eq(config[:address]) }
+      it { expect(Settings.cell.topology_service_client.ca_file).to eq(config[:ca_file]) }
+      it { expect(Settings.cell.topology_service_client.certificate_file).to eq(config[:certificate_file]) }
+      it { expect(Settings.cell.topology_service_client.private_key_file).to eq(config[:private_key_file]) }
+    end
+
+    context 'when topology service client config is provided as a key nested' do
+      before do
+        stub_config({ cell: { enabled: true, id: 1, topology_service_client: config } })
         load_settings
       end
 

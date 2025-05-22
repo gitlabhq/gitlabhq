@@ -13001,6 +13001,7 @@ Input type: `WorkItemUserPreferenceUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationworkitemuserpreferenceupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemuserpreferenceupdatedisplaysettings"></a>`displaySettings` | [`JSON`](#json) | Display settings for the work item lists. |
 | <a id="mutationworkitemuserpreferenceupdatenamespacepath"></a>`namespacePath` | [`ID!`](#id) | Full path of the namespace on which the preference is set. |
 | <a id="mutationworkitemuserpreferenceupdatesort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort order for work item lists. |
 | <a id="mutationworkitemuserpreferenceupdateworkitemtypeid"></a>`workItemTypeId` | [`WorkItemsTypeID`](#workitemstypeid) | Global ID of a work item type. |
@@ -21551,6 +21552,7 @@ Counts for each analyzer status in the group and subgroups.
 | <a id="analyzergroupstatustypefailure"></a>`failure` | [`Int!`](#int) | Number of analyzers failed. |
 | <a id="analyzergroupstatustypenamespaceid"></a>`namespaceId` | [`Int!`](#int) | Namespace ID. |
 | <a id="analyzergroupstatustypesuccess"></a>`success` | [`Int!`](#int) | Number of analyzers succeeded. |
+| <a id="analyzergroupstatustypeupdatedat"></a>`updatedAt` | [`ISO8601DateTime!`](#iso8601datetime) | Timestamp of when the status was last updated. |
 
 ### `AnalyzerProjectStatusType`
 
@@ -21565,6 +21567,7 @@ Analyzer status (success/fail) for projects.
 | <a id="analyzerprojectstatustypelastcall"></a>`lastCall` | [`Time!`](#time) | Last time analyzer was called. |
 | <a id="analyzerprojectstatustypeprojectid"></a>`projectId` | [`Int!`](#int) | Project ID. |
 | <a id="analyzerprojectstatustypestatus"></a>`status` | [`AnalyzerStatusEnum!`](#analyzerstatusenum) | Analyzer status. |
+| <a id="analyzerprojectstatustypeupdatedat"></a>`updatedAt` | [`ISO8601DateTime!`](#iso8601datetime) | Timestamp of when the status was last updated. |
 
 ### `AncestorType`
 
@@ -42070,6 +42073,7 @@ Represents Depth limit reached for the allowed work item type.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="workitemtypesuserpreferencedisplaysettings"></a>`displaySettings` | [`JSON`](#json) | Display settings for the work item lists. |
 | <a id="workitemtypesuserpreferencenamespace"></a>`namespace` | [`Namespace!`](#namespace) | Namespace for the user preference. |
 | <a id="workitemtypesuserpreferencesort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort order for work item lists. |
 | <a id="workitemtypesuserpreferenceworkitemtype"></a>`workItemType` | [`WorkItemType`](#workitemtype) | Type assigned to the work item. |

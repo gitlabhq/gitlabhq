@@ -69,13 +69,19 @@ If the case of `404.html`, there are different scenarios. For example:
 You can configure redirects for your site using a `_redirects` file. For more information, see
 [Create redirects for GitLab Pages](redirects.md).
 
-## Remove your pages
+## Delete a Pages site
 
-To remove your pages:
+Permanently delete all Pages deployments for a project.
+This is permanent and cannot be undone.
+
+To delete your pages:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Pages**.
-1. Select **Remove pages**.
+1. Select **Delete pages**.
+
+Your Pages site is no longer deployed.
+To deploy this Pages site again, run a new pipeline.
 
 ## Subdomains of subdomains
 

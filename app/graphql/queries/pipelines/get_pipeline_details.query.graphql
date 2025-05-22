@@ -23,6 +23,10 @@ fragment LinkedPipelineData on Pipeline {
   userPermissions {
     updatePipeline
   }
+  # @graphql-eslint/eslint-plugin@4.0.0 reports missing IDs in `FragmentDefinition`. For now, we are
+  # ignoring the newly uncovered error on this fragment. Please consider addressing the violation
+  # if you are modifying this file and it turns out selecting the ID makes sense here.
+  # eslint-disable-next-line @graphql-eslint/require-selections
   status: detailedStatus {
     __typename
     group
@@ -59,13 +63,13 @@ query getPipelineDetails($projectPath: ID!, $iid: ID!) {
       downstream {
         __typename
         nodes {
-          # eslint-disable-next-line @graphql-eslint/require-id-when-available -- for detailedStatus.id
+          # eslint-disable-next-line @graphql-eslint/require-selections -- for detailedStatus.id
           ...LinkedPipelineData
           name
         }
       }
       upstream {
-        # eslint-disable-next-line @graphql-eslint/require-id-when-available -- for detailedStatus.id
+        # eslint-disable-next-line @graphql-eslint/require-selections -- for detailedStatus.id
         ...LinkedPipelineData
       }
       stages {
@@ -74,7 +78,7 @@ query getPipelineDetails($projectPath: ID!, $iid: ID!) {
           __typename
           id
           name
-          # eslint-disable-next-line @graphql-eslint/require-id-when-available
+          # eslint-disable-next-line @graphql-eslint/require-selections
           status: detailedStatus {
             __typename
             action {
@@ -91,7 +95,7 @@ query getPipelineDetails($projectPath: ID!, $iid: ID!) {
             nodes {
               __typename
               id
-              # eslint-disable-next-line @graphql-eslint/require-id-when-available
+              # eslint-disable-next-line @graphql-eslint/require-selections
               status: detailedStatus {
                 __typename
                 label
@@ -122,7 +126,7 @@ query getPipelineDetails($projectPath: ID!, $iid: ID!) {
                       ...CiNeeds
                     }
                   }
-                  # eslint-disable-next-line @graphql-eslint/require-id-when-available
+                  # eslint-disable-next-line @graphql-eslint/require-selections
                   status: detailedStatus {
                     __typename
                     icon

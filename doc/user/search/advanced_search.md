@@ -23,7 +23,7 @@ Use advanced search to find exactly what you need across your entire GitLab inst
 With advanced search:
 
 - Identify code patterns across all projects to refactor shared components more efficiently.
-- Locate security vulnerabilities in dependencies across your entire organization at once.
+- Locate security vulnerabilities across your entire organization's codebase and dependencies using [advanced vulnerability management](../application_security/vulnerability_report/_index.md#advanced-vulnerability-management).
 - Track usage of deprecated functions or libraries throughout all repositories.
 - Find discussions buried in issues, merge requests, or comments.
 - Discover existing solutions instead of reinventing functionality that already exists.

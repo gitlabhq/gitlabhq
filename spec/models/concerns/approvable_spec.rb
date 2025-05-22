@@ -106,6 +106,19 @@ RSpec.describe Approvable do
     end
   end
 
+  describe '#approvals_for_user_ids' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:merge_request) { create(:merge_request) }
+    let_it_be(:approval) { create(:approval, merge_request: merge_request, user: user) }
+    let_it_be(:approval2) { create(:approval, merge_request: merge_request, user: create(:user)) }
+
+    subject(:approvals) { merge_request.approvals_for_user_ids([user.id]) }
+
+    it 'returns approvals by user' do
+      is_expected.to contain_exactly(approval)
+    end
+  end
+
   describe '.not_approved_by_users_with_usernames' do
     subject { MergeRequest.not_approved_by_users_with_usernames([user.username, user2.username]) }
 

@@ -20,7 +20,7 @@ if Gitlab.config.cell.enabled
 
   Settings.required_topology_service_settings.each do |setting|
     setting_value = Gitlab.config.cell.topology_service_client.send(setting)
-    print_error.call("Topology Service setting '#{setting}' is not set.") if setting_value.blank?
+    print_error.call("Topology Service Client setting '#{setting}' is not set.") if setting_value.blank?
   end
 elsif Gitlab.config.cell.id.present?
   print_error.call("Cell ID is set but Cell is not enabled.")

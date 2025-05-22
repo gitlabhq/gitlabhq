@@ -4,7 +4,7 @@ query getPipelineCorpuses($projectPath: ID!, $iid: ID, $reportTypes: [SecurityRe
   project(fullPath: $projectPath) {
     id
     pipeline(iid: $iid) {
-      # eslint-disable-next-line @graphql-eslint/require-id-when-available
+      # eslint-disable-next-line @graphql-eslint/require-selections
       ...JobArtifacts
     }
   }

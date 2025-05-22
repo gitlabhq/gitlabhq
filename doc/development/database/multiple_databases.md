@@ -839,10 +839,11 @@ space by truncating tables. This results in a smaller data set: For example,
 the data in `users` table on CI database is no longer read and also no
 longer updated. So this data can be removed by truncating the tables.
 
-For this purpose, GitLab provides two Rake tasks, one for each database:
+For this purpose, GitLab provides separate Rake tasks, one for each database:
 
-- `gitlab:db:truncate_legacy_tables:main` will truncate the CI tables in Main database.
-- `gitlab:db:truncate_legacy_tables:ci` will truncate the Main tables in CI database.
+- `gitlab:db:truncate_legacy_tables:main` will truncate the legacy tables in Main database.
+- `gitlab:db:truncate_legacy_tables:ci` will truncate the legacy tables in CI database.
+- `gitlab:db:truncate_legacy_tables:sec` will truncate the legacy tables in Sec database.
 
 {{< alert type="note" >}}
 

@@ -1119,8 +1119,8 @@ Settings.cell['enabled'] ||= false # All Cells Features are disabled by default
 Settings.cell['id'] ||= nil
 Settings.cell['database'] ||= {}
 Settings.cell.database['skip_sequence_alteration'] ||= false
-
-# Topology Service Client Settings
+# NOTE: `topology_service_client` is the configuration to use going forward as per https://docs.gitlab.com/administration/cells/#configuration
+#   We continue to be backwards compatible and support `topology_service` as a top-level key.
 Settings.cell['topology_service_client'] ||= Settings.respond_to?(:topology_service) ? Settings.topology_service || {} : {}
 Settings.cell.topology_service_client['address'] ||= 'topology-service.gitlab.example.com:443'
 Settings.cell.topology_service_client['ca_file'] ||= '/home/git/gitlab/config/topology-service-ca.pem'

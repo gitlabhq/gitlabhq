@@ -31,5 +31,13 @@ RSpec.describe 'Updating an existing HTTP Integration', feature_category: :incid
 
   let(:mutation_response) { graphql_mutation_response(:http_integration_update) }
 
+  before do
+    allow_unlimited_graphql_complexity
+    allow_unlimited_graphql_depth
+    allow_unlimited_validation_timeout
+    # Optional, if you suspect recursion issues, though less common for timeouts:
+    # allow_high_graphql_recursion
+  end
+
   it_behaves_like 'updating an existing HTTP integration'
 end

@@ -307,6 +307,14 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
 
           update_merge_request(reviewer_ids: [user.id])
         end
+
+        it 'sets reviewer state as approved if user has previously approved' do
+          create(:approval, merge_request: merge_request, user: user)
+
+          update_merge_request(reviewer_ids: [user.id])
+
+          expect(merge_request.find_reviewer(user)).to be_approved
+        end
       end
 
       it 'creates a resource label event' do

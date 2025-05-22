@@ -22,6 +22,11 @@ module Types
         null: true,
         description: 'Sort order for work item lists.'
 
+      field :display_settings,
+        type: GraphQL::Types::JSON,
+        null: true,
+        description: 'Display settings for the work item lists.'
+
       def sort
         object.sort&.to_sym
       end

@@ -27,8 +27,6 @@ Layout/LineBreakAfterFinalMixin:
     - 'ee/app/workers/active_user_count_threshold_worker.rb'
     - 'ee/app/workers/analytics/value_stream_dashboard/count_worker.rb'
     - 'ee/app/workers/arkose/blocked_users_report_worker.rb'
-    - 'ee/app/workers/geo/metrics_update_worker.rb'
-    - 'ee/app/workers/geo/sidekiq_cron_config_worker.rb'
     - 'ee/app/workers/gitlab_subscriptions/notify_seats_exceeded_batch_worker.rb'
     - 'ee/app/workers/historical_data_worker.rb'
     - 'ee/app/workers/ldap_all_groups_sync_worker.rb'

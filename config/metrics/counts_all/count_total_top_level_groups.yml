@@ -1,0 +1,18 @@
+---
+key_path: counts.total_top_level_groups
+description: Counts the number of top-level groups on the instance
+product_group: organizations
+product_categories:
+  - groups_and_projects
+value_type: number
+status: active
+milestone: "18.1"
+instrumentation_class: CountTopLevelGroupsMetric
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190217
+time_frame: all
+data_source: database
+data_category: optional
+tiers:
+  - free
+  - premium
+  - ultimate

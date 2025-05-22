@@ -121,7 +121,7 @@ RSpec.describe 'validate database config', feature_category: :cell do
       end
 
       it 'raises exception about missing topology service client config' do
-        expect { validate_config }.to raise_error("Topology Service setting 'address' is not set.#{dev_message}")
+        expect { validate_config }.to raise_error("Topology Service Client setting 'address' is not set.#{dev_message}")
       end
 
       it_behaves_like 'with SKIP_CELL_CONFIG_VALIDATION=true'

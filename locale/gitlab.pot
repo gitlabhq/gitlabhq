@@ -28375,6 +28375,9 @@ msgstr ""
 msgid "GitLabPages|DNS check unsuccessful"
 msgstr ""
 
+msgid "GitLabPages|Delete Pages"
+msgstr ""
+
 msgid "GitLabPages|Domain ownership verification required. Add a TXT record to verify ownership at your domain provider."
 msgstr ""
 
@@ -28405,7 +28408,7 @@ msgstr ""
 msgid "GitLabPages|New domain"
 msgstr ""
 
-msgid "GitLabPages|Only project maintainers can remove pages"
+msgid "GitLabPages|Only project maintainers can remove pages."
 msgstr ""
 
 msgid "GitLabPages|Pages"
@@ -28429,9 +28432,6 @@ msgstr ""
 msgid "GitLabPages|Remove pages"
 msgstr ""
 
-msgid "GitLabPages|Removing pages will prevent them from being exposed to the public internet."
-msgstr ""
-
 msgid "GitLabPages|Restrict access to only project members on all group projects"
 msgstr ""
 
@@ -28445,6 +28445,12 @@ msgid "GitLabPages|Start over"
 msgstr ""
 
 msgid "GitLabPages|Support for domains and certificates is disabled. Ask your GitLab administrator to enable it."
+msgstr ""
+
+msgid "GitLabPages|This action will permanently delete all Pages deployments."
+msgstr ""
+
+msgid "GitLabPages|This is permanent and cannot be undone. To deploy this Pages site again, run a new pipeline."
 msgstr ""
 
 msgid "GitLabPages|Updating your Pages configuration…"
@@ -43224,7 +43230,10 @@ msgstr ""
 msgid "Owasp|A9:2017 Using Components with Known Vulnerabilities"
 msgstr ""
 
-msgid "Owasp|Non-OWASP Top 10"
+msgid "Owasp|Non-OWASP Top 10 2017"
+msgstr ""
+
+msgid "Owasp|Non-OWASP Top 10 2021"
 msgstr ""
 
 msgid "Owned by %{image_tag}"
