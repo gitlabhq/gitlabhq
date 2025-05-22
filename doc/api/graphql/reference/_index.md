@@ -2068,6 +2068,7 @@ Input type: `AiActionInput`
 | <a id="mutationaiactionplatformorigin"></a>`platformOrigin` | [`String`](#string) | Specifies the origin platform of the request. |
 | <a id="mutationaiactionprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project the user is acting on. |
 | <a id="mutationaiactionresolvevulnerability"></a>`resolveVulnerability` | [`AiResolveVulnerabilityInput`](#airesolvevulnerabilityinput) | Input for resolve_vulnerability AI action. |
+| <a id="mutationaiactionrootnamespaceid"></a>`rootNamespaceId` | [`NamespaceID`](#namespaceid) | Global ID of the top-level namespace the user is acting on. |
 | <a id="mutationaiactionsummarizecomments"></a>`summarizeComments` | [`AiSummarizeCommentsInput`](#aisummarizecommentsinput) | Input for summarize_comments AI action. |
 | <a id="mutationaiactionsummarizenewmergerequest"></a>`summarizeNewMergeRequest` | [`AiSummarizeNewMergeRequestInput`](#aisummarizenewmergerequestinput) | Input for summarize_new_merge_request AI action. |
 | <a id="mutationaiactionsummarizereview"></a>`summarizeReview` | [`AiSummarizeReviewInput`](#aisummarizereviewinput) | Input for summarize_review AI action. |

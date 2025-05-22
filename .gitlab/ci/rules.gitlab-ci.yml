@@ -2025,6 +2025,8 @@
       variables:
         <<: *qa-e2e-test-schedule-variables
         COVERBAND_ENABLED: "true"
+        BABEL_ENV: "istanbul" # This sets the environmental variable enabling `istanbul` plugin in Babel
+        # https://gitlab.com/gitlab-org/gitlab/-/blob/master/babel.config.js
         QA_RUN_IN_PARALLEL: "false"
 
 .qa:rules:e2e:test-on-cng:

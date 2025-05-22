@@ -16748,6 +16748,42 @@ msgstr ""
 msgid "Components must have a 'name'"
 msgstr ""
 
+msgid "CompromisedPasswordDetection|Change GitLab Password"
+msgstr ""
+
+msgid "CompromisedPasswordDetection|Failure to change your password may lead to temporary account access restrictions to prevent potential unauthorized access."
+msgstr ""
+
+msgid "CompromisedPasswordDetection|For your security, we also recommend enabling %{mfa_link} if you have not done so already."
+msgstr ""
+
+msgid "CompromisedPasswordDetection|GitLab documentation"
+msgstr ""
+
+msgid "CompromisedPasswordDetection|Instructions for changing your password can be found in the %{doc_link}."
+msgstr ""
+
+msgid "CompromisedPasswordDetection|Please change your password immediately."
+msgstr ""
+
+msgid "CompromisedPasswordDetection|Security Alert: Change Your GitLab.com Password"
+msgstr ""
+
+msgid "CompromisedPasswordDetection|Security Alert: Change your GitLab password"
+msgstr ""
+
+msgid "CompromisedPasswordDetection|The password used for your GitLab.com account %{code_start}%{username}%{code_end} may have been compromised due to a data breach on another service or platform. This does not necessarily mean that your GitLab account was accessed. However, leaving your password unchanged presents a significant security risk to your account."
+msgstr ""
+
+msgid "CompromisedPasswordDetection|The password used for your GitLab.com account %{username} may have been compromised due to a data breach on another service or platform. This does not necessarily mean that your GitLab account was accessed. However, leaving your password unchanged presents a significant security risk to your account."
+msgstr ""
+
+msgid "CompromisedPasswordDetection|Your GitLab.com account password may be compromised due to a data breach on another service or platform. Please change your password immediately."
+msgstr ""
+
+msgid "CompromisedPasswordDetection|two-factor authentication"
+msgstr ""
+
 msgid "Compute minutes"
 msgstr ""
 
@@ -27745,9 +27781,6 @@ msgstr ""
 msgid "Geo|Resync all"
 msgstr ""
 
-msgid "Geo|Retry count"
-msgstr ""
-
 msgid "Geo|Reverify"
 msgstr ""
 
@@ -27793,9 +27826,6 @@ msgstr ""
 msgid "Geo|Shards to synchronize"
 msgstr ""
 
-msgid "Geo|Show more"
-msgstr ""
-
 msgid "Geo|Site name can't be blank"
 msgstr ""
 
@@ -27827,9 +27857,6 @@ msgid "Geo|Synced"
 msgstr ""
 
 msgid "Geo|Synchronization"
-msgstr ""
-
-msgid "Geo|Synchronization failed - %{error}"
 msgstr ""
 
 msgid "Geo|Synchronization settings"
@@ -27926,9 +27953,6 @@ msgid "Geo|Verification"
 msgstr ""
 
 msgid "Geo|Verification concurrency limit"
-msgstr ""
-
-msgid "Geo|Verification failed - %{error}"
 msgstr ""
 
 msgid "Geo|Verification information"
@@ -28193,6 +28217,9 @@ msgid "GitLab Pages"
 msgstr ""
 
 msgid "GitLab Premium"
+msgstr ""
+
+msgid "GitLab Security"
 msgstr ""
 
 msgid "GitLab Shell"
@@ -61137,6 +61164,9 @@ msgid "Thank you for your report. A GitLab administrator will look into it short
 msgstr ""
 
 msgid "Thank you for your support request! We are tracking your request as ticket #%{issue_iid}, and will respond as soon as we can."
+msgstr ""
+
+msgid "Thank you,"
 msgstr ""
 
 msgid "Thanks for signing up to GitLab!"

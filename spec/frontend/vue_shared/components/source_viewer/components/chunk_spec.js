@@ -5,11 +5,9 @@ import { GlIntersectionObserver } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Chunk from '~/vue_shared/components/source_viewer/components/chunk.vue';
 import { addInteractionClass } from '~/code_navigation/utils';
-import { updateLineNumber } from '~/blob/state';
 import { CHUNK_1, CHUNK_2 } from '../mock_data';
 
 jest.mock('~/code_navigation/utils');
-jest.mock('~/blob/state');
 
 Vue.use(Vuex);
 
@@ -102,19 +100,6 @@ describe('Chunk component', () => {
       await nextTick();
 
       expect(addInteractionClass).toHaveBeenCalledWith({ d: 'test', path: 'index.js' });
-    });
-
-    it('calls updateLineNumber with the correct line number when a line is clicked', async () => {
-      createComponent({ ...CHUNK_2, isHighlighted: true });
-
-      const lineNumber = '71';
-      const lineNumberElement = wrapper.find(`[data-line-number="${lineNumber}"]`);
-
-      expect(lineNumberElement.exists()).toBe(true);
-
-      await lineNumberElement.trigger('click');
-
-      expect(updateLineNumber).toHaveBeenCalledWith(lineNumber);
     });
   });
 });

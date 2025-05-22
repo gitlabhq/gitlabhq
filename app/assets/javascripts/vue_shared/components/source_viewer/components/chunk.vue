@@ -6,7 +6,6 @@ import { GlIntersectionObserver } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { getPageParamValue, getPageSearchString } from '~/blob/utils';
 import { addInteractionClass } from '~/code_navigation/utils';
-import { updateLineNumber } from '~/blob/state';
 
 /*
  * We only highlight the chunk that is currently visible to the user.
@@ -105,10 +104,6 @@ export default {
       this.hasAppeared = true;
       this.$emit('appear');
     },
-    handleOnClick(event) {
-      const { lineNumber } = event.target.dataset;
-      updateLineNumber(lineNumber);
-    },
     calculateLineNumber(index) {
       return this.startingFrom + index + 1;
     },
@@ -148,7 +143,6 @@ export default {
           class="file-line-num gl-select-none !gl-shadow-none"
           :href="`#L${calculateLineNumber(index)}`"
           :data-line-number="calculateLineNumber(index)"
-          @click="handleOnClick"
         >
           {{ calculateLineNumber(index) }}
         </a>

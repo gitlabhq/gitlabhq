@@ -72,7 +72,7 @@ RSpec.configure do |config|
       begin
         Capybara.current_session.execute_script("window.__coveragePathsPersistence.reset()")
       rescue StandardError => e
-        QA::Runtime::Logger.warn("Failed to reset coverage paths: #{e.message}")
+        QA::Runtime::Logger.warn("Failed to reset coverage paths, check if it is an api spec: #{e.message}")
       end
     end
 
@@ -111,7 +111,7 @@ RSpec.configure do |config|
         example.metadata[:coverage_paths] = coverage_paths
         front_end_coverage_by_example[example.metadata[:location]] = coverage_paths
       rescue StandardError => e
-        QA::Runtime::Logger.warn("Failed to collect coverage paths: #{e.message}")
+        QA::Runtime::Logger.warn("Failed to collect coverage paths, check if it is an api spec: #{e.message}")
       end
     end
   end

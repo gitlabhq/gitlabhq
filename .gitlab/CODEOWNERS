@@ -582,6 +582,7 @@ lib/gitlab/checks/**
 /doc/administration/application_settings_cache.md @jglassman1
 /doc/administration/auditor_users.md @idurham
 /doc/administration/auth/ @idurham
+/doc/administration/backup_restore/ @axil
 /doc/administration/broadcast_messages.md @sselhorn
 /doc/administration/cells.md @emily.sahlani
 /doc/administration/cicd/ @lyspin
@@ -658,7 +659,7 @@ lib/gitlab/checks/**
 /doc/administration/raketasks/tokens/ @idurham
 /doc/administration/raketasks/x509_signatures.md @brendan777
 /doc/administration/read_only_gitlab.md @axil @eread
-/doc/administration/redis/ @axil @eread
+/doc/administration/redis/ @axil
 /doc/administration/reference_architectures/ @axil @eread
 /doc/administration/reply_by_email.md @lciutacu
 /doc/administration/reply_by_email_postfix_setup.md @axil @eread
@@ -704,8 +705,7 @@ lib/gitlab/checks/**
 /doc/administration/settings/third_party_offers.md @phillipwells
 /doc/administration/settings/visibility_and_access_controls.md @brendan777
 /doc/administration/settings/vscode_extension_marketplace.md @brendan777
-/doc/administration/sidekiq/ @axil @eread
-/doc/administration/sidekiq/sidekiq_memory_killer.md @jglassman1
+/doc/administration/sidekiq/ @axil
 /doc/administration/silent_mode/ @axil
 /doc/administration/smime_signing_email.md @axil @eread
 /doc/administration/snippets/ @brendan777
@@ -953,6 +953,7 @@ lib/gitlab/checks/**
 /doc/development/cascading_settings.md @gitlab-org/foundations/engineering
 /doc/development/cells/ @OmarQunsulGitlab @bmarjanovic
 /doc/development/cicd/ @gitlab-org/maintainers/cicd-verify
+/doc/development/compromised_password_detection.md @gitlab-org/software-supply-chain-security/authentication/approvers
 /doc/development/contributing/verify/ @gitlab-org/maintainers/cicd-verify
 /doc/development/database/ @OmarQunsulGitlab @bmarjanovic
 /doc/development/distributed_tracing.md @gitlab-org/analytics-section/product-analytics/engineers/frontend

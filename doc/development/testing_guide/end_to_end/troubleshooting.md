@@ -66,3 +66,23 @@ For example, if your IP is `192.168.0.12`:
 ```shell
 bundle exec bin/qa Test::Instance::All http://192.168.0.12:3000
 ```
+
+## Tests sign out when visiting a page
+
+If the tests sign in successfully as a test user, but then unexpectedly sign out, you might be using an
+incorrect URL to execute the test. By default, tests use the URL `http://127.0.0.1:3000`, but if a hostname
+has been configured for the instance, you must explicitly pass that hostname to the tests. The tests use
+the `web_url` returned by the API to go to different pages. They go to the configured hostname, rather than
+`http://127.0.0.1:3000`, so the test user appears signed out.
+
+This example runs the tests against `http://127.0.0.1:3000`, and signs out if a hostname has been configured:
+
+```shell
+bundle exec rspec qa/specs/features/ee/browser_ui/3_create/repository/code_owners_spec.rb
+```
+
+To avoid this, explicitly set `QA_GITLAB_URL` to the configured hostname, for example:
+
+```shell
+QA_GITLAB_URL=http://gdk.test:3000 bundle exec rspec qa/specs/features/ee/browser_ui/3_create/repository/code_owners_spec.rb
+```

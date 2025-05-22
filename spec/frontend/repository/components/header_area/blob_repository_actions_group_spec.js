@@ -9,7 +9,6 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { blobControlsDataMock } from 'ee_else_ce_jest/repository/mock_data';
 
 jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
-jest.mock('~/blob/state');
 
 const relativePermalinkPath =
   'flightjs/Flight/-/blob/46ca9ebd5a43ec240ee8d64e2bb829169dff744e/bower.json';

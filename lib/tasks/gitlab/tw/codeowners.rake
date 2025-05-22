@@ -42,7 +42,7 @@ namespace :tw do
       # CodeOwnerRule.new('Database Operations', ''),
       # CodeOwnerRule.new('DataOps', ''),
       # CodeOwnerRule.new('Delivery', ''),
-      # CodeOwnerRule.new('Durability', ''),
+      CodeOwnerRule.new('Durability', '@axil'),
       CodeOwnerRule.new('Duo Chat', '@jglassman1'),
       CodeOwnerRule.new('Duo Workflow', '@sselhorn'),
       CodeOwnerRule.new('Dynamic Analysis', '@phillipwells'),

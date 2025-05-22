@@ -37,3 +37,39 @@ There is no need to set up the backend components of Duo Workflow to test change
 A local build of the UI is required if you are making Duo Workflow UI changes that you need to view locally. A local build is also required if you want to use a version of the UI that has not been released yet.
 
 Refer to the [GitLab Duo Workflow README](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/webview_duo_workflow/README.md) file in the Language Server project to get started with local development of GitLab Duo Workflow UI.
+
+## Development settings
+
+Each of these settings can be turned on in your user settings in VS Code.
+
+### Change view type
+
+Enable the Duo Workflow as a sidepanel instead of fullview. This is going to be the default for public beta.
+
+`"gitlab.featureFlags.duoWorkflowPanel": true,`
+
+### Executor type
+
+Allow to define which Duo Workflow executor is selected. Accepts:
+
+- `shell` - Current default, runs the go binary directly on the user's machine
+- `docker` - Runs the go binary inside a Docker container (deprecated)
+- `node` - Runs a nodeJs/TypeScript executor directly inside the languge server. Expected to become the default.
+
+`"gitlab.duo.workflow.executor": "node",`
+
+### Workflow graph
+
+Experimental settings that allow Duo Workflow graph to be swapped. Includes:
+
+- `software_development` - default
+- `chat` - used by agentic chat
+- `search_and_replace` - Used to scan large number of files and replace results with specific instructions
+
+`"gitlab.duo.workflow.graph": "software_development",`
+
+### Tool approval
+
+Allow users to get access to tools that require approval such as running terminal commands.
+
+`"gitlab.duo.workflow.toolApproval": true`

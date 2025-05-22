@@ -74,6 +74,8 @@ compile-production-assets as-if-foss:
     - .qa:rules:test-on-omnibus-ce:follow-up
 
 compile-test-assets:
+  variables:
+    BABEL_ENV: "$BABEL_ENV"
   extends:
     - .compile-assets-base
     - .frontend:rules:compile-test-assets
