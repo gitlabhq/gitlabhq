@@ -1,5 +1,5 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import { captureException } from '../../sentry_utils';
 import runnerAssignToProjectMutation from '../../graphql/list/runner_assign_to_project.mutation.graphql';
@@ -10,6 +10,9 @@ export default {
   name: 'RunnerToggleAssignButton',
   components: {
     GlButton,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     projectFullPath: {
@@ -38,7 +41,10 @@ export default {
       }
       return runnerUnassignFromProjectMutation;
     },
-    text() {
+    icon() {
+      return this.assigns ? 'link' : 'unlink';
+    },
+    tooltip() {
       return this.assigns ? s__('Runner|Assign to project') : s__('Runner|Unassign from project');
     },
     doneMessage() {
@@ -86,7 +92,5 @@ export default {
 };
 </script>
 <template>
-  <gl-button size="small" :loading="loading" @click="onClick">
-    {{ text }}
-  </gl-button>
+  <gl-button v-gl-tooltip="tooltip" size="small" :icon="icon" :loading="loading" @click="onClick" />
 </template>

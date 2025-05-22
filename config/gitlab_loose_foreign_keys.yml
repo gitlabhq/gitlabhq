@@ -425,8 +425,8 @@ notes:
   - table: vulnerabilities
     column: noteable_id
     conditions:
-      - column: noteable_type
-        value: "Vulnerability"
+    - column: noteable_type
+      value: Vulnerability
     on_delete: async_delete
 notification_settings:
   - table: users
@@ -619,6 +619,10 @@ sbom_sources:
   - table: organizations
     column: organization_id
     on_delete: async_delete
+security_policy_settings:
+  - table: namespaces
+    column: csp_namespace_id
+    on_delete: async_nullify
 security_scans:
   - table: p_ci_builds
     column: build_id

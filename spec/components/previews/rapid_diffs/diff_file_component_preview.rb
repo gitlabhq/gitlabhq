@@ -186,8 +186,8 @@ module RapidDiffs
       ::Gitlab::Git::Diff.new(
         {
           diff: hunk,
-          new_path: new_path(hunk),
-          old_path: old_path(hunk),
+          new_path: new_path(hunk) || old_path(hunk),
+          old_path: old_path(hunk) || new_path(hunk),
           a_mode: '0',
           b_mode: '100644',
           new_file: true,

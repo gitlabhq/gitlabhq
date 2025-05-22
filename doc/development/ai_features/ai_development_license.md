@@ -17,6 +17,14 @@ should be based on your specific testing requirements.
 
 {{< /alert >}}
 
+{{< alert type="warning" >}}
+
+When adding a Duo Addon license to your local GDK, by default only the root account gets
+a subscription seat to use GitLab Duo features. If you want to test with other users, make
+sure to [assign them a seat](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
+
+{{< /alert >}}
+
 ## Overview
 
 GitLab Duo features require either Duo Pro or Duo Enterprise licensing. When developing locally, there are multiple approaches to set up licensing, each serving different development needs.

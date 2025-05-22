@@ -617,7 +617,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
             | ---- | ---- | ----------- |
             | <a id="mutationmakeitprettyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
             | <a id="mutationmakeitprettyprettinessfactor"></a>`prettinessFactor` | [`Float!`](#float) | How much prettier?. |
-            | <a id="mutationmakeitprettypulchritude"></a>`pulchritude` {{< icon name="warning-solid" >}} | [`Float`](#float) | **Deprecated:** This was renamed. Please use `prettinessFactor`. Deprecated in GitLab 72.34. |
+            | <a id="mutationmakeitprettypulchritude"></a>`pulchritude` {{< icon name="warning-solid" >}} | [`Float`](#float) | **Deprecated**: This was renamed. Please use `prettinessFactor`. Deprecated in GitLab 72.34. |
 
             #### Fields
 
@@ -626,7 +626,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
             | <a id="mutationmakeitprettyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
             | <a id="mutationmakeitprettyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
             | <a id="mutationmakeitprettyeverything"></a>`everything` | [`String`](#string) | What we made prettier. |
-            | <a id="mutationmakeitprettyomnis"></a>`omnis` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated:** This was renamed. Please use `everything`. Deprecated in GitLab 72.34. |
+            | <a id="mutationmakeitprettyomnis"></a>`omnis` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated**: This was renamed. Please use `everything`. Deprecated in GitLab 72.34. |
           DOC
         end
       end

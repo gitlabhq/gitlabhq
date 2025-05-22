@@ -4,6 +4,7 @@ import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 import RunnerToggleAssignButton from '~/ci/runner/project_runners_settings/components/runner_toggle_assign_button.vue';
 import runnerAssignToProjectMutation from '~/ci/runner/graphql/list/runner_assign_to_project.mutation.graphql';
@@ -28,6 +29,7 @@ describe('RunnerToggleAssignButton', () => {
   const projectFullPath = 'group/project';
 
   const findButton = () => wrapper.findComponent(GlButton);
+  const getTooltipValue = () => getBinding(wrapper.element, 'gl-tooltip').value;
 
   const createComponent = ({ props } = {}) => {
     const mockApollo = createMockApollo([
@@ -40,6 +42,9 @@ describe('RunnerToggleAssignButton', () => {
         projectFullPath,
         runner: mockRunner,
         ...props,
+      },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
       },
       apolloProvider: mockApollo,
     });
@@ -56,10 +61,10 @@ describe('RunnerToggleAssignButton', () => {
   });
 
   describe.each`
-    case                           | assigns  | buttonText                 | handler                          | doneMessage                                               | errorMessage
-    ${'when assigning a runner'}   | ${true}  | ${'Assign to project'}     | ${() => assignMutationHandler}   | ${'Runner #1 (abc123) was assigned to this project.'}     | ${'Failed to assign runner to project.'}
-    ${'when unassigning a runner'} | ${false} | ${'Unassign from project'} | ${() => unassignMutationHandler} | ${'Runner #1 (abc123) was unassigned from this project.'} | ${'Failed to unassign runner from project.'}
-  `('$case', ({ assigns, buttonText, handler, doneMessage, errorMessage }) => {
+    case                           | assigns  | icon        | tooltip                    | handler                          | doneMessage                                               | errorMessage
+    ${'when assigning a runner'}   | ${true}  | ${'link'}   | ${'Assign to project'}     | ${() => assignMutationHandler}   | ${'Runner #1 (abc123) was assigned to this project.'}     | ${'Failed to assign runner to project.'}
+    ${'when unassigning a runner'} | ${false} | ${'unlink'} | ${'Unassign from project'} | ${() => unassignMutationHandler} | ${'Runner #1 (abc123) was unassigned from this project.'} | ${'Failed to unassign runner from project.'}
+  `('$case', ({ assigns, icon, tooltip, handler, doneMessage, errorMessage }) => {
     beforeEach(() => {
       createComponent({
         props: { assigns },
@@ -68,7 +73,8 @@ describe('RunnerToggleAssignButton', () => {
 
     it('renders button', () => {
       expect(findButton().props('loading')).toBe(false);
-      expect(findButton().text()).toBe(buttonText);
+      expect(findButton().props('icon')).toBe(icon);
+      expect(getTooltipValue()).toBe(tooltip);
     });
 
     it('calls assign mutation when clicked', () => {

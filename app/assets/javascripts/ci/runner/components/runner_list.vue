@@ -16,7 +16,16 @@ const defaultFields = [
   tableField({ key: 'status', label: s__('Runners|Status'), thClasses: ['gl-w-3/20'] }),
   tableField({ key: 'summary', label: s__('Runners|Runner configuration') }),
   tableField({ key: 'owner', label: s__('Runners|Owner'), thClasses: ['gl-w-4/20'] }),
-  tableField({ key: 'actions', label: __('Actions'), thClasses: ['md:gl-invisible', 'gl-w-3/20'] }),
+  tableField({
+    key: 'actions',
+    label: __('Actions'),
+    thClasses: [
+      'md:gl-invisible', // hides the "Actions" header in large viewports
+      'gl-w-4/20',
+      'lg:gl-w-3/20',
+    ],
+    tdClass: 'gl-text-right',
+  }),
 ];
 
 export default {

@@ -583,7 +583,7 @@ Returns [`DesignManagement!`](#designmanagement).
 
 ### `Query.devopsAdoptionEnabledNamespaces`
 
-Get configured DevOps adoption namespaces. **Status:** Beta. This endpoint is subject to change without notice.
+Get configured DevOps adoption namespaces. **Status**: Beta. This endpoint is subject to change without notice.
 
 Returns [`DevopsAdoptionEnabledNamespaceConnection`](#devopsadoptionenablednamespaceconnection).
 
@@ -2213,7 +2213,7 @@ Input type: `AiModelSelectionNamespaceUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationaimodelselectionnamespaceupdateaifeaturesettings"></a>`aiFeatureSettings` {{< icon name="warning-solid" >}} | [`[AiModelSelectionNamespaceFeatureSetting!]!`](#aimodelselectionnamespacefeaturesetting) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 18.1. |
+| <a id="mutationaimodelselectionnamespaceupdateaifeaturesettings"></a>`aiFeatureSettings` {{< icon name="warning-solid" >}} | [`[AiModelSelectionNamespaceFeatureSetting!]!`](#aimodelselectionnamespacefeaturesetting) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.1. |
 | <a id="mutationaimodelselectionnamespaceupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaimodelselectionnamespaceupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
@@ -3140,7 +3140,7 @@ Input type: `BoardListCreateInput`
 | <a id="mutationboardlistcreatelabelid"></a>`labelId` | [`LabelID`](#labelid) | Global ID of an existing label. |
 | <a id="mutationboardlistcreatemilestoneid"></a>`milestoneId` | [`MilestoneID`](#milestoneid) | Global ID of an existing milestone. |
 | <a id="mutationboardlistcreateposition"></a>`position` | [`Int`](#int) | Position of the list. |
-| <a id="mutationboardlistcreatestatusid"></a>`statusId` {{< icon name="warning-solid" >}} | [`WorkItemsStatusesStatusID`](#workitemsstatusesstatusid) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 18.0. |
+| <a id="mutationboardlistcreatestatusid"></a>`statusId` {{< icon name="warning-solid" >}} | [`WorkItemsStatusesStatusID`](#workitemsstatusesstatusid) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.0. |
 
 #### Fields
 
@@ -3458,7 +3458,7 @@ Input type: `BulkDestroyJobArtifactsInput`
 
 ### `Mutation.bulkEnableDevopsAdoptionNamespaces`
 
-**Status:** Beta.
+**Status**: Beta.
 
 Input type: `BulkEnableDevopsAdoptionNamespacesInput`
 
@@ -3558,8 +3558,8 @@ Input type: `CiJobTokenScopeAddGroupOrProjectInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscopeaddgrouporprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcijobtokenscopeaddgrouporprojectdefaultpermissions"></a>`defaultPermissions` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.8. |
-| <a id="mutationcijobtokenscopeaddgrouporprojectjobtokenpolicies"></a>`jobTokenPolicies` {{< icon name="warning-solid" >}} | [`[CiJobTokenScopePolicies!]`](#cijobtokenscopepolicies) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.5. |
+| <a id="mutationcijobtokenscopeaddgrouporprojectdefaultpermissions"></a>`defaultPermissions` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.8. |
+| <a id="mutationcijobtokenscopeaddgrouporprojectjobtokenpolicies"></a>`jobTokenPolicies` {{< icon name="warning-solid" >}} | [`[CiJobTokenScopePolicies!]`](#cijobtokenscopepolicies) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.5. |
 | <a id="mutationcijobtokenscopeaddgrouporprojectprojectpath"></a>`projectPath` | [`ID!`](#id) | Project that the CI job token scope belongs to. |
 | <a id="mutationcijobtokenscopeaddgrouporprojecttargetpath"></a>`targetPath` | [`ID!`](#id) | Group or project to be added to the CI job token scope. |
 
@@ -3568,7 +3568,7 @@ Input type: `CiJobTokenScopeAddGroupOrProjectInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscopeaddgrouporprojectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | CI job token's access scope. |
-| <a id="mutationcijobtokenscopeaddgrouporprojectcijobtokenscopeallowlistentry"></a>`ciJobTokenScopeAllowlistEntry` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeAllowlistEntry`](#cijobtokenscopeallowlistentry) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.6. |
+| <a id="mutationcijobtokenscopeaddgrouporprojectcijobtokenscopeallowlistentry"></a>`ciJobTokenScopeAllowlistEntry` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeAllowlistEntry`](#cijobtokenscopeallowlistentry) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.6. |
 | <a id="mutationcijobtokenscopeaddgrouporprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcijobtokenscopeaddgrouporprojecterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
@@ -3581,7 +3581,7 @@ Input type: `CiJobTokenScopeAddProjectInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscopeaddprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcijobtokenscopeaddprojectdirection"></a>`direction` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeDirection`](#cijobtokenscopedirection) | **Deprecated:** Outbound job token scope is being removed. This field can now only be set to INBOUND. Deprecated in GitLab 16.0. |
+| <a id="mutationcijobtokenscopeaddprojectdirection"></a>`direction` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeDirection`](#cijobtokenscopedirection) | **Deprecated**: Outbound job token scope is being removed. This field can now only be set to INBOUND. Deprecated in GitLab 16.0. |
 | <a id="mutationcijobtokenscopeaddprojectprojectpath"></a>`projectPath` | [`ID!`](#id) | Project that the CI job token scope belongs to. |
 | <a id="mutationcijobtokenscopeaddprojecttargetprojectpath"></a>`targetProjectPath` | [`ID!`](#id) | Project to be added to the CI job token scope. |
 
@@ -3590,7 +3590,7 @@ Input type: `CiJobTokenScopeAddProjectInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscopeaddprojectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | CI job token's access scope. |
-| <a id="mutationcijobtokenscopeaddprojectcijobtokenscopeallowlistentry"></a>`ciJobTokenScopeAllowlistEntry` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeAllowlistEntry`](#cijobtokenscopeallowlistentry) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.6. |
+| <a id="mutationcijobtokenscopeaddprojectcijobtokenscopeallowlistentry"></a>`ciJobTokenScopeAllowlistEntry` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeAllowlistEntry`](#cijobtokenscopeallowlistentry) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.6. |
 | <a id="mutationcijobtokenscopeaddprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcijobtokenscopeaddprojecterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
@@ -3659,7 +3659,7 @@ Input type: `CiJobTokenScopeRemoveGroupInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscoperemovegroupcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | CI job token's access scope. |
-| <a id="mutationcijobtokenscoperemovegroupcijobtokenscopeallowlistentry"></a>`ciJobTokenScopeAllowlistEntry` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeAllowlistEntry`](#cijobtokenscopeallowlistentry) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.6. |
+| <a id="mutationcijobtokenscoperemovegroupcijobtokenscopeallowlistentry"></a>`ciJobTokenScopeAllowlistEntry` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeAllowlistEntry`](#cijobtokenscopeallowlistentry) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.6. |
 | <a id="mutationcijobtokenscoperemovegroupclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcijobtokenscoperemovegrouperrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
@@ -3672,7 +3672,7 @@ Input type: `CiJobTokenScopeRemoveProjectInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscoperemoveprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcijobtokenscoperemoveprojectdirection"></a>`direction` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeDirection`](#cijobtokenscopedirection) | **Deprecated:** Outbound job token scope is being removed. This field can now only be set to INBOUND. Deprecated in GitLab 16.9. |
+| <a id="mutationcijobtokenscoperemoveprojectdirection"></a>`direction` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeDirection`](#cijobtokenscopedirection) | **Deprecated**: Outbound job token scope is being removed. This field can now only be set to INBOUND. Deprecated in GitLab 16.9. |
 | <a id="mutationcijobtokenscoperemoveprojectprojectpath"></a>`projectPath` | [`ID!`](#id) | Project that the CI job token scope belongs to. |
 | <a id="mutationcijobtokenscoperemoveprojecttargetprojectpath"></a>`targetProjectPath` | [`ID!`](#id) | Project to be removed from the CI job token scope. |
 
@@ -3681,7 +3681,7 @@ Input type: `CiJobTokenScopeRemoveProjectInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscoperemoveprojectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | CI job token's access scope. |
-| <a id="mutationcijobtokenscoperemoveprojectcijobtokenscopeallowlistentry"></a>`ciJobTokenScopeAllowlistEntry` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeAllowlistEntry`](#cijobtokenscopeallowlistentry) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.6. |
+| <a id="mutationcijobtokenscoperemoveprojectcijobtokenscopeallowlistentry"></a>`ciJobTokenScopeAllowlistEntry` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeAllowlistEntry`](#cijobtokenscopeallowlistentry) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.6. |
 | <a id="mutationcijobtokenscoperemoveprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcijobtokenscoperemoveprojecterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
@@ -3708,7 +3708,7 @@ Input type: `CiJobTokenScopeUpdatePoliciesInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationcijobtokenscopeupdatepoliciescijobtokenscopeallowlistentry"></a>`ciJobTokenScopeAllowlistEntry` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeAllowlistEntry`](#cijobtokenscopeallowlistentry) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.6. |
+| <a id="mutationcijobtokenscopeupdatepoliciescijobtokenscopeallowlistentry"></a>`ciJobTokenScopeAllowlistEntry` {{< icon name="warning-solid" >}} | [`CiJobTokenScopeAllowlistEntry`](#cijobtokenscopeallowlistentry) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.6. |
 | <a id="mutationcijobtokenscopeupdatepoliciesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcijobtokenscopeupdatepolicieserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
@@ -4245,7 +4245,7 @@ Input type: `createContainerProtectionTagRuleInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatecontainerprotectiontagruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatecontainerprotectiontagrulecontainerprotectiontagrule"></a>`containerProtectionTagRule` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRule`](#containerprotectiontagrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.8. |
+| <a id="mutationcreatecontainerprotectiontagrulecontainerprotectiontagrule"></a>`containerProtectionTagRule` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRule`](#containerprotectiontagrule) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.8. |
 | <a id="mutationcreatecontainerprotectiontagruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
 ### `Mutation.createCustomEmoji`
@@ -4387,7 +4387,7 @@ Input type: `CreateIssueInput`
 | <a id="mutationcreateissuedescription"></a>`description` | [`String`](#string) | Description of the issue. |
 | <a id="mutationcreateissuediscussiontoresolve"></a>`discussionToResolve` | [`String`](#string) | ID of a discussion to resolve. Also pass `merge_request_to_resolve_discussions_of`. |
 | <a id="mutationcreateissueduedate"></a>`dueDate` | [`ISO8601Date`](#iso8601date) | Due date of the issue. |
-| <a id="mutationcreateissueepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **Deprecated:** This will be replaced by WorkItem hierarchyWidget. Deprecated in GitLab 17.5. |
+| <a id="mutationcreateissueepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **Deprecated**: This will be replaced by WorkItem hierarchyWidget. Deprecated in GitLab 17.5. |
 | <a id="mutationcreateissuehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | Desired health status. |
 | <a id="mutationcreateissueiid"></a>`iid` | [`Int`](#int) | IID (internal ID) of a project issue. Only admins and project owners can modify. |
 | <a id="mutationcreateissueiterationcadenceid"></a>`iterationCadenceId` | [`IterationsCadenceID`](#iterationscadenceid) | Global iteration cadence ID. Required when `iterationWildcardId` is provided. |
@@ -4483,7 +4483,7 @@ Input type: `CreatePackagesProtectionRuleInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatepackagesprotectionruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`PackagesProtectionRuleAccessLevelForDelete`](#packagesprotectionruleaccesslevelfordelete) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
+| <a id="mutationcreatepackagesprotectionruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`PackagesProtectionRuleAccessLevelForDelete`](#packagesprotectionruleaccesslevelfordelete) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.10. |
 | <a id="mutationcreatepackagesprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`PackagesProtectionRuleAccessLevel`](#packagesprotectionruleaccesslevel) | Minimum GitLab access required to push packages to the package registry. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. |
 | <a id="mutationcreatepackagesprotectionrulepackagenamepattern"></a>`packageNamePattern` | [`String!`](#string) | Package name protected by the protection rule. For example, `@my-scope/my-package-*`. Wildcard character `*` allowed. |
 | <a id="mutationcreatepackagesprotectionrulepackagetype"></a>`packageType` | [`PackagesProtectionRulePackageType!`](#packagesprotectionrulepackagetype) | Package type protected by the protection rule. For example, `NPM`, `PYPI`. |
@@ -4840,7 +4840,7 @@ Input type: `DastProfileRunInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastprofilerunclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdastprofilerunfullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in GitLab 14.5. |
+| <a id="mutationdastprofilerunfullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated**: Full path not required to qualify Global ID. Deprecated in GitLab 14.5. |
 | <a id="mutationdastprofilerunid"></a>`id` | [`DastProfileID!`](#dastprofileid) | ID of the profile to be used for the scan. |
 
 #### Fields
@@ -4865,7 +4865,7 @@ Input type: `DastProfileUpdateInput`
 | <a id="mutationdastprofileupdatedastscannerprofileid"></a>`dastScannerProfileId` | [`DastScannerProfileID`](#dastscannerprofileid) | ID of the scanner profile to be associated. |
 | <a id="mutationdastprofileupdatedastsiteprofileid"></a>`dastSiteProfileId` | [`DastSiteProfileID`](#dastsiteprofileid) | ID of the site profile to be associated. |
 | <a id="mutationdastprofileupdatedescription"></a>`description` | [`String`](#string) | Description of the profile. Defaults to an empty string. |
-| <a id="mutationdastprofileupdatefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in GitLab 14.5. |
+| <a id="mutationdastprofileupdatefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated**: Full path not required to qualify Global ID. Deprecated in GitLab 14.5. |
 | <a id="mutationdastprofileupdateid"></a>`id` | [`DastProfileID!`](#dastprofileid) | ID of the profile to be deleted. |
 | <a id="mutationdastprofileupdatename"></a>`name` | [`String`](#string) | Name of the profile. |
 | <a id="mutationdastprofileupdaterunafterupdate"></a>`runAfterUpdate` | [`Boolean`](#boolean) | Run scan using profile after update. Defaults to false. |
@@ -4894,7 +4894,7 @@ Input type: `DastScannerProfileCreateInput`
 | <a id="mutationdastscannerprofilecreatescantype"></a>`scanType` | [`DastScanTypeEnum`](#dastscantypeenum) | Indicates the type of DAST scan that will run. Either a Passive Scan or an Active Scan. |
 | <a id="mutationdastscannerprofilecreateshowdebugmessages"></a>`showDebugMessages` | [`Boolean`](#boolean) | Indicates if debug messages should be included in DAST console output. True to include the debug messages. |
 | <a id="mutationdastscannerprofilecreatespidertimeout"></a>`spiderTimeout` | [`Int`](#int) | Maximum number of minutes allowed for the spider to traverse the site. |
-| <a id="mutationdastscannerprofilecreatetaglist"></a>`tagList` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Deprecated:** Moved to DastProfile. Deprecated in GitLab 15.8. |
+| <a id="mutationdastscannerprofilecreatetaglist"></a>`tagList` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Deprecated**: Moved to DastProfile. Deprecated in GitLab 15.8. |
 | <a id="mutationdastscannerprofilecreatetargettimeout"></a>`targetTimeout` | [`Int`](#int) | Maximum number of seconds allowed for the site under test to respond to a request. |
 | <a id="mutationdastscannerprofilecreateuseajaxspider"></a>`useAjaxSpider` | [`Boolean`](#boolean) | Indicates if the AJAX spider should be used to crawl the target site. True to run the AJAX spider in addition to the traditional spider, and false to run only the traditional spider. |
 
@@ -4905,7 +4905,7 @@ Input type: `DastScannerProfileCreateInput`
 | <a id="mutationdastscannerprofilecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdastscannerprofilecreatedastscannerprofile"></a>`dastScannerProfile` | [`DastScannerProfile`](#dastscannerprofile) | Created scanner profile. |
 | <a id="mutationdastscannerprofilecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
-| <a id="mutationdastscannerprofilecreateid"></a>`id` {{< icon name="warning-solid" >}} | [`DastScannerProfileID`](#dastscannerprofileid) | **Deprecated:** use `dastScannerProfile` field. Deprecated in GitLab 14.10. |
+| <a id="mutationdastscannerprofilecreateid"></a>`id` {{< icon name="warning-solid" >}} | [`DastScannerProfileID`](#dastscannerprofileid) | **Deprecated**: use `dastScannerProfile` field. Deprecated in GitLab 14.10. |
 
 ### `Mutation.dastScannerProfileDelete`
 
@@ -4916,7 +4916,7 @@ Input type: `DastScannerProfileDeleteInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastscannerprofiledeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdastscannerprofiledeletefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in GitLab 14.5. |
+| <a id="mutationdastscannerprofiledeletefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated**: Full path not required to qualify Global ID. Deprecated in GitLab 14.5. |
 | <a id="mutationdastscannerprofiledeleteid"></a>`id` | [`DastScannerProfileID!`](#dastscannerprofileid) | ID of the scanner profile to be deleted. |
 
 #### Fields
@@ -4935,13 +4935,13 @@ Input type: `DastScannerProfileUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastscannerprofileupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdastscannerprofileupdatefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in GitLab 14.5. |
+| <a id="mutationdastscannerprofileupdatefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated**: Full path not required to qualify Global ID. Deprecated in GitLab 14.5. |
 | <a id="mutationdastscannerprofileupdateid"></a>`id` | [`DastScannerProfileID!`](#dastscannerprofileid) | ID of the scanner profile to be updated. |
 | <a id="mutationdastscannerprofileupdateprofilename"></a>`profileName` | [`String!`](#string) | Name of the scanner profile. |
 | <a id="mutationdastscannerprofileupdatescantype"></a>`scanType` | [`DastScanTypeEnum`](#dastscantypeenum) | Indicates the type of DAST scan that will run. Either a Passive Scan or an Active Scan. |
 | <a id="mutationdastscannerprofileupdateshowdebugmessages"></a>`showDebugMessages` | [`Boolean`](#boolean) | Indicates if debug messages should be included in DAST console output. True to include the debug messages. |
 | <a id="mutationdastscannerprofileupdatespidertimeout"></a>`spiderTimeout` | [`Int!`](#int) | Maximum number of minutes allowed for the spider to traverse the site. |
-| <a id="mutationdastscannerprofileupdatetaglist"></a>`tagList` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Deprecated:** Moved to DastProfile. Deprecated in GitLab 15.8. |
+| <a id="mutationdastscannerprofileupdatetaglist"></a>`tagList` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Deprecated**: Moved to DastProfile. Deprecated in GitLab 15.8. |
 | <a id="mutationdastscannerprofileupdatetargettimeout"></a>`targetTimeout` | [`Int!`](#int) | Maximum number of seconds allowed for the site under test to respond to a request. |
 | <a id="mutationdastscannerprofileupdateuseajaxspider"></a>`useAjaxSpider` | [`Boolean`](#boolean) | Indicates if the AJAX spider should be used to crawl the target site. True to run the AJAX spider in addition to the traditional spider, and false to run only the traditional spider. |
 
@@ -4952,7 +4952,7 @@ Input type: `DastScannerProfileUpdateInput`
 | <a id="mutationdastscannerprofileupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdastscannerprofileupdatedastscannerprofile"></a>`dastScannerProfile` | [`DastScannerProfile`](#dastscannerprofile) | Updated scanner profile. |
 | <a id="mutationdastscannerprofileupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
-| <a id="mutationdastscannerprofileupdateid"></a>`id` {{< icon name="warning-solid" >}} | [`DastScannerProfileID`](#dastscannerprofileid) | **Deprecated:** use `dastScannerProfile` field. Deprecated in GitLab 14.10. |
+| <a id="mutationdastscannerprofileupdateid"></a>`id` {{< icon name="warning-solid" >}} | [`DastScannerProfileID`](#dastscannerprofileid) | **Deprecated**: use `dastScannerProfile` field. Deprecated in GitLab 14.10. |
 
 ### `Mutation.dastSiteProfileCreate`
 
@@ -4981,7 +4981,7 @@ Input type: `DastSiteProfileCreateInput`
 | <a id="mutationdastsiteprofilecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdastsiteprofilecreatedastsiteprofile"></a>`dastSiteProfile` | [`DastSiteProfile`](#dastsiteprofile) | Site Profile object. |
 | <a id="mutationdastsiteprofilecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
-| <a id="mutationdastsiteprofilecreateid"></a>`id` {{< icon name="warning-solid" >}} | [`DastSiteProfileID`](#dastsiteprofileid) | **Deprecated:** use `dastSiteProfile.id` field. Deprecated in GitLab 14.10. |
+| <a id="mutationdastsiteprofilecreateid"></a>`id` {{< icon name="warning-solid" >}} | [`DastSiteProfileID`](#dastsiteprofileid) | **Deprecated**: use `dastSiteProfile.id` field. Deprecated in GitLab 14.10. |
 
 ### `Mutation.dastSiteProfileDelete`
 
@@ -4992,7 +4992,7 @@ Input type: `DastSiteProfileDeleteInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastsiteprofiledeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdastsiteprofiledeletefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in GitLab 14.5. |
+| <a id="mutationdastsiteprofiledeletefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated**: Full path not required to qualify Global ID. Deprecated in GitLab 14.5. |
 | <a id="mutationdastsiteprofiledeleteid"></a>`id` | [`DastSiteProfileID!`](#dastsiteprofileid) | ID of the site profile to be deleted. |
 
 #### Fields
@@ -5013,7 +5013,7 @@ Input type: `DastSiteProfileUpdateInput`
 | <a id="mutationdastsiteprofileupdateauth"></a>`auth` | [`DastSiteProfileAuthInput`](#dastsiteprofileauthinput) | Parameters for authentication. |
 | <a id="mutationdastsiteprofileupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdastsiteprofileupdateexcludedurls"></a>`excludedUrls` | [`[String!]`](#string) | URLs to skip during an authenticated scan. |
-| <a id="mutationdastsiteprofileupdatefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in GitLab 14.5. |
+| <a id="mutationdastsiteprofileupdatefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated**: Full path not required to qualify Global ID. Deprecated in GitLab 14.5. |
 | <a id="mutationdastsiteprofileupdateid"></a>`id` | [`DastSiteProfileID!`](#dastsiteprofileid) | ID of the site profile to be updated. |
 | <a id="mutationdastsiteprofileupdateoptionalvariables"></a>`optionalVariables` | [`[JSON!]`](#json) | Optional variables that can be configured for DAST scans. |
 | <a id="mutationdastsiteprofileupdateprofilename"></a>`profileName` | [`String!`](#string) | Name of the site profile. |
@@ -5030,7 +5030,7 @@ Input type: `DastSiteProfileUpdateInput`
 | <a id="mutationdastsiteprofileupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdastsiteprofileupdatedastsiteprofile"></a>`dastSiteProfile` | [`DastSiteProfile`](#dastsiteprofile) | Site profile object. |
 | <a id="mutationdastsiteprofileupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
-| <a id="mutationdastsiteprofileupdateid"></a>`id` {{< icon name="warning-solid" >}} | [`DastSiteProfileID`](#dastsiteprofileid) | **Deprecated:** use `dastSiteProfile.id` field. Deprecated in GitLab 14.10. |
+| <a id="mutationdastsiteprofileupdateid"></a>`id` {{< icon name="warning-solid" >}} | [`DastSiteProfileID`](#dastsiteprofileid) | **Deprecated**: use `dastSiteProfile.id` field. Deprecated in GitLab 14.10. |
 
 ### `Mutation.dastSiteTokenCreate`
 
@@ -5163,7 +5163,7 @@ Input type: `DeleteContainerProtectionTagRuleInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdeletecontainerprotectiontagruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdeletecontainerprotectiontagrulecontainerprotectiontagrule"></a>`containerProtectionTagRule` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRule`](#containerprotectiontagrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.8. |
+| <a id="mutationdeletecontainerprotectiontagrulecontainerprotectiontagrule"></a>`containerProtectionTagRule` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRule`](#containerprotectiontagrule) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.8. |
 | <a id="mutationdeletecontainerprotectiontagruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
 ### `Mutation.deleteConversationThread`
@@ -5619,7 +5619,7 @@ Input type: `DestroySnippetInput`
 
 ### `Mutation.disableDevopsAdoptionNamespace`
 
-**Status:** Beta.
+**Status**: Beta.
 
 Input type: `DisableDevopsAdoptionNamespaceInput`
 
@@ -5738,7 +5738,7 @@ Input type: `EchoCreateInput`
 
 ### `Mutation.enableDevopsAdoptionNamespace`
 
-**Status:** Beta.
+**Status**: Beta.
 
 Input type: `EnableDevopsAdoptionNamespaceInput`
 
@@ -7168,7 +7168,7 @@ Input type: `IssueMoveListInput`
 | ---- | ---- | ----------- |
 | <a id="mutationissuemovelistboardid"></a>`boardId` | [`BoardID!`](#boardid) | Global ID of the board that the issue is in. |
 | <a id="mutationissuemovelistclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationissuemovelistepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **Deprecated:** This will be replaced by WorkItem hierarchyWidget. Deprecated in GitLab 17.5. |
+| <a id="mutationissuemovelistepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **Deprecated**: This will be replaced by WorkItem hierarchyWidget. Deprecated in GitLab 17.5. |
 | <a id="mutationissuemovelistfromlistid"></a>`fromListId` | [`ID`](#id) | ID of the board list that the issue will be moved from. |
 | <a id="mutationissuemovelistiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
 | <a id="mutationissuemovelistmoveafterid"></a>`moveAfterId` | [`ID`](#id) | ID of issue that should be placed after the current issue. |
@@ -7285,7 +7285,7 @@ Input type: `IssueSetEpicInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationissuesetepicclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationissuesetepicepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **Deprecated:** This will be replaced by WorkItem hierarchyWidget. Deprecated in GitLab 17.5. |
+| <a id="mutationissuesetepicepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **Deprecated**: This will be replaced by WorkItem hierarchyWidget. Deprecated in GitLab 17.5. |
 | <a id="mutationissuesetepiciid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
 | <a id="mutationissuesetepicprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
 
@@ -7592,7 +7592,7 @@ Input type: `JiraImportStartInput`
 | ---- | ---- | ----------- |
 | <a id="mutationjiraimportstartclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationjiraimportstartjiraprojectkey"></a>`jiraProjectKey` | [`String!`](#string) | Project key of the importer Jira project. |
-| <a id="mutationjiraimportstartjiraprojectname"></a>`jiraProjectName` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated:** Argument is not used. Deprecated in GitLab 17.4. |
+| <a id="mutationjiraimportstartjiraprojectname"></a>`jiraProjectName` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated**: Argument is not used. Deprecated in GitLab 17.4. |
 | <a id="mutationjiraimportstartprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to import the Jira project into. |
 | <a id="mutationjiraimportstartusersmapping"></a>`usersMapping` | [`[JiraUsersMappingInputType!]`](#jirausersmappinginputtype) | Mapping of Jira to GitLab users. |
 
@@ -8563,7 +8563,7 @@ Input type: `NamespaceCreateRemoteDevelopmentClusterAgentMappingInput`
 | ---- | ---- | ----------- |
 | <a id="mutationnamespacecreateremotedevelopmentclusteragentmappingclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationnamespacecreateremotedevelopmentclusteragentmappingerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
-| <a id="mutationnamespacecreateremotedevelopmentclusteragentmappingnamespaceclusteragentmapping"></a>`namespaceClusterAgentMapping` {{< icon name="warning-solid" >}} | [`NamespaceClusterAgentMapping`](#namespaceclusteragentmapping) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
+| <a id="mutationnamespacecreateremotedevelopmentclusteragentmappingnamespaceclusteragentmapping"></a>`namespaceClusterAgentMapping` {{< icon name="warning-solid" >}} | [`NamespaceClusterAgentMapping`](#namespaceclusteragentmapping) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.10. |
 
 ### `Mutation.namespaceDeleteRemoteDevelopmentClusterAgentMapping`
 
@@ -8583,7 +8583,7 @@ Input type: `NamespaceDeleteRemoteDevelopmentClusterAgentMappingInput`
 | ---- | ---- | ----------- |
 | <a id="mutationnamespacedeleteremotedevelopmentclusteragentmappingclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationnamespacedeleteremotedevelopmentclusteragentmappingerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
-| <a id="mutationnamespacedeleteremotedevelopmentclusteragentmappingnamespaceclusteragentmapping"></a>`namespaceClusterAgentMapping` {{< icon name="warning-solid" >}} | [`NamespaceClusterAgentMapping`](#namespaceclusteragentmapping) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.11. |
+| <a id="mutationnamespacedeleteremotedevelopmentclusteragentmappingnamespaceclusteragentmapping"></a>`namespaceClusterAgentMapping` {{< icon name="warning-solid" >}} | [`NamespaceClusterAgentMapping`](#namespaceclusteragentmapping) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.11. |
 
 ### `Mutation.namespaceSettingsUpdate`
 
@@ -8895,7 +8895,7 @@ Input type: `OrganizationUserUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationorganizationuserupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationorganizationuserupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
-| <a id="mutationorganizationuserupdateorganizationuser"></a>`organizationUser` {{< icon name="warning-solid" >}} | [`OrganizationUser`](#organizationuser) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.5. |
+| <a id="mutationorganizationuserupdateorganizationuser"></a>`organizationUser` {{< icon name="warning-solid" >}} | [`OrganizationUser`](#organizationuser) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.5. |
 
 ### `Mutation.pagesMarkOnboardingComplete`
 
@@ -8942,9 +8942,9 @@ Input type: `PipelineCreateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationpipelinecreateasync"></a>`async` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.8. |
+| <a id="mutationpipelinecreateasync"></a>`async` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.8. |
 | <a id="mutationpipelinecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationpipelinecreateinputs"></a>`inputs` {{< icon name="warning-solid" >}} | [`[CiInputsInput!]`](#ciinputsinput) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
+| <a id="mutationpipelinecreateinputs"></a>`inputs` {{< icon name="warning-solid" >}} | [`[CiInputsInput!]`](#ciinputsinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.10. |
 | <a id="mutationpipelinecreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project that is triggering the pipeline. |
 | <a id="mutationpipelinecreateref"></a>`ref` | [`String!`](#string) | Ref on which to run the pipeline. |
 | <a id="mutationpipelinecreatevariables"></a>`variables` | [`[CiVariableInput!]`](#civariableinput) | Variables for the pipeline. |
@@ -8956,7 +8956,7 @@ Input type: `PipelineCreateInput`
 | <a id="mutationpipelinecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationpipelinecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationpipelinecreatepipeline"></a>`pipeline` | [`Pipeline`](#pipeline) | Pipeline created after mutation. Null if `async: true`. |
-| <a id="mutationpipelinecreaterequestid"></a>`requestId` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.8. |
+| <a id="mutationpipelinecreaterequestid"></a>`requestId` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.8. |
 
 ### `Mutation.pipelineDestroy`
 
@@ -9008,7 +9008,7 @@ Input type: `PipelineScheduleCreateInput`
 | <a id="mutationpipelineschedulecreatecron"></a>`cron` | [`String!`](#string) | Cron expression of the pipeline schedule. |
 | <a id="mutationpipelineschedulecreatecrontimezone"></a>`cronTimezone` | [`String`](#string) | Cron time zone supported by ActiveSupport::TimeZone. For example: "Pacific Time (US & Canada)" (default: "UTC"). |
 | <a id="mutationpipelineschedulecreatedescription"></a>`description` | [`String!`](#string) | Description of the pipeline schedule. |
-| <a id="mutationpipelineschedulecreateinputs"></a>`inputs` {{< icon name="warning-solid" >}} | [`[CiInputsInput!]`](#ciinputsinput) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
+| <a id="mutationpipelineschedulecreateinputs"></a>`inputs` {{< icon name="warning-solid" >}} | [`[CiInputsInput!]`](#ciinputsinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.10. |
 | <a id="mutationpipelineschedulecreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project the pipeline schedule is associated with. |
 | <a id="mutationpipelineschedulecreateref"></a>`ref` | [`String!`](#string) | Ref of the pipeline schedule. |
 | <a id="mutationpipelineschedulecreatevariables"></a>`variables` | [`[PipelineScheduleVariableInput!]`](#pipelineschedulevariableinput) | Variables for the pipeline schedule. |
@@ -9091,7 +9091,7 @@ Input type: `PipelineScheduleUpdateInput`
 | <a id="mutationpipelinescheduleupdatecrontimezone"></a>`cronTimezone` | [`String`](#string) | Cron time zone supported by ActiveSupport::TimeZone. For example: "Pacific Time (US & Canada)" (default: "UTC"). |
 | <a id="mutationpipelinescheduleupdatedescription"></a>`description` | [`String`](#string) | Description of the pipeline schedule. |
 | <a id="mutationpipelinescheduleupdateid"></a>`id` | [`CiPipelineScheduleID!`](#cipipelinescheduleid) | ID of the pipeline schedule to mutate. |
-| <a id="mutationpipelinescheduleupdateinputs"></a>`inputs` {{< icon name="warning-solid" >}} | [`[CiInputsInput!]`](#ciinputsinput) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.11. |
+| <a id="mutationpipelinescheduleupdateinputs"></a>`inputs` {{< icon name="warning-solid" >}} | [`[CiInputsInput!]`](#ciinputsinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.11. |
 | <a id="mutationpipelinescheduleupdateref"></a>`ref` | [`String`](#string) | Ref of the pipeline schedule. |
 | <a id="mutationpipelinescheduleupdatevariables"></a>`variables` | [`[PipelineScheduleVariableInput!]`](#pipelineschedulevariableinput) | Variables for the pipeline schedule. |
 
@@ -9263,7 +9263,7 @@ Input type: `ProjectCiCdSettingsUpdateInput`
 | <a id="mutationprojectcicdsettingsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationprojectcicdsettingsupdatefullpath"></a>`fullPath` | [`ID!`](#id) | Full Path of the project the settings belong to. |
 | <a id="mutationprojectcicdsettingsupdateinboundjobtokenscopeenabled"></a>`inboundJobTokenScopeEnabled` | [`Boolean`](#boolean) | Indicates CI/CD job tokens generated in other projects have restricted access to this project. |
-| <a id="mutationprojectcicdsettingsupdatejobtokenscopeenabled"></a>`jobTokenScopeEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated:** Outbound job token scope is being removed. This field can now only be set to false. Deprecated in GitLab 16.0. |
+| <a id="mutationprojectcicdsettingsupdatejobtokenscopeenabled"></a>`jobTokenScopeEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: Outbound job token scope is being removed. This field can now only be set to false. Deprecated in GitLab 16.0. |
 | <a id="mutationprojectcicdsettingsupdatekeeplatestartifact"></a>`keepLatestArtifact` | [`Boolean`](#boolean) | Indicates if the latest artifact should be kept for the project. |
 | <a id="mutationprojectcicdsettingsupdatemergepipelinesenabled"></a>`mergePipelinesEnabled` | [`Boolean`](#boolean) | Indicates if merged results pipelines are enabled for the project. |
 | <a id="mutationprojectcicdsettingsupdatemergetrainsenabled"></a>`mergeTrainsEnabled` | [`Boolean`](#boolean) | Indicates if merge trains are enabled for the project. |
@@ -10200,9 +10200,9 @@ Input type: `RunnerCreateInput`
 | <a id="mutationrunnercreatemaintenancenote"></a>`maintenanceNote` | [`String`](#string) | Runner's maintenance notes. |
 | <a id="mutationrunnercreatemaximumtimeout"></a>`maximumTimeout` | [`Int`](#int) | Maximum timeout (in seconds) for jobs processed by the runner. |
 | <a id="mutationrunnercreatepaused"></a>`paused` | [`Boolean`](#boolean) | Indicates the runner is not allowed to receive jobs. |
-| <a id="mutationrunnercreateprivateprojectsminutescostfactor"></a>`privateProjectsMinutesCostFactor` {{< icon name="warning-solid" >}} | [`Float`](#float) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.7. |
+| <a id="mutationrunnercreateprivateprojectsminutescostfactor"></a>`privateProjectsMinutesCostFactor` {{< icon name="warning-solid" >}} | [`Float`](#float) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.7. |
 | <a id="mutationrunnercreateprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project that the runner is created in (valid only for project runner). |
-| <a id="mutationrunnercreatepublicprojectsminutescostfactor"></a>`publicProjectsMinutesCostFactor` {{< icon name="warning-solid" >}} | [`Float`](#float) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.7. |
+| <a id="mutationrunnercreatepublicprojectsminutescostfactor"></a>`publicProjectsMinutesCostFactor` {{< icon name="warning-solid" >}} | [`Float`](#float) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.7. |
 | <a id="mutationrunnercreaterununtagged"></a>`runUntagged` | [`Boolean`](#boolean) | Indicates the runner is able to run untagged jobs. |
 | <a id="mutationrunnercreaterunnertype"></a>`runnerType` | [`CiRunnerType!`](#cirunnertype) | Type of the runner to create. |
 | <a id="mutationrunnercreatetaglist"></a>`tagList` | [`[String!]`](#string) | Tags associated with the runner. |
@@ -10266,7 +10266,7 @@ Input type: `RunnerUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationrunnerupdateaccesslevel"></a>`accessLevel` | [`CiRunnerAccessLevel`](#cirunneraccesslevel) | Access level of the runner. |
-| <a id="mutationrunnerupdateactive"></a>`active` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated:** This was renamed. Please use `paused`. Deprecated in GitLab 14.8. |
+| <a id="mutationrunnerupdateactive"></a>`active` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: This was renamed. Please use `paused`. Deprecated in GitLab 14.8. |
 | <a id="mutationrunnerupdateassociatedprojects"></a>`associatedProjects` | [`[ProjectID!]`](#projectid) | Projects associated with the runner. Available only for project runners. |
 | <a id="mutationrunnerupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationrunnerupdatedescription"></a>`description` | [`String`](#string) | Description of the runner. |
@@ -10275,8 +10275,8 @@ Input type: `RunnerUpdateInput`
 | <a id="mutationrunnerupdatemaintenancenote"></a>`maintenanceNote` | [`String`](#string) | Runner's maintenance notes. |
 | <a id="mutationrunnerupdatemaximumtimeout"></a>`maximumTimeout` | [`Int`](#int) | Maximum timeout (in seconds) for jobs processed by the runner. |
 | <a id="mutationrunnerupdatepaused"></a>`paused` | [`Boolean`](#boolean) | Indicates the runner is not allowed to receive jobs. |
-| <a id="mutationrunnerupdateprivateprojectsminutescostfactor"></a>`privateProjectsMinutesCostFactor` {{< icon name="warning-solid" >}} | [`Float`](#float) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.7. |
-| <a id="mutationrunnerupdatepublicprojectsminutescostfactor"></a>`publicProjectsMinutesCostFactor` {{< icon name="warning-solid" >}} | [`Float`](#float) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.7. |
+| <a id="mutationrunnerupdateprivateprojectsminutescostfactor"></a>`privateProjectsMinutesCostFactor` {{< icon name="warning-solid" >}} | [`Float`](#float) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.7. |
+| <a id="mutationrunnerupdatepublicprojectsminutescostfactor"></a>`publicProjectsMinutesCostFactor` {{< icon name="warning-solid" >}} | [`Float`](#float) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.7. |
 | <a id="mutationrunnerupdaterununtagged"></a>`runUntagged` | [`Boolean`](#boolean) | Indicates the runner is able to run untagged jobs. |
 | <a id="mutationrunnerupdatetaglist"></a>`tagList` | [`[String!]`](#string) | Tags associated with the runner. |
 
@@ -10410,7 +10410,7 @@ Input type: `ScanExecutionPolicyCommitInput`
 | <a id="mutationscanexecutionpolicycommitname"></a>`name` | [`String!`](#string) | Name of the policy. If the name is null, the `name` field from `policy_yaml` is used. |
 | <a id="mutationscanexecutionpolicycommitoperationmode"></a>`operationMode` | [`MutationOperationMode!`](#mutationoperationmode) | Changes the operation mode. |
 | <a id="mutationscanexecutionpolicycommitpolicyyaml"></a>`policyYaml` | [`String!`](#string) | YAML snippet of the policy. |
-| <a id="mutationscanexecutionpolicycommitprojectpath"></a>`projectPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated:** Use `fullPath`. Deprecated in GitLab 14.10. |
+| <a id="mutationscanexecutionpolicycommitprojectpath"></a>`projectPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated**: Use `fullPath`. Deprecated in GitLab 14.10. |
 
 #### Fields
 
@@ -10600,7 +10600,7 @@ Input type: `SecurityPolicyProjectAssignInput`
 | ---- | ---- | ----------- |
 | <a id="mutationsecuritypolicyprojectassignclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsecuritypolicyprojectassignfullpath"></a>`fullPath` | [`String`](#string) | Full path of the project or group. |
-| <a id="mutationsecuritypolicyprojectassignprojectpath"></a>`projectPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated:** Use `fullPath`. Deprecated in GitLab 14.10. |
+| <a id="mutationsecuritypolicyprojectassignprojectpath"></a>`projectPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated**: Use `fullPath`. Deprecated in GitLab 14.10. |
 | <a id="mutationsecuritypolicyprojectassignsecuritypolicyprojectid"></a>`securityPolicyProjectId` | [`ProjectID!`](#projectid) | ID of the security policy project. |
 
 #### Fields
@@ -10622,7 +10622,7 @@ Input type: `SecurityPolicyProjectCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationsecuritypolicyprojectcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsecuritypolicyprojectcreatefullpath"></a>`fullPath` | [`String`](#string) | Full path of the project or group. |
-| <a id="mutationsecuritypolicyprojectcreateprojectpath"></a>`projectPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated:** Use `fullPath`. Deprecated in GitLab 14.10. |
+| <a id="mutationsecuritypolicyprojectcreateprojectpath"></a>`projectPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated**: Use `fullPath`. Deprecated in GitLab 14.10. |
 
 #### Fields
 
@@ -10634,7 +10634,7 @@ Input type: `SecurityPolicyProjectCreateInput`
 
 ### `Mutation.securityPolicyProjectCreateAsync`
 
-**Status:** Experiment. Creates and assigns a security policy project for the given project or group (`full_path`) async.
+**Status**: Experiment. Creates and assigns a security policy project for the given project or group (`full_path`) async.
 
 {{< details >}}
 **Introduced** in GitLab 17.3.
@@ -10669,7 +10669,7 @@ Input type: `SecurityPolicyProjectUnassignInput`
 | ---- | ---- | ----------- |
 | <a id="mutationsecuritypolicyprojectunassignclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsecuritypolicyprojectunassignfullpath"></a>`fullPath` | [`String`](#string) | Full path of the project or group. |
-| <a id="mutationsecuritypolicyprojectunassignprojectpath"></a>`projectPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated:** Use `fullPath`. Deprecated in GitLab 14.10. |
+| <a id="mutationsecuritypolicyprojectunassignprojectpath"></a>`projectPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated**: Use `fullPath`. Deprecated in GitLab 14.10. |
 
 #### Fields
 
@@ -11546,7 +11546,7 @@ Input type: `UpdateContainerExpirationPolicyInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationupdatecontainerexpirationpolicyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdatecontainerexpirationpolicycontainerexpirationpolicy"></a>`containerExpirationPolicy` {{< icon name="warning-solid" >}} | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | **Deprecated:** Use `container_tags_expiration_policy`. Deprecated in GitLab 17.5. |
+| <a id="mutationupdatecontainerexpirationpolicycontainerexpirationpolicy"></a>`containerExpirationPolicy` {{< icon name="warning-solid" >}} | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | **Deprecated**: Use `container_tags_expiration_policy`. Deprecated in GitLab 17.5. |
 | <a id="mutationupdatecontainerexpirationpolicycontainertagsexpirationpolicy"></a>`containerTagsExpirationPolicy` | [`ContainerTagsExpirationPolicy`](#containertagsexpirationpolicy) | Container tags expiration policy after mutation. |
 | <a id="mutationupdatecontainerexpirationpolicyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
@@ -11591,16 +11591,16 @@ Input type: `UpdateContainerProtectionTagRuleInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdatecontainerprotectiontagruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatecontainerprotectiontagruleid"></a>`id` | [`ContainerRegistryProtectionTagRuleID!`](#containerregistryprotectiontagruleid) | Global ID of the tag protection rule to update. |
-| <a id="mutationupdatecontainerprotectiontagruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.8. |
-| <a id="mutationupdatecontainerprotectiontagruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.8. |
-| <a id="mutationupdatecontainerprotectiontagruletagnamepattern"></a>`tagNamePattern` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.8. |
+| <a id="mutationupdatecontainerprotectiontagruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.8. |
+| <a id="mutationupdatecontainerprotectiontagruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.8. |
+| <a id="mutationupdatecontainerprotectiontagruletagnamepattern"></a>`tagNamePattern` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.8. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationupdatecontainerprotectiontagruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdatecontainerprotectiontagrulecontainerprotectiontagrule"></a>`containerProtectionTagRule` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRule`](#containerprotectiontagrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.8. |
+| <a id="mutationupdatecontainerprotectiontagrulecontainerprotectiontagrule"></a>`containerProtectionTagRule` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRule`](#containerprotectiontagrule) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.8. |
 | <a id="mutationupdatecontainerprotectiontagruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
 ### `Mutation.updateDependencyProxyImageTtlGroupPolicy`
@@ -11781,7 +11781,7 @@ Input type: `UpdateIssueInput`
 | <a id="mutationupdateissueconfidential"></a>`confidential` | [`Boolean`](#boolean) | Indicates the issue is confidential. |
 | <a id="mutationupdateissuedescription"></a>`description` | [`String`](#string) | Description of the issue. |
 | <a id="mutationupdateissueduedate"></a>`dueDate` | [`ISO8601Date`](#iso8601date) | Due date of the issue. |
-| <a id="mutationupdateissueepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **Deprecated:** This will be replaced by WorkItem hierarchyWidget. Deprecated in GitLab 17.5. |
+| <a id="mutationupdateissueepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **Deprecated**: This will be replaced by WorkItem hierarchyWidget. Deprecated in GitLab 17.5. |
 | <a id="mutationupdateissuehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | Desired health status. |
 | <a id="mutationupdateissueiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
 | <a id="mutationupdateissuelabelids"></a>`labelIds` | [`[ID!]`](#id) | IDs of labels to be set. Replaces existing issue labels. |
@@ -11837,7 +11837,7 @@ Input type: `UpdateNamespacePackageSettingsInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationupdatenamespacepackagesettingsauditeventsenabled"></a>`auditEventsEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
+| <a id="mutationupdatenamespacepackagesettingsauditeventsenabled"></a>`auditEventsEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.10. |
 | <a id="mutationupdatenamespacepackagesettingsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatenamespacepackagesettingsgenericduplicateexceptionregex"></a>`genericDuplicateExceptionRegex` | [`UntrustedRegexp`](#untrustedregexp) | When generic_duplicates_allowed is false, you can publish duplicate packages with names that match this regex. Otherwise, this setting has no effect. |
 | <a id="mutationupdatenamespacepackagesettingsgenericduplicatesallowed"></a>`genericDuplicatesAllowed` | [`Boolean`](#boolean) | Indicates whether duplicate generic packages are allowed for the namespace. |
@@ -11922,7 +11922,7 @@ Input type: `UpdatePackagesProtectionRuleInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdatepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatepackagesprotectionruleid"></a>`id` | [`PackagesProtectionRuleID!`](#packagesprotectionruleid) | Global ID of the package protection rule to be updated. |
-| <a id="mutationupdatepackagesprotectionruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`PackagesProtectionRuleAccessLevelForDelete`](#packagesprotectionruleaccesslevelfordelete) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
+| <a id="mutationupdatepackagesprotectionruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`PackagesProtectionRuleAccessLevelForDelete`](#packagesprotectionruleaccesslevelfordelete) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.10. |
 | <a id="mutationupdatepackagesprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`PackagesProtectionRuleAccessLevel`](#packagesprotectionruleaccesslevel) | Minimum GitLab access required to push packages to the package registry. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the default minimum access level is `DEVELOPER`. |
 | <a id="mutationupdatepackagesprotectionrulepackagenamepattern"></a>`packageNamePattern` | [`String`](#string) | Package name protected by the protection rule. For example, `@my-scope/my-package-*`. Wildcard character `*` allowed. |
 | <a id="mutationupdatepackagesprotectionrulepackagetype"></a>`packageType` | [`PackagesProtectionRulePackageType`](#packagesprotectionrulepackagetype) | Package type protected by the protection rule. For example, `NPM`, `PYPI`. |
@@ -11945,7 +11945,7 @@ Input type: `UpdateRequirementInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdaterequirementclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdaterequirementdescription"></a>`description` | [`String`](#string) | Description of the requirement. |
-| <a id="mutationupdaterequirementiid"></a>`iid` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated:** Use work_item_iid instead. Deprecated in GitLab 15.8. |
+| <a id="mutationupdaterequirementiid"></a>`iid` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated**: Use work_item_iid instead. Deprecated in GitLab 15.8. |
 | <a id="mutationupdaterequirementlasttestreportstate"></a>`lastTestReportState` | [`TestReportState`](#testreportstate) | Creates a test report for the requirement with the given state. |
 | <a id="mutationupdaterequirementprojectpath"></a>`projectPath` | [`ID!`](#id) | Full project path the requirement is associated with. |
 | <a id="mutationupdaterequirementstate"></a>`state` | [`RequirementState`](#requirementstate) | State of the requirement. |
@@ -12194,8 +12194,8 @@ Input type: `UserPreferencesUpdateInput`
 | <a id="mutationuserpreferencesupdateissuessort"></a>`issuesSort` | [`IssueSort`](#issuesort) | Sort order for issue lists. |
 | <a id="mutationuserpreferencesupdatemergerequestdashboardlisttype"></a>`mergeRequestDashboardListType` | [`MergeRequestsDashboardListType`](#mergerequestsdashboardlisttype) | Merge request dashboard list rendering type. |
 | <a id="mutationuserpreferencesupdatemergerequestssort"></a>`mergeRequestsSort` | [`MergeRequestSort`](#mergerequestsort) | Sort order for issue lists. |
-| <a id="mutationuserpreferencesupdateorganizationgroupsprojectsdisplay"></a>`organizationGroupsProjectsDisplay` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectDisplay`](#organizationgroupprojectdisplay) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.2. |
-| <a id="mutationuserpreferencesupdateorganizationgroupsprojectssort"></a>`organizationGroupsProjectsSort` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectSort`](#organizationgroupprojectsort) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.2. |
+| <a id="mutationuserpreferencesupdateorganizationgroupsprojectsdisplay"></a>`organizationGroupsProjectsDisplay` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectDisplay`](#organizationgroupprojectdisplay) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.2. |
+| <a id="mutationuserpreferencesupdateorganizationgroupsprojectssort"></a>`organizationGroupsProjectsSort` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectSort`](#organizationgroupprojectsort) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.2. |
 | <a id="mutationuserpreferencesupdateprojectssort"></a>`projectsSort` | [`ProjectSort`](#projectsort) | Sort order for projects. |
 | <a id="mutationuserpreferencesupdateuseworkitemsview"></a>`useWorkItemsView` | [`Boolean`](#boolean) | Use work item view instead of legacy issue view. |
 | <a id="mutationuserpreferencesupdatevisibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
@@ -12751,8 +12751,8 @@ Input type: `WorkItemCreateInput`
 | <a id="mutationworkitemcreateconfidential"></a>`confidential` | [`Boolean`](#boolean) | Sets the work item confidentiality. |
 | <a id="mutationworkitemcreatecreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the work item was created. Available only for admins and project owners. |
 | <a id="mutationworkitemcreatecrmcontactswidget"></a>`crmContactsWidget` | [`WorkItemWidgetCrmContactsCreateInput`](#workitemwidgetcrmcontactscreateinput) | Input for CRM contacts widget. |
-| <a id="mutationworkitemcreatecustomfieldswidget"></a>`customFieldsWidget` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldValueInputType!]`](#workitemwidgetcustomfieldvalueinputtype) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
-| <a id="mutationworkitemcreatedescription"></a>`description` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated:** use description widget instead. Deprecated in GitLab 16.9. |
+| <a id="mutationworkitemcreatecustomfieldswidget"></a>`customFieldsWidget` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldValueInputType!]`](#workitemwidgetcustomfieldvalueinputtype) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.10. |
+| <a id="mutationworkitemcreatedescription"></a>`description` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated**: use description widget instead. Deprecated in GitLab 16.9. |
 | <a id="mutationworkitemcreatedescriptionwidget"></a>`descriptionWidget` | [`WorkItemWidgetDescriptionInput`](#workitemwidgetdescriptioninput) | Input for description widget. |
 | <a id="mutationworkitemcreatediscussionstoresolve"></a>`discussionsToResolve` | [`WorkItemResolveDiscussionsInput`](#workitemresolvediscussionsinput) | Information required to resolve discussions in a noteable, when the work item is created. |
 | <a id="mutationworkitemcreatehealthstatuswidget"></a>`healthStatusWidget` | [`WorkItemWidgetHealthStatusInput`](#workitemwidgethealthstatusinput) | Input for health status widget. |
@@ -12762,11 +12762,11 @@ Input type: `WorkItemCreateInput`
 | <a id="mutationworkitemcreatelinkeditemswidget"></a>`linkedItemsWidget` | [`WorkItemWidgetLinkedItemsCreateInput`](#workitemwidgetlinkeditemscreateinput) | Input for linked items widget. |
 | <a id="mutationworkitemcreatemilestonewidget"></a>`milestoneWidget` | [`WorkItemWidgetMilestoneInput`](#workitemwidgetmilestoneinput) | Input for milestone widget. |
 | <a id="mutationworkitemcreatenamespacepath"></a>`namespacePath` | [`ID`](#id) | Full path of the namespace(project or group) the work item is created in. |
-| <a id="mutationworkitemcreateprojectpath"></a>`projectPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated:** Please use namespacePath instead. That will cover for both projects and groups. Deprecated in GitLab 15.10. |
+| <a id="mutationworkitemcreateprojectpath"></a>`projectPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated**: Please use namespacePath instead. That will cover for both projects and groups. Deprecated in GitLab 15.10. |
 | <a id="mutationworkitemcreatestartandduedatewidget"></a>`startAndDueDateWidget` | [`WorkItemWidgetStartAndDueDateUpdateInput`](#workitemwidgetstartandduedateupdateinput) | Input for start and due date widget. |
-| <a id="mutationworkitemcreatestatuswidget"></a>`statusWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetStatusInput`](#workitemwidgetstatusinput) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.11. |
+| <a id="mutationworkitemcreatestatuswidget"></a>`statusWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetStatusInput`](#workitemwidgetstatusinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.11. |
 | <a id="mutationworkitemcreatetitle"></a>`title` | [`String!`](#string) | Title of the work item. |
-| <a id="mutationworkitemcreatevulnerabilityid"></a>`vulnerabilityId` {{< icon name="warning-solid" >}} | [`VulnerabilityID`](#vulnerabilityid) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.9. |
+| <a id="mutationworkitemcreatevulnerabilityid"></a>`vulnerabilityId` {{< icon name="warning-solid" >}} | [`VulnerabilityID`](#vulnerabilityid) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.9. |
 | <a id="mutationworkitemcreateweightwidget"></a>`weightWidget` | [`WorkItemWidgetWeightInput`](#workitemwidgetweightinput) | Input for weight widget. |
 | <a id="mutationworkitemcreateworkitemtypeid"></a>`workItemTypeId` | [`WorkItemsTypeID!`](#workitemstypeid) | Global ID of a work item type. |
 
@@ -12831,7 +12831,7 @@ Input type: `WorkItemDeleteInput`
 | <a id="mutationworkitemdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationworkitemdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationworkitemdeletenamespace"></a>`namespace` | [`Namespace`](#namespace) | Namespace the deleted work item belonged to. |
-| <a id="mutationworkitemdeleteproject"></a>`project` {{< icon name="warning-solid" >}} | [`Project`](#project) | **Deprecated:** Use `namespace`. Deprecated in GitLab 16.9. |
+| <a id="mutationworkitemdeleteproject"></a>`project` {{< icon name="warning-solid" >}} | [`Project`](#project) | **Deprecated**: Use `namespace`. Deprecated in GitLab 16.9. |
 
 ### `Mutation.workItemExport`
 
@@ -12958,7 +12958,7 @@ Input type: `WorkItemUpdateInput`
 | <a id="mutationworkitemupdateconfidential"></a>`confidential` | [`Boolean`](#boolean) | Sets the work item confidentiality. |
 | <a id="mutationworkitemupdatecrmcontactswidget"></a>`crmContactsWidget` | [`WorkItemWidgetCrmContactsUpdateInput`](#workitemwidgetcrmcontactsupdateinput) | Input for CRM contacts widget. |
 | <a id="mutationworkitemupdatecurrentusertodoswidget"></a>`currentUserTodosWidget` | [`WorkItemWidgetCurrentUserTodosInput`](#workitemwidgetcurrentusertodosinput) | Input for to-dos widget. |
-| <a id="mutationworkitemupdatecustomfieldswidget"></a>`customFieldsWidget` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldValueInputType!]`](#workitemwidgetcustomfieldvalueinputtype) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
+| <a id="mutationworkitemupdatecustomfieldswidget"></a>`customFieldsWidget` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldValueInputType!]`](#workitemwidgetcustomfieldvalueinputtype) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.10. |
 | <a id="mutationworkitemupdatedescriptionwidget"></a>`descriptionWidget` | [`WorkItemWidgetDescriptionInput`](#workitemwidgetdescriptioninput) | Input for description widget. |
 | <a id="mutationworkitemupdatehealthstatuswidget"></a>`healthStatusWidget` | [`WorkItemWidgetHealthStatusInput`](#workitemwidgethealthstatusinput) | Input for health status widget. |
 | <a id="mutationworkitemupdatehierarchywidget"></a>`hierarchyWidget` | [`WorkItemWidgetHierarchyUpdateInput`](#workitemwidgethierarchyupdateinput) | Input for hierarchy widget. |
@@ -12971,7 +12971,7 @@ Input type: `WorkItemUpdateInput`
 | <a id="mutationworkitemupdateprogresswidget"></a>`progressWidget` | [`WorkItemWidgetProgressInput`](#workitemwidgetprogressinput) | Input for progress widget. |
 | <a id="mutationworkitemupdatestartandduedatewidget"></a>`startAndDueDateWidget` | [`WorkItemWidgetStartAndDueDateUpdateInput`](#workitemwidgetstartandduedateupdateinput) | Input for start and due date widget. |
 | <a id="mutationworkitemupdatestateevent"></a>`stateEvent` | [`WorkItemStateEvent`](#workitemstateevent) | Close or reopen a work item. |
-| <a id="mutationworkitemupdatestatuswidget"></a>`statusWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetStatusInput`](#workitemwidgetstatusinput) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.11. |
+| <a id="mutationworkitemupdatestatuswidget"></a>`statusWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetStatusInput`](#workitemwidgetstatusinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.11. |
 | <a id="mutationworkitemupdatetimetrackingwidget"></a>`timeTrackingWidget` | [`WorkItemWidgetTimeTrackingInput`](#workitemwidgettimetrackinginput) | Input for time tracking widget. |
 | <a id="mutationworkitemupdatetitle"></a>`title` | [`String`](#string) | Title of the work item. |
 | <a id="mutationworkitemupdateverificationstatuswidget"></a>`verificationStatusWidget` | [`VerificationStatusInput`](#verificationstatusinput) | Input for verification status widget. |
@@ -13106,13 +13106,13 @@ Input type: `WorkspaceCreateInput`
 | <a id="mutationworkspacecreateclusteragentid"></a>`clusterAgentId` | [`ClustersAgentID!`](#clustersagentid) | GlobalID of the cluster agent the created workspace will be associated with. |
 | <a id="mutationworkspacecreatedesiredstate"></a>`desiredState` | [`String!`](#string) | Desired state of the created workspace. |
 | <a id="mutationworkspacecreatedevfilepath"></a>`devfilePath` | [`String`](#string) | Project path containing the devfile used to configure the workspace. If not provided, the GitLab default devfile is used. |
-| <a id="mutationworkspacecreatedevfileref"></a>`devfileRef` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated:** Argument is renamed to project_ref. Deprecated in GitLab 17.8. |
-| <a id="mutationworkspacecreateeditor"></a>`editor` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated:** Argument is not used. Deprecated in GitLab 17.5. |
-| <a id="mutationworkspacecreatemaxhoursbeforetermination"></a>`maxHoursBeforeTermination` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Deprecated:** Field is not used. Deprecated in GitLab 17.9. |
+| <a id="mutationworkspacecreatedevfileref"></a>`devfileRef` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated**: Argument is renamed to project_ref. Deprecated in GitLab 17.8. |
+| <a id="mutationworkspacecreateeditor"></a>`editor` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated**: Argument is not used. Deprecated in GitLab 17.5. |
+| <a id="mutationworkspacecreatemaxhoursbeforetermination"></a>`maxHoursBeforeTermination` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Deprecated**: Field is not used. Deprecated in GitLab 17.9. |
 | <a id="mutationworkspacecreateprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | ID of the project that will provide the Devfile for the created workspace. |
 | <a id="mutationworkspacecreateprojectref"></a>`projectRef` | [`String`](#string) | Project repo git ref. |
-| <a id="mutationworkspacecreatevariables"></a>`variables` {{< icon name="warning-solid" >}} | [`[WorkspaceVariableInput!]`](#workspacevariableinput) | **Deprecated:** Argument is renamed to workspace_variables. Deprecated in GitLab 18.0. |
-| <a id="mutationworkspacecreateworkspacevariables"></a>`workspaceVariables` {{< icon name="warning-solid" >}} | [`[WorkspaceVariableInput!]`](#workspacevariableinput) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 18.0. |
+| <a id="mutationworkspacecreatevariables"></a>`variables` {{< icon name="warning-solid" >}} | [`[WorkspaceVariableInput!]`](#workspacevariableinput) | **Deprecated**: Argument is renamed to workspace_variables. Deprecated in GitLab 18.0. |
+| <a id="mutationworkspacecreateworkspacevariables"></a>`workspaceVariables` {{< icon name="warning-solid" >}} | [`[WorkspaceVariableInput!]`](#workspacevariableinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.0. |
 
 #### Fields
 
@@ -35411,7 +35411,6 @@ Project-level settings for product analytics provider.
 | <a id="projectciupstreamprojectsubscriptions"></a>`ciUpstreamProjectSubscriptions` {{< icon name="warning-solid" >}} | [`CiProjectSubscriptionConnection`](#ciprojectsubscriptionconnection) | **Introduced** in GitLab 17.6. **Status**: Experiment. Pipeline subscriptions where this project is the downstream project.When an upstream project's pipeline completes, a pipeline is triggered in the downstream project (this project). |
 | <a id="projectcodecoveragesummary"></a>`codeCoverageSummary` | [`CodeCoverageSummary`](#codecoveragesummary) | Code coverage summary associated with the project. |
 | <a id="projectcomplianceframeworks"></a>`complianceFrameworks` | [`ComplianceFrameworkConnection`](#complianceframeworkconnection) | Compliance frameworks associated with the project. (see [Connections](#connections)) |
-| <a id="projectcompliancerequirementstatuses"></a>`complianceRequirementStatuses` {{< icon name="warning-solid" >}} | [`ProjectComplianceRequirementStatusConnection`](#projectcompliancerequirementstatusconnection) | **Introduced** in GitLab 18.0. **Status**: Experiment. Compliance requirement statuses for a project. |
 | <a id="projectcomponentusages"></a>`componentUsages` | [`CiCatalogResourceComponentUsageConnection`](#cicatalogresourcecomponentusageconnection) | Component(s) used by the project. (see [Connections](#connections)) |
 | <a id="projectcontainerexpirationpolicy"></a>`containerExpirationPolicy` {{< icon name="warning-solid" >}} | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | **Deprecated** in GitLab 17.5. Use `container_tags_expiration_policy`. |
 | <a id="projectcontainerprotectionrepositoryrules"></a>`containerProtectionRepositoryRules` {{< icon name="warning-solid" >}} | [`ContainerProtectionRepositoryRuleConnection`](#containerprotectionrepositoryruleconnection) | **Introduced** in GitLab 16.10. **Status**: Experiment. Container protection rules for the project. |
@@ -35930,6 +35929,28 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectcompliancecontrolstatusfilters"></a>`filters` | [`ProjectComplianceControlStatusInput`](#projectcompliancecontrolstatusinput) | Filters applied when retrieving compliance control statuses for the project. |
+
+##### `Project.complianceRequirementStatuses`
+
+Compliance requirement statuses for a project.
+
+{{< details >}}
+**Introduced** in GitLab 18.0.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`ProjectComplianceRequirementStatusConnection`](#projectcompliancerequirementstatusconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectcompliancerequirementstatusesfilters"></a>`filters` | [`ProjectRequirementComplianceStatusInput`](#projectrequirementcompliancestatusinput) | Filters applied when retrieving compliance requirement statuses. |
+| <a id="projectcompliancerequirementstatusesorderby"></a>`orderBy` | [`ProjectComplianceRequirementStatusOrderBy`](#projectcompliancerequirementstatusorderby) | Field used to sort compliance requirement statuses. |
 
 ##### `Project.complianceStandardsAdherence`
 
@@ -49661,8 +49682,8 @@ Field that are available while modifying the custom mapping attributes for an HT
 | <a id="boardissueinputassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee wildcard. Incompatible with assigneeUsername and assigneeUsernames. |
 | <a id="boardissueinputauthorusername"></a>`authorUsername` | [`String`](#string) | Filter by author username. |
 | <a id="boardissueinputconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter by confidentiality. |
-| <a id="boardissueinputcustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
-| <a id="boardissueinputepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **Deprecated:** This will be replaced by WorkItem hierarchyWidget. Deprecated in GitLab 17.5. |
+| <a id="boardissueinputcustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.10. |
+| <a id="boardissueinputepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **Deprecated**: This will be replaced by WorkItem hierarchyWidget. Deprecated in GitLab 17.5. |
 | <a id="boardissueinputepicwildcardid"></a>`epicWildcardId` | [`EpicWildcardId`](#epicwildcardid) | Filter by epic ID wildcard. Incompatible with epicId. |
 | <a id="boardissueinputhealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the issue, "none" and "any" values are supported. |
 | <a id="boardissueinputiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of issues. For example `["1", "2"]`. |
@@ -49678,7 +49699,7 @@ Field that are available while modifying the custom mapping attributes for an HT
 | <a id="boardissueinputor"></a>`or` | [`UnionedIssueFilterInput`](#unionedissuefilterinput) | List of arguments with inclusive OR. |
 | <a id="boardissueinputreleasetag"></a>`releaseTag` | [`String`](#string) | Filter by release tag. |
 | <a id="boardissueinputsearch"></a>`search` | [`String`](#string) | Search query for issue title or description. |
-| <a id="boardissueinputstatus"></a>`status` {{< icon name="warning-solid" >}} | [`WorkItemWidgetStatusFilterInput`](#workitemwidgetstatusfilterinput) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 18.0. |
+| <a id="boardissueinputstatus"></a>`status` {{< icon name="warning-solid" >}} | [`WorkItemWidgetStatusFilterInput`](#workitemwidgetstatusfilterinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.0. |
 | <a id="boardissueinputtypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter by the given issue types. |
 | <a id="boardissueinputweight"></a>`weight` | [`String`](#string) | Filter by weight. |
 | <a id="boardissueinputweightwildcardid"></a>`weightWildcardId` | [`WeightWildcardId`](#weightwildcardid) | Filter by weight ID wildcard. Incompatible with weight. |
@@ -49753,7 +49774,7 @@ Attributes for defining a CI/CD variable.
 | <a id="complianceframeworkinputdefault"></a>`default` | [`Boolean`](#boolean) | Set the compliance framework as the default framework for the group. |
 | <a id="complianceframeworkinputdescription"></a>`description` | [`String`](#string) | New description for the compliance framework. |
 | <a id="complianceframeworkinputname"></a>`name` | [`String`](#string) | New name for the compliance framework. |
-| <a id="complianceframeworkinputpipelineconfigurationfullpath"></a>`pipelineConfigurationFullPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated:** Use pipeline execution policies instead. Deprecated in GitLab 17.4. |
+| <a id="complianceframeworkinputpipelineconfigurationfullpath"></a>`pipelineConfigurationFullPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated**: Use pipeline execution policies instead. Deprecated in GitLab 17.4. |
 | <a id="complianceframeworkinputprojects"></a>`projects` | [`ComplianceFrameworkProjectInput`](#complianceframeworkprojectinput) | Projects to add or remove from the compliance framework. |
 
 ### `ComplianceFrameworkProjectInput`
@@ -49945,7 +49966,7 @@ Filter parameters for projects to be aggregated for DORA metrics.
 | ---- | ---- | ----------- |
 | <a id="epicfiltersauthorusername"></a>`authorUsername` | [`String`](#string) | Filter by author username. |
 | <a id="epicfiltersconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter by confidentiality. |
-| <a id="epicfilterscustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.10. |
+| <a id="epicfilterscustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.10. |
 | <a id="epicfilterslabelname"></a>`labelName` | [`[String]`](#string) | Filter by label name. |
 | <a id="epicfiltersmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. Wildcard values "NONE" and "ANY" are supported. |
 | <a id="epicfiltersnot"></a>`not` | [`NegatedEpicBoardIssueInput`](#negatedepicboardissueinput) | Negated epic arguments. |
@@ -50044,12 +50065,12 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestsresolvernegatedparamsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Filters merge requests to exclude any that are assigned to the usernames in the given array. |
 | <a id="mergerequestsresolvernegatedparamsauthorusername"></a>`authorUsername` | [`String`](#string) | Filters merge requests to exclude any that are authored by the given user. |
 | <a id="mergerequestsresolvernegatedparamslabelname"></a>`labelName` | [`[String!]`](#string) | Filters merge requests to exclude any that have the labels provided in the given array. |
-| <a id="mergerequestsresolvernegatedparamslabels"></a>`labels` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Deprecated:** Use `labelName`. Deprecated in GitLab 17.7. |
+| <a id="mergerequestsresolvernegatedparamslabels"></a>`labels` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Deprecated**: Use `labelName`. Deprecated in GitLab 17.7. |
 | <a id="mergerequestsresolvernegatedparamsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filters merge requests to those not in the given milestone. |
 | <a id="mergerequestsresolvernegatedparamsmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filters merge requests to those without the given reaction from the authenticated user. |
-| <a id="mergerequestsresolvernegatedparamsonlyreviewer"></a>`onlyReviewer` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.11. |
+| <a id="mergerequestsresolvernegatedparamsonlyreviewer"></a>`onlyReviewer` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.11. |
 | <a id="mergerequestsresolvernegatedparamsreleasetag"></a>`releaseTag` | [`String`](#string) | Filters merge requests to those without the given release tag. |
-| <a id="mergerequestsresolvernegatedparamsreviewstates"></a>`reviewStates` {{< icon name="warning-solid" >}} | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.9. |
+| <a id="mergerequestsresolvernegatedparamsreviewstates"></a>`reviewStates` {{< icon name="warning-solid" >}} | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.9. |
 | <a id="mergerequestsresolvernegatedparamsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Filters merge requests to those not reviewed by the given user. |
 | <a id="mergerequestsresolvernegatedparamssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Filters merge requests to exclude the source branch names provided in the given array. |
 | <a id="mergerequestsresolvernegatedparamstargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Filters merge requests to exclude the target branch names provided in the given array. |
@@ -50073,7 +50094,7 @@ A year and month input for querying product analytics usage data.
 | ---- | ---- | ----------- |
 | <a id="negatedboardissueinputassigneeusername"></a>`assigneeUsername` | [`[String]`](#string) | Filter by assignee username. |
 | <a id="negatedboardissueinputauthorusername"></a>`authorUsername` | [`String`](#string) | Filter by author username. |
-| <a id="negatedboardissueinputepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **Deprecated:** This will be replaced by WorkItem hierarchyWidget. Deprecated in GitLab 17.5. |
+| <a id="negatedboardissueinputepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **Deprecated**: This will be replaced by WorkItem hierarchyWidget. Deprecated in GitLab 17.5. |
 | <a id="negatedboardissueinputhealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatus`](#healthstatus) | Health status not applied to the issue. Includes issues where health status is not set. |
 | <a id="negatedboardissueinputiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of issues. For example `["1", "2"]`. |
 | <a id="negatedboardissueinputiterationid"></a>`iterationId` | [`[IterationID!]`](#iterationid) | Filter by a list of iteration IDs. Incompatible with iterationWildcardId. |
@@ -50245,6 +50266,15 @@ Representation of who is provided access to. For eg: User/Role/MemberRole/Group.
 | ---- | ---- | ----------- |
 | <a id="projectcompliancecontrolstatusinputcompliancerequirementid"></a>`complianceRequirementId` | [`ComplianceManagementComplianceFrameworkComplianceRequirementID`](#compliancemanagementcomplianceframeworkcompliancerequirementid) | Compliance requirement id of the statuses. |
 
+### `ProjectRequirementComplianceStatusInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectrequirementcompliancestatusinputframeworkid"></a>`frameworkId` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | Filter compliance requirement statuses by compliance framework. |
+| <a id="projectrequirementcompliancestatusinputrequirementid"></a>`requirementId` | [`ComplianceManagementComplianceFrameworkComplianceRequirementID`](#compliancemanagementcomplianceframeworkcompliancerequirementid) | Filter compliance requirement statuses by compliance requirement. |
+
 ### `PushAccessLevelInput`
 
 Defines which user roles, users, deploy keys, or groups can push to a protected branch.
@@ -50370,9 +50400,9 @@ Attributes for defining a tracking event.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="unionedepicfilterinputauthorusername"></a>`authorUsername` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Deprecated:** Use authorUsernames instead. Deprecated in GitLab 16.6. |
+| <a id="unionedepicfilterinputauthorusername"></a>`authorUsername` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Deprecated**: Use authorUsernames instead. Deprecated in GitLab 16.6. |
 | <a id="unionedepicfilterinputauthorusernames"></a>`authorUsernames` | [`[String!]`](#string) | Filters epics that are authored by one of the given users. |
-| <a id="unionedepicfilterinputlabelname"></a>`labelName` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Deprecated:** Use labelNames instead. Deprecated in GitLab 16.6. |
+| <a id="unionedepicfilterinputlabelname"></a>`labelName` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Deprecated**: Use labelNames instead. Deprecated in GitLab 16.6. |
 | <a id="unionedepicfilterinputlabelnames"></a>`labelNames` | [`[String!]`](#string) | Filters epics that have at least one of the given labels. |
 
 ### `UnionedIssueFilterInput`
@@ -50392,9 +50422,9 @@ Attributes for defining a tracking event.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="unionedmergerequestfilterinputassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Filters MRs that are assigned to at least one of the given users. |
-| <a id="unionedmergerequestfilterinputonlyreviewerusername"></a>`onlyReviewerUsername` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.11. |
-| <a id="unionedmergerequestfilterinputreviewstates"></a>`reviewStates` {{< icon name="warning-solid" >}} | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 18.0. |
-| <a id="unionedmergerequestfilterinputreviewerwildcard"></a>`reviewerWildcard` {{< icon name="warning-solid" >}} | [`ReviewerWildcardId`](#reviewerwildcardid) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.11. |
+| <a id="unionedmergerequestfilterinputonlyreviewerusername"></a>`onlyReviewerUsername` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.11. |
+| <a id="unionedmergerequestfilterinputreviewstates"></a>`reviewStates` {{< icon name="warning-solid" >}} | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.0. |
+| <a id="unionedmergerequestfilterinputreviewerwildcard"></a>`reviewerWildcard` {{< icon name="warning-solid" >}} | [`ReviewerWildcardId`](#reviewerwildcardid) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.11. |
 
 ### `UnionedWorkItemFilterInput`
 
@@ -50757,6 +50787,6 @@ Attributes for defining a variable to be injected in a workspace.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workspacevariableinputkey"></a>`key` | [`String!`](#string) | Name of the workspace variable. |
-| <a id="workspacevariableinputtype"></a>`type` {{< icon name="warning-solid" >}} | [`WorkspaceVariableInputType`](#workspacevariableinputtype) | **Deprecated:** Use `variableType` instead. Deprecated in GitLab 17.9. |
+| <a id="workspacevariableinputtype"></a>`type` {{< icon name="warning-solid" >}} | [`WorkspaceVariableInputType`](#workspacevariableinputtype) | **Deprecated**: Use `variableType` instead. Deprecated in GitLab 17.9. |
 | <a id="workspacevariableinputvalue"></a>`value` | [`String!`](#string) | Value of the variable. |
 | <a id="workspacevariableinputvariabletype"></a>`variableType` | [`WorkspaceVariableType`](#workspacevariabletype) | Type of the variable to be injected in a workspace. |

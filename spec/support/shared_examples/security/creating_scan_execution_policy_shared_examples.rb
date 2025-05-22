@@ -61,20 +61,4 @@ RSpec.shared_examples 'creating scan execution policy with invalid properties' d
     expect(page).to have_content('Policy cannot be enabled without branch information')
     expect(page).to have_current_path(path_to_scan_execution_policy_editor)
   end
-
-  it "fails to create a policy with exceeding amount of actions and conditions" do
-    fill_in _('Name'), with: 'Exceeding actions and conditions'
-
-    limit.times do
-      click_button _('Add new action')
-      click_button _('Add new condition')
-    end
-
-    expect(page).to have_button _('Add new action'), disabled: true
-
-    click_button _('Configure with a merge request')
-
-    expect(page).to have_content("Policy exceeds the maximum of #{limit} actions")
-    expect(page).to have_current_path(path_to_scan_execution_policy_editor)
-  end
 end

@@ -823,6 +823,9 @@ msgid_plural "%{count} projects have access"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{count} registries is the maximum allowed per group."
+msgstr ""
+
 msgid "%{count} related %{pluralized_subject}: %{links}"
 msgstr ""
 
@@ -39502,9 +39505,6 @@ msgstr ""
 msgid "Model registry"
 msgstr ""
 
-msgid "Model selection is only available for top-level namespaces."
-msgstr ""
-
 msgid "Model version not found"
 msgstr ""
 
@@ -54826,6 +54826,12 @@ msgstr ""
 msgid "SecurityExclusions|ex: spec/**/*.rb"
 msgstr ""
 
+msgid "SecurityInventoryFilter|Search for project name"
+msgstr ""
+
+msgid "SecurityInventoryFilter|Search projects…"
+msgstr ""
+
 msgid "SecurityInventory|Add projects to this group to start tracking their security posture."
 msgstr ""
 
@@ -55121,6 +55127,9 @@ msgstr ""
 msgid "SecurityOrchestration|Automate %{strongStart}vulnerability management%{strongEnd} workflows."
 msgstr ""
 
+msgid "SecurityOrchestration|Automatically configures scans to run only where needed for MR approval policies"
+msgstr ""
+
 msgid "SecurityOrchestration|Automatically selected runners"
 msgstr ""
 
@@ -55178,6 +55187,9 @@ msgstr ""
 msgid "SecurityOrchestration|Configuration"
 msgstr ""
 
+msgid "SecurityOrchestration|Configure exactly when and where scans should run"
+msgstr ""
+
 msgid "SecurityOrchestration|Configure policies to control whether individual users or service accounts can use %{linkStart}skip_ci%{linkEnd} to skip pipelines."
 msgstr ""
 
@@ -55197,6 +55209,9 @@ msgid "SecurityOrchestration|Create new project with the new policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Create security policy"
+msgstr ""
+
+msgid "SecurityOrchestration|Custom configuration"
 msgstr ""
 
 msgid "SecurityOrchestration|Custom roles"
@@ -55472,6 +55487,9 @@ msgstr ""
 msgid "SecurityOrchestration|Merge request pipeline"
 msgstr ""
 
+msgid "SecurityOrchestration|Merge request security"
+msgstr ""
+
 msgid "SecurityOrchestration|Never"
 msgstr ""
 
@@ -55730,6 +55748,9 @@ msgid "SecurityOrchestration|Security policy project will be unlinked soon"
 msgstr ""
 
 msgid "SecurityOrchestration|Security policy projects store your organization's security policies. They are identified when policies are created, or when a project is linked as a security policy project. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "SecurityOrchestration|Security scans to execute"
 msgstr ""
 
 msgid "SecurityOrchestration|Select a cadence"

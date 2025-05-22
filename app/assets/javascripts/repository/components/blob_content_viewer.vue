@@ -72,8 +72,8 @@ export default {
         this.displayError();
       },
       update({ project }) {
-        this.pathLocks = project.pathLocks || DEFAULT_BLOB_INFO.pathLocks;
-        this.userPermissions = project.userPermissions;
+        this.pathLocks = project?.pathLocks || DEFAULT_BLOB_INFO.pathLocks;
+        this.userPermissions = project?.userPermissions || DEFAULT_BLOB_INFO.userPermissions;
       },
     },
     project: {

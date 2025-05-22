@@ -110,7 +110,7 @@ export default {
           'internal-note': this.note.internal,
         },
         noteParent: {
-          'gl-rounded-base gl-border gl-border-section': !this.replyNote,
+          'gl-rounded-lg gl-border gl-border-section': !this.replyNote,
           'gl-ml-7': this.replyNote,
           'gl-bg-section gl-ml-8': !this.replyNote,
         },

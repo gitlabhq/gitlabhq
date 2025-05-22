@@ -71,7 +71,7 @@ RSpec.describe WorkItems::ImportCsvService, feature_category: :team_planning do
             expect(result[:parse_error]).to eq(false)
             expect(result[:type_errors]).to match({
               blank: [4],
-              disallowed: {}, # tested in the EE version
+              disallowed: { "epic" => [5] }, # tested in the EE version
               missing: {
                 "isssue" => [2],
                 "issue!!" => [3]

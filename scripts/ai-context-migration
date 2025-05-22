@@ -1,0 +1,68 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Generate an AI Context migration file and spec with the current timestamp.
+
+require_relative 'lib/migration_creator'
+
+module GitLab
+  module MigrationTools
+    class AIContextMigrationCreator < BaseMigrationCreator
+      protected
+
+      def create_options_struct
+        Struct.new(
+          :name,
+          :milestone,
+          :feature_category
+        )
+      end
+
+      def collect_input
+        options.name = read_name
+        options.milestone = current_milestone
+        options.feature_category = read_variable('feature_category', 'The feature category, like: `code_suggestions`')
+      end
+
+      def file_path
+        "ee/db/active_context/migrate/#{file_name}.rb"
+      end
+
+      def spec_file_path
+        "ee/spec/db/active_context/migrate/#{file_name}_spec.rb"
+      end
+
+      def file_contents
+        <<~RUBY
+          # frozen_string_literal: true
+
+          class #{options.name} < ActiveContext::Migration[1.0]
+            milestone '#{options.milestone}'
+
+            def migrate!
+              # TODO: Implement migration logic
+            end
+          end
+        RUBY
+      end
+
+      def spec_contents
+        <<~RUBY
+          # frozen_string_literal: true
+
+          require 'spec_helper'
+          require File.expand_path('#{file_path}')
+
+          RSpec.describe #{options.name}, feature_category: :#{options.feature_category.parameterize.underscore} do
+            let(:version) { #{timestamp} }
+            let(:migration) { ::ActiveContext::Migration::Dictionary.instance.find_by_version(version) }
+
+            subject(:migrate) { migration.new.migrate! }
+          end
+        RUBY
+      end
+    end
+  end
+end
+
+GitLab::MigrationTools::AIContextMigrationCreator.new.execute if $PROGRAM_NAME == __FILE__

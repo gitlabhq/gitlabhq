@@ -68,8 +68,11 @@ module WorkItems
       available_work_item_types[work_item_type&.downcase]
     end
 
+    # todo: This should be updated once we can determine available work item types based on namespace,
+    #       see https://gitlab.com/gitlab-org/gitlab/-/issues/524828
     def available_work_item_types
-      WorkItems::Type.all.index_by(&:name).with_indifferent_access.transform_keys(&:strip).transform_keys(&:downcase)
+      WorkItems::Type.all.reject { |wit| wit.base_type == :epic }
+        .index_by(&:name).with_indifferent_access.transform_keys(&:strip).transform_keys(&:downcase)
     end
     strong_memoize_attr :available_work_item_types
 

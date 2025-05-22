@@ -138,7 +138,7 @@ export default {
       <template v-if="replies.length || isReplying" #note-footer>
         <div
           data-testid="wiki-note-footer"
-          class="gl-border-t gl-rounded-b-base gl-border-t-subtle gl-bg-subtle dark:gl-border-t-section"
+          class="gl-border-t gl-rounded-b-lg gl-border-t-subtle gl-bg-subtle dark:gl-border-t-section"
         >
           <toggle-replies-widget
             v-if="replies.length"

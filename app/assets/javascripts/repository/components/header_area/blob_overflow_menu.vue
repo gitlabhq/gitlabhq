@@ -93,7 +93,7 @@ export default {
         };
       },
       update({ project }) {
-        this.userPermissions = project?.userPermissions;
+        this.userPermissions = project?.userPermissions || DEFAULT_BLOB_INFO.userPermissions;
       },
       error() {
         createAlert({ message: this.$options.i18n.fetchError });

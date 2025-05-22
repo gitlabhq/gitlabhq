@@ -116,7 +116,7 @@ export default {
     <p v-if="isEmpty" data-testid="empty-message" class="gl-px-5 gl-pt-5 gl-text-subtle">
       <slot name="empty"></slot>
     </p>
-    <runner-list v-else :runners="runners.items" :fixed="false" :loading="isLoading">
+    <runner-list v-else :runners="runners.items" :loading="isLoading">
       <template #runner-name="{ runner }">
         <gl-link v-if="runner.webUrl" data-testid="runner-link" :href="runner.webUrl">
           <runner-name :runner="runner" />

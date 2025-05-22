@@ -51,7 +51,7 @@ Before you can use the Maven virtual registry:
 
 When using the Maven virtual registry, remember the following restrictions:
 
-- You can create only one Maven virtual registry per top-level group.
+- You can create up to `20` Maven virtual registries per top-level group.
 - You can set only `20` upstreams to a given Maven virtual registry.
 - For technical reasons, the `proxy_download` setting is force enabled, no matter what the value in the [object storage configuration](../../../../administration/object_storage.md#proxy-download) is configured to.
 - Geo support is not implemented. You can follow its development in [issue 473033](https://gitlab.com/gitlab-org/gitlab/-/issues/473033).

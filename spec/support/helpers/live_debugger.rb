@@ -24,7 +24,7 @@ module LiveDebugger
   end
 
   def is_headless_disabled?
-    ActiveSupport::Deprecation.warn("CHROME_HEADLESS is deprecated. Use WEBDRIVER_HEADLESS instead.") if ENV.key?('CHROME_HEADLESS')
+    Rails.application.deprecators[:qa].warn("CHROME_HEADLESS is deprecated. Use WEBDRIVER_HEADLESS instead.") if ENV.key?('CHROME_HEADLESS')
 
     ENV['WEBDRIVER_HEADLESS'] =~ /^(false|no|0)$/i || ENV['CHROME_HEADLESS'] =~ /^(false|no|0)$/i
   end

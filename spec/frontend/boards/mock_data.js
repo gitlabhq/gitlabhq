@@ -298,6 +298,7 @@ export const rawIssue = {
   blockedByCount: 0,
   iteration: null,
   healthStatus: null,
+  status: null,
   type: 'ISSUE',
   linkedWorkItems: {
     __typename: 'LinkedWorkItemTypeConnection',
@@ -351,6 +352,7 @@ export const mockIssue = {
   blockedByCount: 0,
   iteration: null,
   healthStatus: null,
+  status: null,
   type: 'ISSUE',
   __typename: 'Issue',
   linkedWorkItems: {
