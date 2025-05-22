@@ -3,6 +3,7 @@ import { GlToggle, GlAlert } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import getProjectPagesDeployments from '../queries/get_project_pages_deployments.graphql';
+import LiveBlock from './live_block.vue';
 import PagesDeployment from './deployment.vue';
 import LoadMoreDeployments from './load_more_deployments.vue';
 
@@ -11,6 +12,7 @@ export default {
   components: {
     CrudComponent,
     LoadMoreDeployments,
+    LiveBlock,
     PagesDeployment,
     GlToggle,
     GlAlert,
@@ -56,6 +58,9 @@ export default {
     },
     loadedParallelDeploymentsCount() {
       return this.parallelDeployments?.nodes.length || 0;
+    },
+    newestDeployment() {
+      return this.primaryDeployments?.nodes[0] || null;
     },
   },
   apollo: {
@@ -159,6 +164,8 @@ export default {
     <gl-alert v-if="hasError" variant="danger" :dismissible="false">
       {{ $options.i18n.loadErrorMessage }}
     </gl-alert>
+
+    <live-block :is-loading="!newestDeployment && $apollo.loading" :deployment="newestDeployment" />
 
     <crud-component
       :title="$options.i18n.title"

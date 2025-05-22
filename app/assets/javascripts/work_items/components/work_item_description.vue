@@ -266,13 +266,16 @@ export default {
   },
   mounted() {
     const DEFAULT_TEMPLATE_NAME = 'default';
-    if (this.isCreateFlow) {
-      const templateName = !this.isNewWorkItemRoute
-        ? DEFAULT_TEMPLATE_NAME
-        : this.$route.query[paramName] ||
-          this.$route.query[oldParamNameFromPreWorkItems] ||
-          DEFAULT_TEMPLATE_NAME;
+    const templateNameFromRoute =
+      this.$route.query[paramName] || this.$route.query[oldParamNameFromPreWorkItems];
+    const templateName = !this.isNewWorkItemRoute
+      ? DEFAULT_TEMPLATE_NAME
+      : templateNameFromRoute || DEFAULT_TEMPLATE_NAME;
 
+    // Ensure that template is set during Create Flow only if any of the following is true:;
+    // - Template name is present in URL.
+    // - Description is empty.
+    if (this.isCreateFlow && (templateNameFromRoute || this.descriptionText.trim() === '')) {
       this.selectedTemplate = {
         name: templateName,
         projectId: null,
@@ -301,10 +304,6 @@ export default {
         }
         if (this.isEditing && this.createFlow) {
           this.startEditing();
-          // Reset edit state as the description
-          // can also be populated from localStorage
-          // when creating a new work item.
-          this.wasEdited = false;
         }
       },
       error() {
@@ -332,17 +331,6 @@ export default {
         if (this.descriptionTemplate === this.descriptionText) {
           return;
         }
-        if (this.createFlow && !this.wasEdited && hasContent && this.appliedTemplate === '') {
-          // If the template was fetched on component mount
-          // while in create flow, we may also have populated
-          // the description from localStorage. In this case,
-          // we need avoid showing the warning on first load.
-          // while also setting appliedTemplate to the current
-          // template such that reset is possible.
-          this.appliedTemplate = this.descriptionTemplate;
-          this.wasEdited = true;
-          return;
-        }
 
         if (!isUnchangedTemplate && (isDirty || hasContent)) {
           this.showTemplateApplyWarning = true;
@@ -366,9 +354,12 @@ export default {
       this.isEditing = true;
       this.wasEdited = true;
 
-      this.descriptionText = this.createFlow
-        ? this.workItemDescription?.description
-        : getDraft(this.autosaveKey) || this.workItemDescription?.description;
+      const draftDescription = getDraft(this.autosaveKey) || '';
+      if (draftDescription.trim() !== '') {
+        this.descriptionText = draftDescription;
+      } else {
+        this.descriptionText = this.workItemDescription?.description;
+      }
       this.initialDescriptionText = this.descriptionText;
 
       await this.$nextTick();

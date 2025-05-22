@@ -62,7 +62,7 @@ users with auditor access have the same [permissions](../user/permissions.md) as
 If you are signed in with auditor access, you:
 
 - Have full access to the projects and groups you own.
-- Have read-only access to the projects and groups you are not a member of.
+- Have read-only access to the projects and groups you are not a member of. Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/542815) this is not supported. Users must have at least the Reporter role for read-only tasks.
 - Have [permissions](../user/permissions.md) based on your role to projects and groups you are a member of. For example, if you have the Developer role,
   you can push commits or comment on issues.
 - Can access the same resources using the GitLab UI or API.

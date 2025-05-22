@@ -21,23 +21,27 @@ module Gitlab
             fi
           SH
 
-          def initialize(
-            namespace:,
-            ci:,
-            gitlab_domain:,
-            admin_password:,
-            admin_token:,
-            host_http_port:,
-            host_ssh_port:,
-            host_registry_port:
-          )
-            super(namespace: namespace, ci: ci, gitlab_domain: gitlab_domain)
+          # Instance of kind deployment configuration
+          #
+          # @param **args [Hash]
+          #   @option args [String] :namespace Namespace used for deployment
+          #   @option args [Boolean] :ci Run for CI environment
+          #   @option args [String] :gitlab_domain Custom gitlab domain
+          #   @option args [String] :admin_password Initial password for admin user
+          #   @option args [String] :admin_token Initial PAT token for admin user
+          #   @option args [Integer] :host_http_port HTTP port for gitlab pages
+          #   @option args [Integer] :host_ssh_port SSH port for gitlab
+          #   @option args [Integer] :host_registry_port Registry port for gitlab
+          #   @option args [String] :resource_preset resource preset name
+          def initialize(**args)
+            super(**args.slice(:namespace, :ci, :gitlab_domain))
 
-            @admin_password = admin_password
-            @admin_token = admin_token
-            @host_http_port = host_http_port
-            @host_ssh_port = host_ssh_port
-            @host_registry_port = host_registry_port
+            @admin_password = args[:admin_password]
+            @admin_token = args[:admin_token]
+            @host_http_port = args[:host_http_port]
+            @host_ssh_port = args[:host_ssh_port]
+            @host_registry_port = args[:host_registry_port]
+            @resource_preset = args[:resource_preset]
           end
 
           # Run pre-deployment setup
@@ -96,7 +100,7 @@ module Gitlab
                   }
                 }
               }
-            }
+            }.deep_merge(ResourcePresets.resource_values(resource_preset))
           end
 
           # Gitlab url
@@ -108,7 +112,12 @@ module Gitlab
 
           private
 
-          attr_reader :admin_password, :admin_token, :host_http_port, :host_ssh_port, :host_registry_port
+          attr_reader :admin_password,
+            :admin_token,
+            :host_http_port,
+            :host_ssh_port,
+            :host_registry_port,
+            :resource_preset
 
           # Token seed script for root user
           #

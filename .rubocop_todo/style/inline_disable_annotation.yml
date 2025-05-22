@@ -648,7 +648,6 @@ Style/InlineDisableAnnotation:
     - 'app/services/todos/destroy/unauthorized_features_service.rb'
     - 'app/services/topics/merge_service.rb'
     - 'app/services/user_project_access_changed_service.rb'
-    - 'app/services/users/assigned_issues_count_service.rb'
     - 'app/services/users/batch_status_cleaner_service.rb'
     - 'app/services/users/destroy_service.rb'
     - 'app/services/users/last_push_event_service.rb'

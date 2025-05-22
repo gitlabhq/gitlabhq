@@ -26,7 +26,7 @@ running on.
 
 ## strace-parser
 
-[strace-parser](https://gitlab.com/wchandler/strace-parser) is a small tool to analyze
+[strace-parser](https://gitlab.com/gitlab-com/support/toolbox/strace-parser) is a small tool to analyze
 and summarize raw `strace` data.
 
 ## `kubesos`

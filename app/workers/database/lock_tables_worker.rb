@@ -59,7 +59,8 @@ module Database
         database_name: database_name,
         with_retries: !connection.transaction_open?,
         logger: nil,
-        dry_run: false
+        dry_run: false,
+        force: true
       )
     end
   end

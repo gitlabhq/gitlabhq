@@ -27,6 +27,7 @@ export default function initPages() {
     apolloProvider,
     provide: {
       projectFullPath: el.dataset.fullPath,
+      primaryDomain: el.dataset.primaryDomain,
     },
     render(createElement) {
       return createElement(PagesEdit, {});

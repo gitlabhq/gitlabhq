@@ -92,6 +92,9 @@ $white-gc-bg: #eaf2f5;
   --code-meta-diff-background-color: #{$gl-color-neutral-10};
   --code-meta-diff-color: #{$gl-color-alpha-dark-24};
 
+  --code-highlighted-line-background-color: #{$gl-color-blue-50};
+  --code-highlighted-line-border-color: #{$gl-color-blue-300};
+
   // Line numbers
   .file-line-blame {
     @include line-link($gl-color-neutral-1000, 'git');

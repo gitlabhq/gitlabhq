@@ -1,0 +1,3 @@
+@function more-than($z-index) {
+  @return $z-index + 1;
+}

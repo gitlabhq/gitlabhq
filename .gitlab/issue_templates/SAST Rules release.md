@@ -6,7 +6,7 @@
 
 /assign @gitlab-org/secure/static-analysis/reaction-rotation
 
-Note: If the rules release includes support for a new file type,  the engineer(s) on reaction rotation will refine and schedule the for an upcoming milestone.
+Note: If the rules release includes support for a new file type, the engineer(s) on reaction rotation will refine and schedule the for an upcoming milestone.
 
 ## Actions for ~"group::static analysis" team member
 
@@ -22,9 +22,9 @@ Release the new Semgrep SAST ruleset version X.Y.Z by going through the sequence
    ```
 1. [ ] If support for a new file type is required:
    1. [ ] Add new extension to https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/blob/main/plugin/plugin.go.
-   1. [ ] Update [SAST components template](https://gitlab.com/components/sast/-/blob/main/templates/sast.yml) to add support for new file type
-   1. [ ] Update the SAST templates [SAST.latest.gitlab-ci.yml](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml) 
+   1. [ ] Update [SAST components template](https://gitlab.com/components/sast/-/blob/main/templates/sast.yml) to add support for new file type.
+   1. [ ] Update the SAST templates [SAST.latest.gitlab-ci.yml](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml).
       and [SAST.gitlab-ci.yml](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml) to support new file types.
-   1. [ ] Update the [SAST documentation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/application_security/sast/_index.md)
+   1. [ ] Update the [SAST documentation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/application_security/sast/_index.md).
 
 /label ~"group::static analysis" ~"devops::application security testing" ~"section::sec" ~"Category:SAST" ~"type::feature" ~"workflow::refinement" 

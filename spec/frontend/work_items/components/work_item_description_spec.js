@@ -406,12 +406,12 @@ describe('WorkItemDescription', () => {
           // Mimic component mount with a pre-populated description
           await createComponent({
             editMode: true,
+            workItemResponseHandler: jest
+              .fn()
+              .mockResolvedValue(
+                workItemByIidResponseFactory({ description: 'Pre-filled description' }),
+              ),
             workItemId: newWorkItemId(workItemQueryResponse.data.workItem.workItemType.name),
-          });
-          findDescriptionTemplateListbox().vm.$emit('selectTemplate', {
-            name: 'default',
-            projectId: 1,
-            catagory: 'catagory',
           });
           await nextTick();
           await waitForPromises();
@@ -419,6 +419,9 @@ describe('WorkItemDescription', () => {
           expect(findDescriptionTemplateWarning().exists()).toBe(false);
           expect(findCancelApplyTemplate().exists()).toBe(false);
           expect(findApplyTemplate().exists()).toBe(false);
+
+          // No template is selected when description is pre-filled
+          expect(findDescriptionTemplateListbox().props('template')).toBeNull();
         });
 
         it('hides the warning when the cancel button is clicked', async () => {

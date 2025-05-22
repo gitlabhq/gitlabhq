@@ -88,7 +88,8 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
           database_name: database_name,
           with_retries: true,
           logger: anything,
-          dry_run: anything
+          dry_run: anything,
+          force: true
         ).once.and_return(lock_writes_manager)
         expect(lock_writes_manager).to receive(:lock_writes).once
       end
@@ -121,7 +122,8 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
           database_name: database_name,
           with_retries: true,
           logger: anything,
-          dry_run: anything
+          dry_run: anything,
+          force: true
         ).once.and_return(lock_writes_manager)
         expect(lock_writes_manager).to receive(:unlock_writes)
       end
@@ -146,7 +148,8 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
         database_name: database_name,
         with_retries: true,
         logger: anything,
-        dry_run: anything
+        dry_run: anything,
+        force: true
       ).once.and_return(lock_writes_manager)
       expect(lock_writes_manager).to receive(:lock_writes)
 
@@ -166,7 +169,8 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
         database_name: database_name,
         with_retries: true,
         logger: anything,
-        dry_run: anything
+        dry_run: anything,
+        force: true
       ).once.and_return(lock_writes_manager)
       expect(lock_writes_manager).to receive(:unlock_writes)
 
@@ -340,7 +344,8 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
           database_name: 'ci',
           with_retries: true,
           logger: anything,
-          dry_run: true
+          dry_run: true,
+          force: false
         ).and_return(default_lock_writes_manager)
         expect(default_lock_writes_manager).to receive(:lock_writes)
 
@@ -389,7 +394,8 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
         database_name: 'geo',
         with_retries: true,
         logger: anything,
-        dry_run: anything
+        dry_run: anything,
+        force: true
       )
 
       subject
@@ -416,7 +422,8 @@ RSpec.describe Gitlab::Database::TablesLocker, :suppress_gitlab_schemas_validate
         database_name: 'sec',
         with_retries: true,
         logger: anything,
-        dry_run: anything
+        dry_run: anything,
+        force: true
       )
 
       subject

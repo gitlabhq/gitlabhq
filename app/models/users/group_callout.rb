@@ -8,6 +8,7 @@ module Users
 
     belongs_to :group
 
+    # NOTE: to avoid false-positive dismissals, use new consecutive enum values for new callout IDs
     enum :feature_name, {
       invite_members_banner: 1,
       approaching_seat_count_threshold: 2, # EE-only

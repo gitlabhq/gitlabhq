@@ -7,19 +7,20 @@
 }
 
 .rd-diff-file {
+  $header-padding: constants.$diff-file-header-padding-y * 2;
+  // top/bottom padding + toggle button size, excluding borders
+  $file-header-height: calc($header-padding + $gl-button-small-size);
+  --rd-diff-file-header-height: #{$file-header-height};
   --rd-diff-file-border-radius: #{calc($gl-border-radius-base - 1px)};
 }
 
 .rd-diff-file[data-virtual]:not([data-collapsed]) {
-  $header-padding: constants.$diff-file-header-padding-y * 2;
-  // top/bottom padding + toggle button size, excluding borders
-  $file-header-height: calc($header-padding + $gl-button-small-size);
   // header top/bottom borders + body border
   $total-borders: constants.$diff-file-border-width * 3;
   content-visibility: var(--rd-content-visibility-auto, auto);
   contain-intrinsic-size:
     auto 0 auto
-    calc(#{$file-header-height} + #{$total-borders} + (#{constants.$code-row-height-target} * var(--total-rows)));
+    calc(var(--rd-diff-file-header-height) + #{$total-borders} + (#{constants.$code-row-height-target} * var(--total-rows)));
 }
 
 // content-visibility: auto; applies paint containment, which means you can not draw outside a diff file
@@ -32,7 +33,7 @@
   position: sticky;
   // 1px offset to hide top border
   top: calc(var(--rd-app-sticky-top, 1px) - 1px);
-  z-index: 3;
+  z-index: constants.$diff-file-header-z-index;
   container-type: scroll-state;
 }
 

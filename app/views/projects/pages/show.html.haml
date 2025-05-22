@@ -13,7 +13,10 @@
 
   .tab-content.gl-tab-content.gl-pt-5
     .tab-pane.active#overview
-      #js-pages{ data: { full_path: @project.full_path } }
+      #js-pages{ data: {
+        full_path: @project.full_path,
+        primary_domain: @project.pages_domains.present? ? @project.project_setting.pages_primary_domain : ''
+      } }
 
     .tab-pane#domains-settings
       .gl-flex.gl-flex-col.gl-gap-5

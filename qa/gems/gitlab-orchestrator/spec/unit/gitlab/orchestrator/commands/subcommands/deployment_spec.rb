@@ -59,7 +59,8 @@ RSpec.describe Gitlab::Orchestrator::Commands::Subcommands::Deployment do
         admin_token: "ypCa3Dzb23o5nvsixwPA",
         host_http_port: 80,
         host_ssh_port: 22,
-        host_registry_port: 5000
+        host_registry_port: 5000,
+        resource_preset: "default"
       )
       expect(installation_instance).to have_received(:create)
     end

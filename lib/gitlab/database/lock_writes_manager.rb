@@ -12,12 +12,16 @@ module Gitlab
 
       # table_name can include schema name as a prefix. For example: 'gitlab_partitions_static.events_03',
       # otherwise, it will default to current used schema, for example 'public'.
-      def initialize(table_name:, connection:, database_name:, with_retries: true, logger: nil, dry_run: false)
+      def initialize(
+        table_name:, connection:, database_name:,
+        with_retries: true, logger: nil, dry_run: false, force: true
+      )
         @table_name = table_name.to_s
         @connection = connection
         @database_name = database_name
         @logger = logger
         @dry_run = dry_run
+        @force = force
         @with_retries = with_retries
 
         @table_name_without_schema = ActiveRecord::ConnectionAdapters::PostgreSQL::Utils
@@ -36,6 +40,18 @@ module Gitlab
       end
 
       def lock_writes
+        unless force
+          unless table_exist?
+            logger&.info "Skipping lock_writes, because #{table_name} does not exist"
+            return result_hash(action: 'skipped')
+          end
+
+          if table_locked_for_writes?
+            logger&.info "Skipping lock_writes, because #{table_name} is already locked for writes"
+            return result_hash(action: 'skipped')
+          end
+        end
+
         logger&.info Rainbow("Database: '#{database_name}', Table: '#{table_name}': Lock Writes").yellow
         sql_statement = <<~SQL
           CREATE OR REPLACE TRIGGER #{write_trigger_name}
@@ -55,19 +71,31 @@ module Gitlab
       end
 
       def unlock_writes
-        logger&.info Rainbow("Database: '#{database_name}', Table: '#{table_name}': Allow Writes").green
-        sql_statement = <<~SQL
-          DROP TRIGGER IF EXISTS #{write_trigger_name} ON #{table_name};
-        SQL
+        if force || table_locked_for_writes?
+          logger&.info Rainbow("Database: '#{database_name}', Table: '#{table_name}': Allow Writes").green
+          sql_statement = <<~SQL
+            DROP TRIGGER IF EXISTS #{write_trigger_name} ON #{table_name};
+          SQL
 
-        result = process_query(sql_statement, 'unlock')
+          result = process_query(sql_statement, 'unlock')
 
-        result_hash(action: result)
+          result_hash(action: result)
+        else
+          logger&.info "Skipping unlock_writes, because #{table_name} is already unlocked for writes"
+          result_hash(action: 'skipped')
+        end
       end
 
       private
 
-      attr_reader :table_name, :connection, :database_name, :logger, :dry_run, :table_name_without_schema, :with_retries
+      attr_reader :table_name,
+        :connection,
+        :database_name,
+        :logger,
+        :dry_run,
+        :force,
+        :table_name_without_schema,
+        :with_retries
 
       def table_exist?
         where = if table_name.include?('.')

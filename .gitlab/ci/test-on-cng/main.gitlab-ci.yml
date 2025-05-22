@@ -25,6 +25,7 @@ workflow:
         --chart-sha "${GITLAB_HELM_CHART_REF}" \
         --admin-token "${GITLAB_QA_ADMIN_ACCESS_TOKEN}" \
         --retry 1 \
+        --resource-preset high \
         --ci \
         ${EXTRA_DEPLOY_VALUES}
     - export QA_GITLAB_URL="http://gitlab.${GITLAB_DOMAIN}"
@@ -66,6 +67,7 @@ workflow:
     - |
       bundle exec orchestrator create deployment "${DEPLOYMENT_TYPE}" \
         --chart-sha "${GITLAB_HELM_CHART_REF}" \
+        --resource-preset high \
         --ci \
         --print-deploy-args \
         $(cat $CI_PROJECT_DIR/EXTRA_DEPLOY_VALUES)

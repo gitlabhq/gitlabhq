@@ -17,13 +17,13 @@
 // stylelint-disable-next-line gitlab/no-gl-class
 :root.gl-dark .rd-text-view-root {
   // disable side borders when light theme is used in dark mode
-  --rd-disable-border-colors: var(--code-light-theme);
+  --rd-disable-extended-borders: var(--code-light-theme);
 }
 
 // stylelint-disable-next-line gitlab/no-gl-class
 :root:not(.gl-dark) .rd-text-view-root {
   // disable side borders when light theme is used in dark mode
-  --rd-disable-border-colors: var(--code-dark-theme);
+  --rd-disable-extended-borders: var(--code-dark-theme);
 }
 
 .rd-text-view-root,
@@ -51,8 +51,7 @@
 
 .rd-hunk-header {
   position: relative;
-  // overlap line numbers
-  z-index: 2;
+  z-index: constants.$diff-file-hunk-header-z-index;
   // this is used when a hunk header doesn't have any text, only expand buttons
   min-height: calc(1em * $code-line-height);
   background-color: var(--code-diff-hunk-header-background-color, $gray-50);
@@ -82,7 +81,7 @@
 }
 
 .rd-hunk-header-parallel,
-.rd-hunk-lines-parallel, {
+.rd-hunk-lines-parallel {
   grid-template-columns: 50px 1fr 50px 1fr;
 }
 
@@ -129,11 +128,30 @@
   padding: 0 10px 0 5px;
   text-align: right;
   background-color: var(--code-line-nubmer-background-color, $white);
+  scroll-margin-top: var(--rd-diff-file-header-height);
+  z-index: constants.$diff-file-line-number-z-index;
+}
+
+.rd-hunk-lines:has(.rd-line-number:target) {
+  --rd-disable-extended-borders: 1;
+  position: relative;
+  background-color: var(--code-highlighted-line-background-color);
+  border-radius: 0 0 var(--rd-row-bottom-right-radius) var(--rd-row-bottom-left-radius);
+  outline: 1px solid var(--code-highlighted-line-border-color);
+  z-index: constants.$diff-file-highlighted-line-number-z-index;
+}
+
+.rd-hunk-lines:has(.rd-line-number:target) .rd-line-number,
+.rd-hunk-lines:has(.rd-line-number:target) .rd-line-content {
+  // handle empty cells
+  --code-line-nubmer-background-color: var(--code-highlighted-line-background-color);
+  --rd-line-background-color: var(--code-highlighted-line-background-color);
 }
 
 // child combinator improves performance of the selector
+// duplicate .rd-hunk-lines-inline selector to override highlighted color
 .rd-hunk-lines-parallel:hover > .rd-line-number:not(:empty),
-.rd-hunk-lines-inline:hover > .rd-line-number {
+.rd-hunk-lines-inline.rd-hunk-lines-inline:hover > .rd-line-number {
   --rd-line-border-color: var(--code-line-nubmer-hover-border-color, #{$gl-color-purple-200});
   --rd-adjacent-line-border-color: var(--rd-line-border-color);
   --rd-line-background-color: var(--code-line-nubmer-hover-background-color, #{$gl-color-purple-100});
@@ -197,12 +215,12 @@
 }
 
 .rd-line-number:first-child {
-  box-shadow: var(--rd-disable-border-colors, -1px 0 var(--rd-line-border-color));
+  box-shadow: var(--rd-disable-extended-borders, -1px 0 var(--rd-line-border-color));
   border-bottom-left-radius: var(--rd-row-bottom-left-radius);
 }
 
 .rd-line-content:last-child {
-  box-shadow: var(--rd-disable-border-colors, 1px 0 var(--rd-line-border-color));
+  box-shadow: var(--rd-disable-extended-borders, 1px 0 var(--rd-line-border-color));
   border-bottom-right-radius: var(--rd-row-bottom-right-radius);
 }
 

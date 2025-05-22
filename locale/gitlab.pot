@@ -44114,7 +44114,13 @@ msgstr ""
 msgid "Pages|URL"
 msgstr ""
 
+msgid "Pages|Visit site"
+msgstr ""
+
 msgid "Pages|We did not find any projects with parallel Pages deployments in this namespace."
+msgstr ""
+
+msgid "Pages|Your Pages site is live at"
 msgstr ""
 
 msgid "Pagination|First"
@@ -53353,6 +53359,9 @@ msgstr ""
 msgid "ScanExecutionPolicy|%{rules} every time a pipeline runs for %{scopes} %{branches} %{branchExceptions} %{agents} %{namespaces}"
 msgstr ""
 
+msgid "ScanExecutionPolicy|%{rules} every time a pipeline runs for %{scopes} %{branches} %{sources} %{branchExceptions} %{agents} %{namespaces}"
+msgstr ""
+
 msgid "ScanExecutionPolicy|%{strategySelector} pipeline file to run from %{projectSelector}"
 msgstr ""
 
@@ -55001,6 +55010,9 @@ msgstr ""
 msgid "SecurityOrchestration|A scan execution policy exceeds the limit of %{maxScanExecutionPolicySchedules} scheduled rules per policy. Remove or consolidate rules across policies to reduce the total number of rules."
 msgstr ""
 
+msgid "SecurityOrchestration|API request"
+msgstr ""
+
 msgid "SecurityOrchestration|Actions"
 msgstr ""
 
@@ -55127,6 +55139,9 @@ msgstr ""
 msgid "SecurityOrchestration|Cannot create an empty policy"
 msgstr ""
 
+msgid "SecurityOrchestration|ChatOps command"
+msgstr ""
+
 msgid "SecurityOrchestration|Choose a project"
 msgstr ""
 
@@ -55143,6 +55158,9 @@ msgid "SecurityOrchestration|Choose specific role"
 msgstr ""
 
 msgid "SecurityOrchestration|Clear all"
+msgstr ""
+
+msgid "SecurityOrchestration|Code push"
 msgstr ""
 
 msgid "SecurityOrchestration|Compliance framework has no projects"
@@ -55295,6 +55313,12 @@ msgstr ""
 msgid "SecurityOrchestration|Excluded projects"
 msgstr ""
 
+msgid "SecurityOrchestration|External event"
+msgstr ""
+
+msgid "SecurityOrchestration|External pull request"
+msgstr ""
+
 msgid "SecurityOrchestration|Failed to fetch the scope information. Please refresh the page to try again."
 msgstr ""
 
@@ -55412,6 +55436,9 @@ msgstr ""
 msgid "SecurityOrchestration|Logic error"
 msgstr ""
 
+msgid "SecurityOrchestration|Manual pipeline run"
+msgstr ""
+
 msgid "SecurityOrchestration|Maximum action limit for scan execution policies will be enabled in 18.0"
 msgstr ""
 
@@ -55434,6 +55461,9 @@ msgid "SecurityOrchestration|Merge request approval policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Merge request approval policy syntax changes"
+msgstr ""
+
+msgid "SecurityOrchestration|Merge request pipeline"
 msgstr ""
 
 msgid "SecurityOrchestration|Never"
@@ -55666,6 +55696,9 @@ msgstr ""
 msgid "SecurityOrchestration|Schedule to run for %{branchSelector}"
 msgstr ""
 
+msgid "SecurityOrchestration|Scheduled pipeline"
+msgstr ""
+
 msgid "SecurityOrchestration|Scheduled pipeline execution"
 msgstr ""
 
@@ -55724,6 +55757,9 @@ msgid "SecurityOrchestration|Select security policy project"
 msgstr ""
 
 msgid "SecurityOrchestration|Select suffix"
+msgstr ""
+
+msgid "SecurityOrchestration|Select the source"
 msgstr ""
 
 msgid "SecurityOrchestration|Send a bot message when the conditions match."
@@ -55873,10 +55909,16 @@ msgstr ""
 msgid "SecurityOrchestration|To widen your search, change filters above or select a different security policy project."
 msgstr ""
 
+msgid "SecurityOrchestration|Trigger"
+msgstr ""
+
 msgid "SecurityOrchestration|Turn off default mode to edit scope."
 msgstr ""
 
 msgid "SecurityOrchestration|Type in custom variable"
+msgstr ""
+
+msgid "SecurityOrchestration|Unknown source"
 msgstr ""
 
 msgid "SecurityOrchestration|Unlink project"
@@ -55964,6 +56006,9 @@ msgid "SecurityOrchestration|Warn in merge request"
 msgstr ""
 
 msgid "SecurityOrchestration|Warn users with a bot comment and contact the following users as security consultants for support: %{approvers}"
+msgstr ""
+
+msgid "SecurityOrchestration|Web UI"
 msgstr ""
 
 msgid "SecurityOrchestration|What does an example message look like?"

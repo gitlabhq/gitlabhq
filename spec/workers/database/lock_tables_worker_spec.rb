@@ -93,7 +93,7 @@ RSpec.describe Database::LockTablesWorker, feature_category: :cell do
             end
 
             with_them do
-              it 'tries to lock the table anyways, and logs the failure' do
+              it 'returns as locked for the previously locked tables on the corresponding database' do
                 tables.each do |table_name|
                   lock_table(database_name, table_name)
                 end

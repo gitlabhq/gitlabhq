@@ -165,6 +165,9 @@ $dark-il: #de935f;
   --code-diff-expand-button-hover-background-color: #{$gl-color-neutral-300};
   --code-diff-expand-button-hover-color: #{$gl-color-neutral-0};
 
+  --code-highlighted-line-background-color: #{$gl-color-orange-800};
+  --code-highlighted-line-border-color: #{$gl-color-orange-500};
+
   // Highlight.js theme overrides (https://gitlab.com/gitlab-org/gitlab/-/issues/365167)
   // We should be able to remove the overrides once the upstream issue is fixed (https://github.com/sourcegraph/sourcegraph/issues/23251)
   @include hljs-override('title\\.class', $dark-nc);

@@ -3128,7 +3128,6 @@ RSpec/NamedSubject:
     - 'spec/services/user_agent_detail_service_spec.rb'
     - 'spec/services/users/activity_service_spec.rb'
     - 'spec/services/users/approve_service_spec.rb'
-    - 'spec/services/users/assigned_issues_count_service_spec.rb'
     - 'spec/services/users/keys_count_service_spec.rb'
     - 'spec/services/users/reject_service_spec.rb'
     - 'spec/services/vs_code/settings/create_or_update_service_spec.rb'

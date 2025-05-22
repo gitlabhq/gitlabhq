@@ -362,6 +362,9 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
 
 ## 17.11.0
 
+- To avoid a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/537325) that causes a database migration to run for a long time and use excessive CPU,
+  update to GitLab 17.11.3 or later.
+
 ### New encryption secrets
 
 In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9):

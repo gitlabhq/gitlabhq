@@ -97,5 +97,3 @@ dismiss_two_factor_auth_recovery_settings_check;:
   file: app/helpers/users/callouts_helper.rb
 all_visibility_levels_restricted?:
   file: app/helpers/visibility_level_helper.rb
-link_to_wiki_page:
-  file: app/helpers/wiki_helper.rb

@@ -30,17 +30,6 @@ describe('IssuablePresenter', () => {
       expect(link.text()).toEqual(expectedText);
     });
 
-    it('truncates long titles', () => {
-      const longTitle =
-        'A quick brown fox jumps over the lazy dog. A quick brown fox jumps over the lazy dog.';
-      createWrapper({ data: { ...mockData, title: longTitle } });
-
-      const link = findLink();
-
-      expect(link.text()).toContain('A quick brown fox jumps over the lazy dog. A qu...');
-      expect(link.attributes('title')).toBe(longTitle);
-    });
-
     it(`correctly renders the state if the ${type} is closed`, () => {
       createWrapper({ data: { ...mockData, state: 'closed' } });
 

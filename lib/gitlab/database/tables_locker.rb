@@ -114,7 +114,8 @@ module Gitlab
           database_name: database_name,
           with_retries: true,
           logger: @logger,
-          dry_run: @dry_run
+          dry_run: @dry_run,
+          force: !@dry_run
         )
       end
     end

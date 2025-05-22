@@ -6,6 +6,7 @@ module Users
 
     self.table_name = 'user_callouts'
 
+    # NOTE: to avoid false-positive dismissals, use new consecutive enum values for new callout IDs
     enum :feature_name, {
       gke_cluster_integration: 1,
       gcp_signup_offer: 2,

@@ -62,8 +62,8 @@ your workflow.
 
 The following table lists the GitLab tiers in which each feature is available.
 
-| Feature                                                                                  | In Free & Premium      | In Ultimate            |
-|:-----------------------------------------------------------------------------------------|:-----------------------|:-----------------------|
+| Feature                                                                                  | In Free & Premium                    | In Ultimate |
+|:-----------------------------------------------------------------------------------------|:-------------------------------------|:------------|
 | Basic scanning with [open-source analyzers](#supported-languages-and-frameworks)         | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
 | Downloadable [SAST JSON report](#download-a-sast-report)                                 | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
 | Cross-file, cross-function scanning with [GitLab Advanced SAST](gitlab_advanced_sast.md) | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
@@ -96,27 +96,27 @@ The available scanning options depend on the GitLab tier:
 
 For more information about our plans for language support in SAST, see the [category direction page](https://about.gitlab.com/direction/application_security_testing/static-analysis/sast/#language-support).
 
-| Language                                | Supported by [GitLab Advanced SAST](gitlab_advanced_sast.md) (Ultimate only)                        | Supported by another [analyzer](analyzers.md) (all tiers)                                                                                                     |
-|-----------------------------------------|-----------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Apex (Salesforce)                       | {{< icon name="dotted-circle" >}} No                                                                              | {{< icon name="check-circle" >}} Yes: [PMD-Apex](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex)                                                                                |
-| C                                       | {{< icon name="dotted-circle" >}} No; tracked in [epic 14271](https://gitlab.com/groups/gitlab-org/-/epics/14271) | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
-| C++                                     | {{< icon name="dotted-circle" >}} No; tracked in [epic 14271](https://gitlab.com/groups/gitlab-org/-/epics/14271) | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
-| C#                                      | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
-| Elixir (Phoenix)                        | {{< icon name="dotted-circle" >}} No                                                                              | {{< icon name="check-circle" >}} Yes: [Sobelow](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)                                                                                  |
-| Go                                      | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
-| Groovy                                  | {{< icon name="dotted-circle" >}} No                                                                              | {{< icon name="check-circle" >}} Yes: [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) with the find-sec-bugs plugin<sup><b><a href="#spotbugs-footnote">1</a></b></sup>                               |
-| Java                                    | {{< icon name="check-circle" >}} Yes, including Java Server Pages (JSP)                                           | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) (including Android) |
-| JavaScript, including Node.js and React | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
-| Kotlin                                  | {{< icon name="dotted-circle" >}} No; tracked in [epic 15173](https://gitlab.com/groups/gitlab-org/-/epics/15173) | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) (including Android) |
-| Objective-C (iOS)                       | {{< icon name="dotted-circle" >}} No                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
-| PHP                                     | {{< icon name="dotted-circle" >}} No; tracked in [epic 14273](https://gitlab.com/groups/gitlab-org/-/epics/14273) | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
-| Python                                  | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
-| Ruby, including Ruby on Rails           | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
-| Scala                                   | {{< icon name="dotted-circle" >}} No; tracked in [epic 15174](https://gitlab.com/groups/gitlab-org/-/epics/15174) | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
-| Swift (iOS)                             | {{< icon name="dotted-circle" >}} No                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
-| TypeScript                              | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
-| YAML<sup><b><a href="#yaml-footnote">2</a></b></sup>                        | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
-| Java Properties                         | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer)                     |
+| Language                                             | Supported by [GitLab Advanced SAST](gitlab_advanced_sast.md) (Ultimate only)                                      | Supported by another [analyzer](analyzers.md) (all tiers) |
+|------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------|
+| Apex (Salesforce)                                    | {{< icon name="dotted-circle" >}} No                                                                              | {{< icon name="check-circle" >}} Yes: [PMD-Apex](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex) |
+| C                                                    | {{< icon name="dotted-circle" >}} No; tracked in [epic 14271](https://gitlab.com/groups/gitlab-org/-/epics/14271) | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
+| C++                                                  | {{< icon name="dotted-circle" >}} No; tracked in [epic 14271](https://gitlab.com/groups/gitlab-org/-/epics/14271) | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
+| C#                                                   | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
+| Elixir (Phoenix)                                     | {{< icon name="dotted-circle" >}} No                                                                              | {{< icon name="check-circle" >}} Yes: [Sobelow](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow) |
+| Go                                                   | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
+| Groovy                                               | {{< icon name="dotted-circle" >}} No                                                                              | {{< icon name="check-circle" >}} Yes: [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) with the find-sec-bugs plugin<sup><b><a href="#spotbugs-footnote">1</a></b></sup> |
+| Java                                                 | {{< icon name="check-circle" >}} Yes, including Java Server Pages (JSP)                                           | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) (including Android) |
+| JavaScript, including Node.js and React              | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
+| Kotlin                                               | {{< icon name="dotted-circle" >}} No; tracked in [epic 15173](https://gitlab.com/groups/gitlab-org/-/epics/15173) | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) (including Android) |
+| Objective-C (iOS)                                    | {{< icon name="dotted-circle" >}} No                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
+| PHP                                                  | {{< icon name="dotted-circle" >}} No; tracked in [epic 14273](https://gitlab.com/groups/gitlab-org/-/epics/14273) | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
+| Python                                               | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
+| Ruby, including Ruby on Rails                        | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
+| Scala                                                | {{< icon name="dotted-circle" >}} No; tracked in [epic 15174](https://gitlab.com/groups/gitlab-org/-/epics/15174) | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
+| Swift (iOS)                                          | {{< icon name="dotted-circle" >}} No                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
+| TypeScript                                           | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
+| YAML<sup><b><a href="#yaml-footnote">2</a></b></sup> | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
+| Java Properties                                      | {{< icon name="check-circle" >}} Yes                                                                              | {{< icon name="check-circle" >}} Yes: [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](rules.md#semgrep-based-analyzer) |
 
 **Footnotes**:
 
@@ -656,11 +656,11 @@ The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variab
 
 The following are Docker image-related CI/CD variables.
 
-| CI/CD variable            | Description                                                                                                                           |
-|---------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| CI/CD variable            | Description |
+|---------------------------|-------------|
 | `SECURE_ANALYZERS_PREFIX` | Override the name of the Docker registry providing the default images (proxy). Read more about [customizing analyzers](analyzers.md). |
-| `SAST_EXCLUDED_ANALYZERS` | Names of default images that should never run. Read more about [customizing analyzers](analyzers.md).                                 |
-| `SAST_ANALYZER_IMAGE_TAG` | Override the default version of analyzer image. Read more about [pinning the analyzer image version](#pinning-to-minor-image-version).                                 |
+| `SAST_EXCLUDED_ANALYZERS` | Names of default images that should never run. Read more about [customizing analyzers](analyzers.md). |
+| `SAST_ANALYZER_IMAGE_TAG` | Override the default version of analyzer image. Read more about [pinning the analyzer image version](#pinning-to-minor-image-version). |
 | `SAST_IMAGE_SUFFIX`       | Suffix added to the image name. If set to `-fips`, `FIPS-enabled` images are used for scan. See [FIPS-enabled images](#fips-enabled-images) for more details. |
 
 #### Vulnerability filters
@@ -780,7 +780,7 @@ The following are Docker image-related CI/CD variables.
    patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns.
 
    The post-filter implementation of `SAST_EXCLUDED_PATHS` is available for all SAST analyzers. Some
-   SAST analyzers such as those with superscript **[2](#sast-excluded-paths-semgrep)** implement `SAST_EXCLUDED_PATHS`
+   SAST analyzers such as those with [superscript `2`](#sast-excluded-paths-semgrep) implement `SAST_EXCLUDED_PATHS`
    as both a pre-filter and post-filter. A pre-filter is more efficient because it reduces the number of files
    to be scanned.
 
@@ -812,28 +812,28 @@ The following are Docker image-related CI/CD variables.
 
 Some analyzers can be customized with CI/CD variables.
 
-| CI/CD variable              | Analyzer   | Description                                                                                                                                                                                                                        |
-|-----------------------------|------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `GITLAB_ADVANCED_SAST_ENABLED` | GitLab Advanced SAST | Set to `true` to enable [GitLab Advanced SAST](gitlab_advanced_sast.md) scanning (available in GitLab Ultimate only). Default: `false`. |
-| `SCAN_KUBERNETES_MANIFESTS` | Kubesec    | Set to `"true"` to scan Kubernetes manifests.                                                                                                                                                                                      |
-| `KUBESEC_HELM_CHARTS_PATH`  | Kubesec    | Optional path to Helm charts that `helm` uses to generate a Kubernetes manifest that `kubesec` scans. If dependencies are defined, `helm dependency build` should be ran in a `before_script` to fetch the necessary dependencies. |
-| `KUBESEC_HELM_OPTIONS`      | Kubesec    | Additional arguments for the `helm` executable.                                                                                                                                                                                    |
-| `COMPILE`                   | SpotBugs   | Set to `false` to disable project compilation and dependency fetching.                                                                                                                                                                                                        |
-| `ANT_HOME`                  | SpotBugs   | The `ANT_HOME` variable.                                                                                                                                                                                                        |
-| `ANT_PATH`                  | SpotBugs   | Path to the `ant` executable.                                                                                                                                                                                                     |
-| `GRADLE_PATH`               | SpotBugs   | Path to the `gradle` executable.                                                                                                                                                                                                   |
-| `JAVA_OPTS`                 | SpotBugs   | Additional arguments for the `java` executable.                                                                                                                                                                                    |
-| `JAVA_PATH`                 | SpotBugs   | Path to the `java` executable.                                                                                                                                                                                                     |
-| `SAST_JAVA_VERSION`         | SpotBugs   | Which Java version to use. [Starting in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/352549), supported versions are `11` and `17` (default). Before GitLab 15.0, supported versions are `8` (default) and `11`.     |
-| `MAVEN_CLI_OPTS`            | SpotBugs   | Additional arguments for the `mvn` or `mvnw` executable.                                                                                                                                                                           |
-| `MAVEN_PATH`                | SpotBugs   | Path to the `mvn` executable.                                                                                                                                                                                                      |
-| `MAVEN_REPO_PATH`           | SpotBugs   | Path to the Maven local repository (shortcut for the `maven.repo.local` property).                                                                                                                                                 |
-| `SBT_PATH`                  | SpotBugs   | Path to the `sbt` executable.                                                                                                                                                                                                      |
-| `FAIL_NEVER`                | SpotBugs   | Set to `1` to ignore compilation failure.                                                                                                                                                                                          |
-| `SAST_SEMGREP_METRICS` | Semgrep | Set to `"false"` to disable sending anonymized scan metrics to [r2c](https://semgrep.dev). Default: `true`. |
-| `SAST_SCANNER_ALLOWED_CLI_OPTS`        | Semgrep | CLI options (arguments with value, or flags) that are passed to the underlying security scanner when running scan operation. Only a limited set of [options](#security-scanner-configuration) are accepted. Separate a CLI option and its value using either a blank space or equals (`=`) character. For example: `name1 value1` or `name1=value1`. Multiple options must be separated by blank spaces. For example: `name1 value1 name2 value2`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368565) in GitLab 15.3. |
-| `SAST_RULESET_GIT_REFERENCE` | All     | Defines a path to a custom ruleset configuration. If a project has a `.gitlab/sast-ruleset.toml` file committed, that local configuration takes precedence and the file from `SAST_RULESET_GIT_REFERENCE` isn't used. This variable is available for the Ultimate tier only.|
-| `SECURE_ENABLE_LOCAL_CONFIGURATION` | All     | Enables the option to use custom ruleset configuration. If `SECURE_ENABLE_LOCAL_CONFIGURATION` is set to `false`, the project's custom ruleset configuration file at `.gitlab/sast-ruleset.toml` is ignored and the file from `SAST_RULESET_GIT_REFERENCE` or the default configuration takes precedence. |
+| CI/CD variable                      | Analyzer             | Description |
+|-------------------------------------|----------------------|-------------|
+| `GITLAB_ADVANCED_SAST_ENABLED`      | GitLab Advanced SAST | Set to `true` to enable [GitLab Advanced SAST](gitlab_advanced_sast.md) scanning (available in GitLab Ultimate only). Default: `false`. |
+| `SCAN_KUBERNETES_MANIFESTS`         | Kubesec              | Set to `"true"` to scan Kubernetes manifests. |
+| `KUBESEC_HELM_CHARTS_PATH`          | Kubesec              | Optional path to Helm charts that `helm` uses to generate a Kubernetes manifest that `kubesec` scans. If dependencies are defined, `helm dependency build` should be ran in a `before_script` to fetch the necessary dependencies. |
+| `KUBESEC_HELM_OPTIONS`              | Kubesec              | Additional arguments for the `helm` executable. |
+| `COMPILE`                           | SpotBugs             | Set to `false` to disable project compilation and dependency fetching. |
+| `ANT_HOME`                          | SpotBugs             | The `ANT_HOME` variable. |
+| `ANT_PATH`                          | SpotBugs             | Path to the `ant` executable. |
+| `GRADLE_PATH`                       | SpotBugs             | Path to the `gradle` executable. |
+| `JAVA_OPTS`                         | SpotBugs             | Additional arguments for the `java` executable. |
+| `JAVA_PATH`                         | SpotBugs             | Path to the `java` executable. |
+| `SAST_JAVA_VERSION`                 | SpotBugs             | Which Java version to use. [Starting in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/352549), supported versions are `11` and `17` (default). Before GitLab 15.0, supported versions are `8` (default) and `11`. |
+| `MAVEN_CLI_OPTS`                    | SpotBugs             | Additional arguments for the `mvn` or `mvnw` executable. |
+| `MAVEN_PATH`                        | SpotBugs             | Path to the `mvn` executable. |
+| `MAVEN_REPO_PATH`                   | SpotBugs             | Path to the Maven local repository (shortcut for the `maven.repo.local` property). |
+| `SBT_PATH`                          | SpotBugs             | Path to the `sbt` executable. |
+| `FAIL_NEVER`                        | SpotBugs             | Set to `1` to ignore compilation failure. |
+| `SAST_SEMGREP_METRICS`              | Semgrep              | Set to `"false"` to disable sending anonymized scan metrics to [r2c](https://semgrep.dev). Default: `true`. |
+| `SAST_SCANNER_ALLOWED_CLI_OPTS`     | Semgrep              | CLI options (arguments with value, or flags) that are passed to the underlying security scanner when running scan operation. Only a limited set of [options](#security-scanner-configuration) are accepted. Separate a CLI option and its value using either a blank space or equals (`=`) character. For example: `name1 value1` or `name1=value1`. Multiple options must be separated by blank spaces. For example: `name1 value1 name2 value2`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368565) in GitLab 15.3. |
+| `SAST_RULESET_GIT_REFERENCE`        | All                  | Defines a path to a custom ruleset configuration. If a project has a `.gitlab/sast-ruleset.toml` file committed, that local configuration takes precedence and the file from `SAST_RULESET_GIT_REFERENCE` isn't used. This variable is available for the Ultimate tier only. |
+| `SECURE_ENABLE_LOCAL_CONFIGURATION` | All                  | Enables the option to use custom ruleset configuration. If `SECURE_ENABLE_LOCAL_CONFIGURATION` is set to `false`, the project's custom ruleset configuration file at `.gitlab/sast-ruleset.toml` is ignored and the file from `SAST_RULESET_GIT_REFERENCE` or the default configuration takes precedence. |
 
 #### Security scanner configuration
 
@@ -1021,13 +1021,13 @@ For details on saving and transporting Docker images as a file, see the Docker d
 
 Support for custom certificate authorities was introduced in the following versions.
 
-| Analyzer               | Version                                                                                                    |
-| --------               | -------                                                                                                    |
-| `kubesec`              | [v2.1.0](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec/-/releases/v2.1.0)              |
-| `pmd-apex`             | [v2.1.0](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex/-/releases/v2.1.0)             |
-| `semgrep`              | [v0.0.1](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/releases/v0.0.1)              |
-| `sobelow`              | [v2.2.0](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow/-/releases/v2.2.0)              |
-| `spotbugs`             | [v2.7.1](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs/-/releases/v2.7.1)             |
+| Analyzer   | Version |
+|------------|---------|
+| `kubesec`  | [v2.1.0](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec/-/releases/v2.1.0) |
+| `pmd-apex` | [v2.1.0](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex/-/releases/v2.1.0) |
+| `semgrep`  | [v0.0.1](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/releases/v0.0.1) |
+| `sobelow`  | [v2.2.0](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow/-/releases/v2.2.0) |
+| `spotbugs` | [v2.7.1](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs/-/releases/v2.7.1) |
 
 ### Set SAST CI/CD variables to use local SAST analyzers
 

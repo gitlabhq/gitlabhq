@@ -151,20 +151,6 @@ module MergeRequestsHelper
     end
   end
 
-  def user_merge_requests_counts
-    @user_merge_requests_counts ||= begin
-      assigned_count = assigned_issuables_count(:merge_requests)
-      review_requested_count = review_requested_merge_requests_count
-      total_count = assigned_count + review_requested_count
-
-      {
-        assigned: assigned_count,
-        review_requested: review_requested_count,
-        total: total_count
-      }
-    end
-  end
-
   def reviewers_label(merge_request, include_value: true)
     reviewers = merge_request.reviewers
 
@@ -359,10 +345,6 @@ module MergeRequestsHelper
   end
 
   private
-
-  def review_requested_merge_requests_count
-    current_user.review_requested_open_merge_requests_count
-  end
 
   def default_suggestion_commit_message(project)
     project.suggestion_commit_message.presence || Gitlab::Suggestions::CommitMessage::DEFAULT_SUGGESTION_COMMIT_MESSAGE

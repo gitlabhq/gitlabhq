@@ -120,29 +120,6 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
     end
   end
 
-  describe '#user_merge_requests_counts' do
-    let(:user) do
-      double(
-        assigned_open_merge_requests_count: 1,
-        review_requested_open_merge_requests_count: 2
-      )
-    end
-
-    subject { helper.user_merge_requests_counts }
-
-    before do
-      allow(helper).to receive(:current_user).and_return(user)
-    end
-
-    it "returns assigned, review requested and total merge request counts" do
-      expect(subject).to eq(
-        assigned: user.assigned_open_merge_requests_count,
-        review_requested: user.review_requested_open_merge_requests_count,
-        total: user.assigned_open_merge_requests_count + user.review_requested_open_merge_requests_count
-      )
-    end
-  end
-
   describe '#reviewers_label' do
     let(:merge_request) { build_stubbed(:merge_request) }
     let(:reviewer1) { build_stubbed(:user, name: 'Jane Doe') }
