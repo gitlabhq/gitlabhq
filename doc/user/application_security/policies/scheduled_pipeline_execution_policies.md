@@ -239,7 +239,7 @@ If your scheduled pipelines are not running as expected, follow these troublesho
    - Ensure the configuration includes appropriate workflow rules for scheduled pipelines.
 1. **Verify policy configuration**:
    - Ensure the policy is enabled (`enabled: true`).
-   - Verify taht the schedule configuration has the correct format and valid values.
+   - Verify that the schedule configuration has the correct format and valid values.
    - Verify that the time zone setting is correct (if specified).
 1. **Review logs and activity**:
    - Check the security policy project's CI/CD pipeline logs for any errors.

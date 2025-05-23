@@ -201,6 +201,27 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
     include_examples 'runner with status scope'
   end
 
+  describe '.ip_address_exists?' do
+    let(:existing_ip_address) { '127.0.0.1' }
+    let(:ip_address_to_find) { existing_ip_address }
+
+    subject { described_class.ip_address_exists?(ip_address_to_find) }
+
+    before do
+      create(:ci_runner_machine, ip_address: existing_ip_address)
+    end
+
+    context 'when the ip address exists' do
+      it { is_expected.to be(true) }
+    end
+
+    context 'when the ip address does not exist' do
+      let(:ip_address_to_find) { '10.0.0.1' }
+
+      it { is_expected.to be(false) }
+    end
+  end
+
   describe '.available_statuses' do
     subject { described_class.available_statuses }
 

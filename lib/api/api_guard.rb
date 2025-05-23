@@ -20,6 +20,7 @@ module API
 
       use AdminModeMiddleware
       use ResponseCoercerMiddleware
+      use TrackAPIRequestFromRunnerMiddleware
 
       helpers HelperMethods
 
@@ -274,6 +275,63 @@ module API
 
         # Explicit nil is needed or the api call return value will be overwritten
         nil
+      end
+    end
+
+    class TrackAPIRequestFromRunnerMiddleware < ::Grape::Middleware::Base
+      delegate :request, :endpoint_id, :current_user, :current_token, to: :context
+
+      def after
+        return unless success? && current_project && current_token
+        return unless Feature.enabled?(:track_api_request_from_runner, current_project)
+        return unless request_from_runner?
+
+        ::Gitlab::InternalEvents.track_event(
+          'api_request_from_runner',
+          project: current_project,
+          additional_properties: {
+            label: endpoint_id,
+            property: token_type,
+            cross_project_request: cross_project_request?.to_s
+          }
+        )
+
+        # Explicit nil is needed or the api call return value will be overwritten
+        nil
+      end
+
+      private
+
+      def current_project
+        project = context.instance_variable_get(:@project)
+        return unless project.is_a?(Project)
+
+        project
+      end
+
+      def success?
+        return unless @app_response
+
+        (200..299).cover?(@app_response[0])
+      end
+
+      def request_from_runner?
+        return unless request
+
+        ::Ci::RunnerManager.ip_address_exists?(request.ip)
+      end
+
+      def token_type
+        return unless current_token
+
+        ::Authn::AgnosticTokenIdentifier.name(current_token.to_s)
+      end
+
+      def cross_project_request?
+        return unless current_project
+        return unless current_user&.from_ci_job_token?
+
+        !current_user.ci_job_token_scope.self_referential?(current_project)
       end
     end
   end

@@ -1,0 +1,10 @@
+---
+name: track_api_request_from_runner
+description: Track API requests from runners
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/525339
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189430
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/538150
+milestone: '18.1'
+group: group::authorization
+type: gitlab_com_derisk
+default_enabled: false

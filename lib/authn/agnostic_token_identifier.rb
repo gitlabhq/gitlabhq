@@ -29,5 +29,13 @@ module Authn
     def self.token_type(plaintext)
       TOKEN_TYPES.find { |x| x.prefix?(plaintext) }
     end
+
+    def self.name(plaintext)
+      type = token_type(plaintext)
+      type = type.new(plaintext, nil).resource_name if type == ::Authn::Tokens::PersonalAccessToken
+      return unless type
+
+      type.to_s.demodulize.underscore
+    end
   end
 end

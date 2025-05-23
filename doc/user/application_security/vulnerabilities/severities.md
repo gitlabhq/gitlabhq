@@ -62,7 +62,7 @@ can be one of the following:
 | [CVSS v3.1 Qualitative Severity Rating](https://www.first.org/cvss/v3.1/specification-document#Qualitative-Severity-Rating-Scale) | `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H` |
 
 To provide consistent vulnerability severity level values, the GitLab vulnerability analyzers
-convert from the above values to a standardized GitLab vulnerability severity level, as outlined in
+convert from the previous values to a standardized GitLab vulnerability severity level, as outlined in
 the following tables:
 
 ## Container Scanning

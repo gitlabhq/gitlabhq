@@ -443,7 +443,6 @@ RSpec.shared_examples 'work items lock discussion' do
   it 'locks and unlocks discussion', :aggregate_failures do
     click_button _('More actions'), match: :first
     click_button 'Lock discussion'
-    click_button _('More actions'), match: :first # click again to close the dropdown
 
     expect(page).to have_text "Discussion is locked. Only members can comment."
 

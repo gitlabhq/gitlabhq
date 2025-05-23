@@ -579,7 +579,7 @@ For details on saving and transporting Docker images as a file, see the Docker d
    ```
 
 1. If your local Docker container registry is running securely over `HTTPS`, but you're using a
-   self-signed certificate, then you must set `CS_DOCKER_INSECURE: "true"` in the above
+   self-signed certificate, then you must set `CS_DOCKER_INSECURE: "true"` in the
    `container_scanning` section of your `.gitlab-ci.yml`.
 
 #### Automating container scanning vulnerability database updates with a pipeline
@@ -606,7 +606,7 @@ update-scanner-image:
     - docker push $TARGET_IMAGE
 ```
 
-The above template works for a GitLab Docker registry running on a local installation. However, if
+The previous template works for a GitLab Docker registry running on a local installation. However, if
 you're using a non-GitLab Docker registry, you must change the `$CI_REGISTRY` value and the
 `docker login` credentials to match your local registry's details.
 
@@ -663,7 +663,7 @@ mirror trivy java db:
 The vulnerability database is not a regular Docker image, so it is not possible to pull it by using `docker pull`.
 The image shows an error if you go to it in the GitLab UI.
 
-If the above container registry is `gitlab.example.com/trivy-java-db-mirror`, then the container scanning job should be configured in the following way. Do not add the tag `:1` at the end, it is added by `trivy`:
+If the container registry is `gitlab.example.com/trivy-java-db-mirror`, then the container scanning job should be configured in the following way. Do not add the tag `:1` at the end, it is added by `trivy`:
 
 ```yaml
 include:

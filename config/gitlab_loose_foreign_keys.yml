@@ -513,6 +513,10 @@ p_ci_workloads:
   - table: projects
     column: project_id
     on_delete: async_delete
+p_knowledge_graph_replicas:
+  - table: p_knowledge_graph_enabled_namespaces
+    column: knowledge_graph_enabled_namespace_id
+    on_delete: async_nullify
 packages_build_infos:
   - table: p_ci_pipelines
     column: pipeline_id

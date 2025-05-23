@@ -499,6 +499,7 @@ export default {
         })
         .finally(() => {
           this.isLockDiscussionUpdating = false;
+          this.closeDropdown();
         });
     },
     async promoteToObjective() {
@@ -658,7 +659,7 @@ export default {
       >
         <template #list-item>
           <gl-loading-icon v-if="isLockDiscussionUpdating" class="gl-mr-2" inline />
-          <gl-icon :name="lockDiscussionIcon" class="gl-mr-2" variant="subtle" />
+          <gl-icon v-else :name="lockDiscussionIcon" class="gl-mr-2" variant="subtle" />
           {{ lockDiscussionText }}
         </template>
       </gl-disclosure-dropdown-item>

@@ -58,7 +58,7 @@ is an internal user that cannot be accessed or modified by regular users and is 
   projects.
 - [Automatically deactivating dormant users](moderate_users.md#automatically-deactivate-dormant-users).
 - [Automatically deleting unconfirmed users](moderate_users.md#automatically-delete-unconfirmed-users).
-- [Deleting inactive projects](inactive_project_deletion.md).
+- [Deleting dormant projects](dormant_project_deletion.md).
 - [Locking users](../security/unlock_user.md).
 
 ## GitLab Security Bot

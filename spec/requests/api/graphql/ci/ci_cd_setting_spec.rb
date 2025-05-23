@@ -44,15 +44,17 @@ RSpec.describe 'Getting Ci Cd Setting', feature_category: :continuous_integratio
     it_behaves_like 'a working graphql query'
 
     it 'fetches the settings data' do
-      expect(settings_data['mergePipelinesEnabled']).to eql project.ci_cd_settings.merge_pipelines_enabled?
-      expect(settings_data['keepLatestArtifact']).to eql project.keep_latest_artifacts_available?
-      expect(settings_data['jobTokenScopeEnabled']).to eql project.ci_cd_settings.job_token_scope_enabled?
+      expect(settings_data['groupRunnersEnabled']).to eql(
+        project.ci_cd_settings.group_runners_enabled?)
       expect(settings_data['inboundJobTokenScopeEnabled']).to eql(
         project.ci_cd_settings.inbound_job_token_scope_enabled?)
-      expect(settings_data['pushRepositoryForJobTokenAllowed']).to eql(
-        project.ci_cd_settings.push_repository_for_job_token_allowed?)
+      expect(settings_data['jobTokenScopeEnabled']).to eql project.ci_cd_settings.job_token_scope_enabled?
+      expect(settings_data['keepLatestArtifact']).to eql project.keep_latest_artifacts_available?
+      expect(settings_data['mergePipelinesEnabled']).to eql project.ci_cd_settings.merge_pipelines_enabled?
       expect(settings_data['pipelineVariablesMinimumOverrideRole']).to eql(
         project.ci_pipeline_variables_minimum_override_role)
+      expect(settings_data['pushRepositoryForJobTokenAllowed']).to eql(
+        project.ci_cd_settings.push_repository_for_job_token_allowed?)
 
       if Gitlab.ee?
         expect(settings_data['mergeTrainsEnabled']).to eql project.ci_cd_settings.merge_trains_enabled?

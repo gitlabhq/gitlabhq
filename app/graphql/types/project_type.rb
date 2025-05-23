@@ -409,6 +409,7 @@ module Types
 
     field :pipelines,
       null: true,
+      calls_gitaly: true,
       description: 'Pipelines of the project.',
       extras: [:lookahead],
       resolver: Resolvers::Ci::ProjectPipelinesResolver

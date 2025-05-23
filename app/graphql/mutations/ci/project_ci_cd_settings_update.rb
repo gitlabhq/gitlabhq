@@ -14,9 +14,13 @@ module Mutations
         required: true,
         description: 'Full Path of the project the settings belong to.'
 
+      argument :group_runners_enabled, GraphQL::Types::Boolean,
+        required: false,
+        description: 'Indicates whether group runners are enabled for the project.'
+
       argument :keep_latest_artifact, GraphQL::Types::Boolean,
         required: false,
-        description: 'Indicates if the latest artifact should be kept for the project.'
+        description: 'Indicates whether the latest artifact should be kept for the project.'
 
       argument :job_token_scope_enabled, GraphQL::Types::Boolean,
         required: false,
@@ -24,12 +28,12 @@ module Mutations
           reason: 'Outbound job token scope is being removed. This field can now only be set to false',
           milestone: '16.0'
         },
-        description: 'Indicates CI/CD job tokens generated in this project ' \
+        description: 'Indicates whether CI/CD job tokens generated in this project ' \
           'have restricted access to other projects.'
 
       argument :inbound_job_token_scope_enabled, GraphQL::Types::Boolean,
         required: false,
-        description: 'Indicates CI/CD job tokens generated in other projects ' \
+        description: 'Indicates whether CI/CD job tokens generated in other projects ' \
           'have restricted access to this project.'
 
       argument :push_repository_for_job_token_allowed, GraphQL::Types::Boolean,
@@ -79,6 +83,7 @@ module Mutations
 
       def project_update_params(_project, **args)
         {
+          group_runners_enabled: args[:group_runners_enabled],
           keep_latest_artifact: args[:keep_latest_artifact],
           ci_outbound_job_token_scope_enabled: args[:job_token_scope_enabled],
           ci_inbound_job_token_scope_enabled: args[:inbound_job_token_scope_enabled],

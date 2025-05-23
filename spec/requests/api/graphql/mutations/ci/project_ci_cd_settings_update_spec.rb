@@ -11,6 +11,7 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
 
   let_it_be_with_reload(:project) do
     create(:project,
+      group_runners_enabled: true,
       keep_latest_artifact: true,
       ci_outbound_job_token_scope_enabled: true,
       ci_inbound_job_token_scope_enabled: true
@@ -20,6 +21,7 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
   let(:variables) do
     {
       full_path: project.full_path,
+      group_runners_enabled: false,
       keep_latest_artifact: false,
       job_token_scope_enabled: false,
       inbound_job_token_scope_enabled: false,
@@ -64,6 +66,7 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
 
       expect(response).to have_gitlab_http_status(:success)
       expect(response_errors).to be_blank
+      expect(project.group_runners_enabled).to be(false)
       expect(project.keep_latest_artifact).to be(false)
       expect(project.restrict_user_defined_variables?).to be(true)
       expect(project.ci_pipeline_variables_minimum_override_role).to eq('no_one_allowed')

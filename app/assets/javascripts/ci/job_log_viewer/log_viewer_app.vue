@@ -73,7 +73,7 @@ export default {
 };
 </script>
 <template>
-  <div class="build-page gl-m-3">
+  <div class="build-page">
     <log-viewer-top-bar :has-timestamps="hasTimestamps" />
     <log-viewer :log="log" :loading="loading" />
   </div>

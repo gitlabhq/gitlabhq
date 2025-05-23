@@ -140,7 +140,6 @@ Read more about [Gems development guidelines](gems.md).
 
 When upgrading the Rails gem and its dependencies, you also should update the following:
 
-- The [`activerecord_version` in the vendored `attr_encrypted` gemspec](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/gems/attr_encrypted/attr_encrypted.gemspec).
 - The [`Gemfile` in the `qa` directory](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/Gemfile).
 
 You should also update npm packages that follow the current version of Rails:

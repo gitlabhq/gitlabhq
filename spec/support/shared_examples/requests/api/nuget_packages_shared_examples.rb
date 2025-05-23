@@ -233,12 +233,13 @@ RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member =
 
     context 'when nuspec extraction fails with a different error', unless: symbol_package do
       include_context 'with nuspec extraction service stub' do
-        let(:service_result) { ServiceResponse.error(message: 'error', reason: :bad_request) }
+        let(:service_result) { ServiceResponse.error(message: 'Custom error message', reason: :bad_request) }
       end
 
       it 'returns a bad request' do
         expect { subject }.not_to change { target.packages.count }
         expect(response).to have_gitlab_http_status(:bad_request)
+        expect(response.headers.to_h).to include 'X-NuGet-Warning' => 'GitLab: Custom error message'
       end
     end
 
@@ -319,6 +320,12 @@ RSpec.shared_examples 'process nuget upload' do |user_type, status, add_member =
             end
 
             it_behaves_like 'returning response status', :forbidden
+
+            it 'include NuGet-specifc response header' do
+              subject
+
+              expect(response.headers.to_h).to include 'X-NuGet-Warning' => 'GitLab: 403 Forbidden'
+            end
           end
         end
 
@@ -855,6 +862,13 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
 
     it_behaves_like 'returning response status', :conflict
 
+    it 'include NuGet-specifc response header' do
+      subject
+
+      expect(response.headers.to_h)
+        .to include('X-NuGet-Warning' => 'GitLab: A package with the same name and version already exists')
+    end
+
     context 'when exception_regex is set' do
       before do
         package_settings.update_column(:nuget_duplicate_exception_regex, ".*#{existing_package.name.last(3)}.*")
@@ -898,6 +912,7 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
         subject
 
         expect(json_response).to include 'message' => '403 Forbidden - Package protected.'
+        expect(response.headers.to_h).to include 'X-NuGet-Warning' => 'GitLab: 403 Forbidden - Package protected.'
       end
 
       context 'when feature flag :packages_protected_packages_nuget is disabled' do

@@ -420,9 +420,9 @@ Projects are permanently deleted after a seven-day delay.
 
 See how to [view and restore projects marked for deletion](../project/working_with_projects.md#restore-a-project).
 
-### Inactive project deletion
+### Dormant project deletion
 
-[Inactive project deletion](../../administration/inactive_project_deletion.md) is disabled on GitLab.com.
+[Dormant project deletion](../../administration/dormant_project_deletion.md) is disabled on GitLab.com.
 
 ## Package registry limits
 

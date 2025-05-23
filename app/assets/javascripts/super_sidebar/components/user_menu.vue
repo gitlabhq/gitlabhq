@@ -244,7 +244,8 @@ export default {
     onShow() {
       this.initBuyCIMinsCallout();
     },
-    closeDropdown() {
+    openStatusModal() {
+      this.setStatusModalReady = true;
       this.$refs.userDropdown.close();
     },
     initBuyCIMinsCallout() {
@@ -314,11 +315,11 @@ export default {
 
       <gl-disclosure-dropdown-group bordered>
         <gl-disclosure-dropdown-item
-          v-if="setStatusModalReady && statusModalData"
+          v-if="statusModalData"
           v-gl-modal="$options.SET_STATUS_MODAL_ID"
           :item="statusItem"
           data-testid="status-item"
-          @action="closeDropdown"
+          @action="openStatusModal"
         />
 
         <gl-disclosure-dropdown-item
@@ -383,10 +384,9 @@ export default {
       />
     </gl-disclosure-dropdown>
     <set-status-modal
-      v-if="statusModalData"
+      v-if="setStatusModalReady"
       default-emoji="speech_balloon"
       v-bind="statusModalData"
-      @mounted="setStatusModalReady = true"
     />
   </div>
 </template>

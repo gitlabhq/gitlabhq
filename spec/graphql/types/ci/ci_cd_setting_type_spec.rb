@@ -7,7 +7,7 @@ RSpec.describe Types::Ci::CiCdSettingType, feature_category: :continuous_integra
 
   it 'exposes the expected fields' do
     expected_fields = %w[
-      inbound_job_token_scope_enabled job_token_scope_enabled
+      group_runners_enabled inbound_job_token_scope_enabled job_token_scope_enabled
       keep_latest_artifact merge_pipelines_enabled project
       push_repository_for_job_token_allowed
       pipeline_variables_minimum_override_role

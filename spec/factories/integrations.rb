@@ -530,6 +530,6 @@ FactoryBot.define do
   trait :instance do
     project { nil }
     instance { true }
-    organization { association(:organization, :default) }
+    organization { association(:organization) }
   end
 end

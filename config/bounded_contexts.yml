@@ -32,6 +32,7 @@ domains:
       - code_suggestions # Also in CodeSuggestions
       - cloud_connector # Also in CloudConnector
       - duo_workflow
+      - knowledge_graph
 
   Analytics:
     description:

@@ -80,19 +80,22 @@ a minimum implementation of `AbstractReferenceFilter` should define:
 
 ### Add a new reference prefix and filter
 
-For reference filters for new objects, use a prefix format following the pattern
-`^<object_type>#`, because:
+For reference filters for new objects, use a format following the pattern
+`[object_type:identifier]`, because:
 
 1. Varied single-character prefixes are hard for users to track. Especially for
    lower-use object types, this can diminish value for the feature.
-1. Suitable single-character prefixes are limited.
+1. Suitable single-character prefixes are limited and no longer allowed for new references.
 1. Following a consistent pattern allows users to infer the existence of new features.
 
-To add a reference prefix for a new object `apple`,which has both a name and ID,
+The [Extensible reference filters](https://gitlab.com/groups/gitlab-org/-/epics/7563)
+epic discusses the use of this format.
+
+To add a reference prefix for a new object `apple`, which has both a name and ID,
 format the reference as:
 
-- `^apple#123` for identification by ID.
-- `^apple#"Granny Smith"` for identification by name.
+- `[apple:123]` for identification by ID.
+- `[apple:"Granny Smith"]` for identification by name.
 
 ### Performance
 

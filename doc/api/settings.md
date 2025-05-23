@@ -796,16 +796,16 @@ to configure other related settings. These requirements are
 | `secret_push_protection_available` | boolean         | no | Allow projects to enable secret push protection. This does not enable secret push protection. Ultimate only. |
 | `disable_invite_members` | boolean         | no | Disable invite members functionality for group. |
 
-### Inactive project settings
+### Dormant project settings
 
-You can configure inactive projects deletion or turn it off.
+You can configure dormant projects deletion or turn it off.
 
 | Attribute                                | Type             | Required                             | Description |
 |------------------------------------------|------------------|:------------------------------------:|-------------|
-| `delete_inactive_projects`               | boolean          | no                                   | Enable [inactive project deletion](../administration/inactive_project_deletion.md). Default is `false`. [Became operational without feature flag](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96803) in GitLab 15.4. |
-| `inactive_projects_delete_after_months`  | integer          | no                                   | If `delete_inactive_projects` is `true`, the time (in months) to wait before deleting inactive projects. Default is `2`. [Became operational](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0. |
+| `delete_inactive_projects`               | boolean          | no                                   | Enable [dormant project deletion](../administration/dormant_project_deletion.md). Default is `false`. [Became operational without feature flag](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96803) in GitLab 15.4. |
+| `inactive_projects_delete_after_months`  | integer          | no                                   | If `delete_inactive_projects` is `true`, the time (in months) to wait before deleting dormant projects. Default is `2`. [Became operational](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0. |
 | `inactive_projects_min_size_mb`          | integer          | no                                   | If `delete_inactive_projects` is `true`, the minimum repository size for projects to be checked for inactivity. Default is `0`. [Became operational](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0. |
-| `inactive_projects_send_warning_email_after_months` | integer | no                                 | If `delete_inactive_projects` is `true`, sets the time (in months) to wait before emailing maintainers that the project is scheduled be deleted because it is inactive. Default is `1`. [Became operational](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0. |
+| `inactive_projects_send_warning_email_after_months` | integer | no                                 | If `delete_inactive_projects` is `true`, sets the time (in months) to wait before emailing Maintainers that the project is scheduled be deleted because it is dormant. Default is `1`. [Became operational](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0. |
 
 ### Housekeeping settings
 

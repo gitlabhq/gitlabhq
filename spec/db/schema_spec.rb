@@ -253,7 +253,9 @@ RSpec.describe 'Database schema',
       subscription_user_add_on_assignment_versions: %w[item_id user_id purchase_id], # Managed by paper_trail gem, no need for FK on the historical data
       virtual_registries_packages_maven_cache_entries: %w[group_id], # We can't use a foreign key due to object storage references
       # system_defined_status_id reference to fixed items model which is stored in code
-      work_item_current_statuses: %w[system_defined_status_id]
+      work_item_current_statuses: %w[system_defined_status_id],
+      # we can't use a foreign key reference because we want to preserve namespace_id  for asynchronous deletion
+      p_knowledge_graph_replicas: %w[namespace_id]
     }.with_indifferent_access.freeze
   end
 

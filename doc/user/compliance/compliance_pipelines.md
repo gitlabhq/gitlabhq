@@ -206,7 +206,7 @@ You can leave it out if your compliance pipeline only ever runs in labeled proje
 
 #### Compliance pipelines and custom pipeline configuration hosted externally
 
-The example above assumes that all projects host their pipeline configuration in the same project.
+The previous example assumes that all projects host their pipeline configuration in the same project.
 If any projects use [configuration hosted externally](../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file),
 the example configuration does not work. See [issue 393960](https://gitlab.com/gitlab-org/gitlab/-/issues/393960)
 for more details.
@@ -242,7 +242,7 @@ With projects that use externally hosted configuration, you can try the this wor
 #### Compliance pipelines in merge requests originating in project forks
 
 When a merge request originates in a fork, the branch to be merged usually only exists in the fork.
-When creating such a merge request against a project with compliance pipelines, the above snippet fails with a
+When creating such a merge request against a project with compliance pipelines, the previous snippet fails with a
 `Project <project-name> reference <branch-name> does not exist!` error message.
 This error occurs because in the context of the target project, `$CI_COMMIT_REF_NAME` evaluates to a non-existing
 branch name.
@@ -270,7 +270,7 @@ include:  # Execute individual project's configuration (if project contains .git
 
 #### Compliance pipelines in projects with no configuration file
 
-The [example configuration](#example-configuration) above assumes that all projects contain
+The [example configuration](#example-configuration) assumes that all projects contain
 a pipeline configuration file (`.gitlab-ci.yml` by default). However, in projects
 with no configuration file (and therefore no pipelines by default), the compliance pipeline
 fails because the file specified in `include:project` is required.
@@ -295,7 +295,7 @@ In this example, a configuration file is only included if it exists for the give
 in the project in `exists:project: $CI_PROJECT_PATH'`.
 
 If `exists:project` is not specified in the compliance pipeline configuration, it searches for files in the project
-in which the `include` is defined. In compliance pipelines, the `include` from the example above
+in which the `include` is defined. In compliance pipelines, the `include` from the previous example
 is defined in the project hosting the compliance pipeline configuration file, not the project
 running the pipeline.
 

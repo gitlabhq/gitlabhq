@@ -144,7 +144,7 @@ spotbugs-sast:
       - merge_requests
 ```
 
-To transition the above configuration to the new `rules` syntax, the override
+To transition the previous configuration to the new `rules` syntax, the override
 would be written as follows:
 
 ```yaml

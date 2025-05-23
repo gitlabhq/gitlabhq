@@ -12,6 +12,49 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
     travel_to(Time.current) { example.run }
   end
 
+  describe 'TAGS and BRANCHES scope' do
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let_it_be(:branch_pipeline) { create(:ci_pipeline, project: project, ref: 'feature') }
+    let_it_be(:tag_pipeline) { create(:ci_pipeline, project: project, ref: 'v1.0.0', tag: true) }
+
+    let(:scope) { '' }
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            pipelines(scope: #{scope}) {
+              nodes {
+                ref
+              }
+            }
+          }
+        }
+      )
+    end
+
+    context 'when the scope is branch pipelines' do
+      let(:scope) { 'BRANCHES' }
+
+      it 'returns all branch pipelines' do
+        post_graphql(query, current_user: user)
+
+        expect(graphql_data_at(:project, :pipelines, :nodes, :ref))
+          .to contain_exactly(eq(pipeline.ref), eq(branch_pipeline.ref))
+      end
+    end
+
+    context 'when the scope is tag pipelines' do
+      let(:scope) { 'TAGS' }
+
+      it 'returns all tag pipelines' do
+        post_graphql(query, current_user: user)
+
+        expect(graphql_data_at(:project, :pipelines, :nodes, :ref)).to contain_exactly(eq(tag_pipeline.ref))
+      end
+    end
+  end
+
   describe 'sha' do
     let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 

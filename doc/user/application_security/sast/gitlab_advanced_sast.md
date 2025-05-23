@@ -175,7 +175,7 @@ To enable GitLab Advanced SAST by using the pipeline editor:
        - In GitLab 17.1, you must manually copy the contents of the GitLab Advanced SAST job into your CI/CD pipeline definition.
    - Set the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `true`.
 
-   See the [minimal YAML example above](#edit-the-cicd-pipeline-definition-manually).
+   See the [minimal YAML example](#edit-the-cicd-pipeline-definition-manually).
 1. Select the **Validate** tab, then select **Validate pipeline**.
 
    The message **Simulation completed successfully** confirms the file is valid.

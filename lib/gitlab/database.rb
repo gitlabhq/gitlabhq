@@ -4,6 +4,7 @@ module Gitlab
   module Database
     MAIN_DATABASE_NAME = 'main'
     CI_DATABASE_NAME = 'ci'
+    SEC_DATABASE_NAME = 'sec'
     DEFAULT_POOL_HEADROOM = 10
 
     # This constant is used when renaming tables concurrently.

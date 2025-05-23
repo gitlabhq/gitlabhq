@@ -176,7 +176,7 @@ To trigger a manual prune of unreachable objects:
 
 While GitLab automatically performs housekeeping tasks based on the number of
 pushes, it does not maintain repositories that don't receive any pushes at all.
-As a result, inactive repositories or repositories that are only getting read
+As a result, dormant repositories or repositories that are only getting read
 requests may not benefit from improvements in the repository housekeeping
 strategy.
 

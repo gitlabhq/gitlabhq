@@ -1,0 +1,23 @@
+---
+description: REST API endpoint requested from runner
+internal_events: true
+action: api_request_from_runner
+identifiers:
+- project
+- namespace
+additional_properties:
+  label:
+    description: The API endpoint of the request
+  property:
+    description: The token type used to authenticate
+  cross_project_request:
+    description: The request is cross-project
+product_group: authorization
+product_categories:
+- permissions
+milestone: '18.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189430
+tiers:
+- free
+- premium
+- ultimate

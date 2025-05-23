@@ -256,7 +256,7 @@ variables:
   SECRET_DETECTION_RULESET_GIT_REFERENCE: "gitlab.com/example-group/remote-ruleset-project"
 ```
 
-Pipeline secret detection assumes the configuration is defined in `.gitlab/secret-detection-ruleset.toml` file in the repository referenced by the CI variable where the remote ruleset is stored. If that file doesn't exist, make sure to [create one](#create-a-ruleset-configuration-file) and follow the steps to [override](#override-a-rule) or [disable](#disable-a-rule) a predefined rule as outlined above.
+Pipeline secret detection assumes the configuration is defined in `.gitlab/secret-detection-ruleset.toml` file in the repository referenced by the CI variable where the remote ruleset is stored. If that file doesn't exist, make sure to [create one](#create-a-ruleset-configuration-file) and follow the steps to [override](#override-a-rule) or [disable](#disable-a-rule) a predefined rule as previously outlined.
 
 {{< alert type="note" >}}
 
@@ -316,7 +316,7 @@ regex = '''Custom Raw Ruleset T[est]{3}'''
 """
 ```
 
-The above example replaces the default ruleset with a rule that checks for the regex defined - `Custom Raw Ruleset T` with a suffix of 3 characters from either one of `e`, `s`, or `t` letters.
+The previous example replaces the default ruleset with a rule that checks for the regex defined - `Custom Raw Ruleset T` with a suffix of 3 characters from either one of `e`, `s`, or `t` letters.
 
 For more information on the passthrough syntax to use, see [Schema](custom_rulesets_schema.md#schema).
 
@@ -473,7 +473,7 @@ To do that with a `git` passthrough, add the following to `.gitlab/secret-detect
 
 Pipeline secret detection assumes the remote ruleset configuration file is called `gitleaks.toml`, and is stored in `config` directory on the `main` branch of the referenced repository.
 
-To extend the default ruleset, the `gitleaks.toml` file should use `[extend]` directive similar to the example above:
+To extend the default ruleset, the `gitleaks.toml` file should use `[extend]` directive similar to the previous example:
 
 ```toml
 # https://gitlab.com/user_group/central_repository_with_shared_ruleset/-/raw/main/config/gitleaks.toml

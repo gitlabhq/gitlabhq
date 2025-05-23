@@ -9263,9 +9263,10 @@ Input type: `ProjectCiCdSettingsUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationprojectcicdsettingsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationprojectcicdsettingsupdatefullpath"></a>`fullPath` | [`ID!`](#id) | Full Path of the project the settings belong to. |
-| <a id="mutationprojectcicdsettingsupdateinboundjobtokenscopeenabled"></a>`inboundJobTokenScopeEnabled` | [`Boolean`](#boolean) | Indicates CI/CD job tokens generated in other projects have restricted access to this project. |
+| <a id="mutationprojectcicdsettingsupdategrouprunnersenabled"></a>`groupRunnersEnabled` | [`Boolean`](#boolean) | Indicates whether group runners are enabled for the project. |
+| <a id="mutationprojectcicdsettingsupdateinboundjobtokenscopeenabled"></a>`inboundJobTokenScopeEnabled` | [`Boolean`](#boolean) | Indicates whether CI/CD job tokens generated in other projects have restricted access to this project. |
 | <a id="mutationprojectcicdsettingsupdatejobtokenscopeenabled"></a>`jobTokenScopeEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: Outbound job token scope is being removed. This field can now only be set to false. Deprecated in GitLab 16.0. |
-| <a id="mutationprojectcicdsettingsupdatekeeplatestartifact"></a>`keepLatestArtifact` | [`Boolean`](#boolean) | Indicates if the latest artifact should be kept for the project. |
+| <a id="mutationprojectcicdsettingsupdatekeeplatestartifact"></a>`keepLatestArtifact` | [`Boolean`](#boolean) | Indicates whether the latest artifact should be kept for the project. |
 | <a id="mutationprojectcicdsettingsupdatemergepipelinesenabled"></a>`mergePipelinesEnabled` | [`Boolean`](#boolean) | Indicates if merged results pipelines are enabled for the project. |
 | <a id="mutationprojectcicdsettingsupdatemergetrainsenabled"></a>`mergeTrainsEnabled` | [`Boolean`](#boolean) | Indicates if merge trains are enabled for the project. |
 | <a id="mutationprojectcicdsettingsupdatemergetrainsskiptrainallowed"></a>`mergeTrainsSkipTrainAllowed` | [`Boolean`](#boolean) | Indicates whether an option is allowed to merge without refreshing the merge train. Ignored unless the `merge_trains_skip_train` feature flag is also enabled. |
@@ -37792,10 +37793,11 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectcicdsettinginboundjobtokenscopeenabled"></a>`inboundJobTokenScopeEnabled` | [`Boolean`](#boolean) | Indicates CI/CD job tokens generated in other projects have restricted access to this project. |
-| <a id="projectcicdsettingjobtokenscopeenabled"></a>`jobTokenScopeEnabled` | [`Boolean`](#boolean) | Indicates CI/CD job tokens generated in this project have restricted access to other projects. |
-| <a id="projectcicdsettingkeeplatestartifact"></a>`keepLatestArtifact` | [`Boolean`](#boolean) | Whether to keep the latest builds artifacts. |
-| <a id="projectcicdsettingmergepipelinesenabled"></a>`mergePipelinesEnabled` | [`Boolean`](#boolean) | Whether merged results pipelines are enabled. |
+| <a id="projectcicdsettinggrouprunnersenabled"></a>`groupRunnersEnabled` | [`Boolean`](#boolean) | Indicates whether group runners are enabled for the project. |
+| <a id="projectcicdsettinginboundjobtokenscopeenabled"></a>`inboundJobTokenScopeEnabled` | [`Boolean`](#boolean) | Indicates whether CI/CD job tokens generated in other projects have restricted access to this project. |
+| <a id="projectcicdsettingjobtokenscopeenabled"></a>`jobTokenScopeEnabled` | [`Boolean`](#boolean) | Indicates whether CI/CD job tokens generated in this project have restricted access to other projects. |
+| <a id="projectcicdsettingkeeplatestartifact"></a>`keepLatestArtifact` | [`Boolean`](#boolean) | Indicates whether the latest artifact should be kept for the project. |
+| <a id="projectcicdsettingmergepipelinesenabled"></a>`mergePipelinesEnabled` | [`Boolean`](#boolean) | Indicates whether merged results pipelines are enabled. |
 | <a id="projectcicdsettingmergetrainsenabled"></a>`mergeTrainsEnabled` | [`Boolean`](#boolean) | Whether merge trains are enabled. |
 | <a id="projectcicdsettingmergetrainsskiptrainallowed"></a>`mergeTrainsSkipTrainAllowed` | [`Boolean!`](#boolean) | Whether merge immediately is allowed for merge trains. |
 | <a id="projectcicdsettingpipelinevariablesminimumoverriderole"></a>`pipelineVariablesMinimumOverrideRole` | [`String!`](#string) | Minimum role required to set variables when creating a pipeline or running a job. |
@@ -49576,6 +49578,7 @@ see the associated mutation type above.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aidescriptioncomposerinputdescription"></a>`description` | [`String!`](#string) | Current description. |
+| <a id="aidescriptioncomposerinputpreviousresponse"></a>`previousResponse` | [`String`](#string) | Previously AI-generated description content used for context in iterative refinements or follow-up prompts. |
 | <a id="aidescriptioncomposerinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
 | <a id="aidescriptioncomposerinputsourcebranch"></a>`sourceBranch` | [`String`](#string) | Source branch of the changes. |
 | <a id="aidescriptioncomposerinputsourceprojectid"></a>`sourceProjectId` | [`ID`](#id) | ID of the project where the changes are from. |

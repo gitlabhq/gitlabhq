@@ -136,6 +136,10 @@ module Ci
         .transform_values { |s| Ci::RunnerVersion.statuses.key(s).to_sym }
     end
 
+    def self.ip_address_exists?(ip_address)
+      exists?(ip_address:)
+    end
+
     def uncached_contacted_at
       read_attribute(:contacted_at)
     end

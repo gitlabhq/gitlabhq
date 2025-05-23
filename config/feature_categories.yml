@@ -37,6 +37,7 @@
 - code_testing
 - compliance_management
 - component_catalog
+- configuration
 - consumables_cost_management
 - container_registry
 - container_scanning
@@ -57,6 +58,7 @@
 - disaster_recovery
 - dora_metrics
 - duo_chat
+- duo_setting
 - duo_workflow
 - dynamic_application_security_testing
 - editor_extensions
@@ -84,6 +86,7 @@
 - integrations
 - internationalization
 - job_artifacts
+- knowledge_graph
 - markdown
 - merge_trains
 - mlops

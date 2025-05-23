@@ -7,30 +7,35 @@ module Types
 
       authorize :manage_merge_request_settings
 
+      field :group_runners_enabled,
+        GraphQL::Types::Boolean,
+        null: true,
+        description: 'Indicates whether group runners are enabled for the project.',
+        authorize: :admin_project
       field :inbound_job_token_scope_enabled,
         GraphQL::Types::Boolean,
         null: true,
-        description: 'Indicates CI/CD job tokens generated in other projects ' \
+        description: 'Indicates whether CI/CD job tokens generated in other projects ' \
           'have restricted access to this project.',
         method: :inbound_job_token_scope_enabled?,
         authorize: :admin_project
       field :job_token_scope_enabled,
         GraphQL::Types::Boolean,
         null: true,
-        description: 'Indicates CI/CD job tokens generated in this project ' \
+        description: 'Indicates whether CI/CD job tokens generated in this project ' \
           'have restricted access to other projects.',
         method: :job_token_scope_enabled?,
         authorize: :admin_project
       field :keep_latest_artifact,
         GraphQL::Types::Boolean,
         null: true,
-        description: 'Whether to keep the latest builds artifacts.',
+        description: 'Indicates whether the latest artifact should be kept for the project.',
         method: :keep_latest_artifacts_available?,
         authorize: :admin_project
       field :merge_pipelines_enabled,
         GraphQL::Types::Boolean,
         null: true,
-        description: 'Whether merged results pipelines are enabled.',
+        description: 'Indicates whether merged results pipelines are enabled.',
         method: :merge_pipelines_enabled?
       field :pipeline_variables_minimum_override_role,
         GraphQL::Types::String,

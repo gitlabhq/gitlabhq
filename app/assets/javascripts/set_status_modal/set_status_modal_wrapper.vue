@@ -138,6 +138,7 @@ export default {
     :action-primary="$options.actionPrimary"
     :action-secondary="$options.actionSecondary"
     modal-class="set-user-status-modal"
+    visible
     @primary="setStatus"
     @secondary="removeStatus"
   >
