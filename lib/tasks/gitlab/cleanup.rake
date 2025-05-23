@@ -49,6 +49,50 @@ namespace :gitlab do
       end
     end
 
+    desc 'GitLab | Cleanup | Clean orphan object storage files that do not exist in the db'
+    task untracked_object_storage_files: :environment do
+      buckets = ENV['BUCKETS']&.to_s&.split(',')&.map(&:strip)&.map(&:to_sym) || []
+      delete = ENV['DELETE'] == 'true'
+
+      available_buckets = Gitlab::Cleanup::ObjectStorageCleanerMapping.buckets
+
+      if buckets.empty?
+        logger.info "No buckets selected. Available bucket types: #{available_buckets.join(', ')}"
+        logger.info "To clean specific buckets, run with BUCKETS=type1,type2"
+        buckets = available_buckets
+      end
+
+      invalid_buckets = buckets - available_buckets
+      if invalid_buckets.any?
+        msg = "Invalid bucket types: #{invalid_buckets.join(', ')}. Available types: #{available_buckets.join(', ')}"
+        logger.warn Rainbow(msg).yellow
+        buckets -= invalid_buckets
+      end
+
+      logger.info "Processing the following bucket types: #{buckets.join(', ')}"
+      logger.info "DRY_RUN: #{dry_run?}"
+      logger.info "DELETE (rather than move to lost_and_found): #{delete}"
+
+      buckets.each do |bucket|
+        logger.info Rainbow("Processing bucket type: #{bucket}").cyan
+
+        cleaner_class = Gitlab::Cleanup::ObjectStorageCleanerMapping.cleaner_class_for(bucket)
+        cleaner = cleaner_class.new(logger: logger)
+        cleaner.run!(dry_run: dry_run?, delete: delete)
+
+        logger.info Rainbow("Completed processing bucket type: #{bucket}").green
+      rescue StandardError => e
+        logger.error Rainbow("Error processing bucket type #{bucket}: #{e.message}").red
+        logger.error e.backtrace.join("\n")
+      end
+
+      if dry_run?
+        logger.info Rainbow("This was a dry run. To actually clean up these files, run with DRY_RUN=false").yellow
+        logger.info Rainbow("By default, files will be moved to a lost_and_found directory.").yellow
+        logger.info Rainbow("To permanently delete files, run with DELETE=true").yellow
+      end
+    end
+
     desc 'GitLab | Cleanup | Clean orphan job artifact files in local storage'
     task orphan_job_artifact_files: :gitlab_environment do
       warn_user_is_not_gitlab

@@ -117,9 +117,9 @@ export default {
 
       const selectedLabelTitles = this.selectedLabels.map((label) => label.title);
 
-      return selectedLabelTitles.length > 3
-        ? sprintf(s__('LabelSelect|%{labelsString}, and %{remainingLabelCount} more'), {
-            labelsString: selectedLabelTitles.at(0),
+      return selectedLabelTitles.length > 2
+        ? sprintf(s__('LabelSelect|%{firstLabelName} +%{remainingLabelCount} more'), {
+            firstLabelName: selectedLabelTitles.at(0),
             remainingLabelCount: selectedLabelTitles.length - 1,
           })
         : createListFormat().format(selectedLabelTitles);

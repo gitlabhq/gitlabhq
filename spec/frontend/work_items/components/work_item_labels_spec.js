@@ -262,7 +262,7 @@ describe('WorkItemLabels component', () => {
 
     await waitForPromises();
 
-    expectDropdownCountToBe(1, '1 label');
+    expectDropdownCountToBe(1, 'Label 1');
     expect(successUpdateWorkItemMutationHandler).toHaveBeenCalledWith(
       getMutationInput([label1Id], []),
     );
@@ -278,13 +278,13 @@ describe('WorkItemLabels component', () => {
 
     showDropdown();
 
-    expectDropdownCountToBe(3, '3 labels');
+    expectDropdownCountToBe(3, 'Label 1 +2 more');
 
     updateLabels([label1Id]);
 
     await waitForPromises();
 
-    expectDropdownCountToBe(1, '1 label');
+    expectDropdownCountToBe(1, 'Label 1');
     expect(successRemoveLabelWorkItemMutationHandler).toHaveBeenCalledWith(
       getMutationInput([], [label2Id, label3Id]),
     );
@@ -300,13 +300,13 @@ describe('WorkItemLabels component', () => {
 
     showDropdown();
 
-    expectDropdownCountToBe(2, '2 labels');
+    expectDropdownCountToBe(2, 'Label 1 and Label::2');
 
     updateLabels([label1Id, label3Id]);
 
     await waitForPromises();
 
-    expectDropdownCountToBe(2, '2 labels');
+    expectDropdownCountToBe(2, 'Label 1 and Label 3');
     expect(successAddRemoveLabelWorkItemMutationHandler).toHaveBeenCalledWith(
       getMutationInput([label3Id], [label2Id]),
     );
@@ -322,7 +322,7 @@ describe('WorkItemLabels component', () => {
 
     showDropdown();
 
-    expectDropdownCountToBe(3, '3 labels');
+    expectDropdownCountToBe(3, 'Label 1 +2 more');
 
     findWorkItemSidebarDropdownWidget().vm.$emit('updateValue', []);
 

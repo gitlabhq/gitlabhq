@@ -22229,7 +22229,7 @@ CREATE TABLE resource_milestone_events (
     state smallint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     imported_from smallint DEFAULT 0 NOT NULL,
-    namespace_id bigint DEFAULT 0 NOT NULL,
+    namespace_id bigint NOT NULL,
     CONSTRAINT check_fa0260b82e CHECK ((num_nonnulls(issue_id, merge_request_id) = 1))
 );
 
@@ -42190,7 +42190,7 @@ ALTER TABLE ONLY work_item_dates_sources
     ADD CONSTRAINT fk_283fb4ad36 FOREIGN KEY (start_date_sourcing_milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY resource_milestone_events
-    ADD CONSTRAINT fk_2867e9284c FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT fk_2867e9284c FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_group_links
     ADD CONSTRAINT fk_28a1244b01 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;

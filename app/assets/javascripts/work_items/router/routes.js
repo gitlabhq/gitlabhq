@@ -2,12 +2,29 @@ import WorkItemList from 'ee_else_ce/work_items/pages/work_items_list_app.vue';
 import CreateWorkItem from '../pages/create_work_item.vue';
 import WorkItemDetail from '../pages/work_item_root.vue';
 import DesignDetail from '../components/design_management/design_preview/design_details.vue';
-import { ROUTES, WORK_ITEM_BASE_ROUTE_MAP } from '../constants';
-import { getEnumFromIssueTypeParameter } from '../utils';
+import {
+  ROUTES,
+  WORK_ITEM_BASE_ROUTE_MAP,
+  WORK_ITEM_TYPE_ENUM_INCIDENT,
+  WORK_ITEM_TYPE_ENUM_ISSUE,
+} from '../constants';
 
 function generateTypeRegex(routeMap) {
   const types = Object.keys(routeMap);
   return types.join('|');
+}
+
+/**
+ * For `.params-issue-type`, the backend only returns "incident" or "issue"
+ *
+ * @returns {string|null}
+ */
+function getIssueTypeEnumFromDocument() {
+  const issueType = document.querySelector('.params-issue-type')?.textContent.toUpperCase().trim();
+  if ([WORK_ITEM_TYPE_ENUM_INCIDENT, WORK_ITEM_TYPE_ENUM_ISSUE].includes(issueType)) {
+    return issueType;
+  }
+  return null;
 }
 
 function getRoutes() {
@@ -23,9 +40,7 @@ function getRoutes() {
       component: CreateWorkItem,
       props: ({ params, query }) => ({
         workItemTypeEnum:
-          query.type ||
-          getEnumFromIssueTypeParameter(query['issue[issue_type]']) ||
-          WORK_ITEM_BASE_ROUTE_MAP[params.type],
+          query.type || getIssueTypeEnumFromDocument() || WORK_ITEM_BASE_ROUTE_MAP[params.type],
       }),
     },
     {

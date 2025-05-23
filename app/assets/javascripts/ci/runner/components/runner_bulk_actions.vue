@@ -4,6 +4,7 @@ import { createAlert } from '~/alert';
 import { __, s__, n__, sprintf } from '~/locale';
 import checkedRunnerIdsQuery from '../graphql/list/checked_runner_ids.query.graphql';
 import BulkRunnerDelete from '../graphql/list/bulk_runner_delete.mutation.graphql';
+import BulkRunnerPause from '../graphql/list/bulk_runner_pause.mutation.graphql';
 import { RUNNER_TYPENAME } from '../constants';
 
 export default {
@@ -26,6 +27,8 @@ export default {
   data() {
     return {
       isDeleting: false,
+      isPausing: false,
+      isUnpausing: false,
       checkedRunnerIds: [],
     };
   },
@@ -98,6 +101,62 @@ export default {
         deletedCount,
       );
     },
+    toastPausedConfirmationMessage(paused, updatedCount) {
+      if (paused) {
+        return n__(
+          'Runners|%d selected runner paused',
+          'Runners|%d selected runners paused',
+          updatedCount,
+        );
+      }
+      return n__(
+        'Runners|%d selected runner unpaused',
+        'Runners|%d selected runners unpaused',
+        updatedCount,
+      );
+    },
+    callBulkRunnerPauseMutation(paused) {
+      return this.$apollo.mutate({
+        mutation: BulkRunnerPause,
+        variables: {
+          input: {
+            ids: this.currentCheckedRunnerIds,
+            paused,
+          },
+        },
+        update: (cache, { data }) => {
+          const { errors, updatedRunners, updatedCount } = data.runnerBulkPause;
+          if (errors?.length) {
+            const message = paused
+              ? s__(
+                  'Runners|An error occurred while pausing. Some runners may not have been paused.',
+                )
+              : s__(
+                  'Runners|An error occurred while unpausing. Some runners may not have been unpaused.',
+                );
+
+            createAlert({
+              message,
+              captureError: true,
+              error: new Error(errors.join(' ')),
+            });
+          }
+
+          if (updatedCount) {
+            this.$emit('toggledPaused', {
+              message: this.toastPausedConfirmationMessage(paused, updatedCount),
+            });
+          }
+
+          // unchecks runners that were updated
+          updatedRunners.forEach((runner) => {
+            this.localMutations.setRunnerChecked({ runner, isChecked: false });
+          });
+
+          return { errors, updatedCount };
+        },
+      });
+    },
     onClearChecked() {
       this.localMutations.clearChecked();
     },
@@ -141,17 +200,46 @@ export default {
           },
         });
       } catch (error) {
-        this.onError(error);
+        const message = s__(
+          'Runners|Something went wrong while deleting. Please refresh the page to try again.',
+        );
+        this.onError({ error, message });
       } finally {
         this.isDeleting = false;
         this.$refs.modal.hide();
       }
     },
-    onError(error) {
+    async onPause() {
+      this.isPausing = true;
+      try {
+        await this.callBulkRunnerPauseMutation(true);
+      } catch (error) {
+        const message = s__(
+          'Runners|Something went wrong while pausing. Please refresh the page to try again.',
+        );
+        this.onError({ error, message });
+      } finally {
+        this.isPausing = false;
+      }
+    },
+    async onUnpause() {
+      this.isUnpausing = true;
+      try {
+        await this.callBulkRunnerPauseMutation(false);
+      } catch (error) {
+        this.onError({
+          message: s__(
+            'Runners|Something went wrong while unpausing. Please refresh the page to try again.',
+          ),
+          error,
+        });
+      } finally {
+        this.isUnpausing = false;
+      }
+    },
+    onError({ error, message }) {
       createAlert({
-        message: s__(
-          'Runners|Something went wrong while deleting. Please refresh the page to try again.',
-        ),
+        message,
         captureError: true,
         error,
       });
@@ -165,7 +253,7 @@ export default {
   <div>
     <div
       v-if="checkedCount"
-      data-testid="runner-bulk-delete-banner"
+      data-testid="runner-bulk-actions-banner"
       class="gl-my-4 gl-border-1 gl-border-solid gl-border-default gl-p-4"
     >
       <div class="gl-flex gl-items-center">
@@ -180,6 +268,22 @@ export default {
           <gl-button data-testid="clear-selection" variant="default" @click="onClearChecked">{{
             s__('Runners|Clear selection')
           }}</gl-button>
+          <gl-button
+            data-testid="pause-selected"
+            variant="default"
+            :loading="isPausing"
+            @click="onPause(true)"
+          >
+            {{ s__('Runners|Pause selected') }}
+          </gl-button>
+          <gl-button
+            data-testid="unpause-selected"
+            variant="default"
+            :loading="isUnpausing"
+            @click="onUnpause(false)"
+          >
+            {{ s__('Runners|Unpause selected') }}
+          </gl-button>
           <gl-button
             v-gl-modal="$options.BULK_DELETE_MODAL_ID"
             variant="danger"

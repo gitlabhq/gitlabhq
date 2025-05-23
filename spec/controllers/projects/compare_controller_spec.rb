@@ -847,5 +847,62 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
         include_examples 'missing diffs stats'
       end
     end
+
+    describe 'GET #diff_file' do
+      let(:from) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9' }
+      let(:to) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
+
+      let(:diff_file) { compare.diffs.diff_files.first }
+      let(:old_path) { diff_file.old_path }
+      let(:new_path) { diff_file.new_path }
+      let(:ignore_whitespace_changes) { false }
+      let(:view) { 'inline' }
+
+      let(:params) do
+        {
+          namespace_id: project.namespace,
+          project_id: project,
+          from: from,
+          to: to,
+          old_path: old_path,
+          new_path: new_path,
+          ignore_whitespace_changes: ignore_whitespace_changes,
+          view: view
+        }.compact
+      end
+
+      let(:send_request) { get :diff_file, params: params }
+
+      let(:compare) do
+        CompareService.new(project, to).execute(project, from)
+      end
+
+      before do
+        sign_in(user)
+      end
+
+      include_examples 'diff file endpoint'
+
+      context 'with whitespace-only diffs' do
+        let(:ignore_whitespace_changes) { true }
+        let(:diffs_collection) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
+
+        before do
+          allow(diff_file).to receive(:whitespace_only?).and_return(true)
+        end
+
+        it 'makes a call to diffs_resource with ignore_whitespace_change: false' do
+          allow(controller).to receive(:diffs_resource).and_return(diffs_collection)
+
+          expect(controller).to receive(:diffs_resource).with(
+            hash_including(ignore_whitespace_change: false)
+          ).and_return(diffs_collection)
+
+          send_request
+
+          expect(response).to have_gitlab_http_status(:success)
+        end
+      end
+    end
   end
 end

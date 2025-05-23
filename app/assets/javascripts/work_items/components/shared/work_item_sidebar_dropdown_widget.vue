@@ -161,8 +161,7 @@ export default {
         }
       },
     },
-    createdLabelId(id) {
-      this.localSelectedItem.push(id);
+    createdLabelId() {
       this.isDirty = true;
     },
   },

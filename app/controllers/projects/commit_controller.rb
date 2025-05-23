@@ -304,8 +304,8 @@ class Projects::CommitController < Projects::ApplicationController
     check_rate_limit!(:expanded_diff_files, scope: current_user || request.ip)
   end
 
-  def diffs_resource
-    commit&.diffs(commit_diff_options)
+  def diffs_resource(options = {})
+    commit&.diffs(commit_diff_options.merge(options))
   end
 
   def complete_diff_path

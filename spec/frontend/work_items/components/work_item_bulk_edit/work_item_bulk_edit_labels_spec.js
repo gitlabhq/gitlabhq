@@ -210,7 +210,7 @@ describe('WorkItemBulkEditLabels component', () => {
       });
     });
 
-    describe('with fewer than 4 selected labels', () => {
+    describe('with fewer than 3 selected labels', () => {
       it('renders all label titles', async () => {
         createComponent({
           props: { selectedLabelsIds: ['gid://gitlab/Label/2', 'gid://gitlab/Label/3'] },
@@ -223,7 +223,7 @@ describe('WorkItemBulkEditLabels component', () => {
       });
     });
 
-    describe('with more than 3 selected labels', () => {
+    describe('with more than 2 selected labels', () => {
       it('renders first label title followed by the count', async () => {
         createComponent({
           props: {
@@ -239,7 +239,7 @@ describe('WorkItemBulkEditLabels component', () => {
         findListbox().vm.$emit('shown');
         await waitForPromises();
 
-        expect(findListbox().props('toggleText')).toBe('Label 1, and 3 more');
+        expect(findListbox().props('toggleText')).toBe('Label 1 +3 more');
       });
     });
   });

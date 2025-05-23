@@ -156,6 +156,73 @@ RSpec.describe 'merge requests creations', feature_category: :code_review_workfl
         include_examples 'missing diffs stats'
       end
     end
+
+    describe 'GET new/diff_file' do
+      let(:diff_file_path) do
+        namespace_project_new_merge_request_diff_file_path(
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          merge_request: {
+            source_branch: 'fix',
+            target_branch: 'master'
+          }
+        )
+      end
+
+      let(:compare) do
+        CompareService.new(project, 'master').execute(project, 'fix')
+      end
+
+      let(:diff_file) { compare.diffs.diff_files.first }
+      let(:old_path) { diff_file.old_path }
+      let(:new_path) { diff_file.new_path }
+      let(:ignore_whitespace_changes) { false }
+      let(:view) { 'inline' }
+
+      let(:params) do
+        {
+          old_path: old_path,
+          new_path: new_path,
+          ignore_whitespace_changes: ignore_whitespace_changes,
+          view: view
+        }.compact
+      end
+
+      let(:send_request) { get diff_file_path, params: params }
+
+      before do
+        login_as(user)
+
+        allow_next_instance_of(MergeRequest) do |instance|
+          allow(instance).to receive(:compare).and_return(compare)
+        end
+      end
+
+      include_examples 'diff file endpoint'
+
+      context 'with whitespace-only diffs' do
+        let(:ignore_whitespace_changes) { true }
+        let(:diffs_collection) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: [diff_file]) }
+
+        before do
+          allow(diff_file).to receive(:whitespace_only?).and_return(true)
+        end
+
+        it 'makes a call to diffs_resource with ignore_whitespace_change: false' do
+          expect_next_instance_of(Projects::MergeRequests::CreationsController) do |instance|
+            allow(instance).to receive(:diffs_resource).and_return(diffs_collection)
+
+            expect(instance).to receive(:diffs_resource).with(
+              hash_including(ignore_whitespace_change: false)
+            ).and_return(diffs_collection)
+          end
+
+          send_request
+
+          expect(response).to have_gitlab_http_status(:success)
+        end
+      end
+    end
   end
 
   describe 'POST /:namespace/:project/merge_requests' do

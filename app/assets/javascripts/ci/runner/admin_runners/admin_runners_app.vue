@@ -91,7 +91,10 @@ export default {
   apollo: {
     runners: {
       query: allRunnersQuery,
-      fetchPolicy: fetchPolicies.NETWORK_ONLY,
+      // Runners can be updated by users directly in this list.
+      // A "cache and network" policy prevents outdated filtered
+      // results.
+      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
       variables() {
         return this.variables;
       },
@@ -183,14 +186,14 @@ export default {
 
       return url.href;
     },
-    onToggledPaused() {
-      // When a runner becomes Paused, the tab count can
+    onUpdated(event) {
+      // When a runner becomes paused or is deleted, the tab count can
       // become stale, refetch outdated counts.
       this.refetchCounts();
-    },
-    onDeleted({ message }) {
-      this.refetchCounts();
-      this.$root.$toast?.show(message);
+
+      if (event?.message) {
+        this.$root.$toast?.show(event.message);
+      }
     },
     refetchCounts() {
       this.$apollo.getClient().refetchQueries({ include: [allRunnersCountQuery] });
@@ -251,7 +254,8 @@ export default {
         :runners="runners.items"
         :loading="runnersLoading"
         :checkable="canAdminRunners"
-        @deleted="onDeleted"
+        @toggledPaused="onUpdated"
+        @deleted="onUpdated"
       >
         <template #runner-job-status-badge="{ runner }">
           <runner-job-status-badge
@@ -268,8 +272,8 @@ export default {
           <runner-actions-cell
             :runner="runner"
             :edit-url="runner.editAdminUrl"
-            @toggledPaused="onToggledPaused"
-            @deleted="onDeleted"
+            @toggledPaused="onUpdated"
+            @deleted="onUpdated"
           />
         </template>
       </runner-list>

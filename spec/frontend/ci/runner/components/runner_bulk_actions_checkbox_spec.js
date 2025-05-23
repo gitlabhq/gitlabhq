@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { GlFormCheckbox } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import RunnerBulkDeleteCheckbox from '~/ci/runner/components/runner_bulk_delete_checkbox.vue';
+import RunnerBulkActionsCheckbox from '~/ci/runner/components/runner_bulk_actions_checkbox.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createLocalState } from '~/ci/runner/graphql/list/local_state';
 
@@ -21,7 +21,7 @@ const stateToAttrs = {
   disabled: { disabled: 'true', checked: undefined, indeterminate: undefined },
 };
 
-describe('RunnerBulkDeleteCheckbox', () => {
+describe('RunnerBulkActionsCheckbox', () => {
   let wrapper;
   let mockState;
   let mockCheckedRunnerIds;
@@ -39,7 +39,7 @@ describe('RunnerBulkDeleteCheckbox', () => {
     const { cacheConfig, localMutations } = mockState;
     const apolloProvider = createMockApollo(undefined, undefined, cacheConfig);
 
-    wrapper = shallowMountExtended(RunnerBulkDeleteCheckbox, {
+    wrapper = shallowMountExtended(RunnerBulkActionsCheckbox, {
       apolloProvider,
       provide: {
         localMutations,

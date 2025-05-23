@@ -36,7 +36,6 @@ import {
   canRouterNav,
   formatSelectOptionForCustomField,
   preserveDetailsState,
-  getEnumFromIssueTypeParameter,
   getParentGroupName,
   createBranchMRApiPathHelper,
 } from '~/work_items/utils';
@@ -170,6 +169,12 @@ describe('markdownPreviewPath', () => {
       '/foobar/groups/group/-/preview_markdown?target_type=WorkItem&target_id=2',
     );
   });
+
+  it('returns correct data sources with NEW_WORK_ITEM_IID', () => {
+    expect(markdownPreviewPath({ fullPath: 'group', iid: NEW_WORK_ITEM_IID, isGroup: true })).toBe(
+      '/foobar/groups/group/-/preview_markdown?target_type=WorkItem',
+    );
+  });
 });
 
 describe('newWorkItemPath', () => {
@@ -220,21 +225,6 @@ describe('convertTypeEnumToName', () => {
     ${WORK_ITEM_TYPE_NAME_TICKET}       | ${WORK_ITEM_TYPE_ENUM_TICKET}
   `('returns %name when given the enum %enumValue', ({ name, enumValue }) => {
     expect(convertTypeEnumToName(enumValue)).toBe(name);
-  });
-});
-
-describe('getEnumFromIssueTypeParameter', () => {
-  it.each`
-    param         | enumValue
-    ${'incident'} | ${WORK_ITEM_TYPE_ENUM_INCIDENT}
-    ${'inciden'}  | ${WORK_ITEM_TYPE_ENUM_ISSUE}
-    ${'issue'}    | ${WORK_ITEM_TYPE_ENUM_ISSUE}
-    ${'asdf'}     | ${WORK_ITEM_TYPE_ENUM_ISSUE}
-    ${''}         | ${undefined}
-    ${null}       | ${undefined}
-    ${undefined}  | ${undefined}
-  `('returns %enumValue when given the param %param', ({ param, enumValue }) => {
-    expect(getEnumFromIssueTypeParameter(param)).toBe(enumValue);
   });
 });
 

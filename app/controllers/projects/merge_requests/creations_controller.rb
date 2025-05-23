@@ -112,8 +112,8 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     render json: ProjectSerializer.new.represent(get_target_projects)
   end
 
-  def diffs_resource
-    @merge_request&.compare&.diffs
+  def diffs_resource(options = {})
+    @merge_request&.compare&.diffs(options)
   end
 
   private

@@ -204,7 +204,7 @@ class Projects::CompareController < Projects::ApplicationController
     @compare_params ||= params.permit(:from, :to, :from_project_id, :straight, :to_project_id)
   end
 
-  def diffs_resource
-    compare&.diffs(diff_options)
+  def diffs_resource(options = {})
+    compare&.diffs(diff_options.merge(options))
   end
 end

@@ -4,9 +4,10 @@ import { createLocalState } from '~/ci/runner/graphql/list/local_state';
 import getCheckedRunnerIdsQuery from '~/ci/runner/graphql/list/checked_runner_ids.query.graphql';
 import { RUNNER_TYPENAME } from '~/ci/runner/constants';
 
-const makeRunner = (id, deleteRunner = true) => ({
+const makeRunner = (id, updateRunner = true, deleteRunner = true) => ({
   id,
   userPermissions: {
+    updateRunner,
     deleteRunner,
   },
 });
@@ -140,24 +141,51 @@ describe('~/ci/runner/graphql/list/local_state', () => {
     });
   });
 
-  describe('when some runners cannot be deleted', () => {
+  describe('when some runners cannot be updated or deleted', () => {
     beforeEach(() => {
       addMockRunnerToCache('a');
       addMockRunnerToCache('b');
     });
 
-    it('setRunnerChecked does not check runner that cannot be deleted', () => {
+    it('setRunnerChecked checks runners that can be updated', () => {
       localState.localMutations.setRunnerChecked({
-        runner: makeRunner('a', false),
+        runner: makeRunner('a', true, false),
+        isChecked: true,
+      });
+
+      expect(queryCheckedRunnerIds()).toEqual(['a']);
+    });
+
+    it('setRunnerChecked checks runners that can be deleted', () => {
+      localState.localMutations.setRunnerChecked({
+        runner: makeRunner('a', false, true),
+        isChecked: true,
+      });
+
+      expect(queryCheckedRunnerIds()).toEqual(['a']);
+    });
+
+    it('setRunnerChecked does not check runner that cannot be updated nor deleted', () => {
+      localState.localMutations.setRunnerChecked({
+        runner: makeRunner('a', false, false),
         isChecked: true,
       });
 
       expect(queryCheckedRunnerIds()).toEqual([]);
     });
 
-    it('setRunnersChecked does not check runner that cannot be deleted', () => {
+    it('setRunnersChecked checks runner that can be updated or deleted', () => {
       localState.localMutations.setRunnersChecked({
-        runners: [makeRunner('a', false), makeRunner('b', false)],
+        runners: [makeRunner('a', true, false), makeRunner('b', false, true)],
+        isChecked: true,
+      });
+
+      expect(queryCheckedRunnerIds()).toEqual(['a', 'b']);
+    });
+
+    it('setRunnersChecked does not check runner that cannot be updated nor deleted', () => {
+      localState.localMutations.setRunnersChecked({
+        runners: [makeRunner('a', false, false), makeRunner('b', false, false)],
         isChecked: true,
       });
 

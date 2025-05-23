@@ -547,10 +547,11 @@ updates for transfers are handled in the [`Projects::TransferService`](https://g
 and [`Groups::TransferService`](https://gitlab.com/gitlab-org/gitlab/-/blob/4d2a86ed035d3c2a960f5b89f2424bee990dc8ab/ee/app/services/ee/groups/transfer_service.rb).
 
 Indexes that contain a `project_id` field must use the [`Search::Elastic::DeleteWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/0105b56d6ad86e04ef46492dcf5537553505b678/ee/app/workers/search/elastic/delete_worker.rb).
-Indexes that contain a `namespace_id` field and no `project_id` field must use [`Search::ElasticGroupAssociationDeleteWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/0105b56d6ad86e04ef46492dcf5537553505b678/ee/app/workers/search/elastic_group_association_deletion_worker.rb).
+Indexes that contain a `namespace_id` field and no `project_id` field must use [`Search::ElasticGroupAssociationDeletionWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/0105b56d6ad86e04ef46492dcf5537553505b678/ee/app/workers/search/elastic_group_association_deletion_worker.rb).
 
 1. Add the indexed class to `excluded_classes` in [`ElasticDeleteProjectWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/0105b56d6ad86e04ef46492dcf5537553505b678/ee/app/workers/elastic_delete_project_worker.rb)
-1. Update the worker to remove documents from the index
+1. Create a new service in the `::Search::Elastic::Delete` namespace to delete documents from the index
+1. Update the worker to use the new service
 
 ### Implementing search for a new document type
 

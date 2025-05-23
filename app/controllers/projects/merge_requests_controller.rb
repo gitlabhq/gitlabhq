@@ -704,8 +704,14 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         "Close this merge request and create a new one.")
   end
 
-  def diffs_resource
-    @merge_request.latest_diffs
+  def diffs_resource(diff_options = {})
+    @merge_request.latest_diffs(diff_options)
+  end
+
+  def diff_file_component(base_args)
+    ::RapidDiffs::MergeRequestDiffFileComponent.new(
+      **base_args.merge({ merge_request: @merge_request })
+    )
   end
 
   def complete_diff_path

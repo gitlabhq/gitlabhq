@@ -496,6 +496,22 @@ describe('AdminRunnersApp', () => {
     expect(findRunnerPagination().attributes('disabled')).toBeDefined();
   });
 
+  describe('Bulk pause', () => {
+    describe('When runners are deleted', () => {
+      beforeEach(async () => {
+        await createComponent({ mountFn: mountExtended });
+      });
+      it('toast is shown', () => {
+        expect(showToast).toHaveBeenCalledTimes(0);
+
+        findRunnerList().vm.$emit('toggledPaused', { message: 'runners paused' });
+
+        expect(showToast).toHaveBeenCalledTimes(1);
+        expect(showToast).toHaveBeenCalledWith('runners paused');
+      });
+    });
+  });
+
   describe('Bulk delete', () => {
     describe('Before runners are deleted', () => {
       it('runner list is checkable', async () => {

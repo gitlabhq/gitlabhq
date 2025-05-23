@@ -371,11 +371,6 @@ msgid_plural "%d jobs"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d label"
-msgid_plural "%d labels"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d layer"
 msgid_plural "%d layers"
 msgstr[0] ""
@@ -18899,6 +18894,9 @@ msgstr ""
 msgid "CreateValueStreamForm|Start event: "
 msgstr ""
 
+msgid "CreateValueStreamForm|There was an error fetching the value stream."
+msgstr ""
+
 msgid "CreateValueStreamForm|Update stage"
 msgstr ""
 
@@ -19436,9 +19434,6 @@ msgid "CycleAnalytics|Failed to parse default stages."
 msgstr ""
 
 msgid "CycleAnalytics|Failed to parse stage events."
-msgstr ""
-
-msgid "CycleAnalytics|Failed to parse value stream."
 msgstr ""
 
 msgid "CycleAnalytics|If you have recently upgraded your GitLab license from a tier without this feature, it can take up to 30 minutes for data to collect and display."
@@ -52048,6 +52043,16 @@ msgid_plural "Runners|%d selected runners deleted"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Runners|%d selected runner paused"
+msgid_plural "Runners|%d selected runners paused"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Runners|%d selected runner unpaused"
+msgid_plural "Runners|%d selected runners unpaused"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Runners|%{count} runners in this group"
 msgstr ""
 
@@ -52169,6 +52174,12 @@ msgid "Runners|An error occurred while creating the runner. Please try again."
 msgstr ""
 
 msgid "Runners|An error occurred while deleting. Some runners may not have been deleted."
+msgstr ""
+
+msgid "Runners|An error occurred while pausing. Some runners may not have been paused."
+msgstr ""
+
+msgid "Runners|An error occurred while unpausing. Some runners may not have been unpaused."
 msgstr ""
 
 msgid "Runners|An upgrade is available for this runner"
@@ -52659,6 +52670,9 @@ msgstr ""
 msgid "Runners|Pause from accepting jobs"
 msgstr ""
 
+msgid "Runners|Pause selected"
+msgstr ""
+
 msgid "Runners|Paused"
 msgstr ""
 
@@ -52903,6 +52917,12 @@ msgstr ""
 msgid "Runners|Something went wrong while fetching the tags suggestions"
 msgstr ""
 
+msgid "Runners|Something went wrong while pausing. Please refresh the page to try again."
+msgstr ""
+
+msgid "Runners|Something went wrong while unpausing. Please refresh the page to try again."
+msgstr ""
+
 msgid "Runners|Specific Image for the Nodes in the Node Pool to use"
 msgstr ""
 
@@ -53058,6 +53078,9 @@ msgid "Runners|Unassign"
 msgstr ""
 
 msgid "Runners|Understand how long it takes for runners to pick up a job. %{linkStart}How is this calculated?%{linkEnd}"
+msgstr ""
+
+msgid "Runners|Unpause selected"
 msgstr ""
 
 msgid "Runners|Unselect all"

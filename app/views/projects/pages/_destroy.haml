@@ -1,6 +1,5 @@
 - if @project.pages_deployed?
   = render ::Layouts::CrudComponent.new(s_('GitLabPages|Delete Pages'),
-    options: { class: 'gl-mt-5' },
     body_options: { class: '!gl-m-0 gl-p-5 gl-bg-feedback-danger' }) do |c|
     - c.with_body do
       - if can?(current_user, :remove_pages, @project)

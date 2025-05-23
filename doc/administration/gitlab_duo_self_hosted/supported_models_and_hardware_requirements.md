@@ -36,7 +36,7 @@ Support for the following GitLab-supported large language models (LLMs) is gener
 
 - Fully compatible: The model can likely handle the feature without any loss of quality.
 - Largely compatible: The model supports the feature, but there might be compromises or limitations.
-- Not compatible: The model is unsuitable for the feature, likely resulting in significant quality loss or performance issues.
+- Not compatible: The model is unsuitable for the feature, likely resulting in significant quality loss or performance issues. Models that are marked not compatible for a feature will not receive GitLab support for that specific feature.
 
 <!-- vale gitlab_base.Spelling = NO -->
 

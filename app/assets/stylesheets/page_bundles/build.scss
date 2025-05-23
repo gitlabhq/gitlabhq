@@ -271,6 +271,13 @@
   }
 }
 
+.rca-bar-component.rca-bar-component-fullscreen {
+  left: 0;
+  width: 100%;
+  padding-left: .5rem;
+  transition: left 0.3s ease, width 0.3s ease, padding 0.3s ease;
+}
+
 .loader-animation {
   @include build-loader-animation;
 }

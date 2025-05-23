@@ -45,6 +45,10 @@ module DiffHelper
     options
   end
 
+  def with_custom_diff_options
+    yield diff_options.dup
+  end
+
   def rapid_diffs?
     return false unless defined? current_user
 

@@ -75,6 +75,10 @@ Gitlab/RSpec/AvoidSetup:
   Enabled: false
 
 # This cop doesn't make sense in the context of gems
+Gitlab/RSpec/MisplacedEeSpecFile:
+  Enabled: false
+
+# This cop doesn't make sense in the context of gems
 Graphql/AuthorizeTypes:
   Enabled: false
 

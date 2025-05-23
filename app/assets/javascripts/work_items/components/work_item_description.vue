@@ -354,12 +354,17 @@ export default {
       this.isEditing = true;
       this.wasEdited = true;
 
-      const draftDescription = getDraft(this.autosaveKey) || '';
-      if (draftDescription.trim() !== '') {
-        this.descriptionText = draftDescription;
-      } else {
+      if (this.createFlow) {
         this.descriptionText = this.workItemDescription?.description;
+      } else {
+        const draftDescription = getDraft(this.autosaveKey) || '';
+        if (draftDescription.trim() !== '') {
+          this.descriptionText = draftDescription;
+        } else {
+          this.descriptionText = this.workItemDescription?.description;
+        }
       }
+
       this.initialDescriptionText = this.descriptionText;
 
       await this.$nextTick();

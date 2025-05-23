@@ -1,0 +1,53 @@
+.gl-flex.gl-gap-5.gl-flex-wrap
+  .hover-test.gl-p-4.gl-border.gl-rounded-base.gl-flex.gl-flex-col.gl-items-center.gl-gap-2{ class: 'hover:gl-cursor-pointer' }
+    = render(todo_component)
+    todo
+
+  .hover-test.gl-p-4.gl-border.gl-rounded-base.gl-flex.gl-flex-col.gl-items-center.gl-gap-2{ class: 'hover:gl-cursor-pointer' }
+    = render(star_component)
+    star
+
+  .hover-test.gl-p-4.gl-border.gl-rounded-base.gl-flex.gl-flex-col.gl-items-center.gl-gap-2{ class: 'hover:gl-cursor-pointer' }
+    = render(sort_component)
+    sort
+
+  .hover-test.gl-p-4.gl-border.gl-rounded-base.gl-flex.gl-flex-col.gl-items-center.gl-gap-2{ class: 'hover:gl-cursor-pointer' }
+    = render(smile_component)
+    smile
+
+  .hover-test.gl-p-4.gl-border.gl-rounded-base.gl-flex.gl-flex-col.gl-items-center.gl-gap-2{ class: 'hover:gl-cursor-pointer' }
+    = render(sidebar_component)
+    sidebar
+
+  .hover-test.gl-p-4.gl-border.gl-rounded-base.gl-flex.gl-flex-col.gl-items-center.gl-gap-2{ class: 'hover:gl-cursor-pointer' }
+    = render(notification_component)
+    notification
+
+  .hover-test.gl-p-4.gl-border.gl-rounded-base.gl-flex.gl-flex-col.gl-items-center.gl-gap-2{ class: 'hover:gl-cursor-pointer' }
+    = render(chevron_right_down_component)
+    chevron_right_down
+
+  .hover-test.gl-p-4.gl-border.gl-rounded-base.gl-flex.gl-flex-col.gl-items-center.gl-gap-2{ class: 'hover:gl-cursor-pointer' }
+    = render(chevron_lg_right_down_component)
+    chevron_lg_right_down
+
+  .hover-test.gl-p-4.gl-border.gl-rounded-base.gl-flex.gl-flex-col.gl-items-center.gl-gap-2{ class: 'hover:gl-cursor-pointer' }
+    = render(chevron_down_up_component)
+    chevron_down_up
+
+  .hover-test.gl-p-4.gl-border.gl-rounded-base.gl-flex.gl-flex-col.gl-items-center.gl-gap-2{ class: 'hover:gl-cursor-pointer' }
+    = render(chevron_lg_down_up_component)
+    chevron_lg_down_up
+
+-# haml-lint:disable InlineJavaScript
+:javascript
+  document.addEventListener('DOMContentLoaded', function() {
+    const iconElement = document.querySelectorAll('.hover-test');
+
+    iconElement.forEach(icon => {
+      icon.addEventListener('click', function() {
+        this.querySelector('.gl-animated-icon').classList.toggle('gl-animated-icon-off');
+        this.querySelector('.gl-animated-icon').classList.toggle('gl-animated-icon-on');
+      });
+    });
+  });

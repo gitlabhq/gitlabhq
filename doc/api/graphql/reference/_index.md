@@ -2068,6 +2068,7 @@ Input type: `AiActionInput`
 | <a id="mutationaiactionplatformorigin"></a>`platformOrigin` | [`String`](#string) | Specifies the origin platform of the request. |
 | <a id="mutationaiactionprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project the user is acting on. |
 | <a id="mutationaiactionresolvevulnerability"></a>`resolveVulnerability` | [`AiResolveVulnerabilityInput`](#airesolvevulnerabilityinput) | Input for resolve_vulnerability AI action. |
+| <a id="mutationaiactionrootnamespaceid"></a>`rootNamespaceId` | [`NamespaceID`](#namespaceid) | Global ID of the top-level namespace the user is acting on. |
 | <a id="mutationaiactionsummarizecomments"></a>`summarizeComments` | [`AiSummarizeCommentsInput`](#aisummarizecommentsinput) | Input for summarize_comments AI action. |
 | <a id="mutationaiactionsummarizenewmergerequest"></a>`summarizeNewMergeRequest` | [`AiSummarizeNewMergeRequestInput`](#aisummarizenewmergerequestinput) | Input for summarize_new_merge_request AI action. |
 | <a id="mutationaiactionsummarizereview"></a>`summarizeReview` | [`AiSummarizeReviewInput`](#aisummarizereviewinput) | Input for summarize_review AI action. |
@@ -9412,7 +9413,7 @@ Input type: `ProjectSecretCreateInput`
 | <a id="mutationprojectsecretcreateenvironment"></a>`environment` | [`String!`](#string) | Environments that can access the secret. |
 | <a id="mutationprojectsecretcreatename"></a>`name` | [`String!`](#string) | Name of the project secret. |
 | <a id="mutationprojectsecretcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project of the secret. |
-| <a id="mutationprojectsecretcreatevalue"></a>`value` | [`String!`](#string) | Value of the project secret. |
+| <a id="mutationprojectsecretcreatesecret"></a>`secret` | [`String!`](#string) | Value of the project secret. |
 
 #### Fields
 
@@ -9456,7 +9457,7 @@ Input type: `ProjectSecretUpdateInput`
 | <a id="mutationprojectsecretupdateenvironment"></a>`environment` | [`String`](#string) | New environments that can access the secret. |
 | <a id="mutationprojectsecretupdatename"></a>`name` | [`String!`](#string) | Name of the project secret to update. |
 | <a id="mutationprojectsecretupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project of the secret. |
-| <a id="mutationprojectsecretupdatevalue"></a>`value` | [`String`](#string) | New value of the project secret. |
+| <a id="mutationprojectsecretupdatesecret"></a>`secret` | [`String`](#string) | New value of the project secret. |
 
 #### Fields
 
