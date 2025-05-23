@@ -37590,11 +37590,11 @@ CREATE INDEX index_tags_on_name_trigram ON tags USING gin (name gin_trgm_ops);
 
 CREATE INDEX index_target_branch_rules_on_project_id ON target_branch_rules USING btree (project_id);
 
-CREATE UNIQUE INDEX index_targeted_message_dismissals_on_message_user_in_namespace ON targeted_message_dismissals USING btree (targeted_message_id, user_id, namespace_id);
-
 CREATE INDEX index_targeted_message_dismissals_on_namespace_id ON targeted_message_dismissals USING btree (namespace_id);
 
-CREATE INDEX index_targeted_message_dismissals_on_user_id ON targeted_message_dismissals USING btree (user_id);
+CREATE INDEX index_targeted_message_dismissals_on_targeted_message_id ON targeted_message_dismissals USING btree (targeted_message_id);
+
+CREATE UNIQUE INDEX index_targeted_message_dismissals_on_user_ns_targeted_message ON targeted_message_dismissals USING btree (user_id, namespace_id, targeted_message_id);
 
 CREATE UNIQUE INDEX index_targeted_message_namespaces_on_message_and_namespace ON targeted_message_namespaces USING btree (targeted_message_id, namespace_id);
 

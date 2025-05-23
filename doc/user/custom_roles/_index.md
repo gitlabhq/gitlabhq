@@ -20,7 +20,8 @@ title: Custom roles
 - Ability to create and remove a custom role with the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393235) in GitLab 16.4.
 - Ability to use the UI to add a user to your group with a custom role, change a user's custom role, or remove a custom role from a group member [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393239) in GitLab 16.7.
 - Ability to create and remove an instance-wide custom role on GitLab Self-Managed [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141562) in GitLab 16.9.
-- Custom admin roles [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181346) in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `custom_admin_roles`. Disabled by default.
+- Custom admin roles [introduced](https://gitlab.com/groups/gitlab-org/-/epics/15854) as an [experiment](../../policy/development_stages_support.md) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `custom_ability_read_admin_dashboard`.
+- Ability to manage custom admin roles with the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181346) in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `custom_admin_roles`. Disabled by default.
 
 {{< /history >}}
 
@@ -44,22 +45,15 @@ There are two types of custom roles:
 For a demo of the custom roles feature, see [[Demo] Ultimate Guest can view code on private repositories via custom role](https://www.youtube.com/watch?v=46cp_-Rtxps).
 <!-- Video published on 2023-02-13 -->
 
-{{< alert type="warning" >}}
-
-- Custom member roles can allow users to perform actions usually restricted to the Maintainer role or higher.
-For example, if a custom role includes permission to manage CI/CD variables, users with the role
-could also manage CI/CD variables added by other Maintainers or Owners for the group or project.
-
-- Custom admin roles can allow users to perform actions in the Admin area.
-
-{{< /alert >}}
-
 ## Create a custom member role
 
-To create a custom member role, add [permissions](abilities.md) to a base role. Each custom role can
-have one or more permissions. For example, you might base the custom member role on the Reporter role,
-but also include permission to view vulnerability reports, change the status of vulnerabilities,
-and approve merge requests.
+To create a custom member role, you select a default GitLab role and add additional [permissions](abilities.md).
+The base role defines the minimum permissions available to the custom role. You cannot use
+[auditor](../../administration/auditor_users.md) as a base role.
+
+Custom permissions can allow actions typically restricted to the Maintainer or Owner role. For
+example, a custom role with permission to manage CI/CD variables also allows manangement of CI/CD
+variables added by other Maintainers or Owners.
 
 Custom member roles are available to groups and projects:
 
@@ -70,6 +64,7 @@ Prerequisites:
 
 - For GitLab.com, you must have the Owner role for the group.
 - For GitLab Self-Managed and GitLab Dedicated, you must have administrator access to the instance.
+- You must have fewer than 10 custom roles.
 
 To create a custom member role:
 
@@ -94,6 +89,7 @@ limited to administrators. Each custom admin role can have one or more permissio
 Prerequisites:
 
 - You must have administrator access to the instance.
+- You must have fewer than 10 custom roles.
 
 To create a custom admin role:
 
@@ -232,31 +228,27 @@ The availability of this feature is controlled by a feature flag. For more infor
 
 {{< /alert >}}
 
-When a group is invited to another group with a custom role, the following rules determine each user's custom permissions in the new group:
+When you [invite a group to a group](../project/members/sharing_projects_groups.md#invite-a-group-to-a-group)
+you can assign a custom role to every user in the group.
 
-- When a user has a custom permission in one group with a base access level that is the same or higher than the default role in the other group, the user's maximum role is the default role. That is, the user is granted the lower of the two access levels.
-- When a user is invited with a custom permission with the same base access level as their original group, the user is always granted the custom permission from their original group.
+The assigned role is compared to user roles and permissions in their original group. Generally,
+users are assigned the role with the smallest access level. However, if users
+have a custom role in their original group:
 
-For example, consider Group A with 5 users assigned the following roles:
+- Only the base role is used for access level comparisons. Custom permissions are not compared.
+- If the custom roles both have the same base role, users keep their custom role from the original group.
 
-- User A: Guest role
-- User B: Guest role + `read_code` custom permission
-- User C: Guest role + `read_vulnerability` custom permission
-- User D: Developer role
-- User E: Developer + `admin_vulnerability` custom permission
+The following table provides examples of the maximum role available to users invited to a group:
 
-Group B invites Group A. The following table shows the maximum role that each the users in Group A will have in Group B:
+| Scenario                                                | User with Guest role | User with Guest role + read_code | User with Guest role + read_vulnerability | User with Developer role     | User with Developer role + admin_vulnerability |
+| ------------------------------------------------------- | -------------------- | -------------------------------- | ----------------------------------------- | ---------------------------- | ---------------------------------------------- |
+| **Invited with Guest role**                             | Guest                | Guest                            | Guest                                     | Guest                        | Guest                                          |
+| **Invited with Guest role + `read_code`**               | Guest                | Guest + `read_code`              | Guest + `read_vulnerability`              | Guest + `read_code`          | Guest + `read_code`                            |
+| **Invited with Guest role + `read_vulnerability`**      | Guest                | Guest + `read_code`              | Guest + `read_vulnerability`              | Guest + `read_vulnerability` | Guest + `read_vulnerability`                   |
+| **Invited with Developer role**                         | Guest                | Guest + `read_code`              | Guest + `read_vulnerability`              | Developer                    | Developer                                      |
+| **Invited with Developer role + `admin_vulnerability`** | Guest                | Guest + `read_code`              | Guest + `read_vulnerability`              | Developer                    | Developer + `admin_vulnerability`              |
 
-| Scenario                                                       | User A | User B              | User C                       | User D                       | User E                            |
-|----------------------------------------------------------------|--------|---------------------|------------------------------|------------------------------|-----------------------------------|
-| Group B invites Group A with Guest                             | Guest  | Guest               | Guest                        | Guest                        | Guest                             |
-| Group B invites Group A with Guest + `read_code`               | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Guest + `read_code`          | Guest + `read_code`               |
-| Group B invites Group A with Guest + `read_vulnerability`      | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Guest + `read_vulnerability` | Guest + `read_vulnerability`      |
-| Group B invites Group A with Developer                         | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Developer                    | Developer                         |
-| Group B invites Group A with Developer + `admin_vulnerability` | Guest  | Guest + `read_code` | Guest + `read_vulnerability` | Developer                    | Developer + `admin_vulnerability` |
-
-When User C is invited to Group B with the same default role (Guest), but different custom permissions with the same base access level (`read_code` and `read_vulnerability`), User C retains the custom permission from Group A (`read_vulnerability`).
-The ability to assign a custom role when sharing a group to a project can be tracked in [issue 468329](https://gitlab.com/gitlab-org/gitlab/-/issues/468329).
+You can only assign custom roles when you invite a group to another group. [Issue 468329](https://gitlab.com/gitlab-org/gitlab/-/issues/468329) proposes to assign a custom role when inviting a group to a project.
 
 ## Supported objects
 
@@ -276,22 +268,6 @@ users to custom roles. For more information, see:
 - [Configure SAML Group Links](../group/saml_sso/group_sync.md#configure-saml-group-links).
 - [Manage group memberships via LDAP](../group/access_and_permissions.md#manage-group-memberships-with-ldap).
 
-## Custom admin roles
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15854) as an [experiment](../../policy/development_stages_support.md) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `custom_ability_read_admin_dashboard`.
-
-{{< /history >}}
-
-Prerequisites:
-
-- You must be an administrator for the GitLab Self-Managed instance.
-
-You can use the API to [create](../../api/graphql/reference/_index.md#mutationmemberroleadmincreate) and [assign](../../api/graphql/reference/_index.md#mutationmemberroletouserassign) custom admin roles. These roles allow you to grant limited access to administrator resources.
-
-For information on available permissions, see [custom permissions](abilities.md).
-
 ## Contribute new permissions
 
 If a permission does not exist, you can:
@@ -299,11 +275,3 @@ If a permission does not exist, you can:
 - Discuss individual custom role and permission requests in [issue 391760](https://gitlab.com/gitlab-org/gitlab/-/issues/391760).
 - Create an issue to request the permission with the [permission proposal issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Permission%2520Proposal).
 - Contribute to GitLab and add the permission.
-
-## Known issues
-
-- If a user with a custom role is shared with a group or project, their custom
-  role is not transferred over with them. The user has the regular Guest role in
-  the new group or project.
-- You cannot use an [Auditor user](../../administration/auditor_users.md) as a template for a custom role.
-- There can be only 10 custom roles on your instance or namespace. See [issue 450929](https://gitlab.com/gitlab-org/gitlab/-/issues/450929) for more details.

@@ -120,7 +120,7 @@ module Mutations
             _('Only project level work items can be created to resolve noteable discussions')
         end
 
-        return if ::WorkItems::Type.allowed_group_level_types(container).include?(type.base_type)
+        return if ::WorkItems::Type.allowed_types(container).include?(type.base_type)
 
         raise_feature_not_available_error!(type)
       end

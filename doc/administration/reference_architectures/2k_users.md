@@ -191,7 +191,7 @@ The basic ports to be used are shown in the table below.
   to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the
   [web terminal](../integration/terminal.md) integration guide for
   more details.
-- (*2*): When using HTTPS protocol for port 443, you will need to add an SSL
+- (*2*): When using HTTPS protocol for port 443, you must add an SSL
   certificate to the load balancers. If you wish to terminate SSL at the
   GitLab application server instead, use TCP protocol.
 
@@ -264,8 +264,8 @@ The load balancers will be responsible for managing SSL certificates that
 end users will see.
 
 Traffic will also be secure between the load balancers and NGINX in this
-scenario. There is no need to add configuration for proxied SSL because the
-connection will be secure all the way. However, configuration will need to be
+scenario. There is no requirement to add configuration for proxied SSL because the
+connection will be secure all the way. However, configuration must be
 added to GitLab to configure SSL certificates. See
 the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/)
 for details on managing SSL certificates and configuring NGINX.
@@ -465,7 +465,7 @@ Be sure to note the following items:
 - A GitLab server can use one or more Gitaly server nodes.
 - Gitaly addresses must be specified to be correctly resolvable for *all*
   Gitaly clients.
-- Gitaly servers must not be exposed to the public internet, as network traffic
+- Gitaly servers must not be exposed to the public internet because network traffic
   on Gitaly is unencrypted by default. The use of a firewall is highly recommended
   to restrict access to the Gitaly server. Another option is to
   [use TLS](#gitaly-tls-support).
@@ -1099,7 +1099,7 @@ in the future.
 
 GitLab Runner returns job logs in chunks which the Linux package caches temporarily on disk in `/var/opt/gitlab/gitlab-ci/builds` by default, even when using consolidated object storage. With default configuration, this directory needs to be shared through NFS on any GitLab Rails and Sidekiq nodes.
 
-While sharing the job logs through NFS is supported, it's recommended to avoid the need to use NFS by enabling [incremental logging](../cicd/job_logs.md#incremental-logging) (required when no NFS node has been deployed). Incremental logging uses Redis instead of disk space for temporary caching of job logs.
+While sharing the job logs through NFS is supported, avoid the requirement to use NFS by enabling [incremental logging](../cicd/job_logs.md#incremental-logging) (required when no NFS node has been deployed). Incremental logging uses Redis instead of disk space for temporary caching of job logs.
 
 ## Configure advanced search
 
@@ -1292,15 +1292,13 @@ For further information on Sidekiq resource usage, see the Charts documentation 
 
 ### Supporting
 
-The Supporting Node Pool is designed to house all supporting deployments that don't need to be
-on the Webservice and Sidekiq pools.
+The Supporting Node Pool is designed to house all supporting deployments that are not required on the Webservice and Sidekiq pools.
 
 This includes various deployments related to the Cloud Provider's implementation and supporting
 GitLab deployments such as [GitLab Shell](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/).
 
-If you wish to make any additional deployments such as Container Registry, Pages or Monitoring, it's recommended
-to deploy these in this pool where possible and not in the Webservice or Sidekiq pools, as the Supporting pool has been designed
-specifically to accommodate several additional deployments. However, if your deployments don't fit into the
+To make any additional deployments such as Container Registry, Pages, or Monitoring, deploy these in the Supporting Node Pool where possible and not in the Webservice or Sidekiq pools. The Supporting Node Pool has been designed
+to accommodate several additional deployments. However, if your deployments don't fit into the
 pool as given, you can increase the node pool accordingly. Conversely, if the pool in your use case is over-provisioned you can reduce accordingly.
 
 ### Example config file

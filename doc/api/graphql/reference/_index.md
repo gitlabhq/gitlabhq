@@ -23947,6 +23947,15 @@ Represents a summary of the compared codequality report.
 | <a id="codequalityreportscomparerreportsummaryresolved"></a>`resolved` | [`Int`](#int) | Count of resolved code quality degradations. |
 | <a id="codequalityreportscomparerreportsummarytotal"></a>`total` | [`Int`](#int) | Total count of code quality degradations. |
 
+### `CommentTemplatePathType`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="commenttemplatepathtypehref"></a>`href` | [`String!`](#string) | Management link to the comment template. |
+| <a id="commenttemplatepathtypetext"></a>`text` | [`String!`](#string) | Name of the comment template scope. |
+
 ### `Commit`
 
 #### Fields
@@ -27362,7 +27371,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="geonodecisecurefileregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodecisecurefileregistriesids"></a>`ids` | [`[GeoCiSecureFileRegistryID!]`](#geocisecurefileregistryid) | Filters registries by their ID. |
 | <a id="geonodecisecurefileregistrieskeyword"></a>`keyword` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 17.9. A keyword search feature on Geo registries will not be built in the UI due to poor search UX and performance. |
 | <a id="geonodecisecurefileregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodecisecurefileregistriessort"></a>`sort` | [`GeoRegistrySort`](#georegistrysort) | Sort registries by given criteria. |
@@ -27382,7 +27391,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="geonodecontainerrepositoryregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodecontainerrepositoryregistriesids"></a>`ids` | [`[GeoContainerRepositoryRegistryID!]`](#geocontainerrepositoryregistryid) | Filters registries by their ID. |
 | <a id="geonodecontainerrepositoryregistrieskeyword"></a>`keyword` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 17.9. A keyword search feature on Geo registries will not be built in the UI due to poor search UX and performance. |
 | <a id="geonodecontainerrepositoryregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodecontainerrepositoryregistriessort"></a>`sort` | [`GeoRegistrySort`](#georegistrysort) | Sort registries by given criteria. |
@@ -27407,7 +27416,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="geonodedependencyproxyblobregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodedependencyproxyblobregistriesids"></a>`ids` | [`[GeoDependencyProxyBlobRegistryID!]`](#geodependencyproxyblobregistryid) | Filters registries by their ID. |
 | <a id="geonodedependencyproxyblobregistrieskeyword"></a>`keyword` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 17.9. A keyword search feature on Geo registries will not be built in the UI due to poor search UX and performance. |
 | <a id="geonodedependencyproxyblobregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodedependencyproxyblobregistriessort"></a>`sort` | [`GeoRegistrySort`](#georegistrysort) | Sort registries by given criteria. |
@@ -27427,7 +27436,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="geonodedependencyproxymanifestregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodedependencyproxymanifestregistriesids"></a>`ids` | [`[GeoDependencyProxyManifestRegistryID!]`](#geodependencyproxymanifestregistryid) | Filters registries by their ID. |
 | <a id="geonodedependencyproxymanifestregistrieskeyword"></a>`keyword` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 17.9. A keyword search feature on Geo registries will not be built in the UI due to poor search UX and performance. |
 | <a id="geonodedependencyproxymanifestregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodedependencyproxymanifestregistriessort"></a>`sort` | [`GeoRegistrySort`](#georegistrysort) | Sort registries by given criteria. |
@@ -27452,7 +27461,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="geonodedesignmanagementrepositoryregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodedesignmanagementrepositoryregistriesids"></a>`ids` | [`[GeoDesignManagementRepositoryRegistryID!]`](#geodesignmanagementrepositoryregistryid) | Filters registries by their ID. |
 | <a id="geonodedesignmanagementrepositoryregistrieskeyword"></a>`keyword` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 17.9. A keyword search feature on Geo registries will not be built in the UI due to poor search UX and performance. |
 | <a id="geonodedesignmanagementrepositoryregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodedesignmanagementrepositoryregistriessort"></a>`sort` | [`GeoRegistrySort`](#georegistrysort) | Sort registries by given criteria. |
@@ -27472,7 +27481,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="geonodegroupwikirepositoryregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodegroupwikirepositoryregistriesids"></a>`ids` | [`[GeoGroupWikiRepositoryRegistryID!]`](#geogroupwikirepositoryregistryid) | Filters registries by their ID. |
 | <a id="geonodegroupwikirepositoryregistrieskeyword"></a>`keyword` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 17.9. A keyword search feature on Geo registries will not be built in the UI due to poor search UX and performance. |
 | <a id="geonodegroupwikirepositoryregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodegroupwikirepositoryregistriessort"></a>`sort` | [`GeoRegistrySort`](#georegistrysort) | Sort registries by given criteria. |
@@ -27492,7 +27501,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="geonodejobartifactregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodejobartifactregistriesids"></a>`ids` | [`[GeoJobArtifactRegistryID!]`](#geojobartifactregistryid) | Filters registries by their ID. |
 | <a id="geonodejobartifactregistrieskeyword"></a>`keyword` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 17.9. A keyword search feature on Geo registries will not be built in the UI due to poor search UX and performance. |
 | <a id="geonodejobartifactregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodejobartifactregistriessort"></a>`sort` | [`GeoRegistrySort`](#georegistrysort) | Sort registries by given criteria. |
@@ -27512,7 +27521,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="geonodelfsobjectregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodelfsobjectregistriesids"></a>`ids` | [`[GeoLfsObjectRegistryID!]`](#geolfsobjectregistryid) | Filters registries by their ID. |
 | <a id="geonodelfsobjectregistrieskeyword"></a>`keyword` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 17.9. A keyword search feature on Geo registries will not be built in the UI due to poor search UX and performance. |
 | <a id="geonodelfsobjectregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodelfsobjectregistriessort"></a>`sort` | [`GeoRegistrySort`](#georegistrysort) | Sort registries by given criteria. |
@@ -27532,7 +27541,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="geonodemergerequestdiffregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodemergerequestdiffregistriesids"></a>`ids` | [`[GeoMergeRequestDiffRegistryID!]`](#geomergerequestdiffregistryid) | Filters registries by their ID. |
 | <a id="geonodemergerequestdiffregistrieskeyword"></a>`keyword` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 17.9. A keyword search feature on Geo registries will not be built in the UI due to poor search UX and performance. |
 | <a id="geonodemergerequestdiffregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodemergerequestdiffregistriessort"></a>`sort` | [`GeoRegistrySort`](#georegistrysort) | Sort registries by given criteria. |
@@ -27552,7 +27561,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="geonodepackagefileregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodepackagefileregistriesids"></a>`ids` | [`[GeoPackageFileRegistryID!]`](#geopackagefileregistryid) | Filters registries by their ID. |
 | <a id="geonodepackagefileregistrieskeyword"></a>`keyword` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 17.9. A keyword search feature on Geo registries will not be built in the UI due to poor search UX and performance. |
 | <a id="geonodepackagefileregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodepackagefileregistriessort"></a>`sort` | [`GeoRegistrySort`](#georegistrysort) | Sort registries by given criteria. |
@@ -27572,7 +27581,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="geonodepagesdeploymentregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodepagesdeploymentregistriesids"></a>`ids` | [`[GeoPagesDeploymentRegistryID!]`](#geopagesdeploymentregistryid) | Filters registries by their ID. |
 | <a id="geonodepagesdeploymentregistrieskeyword"></a>`keyword` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 17.9. A keyword search feature on Geo registries will not be built in the UI due to poor search UX and performance. |
 | <a id="geonodepagesdeploymentregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodepagesdeploymentregistriessort"></a>`sort` | [`GeoRegistrySort`](#georegistrysort) | Sort registries by given criteria. |
@@ -27592,7 +27601,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="geonodepipelineartifactregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodepipelineartifactregistriesids"></a>`ids` | [`[GeoPipelineArtifactRegistryID!]`](#geopipelineartifactregistryid) | Filters registries by their ID. |
 | <a id="geonodepipelineartifactregistrieskeyword"></a>`keyword` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 17.9. A keyword search feature on Geo registries will not be built in the UI due to poor search UX and performance. |
 | <a id="geonodepipelineartifactregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodepipelineartifactregistriessort"></a>`sort` | [`GeoRegistrySort`](#georegistrysort) | Sort registries by given criteria. |
@@ -27612,7 +27621,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="geonodeprojectrepositoryregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodeprojectrepositoryregistriesids"></a>`ids` | [`[GeoProjectRepositoryRegistryID!]`](#geoprojectrepositoryregistryid) | Filters registries by their ID. |
 | <a id="geonodeprojectrepositoryregistrieskeyword"></a>`keyword` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 17.9. A keyword search feature on Geo registries will not be built in the UI due to poor search UX and performance. |
 | <a id="geonodeprojectrepositoryregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodeprojectrepositoryregistriessort"></a>`sort` | [`GeoRegistrySort`](#georegistrysort) | Sort registries by given criteria. |
@@ -27632,7 +27641,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="geonodeprojectwikirepositoryregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodeprojectwikirepositoryregistriesids"></a>`ids` | [`[GeoProjectWikiRepositoryRegistryID!]`](#geoprojectwikirepositoryregistryid) | Filters registries by their ID. |
 | <a id="geonodeprojectwikirepositoryregistrieskeyword"></a>`keyword` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 17.9. A keyword search feature on Geo registries will not be built in the UI due to poor search UX and performance. |
 | <a id="geonodeprojectwikirepositoryregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodeprojectwikirepositoryregistriessort"></a>`sort` | [`GeoRegistrySort`](#georegistrysort) | Sort registries by given criteria. |
@@ -27652,7 +27661,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="geonodesnippetrepositoryregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodesnippetrepositoryregistriesids"></a>`ids` | [`[GeoSnippetRepositoryRegistryID!]`](#geosnippetrepositoryregistryid) | Filters registries by their ID. |
 | <a id="geonodesnippetrepositoryregistrieskeyword"></a>`keyword` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 17.9. A keyword search feature on Geo registries will not be built in the UI due to poor search UX and performance. |
 | <a id="geonodesnippetrepositoryregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodesnippetrepositoryregistriessort"></a>`sort` | [`GeoRegistrySort`](#georegistrysort) | Sort registries by given criteria. |
@@ -27672,7 +27681,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="geonodeterraformstateversionregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodeterraformstateversionregistriesids"></a>`ids` | [`[GeoTerraformStateVersionRegistryID!]`](#geoterraformstateversionregistryid) | Filters registries by their ID. |
 | <a id="geonodeterraformstateversionregistrieskeyword"></a>`keyword` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 17.9. A keyword search feature on Geo registries will not be built in the UI due to poor search UX and performance. |
 | <a id="geonodeterraformstateversionregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodeterraformstateversionregistriessort"></a>`sort` | [`GeoRegistrySort`](#georegistrysort) | Sort registries by given criteria. |
@@ -27692,7 +27701,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="geonodeuploadregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodeuploadregistriesids"></a>`ids` | [`[GeoUploadRegistryID!]`](#geouploadregistryid) | Filters registries by their ID. |
 | <a id="geonodeuploadregistrieskeyword"></a>`keyword` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 17.9. A keyword search feature on Geo registries will not be built in the UI due to poor search UX and performance. |
 | <a id="geonodeuploadregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodeuploadregistriessort"></a>`sort` | [`GeoRegistrySort`](#georegistrysort) | Sort registries by given criteria. |
@@ -29617,6 +29626,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupworkitemtypeslistall"></a>`listAll` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Returns all work item types, regardless of enablement status. |
 | <a id="groupworkitemtypesname"></a>`name` | [`IssueType`](#issuetype) | Filter work item types by the given name. |
 
 ##### `Group.workItems`
@@ -33836,6 +33846,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="namespaceworkitemtypeslistall"></a>`listAll` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Returns all work item types, regardless of enablement status. |
 | <a id="namespaceworkitemtypesname"></a>`name` | [`IssueType`](#issuetype) | Filter work item types by the given name. |
 
 ##### `Namespace.workspacesClusterAgents`
@@ -37732,6 +37743,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectworkitemtypeslistall"></a>`listAll` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Returns all work item types, regardless of enablement status. |
 | <a id="projectworkitemtypesname"></a>`name` | [`IssueType`](#issuetype) | Filter work item types by the given name. |
 
 ##### `Project.workItems`
@@ -41856,6 +41868,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="workitemarchived"></a>`archived` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.5. **Status**: Experiment. Whether the work item belongs to an archived project. Always false for group level work items. |
 | <a id="workitemauthor"></a>`author` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | **Introduced** in GitLab 15.9. **Status**: Experiment. User that created the work item. |
 | <a id="workitemclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the work item was closed. |
+| <a id="workitemcommenttemplatespaths"></a>`commentTemplatesPaths` | [`[CommentTemplatePathType!]!`](#commenttemplatepathtype) | Paths of the comment templates. |
 | <a id="workitemconfidential"></a>`confidential` | [`Boolean!`](#boolean) | Indicates the work item is confidential. |
 | <a id="workitemcreatenoteemail"></a>`createNoteEmail` | [`String`](#string) | User specific email address for the work item. |
 | <a id="workitemcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the work item was created. |
@@ -47388,6 +47401,108 @@ Represents signed double-precision fractional values as specified by [IEEE 754](
 A `GeoBaseRegistryID` is a global ID. It is encoded as a string.
 
 An example `GeoBaseRegistryID` is: `"gid://gitlab/Geo::BaseRegistry/1"`.
+
+### `GeoCiSecureFileRegistryID`
+
+A `GeoCiSecureFileRegistryID` is a global ID. It is encoded as a string.
+
+An example `GeoCiSecureFileRegistryID` is: `"gid://gitlab/Geo::CiSecureFileRegistry/1"`.
+
+### `GeoContainerRepositoryRegistryID`
+
+A `GeoContainerRepositoryRegistryID` is a global ID. It is encoded as a string.
+
+An example `GeoContainerRepositoryRegistryID` is: `"gid://gitlab/Geo::ContainerRepositoryRegistry/1"`.
+
+### `GeoDependencyProxyBlobRegistryID`
+
+A `GeoDependencyProxyBlobRegistryID` is a global ID. It is encoded as a string.
+
+An example `GeoDependencyProxyBlobRegistryID` is: `"gid://gitlab/Geo::DependencyProxyBlobRegistry/1"`.
+
+### `GeoDependencyProxyManifestRegistryID`
+
+A `GeoDependencyProxyManifestRegistryID` is a global ID. It is encoded as a string.
+
+An example `GeoDependencyProxyManifestRegistryID` is: `"gid://gitlab/Geo::DependencyProxyManifestRegistry/1"`.
+
+### `GeoDesignManagementRepositoryRegistryID`
+
+A `GeoDesignManagementRepositoryRegistryID` is a global ID. It is encoded as a string.
+
+An example `GeoDesignManagementRepositoryRegistryID` is: `"gid://gitlab/Geo::DesignManagementRepositoryRegistry/1"`.
+
+### `GeoGroupWikiRepositoryRegistryID`
+
+A `GeoGroupWikiRepositoryRegistryID` is a global ID. It is encoded as a string.
+
+An example `GeoGroupWikiRepositoryRegistryID` is: `"gid://gitlab/Geo::GroupWikiRepositoryRegistry/1"`.
+
+### `GeoJobArtifactRegistryID`
+
+A `GeoJobArtifactRegistryID` is a global ID. It is encoded as a string.
+
+An example `GeoJobArtifactRegistryID` is: `"gid://gitlab/Geo::JobArtifactRegistry/1"`.
+
+### `GeoLfsObjectRegistryID`
+
+A `GeoLfsObjectRegistryID` is a global ID. It is encoded as a string.
+
+An example `GeoLfsObjectRegistryID` is: `"gid://gitlab/Geo::LfsObjectRegistry/1"`.
+
+### `GeoMergeRequestDiffRegistryID`
+
+A `GeoMergeRequestDiffRegistryID` is a global ID. It is encoded as a string.
+
+An example `GeoMergeRequestDiffRegistryID` is: `"gid://gitlab/Geo::MergeRequestDiffRegistry/1"`.
+
+### `GeoPackageFileRegistryID`
+
+A `GeoPackageFileRegistryID` is a global ID. It is encoded as a string.
+
+An example `GeoPackageFileRegistryID` is: `"gid://gitlab/Geo::PackageFileRegistry/1"`.
+
+### `GeoPagesDeploymentRegistryID`
+
+A `GeoPagesDeploymentRegistryID` is a global ID. It is encoded as a string.
+
+An example `GeoPagesDeploymentRegistryID` is: `"gid://gitlab/Geo::PagesDeploymentRegistry/1"`.
+
+### `GeoPipelineArtifactRegistryID`
+
+A `GeoPipelineArtifactRegistryID` is a global ID. It is encoded as a string.
+
+An example `GeoPipelineArtifactRegistryID` is: `"gid://gitlab/Geo::PipelineArtifactRegistry/1"`.
+
+### `GeoProjectRepositoryRegistryID`
+
+A `GeoProjectRepositoryRegistryID` is a global ID. It is encoded as a string.
+
+An example `GeoProjectRepositoryRegistryID` is: `"gid://gitlab/Geo::ProjectRepositoryRegistry/1"`.
+
+### `GeoProjectWikiRepositoryRegistryID`
+
+A `GeoProjectWikiRepositoryRegistryID` is a global ID. It is encoded as a string.
+
+An example `GeoProjectWikiRepositoryRegistryID` is: `"gid://gitlab/Geo::ProjectWikiRepositoryRegistry/1"`.
+
+### `GeoSnippetRepositoryRegistryID`
+
+A `GeoSnippetRepositoryRegistryID` is a global ID. It is encoded as a string.
+
+An example `GeoSnippetRepositoryRegistryID` is: `"gid://gitlab/Geo::SnippetRepositoryRegistry/1"`.
+
+### `GeoTerraformStateVersionRegistryID`
+
+A `GeoTerraformStateVersionRegistryID` is a global ID. It is encoded as a string.
+
+An example `GeoTerraformStateVersionRegistryID` is: `"gid://gitlab/Geo::TerraformStateVersionRegistry/1"`.
+
+### `GeoUploadRegistryID`
+
+A `GeoUploadRegistryID` is a global ID. It is encoded as a string.
+
+An example `GeoUploadRegistryID` is: `"gid://gitlab/Geo::UploadRegistry/1"`.
 
 ### `GitlabErrorTrackingDetailedErrorID`
 

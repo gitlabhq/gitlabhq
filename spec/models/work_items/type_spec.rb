@@ -361,20 +361,17 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
     end
   end
 
-  describe '.allowed_group_level_types' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:non_ee_types) { described_class.base_types.keys.excluding('epic') }
+  describe '.allowed_types' do
+    it_behaves_like 'allowed work item types for a project' do
+      let_it_be(:resource_parent) { create(:project) }
 
-    subject { described_class.allowed_group_level_types(group) }
+      subject(:types_list) { described_class.allowed_types(resource_parent).sort }
+    end
 
-    it { is_expected.to include(*non_ee_types) }
+    it_behaves_like 'allowed work item types for a group' do
+      let_it_be(:resource_parent) { create(:group) }
 
-    context 'when create_group_level_work_items feature flag is disabled' do
-      before do
-        stub_feature_flags(create_group_level_work_items: false)
-      end
-
-      it { is_expected.to be_empty }
+      subject(:types_list) { described_class.allowed_types(resource_parent).sort }
     end
   end
 

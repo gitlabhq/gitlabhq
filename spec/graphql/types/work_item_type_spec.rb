@@ -38,6 +38,7 @@ RSpec.describe GitlabSchema.types['WorkItem'], feature_category: :team_planning 
       name
       duplicatedToWorkItemUrl
       movedToWorkItemUrl
+      comment_templates_paths
       showPlanUpgradePromotion
       hidden
     ]

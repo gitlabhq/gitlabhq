@@ -124,6 +124,7 @@ export default {
     },
     reRequestReview(userId) {
       this.loadingStates[userId] = LOADING_STATE;
+      this.$root.$emit('bv::hide::tooltip');
       this.$emit('request-review', { userId, callback: this.requestReviewComplete });
     },
     removeReviewer(userId) {

@@ -4,7 +4,8 @@ query namespaceWorkItemTypes($fullPath: ID!, $name: IssueType) {
   workspace: namespace(fullPath: $fullPath) {
     id
     webUrl
-    workItemTypes(name: $name) {
+    # listAll is a temporary fix for <ISSUE LINK HERE>
+    workItemTypes(name: $name, listAll: true) {
       nodes {
         ...WorkItemTypeFragment
       }

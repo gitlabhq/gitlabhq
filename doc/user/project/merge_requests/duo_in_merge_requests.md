@@ -164,7 +164,7 @@ The summary is displayed in the comment box. You can edit and refine the summary
 
 Provide feedback on this experimental feature in [issue 408991](https://gitlab.com/gitlab-org/gitlab/-/issues/408991).
 
-Data usage: When you use this feature, the following data is sent to the large language model referenced above:
+Data usage: When you use this feature, the following data is sent to the large language model:
 
 - Draft comment's text
 

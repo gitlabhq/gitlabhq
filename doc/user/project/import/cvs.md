@@ -49,10 +49,10 @@ The following list illustrates the main differences between CVS and Git:
   security and verification that the commit indeed came from its original author.
   GitLab shows whether a signed commit is correctly verified.
 
-_Some of the items above were taken from this great
+Some of the previous items were taken from this great
 [Stack Overflow post](https://stackoverflow.com/a/824241/974710). For a more
 complete list of differences, consult the
-Wikipedia article on [comparing the different version control software](https://en.wikipedia.org/wiki/Comparison_of_version_control_software)._
+Wikipedia article on [comparing the different version control software](https://en.wikipedia.org/wiki/Comparison_of_version_control_software).
 
 ## Why migrate
 

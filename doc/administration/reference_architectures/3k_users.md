@@ -280,7 +280,7 @@ The basic ports to be used are shown in the table below.
   to pass through the `Connection` and `Upgrade` hop-by-hop headers. See the
   [web terminal](../integration/terminal.md) integration guide for
   more details.
-- (*2*): When using HTTPS protocol for port 443, you will need to add an SSL
+- (*2*): When using HTTPS protocol for port 443, you must add an SSL
   certificate to the load balancers. If you wish to terminate SSL at the
   GitLab application server instead, use TCP protocol.
 
@@ -353,8 +353,8 @@ The load balancers will be responsible for managing SSL certificates that
 end users will see.
 
 Traffic will also be secure between the load balancers and NGINX in this
-scenario. There is no need to add configuration for proxied SSL because the
-connection will be secure all the way. However, configuration will need to be
+scenario. There is no requirement to add configuration for proxied SSL because the
+connection will be secure all the way. However, configuration must be
 added to GitLab to configure SSL certificates. See
 the [HTTPS documentation](https://docs.gitlab.com/omnibus/settings/ssl/)
 for details on managing SSL certificates and configuring NGINX.
@@ -541,7 +541,7 @@ If you use a third party external service:
    needs privileges to create the `gitlabhq_production` database.
 1. Configure the GitLab application servers with the appropriate details.
    This step is covered in [Configuring the GitLab Rails application](#configure-gitlab-rails).
-1. The number of nodes required to achieve HA may differ depending on the service compared to the Linux package and doesn't need to match accordingly.
+1. The number of nodes required to achieve HA can differ, depending on the service, and can differ from the Linux package.
 1. However, if [Database Load Balancing](../postgresql/database_load_balancing.md) via Read Replicas is desired for further improved performance it's recommended to follow the node count for the Reference Architecture.
 
 ### Standalone PostgreSQL using the Linux package
@@ -918,7 +918,7 @@ a node and change its status from primary to replica (and vice versa).
 
    # IP address pointing to a local IP that the other machines can reach to.
    # You can also set bind to '0.0.0.0' which listen in all interfaces.
-   # If you really need to bind to an external accessible IP, make
+   # If you really must bind to an external accessible IP, make
    # sure you add extra firewall rules to prevent unauthorized access.
    redis['bind'] = '10.6.0.61'
 
@@ -981,7 +981,7 @@ a node and change its status from primary to replica (and vice versa).
 
    # IP address pointing to a local IP that the other machines can reach to.
    # You can also set bind to '0.0.0.0' which listen in all interfaces.
-   # If you really need to bind to an external accessible IP, make
+   # If you really must bind to an external accessible IP, make
    # sure you add extra firewall rules to prevent unauthorized access.
    redis['bind'] = '10.6.0.62'
 
@@ -1165,9 +1165,8 @@ There are many third-party solutions for PostgreSQL HA. The solution selected mu
 {{< alert type="note" >}}
 
 With a third-party setup, it's possible to colocate Praefect's database on the same server as
-the main [GitLab](#provide-your-own-postgresql-instance) database as a convenience unless
-you are using Geo, where separate database instances are required for handling replication correctly.
-In this setup, the specs of the main database setup shouldn't need to be changed as the impact should be
+the main [GitLab](#provide-your-own-postgresql-instance) database. However, if you are using Geo, separate database instances are required for handling replication correctly.
+In this setup, the specs of the main database setup don't have to be changed because the impact should be
 minimal.
 
 {{< /alert >}}
@@ -1182,7 +1181,7 @@ Once the database is set up, follow the [post configuration](#praefect-postgresq
 
 #### Praefect PostgreSQL post-configuration
 
-After the Praefect PostgreSQL server has been set up, you'll then need to configure the user and database for Praefect to use.
+After the Praefect PostgreSQL server has been set up, you must configure the user and database for Praefect to use.
 
 We recommend the user be named `praefect` and the database `praefect_production`, and these can be configured as standard in PostgreSQL.
 The password for the user is the same as the one you configured earlier as `<praefect_postgresql_password>`.
@@ -1243,7 +1242,7 @@ Gitaly Cluster nodes are configured in Praefect via a `virtual storage`. Each st
 the details of each Gitaly node that makes up the cluster. Each storage is also given a name
 and this name is used in several areas of the configuration. In this guide, the name of the storage will be
 `default`. Also, this guide is geared towards new installs, if upgrading an existing environment
-to use Gitaly Cluster, you may need to use a different name.
+to use Gitaly Cluster, you might have to use a different name.
 Refer to the [Praefect documentation](../gitaly/praefect.md#praefect) for more information.
 
 The following IPs will be used as an example:
@@ -1403,7 +1402,7 @@ input/output operations per second (IOPS) for read operations and 2,000 IOPS for
 write operations. If you're running the environment on a Cloud provider,
 refer to their documentation about how to configure IOPS correctly.
 
-Gitaly servers must not be exposed to the public internet, as network traffic
+Gitaly servers must not be exposed to the public internet because network traffic
 on Gitaly is unencrypted by default. The use of a firewall is highly recommended
 to restrict access to the Gitaly server. Another option is to
 [use TLS](#gitaly-cluster-tls-support).
@@ -1573,7 +1572,7 @@ Note the following:
   `listen_addr` and an encrypted listening address `tls_listen_addr` at the same time.
   This allows you to do a gradual transition from unencrypted to encrypted traffic, if
   necessary. To disable the unencrypted listener, set `praefect['configuration'][:listen_addr] = nil`.
-- The Internal Load Balancer will also access to the certificates and need to be configured
+- The Internal Load Balancer will also access to the certificates and must be configured
   to allow for TLS passthrough.
   Refer to the load balancers documentation on how to configure this.
 
@@ -2142,7 +2141,7 @@ in the future.
 
 GitLab Runner returns job logs in chunks which the Linux package caches temporarily on disk in `/var/opt/gitlab/gitlab-ci/builds` by default, even when using consolidated object storage. With default configuration, this directory needs to be shared through NFS on any GitLab Rails and Sidekiq nodes.
 
-While sharing the job logs through NFS is supported, it's recommended to avoid the need to use NFS by enabling [incremental logging](../cicd/job_logs.md#incremental-logging) (required when no NFS node has been deployed). Incremental logging uses Redis instead of disk space for temporary caching of job logs.
+While sharing the job logs through NFS is supported, avoid the need to use NFS by enabling [incremental logging](../cicd/job_logs.md#incremental-logging) (required when no NFS node has been deployed). Incremental logging uses Redis instead of disk space for temporary caching of job logs.
 
 ## Configure advanced search
 
@@ -2163,7 +2162,7 @@ cluster alongside your instance, read how to
 ## Supported modifications for lower user counts (HA)
 
 The 60 RPS or 3,000 users GitLab reference architecture is the smallest we recommend that achieves High Availability (HA).
-However, for environments that need to serve fewer users or a lower RPS but maintain HA, there are several
+However, for environments that must serve fewer users or a lower RPS but maintain HA, there are several
 supported modifications you can make to this architecture to reduce complexity and cost.
 
 It should be noted that to achieve HA with GitLab, the 60 RPS or 3,000 users architecture's makeup is ultimately what is
@@ -2187,7 +2186,7 @@ If not stated below, no other modifications are supported for lower use counts.
   - Consul, Redis Sentinel, and Praefect: Require an odd number, and a minimum of three nodes, for a voting quorum.
 - Running select components in reputable Cloud PaaS solutions: The following specific components are supported to be run on reputable Cloud Provider PaaS solutions. By doing this, additional dependent components can also be removed:
   - PostgreSQL: Can be run on reputable Cloud PaaS solutions such as Google Cloud SQL or Amazon RDS. In this setup, the PgBouncer and Consul nodes are no longer required:
-    - Consul may still be desired if [Prometheus](../monitoring/prometheus/_index.md) auto discovery is a requirement, otherwise you would need to [manually add scrape configurations](../monitoring/prometheus/_index.md#adding-custom-scrape-configurations) for all nodes.
+    - Consul may still be desired if [Prometheus](../monitoring/prometheus/_index.md) auto discovery is a requirement, otherwise you must [manually add scrape configurations](../monitoring/prometheus/_index.md#adding-custom-scrape-configurations) for all nodes.
   - Redis: Can be run on reputable Cloud PaaS solutions such as Google Memorystore and AWS ElastiCache. In this setup, the Redis Sentinel is no longer required.
 
 ## Cloud Native Hybrid reference architecture with Helm Charts (alternative)
@@ -2392,15 +2391,12 @@ For further information on Sidekiq resource usage, see the Charts documentation 
 
 ### Supporting
 
-The Supporting Node Pool is designed to house all supporting deployments that don't need to be
-on the Webservice and Sidekiq pools.
+The Supporting Node Pool is designed to house all supporting deployments that are not required on the Webservice and Sidekiq pools.
 
 This includes various deployments related to the Cloud Provider's implementation and supporting
 GitLab deployments such as [GitLab Shell](https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/).
 
-If you wish to make any additional deployments such as Container Registry, Pages or Monitoring, it's recommended
-to deploy these in this pool where possible and not in the Webservice or Sidekiq pools, as the Supporting pool has been designed
-specifically to accommodate several additional deployments. However, if your deployments don't fit into the
+To make any additional deployments such as Container Registry, Pages, or Monitoring, deploy these in the Supporting Node Pool where possible and not in the Webservice or Sidekiq pools. The Supporting Node Pool has been designed to accommodate several additional deployments. However, if your deployments don't fit into the
 pool as given, you can increase the node pool accordingly. Conversely, if the pool in your use case is over-provisioned you can reduce accordingly.
 
 ### Example config file

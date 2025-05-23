@@ -1737,7 +1737,7 @@ lib/gitlab/checks/**
 /lib/tasks/gitlab/seed/runner_fleet.rake
 
 # Require approvals for Project API entities affecting availability
-[Data Stores::Tenant Scale] @gitlab-org/tenant-scale-group/backend-engineers
+[Organizations] @gitlab-com/gl-infra/tenant-scale/organizations/backend-engineers
 lib/api/entities/basic_project_details.rb
 lib/api/entities/project_with_access.rb
 lib/api/entities/project_identity.rb

@@ -567,6 +567,12 @@ Gitlab/EeOnlyClass:
   Include:
     - 'ee/**/ee/**/*.rb'
 
+Gitlab/RSpec/AvoidCreateDefaultOrganization:
+  Enabled: true
+  Include:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/373194
 Gitlab/RSpec/AvoidSetup:
   Enabled: true

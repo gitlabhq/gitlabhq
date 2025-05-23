@@ -93,7 +93,7 @@ GitLab assumes the track label is `stable` if the label is blank or missing.
 Any other track label is considered `canary` (temporary).
 This allows GitLab to discover whether a deployment is stable or canary (temporary).
 
-Once all of the above are set up and the pipeline has run at least once,
+After you configure the deploy boards, and the pipeline runs at least once,
 Go to the environments page under **Pipelines > Environments**.
 As the pipeline executes, deploy boards clearly mark canary pods, enabling
 quick and clear insight into the status of each environment and deployment.

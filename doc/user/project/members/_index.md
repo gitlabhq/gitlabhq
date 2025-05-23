@@ -71,7 +71,7 @@ flowchart RL
 
 ![Project members page](img/project_members_v17_4.png)
 
-In the above example:
+In the previous example:
 
 - **Administrator** is an inherited member from the **demo** group.
 - **User 0** is an inherited member from the **demo** group.
