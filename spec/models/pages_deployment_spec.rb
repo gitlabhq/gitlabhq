@@ -34,19 +34,9 @@ RSpec.describe PagesDeployment, feature_category: :pages do
       stub_pages_object_storage(::Pages::DeploymentUploader)
     end
 
-    let!(:remote_deployment) { create(:pages_deployment, project: project, file_store: ::ObjectStorage::Store::REMOTE) }
-    let!(:local_deployment) { create(:pages_deployment, project: project, file_store: ::ObjectStorage::Store::LOCAL) }
-
-    describe '.with_files_stored_locally' do
-      it 'only returns deployments with files stored locally' do
-        expect(described_class.with_files_stored_locally).to contain_exactly(local_deployment)
-      end
-    end
-
-    describe '.with_files_stored_remotely' do
-      it 'only returns deployments with files stored remotely' do
-        expect(described_class.with_files_stored_remotely).to contain_exactly(remote_deployment)
-      end
+    it_behaves_like 'object storable' do
+      let(:create_local) { create(:pages_deployment, project: project, file_store: ::ObjectStorage::Store::LOCAL) }
+      let(:create_remote) { create(:pages_deployment, project: project, file_store: ::ObjectStorage::Store::REMOTE) }
     end
   end
 

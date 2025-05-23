@@ -10,6 +10,7 @@ import AccessToken from './access_token.vue';
 import AccessTokenForm from './access_token_form.vue';
 import AccessTokenTable from './access_token_table.vue';
 import AccessTokenStatistics from './access_token_statistics.vue';
+import UserAvatar from './user_avatar.vue';
 
 export default {
   components: {
@@ -22,12 +23,18 @@ export default {
     AccessTokenForm,
     AccessTokenTable,
     AccessTokenStatistics,
+    UserAvatar,
   },
   inject: ['accessTokenCreate', 'accessTokenRevoke', 'accessTokenRotate', 'accessTokenShow'],
   props: {
     id: {
       type: Number,
       required: true,
+    },
+    showAvatar: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -94,6 +101,7 @@ export default {
 
 <template>
   <div>
+    <user-avatar v-if="showAvatar" :id="id" />
     <page-heading :heading="s__('AccessTokens|Personal access tokens')">
       <template #description>
         {{

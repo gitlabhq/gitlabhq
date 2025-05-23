@@ -4,9 +4,11 @@ class Packages::PackageFile < ApplicationRecord
   include EachBatch
   include UpdateProjectStatistics
   include FileStoreMounter
+  include ObjectStorable
   include Packages::Installable
   include Packages::Destructible
 
+  STORE_COLUMN = :file_store
   INSTALLABLE_STATUSES = [:default].freeze
   ENCODED_SLASH = "%2F"
   SORTABLE_COLUMNS = %w[id file_name created_at].freeze
@@ -45,7 +47,6 @@ class Packages::PackageFile < ApplicationRecord
   scope :for_package_ids, ->(ids) { where(package_id: ids) }
   scope :with_file_name, ->(file_name) { where(file_name: file_name) }
   scope :with_file_name_like, ->(file_name) { where(arel_table[:file_name].matches(file_name)) }
-  scope :with_files_stored_locally, -> { where(file_store: ::Packages::PackageFileUploader::Store::LOCAL) }
   scope :with_format, ->(format) { where(::Packages::PackageFile.arel_table[:file_name].matches("%.#{format}")) }
   scope :with_nuget_format, -> { where("reverse(split_part(reverse(packages_package_files.file_name), '.', 1)) = :format", format: Packages::Nuget::FORMAT) }
 

@@ -5,12 +5,13 @@ class LfsObject < ApplicationRecord
   include Checksummable
   include EachBatch
   include FileStoreMounter
+  include ObjectStorable
+
+  STORE_COLUMN = :file_store
 
   has_many :lfs_objects_projects
   has_many :projects, -> { distinct }, through: :lfs_objects_projects
 
-  scope :with_files_stored_locally, -> { where(file_store: LfsObjectUploader::Store::LOCAL) }
-  scope :with_files_stored_remotely, -> { where(file_store: LfsObjectUploader::Store::REMOTE) }
   scope :for_oids, ->(oids) { where(oid: oids) }
 
   validates :oid, presence: true, uniqueness: true, format: { with: /\A\h{64}\z/ }

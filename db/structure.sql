@@ -19794,7 +19794,8 @@ CREATE TABLE pages_domain_acme_orders (
     challenge_file_content text NOT NULL,
     encrypted_private_key text NOT NULL,
     encrypted_private_key_iv text NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_07cb634b65 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE pages_domain_acme_orders_id_seq
@@ -38115,7 +38116,7 @@ CREATE UNIQUE INDEX index_work_item_current_statuses_on_work_item_id ON work_ite
 
 CREATE UNIQUE INDEX index_work_item_custom_lifecycles_on_namespace_id_and_name ON work_item_custom_lifecycles USING btree (namespace_id, name);
 
-CREATE UNIQUE INDEX index_work_item_custom_statuses_on_namespace_id_and_name ON work_item_custom_statuses USING btree (namespace_id, name);
+CREATE UNIQUE INDEX index_work_item_custom_statuses_on_namespace_id_and_lower_name ON work_item_custom_statuses USING btree (namespace_id, TRIM(BOTH FROM lower(name)));
 
 CREATE INDEX index_work_item_hierarchy_restrictions_on_child_type_id ON work_item_hierarchy_restrictions USING btree (child_type_id);
 

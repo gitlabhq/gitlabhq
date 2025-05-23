@@ -18,7 +18,9 @@ title: Troubleshooting two-factor authentication
 When making a request, you might get an error that states:
 
 ```plaintext
-HTTP Basic: Access denied. If a password was provided for Git authentication, the password was incorrect or you're required to use a token instead of a password. If a token was provided, it was either incorrect, expired, or improperly scoped.
+HTTP Basic: Access denied. If a password was provided for Git authentication,
+the password was incorrect or you're required to use a token instead of a password.
+If a token was provided, it was either incorrect, expired, or improperly scoped.
 ```
 
 This error occurs when:

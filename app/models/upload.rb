@@ -3,6 +3,9 @@
 class Upload < ApplicationRecord
   include Checksummable
   include EachBatch
+  include ObjectStorable
+
+  STORE_COLUMN = :store
 
   # Upper limit for foreground checksum processing
   CHECKSUM_THRESHOLD = 100.megabytes
@@ -15,8 +18,6 @@ class Upload < ApplicationRecord
   validates :model, presence: true
   validates :uploader, presence: true
 
-  scope :with_files_stored_locally, -> { where(store: ObjectStorage::Store::LOCAL) }
-  scope :with_files_stored_remotely, -> { where(store: ObjectStorage::Store::REMOTE) }
   scope :for_model_type_and_id, ->(type, id) { where(model_type: type, model_id: id) }
   scope :for_uploader, ->(uploader_class) { where(uploader: uploader_class.to_s) }
   scope :order_by_created_at_desc, -> { reorder(created_at: :desc) }
