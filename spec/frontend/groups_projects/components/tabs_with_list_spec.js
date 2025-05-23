@@ -241,6 +241,65 @@ describe('TabsWithList', () => {
       });
     });
 
+    describe('when shouldUpdateActiveTabCountFromTabQuery prop is false', () => {
+      beforeEach(async () => {
+        await createComponent({ propsData: { shouldUpdateActiveTabCountFromTabQuery: false } });
+        await waitForPromises();
+      });
+
+      it('fetches count for all tabs', () => {
+        expect(successHandler).toHaveBeenCalledWith(
+          expect.objectContaining({
+            skipContributed: false,
+            skipStarred: false,
+            skipPersonal: false,
+            skipMember: false,
+            skipInactive: false,
+          }),
+        );
+        expect(getTabCount('Contributed')).toBe('2');
+        expect(getTabCount('Starred')).toBe('0');
+        expect(getTabCount('Personal')).toBe('0');
+        expect(getTabCount('Member')).toBe('2');
+        expect(getTabCount('Inactive')).toBe('0');
+      });
+
+      describe('when filtering', () => {
+        beforeEach(async () => {
+          await mockApollo.defaultClient.clearStore();
+          findFilteredSearchAndSort().vm.$emit('filter', {
+            [defaultPropsData.filteredSearchTermKey]: searchTerm,
+            [FILTERED_SEARCH_TOKEN_LANGUAGE]: ['5'],
+            [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ['50'],
+          });
+          await waitForPromises();
+        });
+
+        it('only fetches the active tab with filters applied', () => {
+          expect(successHandler).toHaveBeenCalledWith({
+            minAccessLevel: 'OWNER',
+            programmingLanguageName: 'CSS',
+            search: searchTerm,
+            skipContributed: false,
+            skipStarred: true,
+            skipPersonal: true,
+            skipMember: true,
+            skipInactive: true,
+          });
+        });
+      });
+
+      describe('when TabView component emits update-count event', () => {
+        beforeEach(() => {
+          findTabView().vm.$emit('update-count', CONTRIBUTED_TAB, 5);
+        });
+
+        it('does not update tab count', () => {
+          expect(getTabCount('Contributed')).toBe('2');
+        });
+      });
+    });
+
     it('defaults to Contributed tab as active', () => {
       expect(findActiveTab().text()).toContain('Contributed');
     });
@@ -478,6 +537,11 @@ describe('TabsWithList', () => {
           [FILTERED_SEARCH_TOKEN_LANGUAGE]: query[FILTERED_SEARCH_TOKEN_LANGUAGE],
           [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: query[FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL],
         },
+        filtersAsQueryVariables: {
+          programmingLanguageName: 'CoffeeScript',
+          minAccessLevel: 'OWNER',
+        },
+        search: 'foo',
         filteredSearchTermKey: defaultPropsData.filteredSearchTermKey,
         endCursor: mockEndCursor,
         startCursor: mockStartCursor,
@@ -666,6 +730,7 @@ describe('TabsWithList', () => {
           startCursor: mockStartCursor,
           hasPreviousPage: true,
         });
+        await waitForPromises();
       });
 
       it('sets `start_cursor` query string', () => {

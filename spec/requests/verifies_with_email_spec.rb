@@ -265,7 +265,7 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
 
       context 'when the feature flag is toggled on' do
         before do
-          stub_feature_flags(require_email_verification: user)
+          stub_application_setting(require_email_verification_on_account_locked: true)
           stub_feature_flags(skip_require_email_verification: false)
         end
 

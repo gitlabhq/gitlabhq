@@ -54,6 +54,7 @@ export default {
         :rolled-up-counts-by-type="rolledUpCountsByType"
         info-type="detailed"
       />
+      <slot name="weight-metadata"></slot>
       <item-milestone
         v-if="milestone"
         :milestone="milestone"

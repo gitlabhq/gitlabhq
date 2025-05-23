@@ -1021,13 +1021,25 @@ export default {
               :work-item-type="selectedWorkItemTypeName"
               @error="$emit('error', $event)"
             />
-            <work-item-iteration
-              v-if="workItemIteration"
+            <work-item-parent
+              v-if="showParentAttribute"
               class="work-item-attributes-item"
-              :full-path="selectedProjectFullPath"
-              :is-group="isGroup"
-              :iteration="workItemIteration.iteration"
               :can-update="canUpdate"
+              :work-item-id="workItemId"
+              :work-item-type="selectedWorkItemTypeName"
+              :group-path="groupPath"
+              :full-path="selectedProjectFullPath"
+              :parent="workItemParent"
+              :is-group="isGroup"
+              @error="$emit('error', $event)"
+              @parentMilestone="onParentMilestone"
+            />
+            <work-item-weight
+              v-if="workItemWeight"
+              class="work-item-attributes-item"
+              :can-update="canUpdate"
+              :full-path="selectedProjectFullPath"
+              :widget="workItemWeight"
               :work-item-id="workItemId"
               :work-item-iid="workItemIid"
               :work-item-type="selectedWorkItemTypeName"
@@ -1046,12 +1058,13 @@ export default {
               @error="$emit('error', $event)"
               @parentMilestone="onParentMilestone"
             />
-            <work-item-weight
-              v-if="workItemWeight"
+            <work-item-iteration
+              v-if="workItemIteration"
               class="work-item-attributes-item"
-              :can-update="canUpdate"
               :full-path="selectedProjectFullPath"
-              :widget="workItemWeight"
+              :is-group="isGroup"
+              :iteration="workItemIteration.iteration"
+              :can-update="canUpdate"
               :work-item-id="workItemId"
               :work-item-iid="workItemIid"
               :work-item-type="selectedWorkItemTypeName"
@@ -1095,19 +1108,6 @@ export default {
               :full-path="selectedProjectFullPath"
               :can-update="canUpdate"
               @error="$emit('error', $event)"
-            />
-            <work-item-parent
-              v-if="showParentAttribute"
-              class="work-item-attributes-item"
-              :can-update="canUpdate"
-              :work-item-id="workItemId"
-              :work-item-type="selectedWorkItemTypeName"
-              :group-path="groupPath"
-              :full-path="selectedProjectFullPath"
-              :parent="workItemParent"
-              :is-group="isGroup"
-              @error="$emit('error', $event)"
-              @parentMilestone="onParentMilestone"
             />
             <work-item-crm-contacts
               v-if="workItemCrmContacts"

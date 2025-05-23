@@ -197,7 +197,7 @@ module VerifiesWithEmail
   end
 
   def require_email_verification_enabled?(user)
-    Feature.enabled?(:require_email_verification, user) &&
+    ::Gitlab::CurrentSettings.require_email_verification_on_account_locked &&
       Feature.disabled?(:skip_require_email_verification, user, type: :ops)
   end
 

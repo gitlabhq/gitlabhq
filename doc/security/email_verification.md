@@ -8,25 +8,27 @@ title: Account email verification
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86352) in GitLab 15.2 [with a flag](../administration/feature_flags.md) named `require_email_verification`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/519123) in GitLab 18.1 Feature flag `require_email_verification` removed.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
+Account email verification provides an additional layer of GitLab account security. When certain
+conditions are met, an account is locked. If your account is locked, you must verify your email
+or reset your password to sign in to GitLab.
 
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `require_email_verification`. On GitLab.com and GitLab Dedicated, this feature is not available.
+{{< alert type="note" >}}
+
+On GitLab Self-Managed, this feature is disabled by default. Use the [Application settings API](../api/settings.md)
+to enable the `require_email_verification_on_account_locked` attribute.
 
 {{< /alert >}}
-
-Account email verification provides an additional layer of GitLab account security.
-When certain conditions are met, an account is locked. If your account is locked,
-you must verify your identity or reset your password to sign in to GitLab.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo, see [Require email verification - demo](https://www.youtube.com/watch?v=wU6BVEGB3Y0).

@@ -32,21 +32,22 @@ A GPU is not needed for the GitLab AI gateway.
 The GitLab official Docker image is available:
 
 - In the container registry:
-  - [Stable](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/container_registry/3809284)
+  - [Stable](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/container_registry/3809284?orderBy=PUBLISHED_AT&search%5B%5D=self-hosted)
   - [Nightly](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/container_registry/8086262)
 - On DockerHub:
   - [Stable](https://hub.docker.com/r/gitlab/model-gateway/tags)
   - [Nightly](https://hub.docker.com/r/gitlab/model-gateway-self-hosted/tags)
-  [View the release process for the self-hosted AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/release.md).
+
+[View the release process for the self-hosted AI gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/release.md).
 
 Use the image tag that corresponds to your GitLab version.
-For example, if your GitLab version is `v17.9.0`, use the `self-hosted-v17.9.0-ee` tag.
+For example, if your GitLab version is `vX.Y.0`, use the `self-hosted-vX.Y.0-ee` tag.
 Ensure that the image version matches your GitLab version to avoid compatibility issues.
 Newer features are available from nightly builds, but backwards compatibility is not guaranteed.
 
 {{< alert type="note" >}}
 
-Using the `:latest` tag is **not recommended** because it can cause incompatibility if your GitLab version is behind or ahead of the AI gateway release. Always use an explicit version tag.
+Using the nightly version is **not recommended** because it can cause incompatibility if your GitLab version is behind or ahead of the AI gateway release. Always use an explicit version tag.
 
 {{< /alert >}}
 
@@ -61,7 +62,7 @@ Using the `:latest` tag is **not recommended** because it can cause incompatibil
     registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:<ai-gateway-tag> \
    ```
 
-   Replace `<ai-gateway-tag>` with the version that matches your GitLab instance. For example, if your GitLab version is `v17.9.0`, use `self-hosted-v17.9.0-ee`.
+   Replace `<ai-gateway-tag>` with the version that matches your GitLab instance. For example, if your GitLab version is `vX.Y.0`, use `self-hosted-vX.Y.0-ee`.
    From the container host, accessing `http://localhost:5052` should return `{"error":"No authorization header presented"}`.
 
 1. Ensure that port `5052` is forwarded to the container from the host and configure the AI gateway URL through the [Rails console](../administration/operations/rails_console.md):

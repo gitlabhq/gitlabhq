@@ -216,6 +216,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         repository_storages_weighted: { 'default' => 100 },
         require_admin_approval_after_user_signup: true,
         require_admin_two_factor_authentication: false,
+        require_email_verification_on_account_locked: false,
         require_personal_access_token_expiry: true,
         require_two_factor_authentication: false,
         resource_access_token_notify_inherited: false,

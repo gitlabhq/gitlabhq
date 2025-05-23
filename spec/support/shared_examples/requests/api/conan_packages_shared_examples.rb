@@ -1234,7 +1234,7 @@ RSpec.shared_examples 'packages feature check' do
   it_behaves_like 'returning response status', :not_found
 end
 
-RSpec.shared_examples 'GET package references metadata endpoint' do
+RSpec.shared_examples 'GET package references metadata endpoint' do |with_recipe_revision: false|
   subject(:request) { get api(url), headers: headers }
 
   let_it_be(:reference1) { package.conan_package_references.first }
@@ -1294,6 +1294,32 @@ RSpec.shared_examples 'GET package references metadata endpoint' do
         subject
 
         expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+  end
+
+  if with_recipe_revision
+    context 'when recipe revision does not exist' do
+      let(:recipe_revision) { OpenSSL::Digest.hexdigest('MD5', 'nonexistent-revision') }
+
+      it_behaves_like 'returning response status with message', status: :not_found,
+        message: '404 Revision Not Found'
+    end
+
+    context 'with different recipe revisions' do
+      let_it_be(:recipe_revision2) { create(:conan_recipe_revision, package: package) }
+      let_it_be(:reference2) do
+        create(:conan_package_reference, package: package, info: { 'settings' => { 'os' => 'Linux' } },
+          recipe_revision: recipe_revision2)
+      end
+
+      it 'returns only the package references for the requested recipe revision' do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(
+          reference1.reference => reference1.info
+        )
       end
     end
   end

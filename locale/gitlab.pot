@@ -7007,6 +7007,9 @@ msgstr ""
 msgid "An error occurred fetching the public deploy keys. Please try again."
 msgstr ""
 
+msgid "An error occurred loading the group counts."
+msgstr ""
+
 msgid "An error occurred loading the project counts."
 msgstr ""
 
@@ -23933,6 +23936,9 @@ msgstr ""
 msgid "Email the pipeline status to a list of recipients."
 msgstr ""
 
+msgid "Email verification for locked accounts"
+msgstr ""
+
 msgid "Email:"
 msgstr ""
 
@@ -35618,6 +35624,9 @@ msgid "LDAP|No LDAP synchronizations"
 msgstr ""
 
 msgid "LDAP|Select LDAP group"
+msgstr ""
+
+msgid "LDAP|Select a server to fetch groups."
 msgstr ""
 
 msgid "LDAP|Select server"
@@ -51534,7 +51543,13 @@ msgstr ""
 msgid "Require administrators to enable 2FA"
 msgstr ""
 
+msgid "Require email verification when account is locked."
+msgstr ""
+
 msgid "Require expiration date"
+msgstr ""
+
+msgid "Require users to verify their email address when their account is locked."
 msgstr ""
 
 msgid "Required approvals (%{approvals_given} of %{required} given)"

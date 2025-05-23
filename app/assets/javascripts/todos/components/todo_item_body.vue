@@ -64,7 +64,11 @@ export default {
       );
     },
     showAvatarOnNote() {
-      return !DUO_ACCESS_GRANTED_ACTIONS.includes(this.todo.action);
+      // do not show avatar on duo todo's which were authored by the user
+      return (
+        !DUO_ACCESS_GRANTED_ACTIONS.includes(this.todo.action) ||
+        this.todo.author.id !== this.currentUserId
+      );
     },
     author() {
       if (this.isHiddenBySaml) {

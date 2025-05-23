@@ -617,4 +617,18 @@ RSpec.describe API::Conan::V2::ProjectPackages, feature_category: :package_regis
     it_behaves_like 'project not found by project id'
     it_behaves_like 'conan package revisions feature flag check'
   end
+
+  describe 'GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username' \
+    '/:package_channel/revisions/:recipe_revision/search' do
+    let(:recipe_path) { package.conan_recipe_path }
+    let(:recipe_revision) { package.conan_recipe_revisions.first.revision }
+    let(:url_suffix) { "#{recipe_path}/revisions/#{recipe_revision}/search" }
+
+    subject(:request) { get api(url), headers: headers }
+
+    it_behaves_like 'GET package references metadata endpoint', with_recipe_revision: true
+    it_behaves_like 'accept get request on private project with access to package registry for everyone'
+    it_behaves_like 'project not found by project id'
+    it_behaves_like 'conan package revisions feature flag check'
+  end
 end

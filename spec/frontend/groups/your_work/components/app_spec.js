@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import YourWorkGroupsApp from '~/groups/your_work/components/app.vue';
+import groupCountsQuery from '~/groups/your_work/graphql/queries/group_counts.query.graphql';
 import {
   GROUP_DASHBOARD_TABS,
   SORT_OPTIONS,
@@ -48,8 +49,9 @@ describe('YourWorkGroupsApp', () => {
       initialSort: defaultPropsData.initialSort,
       programmingLanguages: [],
       eventTracking: {},
-      tabCountsQuery: {},
-      tabCountsQueryErrorMessage: 'An error occurred loading the tab counts.',
+      tabCountsQuery: groupCountsQuery,
+      tabCountsQueryErrorMessage: 'An error occurred loading the group counts.',
+      shouldUpdateActiveTabCountFromTabQuery: false,
       paginationType: PAGINATION_TYPE_OFFSET,
     });
   });

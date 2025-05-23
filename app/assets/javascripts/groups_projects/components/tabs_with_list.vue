@@ -9,7 +9,10 @@ import { createAlert } from '~/alert';
 import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_and_sort.vue';
 import { calculateGraphQLPaginationQueryParams } from '~/graphql_shared/utils';
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
-import { ACCESS_LEVEL_OWNER_INTEGER } from '~/access_level/constants';
+import {
+  ACCESS_LEVEL_OWNER_INTEGER,
+  ACCESS_LEVELS_INTEGER_TO_STRING,
+} from '~/access_level/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { InternalEvents } from '~/tracking';
 import {
@@ -109,6 +112,15 @@ export default {
       type: String,
       required: false,
       default: __('An error occurred loading the tab counts.'),
+    },
+    /**
+     * When true, the count of the active tab is updated from the individual tab query.
+     * When false, tabCountsQuery is used for all tab counts.
+     */
+    shouldUpdateActiveTabCountFromTabQuery: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
     paginationType: {
       type: String,
@@ -227,6 +239,28 @@ export default {
 
       return filters;
     },
+    search() {
+      return this.filters[this.filteredSearchTermKey];
+    },
+    minAccessLevel() {
+      const { [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: minAccessLevelInteger } = this.filters;
+
+      return minAccessLevelInteger && ACCESS_LEVELS_INTEGER_TO_STRING[minAccessLevelInteger];
+    },
+    programmingLanguageName() {
+      const { [FILTERED_SEARCH_TOKEN_LANGUAGE]: programmingLanguageId } = this.filters;
+
+      return (
+        programmingLanguageId &&
+        this.programmingLanguages.find(({ id }) => id === parseInt(programmingLanguageId, 10))?.name
+      );
+    },
+    filtersAsQueryVariables() {
+      return {
+        programmingLanguageName: this.programmingLanguageName,
+        minAccessLevel: this.minAccessLevel,
+      };
+    },
     timestampType() {
       return this.timestampTypeMap[this.activeSortOption.value];
     },
@@ -243,10 +277,10 @@ export default {
     },
     pushQuery(query) {
       if (isEqual(this.$route.query, query)) {
-        return;
+        return Promise.resolve();
       }
 
-      this.$router.push({ query });
+      return this.$router.push({ query });
     },
     initActiveTabIndex() {
       return this.firstTabRouteNames.includes(this.$route.name)
@@ -284,8 +318,8 @@ export default {
 
       this.updateSort(sort);
     },
-    updateSort(sort) {
-      this.pushQuery({ ...this.routeQueryWithoutPagination, sort });
+    async updateSort(sort) {
+      await this.pushQuery({ ...this.routeQueryWithoutPagination, sort });
       this.userPreferencesUpdateMutate(sort);
 
       if (!this.eventTracking?.sort) {
@@ -294,10 +328,14 @@ export default {
 
       this.trackEvent(this.eventTracking.sort, { label: this.activeTab.value, property: sort });
     },
-    onFilter(filters) {
+    async onFilter(filters) {
       const { sort } = this.$route.query;
 
-      this.pushQuery({ sort, ...filters });
+      await this.pushQuery({ sort, ...filters });
+
+      if (!this.shouldUpdateActiveTabCountFromTabQuery) {
+        this.getTabCounts({ fromFilter: true });
+      }
 
       if (!this.eventTracking?.filteredSearch) {
         return;
@@ -324,8 +362,8 @@ export default {
         });
       });
     },
-    onKeysetPageChange(pagination) {
-      this.pushQuery(
+    async onKeysetPageChange(pagination) {
+      await this.pushQuery(
         calculateGraphQLPaginationQueryParams({ ...pagination, routeQuery: this.$route.query }),
       );
 
@@ -338,8 +376,8 @@ export default {
         property: pagination.startCursor === null ? 'next' : 'previous',
       });
     },
-    onOffsetPageChange(page) {
-      this.pushQuery({ ...this.$route.query, [QUERY_PARAM_PAGE]: page });
+    async onOffsetPageChange(page) {
+      await this.pushQuery({ ...this.$route.query, [QUERY_PARAM_PAGE]: page });
     },
     onRefetch() {
       this.getTabCounts();
@@ -359,7 +397,37 @@ export default {
         Sentry.captureException(error);
       }
     },
-    async getTabCounts() {
+    skipVariableName(tab) {
+      // Since GraphQL doesn't support string comparison in @skip(if:)
+      // we use the naming convention of skip${tabValue} in camelCase (e.g. skipContributed).
+      return convertToCamelCase(`skip_${tab.value}`);
+    },
+    skipVariables({ fromFilter }) {
+      // Active tab is updated from individual tab query.
+      // Skip fetching active tab count.
+      if (this.shouldUpdateActiveTabCountFromTabQuery) {
+        return { [this.skipVariableName(this.activeTab)]: true };
+      }
+
+      // This has been triggered by filtering.
+      // Skip fetching all tab counts except the active tab.
+      if (fromFilter) {
+        return this.tabs.reduce((accumulator, tab) => {
+          if (tab.value === this.activeTab.value) {
+            return accumulator;
+          }
+
+          return {
+            ...accumulator,
+            [this.skipVariableName(tab)]: true,
+          };
+        }, {});
+      }
+
+      // Fetch all tab counts.
+      return {};
+    },
+    async getTabCounts({ fromFilter = false } = {}) {
       if (!this.hasTabCountsQuery) {
         return;
       }
@@ -367,10 +435,11 @@ export default {
       try {
         const { data } = await this.$apollo.query({
           query: this.tabCountsQuery,
-          // Since GraphQL doesn't support string comparison in @skip(if:)
-          // we use the naming convention of skip${tabValue} in camelCase (e.g. skipContributed).
-          // Skip the active tab to avoid requesting the count twice.
-          variables: { [convertToCamelCase(`skip_${this.activeTab.value}`)]: true },
+          variables: {
+            ...this.filtersAsQueryVariables,
+            search: this.search,
+            ...this.skipVariables({ fromFilter }),
+          },
         });
 
         this.tabCounts = this.tabs.reduce((accumulator, tab) => {
@@ -405,6 +474,10 @@ export default {
       this.trackEvent(this.eventTracking.initialLoad, { label: this.activeTab.value });
     },
     onUpdateCount(tab, newCount) {
+      if (!this.shouldUpdateActiveTabCountFromTabQuery) {
+        return;
+      }
+
       this.tabCounts[tab.value] = newCount;
     },
   },
@@ -435,8 +508,9 @@ export default {
         :page="page"
         :sort="sort"
         :filters="filters"
+        :filters-as-query-variables="filtersAsQueryVariables"
+        :search="search"
         :timestamp-type="timestampType"
-        :programming-languages="programmingLanguages"
         :filtered-search-term-key="filteredSearchTermKey"
         :event-tracking="eventTracking"
         :pagination-type="paginationType"

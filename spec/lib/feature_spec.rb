@@ -6,7 +6,7 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
   include StubVersion
 
   # Pick a long-lasting real feature flag to test that we can check feature flags in the load balancer
-  let(:load_balancer_test_feature_flag) { :require_email_verification }
+  let(:load_balancer_test_feature_flag) { :skip_require_email_verification }
 
   def wrap_all_methods_with_flag_check(lb, flag)
     lb.methods(false).each do |meth|

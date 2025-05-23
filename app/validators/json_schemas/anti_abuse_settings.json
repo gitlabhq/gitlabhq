@@ -7,6 +7,10 @@
     "enforce_email_subaddress_restrictions": {
       "type": "boolean",
       "description": "Prevents registration and auto-bans users with email subaddresses matching banned users (e.g. if user+spam@example.com is banned, user+new@example.com is affected)."
+    },
+    "require_email_verification_on_account_locked": {
+      "type": "boolean",
+      "description": "Set to `true` to enforce email verification when an account is locked."
     }
   }
 }

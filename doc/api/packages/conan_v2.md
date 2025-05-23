@@ -575,3 +575,56 @@ The response includes the following metadata for each package reference:
 - `options`: The package options.
 - `requires`: The required dependencies for the package.
 - `recipe_hash`: The hash of the recipe.
+
+## Get package references metadata by recipe revision
+
+Gets the metadata for all package references associated with a specific recipe revision.
+
+```plaintext
+GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/search
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`                | string | yes | The project ID or full project path. |
+| `package_name`      | string | yes | Name of a package. |
+| `package_version`   | string | yes | Version of a package. |
+| `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
+| `package_channel`   | string | yes | Channel of a package. |
+| `recipe_revision`   | string | yes | Revision of the recipe. Does not accept a value of `0`. |
+
+```shell
+curl --header "Authorization: Bearer <authenticate_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions/75151329520e7685dcf5da49ded2fec0/search"
+```
+
+Example response:
+
+```json
+{
+  "103f6067a947f366ef91fc1b7da351c588d1827f": {
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "gcc",
+      "compiler.libcxx": "libstdc++",
+      "compiler.version": "9",
+      "os": "Linux"
+    },
+    "options": {
+      "shared": "False"
+    },
+    "requires": {
+      "zlib/1.2.11": null
+    },
+    "recipe_hash": "75151329520e7685dcf5da49ded2fec0"
+  }
+}
+```
+
+The response includes the following metadata for each package reference:
+
+- `settings`: The build settings used for the package.
+- `options`: The package options.
+- `requires`: The required dependencies for the package.
+- `recipe_hash`: The hash of the recipe.

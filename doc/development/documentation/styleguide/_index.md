@@ -142,6 +142,35 @@ Do not add an `H1` heading in Markdown, as there can be only one per page.
 - If you use code in topic titles, ensure the code is in backticks.
 - Do not use bold text in topic titles.
 
+### Description lists in Markdown
+
+To define terms, use [description lists](../../../user/markdown.md#description-lists).
+
+```markdown
+Term 1
+: Definition of Term 1
+
+Term 2
+: Definition of Term 2
+```
+
+These lists render like this:
+
+Term 1
+: Definition of Term 1
+
+Term 2
+: Definition of Term 2
+
+You can also use description lists to differentiate between options.
+For example:
+
+On GitLab Self-Managed
+: This feature works this way.
+
+On GitLab.com
+: This feature works this way.
+
 ### Shortcodes
 
 [Shortcodes](https://gohugo.io/content-management/shortcodes/) are snippets of template code that we can include in our Markdown content to display non-standard elements on a page, such as alert boxes or tabs.

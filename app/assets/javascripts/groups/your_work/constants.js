@@ -30,12 +30,14 @@ export const MEMBER_TAB = {
   ...baseTab,
   text: __('Member'),
   value: 'member',
+  countsQueryPath: 'member',
 };
 
 export const INACTIVE_TAB = {
   ...baseTab,
   text: __('Inactive'),
   value: 'inactive',
+  countsQueryPath: 'inactive',
   variables: { active: false },
 };
 

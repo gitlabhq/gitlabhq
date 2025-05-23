@@ -3,6 +3,7 @@ import { GlLink, GlSprintf, GlIcon, GlTooltipDirective, GlLabel } from '@gitlab/
 import ApprovalCount from 'ee_else_ce/merge_requests/components/approval_count.vue';
 import { __, n__, sprintf } from '~/locale';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
@@ -91,6 +92,9 @@ export default {
     isNewlyAdded() {
       return this.newMergeRequestIds.includes(this.mergeRequest.id);
     },
+    authorId() {
+      return getIdFromGraphQLId(this.mergeRequest.author.id);
+    },
   },
   methods: {
     isScopedLabel,
@@ -116,7 +120,10 @@ export default {
           <template #author>
             <gl-link
               :href="mergeRequest.author.webUrl"
-              class="gl-mx-2 gl-inline-flex gl-align-bottom gl-text-subtle"
+              :data-name="mergeRequest.author.name"
+              :data-user-id="authorId"
+              :data-username="mergeRequest.author.username"
+              class="js-user-link gl-mx-2 gl-inline-flex gl-align-bottom gl-text-subtle"
             >
               <user-avatar-image
                 :img-src="mergeRequest.author.avatarUrl"

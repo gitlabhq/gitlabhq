@@ -320,6 +320,7 @@ module ApplicationSettingsHelper
       :enabled_git_access_protocol,
       :enforce_ci_inbound_job_token_scope_enabled,
       :enforce_email_subaddress_restrictions,
+      :require_email_verification_on_account_locked,
       :enforce_terms,
       :error_tracking_enabled,
       :error_tracking_api_url,

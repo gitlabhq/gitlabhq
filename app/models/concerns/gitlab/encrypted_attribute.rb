@@ -4,6 +4,33 @@ module Gitlab
   module EncryptedAttribute
     extend ActiveSupport::Concern
 
+    class_methods do
+      def migrate_to_encrypts(attribute, *options)
+        tmp_column_name = :"tmp_#{attribute}"
+
+        attr_encrypted attribute, *options # rubocop:disable Gitlab/Rails/AttrEncrypted -- This is specifically to migrate from attr_encrypted
+        encrypts tmp_column_name
+
+        attr_encrypted_prefixed_attribute_name = :"attr_encrypted_#{attribute}"
+
+        alias_method attr_encrypted_prefixed_attribute_name, attribute
+        alias_method :"#{attr_encrypted_prefixed_attribute_name}=", :"#{attribute}="
+
+        # rubocop:disable GitlabSecurity/PublicSend -- We're calling methods dynamically but this is only temporary until all attr_encrypted attributes are migrated
+        define_method(attribute) do
+          public_send(tmp_column_name).presence || public_send(attr_encrypted_prefixed_attribute_name)
+        end
+
+        alias_method :"#{attribute}_attr_encrypted=", :"#{attribute}="
+
+        define_method(:"#{attribute}=") do |value|
+          public_send(:"#{attribute}_attr_encrypted=", value)
+          public_send(:"#{tmp_column_name}=", value)
+        end
+        # rubocop:enable GitlabSecurity/PublicSend
+      end
+    end
+
     private
 
     def db_key_base

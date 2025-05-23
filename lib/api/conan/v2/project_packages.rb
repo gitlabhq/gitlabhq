@@ -251,6 +251,32 @@ module API
                     end
                   end
 
+                  desc 'Get package references metadata' do
+                    detail 'This feature was introduced in GitLab 18.1'
+                    success code: 200
+                    failure [
+                      { code: 400, message: 'Bad Request' },
+                      { code: 401, message: 'Unauthorized' },
+                      { code: 403, message: 'Forbidden' },
+                      { code: 404, message: 'Not Found' }
+                    ]
+                    tags %w[conan_packages]
+                  end
+
+                  route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+                  route_setting :authorization,  job_token_policies: :read_packages,
+                    allow_public_access_for_enabled_project_features: :package_registry
+
+                  get 'search', urgency: :low do
+                    check_username_channel
+
+                    authorize_read_package!(project)
+                    not_found!('Package') unless package
+                    not_found!('Revision') unless recipe_revision.present?
+
+                    recipe_revision.conan_package_references.pluck_reference_and_info.to_h
+                  end
+
                   params do
                     requires :conan_package_reference, type: String,
                       regexp: Gitlab::Regex.conan_package_reference_regex, desc: 'Package reference',

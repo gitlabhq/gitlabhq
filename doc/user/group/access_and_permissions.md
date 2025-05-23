@@ -375,8 +375,11 @@ Now you can edit the user's permissions from the **Members** page.
 
 {{< /history >}}
 
-Set the default [minimum role allowed to run a new pipeline with pipeline variables](../../ci/variables/_index.md#restrict-pipeline-variables)
-for projects in a group. Alternatively, you can prevent all users using pipeline variables.
+This setting controls the default value of the [minimum role allowed to run a new pipeline with pipeline variables](../../ci/variables/_index.md#restrict-pipeline-variables)
+project setting, for new projects created in the group.
+
+This setting is not an enforced option. After the project is created, the project setting
+can be changed by a Maintainer or Owner.
 
 Prerequisites:
 

@@ -90,6 +90,7 @@ module ApplicationSettingImplementation
         ed25519_key_restriction: default_min_key_size(:ed25519),
         ed25519_sk_key_restriction: default_min_key_size(:ed25519_sk),
         require_admin_two_factor_authentication: false,
+        require_email_verification_on_account_locked: false,
         eks_access_key_id: nil,
         eks_account_id: nil,
         eks_integration_enabled: false,

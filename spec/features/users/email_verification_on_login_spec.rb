@@ -9,10 +9,10 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
   let_it_be(:another_user) { create(:user) }
   let_it_be(:new_email) { build_stubbed(:user).email }
 
-  let(:require_email_verification_enabled) { user }
+  let(:email_verification_required) { true }
 
   before do
-    stub_feature_flags(require_email_verification: require_email_verification_enabled)
+    stub_application_setting(require_email_verification_on_account_locked: email_verification_required)
     stub_feature_flags(skip_require_email_verification: false)
   end
 
@@ -278,7 +278,7 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
     end
 
     context 'when the feature flag is disabled' do
-      let(:require_email_verification_enabled) { false }
+      let(:email_verification_required) { false }
 
       it_behaves_like 'no email verification required'
     end
@@ -357,8 +357,8 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
           expect(page).to have_content(s_('IdentityVerification|Help us protect your account'))
           code = expect_instructions_email_and_extract_code
 
-          # We toggle the feature flag off
-          stub_feature_flags(require_email_verification: false)
+          # We toggle the application setting off
+          stub_application_setting(require_email_verification_on_account_locked: false)
 
           # Resending and veryfying the code work as expected
           click_button s_('IdentityVerification|Resend code')
@@ -384,7 +384,7 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
     end
 
     context 'when the feature flag is toggled on after Devise sent unlock instructions' do
-      let(:require_email_verification_enabled) { false }
+      let(:email_verification_required) { false }
 
       before do
         perform_enqueued_jobs do
@@ -406,8 +406,8 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
         expect(mail.subject).to eq('Unlock instructions')
         unlock_url = mail.body.parts.first.to_s[/http.*/]
 
-        # We toggle the feature flag on
-        stub_feature_flags(require_email_verification: true)
+        # We toggle the application setting on
+        stub_application_setting(require_email_verification_on_account_locked: true)
 
         # Unlocking works as expected
         visit unlock_url

@@ -62,6 +62,11 @@ describe('TabView', () => {
       [FILTERED_SEARCH_TOKEN_LANGUAGE]: '8',
       [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ACCESS_LEVEL_OWNER_INTEGER,
     },
+    filtersAsQueryVariables: {
+      programmingLanguageName: 'CoffeeScript',
+      minAccessLevel: ACCESS_LEVEL_OWNER_STRING,
+    },
+    search: 'foo',
     filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
     timestampType: TIMESTAMP_TYPE_CREATED_AT,
     programmingLanguages,
@@ -136,9 +141,8 @@ describe('TabView', () => {
             first: DEFAULT_PER_PAGE,
             before: null,
             after: null,
-            search: defaultPropsData.filters[defaultPropsData.filteredSearchTermKey],
-            programmingLanguageName: 'CoffeeScript',
-            minAccessLevel: ACCESS_LEVEL_OWNER_STRING,
+            search: defaultPropsData.search,
+            ...defaultPropsData.filtersAsQueryVariables,
             ...expectedVariables,
           });
         });
@@ -237,7 +241,14 @@ describe('TabView', () => {
 
     describe('when search is empty', () => {
       beforeEach(async () => {
-        createComponent({ propsData: { tab: MEMBER_TAB_GROUPS, filters: {} } });
+        createComponent({
+          propsData: {
+            tab: MEMBER_TAB_GROUPS,
+            filters: {},
+            filtersAsQueryVariables: {},
+            search: '',
+          },
+        });
         await waitForPromises();
       });
 

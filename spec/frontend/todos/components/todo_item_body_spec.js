@@ -108,9 +108,18 @@ describe('TodoItemBody', () => {
     TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED,
     TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED,
     TODO_ACTION_TYPE_DUO_CORE_ACCESS_GRANTED,
-  ])('when todo action is `%s`, avatar is not shown', (action) => {
-    createComponent({ action });
+  ])('when todo action is `%s`, and user is author, avatar is not shown', (action) => {
+    createComponent({ action, author: { id: '1' } });
     expect(wrapper.findComponent(GlAvatarLink).exists()).toBe(false);
+  });
+
+  it.each([
+    TODO_ACTION_TYPE_DUO_ENTERPRISE_ACCESS_GRANTED,
+    TODO_ACTION_TYPE_DUO_PRO_ACCESS_GRANTED,
+    TODO_ACTION_TYPE_DUO_CORE_ACCESS_GRANTED,
+  ])('when todo action is `%s` and user is not author, avatar is shown', (action) => {
+    createComponent({ action });
+    expect(wrapper.findComponent(GlAvatarLink).exists()).toBe(true);
   });
 
   describe('when todo has a note', () => {

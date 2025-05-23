@@ -33332,8 +33332,6 @@ CREATE INDEX idx_issues_on_project_id_and_updated_at_and_id_and_state_id ON issu
 
 CREATE INDEX idx_issues_on_project_work_item_type_closed_at_where_closed ON issues USING btree (project_id, work_item_type_id, closed_at) WHERE (state_id = 2);
 
-CREATE INDEX idx_issues_on_state_id ON issues USING btree (state_id);
-
 CREATE UNIQUE INDEX idx_jira_connect_subscriptions_on_installation_id_namespace_id ON jira_connect_subscriptions USING btree (jira_connect_installation_id, namespace_id);
 
 CREATE INDEX idx_keys_expires_at_and_before_expiry_notification_undelivered ON keys USING btree (date(timezone('UTC'::text, expires_at)), before_expiry_notification_delivered_at) WHERE (before_expiry_notification_delivered_at IS NULL);
@@ -35608,11 +35606,7 @@ CREATE UNIQUE INDEX index_issue_user_mentions_on_note_id ON issue_user_mentions 
 
 CREATE INDEX index_issues_on_author_id ON issues USING btree (author_id);
 
-CREATE INDEX index_issues_on_author_id_and_id_and_created_at ON issues USING btree (author_id, id, created_at);
-
 CREATE INDEX index_issues_on_closed_by_id ON issues USING btree (closed_by_id);
-
-CREATE INDEX index_issues_on_confidential ON issues USING btree (confidential);
 
 CREATE INDEX index_issues_on_description_trigram_non_latin ON issues USING gin (description gin_trgm_ops) WHERE (((title)::text !~ similar_escape('[\u0000-\u02FF\u1E00-\u1EFF\u2070-\u218F]*'::text, NULL::text)) OR (description !~ similar_escape('[\u0000-\u02FF\u1E00-\u1EFF\u2070-\u218F]*'::text, NULL::text)));
 
@@ -35630,19 +35624,13 @@ CREATE UNIQUE INDEX index_issues_on_namespace_id_iid_unique ON issues USING btre
 
 CREATE INDEX index_issues_on_project_health_status_asc_work_item_type ON issues USING btree (project_id, health_status, id DESC, state_id, work_item_type_id);
 
-CREATE INDEX index_issues_on_project_health_status_desc_work_item_type ON issues USING btree (project_id, health_status DESC NULLS LAST, id DESC, state_id, work_item_type_id);
-
 CREATE UNIQUE INDEX index_issues_on_project_id_and_external_key ON issues USING btree (project_id, external_key) WHERE (external_key IS NOT NULL);
 
 CREATE UNIQUE INDEX index_issues_on_project_id_and_iid ON issues USING btree (project_id, iid);
 
-CREATE INDEX index_issues_on_project_id_and_state_id_and_created_at_and_id ON issues USING btree (project_id, state_id, created_at, id);
-
 CREATE INDEX index_issues_on_project_id_and_upvotes_count ON issues USING btree (project_id, upvotes_count);
 
 CREATE INDEX index_issues_on_project_id_closed_at_desc_state_id_and_id ON issues USING btree (project_id, closed_at DESC NULLS LAST, state_id, id);
-
-CREATE INDEX index_issues_on_project_id_health_status_created_at_id ON issues USING btree (project_id, health_status, created_at, id);
 
 CREATE INDEX index_issues_on_promoted_to_epic_id ON issues USING btree (promoted_to_epic_id) WHERE (promoted_to_epic_id IS NOT NULL);
 
