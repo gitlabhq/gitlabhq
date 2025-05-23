@@ -937,6 +937,7 @@ export default {
               :work-item-iid="workItemIid"
               :uploads-path="uploadsPath"
               @error="updateError = $event"
+              @cancelCreate="handleCancelClick"
               @updateDraft="updateDraftData('description', $event)"
             />
             <div

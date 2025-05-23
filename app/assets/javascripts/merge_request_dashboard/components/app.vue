@@ -128,7 +128,7 @@ export default {
         @click="clickTab(tab)"
       >
         <template #title>
-          <tab-title :title="tab.title" :queries="queriesForTab(tab)" :tab-key="tab.key" />
+          <tab-title :title="tab.title" :queries="queriesForTab(tab)" />
         </template>
         <div v-for="(lists, i) in tab.lists" :key="`lists_${i}`">
           <div

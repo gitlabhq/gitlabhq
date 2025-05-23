@@ -7,7 +7,7 @@ title: Post Deployment Migrations
 
 Post deployment migrations are regular Rails migrations that can optionally be
 executed after a deployment. By default these migrations are executed alongside
-the other migrations. To skip these migrations you must set the
+the other migrations, but this would require a downtime. To skip these migrations you must set the
 environment variable `SKIP_POST_DEPLOYMENT_MIGRATIONS` to a non-empty value
 when running `rake db:migrate`.
 

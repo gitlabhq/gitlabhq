@@ -293,7 +293,7 @@ To configure SAST for a project you can:
 - [Configure SAST in your CI/CD YAML](#configure-sast-in-your-cicd-yaml).
 - [Configure SAST by using the UI](#configure-sast-by-using-the-ui).
 
-You can enable SAST across many projects by [enforcing scan execution](../_index.md#enforce-scan-execution).
+You can enable SAST across many projects by [enforcing scan execution](../detect/security_configuration.md#create-a-shared-configuration).
 
 To configure Advanced SAST (available in GitLab Ultimate only), follow these [instructions](gitlab_advanced_sast.md#configuration).
 
@@ -608,7 +608,7 @@ spotbugs-sast:
 
 ### Running jobs in merge request pipelines
 
-See [Use security scanning tools with merge request pipelines](../detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines).
+See [Use security scanning tools with merge request pipelines](../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines).
 
 ### Available CI/CD variables
 

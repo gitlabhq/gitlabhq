@@ -476,7 +476,11 @@ export default {
           .querySelector('textarea')
           ?.classList.contains('at-who-active')
       ) {
-        this.cancelEditing();
+        if (this.isCreateFlow) {
+          this.$emit('cancelCreate');
+        } else {
+          this.cancelEditing();
+        }
       }
     },
   },

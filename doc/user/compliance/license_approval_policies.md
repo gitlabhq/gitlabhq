@@ -43,7 +43,7 @@ License approval policies rely on the output of a dependency scanning job to ver
 To ensure enforcement of your policies, you should enable dependency scanning on your target development projects. You can achieve this a few different ways:
 
 - Create a [scan execution policy](../application_security/policies/scan_execution_policies.md) that enforces Dependency Scanning to run in all target development projects.
-- Work with your development teams to configure [dependency scanning](../application_security/dependency_scanning/_index.md) in each of their projects' `.gitlab-ci.yml` files or enable it by using the [Security Configuration panel](../application_security/configuration/_index.md).
+- Work with your development teams to configure [dependency scanning](../application_security/dependency_scanning/_index.md) in each of their projects' `.gitlab-ci.yml` files or enable it by using the [Security Configuration panel](../application_security/detect/security_configuration.md).
 
 License approval policies require license information from [GitLab-supported packages](license_scanning_of_cyclonedx_files/_index.md#supported-languages-and-package-managers).
 

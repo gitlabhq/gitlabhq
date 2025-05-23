@@ -46,7 +46,6 @@ fragment MergeRequestDashboardFragment on MergeRequest {
       ...Label
     }
   }
-  userNotesCount
   resolvedDiscussionsCount
   resolvableDiscussionsCount
   commitCount

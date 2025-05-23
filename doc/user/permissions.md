@@ -298,7 +298,7 @@ Project permissions for [application security](application_security/secure_your_
 | Create [CVE ID request](application_security/cve_id_request.md)                                                                    |       |         |          |           |     ✓      |   ✓   |       |
 | Change vulnerability status                                                                                                        |       |         |          |           |     ✓      |   ✓   | The `admin_vulnerability` permission was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/412693) from the Developer role in GitLab 17.0. |
 | Create or assign [security policy project](application_security/policies/_index.md)                                                 |       |         |          |           |            |   ✓   |       |
-| Manage [security configurations](application_security/configuration/_index.md)                                                      |       |         |          |           |            |   ✓   |       |
+| Manage [security configurations](application_security/detect/security_configuration.md)                                                      |       |         |          |           |            |   ✓   |       |
 
 ### CI/CD
 

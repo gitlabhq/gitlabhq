@@ -174,6 +174,7 @@ describe('RunnerTypeCell', () => {
     });
 
     expect(findRunnerTags().props('tagList')).toEqual(['shell', 'linux']);
+    expect(findRunnerTags().props('limit')).toEqual(20);
   });
 
   it('Displays a custom runner-name slot', () => {

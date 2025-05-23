@@ -4,11 +4,13 @@ module Projects
   module Alerting
     class NotificationsController < Projects::ApplicationController
       include ActionController::HttpAuthentication::Basic
+      include IncidentManagementFeatureFlag
 
       respond_to :json
 
       skip_before_action :verify_authenticity_token
       skip_before_action :project
+      before_action :check_incidents_feature_flag, only: [:create]
 
       prepend_before_action :repository, :project_without_auth
 
@@ -73,6 +75,10 @@ module Projects
 
       def notification_payload
         @notification_payload ||= params.permit![:notification]
+      end
+
+      def handle_feature_flag_enabled_response
+        head :not_found
       end
     end
   end

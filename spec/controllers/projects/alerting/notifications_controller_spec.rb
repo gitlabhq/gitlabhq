@@ -11,6 +11,10 @@ RSpec.describe Projects::Alerting::NotificationsController, feature_category: :i
   let(:params) { project_params }
 
   describe 'POST #create' do
+    before do
+      stub_feature_flags(hide_incident_management_features: false)
+    end
+
     around do |example|
       ForgeryProtection.with_forgery_protection { example.run }
     end
@@ -165,6 +169,17 @@ RSpec.describe Projects::Alerting::NotificationsController, feature_category: :i
           expect(notify_service).to receive(:execute).with(nil, nil)
 
           make_request
+        end
+      end
+
+      context 'when feature flag :hide_incident_management_features is enabled' do
+        before do
+          stub_feature_flags(hide_incident_management_features: true)
+        end
+
+        it 'returns 404 not found' do
+          make_request
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end

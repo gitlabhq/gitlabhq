@@ -80,7 +80,7 @@ To enable a historic scan, set the variable `SECRET_DETECTION_HISTORIC_SCAN` to 
 
 ### Run jobs in merge request pipelines
 
-See [Use security scanning tools with merge request pipelines](../../detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines).
+See [Use security scanning tools with merge request pipelines](../../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines).
 
 ### Override the analyzer jobs
 

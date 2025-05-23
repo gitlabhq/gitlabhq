@@ -3,6 +3,7 @@
 class Projects::IncidentsController < Projects::ApplicationController
   include IssuableActions
   include Gitlab::Utils::StrongMemoize
+  include IncidentManagementFeatureFlag
 
   before_action :authorize_read_issue!
   before_action :load_incident, only: [:show]
@@ -48,12 +49,6 @@ class Projects::IncidentsController < Projects::ApplicationController
 
   def serializer
     IssueSerializer.new(current_user: current_user, project: incident.project)
-  end
-
-  def check_incidents_feature_flag
-    return unless Feature.enabled?(:hide_incident_management_features, @project)
-
-    render_404
   end
 end
 

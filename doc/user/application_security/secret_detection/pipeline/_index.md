@@ -68,7 +68,7 @@ By default, when you run a pipeline:
   - On an **existing, non-default branch**, the content of all commits from the last pushed commit to the latest commit is scanned.
 - On a **merge request**, the content of all commits on the branch is scanned. If the analyzer can't access every commit,
   the content of all commits from the parent to the latest commit is scanned. To scan all commits, you must enable
-  [merge request pipelines](../../detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines).
+  [merge request pipelines](../../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines).
 
 To override the default behavior, use the [available CI/CD variables](configure.md#available-cicd-variables).
 
