@@ -433,6 +433,16 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   .work-item-sidebar-container {
     container-type: unset;
   }
+
+  .work-item-notes .note-container-query-wrapper {
+    container-type: unset !important;
+
+    @media (max-width: $breakpoint-sm) {
+      .note-hidden-xs {
+        @apply gl-hidden
+      }
+    }
+  }
 }
 
 // Safari
