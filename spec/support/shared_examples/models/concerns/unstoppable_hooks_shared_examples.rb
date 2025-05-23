@@ -38,6 +38,12 @@ RSpec.shared_examples 'a hook that does not get automatically disabled on failur
     end
   end
 
+  describe '#auto_disabling_enabled?' do
+    it 'is false' do
+      expect(hook.auto_disabling_enabled?).to be(false)
+    end
+  end
+
   describe '#executable?', :freeze_time do
     include_context 'with webhook auto-disabling failure thresholds'
 
@@ -78,12 +84,32 @@ RSpec.shared_examples 'a hook that does not get automatically disabled on failur
 
       expect(sql_count).to eq(0)
     end
+
+    it 'does not write any logs' do
+      expect(Gitlab::WebHooks::Logger).not_to receive(:new)
+
+      hook.enable!
+    end
   end
 
   describe '#backoff!' do
     context 'when we have not backed off before' do
       it 'does not disable the hook' do
         expect { hook.backoff! }.not_to change { hook.executable? }.from(true)
+      end
+
+      it 'does not make a database request' do
+        hook
+
+        sql_count = ActiveRecord::QueryRecorder.new { hook.backoff! }.count
+
+        expect(sql_count).to eq(0)
+      end
+
+      it 'does not write any logs' do
+        expect(Gitlab::WebHooks::Logger).not_to receive(:new)
+
+        hook.backoff!
       end
     end
 

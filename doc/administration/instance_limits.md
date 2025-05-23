@@ -501,6 +501,8 @@ You can change the maximum time a job can run before it times out:
 - At the [runner level](../ci/runners/configure_runners.md#set-the-maximum-job-timeout).
   This limit must be 10 minutes or longer.
 
+Regardless of configured timeout limits, GitLab terminates any job that has been inactive for 60 minutes. An inactive job is one that has produced no new logs or trace updates.
+
 ### Maximum number of jobs in a pipeline
 
 You can limit the maximum number of jobs in a pipeline. The number

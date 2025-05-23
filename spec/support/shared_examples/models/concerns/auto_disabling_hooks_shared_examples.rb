@@ -55,6 +55,20 @@ RSpec.shared_examples 'a hook that gets automatically disabled on failure' do
     end
   end
 
+  describe '#auto_disabling_enabled?' do
+    subject(:auto_disabling_enabled) { hook.auto_disabling_enabled? }
+
+    it { is_expected.to be(true) }
+
+    context 'when auto_disabling_web_hooks ops flag is disabled' do
+      before do
+        stub_feature_flags(auto_disabling_web_hooks: false)
+      end
+
+      it { is_expected.to be(false) }
+    end
+  end
+
   describe '#executable?', :freeze_time do
     include_context 'with webhook auto-disabling failure thresholds'
 

@@ -1,0 +1,10 @@
+---
+name: single_pipeline_for_resolver
+description: Temp workaround FF to only return one result on project pipeline resolver
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/461470
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192174
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/544930
+milestone: '18.1'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

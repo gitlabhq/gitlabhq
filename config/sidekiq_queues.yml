@@ -255,6 +255,8 @@
   - 1
 - - compliance_management_compliance_framework_project_requirement_statuses_export_mailer
   - 1
+- - compliance_management_compliance_framework_projects_compliance_enqueue
+  - 1
 - - compliance_management_framework_export_mailer
   - 1
 - - compliance_management_merge_requests_compliance_violations
