@@ -24,6 +24,8 @@ import {
 import {
   autocompleteDataSources,
   convertTypeEnumToName,
+  formatLabelForListbox,
+  formatUserForListbox,
   markdownPreviewPath,
   newWorkItemPath,
   isReference,
@@ -41,6 +43,51 @@ import {
 } from '~/work_items/utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { TYPE_EPIC } from '~/issues/constants';
+
+describe('formatLabelForListbox', () => {
+  const label = {
+    __typename: 'Label',
+    id: 'gid://gitlab/Label/1',
+    title: 'Label 1',
+    description: '',
+    color: '#f00',
+    textColor: '#00f',
+  };
+
+  it('formats as expected', () => {
+    expect(formatLabelForListbox(label)).toEqual({
+      text: 'Label 1',
+      value: 'gid://gitlab/Label/1',
+      color: '#f00',
+    });
+  });
+});
+
+describe('formatUserForListbox', () => {
+  const user = {
+    __typename: 'UserCore',
+    id: 'gid://gitlab/User/1',
+    avatarUrl: '',
+    webUrl: '',
+    webPath: '/doe_I',
+    name: 'John Doe',
+    username: 'doe_I',
+  };
+
+  it('formats as expected', () => {
+    expect(formatUserForListbox(user)).toEqual({
+      __typename: 'UserCore',
+      id: 'gid://gitlab/User/1',
+      avatarUrl: '',
+      webUrl: '',
+      webPath: '/doe_I',
+      name: 'John Doe',
+      username: 'doe_I',
+      text: 'John Doe',
+      value: 'gid://gitlab/User/1',
+    });
+  });
+});
 
 describe('autocompleteDataSources', () => {
   beforeEach(() => {

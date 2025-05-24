@@ -87,3 +87,7 @@
                   .gl-flex.gl-gap-2.gl-mb-2
                     = sprite_icon('github', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
                     = link_to @user.github, github_url(@user), class: 'gl-text-default', title: "GitHub", target: '_blank', rel: 'noopener noreferrer nofollow'
+                - if @user.orcid.present?
+                  .gl-flex.gl-gap-2.gl-mb-2
+                    = sprite_icon('link', css_class: 'gl-fill-icon-subtle gl-mt-1 flex-shrink-0')
+                    = link_to @user.orcid, orcid_url(@user), class: 'gl-text-default', title: "Orcid", target: '_blank', rel: 'noopener noreferrer nofollow'

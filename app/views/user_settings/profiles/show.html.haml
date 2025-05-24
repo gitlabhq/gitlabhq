@@ -160,6 +160,9 @@
               %li.form-group.gl-form-group
                 = f.label :github
                 = f.text_field :github, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|username")
+              %li.form-group.gl-form-group
+                = f.label :orcid, s_('Profiles|ORCID')
+                = f.text_field :orcid, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: "1234-1234-1234-1234"
         .gl-pt-6
           %fieldset.form-group.gl-form-group
             %legend.col-form-label

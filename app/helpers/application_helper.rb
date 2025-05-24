@@ -396,6 +396,12 @@ module ApplicationHelper
     external_redirect_path(url: "https://bsky.app/profile/#{user.bluesky}")
   end
 
+  def orcid_url(user)
+    return '' if user.orcid.blank?
+
+    external_redirect_path(url: "https://orcid.org/#{user.orcid}")
+  end
+
   def mastodon_url(user)
     return '' if user.mastodon.blank?
 

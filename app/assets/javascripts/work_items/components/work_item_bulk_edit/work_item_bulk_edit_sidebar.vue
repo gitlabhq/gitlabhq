@@ -4,14 +4,17 @@ import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
+import { BULK_UPDATE_UNASSIGNED } from '../../constants';
 import workItemBulkUpdateMutation from '../../graphql/list/work_item_bulk_update.mutation.graphql';
 import workItemParent from '../../graphql/list/work_item_parent.query.graphql';
+import WorkItemBulkEditAssignee from './work_item_bulk_edit_assignee.vue';
 import WorkItemBulkEditLabels from './work_item_bulk_edit_labels.vue';
 import WorkItemBulkEditState from './work_item_bulk_edit_state.vue';
 
 export default {
   components: {
     GlForm,
+    WorkItemBulkEditAssignee,
     WorkItemBulkEditLabels,
     WorkItemBulkEditState,
   },
@@ -38,6 +41,7 @@ export default {
   data() {
     return {
       addLabelIds: [],
+      assigneeId: undefined,
       parentId: undefined,
       removeLabelIds: [],
       state: undefined,
@@ -75,7 +79,6 @@ export default {
       try {
         await executeBulkEdit();
         this.$emit('success', { refetchCounts: Boolean(this.state) });
-        this.resetData();
       } catch (error) {
         createAlert({
           message: s__('WorkItem|Something went wrong while bulk editing.'),
@@ -102,18 +105,22 @@ export default {
       });
     },
     performLegacyBulkEdit() {
+      let assigneeIds;
+      if (this.assigneeId === BULK_UPDATE_UNASSIGNED) {
+        assigneeIds = [0];
+      } else if (this.assigneeId) {
+        assigneeIds = [getIdFromGraphQLId(this.assigneeId)];
+      }
+
       const update = {
         add_label_ids: this.addLabelIds.map(getIdFromGraphQLId),
+        assignee_ids: assigneeIds,
         issuable_ids: this.checkedItems.map((item) => getIdFromGraphQLId(item.id)).join(','),
         remove_label_ids: this.removeLabelIds.map(getIdFromGraphQLId),
         state_event: this.state,
       };
+
       return axios.post(this.legacyBulkEditEndpoint, { update });
-    },
-    resetData() {
-      this.addLabelIds = [];
-      this.removeLabelIds = [];
-      this.state = undefined;
     },
   },
 };
@@ -122,6 +129,12 @@ export default {
 <template>
   <gl-form id="work-item-list-bulk-edit" class="gl-p-5" @submit.prevent="handleFormSubmitted">
     <work-item-bulk-edit-state v-if="!isEpicsList" v-model="state" />
+    <work-item-bulk-edit-assignee
+      v-if="!isEpicsList"
+      v-model="assigneeId"
+      :full-path="fullPath"
+      :is-group="isGroup"
+    />
     <work-item-bulk-edit-labels
       :form-label="__('Add labels')"
       :full-path="fullPath"

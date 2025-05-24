@@ -21,6 +21,12 @@ RSpec.describe UsersHelper, feature_category: :user_management do
       it { is_expected.to be true }
     end
 
+    context 'when user has ORCID' do
+      let_it_be(:user) { create(:user, orcid: '1234-1234-1234-1234') }
+
+      it { is_expected.to be true }
+    end
+
     context 'when user has public email' do
       let_it_be(:user) { create(:user, :public_email) }
 
@@ -29,6 +35,12 @@ RSpec.describe UsersHelper, feature_category: :user_management do
 
     context 'when user public email is blank' do
       let_it_be(:user) { create(:user, public_email: '') }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when user ORCID is blank' do
+      let_it_be(:user) { create(:user, orcid: '') }
 
       it { is_expected.to be false }
     end

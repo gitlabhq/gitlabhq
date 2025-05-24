@@ -254,6 +254,7 @@ To add links to other accounts:
    - Mastodon handle. In GitLab 17.4 and later, you can use your [GitLab profile](#access-your-user-profile) to verify your Mastodon account.
    - Skype username.
    - X (formerly Twitter) @username.
+   - [ORCID](https://orcid.org/).
 
    Your user ID or username must be 500 characters or less.
 1. Select **Update profile settings**.

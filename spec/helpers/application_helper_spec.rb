@@ -697,6 +697,26 @@ RSpec.describe ApplicationHelper do
         end
       end
     end
+
+    describe '#orcid_url' do
+      let(:user) { build(:user) }
+
+      subject(:orcid) { orcid_url(user) }
+
+      context 'without ORCID ID' do
+        it 'returns an empty string' do
+          expect(orcid).to eq('')
+        end
+      end
+
+      context 'with ORCID ID' do
+        it 'returns orcid url' do
+          user.orcid = '1234-1234-1234-1234'
+
+          expect(orcid).to eq(external_redirect_path(url: 'https://orcid.org/1234-1234-1234-1234'))
+        end
+      end
+    end
   end
 
   describe '#gitlab_ui_form_for' do

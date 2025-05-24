@@ -1,9 +1,9 @@
 <script>
 import { GlButton, GlCollapsibleListbox, GlFormGroup } from '@gitlab/ui';
 import { debounce, intersectionBy, unionBy } from 'lodash';
+import { createAlert } from '~/alert';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { __, createListFormat, s__, sprintf } from '~/locale';
-import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import groupLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/group_labels.query.graphql';
 import projectLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
 import { findLabelsWidget, formatLabelForListbox } from '../../utils';
@@ -67,11 +67,11 @@ export default {
         return data.workspace?.labels?.nodes ?? [];
       },
       error(error) {
-        this.$emit(
-          'error',
-          s__('WorkItem|Something went wrong when fetching labels. Please try again.'),
-        );
-        Sentry.captureException(error);
+        createAlert({
+          message: s__('WorkItem|Something went wrong when fetching labels. Please try again.'),
+          captureError: true,
+          error,
+        });
       },
     },
   },
@@ -132,9 +132,6 @@ export default {
     searchLabels(searchLabels) {
       this.updateLabelsCache(searchLabels);
     },
-    selectedLabelsIds(selectedLabelsIds) {
-      this.selectedIds = selectedLabelsIds;
-    },
   },
   created() {
     this.setSearchTermDebounced = debounce(this.setSearchTerm, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
@@ -146,8 +143,8 @@ export default {
     },
     handleSelect(items) {
       this.selectedIds = items;
+      this.$emit('select', items);
       this.clearSearch();
-      this.$emit('select', this.selectedIds);
     },
     handleShown() {
       this.searchTerm = '';

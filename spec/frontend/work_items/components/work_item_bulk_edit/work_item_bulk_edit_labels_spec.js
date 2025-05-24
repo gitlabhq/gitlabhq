@@ -6,12 +6,12 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { projectLabelsResponse } from 'jest/work_items/mock_data';
-import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { createAlert } from '~/alert';
 import projectLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
 import WorkItemBulkEditLabels from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_labels.vue';
 import { WIDGET_TYPE_LABELS } from '~/work_items/constants';
 
-jest.mock('~/sentry/sentry_browser_wrapper');
+jest.mock('~/alert');
 
 Vue.use(VueApollo);
 
@@ -112,10 +112,11 @@ describe('WorkItemBulkEditLabels component', () => {
       findListbox().vm.$emit('shown');
       await waitForPromises();
 
-      expect(wrapper.emitted('error')).toEqual([
-        ['Something went wrong when fetching labels. Please try again.'],
-      ]);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error('error!'));
+      expect(createAlert).toHaveBeenCalledWith({
+        captureError: true,
+        error: new Error('error!'),
+        message: 'Something went wrong when fetching labels. Please try again.',
+      });
     });
   });
 

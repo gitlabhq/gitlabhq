@@ -120,9 +120,15 @@ export const findHierarchyWidgetAncestors = (workItem) =>
   findHierarchyWidget(workItem)?.ancestors?.nodes || [];
 
 export const formatLabelForListbox = (label) => ({
-  text: label.title || label.text,
-  value: label.id || label.value,
+  text: label.title,
+  value: label.id,
   color: label.color,
+});
+
+export const formatUserForListbox = (user) => ({
+  ...user,
+  text: user.name,
+  value: user.id,
 });
 
 export const convertTypeEnumToName = (workItemTypeEnum) =>

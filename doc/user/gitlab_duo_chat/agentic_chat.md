@@ -110,14 +110,14 @@ You might find Agentic Chat particularly helpful when you:
 
 Agentic Chat works best with natural language questions. Here are some examples:
 
-- "Read the project structure and explain it to me", or "Explain the project".
-- "Find the API endpoints that handle user authentication in this codebase."
-- "Please explain the authorization flow for `<application name>`"
-- "How do I add a GraphQL mutation in this repository?"
-- "Show me how error handling is implemented across our application."
-- "Component `<component name>` has methods for `<x>` and `<y>`. Could you split it up into two components?"
-- "Could you add in-line documentation for all Java files in `<directory>`?
-- "Do merge request `<MR URL>` and merge request `<MR URL>` fully address this issue `<issue URL>`?"
+- `Read the project structure and explain it to me`, or `Explain the project`.
+- `Find the API endpoints that handle user authentication in this codebase`.
+- `Please explain the authorization flow for <application name>`.
+- `How do I add a GraphQL mutation in this repository?`
+- `Show me how error handling is implemented across our application`.
+- `Component <component name> has methods for <x> and <y>. Could you split it up into two components?`
+- `Could you add in-line documentation for all Java files in <directory>?`
+- `Do merge request <MR URL> and merge request <MR URL> fully address this issue <issue URL>?`
 
 ## Troubleshooting
 
