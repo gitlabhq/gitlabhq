@@ -4,6 +4,11 @@ module Applications
   class CreateService
     attr_reader :current_user, :params
 
+    ## Overridden in EE
+    def self.disable_ropc_available?
+      false
+    end
+
     def initialize(current_user, params)
       @current_user = current_user
       @params = params.except(:ip_address)
@@ -19,6 +24,7 @@ module Applications
         return @application
       end
 
+      @application.ropc_enabled = false if self.class.disable_ropc_available?
       @application.save
       @application
     end

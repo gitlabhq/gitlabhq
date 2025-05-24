@@ -32,6 +32,14 @@ Doorkeeper.configure do
     Gitlab::Auth.find_with_user_password(params[:username], params[:password], increment_failed_attempts: true)
   end
 
+  allow_grant_flow_for_client do |grant_flow, client|
+    next true unless client
+    next true unless grant_flow == 'password'
+    next true unless Applications::CreateService.disable_ropc_available?
+
+    client.ropc_enabled?
+  end
+
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.
   # admin_authenticator do
   #   # Put your admin authentication logic here.
