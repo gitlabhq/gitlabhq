@@ -53,7 +53,7 @@ module WorkItems
     # where it's possible to switch between issue and incident.
     CHANGEABLE_BASE_TYPES = %w[issue incident test_case].freeze
 
-    EE_BASE_TYPES = %w[epic key_result objective requirement].freeze
+    EE_BASE_TYPES = %w[objective epic key_result requirement].freeze
 
     ignore_column :correct_id, remove_with: '18.1', remove_after: '2025-05-15'
 
@@ -90,86 +90,37 @@ module WorkItems
 
     scope :order_by_name_asc, -> { order(arel_table[:name].lower.asc) }
     scope :by_type, ->(base_type) { where(base_type: base_type) }
-    scope :except_type, ->(base_type) { where.not(base_type: base_type) }
 
-    class << self
-      def default_by_type(type)
-        found_type = find_by(base_type: type)
-        return found_type if found_type || !WorkItems::Type.base_types.key?(type.to_s)
+    def self.default_by_type(type)
+      found_type = find_by(base_type: type)
+      return found_type if found_type || !WorkItems::Type.base_types.key?(type.to_s)
 
-        error_message = <<~STRING
-          Default work item types have not been created yet. Make sure the DB has been seeded successfully.
-          See related documentation in
-          https://docs.gitlab.com/omnibus/settings/database.html#seed-the-database-fresh-installs-only
+      error_message = <<~STRING
+        Default work item types have not been created yet. Make sure the DB has been seeded successfully.
+        See related documentation in
+        https://docs.gitlab.com/omnibus/settings/database.html#seed-the-database-fresh-installs-only
 
-          If you have additional questions, you can ask in
-          https://gitlab.com/gitlab-org/gitlab/-/issues/423483
-        STRING
+        If you have additional questions, you can ask in
+        https://gitlab.com/gitlab-org/gitlab/-/issues/423483
+      STRING
 
-        raise DEFAULT_TYPES_NOT_SEEDED, error_message
-      end
+      raise DEFAULT_TYPES_NOT_SEEDED, error_message
+    end
 
-      def default_issue_type
-        default_by_type(:issue)
-      end
+    def self.default_issue_type
+      default_by_type(:issue)
+    end
 
-      def allowed_types_for_issues
-        base_types.keys.excluding('objective', 'key_result', 'epic')
-      end
+    def self.allowed_types_for_issues
+      base_types.keys.excluding('objective', 'key_result', 'epic')
+    end
 
-      # Filter types by the given resource_parent. The filters take in consideration
-      # - enabled workflows
-      # - feature flags
-      # - resource_parent type
-      #
-      # PS.: the order of which the filters are applied matters!!
-      def allowed_types(resource_parent)
-        base_types.keys.to_set
-          .then { |types| filter_disabled_workflows(types, resource_parent) }
-          .then { |types| filter_okr(types, resource_parent) } # overridden in EE
-          .then { |types| filter_epic(types, resource_parent) } # overridden in EE
-          .then { |types| filter_service_desk(types, resource_parent) }
-          .then { |types| filter_group_level(types, resource_parent) }
-      end
-
-      private
-
-      # overridden in EE
-      def filter_okr(types, _resource_parent)
-        types.subtract(%w[key_result objective])
-      end
-
-      # overridden in EE
-      def filter_epic(types, _resource_parent)
-        types.subtract(%w[epic])
-      end
-
-      def filter_group_level(types, resource_parent)
-        return types if group_level_work_item_types_enabled?(resource_parent)
-
-        types.clear
-      end
-
-      def filter_service_desk(types, resource_parent)
-        return types if Feature.enabled?(:service_desk_ticket, resource_parent)
-
-        types.subtract(%w[ticket])
-      end
-
-      # These types are not enabled in the UI yet.
-      # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183399#note_2394091541
-      def filter_disabled_workflows(types, _resource_parent)
-        types.subtract(%w[requirement test_case])
-      end
-
-      def group_level_work_item_types_enabled?(resource_parent)
-        project_resource_parent?(resource_parent) ||
-          resource_parent.try(:create_group_level_work_items_feature_flag_enabled?)
-      end
-
-      def project_resource_parent?(resource_parent)
-        resource_parent.is_a?(Project) ||
-          resource_parent.is_a?(Namespaces::ProjectNamespace)
+    # method overridden in EE to perform the corresponding checks for the Epic type
+    def self.allowed_group_level_types(resource_parent)
+      if Feature.enabled?(:create_group_level_work_items, resource_parent, type: :wip)
+        base_types.keys.excluding('epic')
+      else
+        []
       end
     end
 
