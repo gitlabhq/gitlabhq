@@ -43,7 +43,25 @@ module Keeps
 
     private
 
+    def parse_date(date_string)
+      Date.parse(date_string)
+    rescue Date::Error
+      nil
+    end
+
     def can_remove_ff?(feature_flag, identifiers, latest_feature_flag_status)
+      intended_to_rollout_by_date = feature_flag.intended_to_rollout_by
+      if intended_to_rollout_by_date.present?
+        rollout_date = parse_date(intended_to_rollout_by_date)
+        if !rollout_date.nil? && rollout_date.future?
+          @logger.puts "#{feature_flag.name} cannot be removed, intended rollout date is #{intended_to_rollout_by_date}"
+          return false
+        elsif rollout_date.nil?
+          message = "#{feature_flag.name} intended_to_rollout_by #{intended_to_rollout_by_date}"
+          @logger.puts "#{message}, is ignored as it cannot be parsed."
+        end
+      end
+
       if feature_flag.milestone.nil?
         @logger.puts "#{feature_flag.name} has no milestone set!"
         return false
@@ -100,7 +118,7 @@ module Keeps
       It is possible that this MR will still need some changes to remove references to the feature flag in the code.
       At the moment the `gitlab-housekeeper` is not always capable of removing all references so you must check the diff and pipeline failures to confirm if there are any issues.
       It is the responsibility of ~"#{feature_flag.group}" to push those changes to this branch.
-      If they are already removing this feature flag in another merge request then they can just close this merge request.
+      If they are already removing this feature flag in another merge request then they can just close this merge request and add `intended_to_rollout_by` date in the yml file.
 
       ## TODO for the reviewers before merging this MR
       - [ ] See the status of the rollout by checking #{feature_flag_rollout_issue_url(feature_flag)}, #{format(FEATURE_FLAG_LOG_ISSUES_URL, feature_flag_name: feature_flag.name)}
@@ -297,7 +315,7 @@ module Keeps
     end
 
     def all_feature_flag_files
-      Dir.glob("{,ee/}config/feature_flags/{development,gitlab_com_derisk,ops,beta}/*.yml")
+      Dir.glob("{,ee/}config/feature_flags/{development,gitlab_com_derisk,beta}/*.yml")
     end
 
     def remove_feature_flag_prompts

@@ -40383,9 +40383,6 @@ msgstr ""
 msgid "New epic"
 msgstr ""
 
-msgid "New epic look"
-msgstr ""
-
 msgid "New epic title"
 msgstr ""
 
@@ -40437,9 +40434,6 @@ msgid "New look"
 msgstr ""
 
 msgid "New look (Beta)"
-msgstr ""
-
-msgid "New look for issues and epics"
 msgstr ""
 
 msgid "New merge request"
@@ -68736,13 +68730,7 @@ msgstr ""
 msgid "Welcome, %{name}!"
 msgstr ""
 
-msgid "We’ve introduced improvements to issues and epics such as the ability to view full details from within lists and boards, new features, and a refreshed design. Have questions or thoughts on the changes?"
-msgstr ""
-
 msgid "We’ve introduced improvements to issues and epics, such as the ability to view full details from lists and boards, new features, and a refreshed design. Have questions or thoughts on the changes?"
-msgstr ""
-
-msgid "We’ve introduced some improvements to the epic page such as real time updates, additional features, and a refreshed design. Have questions or thoughts on the changes?"
 msgstr ""
 
 msgid "What are some examples?"

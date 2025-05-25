@@ -57,14 +57,7 @@ module QA
             element 'work-item-title'
           end
 
-          view 'app/assets/javascripts/work_items_feedback/components/work_item_feedback.vue' do
-            element 'work-item-feedback-popover'
-          end
-
           def edit_description(new_description)
-            close_new_issue_popover if has_element?('work-item-feedback-popover')
-            wait_for_requests
-
             click_element('work-item-edit-form-button')
 
             within_element('work-item-description-wrapper') do
@@ -94,17 +87,7 @@ module QA
             find_element('work-item-title').text.include?(title)
           end
 
-          def close_new_issue_popover
-            within_element('work-item-feedback-popover') do
-              click_element('close-button')
-            end
-          end
-
           def open_actions_dropdown
-            close_new_issue_popover if has_element?('work-item-feedback-popover')
-
-            wait_for_requests
-
             click_element('work-item-actions-dropdown') unless has_element?('state-toggle-action', visible: true)
           end
 

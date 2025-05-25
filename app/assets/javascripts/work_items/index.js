@@ -8,7 +8,6 @@ import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { injectVueAppBreadcrumbs } from '~/lib/utils/breadcrumbs';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
-import { ISSUE_WIT_FEEDBACK_BADGE, WORK_ITEM_TYPE_NAME_ISSUE } from '~/work_items/constants';
 import App from './components/app.vue';
 import WorkItemBreadcrumb from './components/work_item_breadcrumb.vue';
 import activeDiscussionQuery from './components/design_management/graphql/client/active_design_discussion.query.graphql';
@@ -16,7 +15,7 @@ import { createRouter } from './router';
 
 Vue.use(VueApollo);
 
-export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}) => {
+export const initWorkItemsRoot = ({ workspaceType, withTabs } = {}) => {
   const el = document.querySelector('#js-work-items');
 
   if (!el) {
@@ -47,7 +46,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     defaultBranch,
     initialSort,
     isSignedIn,
-    workItemType: listWorkItemType,
+    workItemType,
     hasEpicsFeature,
     showNewWorkItem,
     canCreateEpic,
@@ -68,7 +67,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
   const router = createRouter({ fullPath, workspaceType, defaultBranch, isGroup });
   let listPath = issuesListPath;
 
-  const breadcrumbParams = { workItemType: listWorkItemType, isGroup };
+  const breadcrumbParams = { workItemType, isGroup };
 
   if (isGroup) {
     listPath = epicsListPath;
@@ -92,27 +91,6 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       },
     },
   });
-
-  let feedback = {};
-
-  if (gon.features.workItemViewForIssues) {
-    feedback = {
-      ...ISSUE_WIT_FEEDBACK_BADGE,
-    };
-  }
-
-  if (
-    workItemType === WORK_ITEM_TYPE_NAME_ISSUE &&
-    gon.features.workItemsViewPreference &&
-    !isGroup &&
-    !gon.features.useWiViewForIssues
-  ) {
-    import(/* webpackChunkName: 'work_items_feedback' */ '~/work_items_feedback')
-      .then(({ initWorkItemsFeedback }) => {
-        initWorkItemsFeedback(feedback);
-      })
-      .catch({});
-  }
 
   return new Vue({
     el,
@@ -141,7 +119,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       groupId,
       initialSort,
       isSignedIn: parseBoolean(isSignedIn),
-      workItemType: listWorkItemType,
+      workItemType,
       hasEpicsFeature: parseBoolean(hasEpicsFeature),
       showNewWorkItem: parseBoolean(showNewWorkItem),
       canCreateEpic: parseBoolean(canCreateEpic),

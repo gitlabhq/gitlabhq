@@ -98,6 +98,7 @@ module Feature
       type
       group
       default_enabled
+      intended_to_rollout_by
     ].freeze
 
     def self.can_be_default_enabled?(feature_flag_type)
