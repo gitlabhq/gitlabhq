@@ -63,29 +63,7 @@ Malicious code pushed to your `.gitlab-ci.yml` file could compromise your variab
 `$HARBOR_PASSWORD`, and send them to a third-party server. For more details, see
 [CI/CD variable security](../../../ci/variables/_index.md#cicd-variable-security).
 
-## Examples of Harbor variables in CI/CD
-
-### Push a Docker image with kaniko
-
-For more information, see [Use kaniko to build Docker images](../../../ci/docker/using_kaniko.md).
-
-```yaml
-docker:
-  stage: docker
-  image:
-    name: gcr.io/kaniko-project/executor:debug
-    entrypoint: ['']
-  script:
-    - mkdir -p /kaniko/.docker
-    - echo "{\"auths\":{\"${HARBOR_HOST}\":{\"auth\":\"$(echo -n ${HARBOR_USERNAME}:${HARBOR_PASSWORD} | base64 -w 0)\"}}}" > /kaniko/.docker/config.json
-    - >-
-      /kaniko/executor
-      --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
-      --destination "${HARBOR_HOST}/${HARBOR_PROJECT}/${CI_PROJECT_NAME}:${CI_COMMIT_TAG}"
-  rules:
-  - if: $CI_COMMIT_TAG
-```
+## Use Harbor variables
 
 ### Push a Helm chart with an OCI registry
 

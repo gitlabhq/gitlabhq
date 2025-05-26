@@ -52,6 +52,49 @@ job1:
 
 The script in this example outputs `The job's stage is 'test'`.
 
+## CI/CD configuration variables
+
+GitLab CI/CD also makes configuration CI/CD variables available for use in pipeline configuration and job scripts.
+You can use GitLab CI/CD configuration variables in pipeline configuration and job scripts to configure runner
+and the job execution environment.
+
+You cannot directly define configuration variables in a `.gitlab-ci.yml` file.
+Runner administrators can define these variables indirectly as settings in a
+[`.config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration/) file.
+
+For example, when you configure TLS certificate settings for HTTPS communication:
+
+```toml
+[[runners]]
+  name = "gl-docker-runner"
+  url = "https://gitlab.com/example/url"
+  token = "user-token"
+  executor = "docker"
+
+  tls-ca-file = "/example/gl-runner/certs/ca.crt"
+  tls-cert-file = "/example/gl-runner/certs/cert.crt"
+  tls-key-file = "/example/gl-runner/certs/key.key"
+```
+
+The primary purpose of the `tls-ca-file` setting is to specify the certificate authority file for HTTPS verification.
+As a byproduct of this configuration, GitLab Runner automatically creates the `CI_SERVER_TLS_CA_FILE` configuration variable,
+which becomes available to your CI/CD jobs.
+
+Configuration variables are only available under certain conditions.
+For example, the configuration variable `CI_SERVER_TLS_CA_FILE` (which configures the custom
+Certificate Authority file) is only available when:
+
+- You configure it in the `config.toml` file by using the `tls-ca-file` setting.
+- The job instance uses HTTPS, which prompts the runner to automatically build a CA verification chain.
+
+To summarize, the following are the differences between predefined and configuration variables:
+
+|                | Predefined variables     | Configuration variables                            |
+|----------------|--------------------------|----------------------------------------------------|
+| Purpose        | Supports script logic    | Configure runner and the job execution environment |
+| Availability   | Always available         | Available only under specific conditions           |
+| Defined by     | Users in`.gitlab-ci.yml` | Administrators in `config.toml`                    |
+
 ## Define a CI/CD variable in the `.gitlab-ci.yml` file
 
 To create a CI/CD variable in the `.gitlab-ci.yml` file, define the variable and
