@@ -1312,6 +1312,28 @@ RSpec.describe Gitlab::Diff::File, feature_category: :shared do
     end
   end
 
+  describe '#image_diff?' do
+    subject(:image_diff?) { diff_file.image_diff? }
+
+    it 'returns true for image diffs' do
+      allow(diff_file).to receive_messages(different_type?: false, external_storage_error?: false)
+      allow(DiffViewer::Image).to receive(:can_render?).and_return(true)
+      expect(image_diff?).to eq(true)
+    end
+
+    it 'returns false for different types' do
+      allow(diff_file).to receive_messages(different_type?: true, external_storage_error?: false)
+      allow(DiffViewer::Image).to receive(:can_render?).and_return(true)
+      expect(image_diff?).to eq(false)
+    end
+
+    it 'returns false for storage error' do
+      allow(diff_file).to receive_messages(different_type?: false, external_storage_error?: true)
+      allow(DiffViewer::Image).to receive(:can_render?).and_return(true)
+      expect(image_diff?).to eq(false)
+    end
+  end
+
   describe '#modified_file?' do
     subject(:modified_file?) { diff_file.modified_file? }
 

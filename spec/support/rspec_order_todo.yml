@@ -7620,7 +7620,7 @@
 - './spec/services/security/ci_configuration/secret_detection_create_service_spec.rb'
 - './spec/services/security/merge_reports_service_spec.rb'
 - './spec/services/service_desk_settings/update_service_spec.rb'
-- './spec/services/service_ping/submit_service_ping_service_spec.rb'
+- './spec/services/service_ping/submit_service_spec.rb'
 - './spec/services/service_response_spec.rb'
 - './spec/services/snippets/bulk_destroy_service_spec.rb'
 - './spec/services/snippets/count_service_spec.rb'

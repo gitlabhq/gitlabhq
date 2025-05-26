@@ -9,6 +9,10 @@ RSpec.describe 'Incident timeline events', :js, feature_category: :incident_mana
   let_it_be(:user) { create(:user, developer_of: project) }
   let_it_be(:incident) { create(:incident, project: project) }
 
+  before do
+    stub_feature_flags(hide_incident_management_features: false)
+  end
+
   shared_examples 'add, edit, and delete timeline events' do
     it 'submits event data on save' do
       # Add event

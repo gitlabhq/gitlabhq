@@ -1399,12 +1399,10 @@ sudo gitlab-ctl tail | tee /tmp/<case-ID-and-keywords>.log
 
 Conclude the log gathering with <kbd>Control</kbd> + <kbd>C</kbd>.
 
-### GitLabSOS
+### Gathering SOS logs
 
 If performance degradations or cascading errors occur that can't readily be attributed to one
-of the previously listed GitLab components, [GitLabSOS](https://gitlab.com/gitlab-com/support/toolbox/gitlabsos/)
-can provide a broader perspective of the GitLab instance. For more details and instructions
-to run it, read [the GitLabSOS documentation](https://gitlab.com/gitlab-com/support/toolbox/gitlabsos/#gitlabsos).
+of the previously listed GitLab components, [use our SOS scripts](../troubleshooting/diagnostics_tools.md#sos-scripts).
 
 ### Fast-stats
 

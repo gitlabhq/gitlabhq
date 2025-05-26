@@ -2,6 +2,7 @@ import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { GREEN_BOX_IMAGE_URL, RED_BOX_IMAGE_URL } from 'spec/test_constants';
 import ImageDiffViewer from '~/vue_shared/components/diff_viewer/viewers/image_diff_viewer.vue';
+import ImageViewer from '~/vue_shared/components/content_viewer/viewers/image_viewer.vue';
 
 describe('ImageDiffViewer component', () => {
   const requiredProps = {
@@ -54,6 +55,11 @@ describe('ImageDiffViewer component', () => {
     expect(metaInfoElements).toHaveLength(2);
     expect(metaInfoElements.at(0).text()).toBe('2.00 KiB');
     expect(metaInfoElements.at(1).text()).toBe('1.00 KiB');
+  });
+
+  it('renders unencoded image path', () => {
+    createComponent({ ...allProps, encodePath: false });
+    expect(wrapper.findComponent(ImageViewer).props('encodePath')).toBe(false);
   });
 
   it('renders image diff for new', () => {

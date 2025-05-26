@@ -50199,6 +50199,9 @@ msgstr ""
 msgid "RapidDiffs|Line %d"
 msgstr ""
 
+msgid "RapidDiffs|Loading image diff..."
+msgstr ""
+
 msgid "RapidDiffs|Original line"
 msgstr ""
 
@@ -56829,6 +56832,9 @@ msgid "SecurityReports|There was an error reverting the dismissal."
 msgstr ""
 
 msgid "SecurityReports|There was an error while generating the report."
+msgstr ""
+
+msgid "SecurityReports|This dashboard provides an overview of your security vulnerabilities."
 msgstr ""
 
 msgid "SecurityReports|This project has reached the maximum number of vulnerabilities it can contain and some of the vulnerabilities couldn't be ingested."

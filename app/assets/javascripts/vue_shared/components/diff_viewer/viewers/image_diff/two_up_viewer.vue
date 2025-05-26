@@ -24,6 +24,11 @@ export default {
       required: false,
       default: 0,
     },
+    encodePath: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
 };
 </script>
@@ -35,6 +40,7 @@ export default {
       :file-size="oldSize"
       :render-info="true"
       inner-css-classes="frame deleted"
+      :encode-path="encodePath"
       class="wrap w-50"
     />
     <image-viewer
@@ -42,6 +48,7 @@ export default {
       :file-size="newSize"
       :render-info="true"
       :inner-css-classes="['frame', 'added']"
+      :encode-path="encodePath"
       class="wrap w-50"
     >
       <template #image-overlay="{ renderedWidth, renderedHeight }">

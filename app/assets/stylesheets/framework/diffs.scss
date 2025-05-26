@@ -339,12 +339,10 @@ $diff-file-header: 41px;
   .diff-file-container {
     .frame.deleted {
       border: 1px solid var(--gl-status-danger-icon-color);
-      background-color: inherit;
     }
 
     .frame.added {
       border: 1px solid var(--gl-status-success-icon-color);
-      background-color: inherit;
     }
 
     .swipe.view,

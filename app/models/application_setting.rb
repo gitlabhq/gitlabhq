@@ -20,8 +20,6 @@ class ApplicationSetting < ApplicationRecord
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
     'Admin area > Settings > Metrics and profiling > Metrics - Grafana'
 
-  ignore_column :duo_nano_features_enabled, remove_with: '18.1', remove_after: '2025-06-19'
-
   KROKI_URL_ERROR_MESSAGE = 'Please check your Kroki URL setting in ' \
     'Admin area > Settings > General > Kroki'
 

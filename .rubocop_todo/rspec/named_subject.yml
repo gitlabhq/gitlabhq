@@ -3084,7 +3084,6 @@ RSpec/NamedSubject:
     - 'spec/services/repositories/replicate_service_spec.rb'
     - 'spec/services/reset_project_cache_service_spec.rb'
     - 'spec/services/resource_access_tokens/create_service_spec.rb'
-    - 'spec/services/service_ping/submit_service_ping_service_spec.rb'
     - 'spec/services/snippets/bulk_destroy_service_spec.rb'
     - 'spec/services/snippets/count_service_spec.rb'
     - 'spec/services/snippets/create_service_spec.rb'

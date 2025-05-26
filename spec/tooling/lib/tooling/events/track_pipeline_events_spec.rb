@@ -59,7 +59,9 @@ RSpec.describe Tooling::Events::TrackPipelineEvents, feature_category: :tooling 
           send_event
 
           expect(http_client).to have_received(:request_post).with(api_path, expected_request_body, headers)
-          expect(logger).to have_received(:info).with("Successfully sent data for event")
+          expect(logger).to have_received(:info).with(
+            "Successfully sent data with properties: #{additional_properties}"
+          )
         end
       end
 
@@ -92,7 +94,7 @@ RSpec.describe Tooling::Events::TrackPipelineEvents, feature_category: :tooling 
         let(:logger) { nil }
 
         it 'logs to stdout' do
-          expect { send_event }.to output(/Successfully sent data for event/).to_stdout
+          expect { send_event }.to output(/Successfully sent data with properties:/).to_stdout
         end
       end
 

@@ -55,31 +55,32 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
   let(:service_ping_errors_url) { File.join(described_class::STAGING_BASE_URL, described_class::ERROR_PATH) }
   let(:service_ping_metadata_url) { File.join(described_class::STAGING_BASE_URL, described_class::METADATA_PATH) }
   let!(:usage_data) { { uuid: 'uuid', unique_instance_id: 'unique_instance_id', recorded_at: Time.current } }
+
   let!(:organization) { create(:organization) }
 
-  let(:subject) { described_class.new(payload: usage_data) }
+  subject(:submit_service) { described_class.new(organization: organization, payload: usage_data) }
 
   shared_examples 'does not run' do
-    it do
+    it 'does not call gitlab api' do
       expect(Gitlab::HTTP).not_to receive(:post)
 
-      subject.execute
+      submit_service.execute
     end
   end
 
   shared_examples 'does not send a blank usage ping payload' do
-    it do
+    it 'does not call gitlab api' do
       expect(Gitlab::HTTP).not_to receive(:post).with(service_ping_payload_url, any_args)
 
-      expect { subject.execute }.to raise_error(described_class::SubmissionError) do |error|
+      expect { submit_service.execute }.to raise_error(described_class::SubmissionError) do |error|
         expect(error.message).to include('Usage data payload is blank')
       end
     end
   end
 
   shared_examples 'saves DevOps report data from the response' do
-    it do
-      expect { subject.execute }
+    it 'changes metric count' do
+      expect { submit_service.execute }
         .to change { DevOpsReport::Metric.count }
         .by(1)
 
@@ -138,7 +139,7 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
       ).twice
       .and_call_original
 
-      subject.execute
+      submit_service.execute
 
       expect(response).to have_been_requested
       expect(error_response).not_to have_been_requested
@@ -168,7 +169,7 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
       stub_response(body: nil, url: service_ping_metadata_url, status: 201)
       response = stub_response(body: with_dev_ops_score_params)
 
-      subject.execute
+      submit_service.execute
 
       expect(response).to have_been_requested
     end
@@ -183,7 +184,7 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
       it_behaves_like 'saves DevOps report data from the response'
 
       it 'saves usage_data_id to version_usage_data_id_value' do
-        subject.execute
+        submit_service.execute
 
         raw_usage_data = RawUsageData.find_by(recorded_at: usage_data[:recorded_at])
 
@@ -199,11 +200,11 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
       end
 
       it 'does not save DevOps report data' do
-        expect { subject.execute }.not_to change { DevOpsReport::Metric.count }
+        expect { submit_service.execute }.not_to change { DevOpsReport::Metric.count }
       end
 
       it 'saves usage_data_id to version_usage_data_id_value' do
-        subject.execute
+        submit_service.execute
 
         raw_usage_data = RawUsageData.find_by(recorded_at: usage_data[:recorded_at])
 
@@ -219,7 +220,7 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
       end
 
       it 'raises an exception' do
-        expect { subject.execute }.to raise_error(described_class::SubmissionError) do |error|
+        expect { submit_service.execute }.to raise_error(described_class::SubmissionError) do |error|
           expect(error.message).to include('Invalid usage_data_id in response: -1000')
         end
       end
@@ -241,11 +242,11 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
       end
 
       it 'creates a raw_usage_data record' do
-        expect { subject.execute }.to change(RawUsageData, :count).by(1)
+        expect { submit_service.execute }.to change { RawUsageData.count }.by(1)
       end
 
       it 'saves the correct payload' do
-        subject.execute
+        submit_service.execute
 
         raw_usage_data = RawUsageData.find_by(recorded_at: usage_data[:recorded_at])
 
@@ -253,7 +254,7 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
       end
 
       it 'links to the first found organization' do
-        subject.execute
+        submit_service.execute
 
         raw_usage_data = RawUsageData.find_by(recorded_at: usage_data[:recorded_at])
 
@@ -267,7 +268,7 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
       end
 
       it 'raises an exception' do
-        expect { subject.execute }.to raise_error(described_class::SubmissionError) do |error|
+        expect { submit_service.execute }.to raise_error(described_class::SubmissionError) do |error|
           expect(error.message).to include('Unsuccessful response code: 504')
         end
       end
@@ -292,12 +293,12 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
 
       it 'raises SubmissionError' do
         # SubmissionError is raised as a result of 404 in response from HTTP Request
-        expect { subject.execute }.to raise_error(described_class::SubmissionError)
+        expect { submit_service.execute }.to raise_error(described_class::SubmissionError)
       end
     end
   end
 
-  context 'metadata reporting' do
+  context 'with metadata reporting' do
     before do
       stub_usage_data_connections
       stub_database_flavor_check
@@ -343,7 +344,7 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
       response = stub_full_request(service_ping_metadata_url, method: :post)
                    .with(body: metadata_payload)
 
-      subject.execute
+      submit_service.execute
 
       expect(response).to have_been_requested
     end

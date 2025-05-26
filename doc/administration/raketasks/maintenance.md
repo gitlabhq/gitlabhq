@@ -648,7 +648,7 @@ Prerequisites:
    SELECT * FROM pg_stat_statements LIMIT 10;
    ```
 
-## Check the database for deduplicate CI/CD tags
+## Check the database for duplicate CI/CD tags
 
 {{< history >}}
 

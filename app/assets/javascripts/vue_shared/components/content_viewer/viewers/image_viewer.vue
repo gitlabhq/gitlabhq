@@ -26,6 +26,11 @@ export default {
       required: false,
       default: '',
     },
+    encodePath: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -47,6 +52,7 @@ export default {
       return this.width && this.height;
     },
     safePath() {
+      if (!this.encodePath) return this.path;
       return this.path.startsWith(BLOB_PREFIX) ? this.path : encodeSaferUrl(this.path);
     },
   },

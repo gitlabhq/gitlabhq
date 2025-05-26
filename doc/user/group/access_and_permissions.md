@@ -93,6 +93,19 @@ address. This top-level group setting applies to:
 Administrators can combine restricted access by IP address with
 [globally-allowed IP addresses](../../administration/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges).
 
+{{< alert type="warning" >}}
+
+The server that receives direct requests from users must use the
+`X-Forwarded-For` header to correctly capture the user's original IP address.
+
+In NGINX, you can modify your configuration file to include:
+
+```plaintext
+proxy_set_header X-Forwarded-For $remote_addr;
+```
+
+{{< /alert >}}
+
 To restrict group access by IP address:
 
 1. On the left sidebar, select **Search or go to** and find your group.

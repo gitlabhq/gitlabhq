@@ -77,45 +77,55 @@ RSpec.describe Projects::IncidentsController, feature_category: :incident_manage
 
     let(:user) { developer }
 
-    it 'renders incident page' do
-      subject
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(hide_incident_management_features: false)
+      end
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response).to render_template(:show)
-
-      expect(assigns(:incident)).to be_present
-      expect(assigns(:incident).author.association(:status)).to be_loaded
-      expect(assigns(:issue)).to be_present
-      expect(assigns(:noteable)).to eq(assigns(:incident))
-    end
-
-    context 'with non existing id' do
-      let(:resource) { non_existing_record_id }
-
-      it_behaves_like 'not found'
-    end
-
-    context 'for issue' do
-      let_it_be(:resource) { create(:issue, project: project) }
-
-      it_behaves_like 'not found'
-    end
-
-    context 'when user is a guest' do
-      let(:user) { guest }
-
-      it 'shows the page' do
+      it 'renders incident page' do
         subject
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template(:show)
+
+        expect(assigns(:incident)).to be_present
+        expect(assigns(:incident).author.association(:status)).to be_loaded
+        expect(assigns(:issue)).to be_present
+        expect(assigns(:noteable)).to eq(assigns(:incident))
+      end
+
+      context 'with non existing id' do
+        let(:resource) { non_existing_record_id }
+
+        it_behaves_like 'not found'
+      end
+
+      context 'for issue' do
+        let_it_be(:resource) { create(:issue, project: project) }
+
+        it_behaves_like 'not found'
+      end
+
+      context 'when user is a guest' do
+        let(:user) { guest }
+
+        it 'shows the page' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template(:show)
+        end
+      end
+
+      context 'when unauthorized' do
+        let(:user) { anonymous }
+
+        it_behaves_like 'login required'
       end
     end
 
-    context 'when unauthorized' do
-      let(:user) { anonymous }
-
-      it_behaves_like 'login required'
+    context 'when feature flag is enabled' do
+      it_behaves_like 'not found'
     end
   end
 end

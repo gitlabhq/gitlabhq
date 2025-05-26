@@ -18,17 +18,40 @@ with troubleshooting GitLab. If you are currently having an issue with GitLab, y
 may want to check your [support options](https://about.gitlab.com/support/) first,
 before attempting to use these tools.
 
-## gitlabsos
+## SOS scripts
 
-The [gitlabsos](https://gitlab.com/gitlab-com/support/toolbox/gitlabsos/) utility
-provides a unified method of gathering information and logs from GitLab and the system it's
-running on.
+- [`gitlabsos`](https://gitlab.com/gitlab-com/support/toolbox/gitlabsos/)
+  gathers information and recent logs from a Linux package or Docker-based GitLab instance
+  and its operating system.
+- [`kubesos`](https://gitlab.com/gitlab-com/support/toolbox/kubesos/)
+  gathers k8s cluster configuration and recent logs from a GitLab Helm chart deployment.
+- [`gitlab:db:sos`](../raketasks/maintenance.md#collect-information-and-statistics-about-the-database)
+  gathers detailed diagnostic data about your database.
 
 ## strace-parser
 
-[strace-parser](https://gitlab.com/gitlab-com/support/toolbox/strace-parser) is a small tool to analyze
-and summarize raw `strace` data.
+[`strace-parser`](https://gitlab.com/gitlab-com/support/toolbox/strace-parser)
+analyzes and summarize raw `strace` data.
+The [`strace` zine](https://wizardzines.com/zines/strace/) is recommended for context.
 
-## `kubesos`
+## `gitlabrb_sanitizer`
 
-The [`kubesos`](https://gitlab.com/gitlab-com/support/toolbox/kubesos/) utility retrieves GitLab cluster configuration and logs from GitLab Helm chart deployments.
+[1](https://gitlab.com/gitlab-com/support/toolbox/gitlabrb_sanitizer/) outputs a copy of `/etc/gitlab/gitlab.rb` content with sensitive values redacted.
+
+## `fast-stats`
+
+[`fast-stats`](https://gitlab.com/gitlab-com/support/toolbox/fast-stats#fast-stats)
+summarizes errors and resource-intensive usage statistics quickly,
+to help debug performance and configuration problems.
+`fast-stats` is particularly useful to parse and compare large volumes of logs,
+or to start troubleshooting unknown problems.
+
+## `greenhat`
+
+[`greenhat`](https://gitlab.com/gitlab-com/support/toolbox/greenhat/)
+provides an interactive shell to analyze, filter, and summarize [SOS logs](#sos-scripts).
+
+## GitLab Detective
+
+[GitLab Detective](https://gitlab.com/gitlab-com/support/toolbox/gitlab-detective)
+runs automated checks on a GitLab installation to identify and resolve common issues.

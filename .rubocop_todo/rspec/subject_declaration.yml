@@ -90,7 +90,6 @@ RSpec/SubjectDeclaration:
     - 'spec/services/merge_requests/reload_diffs_service_spec.rb'
     - 'spec/services/packages/pypi/create_package_service_spec.rb'
     - 'spec/services/projects/batch_open_issues_count_service_spec.rb'
-    - 'spec/services/service_ping/submit_service_ping_service_spec.rb'
     - 'spec/services/wiki_pages/base_service_spec.rb'
     - 'spec/services/work_items/prepare_import_csv_service_spec.rb'
     - 'spec/support/shared_examples/finders/issues_finder_shared_examples.rb'

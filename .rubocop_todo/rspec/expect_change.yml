@@ -313,7 +313,6 @@ RSpec/ExpectChange:
     - 'spec/services/protected_branches/create_service_spec.rb'
     - 'spec/services/protected_tags/create_service_spec.rb'
     - 'spec/services/releases/create_service_spec.rb'
-    - 'spec/services/service_ping/submit_service_ping_service_spec.rb'
     - 'spec/services/snippets/bulk_destroy_service_spec.rb'
     - 'spec/services/snippets/create_service_spec.rb'
     - 'spec/services/snippets/update_repository_storage_service_spec.rb'

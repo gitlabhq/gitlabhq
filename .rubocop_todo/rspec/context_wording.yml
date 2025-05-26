@@ -2479,7 +2479,6 @@ RSpec/ContextWording:
     - 'spec/services/search/snippet_service_spec.rb'
     - 'spec/services/security/ci_configuration/sast_parser_service_spec.rb'
     - 'spec/services/security/merge_reports_service_spec.rb'
-    - 'spec/services/service_ping/submit_service_ping_service_spec.rb'
     - 'spec/services/snippets/destroy_service_spec.rb'
     - 'spec/services/snippets/update_service_spec.rb'
     - 'spec/services/spam/akismet_mark_as_spam_service_spec.rb'

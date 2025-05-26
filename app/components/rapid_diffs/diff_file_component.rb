@@ -34,6 +34,8 @@ module RapidDiffs
         return Viewers::Text::InlineViewComponent
       end
 
+      return Viewers::ImageViewComponent if @diff_file.image_diff?
+
       Viewers::NoPreviewComponent
     end
 

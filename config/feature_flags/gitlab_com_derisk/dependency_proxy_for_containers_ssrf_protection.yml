@@ -1,9 +1,0 @@
----
-name: dependency_proxy_for_containers_ssrf_protection
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/520309
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184626
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/523245
-milestone: '18.0'
-group: group::package registry
-type: gitlab_com_derisk
-default_enabled: false

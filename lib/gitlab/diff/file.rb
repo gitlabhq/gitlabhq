@@ -462,6 +462,12 @@ module Gitlab
         !collapsed? && diff_lines_for_serializer.nil? && (added_lines != 0 || removed_lines != 0)
       end
 
+      def image_diff?
+        return false if different_type? || external_storage_error?
+
+        DiffViewer::Image.can_render?(self, verify_binary: !stored_externally?)
+      end
+
       private
 
       def diffable_by_attribute?

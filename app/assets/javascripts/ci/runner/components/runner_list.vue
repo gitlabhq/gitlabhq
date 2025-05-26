@@ -213,8 +213,8 @@ export default {
       </template>
     </gl-table-lite>
 
-    <template v-if="!runners.length && loading">
+    <div v-if="!runners.length && loading" class="gl-mx-5 gl-mt-5">
       <gl-skeleton-loader v-for="i in 4" :key="i" />
-    </template>
+    </div>
   </div>
 </template>

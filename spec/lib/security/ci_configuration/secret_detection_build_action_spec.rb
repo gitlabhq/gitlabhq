@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Security::CiConfiguration::SecretDetectionBuildAction do
+RSpec.describe Security::CiConfiguration::SecretDetectionBuildAction, feature_category: :secret_detection do
   subject(:result) { described_class.new(auto_devops_enabled, gitlab_ci_content).generate }
 
   let(:params) { {} }
@@ -119,6 +119,8 @@ RSpec.describe Security::CiConfiguration::SecretDetectionBuildAction do
           # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
           # Note that environment variables can be set in several places
           # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+          stages:
+          - test
           include:
           - template: Security/Secret-Detection.gitlab-ci.yml
         CI_YML

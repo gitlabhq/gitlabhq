@@ -22,23 +22,20 @@ module Tooling
       def send_event(event_name, label:, value: nil, property: nil)
         return log(:error, "Error: Cannot send event '#{event_name}'. Missing project access token.") unless api_token
 
+        properties = { label:, value:, property: }.compact
         body = {
           event: event_name,
           send_to_snowplow: true,
           namespace_id: namespace_id,
           project_id: project_id,
-          additional_properties: {
-            label:,
-            value:,
-            property:
-          }.compact
+          additional_properties: properties
         }.to_json
 
         log(:info, "Sending data for event: #{event_name}")
         response = client.request_post("/api/v4/usage_data/track_event", body, headers)
 
         if response.code.to_i == 200
-          log(:info, "Successfully sent data for event")
+          log(:info, "Successfully sent data with properties: #{properties}")
         else
           log(:error, "Failed event tracking: #{response.code}, body: #{response.body}")
         end
