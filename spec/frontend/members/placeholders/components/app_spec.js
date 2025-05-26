@@ -240,7 +240,9 @@ describe('PlaceholdersTabApp', () => {
     });
 
     it('renders alert with extra text', () => {
-      expect(findAlert().text()).toContain('Skip confirmation when reassigning placeholder users');
+      expect(findAlert().text()).toContain(
+        'Skip confirmation when administrators reassign placeholder users',
+      );
     });
   });
 

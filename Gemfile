@@ -128,7 +128,7 @@ gem 'attr_encrypted', '~> 4.2', feature_category: :shared
 
 # GitLab Pages
 gem 'validates_hostname', '~> 1.0.13', feature_category: :pages
-gem 'rubyzip', '~> 2.3.2', require: 'zip', feature_category: :pages
+gem 'rubyzip', '~> 2.4.0', require: 'zip', feature_category: :pages
 # GitLab Pages letsencrypt support
 gem 'acme-client', '~> 2.0.19', feature_category: :pages
 

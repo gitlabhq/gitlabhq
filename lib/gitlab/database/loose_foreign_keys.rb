@@ -27,6 +27,7 @@ module Gitlab
             gitlab_schema: GitlabSchema.table_schema!(child_table_name),
             target_column: config['target_column'],
             target_value: config['target_value'],
+            delete_limit: config['delete_limit'],
             conditions: conditions
           }
         )

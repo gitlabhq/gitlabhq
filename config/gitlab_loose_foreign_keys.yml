@@ -498,6 +498,7 @@ p_ci_pipelines:
   - table: ci_triggers
     column: trigger_id
     on_delete: async_delete
+    delete_limit: 50
 p_ci_runner_machine_builds:
   - table: ci_runner_machines
     column: runner_machine_id

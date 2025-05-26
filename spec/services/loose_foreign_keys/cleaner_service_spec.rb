@@ -75,6 +75,20 @@ RSpec.describe LooseForeignKeys::CleanerService, feature_category: :database do
         expect(Issue.exists?(id: issue.id)).to eq(false)
       end
 
+      context 'when delete_limit is configured to 50' do
+        it 'generates an IN query for deleting the rows' do
+          loose_fk_definition.options[:on_delete] = :async_delete
+          loose_fk_definition.options[:delete_limit] = 50
+
+          expected_query = %{DELETE FROM "issues" WHERE ("issues"."id") IN (SELECT "issues"."id" FROM "issues" WHERE "issues"."project_id" IN (#{issue.project_id}) LIMIT 50)}
+          expect(ApplicationRecord.connection).to receive(:execute).with(expected_query).and_call_original
+
+          cleaner_service.execute
+
+          expect(Issue.exists?(id: issue.id)).to eq(false)
+        end
+      end
+
       context 'when updating target column', :aggregate_failures do
         let(:target_column) { 'state_id' }
         let(:target_value) { 2 }

@@ -513,7 +513,7 @@ export default {
         <gl-sprintf
           :message="
             s__(
-              'UserMapping|The %{strongStart}Skip confirmation when reassigning placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately.',
+              'UserMapping|The %{strongStart}Skip confirmation when administrators reassign placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately.',
             )
           "
         >

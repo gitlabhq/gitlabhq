@@ -381,6 +381,10 @@ On the destination instance, users with the Owner role for a top-level group can
   [accepts the reassignment request](#accept-contribution-reassignment).
 - Choose not to reassign contributions and memberships and [keep them assigned to placeholder users](#keep-as-placeholder).
 
+On GitLab Self-Managed and GitLab Dedicated, administrators can reassign
+contributions and memberships immediately without user confirmation.
+For more information, see [skip confirmation when administrators reassign placeholder users](../../../administration/settings/import_and_export_settings.md#skip-confirmation-when-administrators-reassign-placeholder-users).
+
 #### Reassigning contributions from multiple placeholder users
 
 All the contributions initially assigned to a single placeholder user can only be reassigned to a single active regular
@@ -621,7 +625,17 @@ In the **Reassigned** tab, possible statuses are:
 By default, the table is sorted alphabetically by placeholder user name.
 You can also sort the table by reassignment status.
 
-### Accept contribution reassignment
+### Confirm contribution reassignment
+
+When [**Skip confirmation when administrators reassign placeholder users**](../../../administration/settings/import_and_export_settings.md#skip-confirmation-when-administrators-reassign-placeholder-users) is enabled:
+
+- Administrators can reassign contributions immediately without user confirmation.
+- You receive an email informing you that you've been reassigned contributions.
+
+If this setting is not enabled, you can [accept](#accept-contribution-reassignment)
+or [reject](#reject-contribution-reassignment) the reassignment.
+
+#### Accept contribution reassignment
 
 You might receive an email informing you that an import process took place and asking you to confirm reassignment of
 contributions to yourself.
