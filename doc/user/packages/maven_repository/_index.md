@@ -279,7 +279,7 @@ In this example:
   Example: `https://gitlab.example.com/api/v4/projects/<project_id>/packages/maven`.
 - `<host>` is the host present in the `<endpoint url>` without the protocol
   scheme or the port. Example: `gitlab.example.com`.
-- `<name>` and `<token>` are explained in the table above.
+- `<name>` and `<token>` are explained in the previous table.
 
 {{< /tab >}}
 

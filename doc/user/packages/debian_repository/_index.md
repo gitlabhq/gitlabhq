@@ -177,8 +177,8 @@ Once built, several files are created:
 - `.changes` file: Upload metadata, and list of uploaded files (all the above)
 
 To upload these files, you can use `dput-ng >= 1.32` (Debian bullseye).
-`<username>` and `<password>` are defined
-[as above](#authenticate-to-the-debian-package-repositories):
+`<username>` and `<password>` are defined like in
+[Debian package repositories](#authenticate-to-the-debian-package-repositories):
 
 ```shell
 cat <<EOF > dput.cf

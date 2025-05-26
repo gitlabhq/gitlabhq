@@ -142,6 +142,7 @@ module Projects
           :runners_token, :builds_enabled, :build_allow_git_fetch,
           :build_timeout_human_readable, :public_builds, :ci_separated_caches,
           :auto_cancel_pending_pipelines, :ci_config_path, :auto_rollback_enabled,
+          :protect_merge_request_pipelines,
           { auto_devops_attributes: [:id, :domain, :enabled, :deploy_strategy],
             ci_cd_settings_attributes: permitted_project_ci_cd_settings_params }
         ].tap do |list|

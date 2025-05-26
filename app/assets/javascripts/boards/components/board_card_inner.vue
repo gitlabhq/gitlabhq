@@ -10,11 +10,7 @@ import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.quer
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import IssueMilestone from '~/issuable/components/issue_milestone.vue';
-import {
-  LINKED_CATEGORIES_MAP,
-  STATE_CLOSED,
-  WORK_ITEM_TYPE_NAME_EPIC,
-} from '~/work_items/constants';
+import { WORK_ITEM_TYPE_NAME_EPIC } from '~/work_items/constants';
 import WorkItemRelationshipIcons from '~/work_items/components/shared/work_item_relationship_icons.vue';
 import { ListType } from '../constants';
 import { setError } from '../graphql/cache_updates';
@@ -193,13 +189,14 @@ export default {
     workItemFullPath() {
       return this.item.namespace?.fullPath || this.item.referencePath?.split(this.itemPrefix)[0];
     },
-    filteredLinkedItems() {
-      const linkedItems = this.item.linkedWorkItems?.nodes || [];
-      return linkedItems.filter((item) => {
-        return (
-          item.linkType !== LINKED_CATEGORIES_MAP.RELATES_TO && item.workItemState !== STATE_CLOSED
-        );
-      });
+    blockingCount() {
+      return this.item?.blockingCount || 0;
+    },
+    blockedByCount() {
+      return this.item?.blockedByCount || 0;
+    },
+    hasBlockingRelationships() {
+      return this.blockingCount > 0 || this.blockedByCount > 0;
     },
     targetId() {
       return uniqueId(`${this.item.iid}`);
@@ -404,10 +401,11 @@ export default {
           >
         </div>
         <work-item-relationship-icons
-          v-if="filteredLinkedItems.length"
+          v-if="hasBlockingRelationships"
           class="gl-whitespace-nowrap"
           :work-item-type="workItemType"
-          :linked-work-items="filteredLinkedItems"
+          :blocking-count="blockingCount"
+          :blocked-by-count="blockedByCount"
           :work-item-full-path="workItemFullPath"
           :work-item-iid="item.iid"
           :work-item-web-url="item.webUrl"

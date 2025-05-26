@@ -21,7 +21,8 @@ export default {
   props: {
     linkedWorkItems: {
       type: Array,
-      required: true,
+      required: false,
+      default: () => [],
     },
     title: {
       type: String,

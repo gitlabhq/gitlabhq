@@ -2941,6 +2941,9 @@ msgstr ""
 msgid "Access levels should either both be present or both be nil"
 msgstr ""
 
+msgid "Access protected resources in merge request pipelines"
+msgstr ""
+
 msgid "Access requests"
 msgstr ""
 
@@ -36807,6 +36810,9 @@ msgstr ""
 msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
 msgstr ""
 
+msgid "Make protected CI/CD variables and runners available in merge request pipelines. Protected resources will only be available in merge request pipelines if both the source and target branches of the merge request are protected."
+msgstr ""
+
 msgid "Make sure you choose a strong, unique password."
 msgstr ""
 
@@ -38454,6 +38460,9 @@ msgstr ""
 msgid "MergeRequests|started a thread on commit %{linkStart}%{commitDisplay}%{linkEnd}"
 msgstr ""
 
+msgid "MergeRequest|Allow merge request pipelines to access protected variables and runners"
+msgstr ""
+
 msgid "MergeRequest|Awaiting review"
 msgstr ""
 
@@ -38479,6 +38488,9 @@ msgid "MergeRequest|Change reviewer"
 msgstr ""
 
 msgid "MergeRequest|Compare %{target} and %{source}"
+msgstr ""
+
+msgid "MergeRequest|Control access to protected variables and runners in merge request pipelines"
 msgstr ""
 
 msgid "MergeRequest|Error dismissing suggestion popover. Please try again."
@@ -72773,6 +72785,9 @@ msgstr ""
 msgid "has already been published"
 msgstr ""
 
+msgid "has already been recorded as a violation for this compliance control"
+msgstr ""
+
 msgid "has already been taken"
 msgstr ""
 
@@ -73521,6 +73536,9 @@ msgstr ""
 msgid "must be associated with a Group or a Project"
 msgstr ""
 
+msgid "must be associated with either a Project or Group entity type"
+msgstr ""
+
 msgid "must be at least 1 day"
 msgstr ""
 
@@ -73596,6 +73614,12 @@ msgstr ""
 msgid "must belong to the same namespace."
 msgstr ""
 
+msgid "must belong to the specified namespace"
+msgstr ""
+
+msgid "must belong to the specified project"
+msgstr ""
+
 msgid "must contain only a discord user ID."
 msgstr ""
 
@@ -73648,6 +73672,12 @@ msgid "must only be set for bot user types"
 msgstr ""
 
 msgid "must only contain letters, digits, forward-slash, underscore, hyphen or period"
+msgstr ""
+
+msgid "must reference the specified namespace as its entity"
+msgstr ""
+
+msgid "must reference the specified project as its entity"
 msgstr ""
 
 msgid "my-awesome-group"

@@ -53,6 +53,8 @@ module MergeRequests
 
           merge_request.schedule_cleanup_refs(only: [:rebase_on_merge_path])
 
+          log_info("Used new from source branch merge")
+
           payload
         else
           result = if project.merge_requests_ff_only_enabled
@@ -141,6 +143,23 @@ module MergeRequests
 
       def raise_error(message)
         raise ::MergeRequests::MergeStrategies::StrategyError, message
+      end
+
+      def logger
+        @logger ||= Gitlab::AppLogger
+      end
+
+      def log_payload(message)
+        Gitlab::ApplicationContext.current.merge(merge_request_info: merge_request_info, message: message)
+      end
+
+      def log_info(message)
+        payload = log_payload(message)
+        logger.info(**payload)
+      end
+
+      def merge_request_info
+        @merge_request_info ||= merge_request.to_reference(full: true)
       end
     end
   end

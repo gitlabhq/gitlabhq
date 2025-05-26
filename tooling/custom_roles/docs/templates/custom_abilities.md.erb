@@ -1,5 +1,4 @@
-<% # change all_customizable_standard_permissions to all_customizable_permissions when custom_admin_roles feature flag is removed%>
-<% active_custom_abilities = MemberRole.all_customizable_standard_permissions.filter { |p| !::Feature::Definition.get("custom_ability_#{p}") } %>
+<% active_custom_abilities = MemberRole.all_customizable_permissions.filter { |p| !::Feature::Definition.get("custom_ability_#{p}") } %>
 <% custom_abilities_by_feature_category = active_custom_abilities.group_by { |_k, definition| definition[:feature_category] } %>
 <% def humanize(feature_category) %>
 <%   case feature_category %>
@@ -43,6 +42,11 @@ title: Custom permissions
   To make changes to the output of the Rake task,
   edit `tooling/custom_roles/docs/templates/custom_abilities.md.erb`.
 -->
+{{< history >}}
+
+- Custom admin roles [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181346) in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `custom_admin_roles`. Disabled by default.
+
+{{< /history >}}
 
 You can create a [custom role](_index.md) by adding one or more custom permissions to a base role.
 

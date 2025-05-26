@@ -31,10 +31,11 @@ RSpec.describe IdeController, feature_category: :web_ide do
         it 'increases the views counter' do
           expect(Gitlab::InternalEvents).to receive(:track_event)
             .with(
-              'web_ide_viewed',
-              user: user,
-              project: project,
-              namespace: project.namespace
+              'web_ide_viewed', hash_including({
+                user: user,
+                project: project,
+                namespace: project.namespace
+              })
             ).once
 
           subject

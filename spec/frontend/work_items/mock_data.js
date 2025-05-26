@@ -805,6 +805,8 @@ export const mockBlockingLinkedItem = {
 
 export const mockBlockedByLinkedItem = {
   type: WIDGET_TYPE_LINKED_ITEMS,
+  blockedByCount: 2,
+  blockingCount: 0,
   linkedItems: {
     nodes: [
       {
@@ -952,6 +954,8 @@ export const mockNoLinkedItems = {
 
 export const mockLinkedItems = {
   type: WIDGET_TYPE_LINKED_ITEMS,
+  blockingCount: 1,
+  blockedByCount: 1,
   linkedItems: {
     nodes: [
       {
@@ -1678,6 +1682,8 @@ export const workItemResponseFactory = ({
   awardEmoji = mockAwardsWidget,
   state = 'OPEN',
   linkedItems = mockEmptyLinkedItems,
+  blockedByCount = mockEmptyLinkedItems.blockedByCount,
+  blockingCount = mockEmptyLinkedItems.blockingCount,
   color = '#1068bf',
   editableWeightWidget = true,
   hasParent = false,
@@ -1997,7 +2003,9 @@ export const workItemResponseFactory = ({
               ...(newCustomEmojiPath ? { newCustomEmojiPath } : {}),
             }
           : { type: 'MOCK TYPE' },
-        linkedItemsWidgetPresent ? linkedItems : { type: 'MOCK TYPE' },
+        linkedItemsWidgetPresent
+          ? { ...linkedItems, blockingCount, blockedByCount }
+          : { type: 'MOCK TYPE' },
         colorWidgetPresent
           ? {
               color,
@@ -6279,6 +6287,8 @@ export const createWorkItemQueryResponse = (widgets = []) => ({
           },
           {
             type: 'LINKED_ITEMS',
+            blockingCount: 0,
+            blockedByCount: 0,
             linkedItems: {
               nodes: [],
               __typename: 'LinkedWorkItemTypeConnection',

@@ -252,7 +252,7 @@ Pages supports reaching each of these files through several different URLs. In
 particular, it always looks for an `index.html` file if the URL only
 specifies the directory. If the URL references a file that doesn't exist, but
 adding `.html` to the URL leads to a file that *does* exist, it's served
-instead. Here are some examples of what happens given the above Pages site:
+instead. Here are some examples of what happens given the previous Pages site:
 
 | URL path             | HTTP response |
 | -------------------- | ------------- |
@@ -305,7 +305,7 @@ To use variables in the `pages.publish` field, see [`pages.publish`](../../../ci
 
 Pages uses artifacts to store the files of your site, so the value from
 `pages.publish` is automatically appended to [`artifacts:paths`](../../../ci/yaml/_index.md#artifactspaths).
-The above example is equivalent to:
+The previous example is equivalent to:
 
 ```yaml
 create-pages:

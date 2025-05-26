@@ -23,7 +23,6 @@ import WorkItemPrefetch from '~/work_items/components/work_item_prefetch.vue';
 import {
   STATE_OPEN,
   STATE_CLOSED,
-  LINKED_CATEGORIES_MAP,
   WORK_ITEM_TYPE_NAME_INCIDENT,
   WORK_ITEM_TYPE_NAME_ISSUE,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
@@ -188,13 +187,17 @@ export default {
         []
       );
     },
-    filteredLinkedItems() {
-      const linkedItems = findLinkedItemsWidget(this.issuable)?.linkedItems?.nodes || [];
-      return linkedItems.filter((item) => {
-        return (
-          item.linkType !== LINKED_CATEGORIES_MAP.RELATES_TO && item.workItemState !== STATE_CLOSED
-        );
-      });
+    linkedItemsWidget() {
+      return findLinkedItemsWidget(this.issuable);
+    },
+    blockingCount() {
+      return this.linkedItemsWidget?.blockingCount || 0;
+    },
+    blockedByCount() {
+      return this.linkedItemsWidget?.blockedByCount || 0;
+    },
+    hasBlockingRelationships() {
+      return this.blockingCount > 0 || this.blockedByCount > 0;
     },
     createdAt() {
       return this.issuable.createdAt ? this.timeFormatted(this.issuable.createdAt) : undefined;
@@ -593,12 +596,13 @@ export default {
         </slot>
         <slot name="statistics"></slot>
         <work-item-relationship-icons
-          v-if="isOpen && filteredLinkedItems.length > 0"
+          v-if="isOpen && hasBlockingRelationships"
           :work-item-type="type"
-          :linked-work-items="filteredLinkedItems"
           :work-item-full-path="workItemFullPath"
           :work-item-iid="issuableIid"
           :work-item-web-url="issuableLinkHref"
+          :blocking-count="blockingCount"
+          :blocked-by-count="blockedByCount"
         />
         <div v-else-if="detailLoading">
           <gl-skeleton-loader :width="45" :lines="1" equal-width-lines />

@@ -21,10 +21,8 @@ import WorkItemStateBadge from '../work_item_state_badge.vue';
 import { canRouterNav, findLinkedItemsWidget, getDisplayReference } from '../../utils';
 import {
   STATE_OPEN,
-  STATE_CLOSED,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_LABELS,
-  LINKED_CATEGORIES_MAP,
   INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
 } from '../../constants';
 import WorkItemRelationshipIcons from './work_item_relationship_icons.vue';
@@ -148,13 +146,17 @@ export default {
     displayReference() {
       return getDisplayReference(this.workItemFullPath, this.childItem.reference);
     },
-    filteredLinkedChildItems() {
-      const linkedChildWorkItems = findLinkedItemsWidget(this.childItem).linkedItems?.nodes || [];
-      return linkedChildWorkItems.filter((item) => {
-        return (
-          item.linkType !== LINKED_CATEGORIES_MAP.RELATES_TO && item.workItemState !== STATE_CLOSED
-        );
-      });
+    linkedItemsWidget() {
+      return findLinkedItemsWidget(this.childItem);
+    },
+    blockingCount() {
+      return this.linkedItemsWidget?.blockingCount || 0;
+    },
+    blockedByCount() {
+      return this.linkedItemsWidget?.blockedByCount || 0;
+    },
+    hasBlockingRelationships() {
+      return this.blockingCount > 0 || this.blockedByCount > 0;
     },
     issueAsWorkItem() {
       return (
@@ -271,12 +273,13 @@ export default {
             </template>
           </gl-avatars-inline>
           <work-item-relationship-icons
-            v-if="isChildItemOpen && filteredLinkedChildItems.length"
+            v-if="isChildItemOpen && hasBlockingRelationships"
             :work-item-type="childItemType"
-            :linked-work-items="filteredLinkedChildItems"
             :work-item-full-path="childItemFullPath"
             :work-item-iid="childItemIid"
             :work-item-web-url="childItemWebUrl"
+            :blocking-count="blockingCount"
+            :blocked-by-count="blockedByCount"
           />
           <slot name="child-contents"></slot>
           <span

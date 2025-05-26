@@ -16,12 +16,21 @@ RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_a
 
   subject(:track_internal_event) { get :show, params: { id: 1 } }
 
+  def expect_internal_tracking(tracked_user: user)
+    expect(Gitlab::InternalEvents).to receive(:track_event).with(event_name,
+      user: tracked_user,
+      project: project,
+      namespace: project.namespace,
+      additional_properties: {}
+    ).once
+  end
+
   describe '.track_internal_event' do
     controller(ApplicationController) do
       include ProductAnalyticsTracking
 
       skip_before_action :authenticate_user!, only: [:index]
-      track_internal_event :index, :show, name: 'an_event', conditions: [:custom_condition?]
+      track_internal_event :index, :show, name: 'an_event', conditions: [:custom_condition?], additional_properties: {}
 
       def index
         render html: 'index'
@@ -44,13 +53,6 @@ RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_a
       def custom_condition?
         true
       end
-    end
-
-    def expect_internal_tracking(tracked_user: user)
-      expect(Gitlab::InternalEvents).to receive(:track_event).with(event_name,
-        user: tracked_user,
-        project: project,
-        namespace: project.namespace).once
     end
 
     def expect_no_internal_tracking
@@ -127,6 +129,47 @@ RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_a
 
       it 'does not update unique counter' do
         expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
+
+        get :index
+      end
+    end
+  end
+
+  describe '.track_internal_event with empty additional_properties' do
+    controller(ApplicationController) do
+      include ProductAnalyticsTracking
+
+      skip_before_action :authenticate_user!, only: [:index]
+      track_internal_event :index, :show, name: 'an_event', additional_properties: nil
+
+      def index
+        render html: 'index'
+      end
+
+      def show
+        render html: 'show'
+      end
+
+      private
+
+      def tracking_namespace_source
+        tracking_project_source.namespace
+      end
+
+      def tracking_project_source
+        Project.first
+      end
+    end
+
+    context 'when user is logged in' do
+      let(:namespace) { project.namespace }
+
+      before do
+        sign_in(user)
+      end
+
+      it 'tracks internal event' do
+        expect_internal_tracking
 
         get :index
       end

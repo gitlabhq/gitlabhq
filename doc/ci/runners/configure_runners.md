@@ -289,7 +289,8 @@ For more information about token rotation, see
 To ensure runners don't reveal sensitive information, you can configure them to only run jobs
 on [protected branches](../../user/project/repository/branches/protected.md), or jobs that have [protected tags](../../user/project/protected_tags.md).
 
-Runners configured to run jobs on protected branches cannot run jobs in [merge request pipelines](../pipelines/merge_request_pipelines.md).
+Runners configured to run jobs on protected branches can 
+[optionally run jobs in merge request pipelines](../pipelines/merge_request_pipelines.md#control-access-to-protected-variables-and-runners).
 
 ### For an instance runner
 

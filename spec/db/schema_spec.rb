@@ -56,6 +56,7 @@ RSpec.describe 'Database schema',
       group_audit_events: %w[author_id group_id target_id],
       project_audit_events: %w[author_id project_id target_id],
       instance_audit_events: %w[author_id target_id],
+      project_compliance_violations: %w[audit_event_id], # audit_events table doesn't have id as the primary key instead the primary key is btree (id, created_at)
       award_emoji: %w[awardable_id user_id],
       aws_roles: %w[role_external_id],
       boards: %w[milestone_id iteration_id],

@@ -1,0 +1,13 @@
+---
+table_name: project_compliance_violations_issues
+classes:
+  - ComplianceManagement::Projects::ComplianceViolationIssue
+feature_categories:
+  - compliance_management
+description: Stores the issues linked to a project compliance violation
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191311
+milestone: '18.1'
+gitlab_schema: gitlab_main_cell
+table_size: small
+sharding_key:
+  project_id: projects

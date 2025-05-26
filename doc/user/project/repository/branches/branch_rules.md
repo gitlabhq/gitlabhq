@@ -179,6 +179,8 @@ For additional information, see [Approval rules](../../merge_requests/approvals/
 Prerequisites:
 
 - You must have at least the Maintainer role for the project.
+- In GitLab Free, this feature is available only if the branch rule targets **All branches**.
+- In GitLab Premium and GitLab Ultimate, this feature is available for all branch rules.
 
 To edit a squash option:
 

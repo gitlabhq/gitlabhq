@@ -8,6 +8,10 @@
 
 - if is_project
   #js-ci-variables-minimum-override-role-app{ data: { full_path: @project.full_path } }
+
+  - if Feature.enabled?(:protect_merge_request_pipelines, @project)
+    = render 'ci/variables/protect_merge_request_pipelines'
+
   %h5
     = _('Project variables')
 

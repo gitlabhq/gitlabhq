@@ -386,6 +386,8 @@ export const setNewWorkItemCache = async (
       if (widgetName === WIDGET_TYPE_LINKED_ITEMS) {
         widgets.push({
           type: WIDGET_TYPE_LINKED_ITEMS,
+          blockingCount: 0,
+          blockedByCount: 0,
           linkedItems: {
             nodes: [],
           },

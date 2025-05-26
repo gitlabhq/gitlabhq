@@ -586,6 +586,7 @@ class Project < ApplicationRecord
     delegate :previous_default_branch, :previous_default_branch=
     delegate :squash_option, :squash_option=
     delegate :extended_prat_expiry_webhooks_execute, :extended_prat_expiry_webhooks_execute=
+    delegate :protect_merge_request_pipelines, :protect_merge_request_pipelines=, :protect_merge_request_pipelines?
 
     with_options allow_nil: true do
       delegate :merge_commit_template, :merge_commit_template=

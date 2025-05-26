@@ -498,10 +498,9 @@ Select **Grant admin consent for `<application_name>`**.
 
 ### Quotation marks
 
-Only use quotation marks when quoting direct text, and use double quotes (`"`).
-For guidance about writing UI elements and in-line code, see [Text formatting](#text-formatting).
+Follow [the Microsoft guidance for quotation marks](https://learn.microsoft.com/en-us/style-guide/punctuation/quotation-marks).
 
-Do not put punctuation inside quotation marks, unless it is part of the quoted text.
+Try to avoid quotation marks for user input and instead, use backticks.
 
 ## Text formatting
 

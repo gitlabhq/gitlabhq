@@ -74,8 +74,6 @@ which is the time between creating an issue and making the first commit.
 Mentioning linked issues in merge requests and other issues helps your team members and
 collaborators know that there are opened issues regarding the same topic.
 
-You do that as explained above, when [mentioning an issue from a commit message](#from-commit-messages).
-
 When mentioning issue `#111` in issue `#222`, issue `#111` also displays a notification
 in its **Activity** feed. That is, you only need to mention the relationship once for it to
 display in both issues. The same is valid when mentioning issues in [merge requests](#from-merge-requests).

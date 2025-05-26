@@ -1,0 +1,42 @@
+query workItemLinkedItemsSlim($fullPath: ID!, $iid: String!) {
+  workspace: namespace(fullPath: $fullPath) {
+    id
+    workItem(iid: $iid) {
+      id
+      widgets(onlyTypes: [LINKED_ITEMS]) {
+        ... on WorkItemWidgetLinkedItems {
+          type
+          blockedByCount
+          blockingCount
+          linkedItems {
+            nodes {
+              linkId
+              linkType
+              workItemState
+              workItem {
+                id
+                iid
+                confidential
+                namespace {
+                  id
+                  fullPath
+                }
+                workItemType {
+                  id
+                  name
+                  iconName
+                }
+                title
+                state
+                createdAt
+                closedAt
+                webUrl
+                reference(full: true)
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

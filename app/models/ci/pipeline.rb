@@ -933,7 +933,13 @@ module Ci
     # rubocop: enable Metrics/CyclomaticComplexity
 
     def protected_ref?
-      strong_memoize(:protected_ref) { project.protected_for?(git_ref) }
+      strong_memoize(:protected_ref) do
+        if Feature.enabled?(:protect_merge_request_pipelines, project)
+          merge_request? ? protected_for_merge_request? : project.protected_for?(git_ref)
+        else
+          project.protected_for?(git_ref)
+        end
+      end
     end
 
     def variables_builder
@@ -1570,6 +1576,24 @@ module Ci
           property: config_source
         }
       )
+    end
+
+    def protected_for_merge_request?
+      return false unless merge_request?
+      return false unless project.protect_merge_request_pipelines?
+
+      # Exposing protected variables to MR Pipelines is explicitly prohibited for cross-project MRs
+      return false unless merge_request.source_project_id == merge_request.target_project_id
+
+      access = Gitlab::UserAccess.new(user, container: project)
+      # Exposing protected variables to MR Pipelines is not allowed if user who created the pipeline CANNOT update the source branch
+      return false unless access.can_update_branch?(merge_request.source_branch)
+      # Exposing protected variables to MR Pipelines is not allowed if user who created the pipeline CANNOT update the target branch
+      # Refer to this discussion for more details: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188008#note_2517290181
+      return false unless access.can_update_branch?(merge_request.target_branch)
+
+      project.protected_for?(merge_request.source_branch) &&
+        project.protected_for?(merge_request.target_branch)
     end
   end
 end

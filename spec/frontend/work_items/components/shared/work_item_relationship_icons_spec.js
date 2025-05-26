@@ -6,7 +6,7 @@ import { LINKED_CATEGORIES_MAP } from '~/work_items/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createMockDirective } from 'helpers/vue_mock_directive';
-import workItemLinkedItemsQuery from '~/work_items/graphql/work_item_linked_items.query.graphql';
+import workItemLinkedItemsSlimQuery from '~/work_items/graphql/work_items_linked_items_slim.query.graphql';
 
 import { mockLinkedItems, workItemLinkedItemsResponse } from '../../mock_data';
 
@@ -23,7 +23,9 @@ describe('WorkItemRelationshipIcons', () => {
     workItemType = 'Task',
     workItemLinkedItemsHandler = workItemLinkedItemsSuccessHandler,
   } = {}) => {
-    const mockApollo = createMockApollo([[workItemLinkedItemsQuery, workItemLinkedItemsHandler]]);
+    const mockApollo = createMockApollo([
+      [workItemLinkedItemsSlimQuery, workItemLinkedItemsHandler],
+    ]);
 
     wrapper = shallowMountExtended(WorkItemRelationshipIcons, {
       apolloProvider: mockApollo,
@@ -35,7 +37,8 @@ describe('WorkItemRelationshipIcons', () => {
         workItemIid: '1',
         workItemFullPath: 'gitlab-org/gitlab-test',
         workItemWebUrl: '/gitlab-org/gitlab-test/-/work_items/1',
-        linkedWorkItems: mockLinkedItems.linkedItems.nodes,
+        blockingCount: 1,
+        blockedByCount: 1,
       },
     });
 

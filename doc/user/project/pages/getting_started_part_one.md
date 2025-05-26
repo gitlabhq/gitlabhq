@@ -121,7 +121,7 @@ The following examples imply you disabled the **Use unique domain** setting. If 
   `https://namespace.gitlab.io/project-slug`
 - On GitLab.com, a user or group website is available under
   `https://namespace.gitlab.io/`
-- On your GitLab instance, replace `gitlab.io` above with your
+- On your GitLab instance, replace `gitlab.io` with your
   Pages server domain. Ask your sysadmin for this information.
 
 ## URLs and base URLs

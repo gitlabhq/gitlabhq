@@ -1572,10 +1572,118 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '#protected_ref?' do
-    let(:pipeline) { build(:ci_empty_pipeline, :created) }
+    subject { pipeline.protected_ref? }
 
-    it 'delegates method to project' do
-      expect(pipeline).not_to be_protected_ref
+    context 'when pipeline is for a branch' do
+      let(:pipeline) { create(:ci_pipeline, tag: false, project: project) }
+
+      it 'checks if the branch ref is protected' do
+        expect(project).to receive(:protected_for?).with("refs/heads/#{pipeline.ref}").and_return(true)
+
+        is_expected.to be_truthy
+      end
+    end
+
+    context 'when pipeline is for a tag' do
+      let(:pipeline) { create(:ci_pipeline, tag: true, project: project) }
+
+      it 'checks if the tag ref is protected' do
+        expect(project).to receive(:protected_for?).with("refs/tags/#{pipeline.ref}").and_return(true)
+
+        is_expected.to be_truthy
+      end
+    end
+
+    context 'when pipeline is for a merge request' do
+      let(:pipeline) { create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, project: project, user: project.owner) }
+
+      let_it_be(:merge_request) do
+        create(:merge_request, source_project: project, source_branch: 'feature', target_project: project, target_branch: 'master')
+      end
+
+      context 'when protect_merge_request_pipelines setting is enabled' do
+        before do
+          project.project_setting.update!(protect_merge_request_pipelines: true)
+        end
+
+        it 'returns true if both the source branch and target branch is protected' do
+          create(:protected_branch, name: 'feature', project: project)
+          create(:protected_branch, name: 'master', project: project)
+
+          expect(project).to receive(:protected_for?).with(merge_request.target_branch).and_call_original
+          expect(project).to receive(:protected_for?).with(merge_request.source_branch).and_call_original
+
+          is_expected.to be_truthy
+        end
+
+        it 'returns false if only the source branch ref is protected' do
+          create(:protected_branch, name: 'feature', project: project)
+
+          is_expected.to be_falsey
+        end
+
+        it 'returns false if only the target branch ref is protected' do
+          create(:protected_branch, name: 'master', project: project)
+
+          is_expected.to be_falsey
+        end
+
+        it 'returns false if the user who create the pipeline cannot update the source branch' do
+          expect_next_instance_of(Gitlab::UserAccess) do |instance|
+            expect(instance).to receive(:can_update_branch?).with(merge_request.source_branch).and_return(false)
+          end
+
+          is_expected.to be_falsey
+        end
+
+        it 'returns false if the user who create the pipeline cannot update the target branch' do
+          expect_next_instance_of(Gitlab::UserAccess) do |instance|
+            allow(instance).to receive(:can_update_branch?).with(merge_request.source_branch).and_call_original
+            expect(instance).to receive(:can_update_branch?).with(merge_request.target_branch).and_return(false)
+          end
+
+          is_expected.to be_falsey
+        end
+
+        context 'when the merge request is from a forked project' do
+          let_it_be(:forked_project) { fork_project(project, nil, repository: true) }
+          let_it_be(:merge_request) do
+            create(:merge_request, source_project: forked_project, source_branch: 'feature', target_project: project, target_branch: 'master')
+          end
+
+          it 'returns false even if both the source and target branches are protected' do
+            allow(project).to receive(:protected_for?).with(merge_request.source_branch).and_return(true)
+            allow(project).to receive(:protected_for?).with(merge_request.target_branch).and_return(true)
+
+            is_expected.to be_falsey
+          end
+        end
+      end
+
+      context 'when protect_merge_request_pipelines setting is disabled' do
+        before do
+          project.project_setting.update!(protect_merge_request_pipelines: false)
+        end
+
+        it 'returns false even if both the source branch ref and target branch ref is protected' do
+          expect(project).not_to receive(:protected_for?)
+
+          is_expected.to be_falsey
+        end
+      end
+
+      context 'when the protect_merge_request_pipelines feature flag is disabled' do
+        before do
+          stub_feature_flags(protect_merge_request_pipelines: false)
+          project.project_setting.update!(protect_merge_request_pipelines: true)
+        end
+
+        it 'checks if the branch ref is protected' do
+          expect(pipeline.project).to receive(:protected_for?).with("refs/heads/#{pipeline.ref}").and_return(false)
+
+          is_expected.to be_falsey
+        end
+      end
     end
   end
 

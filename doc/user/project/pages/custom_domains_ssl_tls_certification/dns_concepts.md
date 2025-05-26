@@ -50,7 +50,7 @@ for the most popular hosting services:
 
 <!-- vale gitlab_base.Spelling = YES -->
 
-If your hosting service is not listed above, you can just try to
+If your hosting service is not listed, you can just try to
 search the web for `how to add dns record on <my hosting service>`.
 
 ## `A` record

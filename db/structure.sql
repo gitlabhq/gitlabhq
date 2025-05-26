@@ -20864,6 +20864,42 @@ CREATE SEQUENCE project_compliance_standards_adherence_id_seq
 
 ALTER SEQUENCE project_compliance_standards_adherence_id_seq OWNED BY project_compliance_standards_adherence.id;
 
+CREATE TABLE project_compliance_violations (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    namespace_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    audit_event_id bigint NOT NULL,
+    compliance_requirements_control_id bigint NOT NULL,
+    status smallint NOT NULL
+);
+
+CREATE SEQUENCE project_compliance_violations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE project_compliance_violations_id_seq OWNED BY project_compliance_violations.id;
+
+CREATE TABLE project_compliance_violations_issues (
+    id bigint NOT NULL,
+    project_compliance_violation_id bigint NOT NULL,
+    issue_id bigint NOT NULL,
+    project_id bigint NOT NULL
+);
+
+CREATE SEQUENCE project_compliance_violations_issues_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE project_compliance_violations_issues_id_seq OWNED BY project_compliance_violations_issues.id;
+
 CREATE TABLE project_control_compliance_statuses (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -27830,6 +27866,10 @@ ALTER TABLE ONLY project_compliance_framework_settings ALTER COLUMN id SET DEFAU
 
 ALTER TABLE ONLY project_compliance_standards_adherence ALTER COLUMN id SET DEFAULT nextval('project_compliance_standards_adherence_id_seq'::regclass);
 
+ALTER TABLE ONLY project_compliance_violations ALTER COLUMN id SET DEFAULT nextval('project_compliance_violations_id_seq'::regclass);
+
+ALTER TABLE ONLY project_compliance_violations_issues ALTER COLUMN id SET DEFAULT nextval('project_compliance_violations_issues_id_seq'::regclass);
+
 ALTER TABLE ONLY project_control_compliance_statuses ALTER COLUMN id SET DEFAULT nextval('project_control_compliance_statuses_id_seq'::regclass);
 
 ALTER TABLE ONLY project_custom_attributes ALTER COLUMN id SET DEFAULT nextval('project_custom_attributes_id_seq'::regclass);
@@ -30709,6 +30749,12 @@ ALTER TABLE ONLY project_compliance_framework_settings
 ALTER TABLE ONLY project_compliance_standards_adherence
     ADD CONSTRAINT project_compliance_standards_adherence_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY project_compliance_violations_issues
+    ADD CONSTRAINT project_compliance_violations_issues_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY project_compliance_violations
+    ADD CONSTRAINT project_compliance_violations_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY project_control_compliance_statuses
     ADD CONSTRAINT project_control_compliance_statuses_pkey PRIMARY KEY (id);
 
@@ -33525,6 +33571,8 @@ CREATE INDEX idx_pkgs_project_id_lower_name_when_nuget_installable_version ON pa
 
 CREATE INDEX idx_policy_violations_on_project_id_policy_rule_id_and_id ON scan_result_policy_violations USING btree (project_id, approval_policy_rule_id, id);
 
+CREATE UNIQUE INDEX idx_proj_comp_viol_issues_on_viol_id_issue_id ON project_compliance_violations_issues USING btree (project_compliance_violation_id, issue_id);
+
 CREATE INDEX idx_proj_feat_usg_on_jira_dvcs_cloud_last_sync_at_and_proj_id ON project_feature_usages USING btree (jira_dvcs_cloud_last_sync_at, project_id) WHERE (jira_dvcs_cloud_last_sync_at IS NOT NULL);
 
 CREATE INDEX idx_proj_feat_usg_on_jira_dvcs_server_last_sync_at_and_proj_id ON project_feature_usages USING btree (jira_dvcs_server_last_sync_at, project_id) WHERE (jira_dvcs_server_last_sync_at IS NOT NULL);
@@ -33534,6 +33582,12 @@ CREATE INDEX idx_project_audit_events_on_author_id_created_at_id ON ONLY project
 CREATE INDEX idx_project_audit_events_on_project_created_at_id ON ONLY project_audit_events USING btree (project_id, created_at, id);
 
 CREATE INDEX idx_project_audit_events_on_project_id_author_created_at_id ON ONLY project_audit_events USING btree (project_id, author_id, created_at, id DESC);
+
+CREATE INDEX idx_project_compliance_violations_on_control_id ON project_compliance_violations USING btree (compliance_requirements_control_id);
+
+CREATE INDEX idx_project_compliance_violations_on_namespace_id ON project_compliance_violations USING btree (namespace_id);
+
+CREATE INDEX idx_project_compliance_violations_on_project_id ON project_compliance_violations USING btree (project_id);
 
 CREATE INDEX idx_project_control_compliance_status_on_requirement_status_id ON project_control_compliance_statuses USING btree (requirement_status_id);
 
@@ -36822,6 +36876,10 @@ CREATE UNIQUE INDEX index_project_ci_feature_usages_unique_columns ON project_ci
 CREATE INDEX index_project_compliance_framework_settings_on_framework_id ON project_compliance_framework_settings USING btree (framework_id);
 
 CREATE INDEX index_project_compliance_standards_adherence_on_project_id ON project_compliance_standards_adherence USING btree (project_id);
+
+CREATE INDEX index_project_compliance_violations_issues_on_issue_id ON project_compliance_violations_issues USING btree (issue_id);
+
+CREATE INDEX index_project_compliance_violations_issues_on_project_id ON project_compliance_violations_issues USING btree (project_id);
 
 CREATE INDEX index_project_custom_attributes_on_key_and_value ON project_custom_attributes USING btree (key, value);
 
@@ -42625,6 +42683,9 @@ ALTER TABLE ONLY group_crm_settings
 ALTER TABLE ONLY epic_issues
     ADD CONSTRAINT fk_54dd5d38a7 FOREIGN KEY (work_item_parent_link_id) REFERENCES work_item_parent_links(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY project_compliance_violations_issues
+    ADD CONSTRAINT fk_5580918168 FOREIGN KEY (project_compliance_violation_id) REFERENCES project_compliance_violations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY terraform_states
     ADD CONSTRAINT fk_558901b030 FOREIGN KEY (locked_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -42867,6 +42928,9 @@ ALTER TABLE ONLY work_item_number_field_values
 
 ALTER TABLE ONLY packages_conan_metadata
     ADD CONSTRAINT fk_7302a29cd9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_compliance_violations_issues
+    ADD CONSTRAINT fk_735afdd8a7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY snippet_statistics
     ADD CONSTRAINT fk_73a34da7d8 FOREIGN KEY (snippet_organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
@@ -43213,6 +43277,9 @@ ALTER TABLE ONLY deploy_tokens
 ALTER TABLE ONLY cluster_agent_migrations
     ADD CONSTRAINT fk_9b274efd3a FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY project_compliance_violations
+    ADD CONSTRAINT fk_9bbcb08120 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY duo_workflows_checkpoint_writes
     ADD CONSTRAINT fk_9bcf756a7e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -43270,6 +43337,9 @@ ALTER TABLE ONLY protected_branch_push_access_levels
 ALTER TABLE ONLY deployment_merge_requests
     ADD CONSTRAINT fk_a064ff4453 FOREIGN KEY (environment_id) REFERENCES environments(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY project_compliance_violations
+    ADD CONSTRAINT fk_a066372b6c FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_a194299be1 FOREIGN KEY (moved_to_id) REFERENCES issues(id) ON DELETE SET NULL;
 
@@ -43299,6 +43369,9 @@ ALTER TABLE ONLY abuse_report_user_mentions
 
 ALTER TABLE ONLY security_orchestration_policy_configurations
     ADD CONSTRAINT fk_a50430b375 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_compliance_violations
+    ADD CONSTRAINT fk_a504c811d1 FOREIGN KEY (compliance_requirements_control_id) REFERENCES compliance_requirements_controls(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issuable_metric_images
     ADD CONSTRAINT fk_a53e03ca65 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -44088,6 +44161,9 @@ ALTER TABLE ONLY compliance_requirements_controls
 
 ALTER TABLE ONLY system_note_metadata
     ADD CONSTRAINT fk_fbd87415c9 FOREIGN KEY (description_version_id) REFERENCES description_versions(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY project_compliance_violations_issues
+    ADD CONSTRAINT fk_fc4630d30b FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY work_item_dates_sources
     ADD CONSTRAINT fk_fc7bc5e687 FOREIGN KEY (due_date_sourcing_milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;

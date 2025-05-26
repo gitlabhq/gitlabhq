@@ -46,7 +46,9 @@ To add a secure file to a project:
 
 ## Use secure files in CI/CD jobs
 
-To use your secure files in a CI/CD job, you must use the [`download-secure-files`](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files)
+### With the `download-secure-files` tool
+
+To use your secure files in a CI/CD job, you can use the [`download-secure-files`](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/download-secure-files)
 tool to download the files in the job. After they are downloaded, you can use them
 with your other script commands.
 
@@ -72,6 +74,29 @@ in the job log output. Make sure to avoid outputting secure file contents in the
 especially when logging output that could contain sensitive information.
 
 {{< /alert >}}
+
+### With the `glab` tool
+
+To download one or more secure files with [`glab`](https://gitlab.com/gitlab-org/cli/),
+you can use the `cli` Docker image in the CI/CD job. For example:
+
+```yaml
+test:
+  image: registry.gitlab.com/gitlab-org/cli:latest
+  script:
+    - export GITLAB_HOST=$CI_SERVER_URL
+    - glab auth login --job-token $CI_JOB_TOKEN --hostname $CI_SERVER_FQDN --api-protocol $CI_SERVER_PROTOCOL
+    - glab -R $CI_PROJECT_PATH securefile download $SECURE_FILE_ID --path="where/to/save/file.txt"
+```
+
+The `SECURE_FILE_ID` CI/CD variable needs to passed to the job explicitly, for example
+in [CI/CD settings](../variables/_index.md#define-a-cicd-variable-in-the-ui) or when
+[running a pipeline manually](../pipelines/_index.md#run-a-pipeline-manually).
+Every other variable is a [predefined variable](../variables/predefined_variables.md)
+that is automatically available.
+
+Alternatively, instead of using the Docker image, you can [download the binary](https://gitlab.com/gitlab-org/cli/-/releases).
+and use it in your CI/CD job.
 
 ## Security details
 

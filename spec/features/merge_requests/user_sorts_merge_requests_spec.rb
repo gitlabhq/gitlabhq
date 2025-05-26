@@ -11,7 +11,7 @@ RSpec.describe 'User sorts merge requests', :js, feature_category: :code_review_
     create(:merge_request_with_diffs, source_project: project, target_project: project, source_branch: 'merge-test')
   end
 
-  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:group_member) { create(:group_member, :maintainer, user: user, group: group) }
   let_it_be(:project) { create(:project, :public, group: group) }
