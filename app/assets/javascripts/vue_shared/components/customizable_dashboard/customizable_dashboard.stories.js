@@ -9,31 +9,43 @@ export default {
 const Template = (args, { argTypes }) => ({
   components: { CustomizableDashboard },
   props: Object.keys(argTypes),
-  template: '<customizable-dashboard v-bind="$props" />',
+  template: `
+    <customizable-dashboard v-bind="$props">
+      <template #panel="{ panel }">
+        <div class="gl-bg-blue-50 gl-h-full">
+          {{ panel.title }}
+        </div>
+      </template>
+    </customizable-dashboard>
+  `,
 });
 
 export const Default = Template.bind({});
 Default.args = {
-  editable: false,
+  editingEnabled: false,
   initialDashboard: {
     title: 'Dashboard',
     description: 'Test description',
     panels: [
       {
+        id: '1',
         component: 'CubeLineChart',
         title: s__('ProductAnalytics|Audience'),
         gridAttributes: {
           width: 3,
           height: 3,
         },
+        visualization: 'daily_active_users',
       },
       {
+        id: '2',
         component: 'CubeLineChart',
-        title: s__('ProductAnalytics|Audience'),
+        title: s__('ProductAnalytics|Events'),
         gridAttributes: {
           width: 3,
           height: 3,
         },
+        visualization: 'daily_active_users',
       },
     ],
     userDefined: true,
@@ -50,5 +62,5 @@ Default.args = {
 export const Editable = Template.bind({});
 Editable.args = {
   ...Default.args,
-  editable: true,
+  editingEnabled: true,
 };
