@@ -8,7 +8,6 @@ Rails/HelperInstanceVariable:
     - 'app/helpers/award_emoji_helper.rb'
     - 'app/helpers/blob_helper.rb'
     - 'app/helpers/boards_helper.rb'
-    - 'app/helpers/branches_helper.rb'
     - 'app/helpers/breadcrumbs_helper.rb'
     - 'app/helpers/ci/builds_helper.rb'
     - 'app/helpers/commits_helper.rb'

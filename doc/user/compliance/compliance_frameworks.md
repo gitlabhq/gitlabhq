@@ -182,15 +182,13 @@ If the import is successful, the new compliance framework appears in the list. A
 
 {{< /history >}}
 
-In GitLab Ultimate, you can define specific **requirements** for a compliance framework. Requirements are made up of one or more **controls**, which are checks against the configuration or behavior of projects that are assigned the framework. There is maximum of 5 controls per requirement.
+In GitLab Ultimate, you can define specific **requirements** for a compliance framework. Requirements are made up of one
+or more **controls**, which are checks against the configuration or behavior of projects that are assigned the framework. There is maximum of 5 controls per requirement.
 
-### Controls
+Each control includes logic that GitLab uses during scheduled or triggered scans to evaluate a project's adherence. For
+more details on how adherence is tracked, see [Compliance status report](compliance_center/compliance_status_report.md).
 
-Each control includes logic that GitLab uses during scheduled or triggered scans to evaluate a project's adherence. For more details on how adherence is tracked, see [Compliance status report](compliance_center/compliance_status_report.md).
-
-#### GitLab controls
-
-The following controls are available to use in framework requirements:
+You can use GitLab compliance controls or external controls for framework requirements.
 
 ### GitLab compliance controls
 
@@ -262,7 +260,7 @@ behavior of projects that are assigned to a compliance framework.
 | Terraform enabled                                        | `terraform_enabled`                                        | Ensures that the [Terraform integration](../../administration/terraform_state.md) is enabled for the project. |
 | Vulnerabilities SLO days over threshold                  | `vulnerabilities_slo_days_over_threshold`                  | Ensures that [vulnerabilities are addressed](../application_security/vulnerabilities/_index.md) inside SLO thresholds (180 days). |
 
-#### External controls
+### External controls
 
 External controls are API calls to external systems that request the status of an external control or requirement.
 

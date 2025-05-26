@@ -32008,6 +32008,12 @@ msgstr ""
 msgid "ImportProjects|Requesting your %{provider} repositories failed"
 msgstr ""
 
+msgid "ImportProjects|Select a destination namespace."
+msgstr ""
+
+msgid "ImportProjects|Select namespace"
+msgstr ""
+
 msgid "ImportProjects|Select the repositories you want to import"
 msgstr ""
 

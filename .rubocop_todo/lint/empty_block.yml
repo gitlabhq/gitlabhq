@@ -87,7 +87,6 @@ Lint/EmptyBlock:
     - 'spec/lib/gitlab/database/shared_model_spec.rb'
     - 'spec/lib/gitlab/database/with_lock_retries_outside_transaction_spec.rb'
     - 'spec/lib/gitlab/database/with_lock_retries_spec.rb'
-    - 'spec/lib/gitlab/database_spec.rb'
     - 'spec/lib/gitlab/etag_caching/router/graphql_spec.rb'
     - 'spec/lib/gitlab/exclusive_lease_helpers_spec.rb'
     - 'spec/lib/gitlab/exclusive_lease_spec.rb'

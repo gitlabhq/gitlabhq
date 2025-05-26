@@ -891,17 +891,15 @@ use three periods with no space (`...`) instead of the `&hellip;` HTML entity or
 
 For more information, see [code blocks](_index.md#code-blocks).
 
-Do not include any ellipses when documenting UI text.
-
 For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/punctuation/ellipses).
 
-Use:
+Do not include any ellipses when documenting UI text. For example, use:
 
-- **Create new**
+- **Search or go to**
 
 Instead of:
 
-- **Create new...**
+- **Search or go to...**
 
 ## email
 

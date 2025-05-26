@@ -19,6 +19,6 @@ export const getImportTarget = (state) => (repoId) => {
 
   return {
     newName: repo.importSource.sanitizedName,
-    targetNamespace: state.defaultTargetNamespace,
+    targetNamespace: null,
   };
 };

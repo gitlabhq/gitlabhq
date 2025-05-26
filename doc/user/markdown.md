@@ -860,10 +860,7 @@ URL references like `https://gitlab.com/gitlab-org/gitlab/-/issues/1234+s` are a
 
 To update the rendered references if the assignee, milestone, or health status changed:
 
-- Edit the comment or description and save it.
-
-Issue [420807](https://gitlab.com/gitlab-org/gitlab/-/issues/420807) tracks improving how these
-references refresh.
+- Refresh the page.
 
 ### Comment preview on hover
 

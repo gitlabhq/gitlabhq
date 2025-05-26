@@ -1,4 +1,4 @@
-import { visitUrl, constructWebIDEPath } from '~/lib/utils/url_utility';
+import { visitUrl, constructWebIDEPath, appendLineRangeHashToUrl } from '~/lib/utils/url_utility';
 import findAndFollowLink, { findAndFollowChildLink } from '~/lib/utils/navigation_utility';
 import {
   GO_TO_PROJECT_OVERVIEW,
@@ -54,7 +54,8 @@ export default class ShortcutsNavigation {
       iid: window.gl.mrWidgetData?.iid,
     });
     if (path) {
-      visitUrl(path, true);
+      const url = appendLineRangeHashToUrl(path);
+      visitUrl(url, true);
     }
   }
 }

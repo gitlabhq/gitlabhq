@@ -448,7 +448,7 @@ curl --request DELETE \
 
 ## Instance-wide endpoints
 
-Beside the group- and project-specific GitLab APIs explained above,
+Beside the group- and project-specific GitLab APIs explained previously,
 the container registry has its own endpoints.
 To query those, follow the Registry's built-in mechanism to obtain and use an
 [authentication token](https://distribution.github.io/distribution/spec/auth/token/).

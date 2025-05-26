@@ -498,6 +498,200 @@ RSpec.describe 'Internal Events matchers', :clean_gitlab_redis_shared_state, fea
       .and change { user_1.reload.updated_at }
       .and not_change { User.count }
     end
+
+    describe 'instrumentation and testing contexts' do
+      shared_examples 'works correctly' do
+        specify do
+          expect { subject }
+            .to trigger_internal_events('g_edit_by_sfe')
+            .and increment_usage_metrics('redis_hll_counters.ide_edit.g_edit_by_sfe_weekly')
+        end
+      end
+
+      subject { track_event }
+
+      context 'with retries', retry: 2 do
+        context "with independent failure after the event" do
+          subject do
+            track_event
+
+            raise 'Fail first attempt, causing a retry' if RSpec.current_example.attempts == 0
+          end
+
+          it_behaves_like "works correctly"
+        end
+
+        context "with independent failure before the event" do
+          subject do
+            raise 'Fail first attempt, causing a retry' if RSpec.current_example.attempts == 0
+
+            track_event
+          end
+
+          it_behaves_like "works correctly"
+        end
+
+        context "with criteria met only on retry" do
+          subject do
+            track_event if RSpec.current_example.attempts > 0
+          end
+
+          it_behaves_like "works correctly"
+        end
+      end
+
+      context 'without clearing Redis state between examples', clean_gitlab_redis_shared_state: false do
+        it_behaves_like "works correctly"
+      end
+
+      context 'with snowplow not stubbed by default', :do_not_stub_snowplow_by_default do
+        it_behaves_like "works correctly"
+      end
+
+      context 'with aggregate_failures', :aggregate_failures do
+        context "with no failures" do
+          it_behaves_like "works correctly"
+        end
+
+        context "with failures" do
+          it "fails" do
+            pending('This example should always fail. Protects against false positives.')
+
+            # we can't test the error message because :aggregate_failures rescues errors
+            expect { nil }.to(trigger_internal_events('g_edit_by_sfe'))
+            expect { nil }.to(increment_usage_metrics('redis_hll_counters.ide_edit.g_edit_by_sfe_weekly'))
+          end
+        end
+      end
+
+      context 'when triggered from controllers' do
+        context 'when using controller specs', type: :controller do
+          controller(BaseActionController) do
+            include ProductAnalyticsTracking
+
+            track_internal_event :index, name: 'g_edit_by_sfe'
+
+            def index
+              render html: 'index page'
+            end
+
+            private
+
+            def tracking_project_source; end
+
+            def tracking_namespace_source; end
+          end
+
+          subject do
+            sign_in user_1
+            get :index
+          end
+
+          it_behaves_like "works correctly"
+        end
+
+        context 'when triggered from request specs', type: :request do
+          # ideally, this spec should be completed with a new controller generated inside the test
+          let_it_be(:project) { create(:project, :repository) }
+          let_it_be(:user) { create(:user, maintainer_of: project) }
+
+          subject do
+            sign_in(user)
+            post namespace_project_create_blob_path(
+              namespace_id: project.namespace,
+              project_id: project,
+              id: 'master'
+            ), params: {
+              branch_name: 'master',
+              file_name: 'docs/EXAMPLE_FILE',
+              content: 'Added changes',
+              commit_message: 'Create CHANGELOG'
+            }
+          end
+
+          it_behaves_like "works correctly"
+        end
+
+        context 'when triggered from rails model lifecycle hooks' do
+          let(:test_model) do
+            Class.new(ApplicationRecord) do
+              self.table_name = :merge_requests
+
+              after_initialize do
+                Gitlab::InternalEvents.track_event(
+                  'create_merge_request',
+                  user: user,
+                  project: project
+                )
+              end
+
+              attr_accessor :user, :project
+            end
+          end
+
+          it 'works correctly' do
+            expect { test_model.new(user: user_1, project: project_1) }
+              .to trigger_internal_events('create_merge_request')
+              .with(user: user_1, project: project_1)
+              .and increment_usage_metrics('counts.merge_request_create')
+          end
+        end
+
+        context 'when triggered from sidekiq worker', :sidekiq_inline do
+          let(:test_worker) do
+            Class.new do
+              # `include ApplicationWorker` raises errors for unnamed classes
+              def self.name
+                'Gitlab::TestUsageWorker'
+              end
+
+              include ApplicationWorker
+
+              def perform(event, user_id, namespace_id)
+                Gitlab::InternalEvents.track_event(
+                  event,
+                  user: User.find(user_id),
+                  namespace: Group.find(namespace_id)
+                )
+              end
+            end
+          end
+
+          subject do
+            stub_const('Gitlab::TestUsageWorker', test_worker)
+            test_worker.perform_async(
+              'g_edit_by_sfe',
+              user_1.id,
+              group_1.id
+            )
+          end
+
+          it_behaves_like "works correctly"
+        end
+
+        context 'when triggered from migrations' do
+          let(:migration) do
+            Class.new(Gitlab::Database::Migration[Gitlab::Database::Migration.current_version]) do
+              milestone '18.0'
+
+              @_defining_file = 'db/migrate/00000000000000_example.rb'
+
+              def up
+                Gitlab::InternalEvents.track_event(
+                  'g_edit_by_sfe',
+                  user: User.first,
+                  namespace: Group.first
+                )
+              end
+            end
+          end
+
+          subject { migration.new.up }
+
+          it_behaves_like "works correctly"
+        end
+      end
+    end
   end
 
   context "when using the 'internal event tracking' shared example" do

@@ -65,10 +65,9 @@ Restore:
 
 ### Certain GitLab configuration must match the original backed up environment
 
-You likely also want to restore your previous `/etc/gitlab/gitlab.rb` (for Linux package installations)
+You likely want to separately restore your previous `/etc/gitlab/gitlab.rb` (for Linux package installations)
 or `/home/git/gitlab/config/gitlab.yml` (for self-compiled installations) and
-any TLS keys, certificates (`/etc/gitlab/ssl`, `/etc/gitlab/trusted-certs`), or
-[SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
+[any TLS or SSH keys and certificates](backup_gitlab.md#data-not-included-in-a-backup).
 
 Certain configuration is coupled to data in PostgreSQL. For example:
 
@@ -453,7 +452,7 @@ that can cause data loss. The problem affects repositories that have been forked
 You can restore specific repositories using the `REPOSITORIES_PATHS` and the `SKIP_REPOSITORIES_PATHS` options.
 Both options accept a comma-separated list of project and group paths. If you
 specify a group path, all repositories in all projects in the group and
-descendent groups are included or skipped, depending on which option you used.
+descendant groups are included or skipped, depending on which option you used.
 Both the groups and projects must exist in the specified backup or on the target instance.
 
 {{< alert type="note" >}}

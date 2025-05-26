@@ -66,7 +66,6 @@ Lint/UnusedMethodArgument:
     - 'app/helpers/environment_helper.rb'
     - 'app/helpers/groups/group_members_helper.rb'
     - 'app/helpers/groups_helper.rb'
-    - 'app/helpers/invite_members_helper.rb'
     - 'app/helpers/issuables_helper.rb'
     - 'app/helpers/issues_helper.rb'
     - 'app/helpers/labels_helper.rb'

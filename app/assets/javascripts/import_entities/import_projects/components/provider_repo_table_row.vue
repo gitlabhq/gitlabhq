@@ -60,6 +60,8 @@ export default {
     return {
       isSelectedForReimport: false,
       showMembershipsModal: false,
+      userHasSelectedNamespace: false,
+      showNamespaceRequiredError: false,
     };
   },
 
@@ -72,8 +74,13 @@ export default {
     },
 
     showMembershipsWarning() {
-      const userNamespaceSelected = this.importTarget.targetNamespace === this.userNamespace;
-      return (this.isImportNotStarted || this.isSelectedForReimport) && userNamespaceSelected;
+      const usersNamespaceIsSelected = this.importTarget.targetNamespace === this.userNamespace;
+
+      return this.isNotImporting && usersNamespaceIsSelected;
+    },
+
+    isNotImporting() {
+      return this.isImportNotStarted || this.isSelectedForReimport;
     },
 
     isFinished() {
@@ -128,6 +135,15 @@ export default {
         this.updateImportTarget({ newName: value });
       },
     },
+    shouldBlockImportForNamespace() {
+      if (this.importTarget.targetNamespace) {
+        return false;
+      }
+
+      return (
+        !this.repo.importSource.target && this.isNotImporting && !this.userHasSelectedNamespace
+      );
+    },
   },
 
   methods: {
@@ -156,7 +172,9 @@ export default {
     },
 
     onImportClick() {
-      if (this.showMembershipsWarning) {
+      if (this.shouldBlockImportForNamespace) {
+        this.showNamespaceRequiredError = true;
+      } else if (this.showMembershipsWarning) {
         this.showMembershipsModal = true;
       } else {
         this.handleImportRepo();
@@ -164,6 +182,8 @@ export default {
     },
 
     onSelect(value) {
+      this.userHasSelectedNamespace = true;
+      this.showNamespaceRequiredError = false;
       this.updateImportTarget({ targetNamespace: value });
     },
   },
@@ -209,6 +229,7 @@ export default {
           <div class="gl-flex gl-w-full gl-items-stretch">
             <import-target-dropdown
               :selected="importTarget.targetNamespace"
+              :toggle-text="s__('ImportProjects|Select namespace')"
               :user-namespace="userNamespace"
               @select="onSelect"
             />
@@ -224,6 +245,14 @@ export default {
               data-testid="project-path-field"
             />
           </div>
+          <p
+            v-if="showNamespaceRequiredError"
+            class="gl-m-0 gl-mt-2 gl-text-danger"
+            role="alert"
+            data-testid="namespace-required-warning"
+          >
+            {{ s__('ImportProjects|Select a destination namespace.') }}
+          </p>
         </template>
         <template v-else-if="repo.importedProject">{{ displayFullPath }}</template>
       </div>
@@ -264,9 +293,11 @@ export default {
       <gl-modal
         v-if="showMembershipsWarning"
         v-model="showMembershipsModal"
+        modal-id="show-memberships-modal"
         :title="
           s__('ImportProjects|Are you sure you want to import the project to a personal namespace?')
         "
+        data-testid="memberships-warning-modal"
         :action-primary="$options.actionPrimary"
         :action-cancel="$options.actionCancel"
         @primary="handleImportRepo"

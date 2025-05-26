@@ -175,7 +175,6 @@ RSpec/VerifiedDoubles:
     - 'ee/spec/workers/iterations/roll_over_issues_worker_spec.rb'
     - 'ee/spec/workers/ldap_group_sync_worker_spec.rb'
     - 'ee/spec/workers/merge_request_reset_approvals_worker_spec.rb'
-    - 'ee/spec/workers/new_epic_worker_spec.rb'
     - 'qa/spec/git/repository_spec.rb'
     - 'qa/spec/page/base_spec.rb'
     - 'qa/spec/page/validator_spec.rb'

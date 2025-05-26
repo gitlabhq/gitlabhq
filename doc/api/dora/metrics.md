@@ -99,7 +99,7 @@ Example response:
 
 ## The `value` field
 
-For both the project and group-level endpoints above, the `value` field in the
+For both the project and group-level endpoints described previously, the `value` field in the
 API response has a different meaning depending on the provided `metric` query
 parameter:
 

@@ -116,7 +116,7 @@ curl --request POST "https://gitlab.com/api/v4/projects/:id/snippets" \
      -d @snippet.json
 ```
 
-`snippet.json` used in the above example request:
+`snippet.json` used in the previous example request:
 
 ```json
 {
@@ -168,7 +168,7 @@ curl --request PUT "https://gitlab.com/api/v4/projects/:id/snippets/:snippet_id"
      -d @snippet.json
 ```
 
-`snippet.json` used in the above example request:
+`snippet.json` used in the previous example request:
 
 ```json
 {

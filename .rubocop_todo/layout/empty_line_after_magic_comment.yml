@@ -305,7 +305,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'lib/gitlab/auth/blocked_user_tracker.rb'
     - 'lib/gitlab/auth/otp/fortinet.rb'
     - 'lib/gitlab/ci/secure_files/mobile_provision.rb'
-    - 'lib/gitlab/cleanup/remote_uploads.rb'
     - 'lib/gitlab/database/migrations/background_migration_helpers.rb'
     - 'lib/gitlab/database/partitioning/detached_partition_dropper.rb'
     - 'lib/gitlab/diff/highlight_cache.rb'

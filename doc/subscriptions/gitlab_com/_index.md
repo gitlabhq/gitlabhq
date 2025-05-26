@@ -357,7 +357,7 @@ To purchase additional storage for your group on GitLab.com:
 
 After your payment is processed, the extra storage is available for your group namespace.
 
-To confirm the available storage, follow the first three steps listed above.
+To confirm the available storage, follow the first three steps listed previously.
 
 The **Purchased storage available** total is incremented by the amount purchased. All locked
 projects are unlocked and their excess usage is deducted from the additional storage.

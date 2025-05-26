@@ -39,7 +39,6 @@ Performance/MapCompact:
     - 'config/initializers/trusted_proxies.rb'
     - 'config/initializers/wikicloth_redos_patch.rb'
     - 'ee/app/graphql/ee/types/issue_connection_type.rb'
-    - 'ee/app/graphql/resolvers/geo/registries_resolver.rb'
     - 'ee/app/models/app_sec/fuzzing/api/ci_configuration.rb'
     - 'ee/app/models/burndown.rb'
     - 'ee/app/models/concerns/ee/project_security_scanners_information.rb'

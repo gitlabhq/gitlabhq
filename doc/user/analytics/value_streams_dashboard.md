@@ -35,7 +35,7 @@ The Value Streams Dashboard includes panels that visualize the following metrics
 
 With the Value Streams Dashboard, you can:
 
-- Track and compare the above metrics over a period of time.
+- Track and compare the metrics listed previously over a period of time.
 - Identify downward trends early on.
 - Understand security exposure.
 - Drill down into individual projects or metrics to take actions for improvement.
