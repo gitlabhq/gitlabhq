@@ -117,6 +117,9 @@ export const OLDER_THAN_OPTIONS = [
   { key: 'NINETY_DAYS', variable: 90, default: true },
 ];
 
+// Needs to be an empty string instead of `null` for @vue/compat. The value
+// should be transformed back to `null` as an input to the GraphQL query.
+export const GRAPHQL_ACCESS_LEVEL_VALUE_NULL = '';
 export const GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER = 'MAINTAINER';
 const GRAPHQL_ACCESS_LEVEL_VALUE_OWNER = 'OWNER';
 const GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN = 'ADMIN';
@@ -158,6 +161,13 @@ export const PackagesMinimumAccessLevelForDeleteOptions = [
   { value: GRAPHQL_ACCESS_LEVEL_VALUE_OWNER, text: __('Owner') },
   { value: GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN, text: s__('AdminUsers|Administrator') },
 ];
+
+export const ContainerRepositoryMinimumAccessLevelText = {
+  null: s__('PackageRegistry|Developer (default)'),
+  [GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER]: __('Maintainer'),
+  [GRAPHQL_ACCESS_LEVEL_VALUE_OWNER]: __('Owner'),
+  [GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN]: s__('AdminUsers|Administrator'),
+};
 
 export const ContainerRepositoryMinimumAccessLevelOptions = [
   { value: '', text: s__('ContainerRegistry|Developer (default)') },

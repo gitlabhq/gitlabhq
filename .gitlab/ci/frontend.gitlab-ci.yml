@@ -162,6 +162,7 @@ retrieve-frontend-fixtures:
     - "setup-test-env"
     - "retrieve-tests-metadata"
     - "retrieve-frontend-fixtures"
+    - "compile-test-assets"
     # it's ok to wait for the repo artifact as we're waiting for setup-test-env (which takes longer than clone-gitlab-repo) anyway
     - !reference [.repo-from-artifacts, needs]
   variables:
@@ -194,9 +195,6 @@ rspec-all frontend_fixture:
   extends:
     - .frontend-fixtures-base
     - .frontend:rules:frontend_fixture
-  needs:
-    - !reference [.frontend-fixtures-base, needs]
-    - "compile-test-assets"
   parallel: 7
 
 # Uploads EE fixtures in the EE project.

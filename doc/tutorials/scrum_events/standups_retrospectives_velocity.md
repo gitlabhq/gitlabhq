@@ -293,7 +293,7 @@ If you're experiencing high volatility, you can explore the following:
 1. Understand where you have process bottlenecks.
 
    You can create a
-   [custom value stream analytics report](../../user/group/value_stream_analytics/_index.md#create-a-value-stream-with-custom-stages)
+   [custom value stream analytics report](../../user/group/value_stream_analytics/_index.md#with-custom-stages)
    that mirrors the workflow stages that a story progresses through in a sprint.
    This report can help focus discussions in your retrospectives on the specific workflow stages
    that take the longest during your sprint cycles.

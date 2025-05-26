@@ -10,11 +10,13 @@ import {
 } from '@gitlab/ui';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import createProtectionRepositoryRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/create_container_protection_repository_rule.mutation.graphql';
+import updateProtectionRepositoryRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_container_protection_repository_rule.mutation.graphql';
 import {
   ContainerRepositoryMinimumAccessLevelOptions,
   GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
+  GRAPHQL_ACCESS_LEVEL_VALUE_NULL,
 } from '~/packages_and_registries/settings/project/constants';
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
@@ -30,26 +32,55 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   inject: ['projectPath'],
+  props: {
+    rule: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+  },
   i18n: {
     protectionRuleSavedErrorMessage: s__(
       'ContainerRegistry|Something went wrong while saving the protection rule.',
     ),
-    packageNamePatternInputHelpText: s__(
+    repositoryPathPatternInputHelpText: s__(
       'ContainerRegistry|Path pattern with %{linkStart}wildcards%{linkEnd} such as `my-scope/my-container-*` are supported.',
     ),
   },
   data() {
     return {
       protectionRuleFormData: {
-        repositoryPathPattern: '',
-        minimumAccessLevelForDelete: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
-        minimumAccessLevelForPush: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
+        repositoryPathPattern: this.rule?.repositoryPathPattern ?? '',
+        minimumAccessLevelForDelete: this.isExistingRule()
+          ? this.rule.minimumAccessLevelForDelete ?? GRAPHQL_ACCESS_LEVEL_VALUE_NULL
+          : GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
+        minimumAccessLevelForPush: this.isExistingRule()
+          ? this.rule.minimumAccessLevelForPush ?? GRAPHQL_ACCESS_LEVEL_VALUE_NULL
+          : GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
       },
       updateInProgress: false,
       alertErrorMessages: [],
     };
   },
   computed: {
+    mutation() {
+      return this.isExistingRule()
+        ? updateProtectionRepositoryRuleMutation
+        : createProtectionRepositoryRuleMutation;
+    },
+    mutationKey() {
+      return this.isExistingRule()
+        ? 'updateContainerProtectionRepositoryRule'
+        : 'createContainerProtectionRepositoryRule';
+    },
+    mutationInput() {
+      return this.isExistingRule()
+        ? this.updateProtectionRepositoryRuleMutationInput
+        : this.createProtectionRepositoryRuleMutationInput;
+    },
+    submitButtonText() {
+      return this.isExistingRule() ? __('Save changes') : s__('ContainerRegistry|Add rule');
+    },
     showLoadingIcon() {
       return this.updateInProgress;
     },
@@ -71,6 +102,15 @@ export default {
         minimumAccessLevelForPush: this.protectionRuleFormData.minimumAccessLevelForPush || null,
       };
     },
+    updateProtectionRepositoryRuleMutationInput() {
+      return {
+        id: this.rule?.id,
+        ...this.protectionRuleFormData,
+        minimumAccessLevelForDelete:
+          this.protectionRuleFormData.minimumAccessLevelForDelete || null,
+        minimumAccessLevelForPush: this.protectionRuleFormData.minimumAccessLevelForPush || null,
+      };
+    },
     containerRepositoryMinimumAccessLevelOptions() {
       return this.glFeatures.containerRegistryProtectedContainersDelete
         ? this.$options.containerRepositoryMinimumAccessLevelOptions
@@ -80,6 +120,9 @@ export default {
     },
   },
   methods: {
+    isExistingRule() {
+      return Boolean(this.rule);
+    },
     submit() {
       this.clearAlertErrorMessages();
 
@@ -87,13 +130,13 @@ export default {
 
       return this.$apollo
         .mutate({
-          mutation: createProtectionRepositoryRuleMutation,
+          mutation: this.mutation,
           variables: {
-            input: this.createProtectionRepositoryRuleMutationInput,
+            input: this.mutationInput,
           },
         })
         .then(({ data }) => {
-          const errorMessages = data?.createContainerProtectionRepositoryRule?.errors ?? [];
+          const errorMessages = data?.[this.mutationKey]?.errors ?? [];
           if (errorMessages?.length) {
             this.alertErrorMessages = Array.isArray(errorMessages)
               ? errorMessages
@@ -101,10 +144,7 @@ export default {
             return;
           }
 
-          this.$emit(
-            'submit',
-            data.createContainerProtectionRepositoryRule.containerProtectionRepositoryRule,
-          );
+          this.$emit('submit', data[this.mutationKey].containerProtectionRepositoryRule);
         })
         .catch(() => {
           this.alertErrorMessages = [this.$options.i18n.protectionRuleSavedErrorMessage];
@@ -149,7 +189,7 @@ export default {
         :disabled="isFieldDisabled"
       />
       <template #description>
-        <gl-sprintf :message="$options.i18n.packageNamePatternInputHelpText">
+        <gl-sprintf :message="$options.i18n.repositoryPathPatternInputHelpText">
           <template #link="{ content }">
             <help-page-link
               href="user/packages/container_registry/container_repository_protection_rules.md"
@@ -192,10 +232,10 @@ export default {
       <gl-button
         variant="confirm"
         type="submit"
-        data-testid="add-rule-btn"
         :disabled="isSubmitButtonDisabled"
         :loading="showLoadingIcon"
-        >{{ s__('ContainerRegistry|Add rule') }}</gl-button
+        data-testid="submit-btn"
+        >{{ submitButtonText }}</gl-button
       >
       <gl-button class="gl-ml-3" type="reset">{{ __('Cancel') }}</gl-button>
     </div>

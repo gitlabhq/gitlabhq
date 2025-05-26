@@ -138,6 +138,7 @@ describe('Tree List', () => {
       expect(findFilterIcon().exists()).toBe(true);
       expect(findFilterIcon().props('name')).toBe('filter');
       expect(findFilterIcon().props('variant')).toBe('subtle');
+      expect(findFilterInput().attributes('type')).toBe('search');
     });
 
     const filterTestCases = [

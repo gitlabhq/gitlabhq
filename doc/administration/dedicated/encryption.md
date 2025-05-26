@@ -99,10 +99,11 @@ Due to key rotation requirements, GitLab Dedicated only supports keys with AWS-m
 (the [AWS_KMS](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-origin)
 origin type).
 
-In GitLab Dedicated, you can use KMS keys in two ways:
+In GitLab Dedicated, you can use KMS keys in several ways:
 
-- One KMS key for all services.
-- Per-service KMS keys (Backup, EBS, RDS, S3, Advanced Search).
+- One KMS key for all services across all regions: Use a single multi-region key with replicas in each region where you have Geo instances.
+- One KMS key for all services within each region: Use separate keys for each region where you have Geo instances.
+- Per-service KMS keys per region: Use different keys for different services (backup, EBS, RDS, S3, advanced search) within each region.
   - Keys do not need to be unique to each service.
   - Selective enablement is not supported.
 
@@ -118,6 +119,7 @@ Prerequisites:
 To create AWS KMS keys for BYOK:
 
 1. Sign in to the AWS Console and go to the KMS service.
+1. Select the region of the Geo instance you want to create a key for.
 1. Select **Create key**.
 1. In the **Configure key** section:
    1. For **Key type**, select **Symmetrical**.
@@ -211,13 +213,34 @@ account IDs and usernames.
 }
 ```
 
+#### Create replica keys for additional Geo instances
+
+Create [replica keys](https://docs.aws.amazon.com/kms/latest/developerguide/multi-region-keys-replicate.html)
+when you want to use the same KMS key across multiple Geo instances in different regions.
+
+To create replica keys:
+
+1. In the AWS Key Management Service (AWS KMS) console, go to the key you previously created.
+1. Select the **Regionality** tab.
+1. In the **Related multi-Region keys** section, select **Create new replica keys**.
+1. Choose one or more AWS Regions where you have additional Geo instances.
+1. Keep the original alias or enter a different alias for the replica key.
+1. Optional. Enter a description and add tags.
+1. Select the IAM users and roles that can administer the replica key.
+1. Optional. Select or clear the **Allow key administrators to delete this key** checkbox.
+1. Select **Next**.
+1. On the **Define key usage permissions** page, verify that the GitLab AWS account
+   is listed under **Other AWS accounts**.
+1. Select **Next** and review the policy.
+1. Select **Next**, review your settings, and select **Finish**.
+
 For more information on creating and managing KMS keys, see the [AWS KMS documentation](https://docs.aws.amazon.com/kms/latest/developerguide/getting-started.html).
 
 #### Enable BYOK for your instance
 
 To enable BYOK:
 
-1. Collect the ARNs of each key you created.
+1. Collect the ARNs for all keys you created, including any replica keys in their respective regions.
 1. Before your GitLab Dedicated tenant is provisioned, ensure these ARNs have been entered into in Switchboard during [onboarding](create_instance/_index.md).
 1. Make sure the AWS KMS keys are replicated to your desired primary, secondary, and backup regions
 specified in Switchboard during [onboarding](create_instance/_index.md).

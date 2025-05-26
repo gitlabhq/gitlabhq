@@ -228,12 +228,7 @@ export default {
             />
           </gl-skeleton-loader>
         </div>
-        <pipeline-url
-          v-else
-          :pipeline="item"
-          :pipeline-id-type="pipelineIdType"
-          ref-color="gl-text-default"
-        />
+        <pipeline-url v-else :pipeline="item" :pipeline-id-type="pipelineIdType" />
       </template>
 
       <template #cell(triggerer)="{ item }">

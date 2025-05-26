@@ -3713,6 +3713,36 @@ Input type: `CiJobTokenScopeUpdatePoliciesInput`
 | <a id="mutationcijobtokenscopeupdatepoliciesclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcijobtokenscopeupdatepolicieserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.ciLint`
+
+Linted and processed contents of a CI config.
+Should not be requested more than once per request.
+
+{{< details >}}
+**Introduced** in GitLab 18.1.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `CiLintInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcilintclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcilintcontent"></a>`content` | [`String!`](#string) | Contents of `.gitlab-ci.yml`. |
+| <a id="mutationcilintdryrun"></a>`dryRun` | [`Boolean`](#boolean) | Run pipeline creation simulation, or only do static check. |
+| <a id="mutationcilintprojectpath"></a>`projectPath` | [`ID!`](#id) | Project of the CI config. |
+| <a id="mutationcilintref"></a>`ref` | [`String`](#string) | Ref to use when linting. Default is the project default branch. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcilintclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcilintconfig"></a>`config` | [`CiConfig`](#ciconfig) | Linted CI config and metadata. |
+| <a id="mutationcilinterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
 ### `Mutation.clusterAgentDelete`
 
 Input type: `ClusterAgentDeleteInput`

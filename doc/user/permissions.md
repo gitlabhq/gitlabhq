@@ -669,7 +669,7 @@ To work around the issue, give these users the Guest role or higher to any proje
 - [Members](project/members/_index.md)
 - Customize permissions on [protected branches](project/repository/branches/protected.md)
 - [LDAP user permissions](group/access_and_permissions.md#manage-group-memberships-with-ldap)
-- [Value stream analytics permissions](group/value_stream_analytics/_index.md#access-permissions-for-value-stream-analytics)
+- [Value stream analytics permissions](group/value_stream_analytics/_index.md#access-permissions)
 - [Project aliases](project/working_with_projects.md#project-aliases)
 - [Auditor users](../administration/auditor_users.md)
 - [Confidential issues](project/issues/confidential_issues.md)

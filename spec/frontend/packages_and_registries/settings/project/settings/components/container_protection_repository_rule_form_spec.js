@@ -6,10 +6,13 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ContainerProtectionRepositoryRuleForm from '~/packages_and_registries/settings/project/components/container_protection_repository_rule_form.vue';
 import createContainerProtectionRepositoryRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/create_container_protection_repository_rule.mutation.graphql';
+import updateContainerProtectionRepositoryRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_container_protection_repository_rule.mutation.graphql';
 import {
-  createContainerProtectionRepositoryRuleMutationPayload,
+  containerProtectionRepositoryRulesData,
   createContainerProtectionRepositoryRuleMutationInput,
+  createContainerProtectionRepositoryRuleMutationPayload,
   createContainerProtectionRepositoryRuleMutationPayloadErrors,
+  updateContainerProtectionRepositoryRuleMutationPayload,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -32,7 +35,8 @@ describe('container Protection Rule Form', () => {
     wrapper.findByRole('combobox', { name: /minimum access level for push/i });
   const findMinimumAccessLevelForDeleteSelect = () =>
     wrapper.findByRole('combobox', { name: /minimum access level for delete/i });
-  const findSubmitButton = () => wrapper.findByTestId('add-rule-btn');
+  const findCancelButton = () => wrapper.findByRole('button', { name: /cancel/i });
+  const findSubmitButton = () => wrapper.findByTestId('submit-btn');
 
   const setSelectValue = async (selectWrapper, value) => {
     await selectWrapper.setValue(value);
@@ -42,19 +46,37 @@ describe('container Protection Rule Form', () => {
     await selectWrapper.trigger('change');
   };
 
-  const mountComponent = ({ config, provide = defaultProvidedValues } = {}) => {
+  const mountComponent = ({ data, config, props, provide = defaultProvidedValues } = {}) => {
     wrapper = mountExtended(ContainerProtectionRepositoryRuleForm, {
       provide,
+      propsData: props,
+      data() {
+        return { ...data };
+      },
       ...config,
     });
   };
 
-  const mountComponentWithApollo = ({ provide = defaultProvidedValues, mutationResolver } = {}) => {
-    const requestHandlers = [[createContainerProtectionRepositoryRuleMutation, mutationResolver]];
+  const mountComponentWithApollo = ({
+    props = {},
+    provide = defaultProvidedValues,
+    mutationResolver,
+    updateContainerProtectionRepositoryRuleMutationResolver = jest
+      .fn()
+      .mockResolvedValue(updateContainerProtectionRepositoryRuleMutationPayload()),
+  } = {}) => {
+    const requestHandlers = [
+      [createContainerProtectionRepositoryRuleMutation, mutationResolver],
+      [
+        updateContainerProtectionRepositoryRuleMutation,
+        updateContainerProtectionRepositoryRuleMutationResolver,
+      ],
+    ];
 
     fakeApollo = createMockApollo(requestHandlers);
 
     mountComponent({
+      props,
       provide,
       config: {
         apolloProvider: fakeApollo,
@@ -158,6 +180,30 @@ describe('container Protection Rule Form', () => {
   });
 
   describe('form actions', () => {
+    describe.each`
+      description                       | props                                                  | submitButtonText
+      ${'when form has no prop "rule"'} | ${{}}                                                  | ${'Add rule'}
+      ${'when form has prop "rule"'}    | ${{ rule: containerProtectionRepositoryRulesData[0] }} | ${'Save changes'}
+    `('$description', ({ props, submitButtonText }) => {
+      beforeEach(() => {
+        mountComponent({
+          props,
+        });
+      });
+
+      describe('submit button', () => {
+        it(`renders text: ${submitButtonText}`, () => {
+          expect(findSubmitButton().text()).toBe(submitButtonText);
+        });
+      });
+
+      describe('cancel button', () => {
+        it('renders with text: "Cancel"', () => {
+          expect(findCancelButton().text()).toBe('Cancel');
+        });
+      });
+    });
+
     describe('button "Add rule"', () => {
       it.each`
         repositoryPathPattern                                                         | submitButtonDisabled
@@ -207,7 +253,7 @@ describe('container Protection Rule Form', () => {
       });
     });
 
-    describe('submit', () => {
+    describe('submit a new rule', () => {
       const findAlert = () => extendedWrapper(wrapper.findByRole('alert'));
 
       const submitForm = () => {
@@ -287,16 +333,12 @@ describe('container Protection Rule Form', () => {
 
         expect(findAlert().isVisible()).toBe(true);
 
-        expect(
-          findAlert()
-            .findByText(createContainerProtectionRepositoryRuleMutationPayloadErrors[0])
-            .exists(),
-        ).toBe(true);
-        expect(
-          findAlert()
-            .findByText(createContainerProtectionRepositoryRuleMutationPayloadErrors[1])
-            .exists(),
-        ).toBe(true);
+        expect(findAlert().text()).toContain(
+          createContainerProtectionRepositoryRuleMutationPayloadErrors[0],
+        );
+        expect(findAlert().text()).toContain(
+          createContainerProtectionRepositoryRuleMutationPayloadErrors[1],
+        );
       });
 
       it('shows error alert with general message when apollo mutation request fails', async () => {
@@ -308,6 +350,107 @@ describe('container Protection Rule Form', () => {
 
         expect(findAlert().isVisible()).toBe(true);
         expect(findAlert().text()).toBe('Something went wrong while saving the protection rule.');
+      });
+    });
+
+    describe('update existing rule', () => {
+      const findAlert = () => wrapper.findByRole('alert');
+
+      const submitForm = async () => {
+        await findRepositoryPathPatternInput().setValue(
+          createContainerProtectionRepositoryRuleMutationInput.repositoryPathPattern,
+        );
+        await findMinimumAccessLevelForPushSelect().findAll('option').at(0).setSelected();
+        await findMinimumAccessLevelForDeleteSelect().findAll('option').at(3).setSelected();
+
+        findForm().trigger('submit');
+
+        await waitForPromises();
+      };
+
+      const [rule] = containerProtectionRepositoryRulesData;
+
+      it('dispatches correct apollo mutation', async () => {
+        const mutationResolver = jest
+          .fn()
+          .mockResolvedValue(createContainerProtectionRepositoryRuleMutationPayload());
+        const updateContainerProtectionRepositoryRuleMutationResolver = jest
+          .fn()
+          .mockResolvedValue(updateContainerProtectionRepositoryRuleMutationPayload());
+
+        mountComponentWithApollo({
+          props: { rule },
+          mutationResolver,
+          updateContainerProtectionRepositoryRuleMutationResolver,
+        });
+
+        await submitForm();
+
+        expect(mutationResolver).not.toHaveBeenCalled();
+        expect(updateContainerProtectionRepositoryRuleMutationResolver).toHaveBeenCalledWith({
+          input: {
+            id: containerProtectionRepositoryRulesData[0].id,
+            ...createContainerProtectionRepositoryRuleMutationInput,
+            minimumAccessLevelForDelete: 'ADMIN',
+            minimumAccessLevelForPush: null,
+          },
+        });
+      });
+
+      it('emits event "submit" when apollo mutation successful', async () => {
+        const mutationResolver = jest
+          .fn()
+          .mockResolvedValue(createContainerProtectionRepositoryRuleMutationPayload());
+
+        mountComponentWithApollo({
+          props: { rule },
+          mutationResolver,
+        });
+
+        await submitForm();
+
+        expect(wrapper.emitted('submit')).toBeDefined();
+        const expectedEventSubmitPayload =
+          updateContainerProtectionRepositoryRuleMutationPayload().data
+            .updateContainerProtectionRepositoryRule.containerProtectionRepositoryRule;
+        expect(wrapper.emitted('submit')[0]).toEqual([expectedEventSubmitPayload]);
+
+        expect(wrapper.emitted()).not.toHaveProperty('cancel');
+      });
+
+      it('shows error alert with general message when apollo mutation request responds with errors', async () => {
+        mountComponentWithApollo({
+          props: { rule },
+          updateContainerProtectionRepositoryRuleMutationResolver: jest.fn().mockResolvedValue(
+            updateContainerProtectionRepositoryRuleMutationPayload({
+              errors: createContainerProtectionRepositoryRuleMutationPayloadErrors,
+            }),
+          ),
+        });
+
+        await submitForm();
+
+        expect(findAlert().isVisible()).toBe(true);
+        expect(findAlert().text()).toContain(
+          createContainerProtectionRepositoryRuleMutationPayloadErrors[0],
+        );
+        expect(findAlert().text()).toContain(
+          createContainerProtectionRepositoryRuleMutationPayloadErrors[1],
+        );
+      });
+
+      it('shows error alert with general message when apollo mutation request fails', async () => {
+        mountComponentWithApollo({
+          props: { rule },
+          updateContainerProtectionRepositoryRuleMutationResolver: jest
+            .fn()
+            .mockRejectedValue(new Error('GraphQL error')),
+        });
+
+        await submitForm();
+
+        expect(findAlert().isVisible()).toBe(true);
+        expect(findAlert().text()).toMatch('Something went wrong while saving the protection rule');
       });
     });
   });

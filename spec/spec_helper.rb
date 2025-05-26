@@ -340,6 +340,10 @@ RSpec.configure do |config|
       # Please see https://gitlab.com/gitlab-org/gitlab/-/issues/523493 for tracking revisiting this.
       stub_feature_flags(your_work_groups_vue: false)
 
+      # Since we are very early in development of this feature, it might cause unexpected behaviors when the flag is enabled
+      # Please see https://gitlab.com/groups/gitlab-org/-/epics/17781 for tracking the progress.
+      stub_feature_flags(repository_file_tree_browser: false)
+
       # New issue page can cause tests to fail if they link to issue or issue list page
       # Default false while we make it compatible
       stub_feature_flags(work_item_view_for_issues: false)

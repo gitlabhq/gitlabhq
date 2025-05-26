@@ -247,7 +247,7 @@ export default {
       return this.directoriesCache[normalizePath(path)] || { trees: [], blobs: [], submodules: [] };
     },
   },
-  filterPlaceholder: s__('Repository|Filter (e.g. *.vue)'),
+  filterPlaceholder: s__('Repository|Filter (e.g. *.vue) (f)'),
 };
 </script>
 
@@ -258,7 +258,12 @@ export default {
     </h3>
     <div class="gl-relative gl-flex">
       <gl-icon name="filter" class="gl-absolute gl-left-3 gl-top-3" variant="subtle" />
-      <gl-form-input v-model="filter" class="!gl-pl-7" :placeholder="$options.filterPlaceholder" />
+      <gl-form-input
+        v-model="filter"
+        type="search"
+        class="!gl-pl-7"
+        :placeholder="$options.filterPlaceholder"
+      />
     </div>
     <gl-loading-icon v-if="isRootLoading" class="gl-mt-5" />
     <nav v-else class="gl-mt-2 gl-flex gl-min-h-0 gl-flex-col" :aria-label="__('File tree')">

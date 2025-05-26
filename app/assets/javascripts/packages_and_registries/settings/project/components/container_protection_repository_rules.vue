@@ -2,7 +2,6 @@
 import {
   GlAlert,
   GlButton,
-  GlFormSelect,
   GlKeysetPagination,
   GlLoadingIcon,
   GlModal,
@@ -10,15 +9,16 @@ import {
   GlTooltipDirective,
   GlTable,
   GlSprintf,
+  GlDrawer,
 } from '@gitlab/ui';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import getContainerPotectionRepositoryRulesQuery from '~/packages_and_registries/settings/project/graphql/queries/get_container_protection_repository_rules.query.graphql';
 import ContainerProtectionRepositoryRuleForm from '~/packages_and_registries/settings/project/components/container_protection_repository_rule_form.vue';
 import deleteContainerProtectionRepositoryRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_repository_rule.mutation.graphql';
-import updateContainerRegistryProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_container_protection_repository_rule.mutation.graphql';
-import { ContainerRepositoryMinimumAccessLevelOptions } from '~/packages_and_registries/settings/project/constants';
+import { ContainerRepositoryMinimumAccessLevelText } from '~/packages_and_registries/settings/project/constants';
 import { s__, __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 
 const PAGINATION_DEFAULT_PER_PAGE = 10;
 
@@ -33,12 +33,12 @@ export default {
     ContainerProtectionRepositoryRuleForm,
     GlAlert,
     GlButton,
-    GlFormSelect,
     GlKeysetPagination,
     GlLoadingIcon,
     GlModal,
     GlTable,
     GlSprintf,
+    GlDrawer,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -47,6 +47,8 @@ export default {
   mixins: [glFeatureFlagsMixin()],
   inject: ['projectPath'],
   i18n: {
+    editIconButton: __('Edit'),
+    deleteIconButton: __('Delete'),
     settingBlockTitle: s__('ContainerRegistry|Protected container repositories'),
     settingBlockDescription: s__(
       'ContainerRegistry|When a container repository is protected, only users with specific roles can push and delete container images. This helps prevent unauthorized modifications.',
@@ -91,6 +93,7 @@ export default {
       protectionRuleMutationInProgress: false,
       protectionRuleMutationItem: null,
       alertErrorMessage: '',
+      showDrawer: false,
     };
   },
   computed: {
@@ -107,8 +110,8 @@ export default {
       return this.protectionRulesQueryResult.map((protectionRule) => {
         return {
           id: protectionRule.id,
-          minimumAccessLevelForDelete: protectionRule.minimumAccessLevelForDelete || '',
-          minimumAccessLevelForPush: protectionRule.minimumAccessLevelForPush || '',
+          minimumAccessLevelForDelete: protectionRule.minimumAccessLevelForDelete,
+          minimumAccessLevelForPush: protectionRule.minimumAccessLevelForPush,
           repositoryPathPattern: protectionRule.repositoryPathPattern,
         };
       });
@@ -131,12 +134,15 @@ export default {
     showTopLevelLoading() {
       return this.isLoadingprotectionRules && !this.containsTableItems;
     },
-    containerRepositoryMinimumAccessLevelOptions() {
-      return this.glFeatures.containerRegistryProtectedContainersDelete
-        ? this.$options.containerRepositoryMinimumAccessLevelOptions
-        : this.$options.containerRepositoryMinimumAccessLevelOptions.filter((option) =>
-            Boolean(option.value),
-          );
+    drawerTitle() {
+      return this.mutationItem
+        ? s__('ContainerRegistry|Edit protection rule')
+        : s__('ContainerRegistry|Add protection rule');
+    },
+    toastMessage() {
+      return this.mutationItem
+        ? s__('ContainerRegistry|Protection rule updated.')
+        : s__('ContainerRegistry|Protection rule created.');
     },
   },
   methods: {
@@ -181,6 +187,22 @@ export default {
     isProtectionRuleMutationInProgress(item) {
       return this.protectionRuleMutationItem === item && this.protectionRuleMutationInProgress;
     },
+    handleSubmit() {
+      this.$toast.show(this.toastMessage);
+      this.closeDrawer();
+      this.refetchProtectionRules();
+    },
+    openEditFormDrawer(item) {
+      this.mutationItem = item;
+      this.showDrawer = true;
+    },
+    openNewFormDrawer() {
+      this.mutationItem = null;
+      this.showDrawer = true;
+    },
+    closeDrawer() {
+      this.showDrawer = false;
+    },
     deleteProtectionRule(protectionRule) {
       this.clearAlertMessage();
 
@@ -199,48 +221,6 @@ export default {
           }
           this.refetchProtectionRules();
           this.$toast.show(s__('ContainerRegistry|Container protection rule deleted.'));
-        })
-        .catch((error) => {
-          this.alertErrorMessage = error.message;
-        })
-        .finally(() => {
-          this.resetProtectionRuleMutation();
-        });
-    },
-    updateMinimumAccessLevelForPush(protectionRule) {
-      this.updateProtectionRule(protectionRule, {
-        minimumAccessLevelForPush: protectionRule.minimumAccessLevelForPush || null,
-      });
-    },
-    updateMinimumAccessLevelForDelete(protectionRule) {
-      this.updateProtectionRule(protectionRule, {
-        minimumAccessLevelForDelete: protectionRule.minimumAccessLevelForDelete || null,
-      });
-    },
-    updateProtectionRule(protectionRule, updateData) {
-      this.clearAlertMessage();
-
-      this.protectionRuleMutationItem = protectionRule;
-      this.protectionRuleMutationInProgress = true;
-
-      return this.$apollo
-        .mutate({
-          mutation: updateContainerRegistryProtectionRuleMutation,
-          variables: {
-            input: {
-              id: protectionRule.id,
-              ...updateData,
-            },
-          },
-        })
-        .then(({ data }) => {
-          const [errorMessage] = data?.updateContainerProtectionRepositoryRule?.errors ?? [];
-          if (errorMessage) {
-            this.alertErrorMessage = errorMessage;
-            return;
-          }
-
-          this.$toast.show(s__('ContainerRegistry|Container protection rule updated.'));
         })
         .catch((error) => {
           this.alertErrorMessage = error.message;
@@ -273,7 +253,7 @@ export default {
       tdClass: '!gl-align-middle gl-text-right',
     },
   ],
-  containerRepositoryMinimumAccessLevelOptions: ContainerRepositoryMinimumAccessLevelOptions,
+  minimumAccessLevelText: ContainerRepositoryMinimumAccessLevelText,
   modal: { id: 'delete-protection-rule-confirmation-modal' },
   modalActionPrimary: {
     text: s__('ContainerRegistry|Delete container protection rule'),
@@ -284,6 +264,7 @@ export default {
   modalActionCancel: {
     text: __('Cancel'),
   },
+  DRAWER_Z_INDEX,
 };
 </script>
 
@@ -295,14 +276,8 @@ export default {
       :description="$options.i18n.settingBlockDescription"
       :is-loading="showTopLevelLoading"
       :toggle-text="s__('ContainerRegistry|Add protection rule')"
+      @showForm="openNewFormDrawer"
     >
-      <template #form>
-        <container-protection-repository-rule-form
-          @cancel="hideProtectionRuleForm"
-          @submit="refetchProtectionRules"
-        />
-      </template>
-
       <template #default>
         <gl-alert
           v-if="alertErrorMessage"
@@ -328,48 +303,61 @@ export default {
           </template>
 
           <template #cell(minimumAccessLevelForPush)="{ item }">
-            <gl-form-select
-              v-model="item.minimumAccessLevelForPush"
-              class="gl-max-w-34"
-              required
-              :aria-label="$options.i18n.minimumAccessLevelForPush"
-              :options="containerRepositoryMinimumAccessLevelOptions"
-              :disabled="isMinimumAccessLevelForPushDisabled(item)"
-              data-testid="minimum-access-level-for-push-select"
-              @change="updateMinimumAccessLevelForPush(item)"
-            />
+            <span data-testid="minimum-access-level-push-value">
+              {{ $options.minimumAccessLevelText[item.minimumAccessLevelForPush] }}
+            </span>
           </template>
 
-          <template #cell(minimumAccessLevelForDelete)="{ item }">
-            <gl-form-select
-              v-model="item.minimumAccessLevelForDelete"
-              class="gl-max-w-34"
-              required
-              :aria-label="$options.i18n.minimumAccessLevelForDelete"
-              :options="containerRepositoryMinimumAccessLevelOptions"
-              data-testid="minimum-access-level-for-delete-select"
-              :disabled="isMinimumAccessLevelForPushDisabled(item)"
-              @change="updateMinimumAccessLevelForDelete(item)"
-            />
+          <template
+            v-if="glFeatures.containerRegistryProtectedContainersDelete"
+            #cell(minimumAccessLevelForDelete)="{ item }"
+          >
+            <span data-testid="minimum-access-level-delete-value">
+              {{ $options.minimumAccessLevelText[item.minimumAccessLevelForDelete] }}
+            </span>
           </template>
 
           <template #cell(rowActions)="{ item }">
             <gl-button
               v-gl-tooltip
+              category="tertiary"
+              icon="pencil"
+              :title="$options.i18n.editIconButton"
+              :aria-label="$options.i18n.editIconButton"
+              @click="openEditFormDrawer(item)"
+            />
+            <gl-button
+              v-gl-tooltip
               v-gl-modal="$options.modal.id"
               category="tertiary"
               icon="remove"
-              :title="__('Delete')"
-              :aria-label="__('Delete')"
+              :title="$options.i18n.deleteIconButton"
+              :aria-label="$options.i18n.deleteIconButton"
               :disabled="isDeleteActionDisabled(item)"
               data-testid="delete-btn"
               @click="showDeletionConfirmModal(item)"
             />
           </template>
         </gl-table>
+
         <p v-else class="gl-mb-0 gl-text-subtle">
           {{ s__('ContainerRegistry|No container repositories are protected.') }}
         </p>
+
+        <gl-drawer :z-index="$options.DRAWER_Z_INDEX" :open="showDrawer" @close="closeDrawer">
+          <template #title>
+            <h2 class="gl-my-0 gl-text-size-h2 gl-leading-24">
+              {{ drawerTitle }}
+            </h2>
+          </template>
+          <template #default>
+            <container-protection-repository-rule-form
+              :rule="mutationItem"
+              @cancel="closeDrawer"
+              @submit="handleSubmit"
+            />
+          </template>
+        </gl-drawer>
       </template>
 
       <template v-if="shouldShowPagination" #pagination>
