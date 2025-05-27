@@ -17,7 +17,7 @@ module ActiveContext
             dimension: field.options[:dimensions],
             method: {
               name: 'hnsw',
-              engine: 'nmslib',
+              engine: 'lucene',
               space_type: 'cosinesimil',
               parameters: {
                 ef_construction: EF_CONSTRUCTION,

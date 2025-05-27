@@ -393,6 +393,7 @@ add different users to that project.
      checkbox.
    - To analyze the source code in the project for known security vulnerabilities,
      select the **Enable Static Application Security Testing (SAST)** checkbox.
+   - To analyze the source code for secrets and credentials to prevent unauthorized access select the **Enable Secret Detection** checkbox.
 1. Select **Create project**.
 
 You have now created a project in the parent group.

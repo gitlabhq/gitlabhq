@@ -34,6 +34,8 @@ To create a blank project:
    create a default branch, and enable cloning of this project's repository.
    1. **Enable Static Application Security Testing (SAST)**: Select this option to analyze the
    source code for known security vulnerabilities.
+   1. **Enable Secret Detection**: Select this option to analyze the
+   source code for secrets and credentials to prevent unauthorized access.
 1. Select **Create project**.
 
 ## Create a project from a built-in template

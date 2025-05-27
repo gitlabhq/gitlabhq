@@ -1,34 +1,26 @@
 # frozen_string_literal: true
 
 # Requires these let variables to be set by the caller:
-# - create_local
-# - create_remote
+# - locally_stored
+# - remotely_stored
 RSpec.shared_examples 'object storable' do
   describe '.with_files_stored_locally' do
-    it 'includes states with local storage' do
-      create_local
-
-      expect(described_class.with_files_stored_locally).to have_attributes(count: 1)
+    it 'includes locally stored files' do
+      expect(described_class.with_files_stored_locally).to include(*locally_stored)
     end
 
-    it 'excludes states without local storage' do
-      create_remote
-
-      expect(described_class.with_files_stored_locally).to have_attributes(count: 0)
+    it 'excludes remotely stored files' do
+      expect(described_class.with_files_stored_locally).not_to include(*remotely_stored)
     end
   end
 
   describe '.with_files_stored_remotely' do
-    it 'excludes states with local storage' do
-      create_local
-
-      expect(described_class.with_files_stored_remotely).to have_attributes(count: 0)
+    it 'includes remotely stored files' do
+      expect(described_class.with_files_stored_remotely).to include(*remotely_stored)
     end
 
-    it 'includes states without local storage' do
-      create_remote
-
-      expect(described_class.with_files_stored_remotely).to have_attributes(count: 1)
+    it 'excludes locally stored files' do
+      expect(described_class.with_files_stored_remotely).not_to include(*locally_stored)
     end
   end
 end

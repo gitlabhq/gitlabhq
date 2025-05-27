@@ -47,6 +47,28 @@ RSpec.describe DependencyProxy::Manifest, type: :model, feature_category: :depen
     end
   end
 
+  it_behaves_like 'object storable' do
+    let(:locally_stored) do
+      dependency_proxy_manifest = create(:dependency_proxy_manifest)
+
+      if dependency_proxy_manifest.file_store == ObjectStorage::Store::REMOTE
+        dependency_proxy_manifest.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::LOCAL)
+      end
+
+      dependency_proxy_manifest
+    end
+
+    let(:remotely_stored) do
+      dependency_proxy_manifest = create(:dependency_proxy_manifest)
+
+      if dependency_proxy_manifest.file_store == ObjectStorage::Store::LOCAL
+        dependency_proxy_manifest.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::REMOTE)
+      end
+
+      dependency_proxy_manifest
+    end
+  end
+
   describe '.find_by_file_name_or_digest' do
     let_it_be(:file_name) { 'foo' }
     let_it_be(:digest) { 'bar' }

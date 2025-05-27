@@ -105,8 +105,6 @@ RSpec.describe LfsObject, feature_category: :source_code_management do
     subject { create(:lfs_object, :with_file) }
 
     describe 'file is being stored' do
-      subject { create(:lfs_object, :with_file) }
-
       context 'when existing object has local store' do
         it_behaves_like 'mounted file in local store'
       end
@@ -118,6 +116,28 @@ RSpec.describe LfsObject, feature_category: :source_code_management do
 
         it_behaves_like 'mounted file in object store'
       end
+    end
+  end
+
+  it_behaves_like 'object storable' do
+    let(:locally_stored) do
+      lfs_object = create(:lfs_object)
+
+      if lfs_object.file_store == ObjectStorage::Store::REMOTE
+        lfs_object.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::LOCAL)
+      end
+
+      lfs_object
+    end
+
+    let(:remotely_stored) do
+      lfs_object = create(:lfs_object)
+
+      if lfs_object.file_store == ObjectStorage::Store::LOCAL
+        lfs_object.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::REMOTE)
+      end
+
+      lfs_object
     end
   end
 

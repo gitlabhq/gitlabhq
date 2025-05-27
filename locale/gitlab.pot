@@ -16863,6 +16863,9 @@ msgstr ""
 msgid "Configure SAST IaC in `.gitlab-ci.yml`, creating this file if it does not already exist"
 msgstr ""
 
+msgid "Configure SAST and Secret Detection in `.gitlab-ci.yml`, creating this file if it does not already exist"
+msgstr ""
+
 msgid "Configure SAST in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings) to customize SAST settings."
 msgstr ""
 
@@ -48990,6 +48993,9 @@ msgstr ""
 msgid "ProjectsNew|Direct transfer projects with a top-level Group"
 msgstr ""
 
+msgid "ProjectsNew|Enable Secret Detection"
+msgstr ""
+
 msgid "ProjectsNew|Enable Static Application Security Testing (SAST)"
 msgstr ""
 
@@ -49126,6 +49132,9 @@ msgid "ProjectsNew|Recommended if you're new to GitLab"
 msgstr ""
 
 msgid "ProjectsNew|Run CI/CD for external repository"
+msgstr ""
+
+msgid "ProjectsNew|Scan your code for secrets and credentials to prevent unauthorized access."
 msgstr ""
 
 msgid "ProjectsNew|Select"

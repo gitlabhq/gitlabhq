@@ -78,3 +78,4 @@ export const FREQUENTLY_VISITED_GROUPS_HANDLE = 'FREQUENTLY_VISITED_GROUPS_HANDL
 
 export const GROUPS_GROUP_HANDLE = 'Groups';
 export const PROJECTS_GROUP_HANDLE = 'Projects';
+export const USER_CATEGORY_VALUE = 'Users';

@@ -14,7 +14,9 @@ module Security
       end
 
       def execute
-        if project.repository.empty? && !(@params && @params[:initialize_with_sast])
+        if project.repository.empty? &&
+            !(@params && (@params[:initialize_with_sast] ||
+                         @params[:initialize_with_secret_detection]))
           docs_link = ActionController::Base.helpers.link_to(
             _('add at least one file to the repository'),
             Rails.application.routes.url_helpers.help_page_url(

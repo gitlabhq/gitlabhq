@@ -326,7 +326,7 @@ Project Owners can perform any listed action, and can delete pipelines:
 | View [agents for Kubernetes](clusters/agent/_index.md)                                                                          |            |       |         |          |     ✓     |     ✓      |       |
 | View project [Secure Files](../api/secure_files.md)                                                                            |            |       |         |          |     ✓     |     ✓      |       |
 | Download project [Secure Files](../api/secure_files.md)                                                                        |            |       |         |          |     ✓     |     ✓      |       |
-| View a job with [debug logging](../ci/variables/_index.md#enable-debug-logging)                                                 |            |       |         |          |     ✓     |     ✓      |       |
+| View a job with [debug logging](../ci/variables/variables_troubleshooting.md#enable-debug-logging)                             |            |       |         |          |     ✓     |     ✓      |       |
 | Create [environments](../ci/environments/_index.md)                                                                             |            |       |         |          |     ✓     |     ✓      |       |
 | Delete [environments](../ci/environments/_index.md)                                                                             |            |       |         |          |     ✓     |     ✓      |       |
 | Stop [environments](../ci/environments/_index.md)                                                                               |            |       |         |          |     ✓     |     ✓      |       |

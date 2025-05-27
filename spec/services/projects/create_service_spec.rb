@@ -888,6 +888,22 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     end
   end
 
+  context 'when Secret Detection initialization is requested' do
+    let(:project) { create_project(user, opts) }
+
+    before do
+      opts[:initialize_with_secret_detection] = '1'
+      allow(Gitlab::CurrentSettings).to receive(:default_branch_name).and_return('main')
+    end
+
+    it 'creates a commit for Secret Detection', :aggregate_failures do
+      expect(project.repository.commit_count).to be(1)
+      expect(project.repository.commit.message).to eq(
+        'Configure Secret Detection in `.gitlab-ci.yml`, creating this file if it does not already exist'
+      )
+    end
+  end
+
   context 'when SHA256 format is requested' do
     let(:project) { create_project(user, opts) }
     let(:opts) { super().merge(initialize_with_readme: true, repository_object_format: 'sha256') }

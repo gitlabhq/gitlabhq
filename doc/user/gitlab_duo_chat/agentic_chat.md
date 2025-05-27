@@ -42,7 +42,7 @@ Agentic Chat is only available in the
 
 Prerequisites:
 
-- A GitLab Duo Pro or Enterprise add-on.
+- A GitLab Duo Core, Pro, or Enterprise add-on.
 - A Premium or Ultimate subscription.
 - You have an assigned seat for or access to GitLab Duo Chat.
 - You have [installed and configured the GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/setup.md) version 6.15.1 or later.

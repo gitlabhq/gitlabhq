@@ -12,7 +12,7 @@ import { s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import highlight from '~/lib/utils/highlight';
-import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
+import { AVATAR_SHAPE_OPTION_RECT, AVATAR_SHAPE_OPTION_CIRCLE } from '~/vue_shared/constants';
 import {
   AUTOCOMPLETE_ERROR_MESSAGE,
   NO_SEARCH_RESULTS,
@@ -76,6 +76,8 @@ export default {
   directives: {
     SafeHtml,
   },
+  AVATAR_SHAPE_OPTION_RECT,
+  AVATAR_SHAPE_OPTION_CIRCLE,
   mixins: [trackingMixin],
   computed: {
     ...mapState(['search', 'loading', 'autocompleteError']),
@@ -174,7 +176,6 @@ export default {
       return groupName;
     },
   },
-  AVATAR_SHAPE_OPTION_RECT,
 };
 </script>
 
@@ -211,16 +212,23 @@ export default {
                 :src="item.avatar_url"
                 :entity-id="item.entity_id"
                 :entity-name="item.entity_name"
-                :size="item.avatar_size"
-                :shape="$options.AVATAR_SHAPE_OPTION_RECT"
+                :size="16"
+                :shape="
+                  group.name === $options.i18n.USERS_GROUP_TITLE
+                    ? $options.AVATAR_SHAPE_OPTION_CIRCLE
+                    : $options.AVATAR_SHAPE_OPTION_RECT
+                "
                 aria-hidden="true"
               />
-              <span class="gl-flex gl-min-w-0 gl-grow gl-flex-col">
+              <span class="gl-flex gl-flex-row gl-items-center gl-gap-2 gl-truncate">
                 <span
                   v-safe-html="highlightedName(item.text)"
                   class="gl-truncate gl-text-strong"
                   data-testid="autocomplete-item-name"
                 ></span>
+                <span v-if="item.avatar_url !== undefined" class="gl-text-subtle" aria-hidden="true"
+                  >·</span
+                >
                 <span
                   v-if="item.value"
                   v-safe-html="item.namespace"

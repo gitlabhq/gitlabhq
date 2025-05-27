@@ -549,6 +549,7 @@ class ProjectsController < Projects::ApplicationController
       :template_project_id,
       :merge_method,
       :initialize_with_sast,
+      :initialize_with_secret_detection,
       :initialize_with_readme,
       :ci_separated_caches,
       :suggestion_commit_message,

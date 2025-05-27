@@ -41,7 +41,7 @@ describe('FrequentlyVisitedItem', () => {
       projectId: mockItem.id,
       projectName: mockItem.title,
       projectAvatarUrl: mockItem.avatar,
-      size: 32,
+      size: 16,
     });
   });
 

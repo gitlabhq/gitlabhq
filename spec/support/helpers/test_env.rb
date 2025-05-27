@@ -174,8 +174,23 @@ module TestEnv
       public_send(method)
     end
     post_init
+    duration = Time.now - start
 
-    puts "\nTest environment set up in #{Time.now - start} seconds"
+    puts "\nTest environment set up in #{duration} seconds"
+
+    send_rspec_setup_duration_telemetry(duration)
+  end
+
+  def send_rspec_setup_duration_telemetry(duration)
+    gdk_path = Gitlab::Utils.which('gdk')
+    return if gdk_path.empty?
+
+    Bundler.with_unbundled_env do
+      success = system(gdk_path, 'send-telemetry', 'rspec_setup_duration', duration.to_s)
+      warn "Failed to send RSpec setup time via telemetry command." unless success
+    end
+  rescue StandardError => e
+    warn "Failed to send telemetry: #{e.message}"
   end
 
   # Can be overriden

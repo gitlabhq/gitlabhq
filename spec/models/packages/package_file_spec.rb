@@ -597,4 +597,26 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
       end
     end
   end
+
+  it_behaves_like 'object storable' do
+    let(:locally_stored) do
+      package_file = create(:package_file)
+
+      if package_file.file_store == ObjectStorage::Store::REMOTE
+        package_file.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::LOCAL)
+      end
+
+      package_file
+    end
+
+    let(:remotely_stored) do
+      package_file = create(:package_file)
+
+      if package_file.file_store == ObjectStorage::Store::LOCAL
+        package_file.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::REMOTE)
+      end
+
+      package_file
+    end
+  end
 end

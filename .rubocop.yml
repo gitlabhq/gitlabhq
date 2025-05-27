@@ -496,6 +496,22 @@ GitlabSecurity/PublicSend:
     - 'ee/lib/**/*.rake'
     - 'ee/spec/**/*'
 
+Gitlab/DeprecatedAuditEventService:
+  Enabled: true
+  Exclude:
+    - 'ee/app/services/ee/audit_event_service.rb'
+    - 'ee/app/services/ee/applications/create_service.rb'
+    - 'ee/app/services/audit_events/release_audit_event_service.rb'
+    - 'ee/app/services/ee/keys/create_service.rb'
+    - 'ee/app/services/ee/users/migrate_records_to_ghost_user_service.rb'
+    - 'ee/spec/features/admin/admin_audit_logs_spec.rb'
+    - 'ee/spec/controllers/groups/omniauth_callbacks_controller_spec.rb'
+    - 'ee/spec/services/audit_event_service_spec.rb'
+    - 'ee/lib/gitlab/auth/group_saml/membership_updater.rb'
+    - 'app/controllers/sessions_controller.rb'
+    - 'app/services/audit_event_service.rb'
+    - 'spec/services/audit_event_service_spec.rb'
+
 Database/MultipleDatabases:
   Enabled: true
   Exclude:

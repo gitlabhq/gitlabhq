@@ -165,27 +165,11 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server, feature_cate
           TestConcurrencyLimitWorker.perform_async('foo')
         end
 
-        context 'when track_sidekiq_concurrency_limit_execution feature flag is disabled' do
-          before do
-            stub_feature_flags(track_sidekiq_concurrency_limit_execution: false)
-          end
-
-          it_behaves_like 'track execution'
-        end
-
         it_behaves_like 'track execution'
 
         context 'when limit is set to zero' do
           before do
             allow(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap).to receive(:limit_for).and_return(0)
-          end
-
-          context 'when track_sidekiq_concurrency_limit_execution feature flag is disabled' do
-            before do
-              stub_feature_flags(track_sidekiq_concurrency_limit_execution: false)
-            end
-
-            it_behaves_like 'skip execution tracking'
           end
 
           it_behaves_like 'track execution'
@@ -194,14 +178,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server, feature_cate
         context 'when limit is not defined' do
           before do
             ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.remove_instance_variable(:@data)
-          end
-
-          context 'when track_sidekiq_concurrency_limit_execution feature flag is disabled' do
-            before do
-              stub_feature_flags(track_sidekiq_concurrency_limit_execution: false)
-            end
-
-            it_behaves_like 'skip execution tracking'
           end
 
           it_behaves_like 'track execution'
@@ -230,14 +206,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server, feature_cate
         expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).not_to receive(:add_to_queue!)
 
         worker_klass.perform_async('foo')
-      end
-
-      context 'when track_sidekiq_concurrency_limit_execution feature flag is disabled' do
-        before do
-          stub_feature_flags(track_sidekiq_concurrency_limit_execution: false)
-        end
-
-        it_behaves_like 'skip execution tracking'
       end
 
       it_behaves_like 'track execution'

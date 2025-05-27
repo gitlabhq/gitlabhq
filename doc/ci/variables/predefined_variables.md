@@ -62,7 +62,7 @@ Predefined variables become available at three different phases of pipeline exec
 | `CI_CONCURRENT_ID`                              | Job-only     | The unique ID of build execution in a single executor. |
 | `CI_CONCURRENT_PROJECT_ID`                      | Job-only     | The unique ID of build execution in a single executor and project. |
 | `CI_CONFIG_PATH`                                | Pre-pipeline | The path to the CI/CD configuration file. Defaults to `.gitlab-ci.yml`. |
-| `CI_DEBUG_TRACE`                                | Pipeline     | `true` if [debug logging (tracing)](_index.md#enable-debug-logging) is enabled. |
+| `CI_DEBUG_TRACE`                                | Pipeline     | `true` if [debug logging (tracing)](variables_troubleshooting.md#enable-debug-logging) is enabled. |
 | `CI_DEBUG_SERVICES`                             | Pipeline     | `true` if [service container logging](../services/_index.md#capturing-service-container-logs) is enabled. Introduced in GitLab 15.7. Requires GitLab Runner 15.7. |
 | `CI_DEFAULT_BRANCH`                             | Pre-pipeline | The name of the project's default branch. |
 | `CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX` | Pre-pipeline | The direct group image prefix for pulling images through the Dependency Proxy. |
@@ -271,5 +271,5 @@ as [job-only predefined variables](#variable-availability):
 
 ## Troubleshooting
 
-You can [output the values of all variables available for a job](_index.md#list-all-variables)
+You can [output the values of all variables available for a job](variables_troubleshooting.md#list-all-variables)
 with a `script` command.

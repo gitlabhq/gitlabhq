@@ -35,8 +35,8 @@ RSpec.describe PagesDeployment, feature_category: :pages do
     end
 
     it_behaves_like 'object storable' do
-      let(:create_local) { create(:pages_deployment, project: project, file_store: ::ObjectStorage::Store::LOCAL) }
-      let(:create_remote) { create(:pages_deployment, project: project, file_store: ::ObjectStorage::Store::REMOTE) }
+      let(:locally_stored) { create(:pages_deployment, project: project, file_store: ::ObjectStorage::Store::LOCAL) }
+      let(:remotely_stored) { create(:pages_deployment, project: project, file_store: ::ObjectStorage::Store::REMOTE) }
     end
   end
 

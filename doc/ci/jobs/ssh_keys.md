@@ -44,7 +44,7 @@ To create and use an SSH key in GitLab CI/CD:
 
 In the following example, the `ssh-add -` command does not display the value of
 `$SSH_PRIVATE_KEY` in the job log, though it could be exposed if you enable
-[debug logging](../variables/_index.md#enable-debug-logging). You might also want to
+[debug logging](../variables/variables_troubleshooting.md#enable-debug-logging). You might also want to
 check the [visibility of your pipelines](../pipelines/settings.md#change-which-users-can-view-your-pipelines).
 
 ## SSH keys when using the Docker executor

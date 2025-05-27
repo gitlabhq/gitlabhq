@@ -7,6 +7,7 @@ RSpec.describe ForkNetwork, feature_category: :source_code_management do
 
   describe "validations" do
     it { is_expected.to belong_to(:organization) }
+    it { is_expected.to belong_to(:root_project).class_name('Project') }
 
     describe "#organization_match" do
       let_it_be(:organization) { create(:organization) }
@@ -39,6 +40,11 @@ RSpec.describe ForkNetwork, feature_category: :source_code_management do
         end
       end
     end
+  end
+
+  describe "associations" do
+    it { is_expected.to have_many(:fork_network_members) }
+    it { is_expected.to have_many(:projects).through(:fork_network_members) }
   end
 
   describe '#add_root_as_member' do

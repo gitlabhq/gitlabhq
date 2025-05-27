@@ -92,6 +92,15 @@
         = s_('ProjectsNew|Analyze your source code for known security vulnerabilities.')
         = link_to _('Learn more.'), help_page_path('user/application_security/sast/_index.md'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed' }
 
+  .form-group
+    = render Pajamas::CheckboxTagComponent.new(name: 'project[initialize_with_secret_detection]',
+      checkbox_options: { data: { testid: 'initialize-with-secret-detection-checkbox' } }) do |c|
+      - c.with_label do
+        = s_('ProjectsNew|Enable Secret Detection')
+      - c.with_help_text do
+        = s_('ProjectsNew|Scan your code for secrets and credentials to prevent unauthorized access.')
+        = link_to _('Learn more.'), help_page_path('user/application_security/secret_detection/_index.md'), target: '_blank', rel: 'noopener noreferrer'
+
   - if display_sha256_repository
     #js-experimental-setting-accordion.form-group.gl-mb-6
       = render Pajamas::AccordionItemComponent.new(title: s_("ProjectsNew|Experimental settings"), state: :closed) do

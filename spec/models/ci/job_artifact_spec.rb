@@ -668,6 +668,28 @@ RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
     end
   end
 
+  it_behaves_like 'object storable' do
+    let(:locally_stored) do
+      ci_job_artifact = create(:ci_job_artifact)
+
+      if ci_job_artifact.file_store == ObjectStorage::Store::REMOTE
+        ci_job_artifact.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::LOCAL)
+      end
+
+      ci_job_artifact
+    end
+
+    let(:remotely_stored) do
+      ci_job_artifact = create(:ci_job_artifact)
+
+      if ci_job_artifact.file_store == ObjectStorage::Store::LOCAL
+        ci_job_artifact.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::REMOTE)
+      end
+
+      ci_job_artifact
+    end
+  end
+
   describe '.file_types' do
     context 'all file types have corresponding limit' do
       let_it_be(:plan_limits) { create(:plan_limits) }

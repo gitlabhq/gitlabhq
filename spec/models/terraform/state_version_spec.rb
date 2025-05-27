@@ -11,12 +11,24 @@ RSpec.describe Terraform::StateVersion, feature_category: :infrastructure_as_cod
   it { is_expected.to belong_to(:build).class_name('Ci::Build').optional }
 
   it_behaves_like 'object storable' do
-    let(:create_local) do
-      create(:terraform_state_version, described_class::STORE_COLUMN => ObjectStorage::Store::LOCAL)
+    let(:locally_stored) do
+      terraform_state_version = create(:terraform_state_version)
+
+      if terraform_state_version.file_store == ObjectStorage::Store::REMOTE
+        terraform_state_version.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::LOCAL)
+      end
+
+      terraform_state_version
     end
 
-    let(:create_remote) do
-      create_local.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::REMOTE)
+    let(:remotely_stored) do
+      terraform_state_version = create(:terraform_state_version)
+
+      if terraform_state_version.file_store == ObjectStorage::Store::LOCAL
+        terraform_state_version.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::REMOTE)
+      end
+
+      terraform_state_version
     end
   end
 
