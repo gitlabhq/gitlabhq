@@ -9,6 +9,13 @@ export default {
   components: {
     GlBreadcrumb,
   },
+  props: {
+    staticBreadcrumbs: {
+      type: Object,
+      default: () => ({ items: [] }),
+      required: false,
+    },
+  },
   computed: {
     rootRoute() {
       return this.$router.options.routes.find((r) => r.meta.root);
@@ -35,7 +42,9 @@ export default {
         });
       }
 
-      return routeInfoList;
+      const staticCrumbs = this.staticBreadcrumbs.items;
+
+      return [...staticCrumbs, ...routeInfoList];
     },
     isLoaded() {
       return this.isRootRoute || last(this.currentRoute).text;
@@ -50,7 +59,9 @@ export default {
       if (!this.isRootRoute) {
         crumbs = crumbs.concat(this.currentRoute);
       }
-      return crumbs;
+      const staticCrumbs = this.staticBreadcrumbs.items;
+
+      return [...staticCrumbs, ...crumbs];
     },
   },
 };

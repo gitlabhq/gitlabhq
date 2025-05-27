@@ -15598,6 +15598,9 @@ msgstr ""
 msgid "ComplianceFrameworks|External"
 msgstr ""
 
+msgid "ComplianceFrameworks|External Control Name"
+msgstr ""
+
 msgid "ComplianceFrameworks|External URL"
 msgstr ""
 
@@ -15671,6 +15674,9 @@ msgid "ComplianceFrameworks|Optional"
 msgstr ""
 
 msgid "ComplianceFrameworks|Please enter a valid URL"
+msgstr ""
+
+msgid "ComplianceFrameworks|Please enter a valid name"
 msgstr ""
 
 msgid "ComplianceFrameworks|Policies"
@@ -27422,6 +27428,18 @@ msgstr ""
 msgid "Geo|Allowed Geo IP should contain valid IP addresses"
 msgstr ""
 
+msgid "Geo|CI Job Artifact"
+msgstr ""
+
+msgid "Geo|CI Job Artifacts"
+msgstr ""
+
+msgid "Geo|CI Secure File"
+msgstr ""
+
+msgid "Geo|CI Secure Files"
+msgstr ""
+
 msgid "Geo|Checksum: %{verificationChecksum}"
 msgstr ""
 
@@ -27429,12 +27447,6 @@ msgid "Geo|Checksummed"
 msgstr ""
 
 msgid "Geo|Choose specific groups or storage shards"
-msgstr ""
-
-msgid "Geo|Ci Secure File"
-msgstr ""
-
-msgid "Geo|Ci Secure Files"
 msgstr ""
 
 msgid "Geo|Comma-separated, e.g. '1.1.1.1, 2.2.2.0/24'"
@@ -27596,10 +27608,10 @@ msgstr ""
 msgid "Geo|Internal URL (optional)"
 msgstr ""
 
-msgid "Geo|Job Artifact"
+msgid "Geo|LFS Object"
 msgstr ""
 
-msgid "Geo|Job Artifacts"
+msgid "Geo|LFS Objects"
 msgstr ""
 
 msgid "Geo|Last event ID"
@@ -27624,12 +27636,6 @@ msgid "Geo|Learn more about Geo"
 msgstr ""
 
 msgid "Geo|Learn more about Geo site statuses"
-msgstr ""
-
-msgid "Geo|Lfs Object"
-msgstr ""
-
-msgid "Geo|Lfs Objects"
 msgstr ""
 
 msgid "Geo|Limit the number of concurrent operations this secondary site can run in the background."
@@ -37575,7 +37581,7 @@ msgstr ""
 msgid "MemberRole|Are you sure you want to delete this role?"
 msgstr ""
 
-msgid "MemberRole|Automatically sync your LDAP directory to custom admin roles."
+msgid "MemberRole|Automatically sync your LDAP directory to custom admin roles. For users matched to multiple LDAP syncs, the oldest sync entry will be used."
 msgstr ""
 
 msgid "MemberRole|Base role"
@@ -37842,7 +37848,7 @@ msgstr ""
 msgid "MemberRole|This member is an LDAP user. Changing their role will override the settings from the LDAP group sync."
 msgstr ""
 
-msgid "MemberRole|This removes automatic syncing with your LDAP server. Users will keep their current role but future changes will require manual updates. %{confirmStart}Are you sure you want to remove LDAP synchronization?%{confirmEnd}"
+msgid "MemberRole|This removes automatic syncing with your LDAP server. Users will have their current role unassigned on the next sync. %{confirmStart}Are you sure you want to remove LDAP synchronization?%{confirmEnd}"
 msgstr ""
 
 msgid "MemberRole|This role has been manually selected and will not sync to the LDAP sync role."
@@ -37855,6 +37861,9 @@ msgid "MemberRole|To delete custom role, remove role from all users."
 msgstr ""
 
 msgid "MemberRole|Unable to export role report. Contact support if this error persists."
+msgstr ""
+
+msgid "MemberRole|Unknown LDAP server. Please check your server settings."
 msgstr ""
 
 msgid "MemberRole|Update role"

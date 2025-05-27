@@ -143,10 +143,8 @@
     "name": {
       "type": "string"
     },
-    "events": {
-    },
-    "time_frame": {
-    }
+    "events": {},
+    "time_frame": {}
   },
   "oneOf": [
     {

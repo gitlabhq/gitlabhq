@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlFilteredSearchToken, GlLoadingIcon } from '@gitlab/ui';
-import { isEmpty, unionBy } from 'lodash';
+import { capitalize, isEmpty, unionBy } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
@@ -202,6 +202,7 @@ export default {
       hasStateToken: false,
       initialLoadWasFiltered: false,
       showLocalBoard: false,
+      namespaceId: null,
     };
   },
   apollo: {
@@ -221,6 +222,7 @@ export default {
         return isEmpty(this.pageParams);
       },
       result({ data }) {
+        this.namespaceId = data?.[this.namespace]?.id;
         this.handleListDataResults(data);
       },
       error(error) {
@@ -664,11 +666,11 @@ export default {
       const findSlimItem = (id) => slim.find((item) => item.id === id);
       return full.map((fullItem) => {
         const slimVersion = findSlimItem(fullItem.id);
-        const combinedWidgets = unionBy(fullItem.widgets, slimVersion.widgets, 'type');
+        const combinedWidgets = unionBy(fullItem.widgets, slimVersion?.widgets, 'type');
         return {
           ...fullItem,
           widgets: combinedWidgets.reduce((acc, widget) => {
-            const slimWidget = slimVersion.widgets.find((w) => w.type === widget.type);
+            const slimWidget = slimVersion?.widgets.find((w) => w.type === widget.type);
             if (slimWidget && Object.keys(slimWidget).length > Object.keys(widget).length) {
               acc.push(slimWidget);
             } else {
@@ -826,24 +828,28 @@ export default {
     },
     deleteItem() {
       this.activeItem = null;
-      this.refetchItems();
+      this.refetchItems({ refetchCounts: true });
     },
     handleStatusChange(workItem) {
       if (this.state === STATUS_ALL) {
         return;
       }
       if (statusMap[this.state] !== workItem.state) {
-        this.refetchItems();
+        this.refetchItems({ refetchCounts: true });
       }
     },
     async refetchItems({ refetchCounts = false } = {}) {
-      this.isRefetching = true;
-      this.$apollo.queries.workItemsFull.refetch();
-      this.$apollo.queries.workItemsSlim.refetch();
       if (refetchCounts) {
         this.$apollo.queries.workItemStateCounts.refetch();
       }
-      this.isRefetching = false;
+
+      // evict the namespace's workItems cache to force a full refetch
+      const { cache } = this.$apollo.provider.defaultClient;
+      cache.evict({
+        id: cache.identify({ __typename: capitalize(this.namespace), id: this.namespaceId }),
+        fieldName: 'workItems',
+      });
+      cache.gc();
     },
     updateData(sort) {
       const firstPageSize = getParameterByName(PARAM_FIRST_PAGE_SIZE);

@@ -63,14 +63,14 @@ or when using Geo-related console commands.
 
 | Geo replicator name            | GitLab component name                  |
 |--------------------------------|----------------------------------------|
-| Ci Secure Files                | CI Secure Files                        |
+| CI Secure Files                | CI Secure Files                        |
 | Container Repositories         | Container registry                     |
 | Dependency Proxy Blobs         | Dependency Proxy Images                |
 | Dependency Proxy Manifests     | Dependency Proxy Images                |
 | Design Management Repositories | Project designs repository             |
 | Group Wiki Repositories        | Group wiki repository                  |
-| Job Artifacts                  | CI job artifacts                       |
-| Lfs Objects                    | LFS objects                            |
+| CI Job Artifacts               | CI job artifacts                       |
+| LFS Objects                    | LFS objects                            |
 | Merge Request Diffs            | External merge request diffs           |
 | Package Files                  | Package registry                       |
 | Pages Deployments              | Pages                                  |

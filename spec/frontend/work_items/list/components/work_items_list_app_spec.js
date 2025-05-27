@@ -709,8 +709,8 @@ describeSkipVue3(skipReason, () => {
             checkThatDrawerPropsAreEmpty();
           });
 
-          it('refetches and resets when work item is deleted', async () => {
-            expect(defaultQueryHandler).toHaveBeenCalledTimes(1);
+          it('refetches counts and resets when work item is deleted', async () => {
+            expect(defaultCountsQueryHandler).toHaveBeenCalledTimes(1);
 
             findDrawer().vm.$emit('workItemDeleted');
 
@@ -718,11 +718,11 @@ describeSkipVue3(skipReason, () => {
 
             checkThatDrawerPropsAreEmpty();
 
-            expect(defaultQueryHandler).toHaveBeenCalledTimes(2);
+            expect(defaultCountsQueryHandler).toHaveBeenCalledTimes(2);
           });
 
-          it('refetches when the selected work item is closed', async () => {
-            expect(defaultQueryHandler).toHaveBeenCalledTimes(1);
+          it('refetches counts when the selected work item is closed', async () => {
+            expect(defaultCountsQueryHandler).toHaveBeenCalledTimes(1);
 
             // component displays open work items by default
             findDrawer().vm.$emit('work-item-updated', {
@@ -731,7 +731,7 @@ describeSkipVue3(skipReason, () => {
 
             await nextTick();
 
-            expect(defaultQueryHandler).toHaveBeenCalledTimes(2);
+            expect(defaultCountsQueryHandler).toHaveBeenCalledTimes(2);
           });
         });
       });

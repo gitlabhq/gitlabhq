@@ -190,7 +190,7 @@ module Gitlab
           command_name = commands.size > 1 ? "PIPELINE/MULTI" : commands.first.first.to_s.upcase
           return if commands.size == 1 && REDIS_COMMANDS.dig(command_name, :single_key)
 
-          keys = commands.map { |command| extract_keys(command) }.flatten
+          keys = commands.flat_map { |command| extract_keys(command) }
 
           {
             valid: !has_cross_slot_keys?(keys),

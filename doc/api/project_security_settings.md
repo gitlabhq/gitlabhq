@@ -34,7 +34,9 @@ GET /projects/:id/security_settings
 | `id`          | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).                                                            |
 
 ```shell
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/7/security_settings"
+curl --request GET \
+--header "PRIVATE-TOKEN: <your_access_token>" \
+--url "https://gitlab.example.com/api/v4/projects/7/security_settings"
 ```
 
 Example response:
@@ -76,7 +78,9 @@ Prerequisites:
 | `secret_push_protection_enabled`        | boolean | yes        | The value to update `secret_push_protection_enabled` to  |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/7/security_settings?secret_push_protection_enabled=false"
+curl --request PUT \
+--header "PRIVATE-TOKEN: <your_access_token>" \
+--url "https://gitlab.example.com/api/v4/projects/7/security_settings?secret_push_protection_enabled=false"
 ```
 
 Example response:

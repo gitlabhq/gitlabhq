@@ -90,7 +90,8 @@ Details of each dependency are listed, sorted by decreasing severity of vulnerab
 - Dependency filtering for group [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/422356) in GitLab 16.10. Feature flag `group_level_dependencies_filtering` removed.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513320) dependency filtering for projects in GitLab 17.9 with a flag named [`project_component_filter`](../../../administration/feature_flags.md). Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/513321) in GitLab 17.10. Feature flag `project_component_filter` removed.
-- Introduced dependency version filtering for [projects](https://gitlab.com/gitlab-org/gitlab/-/issues/520771) and [groups](https://gitlab.com/gitlab-org/gitlab/-/issues/523061) in GitLab 18.0 with [flags](../../../administration/feature_flags.md) named `version_filtering_on_project_level_dependency_list` and `version_filtering_on_group_level_dependency_list`. Disabled by default.
+- Dependency version filtering introduced for [projects](https://gitlab.com/gitlab-org/gitlab/-/issues/520771) and [groups](https://gitlab.com/gitlab-org/gitlab/-/issues/523061) in GitLab 18.0 with [flags](../../../administration/feature_flags.md) named `version_filtering_on_project_level_dependency_list` and `version_filtering_on_group_level_dependency_list`. Disabled by default.
+- Dependency version filtering [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192291) on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in GitLab 18.1.
 
 {{< /history >}}
 

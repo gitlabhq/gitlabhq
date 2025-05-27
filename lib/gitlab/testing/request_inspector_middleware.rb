@@ -65,10 +65,9 @@ module Gitlab
       end
 
       def http_headers_env(headers)
-        Hash[*headers
-          .collect { |k, v| [k.split('-').collect(&:upcase).join('_'), v] }
-          .collect { |k, v| [k.prepend('HTTP_'), v] }
-          .flatten]
+        headers.transform_keys do |k|
+          "HTTP_#{k.to_s.split('-').map(&:upcase).join('_')}"
+        end
       end
 
       def log_request(response)

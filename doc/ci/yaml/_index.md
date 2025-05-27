@@ -1320,6 +1320,13 @@ test_job_2:
 
 ### `artifacts`
 
+{{< history >}}
+
+- [Updated](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/5543) in GitLab Runner 18.1. During the caching process,
+  `symlinks` are no longer followed, which happened in some edge cases with previous GitLab Runner versions.
+
+{{< /history >}}
+
 Use `artifacts` to specify which files to save as [job artifacts](../jobs/job_artifacts.md).
 Job artifacts are a list of files and directories that are
 attached to the job when it [succeeds, fails, or always](#artifactswhen).
@@ -1759,6 +1766,8 @@ job:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330047) in GitLab 15.0, caches are not shared between protected and unprotected branches.
+- [Updated](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/5543) in GitLab Runner 18.1. During the caching process,
+  `symlinks` are no longer followed, which happened in some edge cases with previous GitLab Runner versions.
 
 {{< /history >}}
 

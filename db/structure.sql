@@ -21758,7 +21758,8 @@ CREATE TABLE protected_branch_merge_access_levels (
     user_id bigint,
     group_id bigint,
     protected_branch_project_id bigint,
-    protected_branch_namespace_id bigint
+    protected_branch_namespace_id bigint,
+    CONSTRAINT check_66e95f5ee9 CHECK ((num_nonnulls(protected_branch_namespace_id, protected_branch_project_id) = 1))
 );
 
 CREATE SEQUENCE protected_branch_merge_access_levels_id_seq
@@ -33289,6 +33290,8 @@ CREATE INDEX idx_approval_merge_request_rules_on_scan_result_policy_id ON approv
 
 CREATE INDEX idx_approval_mr_rules_on_config_id_and_id_and_updated_at ON approval_merge_request_rules USING btree (security_orchestration_policy_configuration_id, id, updated_at);
 
+CREATE INDEX idx_approval_policy_rule_project_links_on_project_id_and_id ON approval_policy_rule_project_links USING btree (project_id, id);
+
 CREATE INDEX idx_approval_policy_rules_security_policy_id_id ON approval_policy_rules USING btree (security_policy_id, id);
 
 CREATE INDEX idx_approval_project_rules_on_config_id_and_policy_rule_id ON approval_project_rules USING btree (security_orchestration_policy_configuration_id, approval_policy_rule_id);
@@ -33642,6 +33645,8 @@ CREATE INDEX idx_secret_detect_token_on_project_id ON secret_detection_token_sta
 CREATE INDEX idx_security_pipeline_execution_project_schedules_next_run_at ON security_pipeline_execution_project_schedules USING btree (next_run_at, id);
 
 CREATE INDEX idx_security_policies_config_id_policy_index ON security_policies USING btree (security_orchestration_policy_configuration_id, policy_index);
+
+CREATE INDEX idx_security_policy_project_links_on_project_id_and_id ON security_policy_project_links USING btree (project_id, id);
 
 CREATE UNIQUE INDEX idx_security_scans_on_build_and_scan_type ON security_scans USING btree (build_id, scan_type);
 
@@ -34066,8 +34071,6 @@ CREATE INDEX index_approval_merge_request_rules_users_2 ON approval_merge_reques
 CREATE INDEX index_approval_mr_rules_on_project_id_policy_rule_id_and_id ON approval_merge_request_rules USING btree (security_orchestration_policy_configuration_id, approval_policy_rule_id, id);
 
 CREATE UNIQUE INDEX index_approval_policy_rule_on_project_and_rule ON approval_policy_rule_project_links USING btree (approval_policy_rule_id, project_id);
-
-CREATE INDEX index_approval_policy_rule_project_links_on_project_id ON approval_policy_rule_project_links USING btree (project_id);
 
 CREATE INDEX index_approval_policy_rules_on_policy_management_project_id ON approval_policy_rules USING btree (security_policy_management_project_id);
 
@@ -37420,8 +37423,6 @@ CREATE INDEX index_security_policies_on_policy_management_project_id ON security
 CREATE UNIQUE INDEX index_security_policies_on_unique_config_type_policy_index ON security_policies USING btree (security_orchestration_policy_configuration_id, type, policy_index);
 
 CREATE UNIQUE INDEX index_security_policy_project_links_on_project_and_policy ON security_policy_project_links USING btree (security_policy_id, project_id);
-
-CREATE INDEX index_security_policy_project_links_on_project_id ON security_policy_project_links USING btree (project_id);
 
 CREATE INDEX index_security_policy_requirements_on_compliance_requirement_id ON security_policy_requirements USING btree (compliance_requirement_id);
 

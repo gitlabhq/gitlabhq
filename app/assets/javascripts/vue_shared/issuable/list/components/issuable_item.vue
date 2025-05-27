@@ -183,7 +183,7 @@ export default {
       return (
         this.issuable.assignees?.nodes ||
         this.issuable.assignees ||
-        this.issuable.widgets?.find(isAssigneesWidget)?.assignees.nodes ||
+        this.issuable.widgets?.find(isAssigneesWidget)?.assignees?.nodes ||
         []
       );
     },
