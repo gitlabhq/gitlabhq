@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: uk\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-05-26 13:32\n"
+"PO-Revision-Date: 2025-05-27 10:58\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} до %{end}"
@@ -5244,7 +5244,7 @@ msgstr ""
 msgid "AdminSettings|Size and domain settings for Pages static sites."
 msgstr "Розмір і параметри налаштування домену для статичних сайтів Сторінок."
 
-msgid "AdminSettings|Skip confirmation when reassigning placeholder users"
+msgid "AdminSettings|Skip confirmation when administrators reassign placeholder users %{link_start}%{icon}%{link_end}"
 msgstr ""
 
 msgid "AdminSettings|The URL of your Cube instance."
@@ -5302,6 +5302,9 @@ msgid "AdminSettings|Use AWS OpenSearch Service with IAM credentials"
 msgstr "Використовуйте службу AWS OpenSearch з обліковими даними IAM"
 
 msgid "AdminSettings|Use for cluster and index migrations. When indexing is paused, GitLab still tracks changes."
+msgstr ""
+
+msgid "AdminSettings|User impersonation is not enabled on the GitLab instance."
 msgstr ""
 
 msgid "AdminSettings|Users and groups must accept the invitation before they're added to a group or project."
@@ -17906,6 +17909,12 @@ msgid "ContainerRegistry|Protected container image tags"
 msgstr ""
 
 msgid "ContainerRegistry|Protected container repositories"
+msgstr ""
+
+msgid "ContainerRegistry|Protection rule created."
+msgstr ""
+
+msgid "ContainerRegistry|Protection rule updated."
 msgstr ""
 
 msgid "ContainerRegistry|Protection type"
@@ -31256,6 +31265,9 @@ msgstr ""
 msgid "Groups|Group path is unavailable. Path has been replaced with a suggested available path."
 msgstr ""
 
+msgid "Groups|Groups that are archived or pending deletion will appear here."
+msgstr ""
+
 msgid "Groups|Learn more about subgroups"
 msgstr "Дізнатися більше про підгрупи"
 
@@ -31291,6 +31303,9 @@ msgstr "Це створить README.md для проєкту %{path}."
 
 msgid "Groups|This will create a project %{path} and add a README.md."
 msgstr "Це створить проєкт %{path} та додасть README.md."
+
+msgid "Groups|You don't have any inactive groups."
+msgstr ""
 
 msgid "Groups|You're creating a new top-level group"
 msgstr "Ви створюєте нову групу верхнього рівня"
@@ -32553,6 +32568,12 @@ msgstr "Запит просторів імен не вдався"
 
 msgid "ImportProjects|Requesting your %{provider} repositories failed"
 msgstr "Запит ваших %{provider} репозиторіїв пройшов невдало"
+
+msgid "ImportProjects|Select a destination namespace."
+msgstr ""
+
+msgid "ImportProjects|Select namespace"
+msgstr ""
 
 msgid "ImportProjects|Select the repositories you want to import"
 msgstr "Виберіть репозиторії, які ви хочете імпортувати"
@@ -52123,7 +52144,7 @@ msgstr "Розпочато перерахунок використання сх�
 msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / Pipeline Artifacts: %{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads}"
 msgstr ""
 
-msgid "Repository|Filter (e.g. *.vue)"
+msgid "Repository|Filter (e.g. *.vue) (f)"
 msgstr ""
 
 msgid "Repository|New branch"
@@ -67341,7 +67362,7 @@ msgstr ""
 msgid "UserMapping|Source name"
 msgstr ""
 
-msgid "UserMapping|The %{strongStart}Skip confirmation when reassigning placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately."
+msgid "UserMapping|The %{strongStart}Skip confirmation when administrators reassign placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately."
 msgstr ""
 
 msgid "UserMapping|The file is being processed and you will receive an email when completed."

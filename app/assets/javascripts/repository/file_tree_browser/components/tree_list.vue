@@ -167,9 +167,6 @@ export default {
             path: apiPath,
             pageSize: TREE_PAGE_SIZE,
           },
-          // Temporarily disabled cache here because the ID for blobs might not be unique, which can cause apollo to exclude some blobs from cache
-          // See https://gitlab.com/gitlab-org/gitlab/-/issues/542942
-          fetchPolicy: 'no-cache',
         });
 
         const { project } = data;

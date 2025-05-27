@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ga-IE\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-05-26 17:18\n"
+"PO-Revision-Date: 2025-05-27 10:57\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} go %{end}"
@@ -3473,7 +3473,7 @@ msgid "Access levels should either both be present or both be nil"
 msgstr "Ba cheart go mbeadh an dá leibhéal rochtana i láthair nó an dá rud a bheith nialas"
 
 msgid "Access protected resources in merge request pipelines"
-msgstr ""
+msgstr "Rochtain ar acmhainní cosanta i bpíblínte iarratais chumasc"
 
 msgid "Access requests"
 msgstr "Iarratais rochtana"
@@ -5423,8 +5423,8 @@ msgstr "Easpórtálacha ciúine ag riarthóirí %{silent_admin_exports_link_star
 msgid "AdminSettings|Size and domain settings for Pages static sites."
 msgstr "Socruithe méid agus fearainn do shuíomhanna statacha Leathanaigh."
 
-msgid "AdminSettings|Skip confirmation when reassigning placeholder users"
-msgstr "Seachain an deimhniú agus úsáideoirí áitchoinneála á n-athshannadh"
+msgid "AdminSettings|Skip confirmation when administrators reassign placeholder users %{link_start}%{icon}%{link_end}"
+msgstr "Seachain an deimhniú nuair a athshanntar úsáideoirí áitchoinneálaí %{link_start}%{icon}%{link_end} ag riarthóirí"
 
 msgid "AdminSettings|The URL of your Cube instance."
 msgstr "URL do shampla Ciúb."
@@ -5482,6 +5482,9 @@ msgstr "Úsáid Seirbhís OpenSearch AWS le dintiúir IAM"
 
 msgid "AdminSettings|Use for cluster and index migrations. When indexing is paused, GitLab still tracks changes."
 msgstr "Úsáid le haghaidh imirce braisle agus innéacs. Nuair a chuirtear an innéacsú ar stop, rianaíonn GitLab athruithe fós."
+
+msgid "AdminSettings|User impersonation is not enabled on the GitLab instance."
+msgstr "Níl pearsantú úsáideora cumasaithe ar an gcás GitLab."
 
 msgid "AdminSettings|Users and groups must accept the invitation before they're added to a group or project."
 msgstr "Caithfidh úsáideoirí agus grúpaí glacadh leis an gcuireadh sula gcuirtear iad le grúpa nó tionscadal."
@@ -11982,11 +11985,11 @@ msgstr[4] "Tá %{count} úsáideoirí áitchoinneála meaitseáilte le húsáide
 
 msgid "BulkImport|%{count} placeholder user has been skipped."
 msgid_plural "BulkImport|%{count} placeholder users have been skipped."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
+msgstr[0] "Tá %{count} úsáideoir áitchoinneála scipeáilte."
+msgstr[1] "Tá %{count} úsáideoir áitchoinneála scipeáilte."
+msgstr[2] "Tá %{count} úsáideoir áitchoinneála scipeáilte."
+msgstr[3] "Tá %{count} úsáideoir áitchoinneála scipeáilte."
+msgstr[4] "Tá %{count} úsáideoir áitchoinneála scipeáilte."
 
 msgid "BulkImport|%{count} placeholder user has not been matched to a user."
 msgid_plural "BulkImport|%{count} placeholder users have not been matched to users."
@@ -18130,6 +18133,12 @@ msgstr "Clibeanna íomhá coimeádán cosanta"
 msgid "ContainerRegistry|Protected container repositories"
 msgstr "Taisclanna coimeádán faoi chosaint"
 
+msgid "ContainerRegistry|Protection rule created."
+msgstr "Riail chosanta cruthaithe."
+
+msgid "ContainerRegistry|Protection rule updated."
+msgstr "Riail chosanta nuashonraithe."
+
 msgid "ContainerRegistry|Protection type"
 msgstr "Cineál cosanta"
 
@@ -20251,7 +20260,7 @@ msgid "DORA4Metrics|Cycle time"
 msgstr "Am rothaíochta"
 
 msgid "DORA4Metrics|DORA metrics have moved to %{dashboardsLinkStart}Analytics dashboards%{dashboardsLinkEnd} &gt; %{doraMetricsLinkStart}DORA metrics%{doraMetricsLinkEnd}."
-msgstr ""
+msgstr "Tá méadrachtaí DORA bogtha go %{dashboardsLinkStart}Painéil anailíse%{dashboardsLinkEnd} &gt; %{doraMetricsLinkStart}méadrachtaí DORA%{doraMetricsLinkEnd}."
 
 msgid "DORA4Metrics|Date"
 msgstr "Dáta"
@@ -31524,6 +31533,9 @@ msgstr "Tá cosán grúpa ar fáil."
 msgid "Groups|Group path is unavailable. Path has been replaced with a suggested available path."
 msgstr "Níl cosán grúpa ar fáil. Cuireadh cosán a mholtar ar fáil in ionad cosán."
 
+msgid "Groups|Groups that are archived or pending deletion will appear here."
+msgstr "Beidh grúpaí atá cartlannaithe nó atá ar feitheamh le scriosadh le feiceáil anseo."
+
 msgid "Groups|Learn more about subgroups"
 msgstr "Tuilleadh eolais faoi fhoghrúpaí"
 
@@ -31559,6 +31571,9 @@ msgstr "Cruthóidh sé seo README.md do thionscadal %{path}."
 
 msgid "Groups|This will create a project %{path} and add a README.md."
 msgstr "Cruthóidh sé seo tionscadal %{path} agus cuirfidh sé README.md leis."
+
+msgid "Groups|You don't have any inactive groups."
+msgstr "Níl aon ghrúpaí neamhghníomhacha agat."
 
 msgid "Groups|You're creating a new top-level group"
 msgstr "Tá grúpa nua barrleibhéil á chruthú agat"
@@ -32826,6 +32841,12 @@ msgstr "Theip ar spásanna ainmneacha a iarraidh"
 
 msgid "ImportProjects|Requesting your %{provider} repositories failed"
 msgstr "Theip ar do stór %{provider} a iarraidh"
+
+msgid "ImportProjects|Select a destination namespace."
+msgstr "Roghnaigh ainmspás ceann scríbe."
+
+msgid "ImportProjects|Select namespace"
+msgstr "Roghnaigh ainmspás"
 
 msgid "ImportProjects|Select the repositories you want to import"
 msgstr "Roghnaigh na stórais is mian leat a iompórtáil"
@@ -37696,7 +37717,7 @@ msgid "Make everyone on your team more productive regardless of their location. 
 msgstr "Déan gach duine ar d'fhoireann níos táirgiúla beag beann ar a suíomh. Cruthaíonn GitLab Geo scátháin léite amháin de do shampla GitLab ionas gur féidir leat an t-am a thógann sé chun stórais móra a chlónú agus a fháil a laghdú."
 
 msgid "Make protected CI/CD variables and runners available in merge request pipelines. Protected resources will only be available in merge request pipelines if both the source and target branches of the merge request are protected."
-msgstr ""
+msgstr "Cuir athróga agus reathaithe CI/CD faoi chosaint ar fáil i bpíblínte iarrata cumaisc. Ní bheidh acmhainní faoi chosaint ar fáil i bpíblínte iarrata cumaisc ach amháin má tá brainsí foinse agus sprice an iarratais chumaisc faoi chosaint."
 
 msgid "Make sure you choose a strong, unique password."
 msgstr "Déan cinnte go roghnaíonn tú pasfhocal láidir, uathúil."
@@ -39364,7 +39385,7 @@ msgid "MergeRequests|started a thread on commit %{linkStart}%{commitDisplay}%{li
 msgstr "thosaigh snáithe ar thiomantas %{linkStart}%{commitDisplay}%{linkEnd}"
 
 msgid "MergeRequest|Allow merge request pipelines to access protected variables and runners"
-msgstr ""
+msgstr "Ceadaigh do phíblínte iarratais chumaisc rochtain a fháil ar athróga agus ar reathaithe faoi chosaint"
 
 msgid "MergeRequest|Awaiting review"
 msgstr "Ag fanacht le hathbhreithniú"
@@ -39394,7 +39415,7 @@ msgid "MergeRequest|Compare %{target} and %{source}"
 msgstr "Déan comparáid idir %{target} agus %{source}"
 
 msgid "MergeRequest|Control access to protected variables and runners in merge request pipelines"
-msgstr ""
+msgstr "Rialú rochtana ar athróga agus reathaithe faoi chosaint i bpíblínte iarratais chumaisc"
 
 msgid "MergeRequest|Error dismissing suggestion popover. Please try again."
 msgstr "Earráid ag díscríobh popover moltaí. Bain triail as arís."
@@ -40964,19 +40985,19 @@ msgid "NamespaceStorageSize|To reduce storage usage, reduce git repository and g
 msgstr "Chun úsáid stórála a laghdú, stór git agus stóráil git LFS a laghdú."
 
 msgid "NamespaceStorageSize|To remove the read-only state %{manage_storage_link_start}manage your storage usage%{link_end}, or %{purchase_more_link_start}purchase more storage%{link_end}."
-msgstr "Chun an stát léite amháin a bhaint %{manage_storage_link_start} bainistigh d'úsáid stórála %{link_end}, nó %{purchase_more_link_start} ceannaigh níos mó stórála %{link_end}."
+msgstr "Chun an stát inléite amháin a bhaint %{manage_storage_link_start}bainistigh d'úsáid stórála %{link_end}, nó %{purchase_more_link_start}ceannaigh tuilleadh stórais%{link_end}."
 
 msgid "NamespaceStorageSize|To remove the read-only state %{manage_storage_link_start}manage your storage usage%{link_end}, or contact a user with the %{group_member_link_start}owner role for this namespace%{link_end} and ask them to %{purchase_more_link_start}purchase more storage%{link_end}."
-msgstr "Chun an stát léite amháin a bhaint %{manage_storage_link_start} bainistigh d'úsáid stórála %{link_end}, nó déan teagmháil le húsáideoir le ról úinéara %{group_member_link_start} don spás ainmneacha seo %{link_end} agus iarr orthu %{purchase_more_link_start} níos mó stórála %{link_end} a cheannach."
+msgstr "Chun an staid léite amháin a bhaint %{manage_storage_link_start}bainistigh d'úsáid stórála%{link_end}, nó déan teagmháil le húsáideoir a bhfuil ról úinéara %{group_member_link_start}aige aige don ainmspás seo%{link_end} agus iarr orthu %{purchase_more_link_start}níos mó stórála a cheannach%{link_end}."
 
 msgid "NamespaceStorageSize|To remove the read-only state contact a user with the %{group_member_link_start}owner role for this namespace%{link_end} and ask them to %{purchase_more_link_start}purchase more storage%{link_end}."
 msgstr "Chun an staid léite amháin a bhaint, déan teagmháil le húsáideoir a bhfuil ról úinéara %{group_member_link_start}aige aige don ainmspás seo%{link_end} agus iarr orthu %{purchase_more_link_start}níos mó stórála a cheannach%{link_end}."
 
 msgid "NamespaceStorageSize|To remove the read-only state, %{manage_storage_link_start}manage your storage usage%{link_end} or %{purchase_more_link_start}purchase more storage%{link_end}."
-msgstr ""
+msgstr "Chun an staid inléite amháin a bhaint, %{manage_storage_link_start}bainistigh d'úsáid stórála %{link_end} nó %{purchase_more_link_start}ceannaigh tuilleadh stórais%{link_end}."
 
 msgid "NamespaceStorageSize|To remove the read-only state, %{manage_storage_link_start}manage your storage usage%{link_end} or %{support_link_start}contact support%{link_end}."
-msgstr ""
+msgstr "Chun an staid inléite amháin a bhaint, %{manage_storage_link_start}bainistigh d'úsáid stórála%{link_end} nó %{support_link_start}déan teagmháil le tacaíocht%{link_end}."
 
 msgid "NamespaceStorageSize|We've noticed an unusually high storage usage on %{namespace_name}"
 msgstr "Thugamar faoi deara úsáid stórála neamhghnách ard ar %{namespace_name}"
@@ -51175,7 +51196,7 @@ msgid "RapidDiffs|Line %d"
 msgstr "Líne %d"
 
 msgid "RapidDiffs|Loading image diff..."
-msgstr ""
+msgstr "Difríocht íomhá á lódáil..."
 
 msgid "RapidDiffs|Original line"
 msgstr "Líne bunaidh"
@@ -52459,8 +52480,8 @@ msgstr "Cuireadh tús le hathríomh úsáide stóras"
 msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / Pipeline Artifacts: %{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads}"
 msgstr "Repository: %{counter_repositories} / Vicí: %{counter_wikis} / Déantúsáin Tógála: %{counter_build_artifacts} / Déantúsáin Phíblíne: %{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / Blúiríní: %{counter_snippets} / Pacáistí: %{counter_packages} / Uasluchtuithe: %{counter_uploads}"
 
-msgid "Repository|Filter (e.g. *.vue)"
-msgstr "Scagaire (m.sh. *.vue)"
+msgid "Repository|Filter (e.g. *.vue) (f)"
+msgstr "Scagaire (m.sh. *.vue) (f)"
 
 msgid "Repository|New branch"
 msgstr "Brainse nua"
@@ -53442,10 +53463,10 @@ msgid "Runners|Executor"
 msgstr "Seiceadóir"
 
 msgid "Runners|Existing runners are not affected. To permit runner registration for all groups, enable this setting in the Admin area in Settings &gt; CI/CD."
-msgstr ""
+msgstr "Níl aon tionchar ar reathaithe atá ann cheana féin. Chun clárú reathaithe a cheadú do gach grúpa, cumasaigh an socrú seo sa limistéar Riaracháin i Socruithe &gt; CI/CD."
 
 msgid "Runners|Existing runners are not affected. To permit runner registration for all projects, enable this setting in the Admin area in Settings &gt; CI/CD."
-msgstr ""
+msgstr "Níl aon tionchar ar reathaithe atá ann cheana féin. Chun clárú reathaithe a cheadú do gach tionscadal, cumasaigh an socrú seo sa limistéar Riaracháin i Socruithe &gt; CI/CD."
 
 msgid "Runners|Export as CSV"
 msgstr "Easpórtáil mar CSV"
@@ -57610,7 +57631,7 @@ msgid "SecurityReports|Container Scanning for Registry scans the latest tag of e
 msgstr "Déanann Scanadh Coimeádán don Chlárlann an chlib is déanaí de gach íomhá a scanadh le haghaidh leochaileachtaí. %{linkStart}Conas is féidir liom Scanadh Coimeádán don Chlárlann a chumasú?%{linkEnd}"
 
 msgid "SecurityReports|Container Scanning for Registry scans the latest tag of each image. It scans for vulnerabilities in the container %{linkStart}registry%{linkEnd} when an image or database is updated."
-msgstr ""
+msgstr "Déanann Scanadh Coimeádán don Chlárlann scanadh ar an gclib is déanaí de gach íomhá. Déanann sé scanadh ar leochaileachtaí sa choimeádán %{linkStart} clárlann %{linkEnd} nuair a dhéantar íomhá nó bunachar sonraí a nuashonrú."
 
 msgid "SecurityReports|Container Scanning for registry is active"
 msgstr "Tá scanadh coimeádán don chlárlann gníomhach"
@@ -57948,7 +57969,7 @@ msgid "SecurityReports|There was an error while generating the report."
 msgstr "Bhí earráid ann agus an tuarascáil á ghiniúint."
 
 msgid "SecurityReports|This dashboard provides an overview of your security vulnerabilities."
-msgstr ""
+msgstr "Tugann an painéal seo forbhreathnú ar do leochaileachtaí slándála."
 
 msgid "SecurityReports|This project has reached the maximum number of vulnerabilities it can contain and some of the vulnerabilities couldn't be ingested."
 msgstr "Tá an tionscadal seo tar éis an líon uasta leochaileachtaí a d'fhéadfadh a bheith ann agus ní fhéadfaí cuid de na leochaileachtaí a ionghabháil."
@@ -59782,7 +59803,7 @@ msgid "Snippets|Snippet actions"
 msgstr "Gníomhartha Blúire"
 
 msgid "Snippets|Snippets"
-msgstr ""
+msgstr "Blúirí"
 
 msgid "Snippets|Snippets are limited to %{total} files."
 msgstr "Blúiríní teoranta do chomhaid %{total}."
@@ -67763,8 +67784,8 @@ msgstr "Tharla earráid agus an comhad CSV á uaslódáil."
 msgid "UserMapping|Source name"
 msgstr "Ainm foinse"
 
-msgid "UserMapping|The %{strongStart}Skip confirmation when reassigning placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately."
-msgstr "Tá an socrú %{strongStart}Scipeáil deimhniú agus úsáideoirí áitchoinneála á n-athshannadh%{strongEnd} cumasaithe. Ní gá d'úsáideoirí an t-athshannadh a cheadú, agus athshanntar ranníocaíochtaí láithreach."
+msgid "UserMapping|The %{strongStart}Skip confirmation when administrators reassign placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately."
+msgstr "Tá an socrú %{strongStart}Scipeáil deimhniú nuair a athshannann riarthóirí úsáideoirí áitchoinneálaí%{strongEnd} cumasaithe. Ní gá d'úsáideoirí an t-athshannadh a cheadú, agus athshanntar ranníocaíochtaí láithreach."
 
 msgid "UserMapping|The file is being processed and you will receive an email when completed."
 msgstr "Tá an comhad á phróiseáil agus gheobhaidh tú ríomhphost nuair a bheidh sé críochnaithe."
@@ -74175,7 +74196,7 @@ msgid "has already been published"
 msgstr "foilsíodh cheana féin"
 
 msgid "has already been recorded as a violation for this compliance control"
-msgstr ""
+msgstr "tá sé taifeadta cheana féin mar shárú don rialú comhlíontachta seo"
 
 msgid "has already been taken"
 msgstr "cheana féin a glacadh"
@@ -74959,7 +74980,7 @@ msgid "must be associated with a Group or a Project"
 msgstr "caithfidh sé a bheith bainteach le Grúpa nó le Tionscadal"
 
 msgid "must be associated with either a Project or Group entity type"
-msgstr ""
+msgstr "ní mór é a bheith bainteach le cineál eintitis Tionscadail nó Grúpa"
 
 msgid "must be at least 1 day"
 msgstr "caithfidh sé a bheith 1 lá ar a laghad"
@@ -75037,10 +75058,10 @@ msgid "must belong to the same namespace."
 msgstr "ní mór go mbaineann sé leis an ainmspás céanna."
 
 msgid "must belong to the specified namespace"
-msgstr ""
+msgstr "ní mór don ainmspás sonraithe a bheith i gceist"
 
 msgid "must belong to the specified project"
-msgstr ""
+msgstr "ní mór don tionscadal sonraithe a bheith i gceist"
 
 msgid "must contain only a discord user ID."
 msgstr "ní mór go mbeadh ach ID úsáideora discord."
@@ -75097,10 +75118,10 @@ msgid "must only contain letters, digits, forward-slash, underscore, hyphen or p
 msgstr "ní mór ach litreacha, digití, réamhslais, béim, fleiscín nó peiriad a bheith ann"
 
 msgid "must reference the specified namespace as its entity"
-msgstr ""
+msgstr "ní mór tagairt a dhéanamh don ainmspás sonraithe mar a eintiteas"
 
 msgid "must reference the specified project as its entity"
-msgstr ""
+msgstr "ní mór tagairt a dhéanamh don tionscadal sonraithe mar a eintiteas"
 
 msgid "my-awesome-group"
 msgstr "mo-ghrúpa-iontach"

@@ -142,3 +142,18 @@ RSpec.shared_examples 'update by a loose foreign key' do
     expect(find_model.read_attribute_before_type_cast(options[:target_column])).to eq(options[:target_value])
   end
 end
+
+RSpec.shared_examples 'loose foreign key with custom delete limit' do
+  let(:table_name) { described_class.table_name }
+
+  include_context 'for loose foreign keys'
+
+  it 'has loose foreign key definition with custom delete limit' do
+    definitions = Gitlab::Database::LooseForeignKeys.definitions_by_table[table_name]
+    definition = definitions.find do |definition|
+      definition.from_table == from_table && definition.to_table == table_name
+    end
+
+    expect(definition.options[:delete_limit]).to eq(delete_limit)
+  end
+end

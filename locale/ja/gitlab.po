@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-05-26 13:42\n"
+"PO-Revision-Date: 2025-05-27 10:57\n"
 
 msgid " %{start} to %{end}"
 msgstr "%{start}から%{end}まで"
@@ -4707,8 +4707,8 @@ msgstr "管理者によるサイレントエクスポート%{silent_admin_export
 msgid "AdminSettings|Size and domain settings for Pages static sites."
 msgstr "Pagesの静的サイトのサイズとドメイン設定。"
 
-msgid "AdminSettings|Skip confirmation when reassigning placeholder users"
-msgstr "プレースホルダーユーザーを再アサインしたときの確認をスキップする"
+msgid "AdminSettings|Skip confirmation when administrators reassign placeholder users %{link_start}%{icon}%{link_end}"
+msgstr ""
 
 msgid "AdminSettings|The URL of your Cube instance."
 msgstr "CubeインスタンスのURL。"
@@ -4767,6 +4767,9 @@ msgstr "IAM認証情報でAWS OpenSearchを使用します"
 msgid "AdminSettings|Use for cluster and index migrations. When indexing is paused, GitLab still tracks changes."
 msgstr "クラスターとインデックスの移行に使用します。インデックス作成を一時停止しても、GitLabは変更をトラッキングします。"
 
+msgid "AdminSettings|User impersonation is not enabled on the GitLab instance."
+msgstr ""
+
 msgid "AdminSettings|Users and groups must accept the invitation before they're added to a group or project."
 msgstr "グループまたはプロジェクトに追加される前に、ユーザーとグループは招待を承諾する必要があります。"
 
@@ -4774,7 +4777,7 @@ msgid "AdminSettings|When disabled, runner registration tokens are disabled from
 msgstr "無効にすると、Runner登録トークンはRunnerページで無効になり、メンテナーとオーナーは登録トークンを使用してRunnerを登録できません。より安全なRunner登録方法として、代わりにRunner認証トークンを使用できます。"
 
 msgid "AdminSettings|When to delete dormant projects"
-msgstr "休止中のプロジェクトを削除するとき"
+msgstr "休止中のプロジェクトを削除するタイミング"
 
 msgid "AdminSettings|You can enable Registration Features because Service Ping is enabled."
 msgstr "Service Ping が有効になっているため、登録機能を有効にできます。"
@@ -9851,7 +9854,7 @@ msgstr "Freeプランおよびトライアルグループは1日に最大20人�
 
 msgid "Billings|Groups in the Free tier are limited to %d seat"
 msgid_plural "Billings|Groups in the Free tier are limited to %d seats"
-msgstr[0] ""
+msgstr[0] "Freeプランのグループは%d個のシートに制限されています"
 
 msgid "Billings|In a seat"
 msgstr "一人あたりの料金"
@@ -17241,6 +17244,12 @@ msgstr "保護されているコンテナイメージタグ"
 
 msgid "ContainerRegistry|Protected container repositories"
 msgstr "保護されたコンテナリポジトリ"
+
+msgid "ContainerRegistry|Protection rule created."
+msgstr ""
+
+msgid "ContainerRegistry|Protection rule updated."
+msgstr ""
 
 msgid "ContainerRegistry|Protection type"
 msgstr "保護タイプ"
@@ -27160,10 +27169,10 @@ msgid "Geo|Choose specific groups or storage shards"
 msgstr "特定のグループまたはストレージシャードを選択してください"
 
 msgid "Geo|Ci Secure File"
-msgstr ""
+msgstr "Ciセキュアファイル"
 
 msgid "Geo|Ci Secure Files"
-msgstr ""
+msgstr "Ciセキュアファイル"
 
 msgid "Geo|Comma-separated, e.g. '1.1.1.1, 2.2.2.0/24'"
 msgstr "カンマ区切り。例: '1.1.1.1, 2.2.2.0/24'"
@@ -27196,7 +27205,7 @@ msgid "Geo|Container repositories synchronization concurrency limit"
 msgstr "コンテナリポジトリの同期並列処理制限"
 
 msgid "Geo|Created: %{timeAgo}"
-msgstr ""
+msgstr "作成日:%{timeAgo}"
 
 msgid "Geo|Data replication lag"
 msgstr "データレプリケーションの遅延"
@@ -27247,13 +27256,13 @@ msgid "Geo|Edit your search and try again."
 msgstr "検索条件を編集して、再度お試しください。"
 
 msgid "Geo|Error: %{message}"
-msgstr ""
+msgstr "エラー: %{message}"
 
 msgid "Geo|Errors:"
 msgstr "エラー:"
 
 msgid "Geo|Expected checksum: %{verificationChecksum}"
-msgstr ""
+msgstr "想定したチェックサム: %{verificationChecksum}"
 
 msgid "Geo|External URL"
 msgstr "外部URL"
@@ -27271,7 +27280,7 @@ msgid "Geo|Filter by name"
 msgstr "名前で絞り込み"
 
 msgid "Geo|Geo Replication - %{node_name}"
-msgstr ""
+msgstr "Geoレプリケーション - %{node_name}"
 
 msgid "Geo|Geo Settings"
 msgstr "Geoの設定"
@@ -27292,7 +27301,7 @@ msgid "Geo|Go to the primary site"
 msgstr "プライマリサイトに移動"
 
 msgid "Geo|GraphQL ID: %{id}"
-msgstr ""
+msgstr "GraphQL ID: %{id}"
 
 msgid "Geo|Group Wiki Repositories"
 msgstr "グループWikiリポジトリ"
@@ -27307,7 +27316,7 @@ msgid "Geo|Healthy"
 msgstr "健全"
 
 msgid "Geo|Help us improve Geo for distributed teams and disaster recovery. We aim to make it simpler to use and operate."
-msgstr ""
+msgstr "分散チームや災害リカバリ用にGeoを改善する取り組みにご協力ください。より簡単に使用し運用できることを目指しています。"
 
 msgid "Geo|If enabled, GitLab will handle Object Storage replication using Geo."
 msgstr "有効にすると、GitLabではGeoを使用してオブジェクトストレージのレプリケーションを処理します。"
@@ -27376,7 +27385,7 @@ msgid "Geo|Minimum interval in days"
 msgstr "最小間隔 (日)"
 
 msgid "Geo|Missing on Primary!"
-msgstr ""
+msgstr "プライマリには存在しません"
 
 msgid "Geo|Model record: %{modelRecordId}"
 msgstr "モデルレコード: %{modelRecordId}"
@@ -27577,13 +27586,13 @@ msgid "Geo|Site's status was updated %{timeAgo}."
 msgstr "サイトのステータスが%{timeAgo}に更新されました。"
 
 msgid "Geo|Snippet Repositories"
-msgstr ""
+msgstr "スニペットリポジトリ"
 
 msgid "Geo|Snippet Repository"
-msgstr ""
+msgstr "スニペットリポジトリ"
 
 msgid "Geo|Started"
-msgstr ""
+msgstr "開始済み"
 
 msgid "Geo|Status: %{badge}"
 msgstr "ステータス: %{badge}"
@@ -27592,7 +27601,7 @@ msgid "Geo|Storage config"
 msgstr "ストレージの構成"
 
 msgid "Geo|Succeeded"
-msgstr ""
+msgstr "完了"
 
 msgid "Geo|Synced"
 msgstr "同期済み"
@@ -27634,7 +27643,7 @@ msgid "Geo|There was an error deleting the Geo Site"
 msgstr "Geo サイトの削除中にエラーが発生しました"
 
 msgid "Geo|There was an error fetching the %{replicableType}. The GraphQL API call to the secondary may have failed."
-msgstr ""
+msgstr "%{replicableType}の取得中にエラーが発生しました。セカンダリに対するGraphQL API呼び出しは失敗した可能性があります。"
 
 msgid "Geo|There was an error fetching the Geo Settings"
 msgstr "Geo設定の取得中にエラーが発生しました"
@@ -27733,7 +27742,7 @@ msgid "Get a support subscription"
 msgstr "サポートサブスクリプションの取得"
 
 msgid "Get access to all Ultimate and GitLab Duo AI-native features, free for 60 days. No credit card required."
-msgstr ""
+msgstr "60日間の無料トライアルで、UltimateとGitLab DuoのすべてのAIネイティブ機能にアクセスしましょう。クレジットカードも必要ありません。"
 
 msgid "Get free trial"
 msgstr "無料トライアルを入手"
@@ -27757,7 +27766,7 @@ msgid "GetStarted|There was a problem trying to end the tutorial. Please try aga
 msgstr ""
 
 msgid "GetStarted|Use GitLab Duo locally"
-msgstr ""
+msgstr "GitLab Duoをローカルで使用"
 
 msgid "GetStarted|You've ended the tutorial."
 msgstr ""
@@ -27766,7 +27775,7 @@ msgid "GiB"
 msgstr "GiB"
 
 msgid "Git"
-msgstr ""
+msgstr "Git"
 
 msgid "Git HTTP rate limits"
 msgstr "Git HTTPレート制限"
@@ -27874,7 +27883,7 @@ msgid "GitHub repository URL."
 msgstr "GitHubのリポジトリURL."
 
 msgid "GitHub:"
-msgstr ""
+msgstr "GitHub:"
 
 msgid "GitHubImporter|*Merged by: %{author} at %{timestamp}*"
 msgstr "*%{author}が%{timestamp}にマージ*"
@@ -27901,10 +27910,10 @@ msgid "GitLab Billing Team."
 msgstr "GitLab契約チーム"
 
 msgid "GitLab CI/CD"
-msgstr ""
+msgstr "GitLab CI/CD"
 
 msgid "GitLab CLI"
-msgstr ""
+msgstr "GitLab CLI"
 
 msgid "GitLab Community Edition"
 msgstr "GitLab Community Edition"
@@ -27925,7 +27934,7 @@ msgid "GitLab Duo Pro seats"
 msgstr "GitLab Duo Proシート"
 
 msgid "GitLab Duo code features"
-msgstr ""
+msgstr "GitLab Duoのコード機能"
 
 msgid "GitLab Duo features"
 msgstr "GitLab Duoの機能"
@@ -27961,7 +27970,7 @@ msgid "GitLab Premium"
 msgstr "GitLab Premium"
 
 msgid "GitLab Security"
-msgstr ""
+msgstr "GitLabセキュリティ"
 
 msgid "GitLab Shell"
 msgstr "GitLab Shell"
@@ -27988,7 +27997,7 @@ msgid "GitLab commit"
 msgstr "GitLab のコミット"
 
 msgid "GitLab community forum"
-msgstr ""
+msgstr "GitLabコミュニティフォーラム"
 
 msgid "GitLab container registry API not supported"
 msgstr "GitLabコンテナレジストリAPIはサポートされていません"
@@ -28114,7 +28123,7 @@ msgid "GitLabPages|Access pages"
 msgstr "ページへアクセス"
 
 msgid "GitLabPages|Add domain"
-msgstr ""
+msgstr "ドメインの追加"
 
 msgid "GitLabPages|Are you sure you want to regenerate the unique domain? The previous URL will stop working."
 msgstr "本当に一意のドメインを再生成しますか? 以前のURLは機能しなくなります。"
@@ -28135,10 +28144,10 @@ msgid "GitLabPages|DNS check successful"
 msgstr ""
 
 msgid "GitLabPages|DNS check unsuccessful"
-msgstr ""
+msgstr "DNSのチェック失敗"
 
 msgid "GitLabPages|Delete Pages"
-msgstr ""
+msgstr "Pagesの削除"
 
 msgid "GitLabPages|Domain ownership verification required. Add a TXT record to verify ownership at your domain provider."
 msgstr ""
@@ -28147,7 +28156,7 @@ msgid "GitLabPages|Domains"
 msgstr "ドメイン"
 
 msgid "GitLabPages|Domains & settings"
-msgstr ""
+msgstr "ドメインと設定"
 
 msgid "GitLabPages|Don’t enforce a primary domain"
 msgstr "プライマリドメインを適用しない"
@@ -28156,7 +28165,7 @@ msgid "GitLabPages|Edit"
 msgstr "編集"
 
 msgid "GitLabPages|Edit domain"
-msgstr ""
+msgstr "ドメインの編集"
 
 msgid "GitLabPages|Force HTTPS (requires valid certificates)"
 msgstr "HTTPS を強制 (有効な証明書が必要)"
@@ -28171,7 +28180,7 @@ msgid "GitLabPages|New domain"
 msgstr "新しいドメイン"
 
 msgid "GitLabPages|Only project maintainers can remove pages."
-msgstr ""
+msgstr "プロジェクトのメンテナーのみがページを削除できます。"
 
 msgid "GitLabPages|Pages"
 msgstr "ページ"
@@ -28210,22 +28219,22 @@ msgid "GitLabPages|Support for domains and certificates is disabled. Ask your Gi
 msgstr "ドメインと証明書のサポートが無効です。有効にするには、管理者にリクエストしてください。"
 
 msgid "GitLabPages|This action will permanently delete all Pages deployments."
-msgstr ""
+msgstr "このアクションはすべてのPagesのデプロイを永久に削除します。"
 
 msgid "GitLabPages|This is permanent and cannot be undone. To deploy this Pages site again, run a new pipeline."
-msgstr ""
+msgstr "これは永久的なものであり、元に戻すことはできません。このPagesサイトを再度デプロイするには、新しいパイプラインを実行してください。"
 
 msgid "GitLabPages|Updating your Pages configuration…"
-msgstr ""
+msgstr "Pagesの設定を更新しています…"
 
 msgid "GitLabPages|Use unique domain"
 msgstr "一意のドメインを使用"
 
 msgid "GitLabPages|Waiting for the Pages Pipeline to complete…"
-msgstr ""
+msgstr "Pagesのパイプラインの完了を待っています…"
 
 msgid "GitLabPages|When enabled, adds a unique identifier to your domain (for example: %{domain}). When disabled, uses your namespace (username/group name) as the domain (for example: %{unique_domain}). %{docs_link_start}How do Pages URLs work?%{link_end}"
-msgstr ""
+msgstr "有効にすると、一意の識別子をドメインに追加します(例: %{domain}) 。無効にすると、あなたのネームスペース(ユーザー名/グループ名)をドメイントして使用します(例: %{unique_domain})。%{docs_link_start}PagesのURLはどのようになりますか?%{link_end}"
 
 msgid "GitLabPages|When enabled, all access to domains will use HTTPS with %{redirect_code} redirects. Requires valid certificates for all domains. %{docs_link_start}How does HTTPS redirection work?%{link_end}"
 msgstr ""
@@ -28237,7 +28246,7 @@ msgid "GitLabPages|When using Pages under the general domain of a GitLab instanc
 msgstr "GitLabインスタンスの標準ドメイン(%{pages_host})でPagesを使用する場合、サブサブドメインでHTTPSを使用できません。これは、ネームスペースやグループ名にドットが含まれている場合に機能しないことを意味します。これは、HTTP over TLSプロトコルの制限です。HTTPをHTTPSにリダイレクトしない限り、HTTPのページは引き続き機能します。%{docs_link_start}詳細はこちら%{link_end}"
 
 msgid "GitLabPages|With GitLab Pages you can host your static website directly from your GitLab repository. %{docs_link_start}How do I publish my site with Pages?%{link_end}"
-msgstr ""
+msgstr "GitLab Pagesを使用すると、静的なWebサイトをGitLabリポジトリから直接ホストできます。%{docs_link_start}Pagesで自分のサイトを公開するには?%{link_end}"
 
 msgid "GitLabPages|Your Pages site is not configured yet. See the %{docs_link_start}GitLab Pages documentation%{link_end} to learn how to upload your static site and have GitLab serve it. You can also take some inspiration from the %{samples_link_start}sample Pages projects%{link_end}."
 msgstr "Pagesサイトが設定できていません。静的サイトをアップロードして、それをGitLabに管理させる方法については、%{docs_link_start}GitLab Pagesドキュメント%{link_end}を参照してください。また%{samples_link_start}サンプルプロジェクト%{link_end}も参考にしてください。"
@@ -28585,7 +28594,7 @@ msgid "GlobalSearch|Groups"
 msgstr "グループ"
 
 msgid "GlobalSearch|Groups I'm a member of"
-msgstr ""
+msgstr "メンバーになっているグループ"
 
 msgid "GlobalSearch|Help"
 msgstr "ヘルプ"
@@ -28693,7 +28702,7 @@ msgid "GlobalSearch|Projects"
 msgstr "プロジェクト"
 
 msgid "GlobalSearch|Projects I'm a member of"
-msgstr ""
+msgstr "メンバーになっているプロジェクト"
 
 msgid "GlobalSearch|Projects not indexed"
 msgstr "インデックスされていないプロジェクト"
@@ -28723,19 +28732,19 @@ msgid "GlobalSearch|Search %{kbdStart}↵%{kbdEnd}"
 msgstr "%{kbdStart}↵%{kbdEnd}を検索"
 
 msgid "GlobalSearch|Search for `%{searchTerm}` files in…"
-msgstr ""
+msgstr "「%{searchTerm}」ファイルを次の場所で検索する…"
 
 msgid "GlobalSearch|Search for `%{searchTerm}` in…"
-msgstr ""
+msgstr "「%{searchTerm}」を次の場所で検索する…"
 
 msgid "GlobalSearch|Search for `%{searchTerm}` pages in…"
-msgstr ""
+msgstr "「%{searchTerm}」ページを次の場所で検索する…"
 
 msgid "GlobalSearch|Search for `%{searchTerm}` projects in…"
-msgstr ""
+msgstr "「%{searchTerm}」のプロジェクトを次の場所で検索する…"
 
 msgid "GlobalSearch|Search for `%{searchTerm}` users in…"
-msgstr ""
+msgstr "「%{searchTerm}」のユーザーを次の場所で検索する…"
 
 msgid "GlobalSearch|Search for projects, issues, etc."
 msgstr "プロジェクトやイシューなどを検索します。"
@@ -28744,10 +28753,10 @@ msgid "GlobalSearch|Search labels"
 msgstr "ラベルを検索"
 
 msgid "GlobalSearch|Search or go to… %{kbdStart}/%{kbdEnd}"
-msgstr ""
+msgstr "検索または移動…%{kbdStart}/%{kbdEnd}"
 
 msgid "GlobalSearch|Search or go to… (or use the / keyboard shortcut)"
-msgstr ""
+msgstr "検索または移動… (またはキーボードショートカット「/」を使用)"
 
 msgid "GlobalSearch|Search results are loading"
 msgstr "検索結果を読み込み中"
@@ -28757,7 +28766,7 @@ msgstr "設定"
 
 msgid "GlobalSearch|Show 1 more result"
 msgid_plural "GlobalSearch|Show %d more results"
-msgstr[0] ""
+msgstr[0] "さらに%d件の結果を表示する"
 
 msgid "GlobalSearch|Show less"
 msgstr "表示を減らす"
@@ -28811,7 +28820,7 @@ msgid "GlobalSearch|Type to filter labels."
 msgstr "入力してラベルをフィルタリングします。"
 
 msgid "GlobalSearch|Type to search…"
-msgstr ""
+msgstr "入力して検索…"
 
 msgid "GlobalSearch|Users"
 msgstr "ユーザー"
@@ -29607,7 +29616,7 @@ msgid "Group work item bulk edit is a licensed feature not available for this gr
 msgstr "グループ作業アイテムの一括編集は、このグループでは利用できないライセンスの機能です。"
 
 msgid "Group your merge requests by %{boldStart}workflow%{boldEnd} or your %{boldStart}role%{boldEnd}, and manage label visibility."
-msgstr ""
+msgstr "%{boldStart}ワークフロー%{boldEnd}または%{boldStart}ロール%{boldEnd}ごとにマージリクストをグループ化して、ラベルの表示レベルを管理します。"
 
 msgid "Group-level MFA enforcement"
 msgstr "グループレベルで多要素認証の適用"
@@ -29883,7 +29892,7 @@ msgid "GroupSAML|Valid SAML Response"
 msgstr "有効な SAML レスポンス"
 
 msgid "GroupSAML|When selected, group sync will only occur when both the SAML group name and provider match."
-msgstr ""
+msgstr "選択すると、グループの同期はSAMLグループ名とプロバイダが一致したときにのみ行われます。"
 
 msgid "GroupSAML|as %{access_level}"
 msgstr "%{access_level}として"
@@ -29961,7 +29970,7 @@ msgid "GroupSettings|Be careful. Changing a group's parent can have unintended s
 msgstr "注意: グループの親を変更すると、意図しない結果を生じる場合があります。%{learn_more_link_start}詳細はこちら%{learn_more_link_end}。"
 
 msgid "GroupSettings|Cannot update the path because there are projects under this group that contain Docker images in their container registry. Please remove the images from your projects first and try again."
-msgstr ""
+msgstr "コンテナレジストリにDockerイメージを含むプロジェクトがこのグループにあるため、パスを更新できません。プロジェクトからイメージを削除してから、もう一度お試しください。"
 
 msgid "GroupSettings|Change group URL"
 msgstr "グループのURLの変更"
@@ -30000,7 +30009,7 @@ msgid "GroupSettings|Default to Auto DevOps pipeline for all projects within thi
 msgstr "このグループ内のすべてのプロジェクトに対してデフォルトの Auto DevOps パイプライン"
 
 msgid "GroupSettings|Disable personal access tokens for enterprise users"
-msgstr ""
+msgstr "エンタープライズユーザーのパーソナルアクセストークンを無効にする"
 
 msgid "GroupSettings|Disable user invitations to groups and projects within %{group}"
 msgstr ""
@@ -30009,7 +30018,7 @@ msgid "GroupSettings|Emails are not encrypted. Concerned administrators may want
 msgstr "メールは暗号化されていません。心配する管理者は、差分プレビューを無効にすることができます。"
 
 msgid "GroupSettings|Enable JWT format for CI/CD job tokens"
-msgstr ""
+msgstr "CI/CDジョブトークンのJWTフォーマットを有効にする"
 
 msgid "GroupSettings|Enable JWT format for the CI_JOB_TOKEN variable. When disabled, it uses the legacy database format."
 msgstr "CI_JOB_TOKEN変数のJWTフォーマットを有効にする。無効にした場合、従来のデータベースフォーマットを使用する。"
@@ -30021,7 +30030,7 @@ msgid "GroupSettings|Enable extension marketplace"
 msgstr "拡張機能マーケットプレイスを有効にする"
 
 msgid "GroupSettings|Enable fine-grained permissions for CI/CD job tokens"
-msgstr ""
+msgstr "CI/CDジョブトークンの詳細な権限を有効にする"
 
 msgid "GroupSettings|Enable fine-grained permissions for CI/CD job tokens."
 msgstr ""
@@ -30452,6 +30461,9 @@ msgstr "そのグループパスは利用可能です。"
 msgid "Groups|Group path is unavailable. Path has been replaced with a suggested available path."
 msgstr "このグループパスは利用できませんでした。パスは推奨された利用可能なパスに置き換えられています。"
 
+msgid "Groups|Groups that are archived or pending deletion will appear here."
+msgstr ""
+
 msgid "Groups|Learn more about subgroups"
 msgstr "サブグループの詳細について"
 
@@ -30487,6 +30499,9 @@ msgstr "プロジェクト%{path}用のREADME.mdを作成します。"
 
 msgid "Groups|This will create a project %{path} and add a README.md."
 msgstr "プロジェクト%{path}を作成し、README.mdを追加します。"
+
+msgid "Groups|You don't have any inactive groups."
+msgstr ""
 
 msgid "Groups|You're creating a new top-level group"
 msgstr "新しいトップレベルのグループを作成しています"
@@ -31734,6 +31749,12 @@ msgstr "ネームスペースのリクエストに失敗しました"
 
 msgid "ImportProjects|Requesting your %{provider} repositories failed"
 msgstr "%{provider} リポジトリのリクエストに失敗しました"
+
+msgid "ImportProjects|Select a destination namespace."
+msgstr ""
+
+msgid "ImportProjects|Select namespace"
+msgstr ""
 
 msgid "ImportProjects|Select the repositories you want to import"
 msgstr "インポートしたいリポジトリを選択します"
@@ -51115,7 +51136,7 @@ msgstr "リポジトリの使用量の再計算が開始されました"
 msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / Pipeline Artifacts: %{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads}"
 msgstr "リポジトリ: %{counter_repositories}/ Wiki: %{counter_wikis}/ ビルドアーティファクト: %{counter_build_artifacts}/ パイプラインアーティファクト: %{counter_pipeline_artifacts}/ LFS: %{counter_lfs_objects}/ スニペット: %{counter_snippets}/ パッケージ: %{counter_packages}/ 更新: %{counter_uploads}"
 
-msgid "Repository|Filter (e.g. *.vue)"
+msgid "Repository|Filter (e.g. *.vue) (f)"
 msgstr ""
 
 msgid "Repository|New branch"
@@ -66075,7 +66096,7 @@ msgstr "CSVファイルのアップロード中に問題が発生しました。
 msgid "UserMapping|Source name"
 msgstr "ソース名"
 
-msgid "UserMapping|The %{strongStart}Skip confirmation when reassigning placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately."
+msgid "UserMapping|The %{strongStart}Skip confirmation when administrators reassign placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately."
 msgstr ""
 
 msgid "UserMapping|The file is being processed and you will receive an email when completed."

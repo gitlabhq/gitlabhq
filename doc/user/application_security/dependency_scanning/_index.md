@@ -614,7 +614,7 @@ To support the following package managers, the GitLab analyzers proceed in two s
   <li>
     <a id="exported-dependency-information-notes-2"></a>
     <p>
-      Different versions of Java require different versions of Gradle. The versions of Gradle listed in the above table are pre-installed
+      Different versions of Java require different versions of Gradle. The versions of Gradle listed in the previous table are pre-installed
       in the analyzer image. The version of Gradle used by the analyzer depends on whether your project uses a <code>gradlew</code>
       (Gradle wrapper) file or not:
     </p>
@@ -656,7 +656,7 @@ To support the following package managers, the GitLab analyzers proceed in two s
 ### How analyzers are triggered
 
 GitLab relies on [`rules:exists`](../../../ci/yaml/_index.md#rulesexists) to start the relevant analyzers for the languages detected by the presence of the
-`Supported files` in the repository as shown in the [table above](#supported-languages-and-package-managers).
+[supported files](#supported-languages-and-package-managers) in the repository.
 A maximum of two directory levels from the repository's root is searched. For example, the
 `gemnasium-dependency_scanning` job is enabled if a repository contains either `Gemfile`,
 `api/Gemfile`, or `api/client/Gemfile`, but not if the only supported dependency file is
@@ -857,7 +857,7 @@ gemnasium-dependency_scanning:
     DS_REMEDIATE: "false"
 ```
 
-To override the `dependencies: []` attribute, add an override job as above, targeting this attribute:
+To override the `dependencies: []` attribute, add an override job as described previously, targeting this attribute:
 
 ```yaml
 include:
@@ -1294,7 +1294,7 @@ If you need to install Python packages before the analyzer runs, you should use 
 If you need to install Python packages before the analyzer runs, you should use `python setup.py install --user` in the `before_script` of the scanning job. The `--user` flag causes project dependencies to be installed in the user directory. If you do not pass the `--user` option, packages are installed globally, and they are not scanned and don't show up when listing project dependencies.
 
 When using self-signed certificates for your private PyPi repository, no extra job configuration (aside
-from the template `.gitlab-ci.yml` above) is needed. However, you must update your `setup.py` to
+from the previous `.gitlab-ci.yml` template) is needed. However, you must update your `setup.py` to
 ensure that it can reach your private repository. Here is an example configuration:
 
 1. Update `setup.py` to create a `dependency_links` attribute pointing at your private repository for each

@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ko\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-05-26 13:31\n"
+"PO-Revision-Date: 2025-05-27 10:57\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} 에서 %{end}"
@@ -2765,7 +2765,7 @@ msgid "Access levels should either both be present or both be nil"
 msgstr "억세스 레벨은 두개 모두 지정하거나 모두 nil 이어야 합니다."
 
 msgid "Access protected resources in merge request pipelines"
-msgstr ""
+msgstr "머지 리퀘스트 파이프라인에서 보호된 리소스에 액세스"
 
 msgid "Access requests"
 msgstr "액세스 요청"
@@ -4707,8 +4707,8 @@ msgstr "운영자 내보내기 %{silent_admin_exports_link_start}%{icon}%{silent
 msgid "AdminSettings|Size and domain settings for Pages static sites."
 msgstr "Pages 정적 사이트의 크기 및 도메인 설정."
 
-msgid "AdminSettings|Skip confirmation when reassigning placeholder users"
-msgstr "플레이스홀더 사용자를 재할당할 때 확인 생략"
+msgid "AdminSettings|Skip confirmation when administrators reassign placeholder users %{link_start}%{icon}%{link_end}"
+msgstr "운영자가 플레이스홀더 사용자를 재할당할 때 확인 건너뛰기 %{link_start}%{icon}%{link_end}"
 
 msgid "AdminSettings|The URL of your Cube instance."
 msgstr "Cube 인스턴스의 URL"
@@ -4766,6 +4766,9 @@ msgstr "IAM 자격 증명으로 AWS OpenSearch Service 사용"
 
 msgid "AdminSettings|Use for cluster and index migrations. When indexing is paused, GitLab still tracks changes."
 msgstr "클러스터 및 인덱스 마이그레이션에 사용합니다. 인덱싱이 일시 중지되어도 GitLab은 여전히 변경 사항을 추적합니다."
+
+msgid "AdminSettings|User impersonation is not enabled on the GitLab instance."
+msgstr "사용자 대리 (impersonation)는 GitLab 인스턴스에서 활성화되지 않았습니다."
 
 msgid "AdminSettings|Users and groups must accept the invitation before they're added to a group or project."
 msgstr "사용자 및 그룹은 그룹 또는 프로젝트에 추가되기 전에 초대를 수락해야 합니다."
@@ -17242,6 +17245,12 @@ msgstr "보호된 컨테이너 이미지 태그"
 msgid "ContainerRegistry|Protected container repositories"
 msgstr "보호된 컨테이너 리포지토리"
 
+msgid "ContainerRegistry|Protection rule created."
+msgstr "보호 규칙이 생성되었습니다."
+
+msgid "ContainerRegistry|Protection rule updated."
+msgstr "보호 규칙이 업데이트되었습니다."
+
 msgid "ContainerRegistry|Protection type"
 msgstr "보호 유형"
 
@@ -29607,7 +29616,7 @@ msgid "Group work item bulk edit is a licensed feature not available for this gr
 msgstr "그룹 작업 항목 대량 편집은 이 그룹에서 사용할 수 없는 라이선스 기능입니다."
 
 msgid "Group your merge requests by %{boldStart}workflow%{boldEnd} or your %{boldStart}role%{boldEnd}, and manage label visibility."
-msgstr ""
+msgstr "%{boldStart}워크플로우%{boldEnd} 또는 당신의 %{boldStart}역할%{boldEnd}에 따라 당신의 머지 리퀘스트를 그루핑하고, 라벨 공개수준을 관리하세요."
 
 msgid "Group-level MFA enforcement"
 msgstr "그룹 수준의 MFA 강제"
@@ -30452,6 +30461,9 @@ msgstr "그룹 경로를 사용할 수 있습니다."
 msgid "Groups|Group path is unavailable. Path has been replaced with a suggested available path."
 msgstr "그룹 경로를 사용할 수 없습니다. 사용가능한 경로를 추천하여 대체하였습니다."
 
+msgid "Groups|Groups that are archived or pending deletion will appear here."
+msgstr "여기에는 보관되거나 삭제 대기 중인 그룹이 표시됩니다."
+
 msgid "Groups|Learn more about subgroups"
 msgstr "하위 그룹에 대해 자세히 알아보기"
 
@@ -30487,6 +30499,9 @@ msgstr "이것은 프로젝트 %{path}에 대한 README.md를 생성할 것입�
 
 msgid "Groups|This will create a project %{path} and add a README.md."
 msgstr "이것은 프로젝트 %{path}를 생성하고 README.md를 추가할 것입니다."
+
+msgid "Groups|You don't have any inactive groups."
+msgstr "비활성 그룹이 없습니다."
 
 msgid "Groups|You're creating a new top-level group"
 msgstr "새로운 최상위 그룹을 생성 중입니다."
@@ -31734,6 +31749,12 @@ msgstr "네임스페이스 요청 실패"
 
 msgid "ImportProjects|Requesting your %{provider} repositories failed"
 msgstr "%{provider} 리포지토리 요청 실패"
+
+msgid "ImportProjects|Select a destination namespace."
+msgstr "대상 네임스페이스를 선택하세요."
+
+msgid "ImportProjects|Select namespace"
+msgstr "네임스페이스 선택"
 
 msgid "ImportProjects|Select the repositories you want to import"
 msgstr "가져오려는 리포지토리 선택"
@@ -36516,7 +36537,7 @@ msgid "Make everyone on your team more productive regardless of their location. 
 msgstr "팀의 모든 구성원이 장소에 관계없이 생산성을 높일 수 있게 해줍니다. GitLab Geo는 GitLab 인스턴스의 읽기 전용 미러를 생성하여 대규모 리포지토리를 클론하고 가져오는데 걸리는 시간을 줄여줍니다."
 
 msgid "Make protected CI/CD variables and runners available in merge request pipelines. Protected resources will only be available in merge request pipelines if both the source and target branches of the merge request are protected."
-msgstr ""
+msgstr "보호된 CI/CD 변수와 러너를 머지 리퀘스트 파이프라인에서 사용할 수 있도록 합니다. 보호된 리소스는 머지 리퀘스트의 소스 및 대상 브랜치가 모두 보호된 경우에만 머지 리퀘스트 파이프라인에서 사용할 수 있습니다."
 
 msgid "Make sure you choose a strong, unique password."
 msgstr "강력하고 고유한 암호를 선택했는지 확인하십시오."
@@ -49875,7 +49896,7 @@ msgid "RapidDiffs|Line %d"
 msgstr "%d 라인"
 
 msgid "RapidDiffs|Loading image diff..."
-msgstr ""
+msgstr "이미지 diff 로딩..."
 
 msgid "RapidDiffs|Original line"
 msgstr "원래 라인"
@@ -51115,8 +51136,8 @@ msgstr "리포지토리 사용량 재계산 시작됨"
 msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / Pipeline Artifacts: %{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads}"
 msgstr "리포지토리: %{counter_repositories} / 위키: %{counter_wikis} / 빌드 아티팩트: %{counter_build_artifacts} / 파이프라인 아티팩트: %{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / 스니펫: %{counter_snippets} / 패키지: %{counter_packages} / 업로드: %{counter_uploads}"
 
-msgid "Repository|Filter (e.g. *.vue)"
-msgstr "필터 (예 *.vue)"
+msgid "Repository|Filter (e.g. *.vue) (f)"
+msgstr "필터 (예 *.vue) (f)"
 
 msgid "Repository|New branch"
 msgstr "새 브랜치"
@@ -53103,7 +53124,7 @@ msgid "ScanExecutionPolicy|%{rules} every time a pipeline runs for %{scopes} %{b
 msgstr "파이프라인이 %{scopes} %{branches} %{branchExceptions} %{agents} %{namespaces} 에 대해 실행될 때마다 %{rules}"
 
 msgid "ScanExecutionPolicy|%{rules} every time a pipeline runs for %{scopes} %{branches} %{sources} %{branchExceptions} %{agents} %{namespaces}"
-msgstr ""
+msgstr "파이프라인이 실행될 때마다 %{rules} 규칙이 %{scopes} %{branches} %{sources} %{branchExceptions} %{agents} %{namespaces}에 대해 적용됩니다."
 
 msgid "ScanExecutionPolicy|%{strategySelector} pipeline file to run from %{projectSelector}"
 msgstr "%{projectSelector}에서 실행할 %{strategySelector} 파이프라인 파일"
@@ -54941,7 +54962,7 @@ msgid "SecurityOrchestration|Create security policy"
 msgstr "보안 정책 생성"
 
 msgid "SecurityOrchestration|Custom configuration"
-msgstr ""
+msgstr "사용자 정의 구성"
 
 msgid "SecurityOrchestration|Custom roles"
 msgstr "커스텀 역할"
@@ -56464,7 +56485,7 @@ msgid "SecurityReports|There was an error while generating the report."
 msgstr "보고서를 생성하는 동안 오류가 발생했습니다."
 
 msgid "SecurityReports|This dashboard provides an overview of your security vulnerabilities."
-msgstr ""
+msgstr "이 대시보드는 보안 취약성에 대한 요약 정보를 제공합니다."
 
 msgid "SecurityReports|This project has reached the maximum number of vulnerabilities it can contain and some of the vulnerabilities couldn't be ingested."
 msgstr "이 프로젝트는 포함할 수 있는 취약점의 최대 개수에 도달했으며, 일부 취약점은 수집할 수 없습니다."
@@ -66075,8 +66096,8 @@ msgstr "CSV 파일을 업로드하는 동안 문제가 발생했습니다."
 msgid "UserMapping|Source name"
 msgstr "소스 이름"
 
-msgid "UserMapping|The %{strongStart}Skip confirmation when reassigning placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately."
-msgstr "%{strongStart}플레이스홀더 사용자 재할당 시 확인 생략%{strongEnd} 설정이 활성화되었습니다. 사용자는 재할당을 승인할 필요가 없으며, 기여 내용은 즉시 재할당됩니다."
+msgid "UserMapping|The %{strongStart}Skip confirmation when administrators reassign placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately."
+msgstr ""
 
 msgid "UserMapping|The file is being processed and you will receive an email when completed."
 msgstr "파일이 처리 중이며 완료되면 이메일을 받게 됩니다."
@@ -72331,7 +72352,7 @@ msgid "has already been published"
 msgstr "이미 게시되었습니다"
 
 msgid "has already been recorded as a violation for this compliance control"
-msgstr ""
+msgstr "이 규정 준수 제어에 대한 위반으로 이미 기록되었습니다"
 
 msgid "has already been taken"
 msgstr "이미 존재합니다"
@@ -73071,7 +73092,7 @@ msgid "must be associated with a Group or a Project"
 msgstr "그룹 또는 프로젝트와 연결되어야 합니다"
 
 msgid "must be associated with either a Project or Group entity type"
-msgstr ""
+msgstr "프로젝트 또는 그룹 항목 유형과 연결되어야 합니다."
 
 msgid "must be at least 1 day"
 msgstr "1일 이상이어야 합니다"
@@ -73149,10 +73170,10 @@ msgid "must belong to the same namespace."
 msgstr "동일한 네임스페이스에 속해 있어야 합니다."
 
 msgid "must belong to the specified namespace"
-msgstr ""
+msgstr "지정된 네임스페이스에 속해 있어야 합니다"
 
 msgid "must belong to the specified project"
-msgstr ""
+msgstr "지정된 프로젝트에 속해 있어야 합니다"
 
 msgid "must contain only a discord user ID."
 msgstr "Discord 사용자 ID만 포함해야 합니다."
@@ -73209,10 +73230,10 @@ msgid "must only contain letters, digits, forward-slash, underscore, hyphen or p
 msgstr "문자, 숫자, 슬래시, 밑줄, 하이픈 또는 마침표만 포함해야 합니다."
 
 msgid "must reference the specified namespace as its entity"
-msgstr ""
+msgstr "해당 항목으로서 지정 네임스페이스를 참조해야 합니다"
 
 msgid "must reference the specified project as its entity"
-msgstr ""
+msgstr "해당 항목으로서 지정 프로젝트를 참조해야 합니다"
 
 msgid "my-awesome-group"
 msgstr "my-awesome-group"

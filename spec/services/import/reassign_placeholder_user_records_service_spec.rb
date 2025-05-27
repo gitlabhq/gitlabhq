@@ -119,11 +119,14 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
     create_placeholder_reference(source_user, ci_build, user_column: 'user_id')
   end
 
+  before do
+    # Decrease the sleep in these tests, so the test suite runs faster.
+    stub_const("#{described_class}::RELATION_BATCH_SLEEP", 0.01)
+  end
+
   describe '#execute', :aggregate_failures do
     before do
       allow(service).to receive_messages(db_health_check!: nil, db_table_unavailable?: false)
-      # Decrease the sleep in this test, so the test suite runs faster.
-      stub_const("#{described_class}::RELATION_BATCH_SLEEP", 0.01)
     end
 
     shared_examples 'a successful reassignment' do
@@ -324,15 +327,35 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
 
       context 'when user has existing same level INHERITED membership' do
         before_all do
-          namespace.add_reporter(real_user)
+          namespace.add_developer(real_user)
         end
 
-        it 'still creates the project membership' do
-          expect { service.execute }.to change { project.reload.members.count }.to(1)
+        let(:existing_membership_logged_params) do
+          {
+            'id' => real_user.members.first.id,
+            'access_level' => Gitlab::Access::DEVELOPER,
+            'source_id' => namespace.id,
+            'source_type' => 'Namespace',
+            'user_id' => real_user.id
+          }
         end
 
-        it 'still creates the group membership' do
-          expect { service.execute }.to change { subgroup.reload.members.count }.to(1)
+        it 'does not create the project membership, and logs' do
+          expect_skipped_membership_log(
+            'Existing membership of same or higher access level found for user, skipping',
+            { 'project_id' => project.id }, existing_membership_logged_params
+          )
+
+          expect { service.execute }.not_to change { project.reload.members.count }
+        end
+
+        it 'does not create the group membership, and logs' do
+          expect_skipped_membership_log(
+            'Existing membership of same or higher access level found for user, skipping',
+            { 'group_id' => subgroup.id }, existing_membership_logged_params
+          )
+
+          expect { service.execute }.not_to change { subgroup.reload.members.count }
         end
       end
 
@@ -353,7 +376,7 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
 
         it 'does not create the project membership, and logs' do
           expect_skipped_membership_log(
-            'Existing membership of higher access level found for user, skipping',
+            'Existing membership of same or higher access level found for user, skipping',
             { 'project_id' => project.id }, existing_membership_logged_params
           )
 
@@ -362,7 +385,7 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
 
         it 'does not create the group membership, and logs' do
           expect_skipped_membership_log(
-            'Existing membership of higher access level found for user, skipping',
+            'Existing membership of same or higher access level found for user, skipping',
             { 'group_id' => subgroup.id }, existing_membership_logged_params
           )
 
@@ -377,7 +400,7 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
 
         it 'does not create a new membership, and logs' do
           expect_skipped_membership_log(
-            'Existing direct membership of lower or equal access level found for user, skipping',
+            'Existing direct membership of lower access level found for user, skipping',
             {
               'project_id' => project.id
             },
@@ -401,7 +424,7 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
 
         it 'does not create a new membership, and logs' do
           expect_skipped_membership_log(
-            'Existing direct membership of lower or equal access level found for user, skipping',
+            'Existing membership of same or higher access level found for user, skipping',
             {
               'project_id' => project.id
             },

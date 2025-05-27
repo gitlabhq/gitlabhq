@@ -107,10 +107,8 @@ RSpec.describe ContentSecurityPolicyPatch, feature_category: :shared do
       allow(Rails).to receive(:gem_version).and_return(version)
     end
 
-    it "emits a deprecation warning" do
-      expect { setup_controller }
-        .to output(/Use content_security_policy instead/)
-        .to_stderr
+    it "does not emit any warnings" do
+      expect { setup_controller }.not_to output.to_stderr
     end
   end
 end

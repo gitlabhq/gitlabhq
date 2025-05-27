@@ -58,6 +58,9 @@ export const typePolicies = {
   TreeEntry: {
     keyFields: ['webPath'],
   },
+  Blob: {
+    keyFields: ['webPath'],
+  },
   Subscription: {
     fields: {
       aiCompletionResponse: {

@@ -177,10 +177,10 @@ module Import
     def create_membership(memberable, placeholder_membership)
       existing_membership = find_existing_membership(memberable)
 
-      # If user is a member (direct or inherited) with higher level, skip creating the membership.
+      # If user is a member (direct or inherited) with same or higher level, skip creating the membership.
       if existing_membership
-        if existing_membership.access_level > placeholder_membership.access_level
-          log_create_membership_skipped('Existing membership of higher access level found for user, skipping',
+        if existing_membership.access_level >= placeholder_membership.access_level
+          log_create_membership_skipped('Existing membership of same or higher access level found for user, skipping',
             placeholder_membership, existing_membership)
 
           return
@@ -190,9 +190,7 @@ module Import
         # to this memberable between the time the import finished and the reassignment process began.
         # In this case, we don't override the existing direct membership, we skip creating it.
         if existing_membership.source == memberable
-          log_create_membership_skipped(
-            'Existing direct membership of lower or equal access level found for user, ' \
-              'skipping',
+          log_create_membership_skipped('Existing direct membership of lower access level found for user, skipping',
             placeholder_membership, existing_membership)
 
           return

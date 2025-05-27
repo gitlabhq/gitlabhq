@@ -531,7 +531,7 @@ To learn more about the implementation, see the blog post [Applying GitLab Label
 
 ![Example configuration](img/object_hierarchy_v14_10.png "Example custom value stream configuration")
 
-In the example above, two independent value streams are set up for two teams that are using different development workflows in the **Test Group** (top-level namespace).
+In the previous example, two independent value streams are set up for two teams that are using different development workflows in the **Test Group** (top-level namespace).
 
 The first value stream uses standard timestamp-based events for defining the stages. The second value stream uses label events.
 

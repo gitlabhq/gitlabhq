@@ -753,13 +753,14 @@ empty cells. If there is no otherwise meaningful value for a cell, consider ente
 
 To make tables easier to maintain:
 
+- If the table has a `Description` column, make it the right-most column if possible.
 - Add additional spaces to make the column widths consistent. For example:
 
   ```markdown
-  | App name | Description         | Requirements |
-  |----------|---------------------|--------------|
-  | App 1    | Description text 1. | A, B, and C. |
-  | App 2    | Description text 2. | None         |
+  | Parameter | Default      | Requirements |
+  |-----------|--------------|--------------|
+  | `param1`  | `true`       | A and B.     |
+  | `param2`  | `gitlab.com` | None         |
   ```
 
 - Skip the additional spaces in the rightmost column for tables that are very wide.
@@ -773,9 +774,12 @@ To make tables easier to maintain:
   | Setting 3 | `0`     | Another short description. |
   ```
 
-Always align the delimiter (second) row of the table with the header (first) row.
-Avoid using shortened delimiter rows like `|-|-|-|` or `|--|--|`.
-If a large table does not auto-format well, you should still align the delimiter row with the header row.
+- The header (first) row and the delimiter (second) row of the table should be the same length.
+  Do not use shortened delimiter rows like `|-|-|-|` or `|--|--|`.
+- If a large table does not auto-format well, you can skip the auto-format but:
+  - Make the first two rows the same length.
+  - Put spaces between the `|` characters and cell contents.
+    For example `| Cell 1 | Cell 2 |`, not `|Cell1|Cell2|`.
 
 ### Editor extensions for table formatting
 

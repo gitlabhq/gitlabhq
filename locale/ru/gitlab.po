@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ru\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-05-26 17:05\n"
+"PO-Revision-Date: 2025-05-27 10:58\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} по %{end}"
@@ -5244,8 +5244,8 @@ msgstr ""
 msgid "AdminSettings|Size and domain settings for Pages static sites."
 msgstr "Настройки размеров и домена для статических сайтов Pages."
 
-msgid "AdminSettings|Skip confirmation when reassigning placeholder users"
-msgstr "Пропускать подтверждение при повторном назначении временных пользователей"
+msgid "AdminSettings|Skip confirmation when administrators reassign placeholder users %{link_start}%{icon}%{link_end}"
+msgstr ""
 
 msgid "AdminSettings|The URL of your Cube instance."
 msgstr ""
@@ -5303,6 +5303,9 @@ msgstr ""
 
 msgid "AdminSettings|Use for cluster and index migrations. When indexing is paused, GitLab still tracks changes."
 msgstr "Используйте для миграций кластера и индекса. Когда индексирование приостановлено, GitLab продолжает отслеживать изменения."
+
+msgid "AdminSettings|User impersonation is not enabled on the GitLab instance."
+msgstr ""
 
 msgid "AdminSettings|Users and groups must accept the invitation before they're added to a group or project."
 msgstr ""
@@ -17907,6 +17910,12 @@ msgstr "Защищённые теги образов контейнеров"
 
 msgid "ContainerRegistry|Protected container repositories"
 msgstr "Защищённые репозитории контейнеров"
+
+msgid "ContainerRegistry|Protection rule created."
+msgstr ""
+
+msgid "ContainerRegistry|Protection rule updated."
+msgstr ""
 
 msgid "ContainerRegistry|Protection type"
 msgstr "Тип защиты"
@@ -31256,6 +31265,9 @@ msgstr ""
 msgid "Groups|Group path is unavailable. Path has been replaced with a suggested available path."
 msgstr ""
 
+msgid "Groups|Groups that are archived or pending deletion will appear here."
+msgstr ""
+
 msgid "Groups|Learn more about subgroups"
 msgstr "Подробнее о подгруппах"
 
@@ -31291,6 +31303,9 @@ msgstr "Это создаст файл README.md для проекта %{path}."
 
 msgid "Groups|This will create a project %{path} and add a README.md."
 msgstr "Это создаст проект %{path} и добавит файл README.md."
+
+msgid "Groups|You don't have any inactive groups."
+msgstr ""
 
 msgid "Groups|You're creating a new top-level group"
 msgstr "Вы создаёте новую группу верхнего уровня"
@@ -32553,6 +32568,12 @@ msgstr ""
 
 msgid "ImportProjects|Requesting your %{provider} repositories failed"
 msgstr "Не удалось запросить %{provider} репозиториев"
+
+msgid "ImportProjects|Select a destination namespace."
+msgstr ""
+
+msgid "ImportProjects|Select namespace"
+msgstr ""
 
 msgid "ImportProjects|Select the repositories you want to import"
 msgstr ""
@@ -52123,7 +52144,7 @@ msgstr ""
 msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / Pipeline Artifacts: %{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads}"
 msgstr "Репозитории: %{counter_repositories} / Вики: %{counter_wikis} / Артефакты сборки: %{counter_build_artifacts} / Артефакты конвейера: %{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / Сниппеты: %{counter_snippets} / Пакеты: %{counter_packages} / Загрузки: %{counter_uploads}"
 
-msgid "Repository|Filter (e.g. *.vue)"
+msgid "Repository|Filter (e.g. *.vue) (f)"
 msgstr ""
 
 msgid "Repository|New branch"
@@ -67341,8 +67362,8 @@ msgstr "Произошла ошибка при загрузке CSV-файла."
 msgid "UserMapping|Source name"
 msgstr "Название источника"
 
-msgid "UserMapping|The %{strongStart}Skip confirmation when reassigning placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately."
-msgstr "Включена настройка %{strongStart}Пропускать подтверждение при переназначении временных пользователей%{strongEnd}. Пользователям не нужно одобрять переназначение, и вклады переназначаются сразу."
+msgid "UserMapping|The %{strongStart}Skip confirmation when administrators reassign placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately."
+msgstr ""
 
 msgid "UserMapping|The file is being processed and you will receive an email when completed."
 msgstr "Файл обрабатывается, и вы получите электронное письмо, когда процесс завершится."

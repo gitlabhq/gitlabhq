@@ -550,7 +550,7 @@ The following Elasticsearch settings are available:
 | `Maximum field length`                                | See [the explanation in instance limits.](../../administration/instance_limits.md#maximum-field-length). |
 | `Number of shards for non-code indexing` | Number of indexing worker shards. This improves non-code indexing throughput by enqueuing more parallel Sidekiq jobs. Increasing the number of shards is not recommended for smaller instances or instances with few Sidekiq processes. Default is `2`. |
 | `Maximum bulk request size (MiB)` | Used by the GitLab Ruby and Go-based indexer processes. This setting indicates how much data must be collected (and stored in memory) in a given indexing process before submitting the payload to the Elasticsearch Bulk API. For the GitLab Go-based indexer, you should use this setting with `Bulk request concurrency`. `Maximum bulk request size (MiB)` must accommodate the resource constraints of both the Elasticsearch hosts and the hosts running the GitLab Go-based indexer from either the `gitlab-rake` command or the Sidekiq tasks. |
-| `Bulk request concurrency`                            | The Bulk request concurrency indicates how many of the GitLab Go-based indexer processes (or threads) can run in parallel to collect data to subsequently submit to the Elasticsearch Bulk API. This increases indexing performance, but fills the Elasticsearch bulk requests queue faster. This setting should be used together with the Maximum bulk request size setting (see above) and needs to accommodate the resource constraints of both the Elasticsearch hosts and the hosts running the GitLab Go-based indexer either from the `gitlab-rake` command or the Sidekiq tasks. |
+| `Bulk request concurrency`                            | The Bulk request concurrency indicates how many of the GitLab Go-based indexer processes (or threads) can run in parallel to collect data to subsequently submit to the Elasticsearch Bulk API. This increases indexing performance, but fills the Elasticsearch bulk requests queue faster. This setting should be used together with the `Maximum bulk request size` setting and needs to accommodate the resource constraints of both the Elasticsearch hosts and the hosts running the GitLab Go-based indexer either from the `gitlab-rake` command or the Sidekiq tasks. |
 | `Client request timeout` | Elasticsearch HTTP client request timeout value in seconds. `0` means using the system default timeout value, which depends on the libraries that GitLab application is built upon. |
 | `Code indexing concurrency` | Maximum number of Elasticsearch code indexing background jobs allowed to run concurrently. This only applies to repository indexing operations. |
 | `Retry on failure` | Maximum number of possible retries for Elasticsearch search requests. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/486935) in GitLab 17.6. |
@@ -1182,7 +1182,7 @@ due to large volumes of data being indexed:
    ```
 
    Where `ID_FROM` and `ID_TO` are project IDs. Both parameters are optional.
-   The above example indexes all projects from ID `1001` up to (and including) ID `2000`.
+   The previous example indexes all projects from ID `1001` up to (and including) ID `2000`.
 
    {{< alert type="note" >}}
 
@@ -1223,7 +1223,7 @@ due to large volumes of data being indexed:
           } }'
    ```
 
-   A force merge should be called after enabling the refreshing above.
+   A force merge should be called after enabling refreshing.
 
    For Elasticsearch 6.x and later, ensure the index is in read-only mode before proceeding with the force merge:
 
@@ -1367,7 +1367,7 @@ To create both an indexing and a non-indexing Sidekiq process in one node:
 
 1. Save the file and [reconfigure GitLab](../../administration/restart_gitlab.md)
    for the changes to take effect.
-1. On all other Rails and Sidekiq nodes, ensure that `sidekiq['routing_rules']` is the same as above.
+1. On all other Rails and Sidekiq nodes, ensure that `sidekiq['routing_rules']` is the same as the previous configuration.
 1. Run the Rake task to [migrate existing jobs](../../administration/sidekiq/sidekiq_job_migration.md):
 
 {{< alert type="note" >}}
@@ -1434,7 +1434,7 @@ To handle these queue groups on two nodes:
    sidekiq['queue_selector'] = false
    ```
 
-1. On all other Rails and Sidekiq nodes, ensure that `sidekiq['routing_rules']` is the same as above.
+1. On all other Rails and Sidekiq nodes, ensure that `sidekiq['routing_rules']` is the same as the previous configuration.
 1. Save the file and [reconfigure GitLab](../../administration/restart_gitlab.md)
    for the changes to take effect.
 1. Run the Rake task to [migrate existing jobs](../../administration/sidekiq/sidekiq_job_migration.md):

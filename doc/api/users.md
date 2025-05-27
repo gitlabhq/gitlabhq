@@ -934,7 +934,8 @@ GET /user/status
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user/status"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/user/status"
 ```
 
 Example response:
@@ -966,7 +967,7 @@ Supported attributes:
 Example request:
 
 ```shell
-curl "https://gitlab.example.com/users/<username>/status"
+curl --url "https://gitlab.example.com/users/<username>/status"
 ```
 
 Example response:
@@ -1011,8 +1012,12 @@ Difference between `PUT` and `PATCH`:
 Example request:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "clear_status_after=1_day" --data "emoji=coffee" \
-     --data "message=I crave coffee" --data "availability=busy" "https://gitlab.example.com/api/v4/user/status"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data "clear_status_after=1_day" \
+  --data "emoji=coffee" \
+  --data "message=I crave coffee" --data "availability=busy" \
+  --url "https://gitlab.example.com/api/v4/user/status"
 ```
 
 Example response:
@@ -1113,9 +1118,10 @@ preceded by `@`. For example:
 Example request:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
-     --form "avatar=@avatar.png" \
-     --url "https://gitlab.example.com/api/v4/user/avatar"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --form "avatar=@avatar.png" \
+  --url "https://gitlab.example.com/api/v4/user/avatar"
 ```
 
 Example response:
@@ -1156,7 +1162,8 @@ GET /user_counts
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user_counts"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/user_counts"
 ```
 
 Example response:
@@ -1242,7 +1249,8 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user/activities"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/user/activities"
 ```
 
 Example response:
@@ -1302,7 +1310,8 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/:user_id/memberships"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/users/:user_id/memberships"
 ```
 
 Example response:
@@ -1368,7 +1377,8 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/1/disable_two_factor"
+curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/users/1/disable_two_factor"
 ```
 
 Returns:
@@ -1421,8 +1431,10 @@ Supported attributes:
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "runner_type=instance_type" \
-     "https://gitlab.example.com/api/v4/user/runners"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data "runner_type=instance_type" \
+  --url "https://gitlab.example.com/api/v4/user/runners"
 ```
 
 Example response:
@@ -1535,7 +1547,8 @@ GET /user/support_pin
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/user/support_pin"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/user/support_pin"
 ```
 
 Example response:
@@ -1577,7 +1590,8 @@ GET /users/:id/support_pin
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/1234/support_pin"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/users/1234/support_pin"
 ```
 
 Example response:

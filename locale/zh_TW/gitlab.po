@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: zh-TW\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-05-26 13:29\n"
+"PO-Revision-Date: 2025-05-27 10:56\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} 到 %{end}"
@@ -4707,7 +4707,7 @@ msgstr "管理員靜默匯出 %{silent_admin_exports_link_start}%{icon}%{silent_
 msgid "AdminSettings|Size and domain settings for Pages static sites."
 msgstr "靜態頁面網站的容量及網域設定。"
 
-msgid "AdminSettings|Skip confirmation when reassigning placeholder users"
+msgid "AdminSettings|Skip confirmation when administrators reassign placeholder users %{link_start}%{icon}%{link_end}"
 msgstr ""
 
 msgid "AdminSettings|The URL of your Cube instance."
@@ -4766,6 +4766,9 @@ msgstr "使用帶有 IAM 憑證的 AWS OpenSearch 服務"
 
 msgid "AdminSettings|Use for cluster and index migrations. When indexing is paused, GitLab still tracks changes."
 msgstr "用於叢集和索引遷移，當索引暫停時，GitLab 仍然會追踪變更。"
+
+msgid "AdminSettings|User impersonation is not enabled on the GitLab instance."
+msgstr ""
 
 msgid "AdminSettings|Users and groups must accept the invitation before they're added to a group or project."
 msgstr "使用者和群組在被加入到群組或專案之前必須接受邀請。"
@@ -17240,6 +17243,12 @@ msgid "ContainerRegistry|Protected container image tags"
 msgstr ""
 
 msgid "ContainerRegistry|Protected container repositories"
+msgstr ""
+
+msgid "ContainerRegistry|Protection rule created."
+msgstr ""
+
+msgid "ContainerRegistry|Protection rule updated."
 msgstr ""
 
 msgid "ContainerRegistry|Protection type"
@@ -30452,6 +30461,9 @@ msgstr "群組路徑可用。"
 msgid "Groups|Group path is unavailable. Path has been replaced with a suggested available path."
 msgstr "群組路徑不可用。路徑已替換為建議的可用路徑。"
 
+msgid "Groups|Groups that are archived or pending deletion will appear here."
+msgstr ""
+
 msgid "Groups|Learn more about subgroups"
 msgstr "了解有關子群組的更多訊息"
 
@@ -30487,6 +30499,9 @@ msgstr "這將建立一個 README.md 檔案到專案 %{path} 中。"
 
 msgid "Groups|This will create a project %{path} and add a README.md."
 msgstr "這將建立一個專案 %{path} 並新增 README.md 檔案。"
+
+msgid "Groups|You don't have any inactive groups."
+msgstr ""
 
 msgid "Groups|You're creating a new top-level group"
 msgstr "您正在建立一個新的最上層群組"
@@ -31734,6 +31749,12 @@ msgstr "請求命名空間失敗"
 
 msgid "ImportProjects|Requesting your %{provider} repositories failed"
 msgstr "取得您的%{provider}版本庫失敗"
+
+msgid "ImportProjects|Select a destination namespace."
+msgstr ""
+
+msgid "ImportProjects|Select namespace"
+msgstr ""
 
 msgid "ImportProjects|Select the repositories you want to import"
 msgstr "選擇您想要匯入的版本庫"
@@ -51115,7 +51136,7 @@ msgstr "已開始重新計算版本庫使用情況"
 msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / Pipeline Artifacts: %{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads}"
 msgstr "版本庫: %{counter_repositories} / Wikis: %{counter_wikis} / 構建產物: %{counter_build_artifacts} / 流水線產物：%{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / 程式碼片段: %{counter_snippets} / 軟體包: %{counter_packages} / 上傳文件: %{counter_uploads}"
 
-msgid "Repository|Filter (e.g. *.vue)"
+msgid "Repository|Filter (e.g. *.vue) (f)"
 msgstr ""
 
 msgid "Repository|New branch"
@@ -66075,7 +66096,7 @@ msgstr ""
 msgid "UserMapping|Source name"
 msgstr ""
 
-msgid "UserMapping|The %{strongStart}Skip confirmation when reassigning placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately."
+msgid "UserMapping|The %{strongStart}Skip confirmation when administrators reassign placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately."
 msgstr ""
 
 msgid "UserMapping|The file is being processed and you will receive an email when completed."

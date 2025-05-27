@@ -1120,6 +1120,10 @@ class Group < Namespace
     ::Feature.enabled?(:namespace_level_work_items, self, type: :development)
   end
 
+  def work_item_epics_list_enabled?
+    ::Feature.enabled?(:work_item_epics_list, root_ancestor, type: :wip)
+  end
+
   def create_group_level_work_items_feature_flag_enabled?
     ::Feature.enabled?(:create_group_level_work_items, self, type: :wip)
   end

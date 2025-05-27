@@ -60,7 +60,7 @@ format `field operator value`.
 
 - `Enum` (one of `Issue`, `Incident`, `TestCase`, `Requirement`, `Task`, `Ticket`, `Objective`,
   `KeyResult`, or `MergeRequest`)
-- `List` (containing one or more `enum` values above)
+- `List` (containing one or more `enum` values)
 
 **Allowed in columns of a GLQL view**: Only for issue and work item types.
 

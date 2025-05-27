@@ -76,7 +76,9 @@ Below are the high-level steps:
 
 #### Run Pipeline with Change Management
 
-Once the above steps are completed, the project CD pipeline can incorporate the jobs illustrated in the `gitlab-ci-workflow1.yml` sample pipeline. Below are the Change Management steps:
+After the previous steps are completed, the project CD pipeline can incorporate the jobs illustrated in the `gitlab-ci-workflow1.yml` sample pipeline.
+
+To run a pipeline with Change Management:
 
 1. In ServiceNow, Change control is enabled for one of the stages in the pipeline. ![change control enabled](img/snow_change_control_enabled_v17_9.png)
 1. In GitLab, the pipeline job with the change control function runs. ![pipeline paused](img/snow_pipeline_pause_for_approval_v17_9.png)
@@ -126,7 +128,9 @@ Use the `gitlab-ci-workflow2.yml` sample pipeline in this repository as an examp
 #### Run Pipeline with Custom Change Management
 
 Use the `gitlab-ci-workflow2.yml` sample pipeline as a starting point.
-Once the above steps are completed, the project CD pipeline can incorporate the jobs illustrated in the `gitlab-ci-workflow2.yml` sample pipeline. Below are the Change Management steps:
+After the previous steps are completed, the project CD pipeline can incorporate the jobs illustrated in the `gitlab-ci-workflow2.yml` sample pipeline.
+
+To run a pipeline with custom Change Management:
 
 1. In ServiceNow, change control is enabled for one of the stages in the pipeline. ![change control enabled](img/snow_change_control_enabled_v17_9.png)
 1. In GitLab, the pipeline job with the change control function runs. ![change request creation workflow2](img/snow_cr_creation_workflow2_v17_9.png)

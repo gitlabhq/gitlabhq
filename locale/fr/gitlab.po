@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-05-26 13:37\n"
+"PO-Revision-Date: 2025-05-27 10:56\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} à %{end}"
@@ -4886,8 +4886,8 @@ msgstr "Exportations silencieuses par les administrateurs %{silent_admin_exports
 msgid "AdminSettings|Size and domain settings for Pages static sites."
 msgstr "Paramètres de taille et de domaine pour les sites statiques Pages."
 
-msgid "AdminSettings|Skip confirmation when reassigning placeholder users"
-msgstr "Ignorer la confirmation lors de la réaffectation d'utilisateurs et d'utilisatrices d'espaces réservés"
+msgid "AdminSettings|Skip confirmation when administrators reassign placeholder users %{link_start}%{icon}%{link_end}"
+msgstr ""
 
 msgid "AdminSettings|The URL of your Cube instance."
 msgstr "L'URL de votre instance Cube."
@@ -4945,6 +4945,9 @@ msgstr "Utiliser le service AWS OpenSearch avec les identifiants IAM"
 
 msgid "AdminSettings|Use for cluster and index migrations. When indexing is paused, GitLab still tracks changes."
 msgstr "À utiliser pour les migrations de clusters et d'index. Lorsque l'indexation est interrompue, GitLab continue à effectuer le suivi des modifications."
+
+msgid "AdminSettings|User impersonation is not enabled on the GitLab instance."
+msgstr ""
 
 msgid "AdminSettings|Users and groups must accept the invitation before they're added to a group or project."
 msgstr "Les utilisateurs et les groupes doivent accepter l'invitation avant de pouvoir être ajoutés à un groupe ou à un projet."
@@ -17463,6 +17466,12 @@ msgstr "Étiquettes d'images de conteneurs protégées"
 
 msgid "ContainerRegistry|Protected container repositories"
 msgstr "Dépôts de conteneurs protégés"
+
+msgid "ContainerRegistry|Protection rule created."
+msgstr ""
+
+msgid "ContainerRegistry|Protection rule updated."
+msgstr ""
 
 msgid "ContainerRegistry|Protection type"
 msgstr "Type de protection"
@@ -30720,6 +30729,9 @@ msgstr "Le chemin d'accès du groupe est disponible."
 msgid "Groups|Group path is unavailable. Path has been replaced with a suggested available path."
 msgstr "Le chemin d'accès du groupe n'est pas disponible. Il a été remplacé par une suggestion de chemin qui est disponible."
 
+msgid "Groups|Groups that are archived or pending deletion will appear here."
+msgstr ""
+
 msgid "Groups|Learn more about subgroups"
 msgstr "En savoir plus sur les sous-groupes"
 
@@ -30755,6 +30767,9 @@ msgstr "Un fichier README.md sera créé pour le projet %{path}."
 
 msgid "Groups|This will create a project %{path} and add a README.md."
 msgstr "Un projet %{path} sera créé et un fichier README.md sera ajouté."
+
+msgid "Groups|You don't have any inactive groups."
+msgstr ""
 
 msgid "Groups|You're creating a new top-level group"
 msgstr "Vous êtes en train de créer un nouveau groupe principal"
@@ -32007,6 +32022,12 @@ msgstr "L'interrogation des espaces de nommage a échoué"
 
 msgid "ImportProjects|Requesting your %{provider} repositories failed"
 msgstr "La demande de vos dépôts auprès de %{provider} a échoué"
+
+msgid "ImportProjects|Select a destination namespace."
+msgstr ""
+
+msgid "ImportProjects|Select namespace"
+msgstr ""
 
 msgid "ImportProjects|Select the repositories you want to import"
 msgstr "Sélectionnez les dépôts que vous souhaitez importer"
@@ -51451,7 +51472,7 @@ msgstr "Le recalcul de l'utilisation du dépôt a démarré"
 msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / Pipeline Artifacts: %{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads}"
 msgstr "Dépôt : %{counter_repositories} / Wikis %{counter_wikis} / Artéfacts de Construction : %{counter_build_artifacts} / Artéfacts de Pipeline : %{counter_pipeline_artifacts} / LFS : %{counter_lfs_objects} / Extraits : %{counter_snippets} / Paquets : %{counter_packages} / Téléversements : %{counter_uploads}"
 
-msgid "Repository|Filter (e.g. *.vue)"
+msgid "Repository|Filter (e.g. *.vue) (f)"
 msgstr ""
 
 msgid "Repository|New branch"
@@ -66497,8 +66518,8 @@ msgstr "Une erreur s'est produite lors du téléversement du fichier CSV."
 msgid "UserMapping|Source name"
 msgstr "Nom de la source"
 
-msgid "UserMapping|The %{strongStart}Skip confirmation when reassigning placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately."
-msgstr "Le paramètre %{strongStart}Ignorer la confirmation lors de la réaffectation d'utilisateurs et d'utilisatrices d'espaces réservés%{strongEnd} est activé. Les utilisateurs et utilisatrices n'ont pas à approuver la réaffectation, et les contributions sont réaffectées immédiatement."
+msgid "UserMapping|The %{strongStart}Skip confirmation when administrators reassign placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately."
+msgstr ""
 
 msgid "UserMapping|The file is being processed and you will receive an email when completed."
 msgstr "Le fichier est en cours de traitement. Vous recevrez un courriel lorsque le traitement sera terminé."

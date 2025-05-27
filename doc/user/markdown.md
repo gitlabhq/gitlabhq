@@ -227,7 +227,7 @@ GitLab Flavored Markdown adheres to the Markdown specification for handling
 [paragraphs and line breaks](https://spec.commonmark.org/current/).
 
 A paragraph is one or more consecutive lines of text, separated by one or
-more blank lines (two newlines at the end of the first paragraph), as [explained above](#line-breaks).
+more blank lines (two newlines at the end of the first paragraph), as explained in  [line breaks](#line-breaks).
 
 Need more control over line breaks or soft returns? Add a single line break
 by ending a line with a backslash, or two or more spaces. Two newlines in a row create a new
@@ -401,8 +401,8 @@ Examples:
 ```
 
 <!--
-The "2." and "4." in the example above are changed to "1." below, to match the style
-standards on docs.gitlab.com.
+The "2." and "4." in the previous example are changed to "1." in the following example,
+to match the style standards on docs.gitlab.com.
 See https://docs.gitlab.com/ee/development/documentation/styleguide/#lists
 -->
 
@@ -437,8 +437,8 @@ They can even:
 ```
 
 <!--
-The "*" and "+" in the example above are changed to "-" below, to match the style
-standards on docs.gitlab.com.
+The "*" and "+" in the previous example are changed to "-" in the following example,
+to match the style standards on docs.gitlab.com.
 See https://docs.gitlab.com/ee/development/documentation/styleguide/#lists
 -->
 
@@ -1379,7 +1379,7 @@ For example:
   ~~~
   ```
 
-The three examples above render as:
+The three previous examples render as:
 
 - > ```python
   > def function():

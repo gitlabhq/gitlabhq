@@ -259,7 +259,7 @@ For this requirement, be sure to take the following into account:
   the request to contain one. In this case the fingerprint or fingerprint
   validators are optional.
 
-If none of the above described scenarios is valid, the request
+If none of the previously described scenarios is valid, the request
 fails with one of the mentioned errors.
 
 ### Missing claims, or `Email can't be blank` errors

@@ -103,6 +103,15 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
     subject { build(:ci_trigger, owner: project.first_owner, project: project) }
   end
 
+  it_behaves_like 'it has loose foreign keys' do
+    let(:factory_name) { :ci_trigger }
+  end
+
+  it_behaves_like 'loose foreign key with custom delete limit' do
+    let(:from_table) { "p_ci_pipelines" }
+    let(:delete_limit) { 50 }
+  end
+
   context 'loose foreign key on ci_triggers.owner_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
       let!(:parent) { create(:user) }

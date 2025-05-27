@@ -7,6 +7,12 @@ export const mockResponse = {
         __typename: 'Repository',
         paginatedTree: {
           __typename: 'TreeConnection',
+          pageInfo: {
+            __typename: 'PageInfo',
+            endCursor: 'cursor123',
+            startCursor: 'cursor456',
+            hasNextPage: false,
+          },
           nodes: [
             {
               __typename: 'Tree',
@@ -40,6 +46,10 @@ export const mockResponse = {
                     path: 'dir_1/file.txt',
                     mode: '100644',
                     webPath: '/root/jerasmus-test-project/-/blob/master/dir_1/file.txt',
+                    filePath: 'dir_1/file.txt',
+                    flatPath: 'dir_1//dir2/file.txt',
+                    type: 'text',
+                    lfsOid: '1234',
                   },
                 ],
               },

@@ -85,14 +85,13 @@ You can create as many personal access tokens as you like.
 Save the personal access token somewhere safe. After you leave the page,
 you no longer have access to the token.
 
-### Prefill personal access token name and scopes
+### Prefill personal access token details
 
-You can link directly to the personal access token page and have the form prefilled with a name and
-list of scopes. To do this, you can append a `name` parameter and a list of comma-separated scopes
-to the URL. For example:
+You can prefill the details of the personal access token by appending the name, description, and
+list of scopes to the URL. For example:
 
 ```plaintext
-https://gitlab.example.com/-/user_settings/personal_access_tokens?name=Example+Access+token&scopes=api,read_user,read_registry
+https://gitlab.example.com/-/user_settings/personal_access_tokens?name=Example+Access+token&description=My+description&scopes=api,read_user
 ```
 
 {{< alert type="warning" >}}

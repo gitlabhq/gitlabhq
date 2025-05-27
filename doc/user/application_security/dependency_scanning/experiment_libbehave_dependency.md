@@ -81,7 +81,7 @@ The following languages and package managers are supported by Libbehave:
   - Reads `**/specifications/**/*.gemspec` files
   - Reads `**/*.gemspec` files
 
-The above files are analyzed for new dependencies only if the files have been modified in the source branch.
+The previous files are analyzed for new dependencies only if the files have been modified in the source branch.
 
 ## Configuration
 
@@ -104,7 +104,7 @@ include:
       stage: test
 ```
 
-The above configuration enables the Libbehave CI component for the test stage. This will create a new job called `libbehave-experiment`.
+The previous configuration enables the Libbehave CI component for the test stage. This will create a new job called `libbehave-experiment`.
 
 ### Configuring MR comments
 

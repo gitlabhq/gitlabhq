@@ -201,16 +201,6 @@ RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database d
           end
       end
     end
-
-    describe 'custom delete_limit' do
-      it 'configures batch size 50 for p_ci_pipelines to be async_delete for deleted ci_triggers',
-        :aggregate_failures do
-        definition = definitions.find do |definition|
-          definition.from_table == 'p_ci_pipelines' && definition.to_table == 'ci_triggers'
-        end
-        expect(definition.options[:delete_limit]).to eq(50)
-      end
-    end
   end
 
   context 'all tables have correct triggers installed' do

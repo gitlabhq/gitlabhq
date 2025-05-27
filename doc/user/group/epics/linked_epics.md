@@ -176,7 +176,7 @@ If you try to close a blocked epic using the "Close epic" button, a confirmation
 
 {{< /history >}}
 
-<!-- When epics as work items are GA, integrate this and below sections with the ones above. -->
+<!-- When epics as work items are GA, integrate this and the following sections with the previous ones. -->
 
 If your administrator [enabled the new look for epics](epic_work_items.md), you can also link epics
 and the following items:

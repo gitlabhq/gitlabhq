@@ -1,5 +1,5 @@
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
-import { stripWhitespaceFromQuery } from '~/lib/graphql';
+import { stripWhitespaceFromQuery, typePolicies } from '~/lib/graphql';
 import { queryToObject } from '~/lib/utils/url_utility';
 
 describe('stripWhitespaceFromQuery', () => {
@@ -50,5 +50,11 @@ describe('stripWhitespaceFromQuery', () => {
   it('works when the params do not include a query', () => {
     const paramsWithoutQuery = `${defaultPath}&variables=${encodedVariables}`;
     expect(stripWhitespaceFromQuery(paramsWithoutQuery, defaultPath)).toEqual(paramsWithoutQuery);
+  });
+});
+
+describe('typePolicies', () => {
+  it('includes a policy for Blob', () => {
+    expect(typePolicies.Blob).toEqual(expect.objectContaining({ keyFields: ['webPath'] }));
   });
 });
