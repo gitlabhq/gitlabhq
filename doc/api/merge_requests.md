@@ -2325,7 +2325,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 | `target_branch`            | string  | No       | The target branch. |
 | `title`                    | string  | No       | Title of MR. |
 
-Must include at least one non-required attribute from above.
+Must include at least one non-required attribute.
 
 Example response:
 

@@ -176,7 +176,7 @@ To disable the bypass mechanism, make sure the environment variable
 
 ## Allow specific users to bypass authenticated request rate limiting
 
-Similarly to the bypass header described above, it is possible to allow
+Similarly to the bypass header described previously, it is possible to allow
 a certain set of users to bypass the rate limiter. This only applies
 to authenticated requests: with unauthenticated requests, by definition
 GitLab does not know who the user is.

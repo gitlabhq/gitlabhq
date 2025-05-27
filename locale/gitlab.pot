@@ -30729,6 +30729,9 @@ msgstr ""
 msgid "Groups|Group path is unavailable. Path has been replaced with a suggested available path."
 msgstr ""
 
+msgid "Groups|Groups that are archived or pending deletion will appear here."
+msgstr ""
+
 msgid "Groups|Learn more about subgroups"
 msgstr ""
 
@@ -30763,6 +30766,9 @@ msgid "Groups|This will create a README.md for project %{path}."
 msgstr ""
 
 msgid "Groups|This will create a project %{path} and add a README.md."
+msgstr ""
+
+msgid "Groups|You don't have any inactive groups."
 msgstr ""
 
 msgid "Groups|You're creating a new top-level group"

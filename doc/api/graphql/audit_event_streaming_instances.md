@@ -77,7 +77,7 @@ mutation {
 ```
 
 Instance administrators can add an HTTP header using the GraphQL `auditEventsStreamingInstanceHeadersCreate` mutation. You can retrieve the destination ID
-by [listing all the streaming destinations](#list-streaming-destinations) for the instance or from the mutation above.
+by [listing all the streaming destinations](#list-streaming-destinations) for the instance or from the previous mutation.
 
 ```graphql
 mutation {

@@ -615,13 +615,13 @@ To post a comment in a particular line of a particular file, you must specify
 the full commit SHA, the `path`, the `line`, and `line_type` should be `new`.
 
 The comment is added at the end of the last commit if at least one of the
-cases below is valid:
+following cases is valid:
 
 - the `sha` is instead a branch or a tag and the `line` or `path` are invalid
 - the `line` number is invalid (does not exist)
 - the `path` is invalid (does not exist)
 
-In any of the above cases, the response of `line`, `line_type` and `path` is
+In any of the previous cases, the response of `line`, `line_type` and `path` is
 set to `null`.
 
 For other approaches to commenting on a merge request, see

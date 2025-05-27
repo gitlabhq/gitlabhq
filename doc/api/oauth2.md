@@ -113,7 +113,7 @@ Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `COD
   - The SHA256 hash must be in binary format before encoding.
   - In Ruby, you can set that up with `Base64.urlsafe_encode64(Digest::SHA256.digest(CODE_VERIFIER), padding: false)`.
   - For reference, a `CODE_VERIFIER` string of `ks02i3jdikdo2k0dkfodf3m39rjfjsdk0wk349rj3jrhf` when hashed
-    and encoded using the Ruby snippet above produces a `CODE_CHALLENGE` string
+    and encoded using the previous Ruby snippet produces a `CODE_CHALLENGE` string
     of `2i0WFA-0AerkjQm4X4oDEhqA17QIAKNjXpagHBXmO_U`.
 
 1. Request authorization code. To do that, you should redirect the user to the
