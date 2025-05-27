@@ -51,8 +51,11 @@ To maximize the chance of a successful and performant migration, you should:
 - Migrate between versions that are as new as possible. Update the source and destination instances to as late a version
   as possible to take advantage of bug fixes and improvements added over time.
 
-We have successfully tested migrations between a source instance running GitLab 16.2 and a destination instance running
-GitLab 16.8.
+If the source and destination instances are not the same version:
+
+- The destination instance must be a later version than the source instance.
+- The source instance must not be more than two [minor](../../../policy/maintenance.md#versioning)
+  versions earlier than the destination instance.
 
 ### Configuration
 

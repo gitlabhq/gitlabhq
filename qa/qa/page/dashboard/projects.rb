@@ -49,7 +49,17 @@ module QA
         end
 
         def click_member_tab
-          click_link('Member')
+          # Because project authorization updates are async it is possible that we get to this page before
+          # project authorizations have been updated and therefore the empty state is shown.
+          # Retry until project authorizations have been updated.
+          QA::Support::Retrier.retry_until(
+            max_duration: 60,
+            retry_on_exception: true,
+            reload_page: true,
+            sleep_interval: 2
+          ) do
+            click_link('Member')
+          end
           wait_for_requests
         end
 

@@ -42,6 +42,7 @@ Migration/UpdateLargeTable:
   - :resource_label_events
   - :sbom_occurrences
   - :security_findings
+  - :security_scans
   - :sent_notifications
   - :system_note_metadata
   - :taggings

@@ -1021,6 +1021,8 @@
   - 1
 - - vulnerabilities_namespace_statistics_adjustment
   - 1
+- - vulnerabilities_namespace_statistics_process_group_delete_events
+  - 1
 - - vulnerabilities_namespace_statistics_process_group_transfer_events
   - 1
 - - vulnerabilities_namespace_statistics_process_project_delete_events

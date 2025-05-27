@@ -89,11 +89,11 @@ Certificate Authority file) is only available when:
 
 To summarize, the following are the differences between predefined and configuration variables:
 
-|                | Predefined variables     | Configuration variables                            |
-|----------------|--------------------------|----------------------------------------------------|
-| Purpose        | Supports script logic    | Configure runner and the job execution environment |
-| Availability   | Always available         | Available only under specific conditions           |
-| Defined by     | Users in`.gitlab-ci.yml` | Administrators in `config.toml`                    |
+|                | Predefined variables      | Configuration variables                            |
+|----------------|---------------------------|----------------------------------------------------|
+| Purpose        | Supports script logic     | Configure runner and the job execution environment |
+| Availability   | Always available          | Available only under specific conditions           |
+| Defined by     | Users in `.gitlab-ci.yml` | Administrators in `config.toml`                    |
 
 ## Define a CI/CD variable in the `.gitlab-ci.yml` file
 

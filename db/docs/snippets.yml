@@ -14,4 +14,4 @@ gitlab_schema: gitlab_main_cell
 sharding_key:
   project_id: projects
   organization_id: organizations
-table_size: medium
+table_size: small
