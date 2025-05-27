@@ -9,6 +9,8 @@ module Gitlab
 
           DEFAULT_TEMPLATE_NAME = "default"
 
+          BATCH_SIZE = 100
+
           def unmet?
             return false unless valid_for_managed_resources?(environment:, build:)
             return false unless resource_management_enabled?
@@ -37,16 +39,7 @@ module Gitlab
 
               managed_resource.save!
 
-              Gitlab::InternalEvents.track_event(
-                'ensure_environment_for_managed_resource',
-                user: build.user,
-                project: build.project,
-                additional_properties: {
-                  label: build.project.namespace.actual_plan_name,
-                  property: environment.tier,
-                  value: environment.id
-                }
-              )
+              track_events(response)
             end
           end
 
@@ -118,6 +111,34 @@ module Gitlab
 
           def format_error_message(object_errors)
             "Failed to ensure the environment. #{object_errors.map(&:to_json).join(', ')}"
+          end
+
+          def track_events(response)
+            Gitlab::InternalEvents.track_event(
+              'ensure_environment_for_managed_resource',
+              user: build.user,
+              project: build.project,
+              additional_properties: {
+                label: build.project.namespace.actual_plan_name,
+                property: environment.tier,
+                value: environment.id
+              }
+            )
+
+            response.objects.each_slice(BATCH_SIZE) do |objects|
+              objects.each do |object|
+                Gitlab::InternalEvents.track_event(
+                  'ensure_gvk_resource_for_managed_resource',
+                  user: build.user,
+                  project: build.project,
+                  additional_properties: {
+                    label: "#{object.group}/#{object.version}/#{object.kind}",
+                    property: environment.tier,
+                    value: environment.id
+                  }
+                )
+              end
+            end
           end
         end
       end
