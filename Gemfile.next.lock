@@ -768,7 +768,7 @@ GEM
       nokogiri (~> 1, >= 1.10.8)
     gitlab-glfm-markdown (0.0.31)
       rb_sys (~> 0.9.109)
-    gitlab-kas-grpc (17.11.2)
+    gitlab-kas-grpc (17.11.3)
       grpc (~> 1.0)
     gitlab-labkit (0.37.0)
       actionpack (>= 5.0.0, < 8.1.0)

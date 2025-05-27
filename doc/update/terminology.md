@@ -47,7 +47,7 @@ A breaking change can be considered major if it affects many users, or represent
 
 ## Third-party dependencies
 
-This section applies to all above terms.
+This section applies to all previous terms.
 
 Changes (deprecation, end of support, removal, or breaking change) in third-party dependencies are handled separately from changes to features in GitLab itself:
 

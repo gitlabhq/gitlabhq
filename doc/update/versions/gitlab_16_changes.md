@@ -875,7 +875,7 @@ Specific information applies to installations using Geo:
   - Workhorse
 
   You should check the size of your RSA keys (`openssl rsa -in <your-key-file> -text -noout | grep "Key:"`)
-  for any of the applications above before
+  for any of the previous applications before
   upgrading.
 
 - A `BackfillCiPipelineVariablesForPipelineIdBigintConversion` background migration is finalized with
@@ -1557,7 +1557,7 @@ praefect['configuration'] = {
     #
     # IMPORTANT:
     # As part of reconfiguring Praefect, disable this feature.
-    # Read about this above.
+    # Read about this as described previously.
     #
     verification_interval: 0,
   },

@@ -48,7 +48,7 @@ The zero-downtime upgrade process has the following requirements:
 - You have to use post-deployment migrations.
 - [Zero-downtime upgrades are not available with the GitLab Charts](https://docs.gitlab.com/charts/installation/upgrade.html). Support is available with the [GitLab Operator](https://docs.gitlab.com/operator/gitlab_upgrades.html) but there are [known limitations](https://docs.gitlab.com/operator/#known-issues) with this deployment method and as such it's not covered in this guide at this time.
 
-In addition to the above, be aware of the following considerations:
+In addition to the previous, be aware of the following considerations:
 
 - Most of the time, you can safely upgrade from a patch release to the next minor release if the patch release is not the latest.
   For example, upgrading from `16.3.2` to `16.4.1` should be safe even if `16.3.3` has been released. You should verify the
@@ -57,7 +57,7 @@ In addition to the above, be aware of the following considerations:
   - [GitLab 16 changes](versions/gitlab_16_changes.md)
   - [GitLab 15 changes](versions/gitlab_15_changes.md)
 - Some releases may include [background migrations](background_migrations.md). These migrations are performed in the background by Sidekiq and are often used for migrating data. Background migrations are only added in the monthly releases.
-  - Certain major or minor releases may require a set of background migrations to be finished. While this doesn't require downtime (if the above conditions are met), it's required that you [wait for background migrations to complete](background_migrations.md) between each major or minor release upgrade.
+  - Certain major or minor releases may require a set of background migrations to be finished. While this doesn't require downtime (if the previous conditions are met), it's required that you [wait for background migrations to complete](background_migrations.md) between each major or minor release upgrade.
   - The time necessary to complete these migrations can be reduced by increasing the number of Sidekiq workers that can process jobs in the
     `background_migration` queue. To see the size of this queue, [check for background migrations before upgrading](background_migrations.md).
 - Zero downtime upgrades can be performed for [Gitaly](#gitaly) when it's set up in its Cluster or Sharded setups due to a graceful reload mechanism. For the [Praefect (Gitaly Cluster)](#praefect-gitaly-cluster) component it can also be directly upgraded without downtime, however the GitLab Linux package does not offer HA and subsequently Zero Downtime support for it's database - A third party database solution is required to avoid downtime.
@@ -236,7 +236,7 @@ for a graceful reload, Workhorse doesn't. The best approach is to drain the node
 such as by using your load balancer. You can also do this by using NGINX on the node through its graceful shutdown
 functionality. This section explains the NGINX approach.
 
-In addition to the above, Rails is where the main database migrations need to be executed. Like Praefect, the best approach is by using the deploy node. If PgBouncer is currently being used, it also needs to be bypassed as Rails uses an advisory lock when attempting to run a migration to prevent concurrent migrations from running on the same database. These locks are not shared across transactions, resulting in `ActiveRecord::ConcurrentMigrationError` and other issues when running database migrations using PgBouncer in transaction pooling mode.
+In addition to the previous, Rails is where the main database migrations need to be executed. Like Praefect, the best approach is by using the deploy node. If PgBouncer is currently being used, it also needs to be bypassed as Rails uses an advisory lock when attempting to run a migration to prevent concurrent migrations from running on the same database. These locks are not shared across transactions, resulting in `ActiveRecord::ConcurrentMigrationError` and other issues when running database migrations using PgBouncer in transaction pooling mode.
 
 1. On the **Rails deploy node**:
 

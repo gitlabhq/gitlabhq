@@ -166,7 +166,7 @@ If you upgrade your GitLab instance while the GitLab Runner is processing jobs, 
 
 As for the artifacts, the GitLab Runner attempts to upload them three times, after which the job eventually fails.
 
-To address the above two scenarios, it is advised to do the following prior to upgrading:
+To address the two previous scenarios, it is advised to do the following prior to upgrading:
 
 1. Plan your maintenance.
 1. Pause your runners, or block new jobs from starting by adding the following to your `/etc/gitlab/gitlab.rb`:

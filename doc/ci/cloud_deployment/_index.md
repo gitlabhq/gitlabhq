@@ -209,7 +209,7 @@ To deploy to EC2, complete the following steps.
 
    - If you do not want these JSON objects saved in your repository, add each object
      as a separate [file type CI/CD variable](../variables/_index.md#use-file-type-cicd-variables)
-     in the project settings. Use the same variable names as above.
+     in the project settings. Use the same previous variable names.
 
 1. In your `.gitlab-ci.yml` file, create a CI/CD variable for the name of the stack. For example:
 
