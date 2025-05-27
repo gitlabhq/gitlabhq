@@ -629,6 +629,94 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         ).to be_truthy
       end
     end
+
+    describe '.archived' do
+      let_it_be(:non_archived) { create(:group) }
+      let_it_be(:archived) { create(:group, :archived) }
+
+      subject { described_class.archived }
+
+      it 'returns archived groups', :aggregate_failures do
+        is_expected.to include(archived)
+        is_expected.not_to include(non_archived)
+      end
+    end
+
+    describe '.non_archived' do
+      let_it_be(:non_archived) { create(:group) }
+      let_it_be(:archived) { create(:group, :archived) }
+
+      subject { described_class.non_archived }
+
+      it 'returns non-archived groups', :aggregate_failures do
+        is_expected.to include(non_archived)
+        is_expected.not_to include(archived)
+      end
+    end
+
+    describe '.self_or_ancestors_archived' do
+      let_it_be(:non_archived) { create(:group) }
+      let_it_be(:non_archived_subgroup) { create(:group, parent: non_archived) }
+
+      let_it_be(:archived) { create(:group, :archived) }
+
+      let_it_be(:archived_subgroup_with_non_archived_parent) { create(:group, :archived, parent: non_archived) }
+      let_it_be(:non_archived_subgroup_with_archived_parent) { create(:group, parent: archived) }
+
+      subject { described_class.self_or_ancestors_archived }
+
+      it 'returns archived groups' do
+        is_expected.to include(archived)
+      end
+
+      it 'returns archived group with non-archived ancestors' do
+        is_expected.to include(archived_subgroup_with_non_archived_parent)
+      end
+
+      it 'returns non-archived group with archived ancestors' do
+        is_expected.to include(non_archived_subgroup_with_archived_parent)
+      end
+
+      it 'does not return non-archived groups' do
+        is_expected.not_to include(non_archived)
+      end
+
+      it 'does not return groups without archived ancestors' do
+        is_expected.not_to include(non_archived_subgroup)
+      end
+    end
+
+    describe '.self_and_ancestors_non_archived' do
+      let_it_be(:non_archived) { create(:group) }
+      let_it_be(:non_archived_subgroup) { create(:group, parent: non_archived) }
+
+      let_it_be(:archived) { create(:group, :archived) }
+
+      let_it_be(:archived_subgroup_with_non_archived_parent) { create(:group, :archived, parent: non_archived) }
+      let_it_be(:non_archived_subgroup_with_archived_parent) { create(:group, parent: archived) }
+
+      subject { described_class.self_and_ancestors_non_archived }
+
+      it 'returns non-archived groups' do
+        is_expected.to include(non_archived)
+      end
+
+      it 'returns groups without archived ancestors' do
+        is_expected.to include(non_archived_subgroup)
+      end
+
+      it 'does not return archived groups' do
+        is_expected.not_to include(archived)
+      end
+
+      it 'does not return archived group with non-archived ancestors' do
+        is_expected.not_to include(archived_subgroup_with_non_archived_parent)
+      end
+
+      it 'does not return non-archived group with archived ancestors' do
+        is_expected.not_to include(non_archived_subgroup_with_archived_parent)
+      end
+    end
   end
 
   describe 'delegate' do

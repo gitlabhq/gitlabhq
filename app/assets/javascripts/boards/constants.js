@@ -32,6 +32,7 @@ export const ListType = {
   backlog: 'backlog',
   closed: 'closed',
   label: 'label',
+  status: 'status',
 };
 
 export const ListTypeTitles = {
@@ -161,6 +162,7 @@ export const FilterFields = {
     'search',
     'types',
     'weight',
+    'status',
   ],
 };
 

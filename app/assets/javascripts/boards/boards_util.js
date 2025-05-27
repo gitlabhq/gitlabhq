@@ -286,6 +286,11 @@ export const FiltersInfo = {
   search: {
     negatedSupport: false,
   },
+  status: {
+    transform: (val) => {
+      return { name: val };
+    },
+  },
 };
 
 /**

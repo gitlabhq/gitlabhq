@@ -891,8 +891,6 @@ use three periods with no space (`...`) instead of the `&hellip;` HTML entity or
 
 For more information, see [code blocks](_index.md#code-blocks).
 
-For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/punctuation/ellipses).
-
 Do not include any ellipses when documenting UI text. For example, use:
 
 - **Search or go to**
@@ -900,6 +898,8 @@ Do not include any ellipses when documenting UI text. For example, use:
 Instead of:
 
 - **Search or go to...**
+
+For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/punctuation/ellipses).
 
 ## email
 

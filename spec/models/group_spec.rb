@@ -1298,28 +1298,120 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     describe '.aimed_for_deletion' do
-      let!(:date) { 10.days.ago }
+      let_it_be(:group_not_marked_for_deletion) { create(:group) }
+      let_it_be(:group_marked_for_deletion) { create(:group_with_deletion_schedule) }
 
-      subject(:relation) { described_class.aimed_for_deletion(date) }
+      subject(:relation) { described_class.aimed_for_deletion }
+
+      it 'only includes groups marked for deletion', :aggregate_failures do
+        is_expected.to include(group_marked_for_deletion)
+        is_expected.not_to include(group_not_marked_for_deletion)
+      end
+    end
+
+    describe '.self_or_ancestors_aimed_for_deletion' do
+      let_it_be(:group_not_marked_for_deletion) { create(:group) }
+      let_it_be(:group_not_marked_for_deletion_subgroup) { create(:group, parent: group_not_marked_for_deletion) }
+      let_it_be(:group_marked_for_deletion) { create(:group_with_deletion_schedule) }
+
+      let_it_be(:group_marked_for_deletion_with_active_parent) do
+        create(:group_with_deletion_schedule, parent: group_not_marked_for_deletion)
+      end
+
+      let_it_be(:group_not_marked_for_deletion_with_parent_marked_for_deletion) do
+        create(:group, parent: group_marked_for_deletion)
+      end
+
+      subject(:relation) { described_class.self_or_ancestors_aimed_for_deletion }
+
+      it 'returns groups marked for deletion' do
+        is_expected.to include(group_marked_for_deletion)
+      end
+
+      it 'returns group marked for deletion without ancestors marked for deletion' do
+        is_expected.to include(group_marked_for_deletion_with_active_parent)
+      end
+
+      it 'returns group with ancestors marked for deletion' do
+        is_expected.to include(group_not_marked_for_deletion_with_parent_marked_for_deletion)
+      end
+
+      it 'does not return groups marked for deletion' do
+        is_expected.not_to include(group_not_marked_for_deletion)
+      end
+
+      it 'does not return groups without ancestors marked for deletion' do
+        is_expected.not_to include(group_not_marked_for_deletion_subgroup)
+      end
+    end
+
+    describe '.not_aimed_for_deletion' do
+      let_it_be(:group_not_marked_for_deletion) { create(:group) }
+      let_it_be(:group_marked_for_deletion) { create(:group_with_deletion_schedule) }
+
+      subject(:relation) { described_class.not_aimed_for_deletion }
+
+      it 'only includes groups not marked for deletion', :aggregate_failures do
+        is_expected.to include(group_not_marked_for_deletion)
+        is_expected.not_to include(group_marked_for_deletion)
+      end
+    end
+
+    describe '.self_and_ancestors_not_aimed_for_deletion' do
+      let_it_be(:group_not_marked_for_deletion) { create(:group) }
+      let_it_be(:group_not_marked_for_deletion_subgroup) { create(:group, parent: group_not_marked_for_deletion) }
+      let_it_be(:group_marked_for_deletion) { create(:group_with_deletion_schedule) }
+
+      let_it_be(:group_marked_for_deletion_with_active_parent) do
+        create(:group_with_deletion_schedule, parent: group_not_marked_for_deletion)
+      end
+
+      let_it_be(:group_not_marked_for_deletion_with_parent_marked_for_deletion) do
+        create(:group, parent: group_marked_for_deletion)
+      end
+
+      subject(:relation) { described_class.self_and_ancestors_not_aimed_for_deletion }
+
+      it 'return groups marked for deletion' do
+        is_expected.to include(group_not_marked_for_deletion)
+      end
+
+      it 'return groups without ancestors marked for deletion' do
+        is_expected.to include(group_not_marked_for_deletion_subgroup)
+      end
+
+      it 'does not return groups marked for deletion' do
+        is_expected.not_to include(group_marked_for_deletion)
+      end
+
+      it 'does not return groups marked for deletion without ancestors marked for deletion' do
+        is_expected.not_to include(group_marked_for_deletion_with_active_parent)
+      end
+
+      it 'does not return groups with ancestors marked for deletion' do
+        is_expected.not_to include(group_not_marked_for_deletion_with_parent_marked_for_deletion)
+      end
+    end
+
+    describe '.marked_for_deletion_before' do
+      let_it_be(:date) { 10.days.ago }
+
+      let_it_be(:group_not_marked_for_deletion) { create(:group) }
+      let_it_be(:group_marked_for_deletion_after_specified_date) do
+        create(:group_with_deletion_schedule, marked_for_deletion_on: date + 2.days)
+      end
+
+      let_it_be(:group_marked_for_deletion_before_specified_date) do
+        create(:group_with_deletion_schedule, marked_for_deletion_on: date - 2.days)
+      end
+
+      let_it_be(:group_marked_for_deletion_on_specified_date) do
+        create(:group_with_deletion_schedule, marked_for_deletion_on: date)
+      end
+
+      subject(:relation) { described_class.marked_for_deletion_before(date) }
 
       it 'only includes groups that are marked for deletion on or before the specified date' do
-        group_not_marked_for_deletion = create(:group)
-
-        group_marked_for_deletion_after_specified_date = create(
-          :group_with_deletion_schedule,
-          marked_for_deletion_on: date + 2.days
-        )
-
-        group_marked_for_deletion_before_specified_date = create(
-          :group_with_deletion_schedule,
-          marked_for_deletion_on: date - 2.days
-        )
-
-        group_marked_for_deletion_on_specified_date = create(
-          :group_with_deletion_schedule,
-          marked_for_deletion_on: date
-        )
-
         expect(relation).to include(
           group_marked_for_deletion_before_specified_date,
           group_marked_for_deletion_on_specified_date
@@ -1331,19 +1423,19 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
     end
 
-    describe '.by_marked_for_deletion_on' do
+    describe '.marked_for_deletion_on' do
       let_it_be(:group_marked_for_deletion) { create(:group_with_deletion_schedule, marked_for_deletion_on: Date.parse('2024-01-01')) }
       let_it_be(:group_not_marked_for_deletion) { create(:group) }
 
       context 'when marked_for_deletion_on is present' do
         it 'returns groups marked for deletion on the specified date' do
-          expect(described_class.by_marked_for_deletion_on(Date.parse('2024-01-01'))).to contain_exactly(group_marked_for_deletion)
+          expect(described_class.marked_for_deletion_on(Date.parse('2024-01-01'))).to contain_exactly(group_marked_for_deletion)
         end
       end
 
       context 'when marked_for_deletion_on is not present' do
         it 'does not return any groups marked for deletion' do
-          expect(described_class.by_marked_for_deletion_on(nil)).to be_empty
+          expect(described_class.marked_for_deletion_on(nil)).to be_empty
         end
       end
     end
@@ -1646,7 +1738,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
     describe '.active' do
       let_it_be(:active_group) { create(:group) }
-      let_it_be(:archived_group) { create(:group, namespace_settings: create(:namespace_settings, archived: true)) }
+      let_it_be(:archived_group) { create(:group, :archived) }
       let_it_be(:marked_for_deletion_group) { create(:group_with_deletion_schedule) }
 
       subject { described_class.active }
@@ -1656,15 +1748,37 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       it { is_expected.not_to include(archived_group) }
     end
 
+    describe '.self_and_ancestors_active' do
+      let_it_be(:active_group) { create(:group) }
+      let_it_be(:inactive_group) { create(:group, :archived) }
+      let_it_be(:inactive_subgroup) { create(:group, parent: inactive_group) }
+
+      subject { described_class.self_and_ancestors_active }
+
+      it { is_expected.to include(active_group) }
+      it { is_expected.not_to include(inactive_group, inactive_subgroup) }
+    end
+
     describe '.inactive' do
       let_it_be(:active_group) { create(:group) }
-      let_it_be(:archived_group) { create(:group, namespace_settings: create(:namespace_settings, archived: true)) }
+      let_it_be(:archived_group) { create(:group, :archived) }
       let_it_be(:marked_for_deletion_group) { create(:group_with_deletion_schedule) }
 
       subject { described_class.inactive }
 
       it { is_expected.to include(archived_group) }
       it { is_expected.to include(marked_for_deletion_group) }
+      it { is_expected.not_to include(active_group) }
+    end
+
+    describe '.self_or_ancestors_inactive' do
+      let_it_be(:active_group) { create(:group) }
+      let_it_be(:inactive_group) { create(:group, :archived) }
+      let_it_be(:inactive_subgroup) { create(:group, parent: inactive_group) }
+
+      subject { described_class.self_or_ancestors_inactive }
+
+      it { is_expected.to include(inactive_group, inactive_subgroup) }
       it { is_expected.not_to include(active_group) }
     end
   end

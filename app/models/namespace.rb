@@ -235,7 +235,10 @@ class Namespace < ApplicationRecord
   scope :with_project_statistics, -> { includes(projects: :statistics) }
 
   scope :archived, -> { joins(:namespace_settings).where(namespace_settings: { archived: true }) }
+  scope :self_or_ancestors_archived, -> { where(self_or_ancestors_archived_setting_subquery.exists) }
+
   scope :non_archived, -> { joins(:namespace_settings).where(namespace_settings: { archived: false }) }
+  scope :self_and_ancestors_non_archived, -> { where.not(self_or_ancestors_archived_setting_subquery.exists) }
 
   scope :with_statistics, -> do
     namespace_statistic_columns = STATISTICS_COLUMNS.map { |column| sum_project_statistics_column(column) }
@@ -383,6 +386,20 @@ class Namespace < ApplicationRecord
 
     def username_reserved?(username)
       without_project_namespaces.top_level.find_by_path_or_name(username).present?
+    end
+
+    def self_or_ancestors_archived_setting_subquery
+      namespace_setting_reflection = reflect_on_association(:namespace_settings)
+      namespace_setting_table = Arel::Table.new(namespace_setting_reflection.table_name)
+      traversal_ids_ref = "#{arel_table.name}.#{arel_table[:traversal_ids].name}"
+
+      namespace_setting_table
+        .project(1)
+        .where(
+          namespace_setting_table[namespace_setting_reflection.foreign_key]
+            .eq(Arel.sql("ANY (#{traversal_ids_ref})"))
+        )
+        .where(namespace_setting_table[:archived].eq(true))
     end
   end
 

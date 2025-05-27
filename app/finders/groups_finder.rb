@@ -112,7 +112,7 @@ class GroupsFinder < UnionFinder
     groups = by_visibility(groups)
     groups = by_ids(groups)
     groups = top_level_only(groups)
-    groups = by_marked_for_deletion_on(groups)
+    groups = marked_for_deletion_on(groups)
     by_search(groups)
   end
 
@@ -145,10 +145,10 @@ class GroupsFinder < UnionFinder
     groups.by_parent(parent)
   end
 
-  def by_marked_for_deletion_on(groups)
+  def marked_for_deletion_on(groups)
     return groups unless params[:marked_for_deletion_on].present?
 
-    groups.by_marked_for_deletion_on(params[:marked_for_deletion_on])
+    groups.marked_for_deletion_on(params[:marked_for_deletion_on])
   end
 
   def filter_group_ids(groups)
@@ -166,7 +166,7 @@ class GroupsFinder < UnionFinder
   def by_active(groups)
     return groups if params[:active].nil?
 
-    params[:active] ? groups.active : groups.inactive
+    params[:active] ? groups.self_and_ancestors_active : groups.self_or_ancestors_inactive
   end
 
   def include_parent_shared_groups?

@@ -19,6 +19,7 @@ import {
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_TYPE,
   TOKEN_TYPE_WEIGHT,
+  TOKEN_TYPE_STATUS,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import { AssigneeFilterType, GroupByParamType } from 'ee_else_ce/boards/constants';
@@ -75,8 +76,10 @@ export default {
         releaseTag,
         confidential,
         healthStatus,
+        status,
         ...otherValues
       } = this.filterParams;
+
       const filteredSearchValue = [];
 
       if (this.hasCustomFieldsFeature) {
@@ -155,6 +158,13 @@ export default {
         filteredSearchValue.push({
           type: TOKEN_TYPE_WEIGHT,
           value: { data: weight, operator: '=' },
+        });
+      }
+
+      if (status) {
+        filteredSearchValue.push({
+          type: TOKEN_TYPE_STATUS,
+          value: { data: status, operator: '=' },
         });
       }
 
@@ -295,8 +305,10 @@ export default {
         releaseTag,
         confidential,
         healthStatus,
+        status,
         ...otherValues
       } = this.filterParams;
+
       let iteration = iterationId;
       let cadence = iterationCadenceId;
       let notParams = {};
@@ -347,6 +359,7 @@ export default {
           search,
           types,
           weight,
+          status,
           epic_id: isGid(epicId) ? getIdFromGraphQLId(epicId) : epicId,
           my_reaction_emoji: myReactionEmoji,
           release_tag: releaseTag,
@@ -444,6 +457,9 @@ export default {
             break;
           case TOKEN_TYPE_WEIGHT:
             filterParams.weight = filter.value.data;
+            break;
+          case TOKEN_TYPE_STATUS:
+            filterParams.status = filter.value.data;
             break;
           case TOKEN_TYPE_EPIC:
             filterParams.epicId = filter.value.data;

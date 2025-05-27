@@ -72,7 +72,7 @@ export default {
     <local-storage-sync v-model="isCollapsed" :storage-key="`wiki:${page.path}:collapsed`" />
     <span
       ref="entry"
-      class="wiki-list gl-relative gl-mx-2 gl-mb-px gl-flex gl-min-h-8 gl-cursor-pointer gl-items-center gl-rounded-base gl-px-3"
+      class="wiki-list gl-relative gl-mx-2 gl-mb-px gl-flex gl-min-h-7 gl-cursor-pointer gl-items-center gl-rounded-base gl-px-3"
       data-testid="wiki-list"
       :class="{ active: page.path === currentPath }"
       @click="toggleCollapsed"
@@ -92,7 +92,7 @@ export default {
         category="tertiary"
         data-testid="wiki-list-create-child-button"
         :href="`${page.path}/{new_page_title}`"
-        class="wiki-list-create-child-button has-tooltip gl-ml-2"
+        class="wiki-list-create-child-button has-tooltip gl-ml-3"
         :title="plusButtonTooltip"
         :aria-label="plusButtonTooltip"
         @click.stop

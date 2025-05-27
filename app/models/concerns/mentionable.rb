@@ -179,7 +179,7 @@ module Mentionable
   private
 
   def extracted_mentionables(refs)
-    refs.issues + refs.merge_requests + refs.commits
+    (refs.work_items + refs.issues).uniq(&:id) + refs.merge_requests + refs.commits
   end
 
   # Returns a Hash of changed mentionable fields

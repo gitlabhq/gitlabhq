@@ -36275,6 +36275,8 @@ CREATE UNIQUE INDEX index_namespace_import_users_on_user_id ON namespace_import_
 
 CREATE UNIQUE INDEX index_namespace_root_storage_statistics_on_namespace_id ON namespace_root_storage_statistics USING btree (namespace_id);
 
+CREATE INDEX index_namespace_settings_on_namespace_id_where_archived_true ON namespace_settings USING btree (namespace_id) WHERE (archived = true);
+
 CREATE UNIQUE INDEX index_namespace_statistics_on_namespace_id ON namespace_statistics USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_namespaces_name_parent_id_type ON namespaces USING btree (name, parent_id, type);

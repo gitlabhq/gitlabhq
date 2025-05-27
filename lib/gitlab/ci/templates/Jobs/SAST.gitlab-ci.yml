@@ -59,12 +59,14 @@ sast:
     - '**/*.mjs'
     - '**/*.cs'
     - '**/*.rb'
+    - '**/*.php'
 
 gitlab-advanced-sast:
   extends: .sast-analyzer
   image:
     name: "$SAST_ANALYZER_IMAGE"
   variables:
+    FF_GLAS_ENABLE_PHP_SUPPORT: "true"
     SEARCH_MAX_DEPTH: 20
     SAST_ANALYZER_IMAGE_TAG: '2'
     SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gitlab-advanced-sast:$SAST_ANALYZER_IMAGE_TAG$SAST_IMAGE_SUFFIX"
@@ -297,7 +299,7 @@ semgrep-sast:
           $SAST_EXCLUDED_ANALYZERS !~ /gitlab-advanced-sast/ &&
           ($GITLAB_ADVANCED_SAST_ENABLED == 'true' || $GITLAB_ADVANCED_SAST_ENABLED == '1')
       variables:
-        SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS, **/*.py, **/*.go, **/*.java, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.cjs, **/*.mjs, **/*.cs, **/*.rb"
+        SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS, **/*.py, **/*.go, **/*.java, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.cjs, **/*.mjs, **/*.cs, **/*.rb, **/*.php"
       exists: !reference [.semgrep-with-advanced-sast-exist-rules, exists]
     ## In case gitlab-advanced-sast already covers all the files that semgrep-sast would have scanned (i.e the previous rule did not match) skip this job
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
@@ -322,7 +324,7 @@ semgrep-sast:
           $SAST_EXCLUDED_ANALYZERS !~ /gitlab-advanced-sast/ &&
           ($GITLAB_ADVANCED_SAST_ENABLED == 'true' || $GITLAB_ADVANCED_SAST_ENABLED == '1')
       variables:
-        SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS, **/*.py, **/*.go, **/*.java, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.cjs, **/*.mjs, **/*.cs, **/*.rb"
+        SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS, **/*.py, **/*.go, **/*.java, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.cjs, **/*.mjs, **/*.cs, **/*.rb, **/*.php"
       exists: !reference [.semgrep-with-advanced-sast-exist-rules, exists]
     ## In case gitlab-advanced-sast already covers all the files that semgrep-sast would have scanned
     - if: $CI_COMMIT_BRANCH &&

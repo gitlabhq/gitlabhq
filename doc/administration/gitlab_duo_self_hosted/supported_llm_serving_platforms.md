@@ -155,7 +155,7 @@ This change has been observed to notably improve response times in internal benc
 1. [AWS Bedrock](https://aws.amazon.com/bedrock/).
    A fully managed service that allows developers to build and scale generative AI applications using pre-trained models from leading AI companies. It seamlessly integrates with other AWS services and offers a pay-as-you-go pricing model.
 
-   You must configure IAM credentials to access Bedrock with the appropriate AWS IAM permissions before accessing Bedrock models. You cannot do this in the GitLab Duo Self-Hosted UI.
+   You must configure IAM credentials to access Bedrock with the appropriate AWS IAM permissions before accessing Bedrock models. Make sure that the IAM role has the `AmazonBedrockFullAccess` policy to allow [access to Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam-awsmanpol.html#security-iam-awsmanpol-AmazonBedrockFullAccess). You cannot do this in the GitLab Duo Self-Hosted UI. You also need to [use the AWS console to request access to the models](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access-modify.html) that you want to use.
 
    To authenticate your AI Gateway instance export the appropriate AWS SDK environment variables such as [`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_REGION_NAME`](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) when starting the Docker container. For more information, see the [AWS Identity and Access Management (IAM) Guide](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam.html).
 

@@ -17,7 +17,8 @@ class AdjournedGroupDeletionWorker
   def perform
     deletion_cutoff = Gitlab::CurrentSettings.deletion_adjourned_period.days.ago.to_date
 
-    Group.with_route.aimed_for_deletion(deletion_cutoff)
+    Group.with_route
+      .marked_for_deletion_before(deletion_cutoff)
       .with_deletion_schedule
       .find_each(batch_size: 100) # rubocop: disable CodeReuse/ActiveRecord -- existing class moved from EE to CE
       .with_index do |group, index|

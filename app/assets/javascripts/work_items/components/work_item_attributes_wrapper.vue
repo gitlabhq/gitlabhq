@@ -214,6 +214,7 @@ export default {
       :work-item-type="workItemType"
       :full-path="fullPath"
       @error="$emit('error', $event)"
+      @statusUpdated="$emit('attributesUpdated', { type: $options.ListType.status, ids: [$event] })"
     />
     <work-item-assignees
       v-if="workItemAssignees"

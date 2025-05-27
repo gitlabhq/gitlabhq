@@ -137,14 +137,23 @@ class Group < Namespace
   has_one :deletion_schedule, class_name: 'GroupDeletionSchedule'
   delegate :deleting_user, :marked_for_deletion_on, to: :deletion_schedule, allow_nil: true
 
-  scope :aimed_for_deletion, ->(date) { joins(:deletion_schedule).where('group_deletion_schedules.marked_for_deletion_on <= ?', date) }
+  scope :aimed_for_deletion, -> { where.associated(:deletion_schedule) }
+  scope :self_or_ancestors_aimed_for_deletion, -> { where(self_or_ancestors_deletion_schedule_subquery.exists) }
+
   scope :not_aimed_for_deletion, -> { where.missing(:deletion_schedule) }
+  scope :self_and_ancestors_not_aimed_for_deletion, -> { where.not(self_or_ancestors_deletion_schedule_subquery.exists) }
+
   scope :with_deletion_schedule, -> { preload(deletion_schedule: :deleting_user) }
   scope :with_deletion_schedule_only, -> { preload(:deletion_schedule) }
 
-  scope :by_marked_for_deletion_on, ->(marked_for_deletion_on) do
+  scope :marked_for_deletion_before, ->(date) do
     joins(:deletion_schedule)
-      .where(group_deletion_schedules: { marked_for_deletion_on: marked_for_deletion_on })
+      .where('group_deletion_schedules.marked_for_deletion_on <= ?', date)
+  end
+
+  scope :marked_for_deletion_on, ->(date) do
+    joins(:deletion_schedule)
+      .where(group_deletion_schedules: { marked_for_deletion_on: date })
   end
 
   has_one :harbor_integration, class_name: 'Integrations::Harbor'
@@ -205,9 +214,8 @@ class Group < Namespace
 
   scope :with_users, -> { includes(:users) }
 
-  scope :active, -> do
-    non_archived.not_aimed_for_deletion
-  end
+  scope :active, -> { non_archived.not_aimed_for_deletion }
+  scope :self_and_ancestors_active, -> { self_and_ancestors_non_archived.self_and_ancestors_not_aimed_for_deletion }
 
   scope :inactive, -> do
     joins(:namespace_settings)
@@ -217,6 +225,7 @@ class Group < Namespace
         OR #{reflections['deletion_schedule'].table_name}.#{reflections['deletion_schedule'].foreign_key} IS NOT NULL
       SQL
   end
+  scope :self_or_ancestors_inactive, -> { self_or_ancestors_archived.or(self_or_ancestors_aimed_for_deletion) }
 
   scope :with_non_archived_projects, -> { includes(:non_archived_projects) }
 
@@ -498,6 +507,19 @@ class Group < Namespace
       return false if user.can_admin_all_resources?
 
       project_creation_setting == ::Gitlab::Access::ADMINISTRATOR_PROJECT_ACCESS
+    end
+
+    def self_or_ancestors_deletion_schedule_subquery
+      deletion_schedule_reflection = reflect_on_association(:deletion_schedule)
+      deletion_schedule_table = Arel::Table.new(deletion_schedule_reflection.table_name)
+      traversal_ids_ref = "#{arel_table.name}.#{arel_table[:traversal_ids].name}"
+
+      deletion_schedule_table
+        .project(1)
+        .where(
+          deletion_schedule_table[deletion_schedule_reflection.foreign_key]
+            .eq(Arel.sql("ANY (#{traversal_ids_ref})"))
+        )
     end
 
     private
