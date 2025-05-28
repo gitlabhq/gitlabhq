@@ -368,6 +368,32 @@ dast:
     DAST_AUTH_BEFORE_LOGIN_ACTIONS: "css:.navigation-menu,css:.login-menu-item"
 ```
 
+### Taking additional actions after submitting the login form
+
+Define `DAST_AUTH_AFTER_LOGIN_ACTIONS` to provide a sequence of actions to perform
+after submitting the sign-in form, but before verification, when authentication details are recorded.
+This can be used to proceed past a "keep me signed in" dialog.
+
+| Action                           | Format                      |
+|----------------------------------|-----------------------------|
+| Click on an element              | `click(on=<selector>)`      |
+| Select an option from a dropdown | `select(option=<selector>)` |
+
+Actions are comma-separated. For information about selectors, see [finding an element's selector](#finding-an-elements-selector).
+
+For example:
+
+```yaml
+include:
+  - template: DAST.gitlab-ci.yml
+
+dast:
+  variables:
+    DAST_TARGET_URL: "https://example.com"
+    DAST_AUTH_URL: "https://example.com/login"
+    DAST_AUTH_AFTER_LOGIN_ACTIONS: "select(option=id:accept-yes),click(on=id:continue-button)"
+```
+
 ### Excluding logout URLs
 
 If DAST crawls the logout URL while running an authenticated scan, the user is logged out, resulting in the remainder of the scan being unauthenticated.

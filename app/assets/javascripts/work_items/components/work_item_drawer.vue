@@ -13,6 +13,7 @@ import {
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { visitUrl, setUrlParams, updateHistory, removeParams } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { makeDrawerItemFullPath, makeDrawerUrlParam, canRouterNav } from '../utils';
 
 export default {
@@ -257,6 +258,7 @@ export default {
     '#super-sidebar-search',
     '#chat-component',
   ],
+  DRAWER_Z_INDEX,
 };
 </script>
 
@@ -264,7 +266,7 @@ export default {
   <gl-drawer
     v-gl-outside="handleClickOutside"
     :open="open"
-    :z-index="200"
+    :z-index="$options.DRAWER_Z_INDEX"
     data-testid="work-item-drawer"
     :header-height="getDrawerHeight"
     header-sticky

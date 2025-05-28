@@ -33,11 +33,13 @@ module Gitlab
               additional: true,
               auth: true,
               type: "string",
-              example: "click(on=id:remember-me),click(on=css:.continue)",
+              example: "select(option=id:accept-yes),click(on=css:.continue)",
               name: s_("DastProfiles|After-login actions"),
               description: s_(
-                "DastProfiles|A comma-separated list of actions to be run after login but before login " \
-                  "verification. Currently supports `click` actions."
+                "DastProfiles|A comma-separated list of actions to take after login but before login verification. " \
+                  "Supports `click` and `select` actions. " \
+                  "See [Taking additional actions after submitting the login form]" \
+                  "(authentication.md#taking-additional-actions-after-submitting-the-login-form)."
               )
             },
             DAST_AUTH_BEFORE_LOGIN_ACTIONS: {

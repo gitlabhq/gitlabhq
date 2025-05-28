@@ -867,7 +867,7 @@ class ApplicationSetting < ApplicationRecord
     allow_nil: false,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
-  attr_encrypted :asset_proxy_secret_key,
+  migrate_to_encrypts :asset_proxy_secret_key,
     mode: :per_attribute_iv,
     key: :db_key_base_truncated,
     algorithm: 'aes-256-cbc',

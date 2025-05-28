@@ -367,6 +367,8 @@ class ApplicationSettingsAnalysis
     ^(
       encrypted_\w+_iv # ignore encryption-related extra columns
       |
+      tmp_\w+ # ignore migrate_to_encrypts-related columns
+      |
       \w+_html # ignore Markdown-caching extra columns
     )$
   }x

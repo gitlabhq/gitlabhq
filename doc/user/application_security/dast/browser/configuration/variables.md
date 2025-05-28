@@ -83,7 +83,7 @@ These variables tell the scanner how to authenticate with your application.
 
 | CI/CD variable | Type | Example | Description |
 | :------------- | :--- | ------- | :---------- |
-| `DAST_AUTH_AFTER_LOGIN_ACTIONS` | string | `click(on=id:remember-me),click(on=css:.continue)` | A comma-separated list of actions to be run after login but before login verification. Currently supports `click` actions. |
+| `DAST_AUTH_AFTER_LOGIN_ACTIONS` | string | `select(option=id:accept-yes),click(on=css:.continue)` | A comma-separated list of actions to take after login but before login verification. Supports `click` and `select` actions. See [Taking additional actions after submitting the login form](authentication.md#taking-additional-actions-after-submitting-the-login-form). |
 | `DAST_AUTH_BEFORE_LOGIN_ACTIONS` | [selector](authentication.md#finding-an-elements-selector) | `css:.user,id:show-login-form` | A comma-separated list of selectors representing elements to click on prior to entering the DAST_AUTH_USERNAME and DAST_AUTH_PASSWORD into the login form. |
 | `DAST_AUTH_CLEAR_INPUT_FIELDS` | boolean | `true` | Disables clearing of username and password fields before attempting manual login. Set to false by default. |
 | `DAST_AUTH_COOKIE_NAMES` | string | `sessionID,groupName` | Set to a comma-separated list of cookie names to specify which cookies are used for authentication. |

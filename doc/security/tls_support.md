@@ -37,27 +37,29 @@ and interactions with the platform.
 
 ## Supported cipher suites
 
-GitLab supports the following cipher suites and protocol versions:
+GitLab supports multiple cipher suites. Each of the following cipher suites are considered
+secure and have an [SSL server rating](https://github.com/ssllabs/research/wiki/SSL-Server-Rating-Guide)
+of `A`.
 
-| Protocol Version | Cipher Suite | [Grade](https://github.com/ssllabs/research/wiki/SSL-Server-Rating-Guide) |
-|------------------|--------------|-------|
-| TLSv1.3 | TLS_AKE_WITH_AES_128_GCM_SHA256 | A |
-| TLSv1.3 | TLS_AKE_WITH_AES_256_GCM_SHA384 | A |
-| TLSv1.3 | TLS_AKE_WITH_CHACHA20_POLY1305_SHA256 | A |
-| TLSv1.2 | TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 | A |
-| TLSv1.2 | TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256 | A |
-| TLSv1.2 | TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256-draft | A |
-| TLSv1.2 | TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA | A |
-| TLSv1.2 | TLS_RSA_WITH_AES_128_GCM_SHA256 | A |
-| TLSv1.2 | TLS_RSA_WITH_AES_128_CBC_SHA | A |
-| TLSv1.2 | TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 | A |
-| TLSv1.2 | TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA | A |
-| TLSv1.2 | TLS_RSA_WITH_AES_256_GCM_SHA384 | A |
-| TLSv1.2 | TLS_RSA_WITH_AES_256_CBC_SHA | A |
-| TLSv1.2 | TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256 | A |
-| TLSv1.2 | TLS_RSA_WITH_AES_128_CBC_SHA256 | A |
-| TLSv1.2 | TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384 | A |
-| TLSv1.2 | TLS_RSA_WITH_AES_256_CBC_SHA256 | A |
+| Protocol Version | Cipher Suite |
+|------------------|--------------|
+| TLSv1.3 | TLS_AKE_WITH_AES_128_GCM_SHA256 |
+| TLSv1.3 | TLS_AKE_WITH_AES_256_GCM_SHA384 |
+| TLSv1.3 | TLS_AKE_WITH_CHACHA20_POLY1305_SHA256 |
+| TLSv1.2 | TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 |
+| TLSv1.2 | TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256 |
+| TLSv1.2 | TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256-draft |
+| TLSv1.2 | TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA |
+| TLSv1.2 | TLS_RSA_WITH_AES_128_GCM_SHA256 |
+| TLSv1.2 | TLS_RSA_WITH_AES_128_CBC_SHA |
+| TLSv1.2 | TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 |
+| TLSv1.2 | TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA |
+| TLSv1.2 | TLS_RSA_WITH_AES_256_GCM_SHA384 |
+| TLSv1.2 | TLS_RSA_WITH_AES_256_CBC_SHA |
+| TLSv1.2 | TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256 |
+| TLSv1.2 | TLS_RSA_WITH_AES_128_CBC_SHA256 |
+| TLSv1.2 | TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384 |
+| TLSv1.2 | TLS_RSA_WITH_AES_256_CBC_SHA256 |
 
 ## Certificate requirements
 

@@ -19880,7 +19880,7 @@ msgstr ""
 msgid "DastProfiles|A URL that is compared to the URL in the browser to determine if authentication has succeeded after the login form is submitted."
 msgstr ""
 
-msgid "DastProfiles|A comma-separated list of actions to be run after login but before login verification. Currently supports `click` actions."
+msgid "DastProfiles|A comma-separated list of actions to take after login but before login verification. Supports `click` and `select` actions. See [Taking additional actions after submitting the login form](authentication.md#taking-additional-actions-after-submitting-the-login-form)."
 msgstr ""
 
 msgid "DastProfiles|A comma-separated list of selectors representing elements to click on prior to entering the DAST_AUTH_USERNAME and DAST_AUTH_PASSWORD into the login form."

@@ -11,15 +11,17 @@ For detailed instructions on setting up GitLab Duo licensing in your development
 
 ## Instructions for setting up GitLab Duo features in the local development environment
 
-For complete setup instructions, see [GitLab Duo licensing for local development](ai_development_license.md).
+### Required: Configure licenses
 
-### Required: Install AI gateway
+See [GitLab Duo licensing for local development](ai_development_license.md).
+
+## Required: Install AI gateway
 
 **Why:** Duo features (except for Duo Workflow) route LLM requests through the AI gateway.
 
 **How:**
 Follow [these instructions](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md#install)
-to install the AI gateway with GDK. We recommend this route for most users.
+to install the AI gateway with GDK. Installing through GDK is the best route for most users.
 
 You can also install AI gateway by:
 
@@ -29,9 +31,51 @@ You can also install AI gateway by:
 We only recommend this for users who have a specific reason for *not* running
 the AI gateway through GDK.
 
-### Set up and run GDK
+### Required: Run `gitlab:duo:setup` script
 
-For detailed instructions on setting up your GDK for GitLab Duo development, see [GitLab Duo licensing for local development](ai_development_license.md).
+**Why:** This ensures that your instance or group has the correct licenses, settings, and feature flags to test Duo features locally.
+
+**How:**
+
+1. GitLab.com (SaaS) mode
+
+   ```shell
+   GITLAB_SIMULATE_SAAS=1 bundle exec 'rake gitlab:duo:setup'
+   ```
+
+   This:
+
+   - Creates a test group called `gitlab-duo`, which contains a project called `test`
+   - Applies an Ultimate license to the group
+   - Sets up Duo Enterprise seats for the group
+   - Enables all feature flags for the group
+   - Updates group settings to enable all available GitLab Duo features
+
+   Alternatively, if you want to add GitLab Duo Pro licenses for the group instead (which only enables a subset of features), you can run:
+
+   ```shell
+   GITLAB_SIMULATE_SAAS=1 bundle exec 'rake gitlab:duo:setup[duo_pro]'
+   ```
+
+1. GitLab Self-Managed / Dedicated mode
+
+   ```shell
+   GITLAB_SIMULATE_SAAS=0 bundle exec 'rake gitlab:duo:setup'
+   ```
+
+   This:
+
+   - Creates a test group called `gitlab-duo`, which contains a project called `test`
+   - Applies an Ultimate license to the instance
+   - Sets up Duo Enterprise seats for the instance
+   - Enables all feature flags for the instance
+   - Updates instance settings to enable all available GitLab Duo features
+
+   Alternatively, if you want to add GitLab Duo Pro add-on for the instance instead (which only enables a subset of features), you can run:
+
+   ```shell
+   GITLAB_SIMULATE_SAAS=0 bundle exec 'rake gitlab:duo:setup[duo_pro]'
+   ```
 
 ## Tips for local development
 

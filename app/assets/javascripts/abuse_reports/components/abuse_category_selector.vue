@@ -4,6 +4,7 @@ import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { s__, __ } from '~/locale';
 import csrf from '~/lib/utils/csrf';
 import { CATEGORY_OPTIONS } from '~/abuse_reports/components/constants';
+import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 
 export default {
   name: 'AbuseCategorySelector',
@@ -66,12 +67,13 @@ export default {
       this.$emit('close-drawer');
     },
   },
+  DRAWER_Z_INDEX,
 };
 </script>
 <template>
   <gl-drawer
     :header-height="getDrawerHeaderHeight"
-    :z-index="300"
+    :z-index="$options.DRAWER_Z_INDEX"
     :open="showDrawer && mounted"
     @close="closeDrawer"
   >

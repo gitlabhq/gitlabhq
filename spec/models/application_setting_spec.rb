@@ -1352,11 +1352,15 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           expect(setting).to be_valid
         end
 
-        it 'is encrypted' do
-          setting.asset_proxy_secret_key = 'shared secret'
+        context 'with asset_proxy_url set' do
+          before do
+            setting.asset_proxy_url = 'https://example.com'
+          end
 
-          expect(setting.encrypted_asset_proxy_secret_key).to be_present
-          expect(setting.encrypted_asset_proxy_secret_key).not_to eq(setting.asset_proxy_secret_key)
+          it_behaves_like 'encrypted attribute being migrated to the new encryption framework',
+            :asset_proxy_secret_key do
+            let(:record) { setting }
+          end
         end
       end
 

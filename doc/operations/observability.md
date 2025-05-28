@@ -142,6 +142,9 @@ To properly receive telemetry data, you need to open specific ports in your GitL
    - Type: Custom TCP, Port: 8080, Source: Your IP or 0.0.0.0/0 (for UI access)
    - Type: Custom TCP, Port: 4317, Source: Your IP or 0.0.0.0/0 (for OTLP gRPC)
    - Type: Custom TCP, Port: 4318, Source: Your IP or 0.0.0.0/0 (for OTLP HTTP)
+   - Type: Custom TCP, Port: 9411, Source: Your IP or 0.0.0.0/0 (for Zipkin - optional)
+   - Type: Custom TCP, Port: 14268, Source: Your IP or 0.0.0.0/0 (for Jaeger HTTP - optional)
+   - Type: Custom TCP, Port: 14250, Source: Your IP or 0.0.0.0/0 (for Jaeger gRPC - optional)
 1. Select **Save rules**.
 
 ### Access GitLab Observability
@@ -391,7 +394,9 @@ If your telemetry data isn't appearing in GitLab O11y:
 1. Check container logs for any errors:
 
    ```shell
-   docker logs signoz-otel-collector
+   docker logs otel-collector-standard
+   docker logs o11y-otel-collector
+   docker logs o11y
    ```
 
 1. Try using the HTTP endpoint (4318) instead of gRPC (4317).

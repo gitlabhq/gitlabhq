@@ -548,7 +548,7 @@ To simplify testing on [staging](https://staging.gitlab.com), several pre-config
 
 Ask in the `#g_duo_chat` channel on Slack to be added as an Owner to these groups.
 Once added as an Owner, you can add your secondary accounts to the group with a role Developer and assign them a seat in the Duo add-on.
-Then you can sign in as your Developer user and test access control to Duo Chat. 
+Then you can sign in as your Developer user and test access control to Duo Chat.
 
 ### GitLab Duo Chat End-to-End Tests in live environments
 
@@ -569,7 +569,7 @@ and the analysis is tracked as a Snowplow event.
 
 The analysis can contain any of the attributes defined in the latest [iglu schema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/ai_question_category/jsonschema).
 
-- The categories and detailed categories have been predefined by the product manager and the product designer, as we are not allowed to look at the actual questions from users. If there is reason to believe that there are missing or confusing categories, they can be changed. To edit the definitions, update `categories.xml` in both [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/ai_gateway/prompts/definitions/categorize_question/categories.xml) and [monolith](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/llm/fixtures/categories.xml). 
+- The categories and detailed categories have been predefined by the product manager and the product designer, as we are not allowed to look at the actual questions from users. If there is reason to believe that there are missing or confusing categories, they can be changed. To edit the definitions, update `categories.xml` in both [AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/ai_gateway/prompts/definitions/categorize_question/categories.xml) and [monolith](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/llm/fixtures/categories.xml).
 - The list of attributes captured can be found in [labesl.xml](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/ai_gateway/prompts/definitions/categorize_question/labels.xml).
   - The following is yet to be implemented:
     - `is_proper_sentence`

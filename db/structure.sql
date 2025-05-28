@@ -9124,6 +9124,7 @@ CREATE TABLE application_settings (
     response_limits jsonb DEFAULT '{}'::jsonb NOT NULL,
     web_based_commit_signing_enabled boolean DEFAULT false NOT NULL,
     lock_web_based_commit_signing_enabled boolean DEFAULT false NOT NULL,
+    tmp_asset_proxy_secret_key jsonb,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -14019,8 +14020,8 @@ CREATE TABLE duo_workflows_events (
     event_status smallint NOT NULL,
     message text,
     correlation_id_value text,
-    CONSTRAINT check_5e35596b00 CHECK ((char_length(correlation_id_value) <= 128)),
-    CONSTRAINT check_9422e6deb0 CHECK ((char_length(message) <= 4096))
+    CONSTRAINT check_125840165c CHECK ((char_length(message) <= 16384)),
+    CONSTRAINT check_5e35596b00 CHECK ((char_length(correlation_id_value) <= 128))
 );
 
 CREATE SEQUENCE duo_workflows_events_id_seq
@@ -14044,7 +14045,7 @@ CREATE TABLE duo_workflows_workflows (
     workflow_definition text DEFAULT 'software_development'::text NOT NULL,
     allow_agent_to_request_user boolean DEFAULT true NOT NULL,
     pre_approved_agent_privileges smallint[] DEFAULT '{1,2}'::smallint[] NOT NULL,
-    CONSTRAINT check_5aedde451d CHECK ((char_length(goal) <= 4096)),
+    CONSTRAINT check_30ca07a4ef CHECK ((char_length(goal) <= 16384)),
     CONSTRAINT check_ec723e2a1a CHECK ((char_length(workflow_definition) <= 255))
 );
 
