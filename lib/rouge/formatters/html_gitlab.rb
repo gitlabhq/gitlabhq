@@ -12,6 +12,7 @@ module Rouge
       def initialize(options = {})
         @tag = options[:tag]
         @line_number = options[:line_number] || 1
+        @fix_attributes = options[:fix_attributes]
         @ellipsis_indexes = options[:ellipsis_indexes] || []
         @ellipsis_svg = options[:ellipsis_svg]
       end
@@ -22,7 +23,11 @@ module Rouge
           yield "\n" unless is_first
           is_first = false
 
-          yield %(<span id="LC#{@line_number}" class="line" lang="#{@tag}">)
+          id = " id=\"LC#{@line_number}\"" unless @fix_attributes
+          lang = " lang=\"#{@tag}\"" unless @fix_attributes
+          data_lang = " data-lang=\"#{@tag}\"" if @fix_attributes && @tag
+
+          yield %(<span#{id} class="line"#{lang}#{data_lang}>)
 
           line.each do |token, value|
             value = value.chomp! || value

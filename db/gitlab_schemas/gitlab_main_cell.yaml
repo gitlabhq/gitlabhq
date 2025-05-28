@@ -15,3 +15,7 @@ allow_cross_foreign_keys:
   - gitlab_main
   - gitlab_main_clusterwide
 require_sharding_key: true
+sharding_root_tables:
+  - projects
+  - organizations
+  - namespaces

@@ -364,6 +364,29 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
           expect(failure.exception_message).to eq("Project can't be blank, Priority can't be blank, and Priority is not a number")
         end
       end
+
+      context 'when object has failed subrelations' do
+        it 'captures failed subrelations when max retries exceeded' do
+          label = group.labels.new
+          exception = ActiveRecord::QueryCanceled.new("PG::QueryCanceled: ERROR:  canceling statement due to statement timeout")
+          failed_record = { record: label.priorities.build, exception: exception }
+
+          allow_next_instance_of(Gitlab::ImportExport::Base::RelationObjectSaver) do |saver|
+            allow(saver).to receive(:execute)
+            allow(saver).to receive(:invalid_subrelations).and_return([])
+            allow(saver).to receive(:failed_subrelations).and_return([failed_record])
+          end
+
+          subject.load(context, [label])
+
+          failure = entity.failures.first
+
+          expect(failure.pipeline_class).to eq(tracker.pipeline_name)
+          expect(failure.subrelation).to eq('LabelPriority')
+          expect(failure.exception_class).to eq('ActiveRecord::QueryCanceled')
+          expect(failure.exception_message).to eq("PG::QueryCanceled: ERROR:  canceling statement due to statement timeout")
+        end
+      end
     end
 
     context 'when object is persisted' do

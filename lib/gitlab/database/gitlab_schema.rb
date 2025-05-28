@@ -91,6 +91,10 @@ module Gitlab
         Gitlab::Database.all_gitlab_schemas[schema.to_s].require_sharding_key
       end
 
+      def self.sharding_root_tables(schema)
+        Gitlab::Database.all_gitlab_schemas[schema.to_s].sharding_root_tables
+      end
+
       def self.cross_joins_allowed?(table_schemas, all_tables)
         return true unless table_schemas.many?
 

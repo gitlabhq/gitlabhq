@@ -108,5 +108,108 @@ RSpec.describe Gitlab::ImportExport::Base::RelationObjectSaver, feature_category
         end
       end
     end
+
+    context 'when database timeout (ActiveRecord::QueryCanceled) occurs during batch processing' do
+      let(:notes) { build_list(:note, 10, project: project, importing: true) }
+      let(:relation_object) { build(:issue, project: project, notes: notes) }
+      let(:relation_definition) { { 'notes' => {} } }
+
+      before do
+        stub_feature_flags(import_rescue_query_canceled: true)
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(import_rescue_query_canceled: false)
+        end
+
+        it 're-raises the exception without retrying' do
+          allow(saver).to receive(:save_valid_records).and_raise(ActiveRecord::QueryCanceled)
+
+          expect { saver.execute }.to raise_error(ActiveRecord::QueryCanceled)
+          expect(saver).not_to receive(:process_with_smaller_batch_size)
+        end
+      end
+
+      context 'when maximum exception rescue count is exceeded' do
+        it 're-raises the exception after MAX_EXCEPTION_RESCUE_COUNT attempts' do
+          allow(saver).to receive(:save_valid_records).and_raise(ActiveRecord::QueryCanceled)
+
+          saver.instance_variable_set(:@exceptions_rescued, described_class::MAX_EXCEPTION_RESCUE_COUNT - 1)
+
+          expect { saver.execute }.to raise_error(ActiveRecord::QueryCanceled)
+          expect(saver.instance_variable_get(:@exceptions_rescued)).to eq(described_class::MAX_EXCEPTION_RESCUE_COUNT)
+        end
+
+        it 'increments exception counter on each rescue' do
+          call_count = 0
+          allow(saver).to receive(:save_valid_records) do
+            call_count += 1
+            raise ActiveRecord::QueryCanceled if call_count <= 2
+          end
+
+          saver.execute
+
+          expect(saver.instance_variable_get(:@exceptions_rescued)).to eq(2)
+        end
+      end
+
+      it 'retries with smaller batch size' do
+        expect(saver).to receive(:save_valid_records).and_raise(ActiveRecord::QueryCanceled)
+        allow(saver).to receive(:save_valid_records).and_call_original
+
+        expect(saver).to receive(:save_batch_with_retry)
+          .with('notes', notes)
+          .and_call_original
+        smaller_batch_size = (notes.size / described_class::BATCH_SIZE_REDUCTION_FACTOR.to_f).ceil
+
+        (0...described_class::BATCH_SIZE_REDUCTION_FACTOR).each do |i|
+          start_index = i * smaller_batch_size
+          end_index = [start_index + smaller_batch_size, notes.size].min - 1
+          batch = notes[start_index..end_index]
+
+          next if batch.empty?
+
+          expect(saver).to receive(:save_batch_with_retry)
+            .with('notes', batch, 1)
+            .and_call_original
+        end
+
+        saver.execute
+      end
+
+      it 'tracks error with Gitlab::ErrorTracking' do
+        expect(saver).to receive(:save_valid_records).and_raise(ActiveRecord::QueryCanceled)
+        allow(saver).to receive(:save_valid_records).and_call_original
+
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).at_least(:once).with(
+          instance_of(ActiveRecord::QueryCanceled),
+          hash_including(
+            relation_name: 'notes',
+            relation_key: 'issues',
+            batch_size: kind_of(Integer),
+            retry_count: kind_of(Integer)
+          )
+        )
+
+        saver.execute
+      end
+
+      it 'tracks failed subrelations when max retries exceeded' do
+        call_count = 0
+
+        allow(saver).to receive(:save_valid_records) do |*args|
+          call_count += 1
+          raise ActiveRecord::QueryCanceled if call_count <= 4
+
+          saver.method(:save_valid_records).super_method.call(*args)
+        end
+
+        saver.execute
+        expect(saver.failed_subrelations.present?).to eq(true)
+        expect(saver.failed_subrelations.pluck(:record)).to match_array(notes.first)
+        expect(saver.failed_subrelations.pluck(:exception)).to all(be_a(ActiveRecord::QueryCanceled))
+      end
+    end
   end
 end

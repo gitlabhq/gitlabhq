@@ -118,6 +118,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'gitlab_subscription_histories.namespace_id',
       # allowed as it points to itself
       'organizations.id',
+      # allowed as it points to itself
+      'users.id',
       # contains an object storage reference. Group_id is the sharding key but we can't use the usual cascade delete FK.
       'virtual_registries_packages_maven_cache_entries.group_id',
       # The table contains references in the object storage and thus can't have cascading delete
@@ -146,8 +148,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
 
   let(:starting_from_milestone) { 16.6 }
 
-  let(:allowed_sharding_key_referenced_tables) { %w[projects namespaces organizations] }
-
   it 'requires a sharding_key for all cell-local tables, after milestone 16.6', :aggregate_failures do
     tables_missing_sharding_key(starting_from_milestone: starting_from_milestone).each do |table_name|
       expect(allowed_to_be_missing_sharding_key).to include(table_name), error_message(table_name)
@@ -166,7 +166,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
 
   it 'ensures all sharding_key columns exist and reference projects, namespaces or organizations',
     :aggregate_failures do
-    all_tables_to_sharding_key.each do |table_name, sharding_key|
+    all_tables_to_sharding_key.each do |table_name, sharding_key, gitlab_schema|
+      allowed_sharding_key_referenced_tables = ::Gitlab::Database::GitlabSchema.sharding_root_tables(gitlab_schema)
+
       sharding_key.each do |column_name, referenced_table_name|
         expect(column_exists?(table_name, column_name)).to eq(true),
           "Could not find sharding key column #{table_name}.#{column_name}"
@@ -192,7 +194,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
 
   it 'ensures all sharding_key columns are not nullable or have a not null check constraint',
     :aggregate_failures do
-    all_tables_to_sharding_key.each do |table_name, sharding_key|
+    all_tables_to_sharding_key.each do |table_name, sharding_key, _gitlab_schema|
       sharding_key_columns = sharding_key.keys
 
       if sharding_key_columns.one?
@@ -475,8 +477,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       entry.sharding_key.present?
     end
 
-    entries_with_sharding_key.to_h do |entry|
-      [entry.table_name, entry.sharding_key]
+    entries_with_sharding_key.map do |entry|
+      [entry.table_name, entry.sharding_key, entry.gitlab_schema]
     end
   end
 

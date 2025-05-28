@@ -10,6 +10,7 @@
 - Llm::ExtraResourceFinder # Reason: The finder does not deal with DB-backend resource for now.
 - Security::VulnerabilityElasticFinder # Reason: The finder deals with Elasticsearch records and not DB records
 - Security::VulnerabilityElasticAggregationFinder # Reason: The finder deals with Elasticsearch records and not DB records
+- WorkItems::Statuses::Finder # Reason: The finder intentionally returns a single model instance.
 
 # Temporary excludes (aka TODOs)
 # For example:

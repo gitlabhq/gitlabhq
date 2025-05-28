@@ -19,7 +19,7 @@ Below are available schemas related to Cells and Organizations:
 | `gitlab_main_cell_local` | For tables in the `main:` database that are related to features that is distinct for each cell. For example, `zoekt_nodes`, or `shards`. These cell-local tables should not have any foreign key references from/to organization tables. |
 | `gitlab_ci` | Use for all tables in the `ci:` database that are for an Organization. For example, `ci_pipelines` and `ci_builds` |
 | `gitlab_ci_cell_local` | For tables in the `ci:` database that are related to features that is distinct for each cell. For example, `instance_type_ci_runners`, or `ci_cost_settings`. These cell-local tables should not have any foreign key references from/to organization tables. |
-| `gitlab_main_user` | Upcoming schema, related to Users. For example, `users`. |
+| `gitlab_main_user` | Schema for all User-related tables, ex. users, etc. Most user functionality is organizational level (e.g. commenting on an issue), but some functionality (e.g. login) is cluster-wide. |
 
 ## Choose either the `gitlab_main_cell` or `gitlab_main_clusterwide` schema
 
@@ -54,6 +54,7 @@ All tables with the following `gitlab_schema` are considered organization level:
 - `gitlab_main_cell`
 - `gitlab_ci`
 - `gitlab_sec`
+- `gitlab_main_user`
 
 All newly created organization-level tables are required to have a `sharding_key`
 defined in the corresponding `db/docs/` file for that table.
@@ -110,6 +111,13 @@ The following are examples of valid sharding keys:
   sharding_key:
     project_id: projects
     namespace_id: namespaces
+  ```
+
+- (Only for `gitlab_main_user`) The table entries belong to a user only:
+
+  ```yaml
+  sharding_key:
+    user_id: user
   ```
 
 ### The sharding key must be immutable

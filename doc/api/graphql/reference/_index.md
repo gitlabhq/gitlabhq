@@ -20344,6 +20344,29 @@ The edge type for [`WorkItem`](#workitem).
 | <a id="workitemedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="workitemedgenode"></a>`node` | [`WorkItem`](#workitem) | The item at the end of the edge. |
 
+#### `WorkItemLifecycleConnection`
+
+The connection type for [`WorkItemLifecycle`](#workitemlifecycle).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemlifecycleconnectionedges"></a>`edges` | [`[WorkItemLifecycleEdge]`](#workitemlifecycleedge) | A list of edges. |
+| <a id="workitemlifecycleconnectionnodes"></a>`nodes` | [`[WorkItemLifecycle]`](#workitemlifecycle) | A list of nodes. |
+| <a id="workitemlifecycleconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `WorkItemLifecycleEdge`
+
+The edge type for [`WorkItemLifecycle`](#workitemlifecycle).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemlifecycleedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="workitemlifecycleedgenode"></a>`node` | [`WorkItemLifecycle`](#workitemlifecycle) | The item at the end of the edge. |
+
 #### `WorkItemLinkedResourceConnection`
 
 The connection type for [`WorkItemLinkedResource`](#workitemlinkedresource).
@@ -27928,6 +27951,7 @@ GPG signature for a signed commit.
 | <a id="groupisadjourneddeletionenabled"></a>`isAdjournedDeletionEnabled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.11. **Status**: Experiment. Indicates if delayed group deletion is enabled. |
 | <a id="groupislinkedtosubscription"></a>`isLinkedToSubscription` | [`Boolean`](#boolean) | Indicates if group is linked to a subscription. |
 | <a id="grouplfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
+| <a id="grouplifecycles"></a>`lifecycles` {{< icon name="warning-solid" >}} | [`WorkItemLifecycleConnection`](#workitemlifecycleconnection) | **Introduced** in GitLab 18.1. **Status**: Experiment. Lifecycles of work items available to the namespace. |
 | <a id="grouplinkpaths"></a>`linkPaths` {{< icon name="warning-solid" >}} | [`NamespacesLinkPaths`](#namespaceslinkpaths) | **Introduced** in GitLab 18.1. **Status**: Experiment. Namespace relevant paths to create links on the UI. |
 | <a id="grouplockduofeaturesenabled"></a>`lockDuoFeaturesEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 16.10. **Status**: Experiment. Indicates if the GitLab Duo features enabled setting is enforced for all subgroups. |
 | <a id="grouplockmathrenderinglimitsenabled"></a>`lockMathRenderingLimitsEnabled` | [`Boolean`](#boolean) | Indicates if math rendering limits are locked for all descendant groups. |
@@ -33479,6 +33503,7 @@ Product analytics events for a specific month and year.
 | <a id="namespacefullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace. |
 | <a id="namespaceid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
 | <a id="namespacelfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
+| <a id="namespacelifecycles"></a>`lifecycles` {{< icon name="warning-solid" >}} | [`WorkItemLifecycleConnection`](#workitemlifecycleconnection) | **Introduced** in GitLab 18.1. **Status**: Experiment. Lifecycles of work items available to the namespace. |
 | <a id="namespacelinkpaths"></a>`linkPaths` {{< icon name="warning-solid" >}} | [`NamespacesLinkPaths`](#namespaceslinkpaths) | **Introduced** in GitLab 18.1. **Status**: Experiment. Namespace relevant paths to create links on the UI. |
 | <a id="namespacename"></a>`name` | [`String!`](#string) | Name of the namespace. |
 | <a id="namespacepackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
@@ -41969,6 +41994,22 @@ Returns [`[WorkItemWidget!]`](#workitemwidget).
 | <a id="workitemdescriptiontemplatecontent"></a>`content` | [`String`](#string) | Content of Description Template. |
 | <a id="workitemdescriptiontemplatename"></a>`name` | [`String`](#string) | Name of Description Template. |
 | <a id="workitemdescriptiontemplateprojectid"></a>`projectId` | [`Int`](#int) | ID of the description template project. |
+
+### `WorkItemLifecycle`
+
+Represents a lifecycle for work items.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemlifecycledefaultclosedstatus"></a>`defaultClosedStatus` {{< icon name="warning-solid" >}} | [`WorkItemStatus`](#workitemstatus) | **Introduced** in GitLab 18.1. **Status**: Experiment. Default closed status of the lifecycle. |
+| <a id="workitemlifecycledefaultduplicatestatus"></a>`defaultDuplicateStatus` {{< icon name="warning-solid" >}} | [`WorkItemStatus`](#workitemstatus) | **Introduced** in GitLab 18.1. **Status**: Experiment. Default duplicate status of the lifecycle. |
+| <a id="workitemlifecycledefaultopenstatus"></a>`defaultOpenStatus` {{< icon name="warning-solid" >}} | [`WorkItemStatus`](#workitemstatus) | **Introduced** in GitLab 18.1. **Status**: Experiment. Default open status of the lifecycle. |
+| <a id="workitemlifecycleid"></a>`id` {{< icon name="warning-solid" >}} | [`GlobalID`](#globalid) | **Introduced** in GitLab 18.1. **Status**: Experiment. ID of the lifecycle. |
+| <a id="workitemlifecyclename"></a>`name` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Name of the lifecycle. |
+| <a id="workitemlifecyclestatuses"></a>`statuses` {{< icon name="warning-solid" >}} | [`[WorkItemStatus!]`](#workitemstatus) | **Introduced** in GitLab 18.1. **Status**: Experiment. All available statuses of the lifecycle. |
+| <a id="workitemlifecycleworkitemtypes"></a>`workItemTypes` {{< icon name="warning-solid" >}} | [`[WorkItemType!]`](#workitemtype) | **Introduced** in GitLab 18.1. **Status**: Experiment. Work item types associated to the lifecycle. |
 
 ### `WorkItemLinkedResource`
 

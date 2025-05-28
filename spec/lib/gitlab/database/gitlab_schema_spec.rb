@@ -218,6 +218,31 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
     end
   end
 
+  describe '.sharding_root_tables' do
+    context 'schemas where require_sharding_key is true' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:schema_name, :result) do
+        :gitlab_main_user | %w[organizations users]
+        :gitlab_main_cell | %w[organizations projects namespaces]
+        :gitlab_ci | %w[organizations projects namespaces]
+        :gitlab_sec | %w[organizations projects namespaces]
+      end
+
+      with_them do
+        it { expect(described_class.sharding_root_tables(schema_name)).to match_array(result) }
+      end
+
+      it 'always includes organizations', :aggregate_failures do
+        Gitlab::Database.all_gitlab_schemas.each do |schema_name, schema_info|
+          next unless schema_info.require_sharding_key
+
+          expect(described_class.sharding_root_tables(schema_name)).to include('organizations')
+        end
+      end
+    end
+  end
+
   context 'when testing cross schema access' do
     using RSpec::Parameterized::TableSyntax
 

@@ -80,6 +80,13 @@ than the [standard cycle](#when-can-a-feature-be-removedchanged) before a breaki
 
 See the [GraphQL deprecation process](../api_graphql_styleguide.md#deprecating-schema-items).
 
+## Webhook breaking changes
+
+We cannot make breaking changes to webhook payloads.
+
+For a list of what constitutes a breaking webhook payload change and what to do instead, see the
+[Webhook breaking changes guide](../../development/webhooks.md#breaking-changes).
+
 ## How are Community Contributions to a deprecated feature handled?
 
 Development on deprecated features is restricted to Priority 1 / Severity 1 bug fixes. Any community contributions to deprecated features are unlikely to be prioritized during milestone planning.

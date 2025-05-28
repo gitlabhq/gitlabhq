@@ -140,7 +140,7 @@ RSpec.describe 'Merge request > User sees diff', :js, feature_category: :code_re
         find_by_scrolling("[id='#{file_hash}']")
 
         expect(page).to have_text("function foo<input> {")
-        expect(page).to have_css(".line[lang='rust'] .k")
+        expect(page).to have_css(".line[data-lang=\"rust\"] .k")
       end
     end
 

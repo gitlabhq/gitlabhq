@@ -8,5 +8,7 @@ description: Users records awaiting for their associated records to be migrated 
   ghost user
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95473
 milestone: '15.4'
-gitlab_schema: gitlab_main_clusterwide
+gitlab_schema: gitlab_main_user
+sharding_key:
+  user_id: users
 table_size: small

@@ -1048,6 +1048,9 @@ excluded_attributes:
     - :label_id
     - :milestone_id
     - :iteration_id
+    - :system_defined_status_identifier
+    - :custom_status_id
+
   epic:
     - :start_date_sourcing_milestone_id
     - :due_date_sourcing_milestone_id

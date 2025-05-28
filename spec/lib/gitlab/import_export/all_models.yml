@@ -1034,6 +1034,7 @@ lists:
 - list_user_preferences
 - group
 - project
+- custom_status
 milestone_releases:
 - milestone
 - release

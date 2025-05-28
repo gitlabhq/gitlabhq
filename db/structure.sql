@@ -16804,6 +16804,9 @@ CREATE TABLE lists (
     iteration_id bigint,
     group_id bigint,
     project_id bigint,
+    custom_status_id bigint,
+    system_defined_status_identifier smallint,
+    CONSTRAINT check_5ed14cb08c CHECK (((list_type <> 6) OR (num_nonnulls(system_defined_status_identifier, custom_status_id) = 1))),
     CONSTRAINT check_6dadb82d36 CHECK ((num_nonnulls(group_id, project_id) = 1))
 );
 
@@ -35872,7 +35875,13 @@ CREATE INDEX index_list_user_preferences_on_user_id ON list_user_preferences USI
 
 CREATE UNIQUE INDEX index_list_user_preferences_on_user_id_and_list_id ON list_user_preferences USING btree (user_id, list_id);
 
+CREATE UNIQUE INDEX index_lists_on_board_id_and_custom_status_id ON lists USING btree (board_id, custom_status_id);
+
 CREATE UNIQUE INDEX index_lists_on_board_id_and_label_id ON lists USING btree (board_id, label_id);
+
+CREATE UNIQUE INDEX index_lists_on_board_id_and_system_defined_status_identifier ON lists USING btree (board_id, system_defined_status_identifier);
+
+CREATE INDEX index_lists_on_custom_status_id ON lists USING btree (custom_status_id);
 
 CREATE INDEX index_lists_on_group_id ON lists USING btree (group_id);
 
@@ -42115,6 +42124,9 @@ ALTER TABLE ONLY audit_events_streaming_event_type_filters
 
 ALTER TABLE ONLY import_placeholder_user_details
     ADD CONSTRAINT fk_10a16b0435 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY lists
+    ADD CONSTRAINT fk_10deab2eef FOREIGN KEY (custom_status_id) REFERENCES work_item_custom_statuses(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY work_item_type_custom_lifecycles
     ADD CONSTRAINT fk_111d417cb7 FOREIGN KEY (work_item_type_id) REFERENCES work_item_types(id) ON DELETE CASCADE;
