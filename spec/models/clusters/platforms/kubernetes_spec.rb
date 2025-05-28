@@ -14,9 +14,9 @@ RSpec.describe Clusters::Platforms::Kubernetes, feature_category: :kubernetes_ma
   it { is_expected.to validate_presence_of(:api_url) }
   it { is_expected.to validate_presence_of(:token) }
 
-  it { is_expected.to validate_length_of(:api_url).is_at_most(2048) }
-  it { is_expected.to validate_length_of(:token).is_at_most(8192) }
-  it { is_expected.to validate_length_of(:ca_cert).is_at_most(65535) }
+  it { is_expected.to validate_length_of(:api_url).is_at_most(described_class::MAX_API_URL_LENGTH) }
+  it { is_expected.to validate_length_of(:token).is_at_most(described_class::MAX_TOKEN_LENGTH) }
+  it { is_expected.to validate_length_of(:ca_cert).is_at_most(described_class::MAX_CA_CERT_LENGTH) }
 
   it { is_expected.to delegate_method(:enabled?).to(:cluster) }
   it { is_expected.to delegate_method(:provided_by_user?).to(:cluster) }

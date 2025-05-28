@@ -373,7 +373,7 @@ export default {
           </span>
         </span>
       </div>
-      <div class="gl-flex gl-flex-1 gl-items-center gl-justify-end gl-gap-3">
+      <div class="gl-flex gl-flex-1 gl-flex-wrap gl-items-center gl-justify-end gl-gap-3">
         <div class="board-card-assignee gl-flex">
           <user-avatar-link
             v-for="assignee in cappedAssignees"
@@ -411,12 +411,14 @@ export default {
           :work-item-web-url="item.webUrl"
           :target-id="targetId"
         />
-        <work-item-status-badge
-          v-if="showStatus"
-          :name="item.status.name"
-          :icon-name="item.status.iconName"
-          :color="item.status.color"
-        />
+        <div class="gl-max-w-20">
+          <work-item-status-badge
+            v-if="showStatus"
+            :name="item.status.name"
+            :icon-name="item.status.iconName"
+            :color="item.status.color"
+          />
+        </div>
       </div>
     </div>
   </div>

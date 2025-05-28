@@ -172,16 +172,11 @@ The worker can be enabled on GitLab Self-Managed:
 The worker processes 10,000 `unknown` artifacts every seven minutes, or roughly two million
 in 24 hours.
 
-There is a related `ci_job_artifacts_backlog_large_loop_limit` feature flag
-which causes the worker to process `unknown` artifacts
-[in batches that are five times larger](https://gitlab.com/gitlab-org/gitlab/-/issues/356319).
-This flag is not recommended for use.
-
 #### `@final` artifacts not deleted from object store
 
 In GitLab 16.1 and later, artifacts are uploaded directly to their final storage location in the `@final` directory, rather than using a temporary location first.
 
-An issue in GitLab 16.1 and 16.2 causes [artifacts to not be deleted from object storage](https://gitlab.com/gitlab-org/gitlab/-/issues/419920) when they expire. 
+An issue in GitLab 16.1 and 16.2 causes [artifacts to not be deleted from object storage](https://gitlab.com/gitlab-org/gitlab/-/issues/419920) when they expire.
 The cleanup process for expired artifacts does not remove artifacts from the `@final` directory. This issue is fixed in GitLab 16.3 and later.
 
 Administrators of GitLab instances that ran GitLab 16.1 or 16.2 for some time could see an increase
@@ -561,8 +556,8 @@ Ci::DeletedObject.where("pick_up_at < ?", Time.current)
 
 # Delete the artifacts from disk
 while Ci::DeletedObject.where("pick_up_at < ?", Time.current).count > 0
-  Ci::DeleteObjectsService.new.execute 
-  sleep(10) 
+  Ci::DeleteObjectsService.new.execute
+  sleep(10)
 end
 
 # Get the count of artifacts marked for deletion (should now be zero)

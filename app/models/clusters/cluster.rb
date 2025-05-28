@@ -13,6 +13,7 @@ module Clusters
 
     DEFAULT_ENVIRONMENT = '*'
     KUBE_INGRESS_BASE_DOMAIN = 'KUBE_INGRESS_BASE_DOMAIN'
+    MAX_ENVIRONMENT_SCOPE_LENGTH = 255
 
     self.reactive_cache_work_type = :external_dependency
 
@@ -52,7 +53,7 @@ module Clusters
     accepts_nested_attributes_for :platform_kubernetes, update_only: true
 
     validates :name, cluster_name: true
-    validates :environment_scope, length: 1..255, if: :environment_scope_changed?
+    validates :environment_scope, length: 1..MAX_ENVIRONMENT_SCOPE_LENGTH, if: :environment_scope_changed?
     validates :cluster_type, presence: true
     validates :domain, allow_blank: true, hostname: { allow_numeric_hostname: true }
     validates :namespace_per_environment, inclusion: { in: [true, false] }

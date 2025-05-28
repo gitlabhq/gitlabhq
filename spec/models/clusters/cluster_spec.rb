@@ -29,7 +29,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
   it { is_expected.to have_many(:deployment_clusters) }
   it { is_expected.to have_many(:environments).through(:deployments) }
 
-  it { is_expected.to validate_length_of(:environment_scope).is_at_most(255) }
+  it { is_expected.to validate_length_of(:environment_scope).is_at_most(described_class::MAX_ENVIRONMENT_SCOPE_LENGTH) }
 
   it { is_expected.to delegate_method(:status).to(:provider) }
   it { is_expected.to delegate_method(:status_reason).to(:provider) }

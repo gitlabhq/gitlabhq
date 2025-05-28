@@ -9,7 +9,6 @@ module Ci
       BATCH_SIZE = 100
       LOOP_TIMEOUT = 5.minutes
       LOOP_LIMIT = 100
-      LARGE_LOOP_LIMIT = 500
       EXCLUSIVE_LOCK_KEY = 'unknown_status_job_artifacts:update:lock'
       LOCK_TIMEOUT = 6.minutes
 
@@ -17,11 +16,6 @@ module Ci
         @removed_count = 0
         @locked_count = 0
         @start_at = Time.current
-        @loop_limit = if Feature.enabled?(:ci_job_artifacts_backlog_large_loop_limit, type: :ops)
-                        LARGE_LOOP_LIMIT
-                      else
-                        LOOP_LIMIT
-                      end
       end
 
       def execute
@@ -35,7 +29,7 @@ module Ci
       private
 
       def update_locked_status_on_unknown_artifacts
-        loop_until(timeout: LOOP_TIMEOUT, limit: @loop_limit) do
+        loop_until(timeout: LOOP_TIMEOUT, limit: LOOP_LIMIT) do
           unknown_status_build_ids = safely_ordered_ci_job_artifacts_locked_unknown_relation.pluck_job_id.uniq
 
           locked_pipe_build_ids = ::Ci::Build
