@@ -442,9 +442,9 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
 
       it 'does not create a new package', :aggregate_failures do
         expect { subject }
-          .to change { Packages::Pypi::Package.for_projects(project).count }.by(0)
+          .to not_change { Packages::Pypi::Package.for_projects(project).count }
           .and change { Packages::PackageFile.count }.by(1)
-          .and change { Packages::Pypi::Metadatum.count }.by(0)
+          .and not_change { Packages::Pypi::Metadatum.count }
         expect(response).to have_gitlab_http_status(:created)
       end
 

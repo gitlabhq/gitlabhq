@@ -548,13 +548,18 @@ class NotificationService
     mailer.project_was_not_exported_email(current_user, project, errors).deliver_later
   end
 
+  def email_template_name(status)
+    "pipeline_#{status}_email"
+  end
+
   def pipeline_finished(pipeline, ref_status: nil, recipients: nil)
     # Must always check project configuration since recipients could be a list of emails
     # from the PipelinesEmailService integration.
     return if pipeline.project.emails_disabled?
 
+    # If changing the next line don't forget to do the same in EE section
     status = pipeline_notification_status(ref_status, pipeline)
-    email_template = "pipeline_#{status}_email"
+    email_template = email_template_name(status)
 
     return unless mailer.respond_to?(email_template)
 

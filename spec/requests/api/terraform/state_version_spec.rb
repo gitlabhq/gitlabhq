@@ -198,7 +198,7 @@ RSpec.describe API::Terraform::StateVersion, feature_category: :infrastructure_a
         let(:version_serial) { -1 }
 
         it 'does not delete a version' do
-          expect { request }.to change { Terraform::StateVersion.count }.by(0)
+          expect { request }.not_to change { Terraform::StateVersion.count }
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -209,7 +209,7 @@ RSpec.describe API::Terraform::StateVersion, feature_category: :infrastructure_a
       let(:current_user) { developer }
 
       it 'returns forbidden status' do
-        expect { request }.to change { Terraform::StateVersion.count }.by(0)
+        expect { request }.not_to change { Terraform::StateVersion.count }
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
@@ -219,7 +219,7 @@ RSpec.describe API::Terraform::StateVersion, feature_category: :infrastructure_a
       let(:current_user) { user_without_access }
 
       it 'returns not found status' do
-        expect { request }.to change { Terraform::StateVersion.count }.by(0)
+        expect { request }.not_to change { Terraform::StateVersion.count }
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

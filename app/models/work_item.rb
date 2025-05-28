@@ -2,6 +2,7 @@
 
 class WorkItem < Issue
   include Gitlab::Utils::StrongMemoize
+  include Gitlab::InternalEventsTracking
   include Import::HasImportSource
 
   COMMON_QUICK_ACTIONS_COMMANDS = [
@@ -378,7 +379,14 @@ class WorkItem < Issue
   def record_create_action
     super
 
-    Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter.track_work_item_created_action(author: author)
+    track_internal_event(
+      'users_creating_work_items',
+      user: author,
+      project: project,
+      additional_properties: {
+        label: work_item_type.base_type
+      }
+    )
   end
 
   def hierarchy(options = {})

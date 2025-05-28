@@ -468,7 +468,7 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
 
       it 'does not create a new package' do
         expect { subject }
-          .to change { ::Packages::Composer::Package.for_projects(project).count }.by(0)
+          .not_to change { ::Packages::Composer::Package.for_projects(project).count }
 
         expect(response).to have_gitlab_http_status(:created)
       end

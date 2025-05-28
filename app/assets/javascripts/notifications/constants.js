@@ -57,6 +57,11 @@ export const i18n = {
     reassign_merge_request: s__('NotificationEvent|Merge request is reassigned'),
     reopen_issue: s__('NotificationEvent|Issue is reopened'),
     reopen_merge_request: s__('NotificationEvent|Merge request is reopened'),
+    service_account_failed_pipeline: s__('NotificationEvent|Pipeline by Service Account fails'),
+    service_account_fixed_pipeline: s__('NotificationEvent|Pipeline by Service Account is fixed'),
+    service_account_success_pipeline: s__(
+      'NotificationEvent|Pipeline by Service Account is successful',
+    ),
     success_pipeline: s__('NotificationEvent|Pipeline is successful'),
   },
 };

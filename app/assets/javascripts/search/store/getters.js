@@ -4,6 +4,7 @@ import {
   addCountOverLimit,
   injectRegexSearch,
   scopeCrawler,
+  modifySearchQuery,
 } from '~/search/store/utils';
 
 import {
@@ -93,6 +94,23 @@ export const currentScope = (state) => {
   return scopeCrawler(state.navigation);
 };
 
+export const searchNavigationLink = (item, state) => {
+  const { link } = item;
+  let newQueryParam = {};
+
+  if (item.scope === SCOPE_BLOB) {
+    newQueryParam = {
+      ...injectRegexSearch(link, true),
+    };
+  }
+
+  if (!state.query?.search) {
+    newQueryParam.search = '*';
+  }
+
+  return modifySearchQuery(link, newQueryParam);
+};
+
 export const navigationItems = (state) =>
   Object.values(state.navigation).map((item, index) => {
     const navigation = {
@@ -100,7 +118,7 @@ export const navigationItems = (state) =>
       scope: item.scope,
       title: item.label,
       icon: ICON_MAP[item.scope] || '',
-      link: item.scope === SCOPE_BLOB ? injectRegexSearch(item.link) : item.link,
+      link: searchNavigationLink(item, state),
       is_active: Boolean(item?.active),
       pill_count: `${formatSearchResultCount(item?.count)}${addCountOverLimit(item?.count)}` || '',
     };

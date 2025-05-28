@@ -38,3 +38,5 @@ module NotificationRecipients
     end
   end
 end
+
+NotificationRecipients::BuildService.prepend_mod

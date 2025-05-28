@@ -4,9 +4,12 @@ import {
   PROJECTS_LOCAL_STORAGE_KEY,
   LS_REGEX_HANDLE,
 } from '~/search/store/constants';
+import { SCOPE_BLOB, SCOPE_PROJECTS } from '~/search/sidebar/constants';
+
 import * as getters from '~/search/store/getters';
 import createState from '~/search/store/state';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
+
 import {
   MOCK_QUERY,
   MOCK_GROUPS,
@@ -172,6 +175,58 @@ describe('Global Search Store Getters', () => {
         id: 'test',
       };
       expect(getters.hasMissingProjectContext(state)).toBe(false);
+    });
+  });
+
+  describe('searchNavigationLink', () => {
+    const { searchNavigationLink } = getters;
+
+    it('adds default search term "*" when no search query exists', () => {
+      state.query.search = '';
+      const item = { link: '/search', scope: SCOPE_PROJECTS };
+
+      const result = searchNavigationLink(item, state);
+
+      expect(result).toBe('/search?search=*');
+    });
+
+    it('adds default search term "*" for blob scope when no search query exists', () => {
+      state.query.search = '';
+      localStorage.setItem(LS_REGEX_HANDLE, JSON.stringify(false));
+      const item = { link: '/search', scope: SCOPE_BLOB };
+
+      const result = searchNavigationLink(item, state);
+
+      expect(result).toBe('/search?search=*');
+    });
+
+    it('does not add default search term when search query exists', () => {
+      state.query.search = 'existing query';
+      const item = { link: '/search', scope: SCOPE_PROJECTS };
+
+      const result = searchNavigationLink(item, state);
+
+      expect(result).toBe('/search?');
+    });
+
+    it('uses injectRegexSearch for blob scope even when search query exists', () => {
+      state.query.search = 'existing query';
+      localStorage.setItem(LS_REGEX_HANDLE, JSON.stringify(true));
+      const item = { link: '/search', scope: SCOPE_BLOB };
+
+      const result = searchNavigationLink(item, state);
+
+      expect(result).toBe('/search?regex=true');
+    });
+
+    it('adds default search term "*" and uses injectRegexSearch', () => {
+      state.query.search = '';
+      localStorage.setItem(LS_REGEX_HANDLE, JSON.stringify(true));
+      const item = { link: '/search', scope: SCOPE_BLOB };
+
+      const result = searchNavigationLink(item, state);
+
+      expect(result).toBe('/search?regex=true&search=*');
     });
   });
 });

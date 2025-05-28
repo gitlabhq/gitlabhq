@@ -451,13 +451,49 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
   end
 
   describe 'callbacks' do
-    describe 'record_create_action' do
+    describe 'record_create_action', :clean_gitlab_redis_shared_state do
+      let_it_be(:user) { create(:user) }
+
       it 'records the creation action after saving' do
-        expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter).to receive(:track_work_item_created_action)
         # During the work item transition we also want to track work items as issues
         expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_created_action)
 
         create(:work_item)
+      end
+
+      it "triggers an internal event" do
+        expect { create(:work_item, project: reusable_project, author: user) }
+          .to trigger_internal_events('users_creating_work_items').with(
+            project: reusable_project,
+            user: user,
+            additional_properties: {
+              label: 'issue'
+            }
+          ).and increment_usage_metrics(
+            'counts_weekly.aggregated_metrics.users_work_items',
+            'counts_monthly.aggregated_metrics.users_work_items'
+          ).and not_increment_usage_metrics(
+            'redis_hll_counters.count_distinct_user_id_from_create_work_type_epic_monthly',
+            'redis_hll_counters.count_distinct_user_id_from_create_work_type_epic_weekly'
+          )
+      end
+
+      context 'when work item is of type epic' do
+        it "triggers an internal event" do
+          expect { create(:work_item, :epic, project: reusable_project, author: user) }
+            .to trigger_internal_events('users_creating_work_items').with(
+              project: reusable_project,
+              user: user,
+              additional_properties: {
+                label: 'epic'
+              }
+            ).and increment_usage_metrics(
+              'redis_hll_counters.count_distinct_user_id_from_create_work_type_epic_monthly',
+              'redis_hll_counters.count_distinct_user_id_from_create_work_type_epic_weekly',
+              'counts_weekly.aggregated_metrics.users_work_items',
+              'counts_monthly.aggregated_metrics.users_work_items'
+            )
+        end
       end
 
       it_behaves_like 'internal event tracking' do

@@ -202,7 +202,7 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
           let(:state_name) { given_state_name }
 
           it 'updates the state' do
-            expect { request }.to change { Terraform::State.count }.by(0)
+            expect { request }.not_to change { Terraform::State.count }
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(Gitlab::Json.parse(response.body)).to be_empty
@@ -407,7 +407,7 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
       let(:current_user) { developer }
 
       it 'returns forbidden' do
-        expect { request }.to change { Terraform::State.count }.by(0)
+        expect { request }.not_to change { Terraform::State.count }
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end

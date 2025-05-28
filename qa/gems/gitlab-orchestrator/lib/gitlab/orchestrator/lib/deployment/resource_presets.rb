@@ -39,7 +39,7 @@ module Gitlab
                   sidekiq: {
                     concurrency: 20,
                     minReplicas: 1,
-                    resources: resources("900m", "1.6Gi"),
+                    resources: resources("900m", "2Gi"),
                     hpa: {
                       cpu: { targetAverageValue: "800m" }
                     }
@@ -64,16 +64,16 @@ module Gitlab
                   }
                 },
                 minio: {
-                  resources: resources("9m", "128Mi")
+                  resources: resources("15m", "128Mi")
                 }
               },
-              # This preset is optimised for running e2e tests in parallel
+              # This preset is optimized for running e2e tests in parallel
               HIGH => {
                 gitlab: {
                   webservice: {
                     workerProcesses: 4,
                     minReplicas: 1,
-                    resources: resources(3, "4.5Gi"),
+                    resources: resources(3, "4500Mi"),
                     hpa: cpu_utilization
                   },
                   sidekiq: {
@@ -104,7 +104,7 @@ module Gitlab
                   }
                 },
                 minio: {
-                  resources: resources("15m", "256Mi")
+                  resources: resources("20m", "256Mi")
                 }
               }
             }

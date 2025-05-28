@@ -373,7 +373,9 @@ module Types
 
     field :permanent_deletion_date, GraphQL::Types::String,
       null: true,
-      description: 'Date when group will be deleted if delayed group deletion is enabled.',
+      description: "For groups pending deletion, returns the group's scheduled deletion date. " \
+        'For groups not pending deletion, returns a theoretical date based on current settings ' \
+        'if marked for deletion today.',
       experiment: { milestone: '16.11' }
 
     def label(title:)
@@ -480,7 +482,7 @@ module Types
     def permanent_deletion_date
       return unless group.adjourned_deletion?
 
-      permanent_deletion_date_formatted
+      permanent_deletion_date_formatted(group.marked_for_deletion_on || Date.current)
     end
 
     private

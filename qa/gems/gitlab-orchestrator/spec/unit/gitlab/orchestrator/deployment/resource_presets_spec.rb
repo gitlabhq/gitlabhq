@@ -16,8 +16,8 @@ RSpec.describe Gitlab::Orchestrator::Deployment::ResourcePresets do
           concurrency: 20,
           minReplicas: 1,
           resources: {
-            requests: { cpu: "900m", memory: "1.6Gi" },
-            limits: { cpu: "900m", memory: "1.6Gi" }
+            requests: { cpu: "900m", memory: "2Gi" },
+            limits: { cpu: "900m", memory: "2Gi" }
           },
           hpa: {
             cpu: { targetAverageValue: "800m" }
@@ -59,8 +59,8 @@ RSpec.describe Gitlab::Orchestrator::Deployment::ResourcePresets do
       },
       minio: {
         resources: {
-          requests: { cpu: "9m", memory: "128Mi" },
-          limits: { cpu: "9m", memory: "128Mi" }
+          requests: { cpu: "15m", memory: "128Mi" },
+          limits: { cpu: "15m", memory: "128Mi" }
         }
       }
     })
@@ -73,8 +73,8 @@ RSpec.describe Gitlab::Orchestrator::Deployment::ResourcePresets do
           workerProcesses: 4,
           minReplicas: 1,
           resources: {
-            requests: { cpu: 3, memory: "4.5Gi" },
-            limits: { cpu: 3, memory: "4.5Gi" }
+            requests: { cpu: 3, memory: "4500Mi" },
+            limits: { cpu: 3, memory: "4500Mi" }
           },
           hpa: {
             cpu: {
@@ -145,8 +145,8 @@ RSpec.describe Gitlab::Orchestrator::Deployment::ResourcePresets do
       },
       minio: {
         resources: {
-          requests: { cpu: "15m", memory: "256Mi" },
-          limits: { cpu: "15m", memory: "256Mi" }
+          requests: { cpu: "20m", memory: "256Mi" },
+          limits: { cpu: "20m", memory: "256Mi" }
         }
       }
     })

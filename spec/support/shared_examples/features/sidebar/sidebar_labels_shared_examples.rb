@@ -105,6 +105,8 @@ RSpec.shared_examples 'labels sidebar widget' do
           click_link 'Magenta-pink'
           click_button 'Create'
 
+          wait_for_requests
+
           expect(page).to have_content 'wontfix'
         end
       end

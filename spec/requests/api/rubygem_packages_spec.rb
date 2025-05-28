@@ -379,8 +379,8 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
           allow(Packages::CreatePackageFileService).to receive(:new).and_raise(StandardError)
 
           expect { subject }
-              .to change { project.packages.count }.by(0)
-              .and change { Packages::PackageFile.count }.by(0)
+              .to not_change { project.packages.count }
+              .and not_change { Packages::PackageFile.count }
           expect(response).to have_gitlab_http_status(:error)
         end
       end

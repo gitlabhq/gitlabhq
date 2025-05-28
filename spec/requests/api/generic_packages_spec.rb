@@ -596,7 +596,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
         it 'does not create a new package' do
           expect { upload_file(params, headers, package_name: package_name, package_version: package_version) }
-            .to change { project.packages.generic.count }.by(0)
+            .to not_change { project.packages.generic.count }
             .and change { Packages::PackageFile.count }.by(1)
 
           expect(response).to have_gitlab_http_status(:created)

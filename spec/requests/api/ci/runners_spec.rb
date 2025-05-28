@@ -2227,7 +2227,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
         let(:runner) { project_runner }
 
         it 'avoids changes' do
-          expect { perform_request }.to change { project.runners.count }.by(0)
+          expect { perform_request }.not_to change { project.runners.count }
 
           expect(response).to have_gitlab_http_status(:bad_request)
         end

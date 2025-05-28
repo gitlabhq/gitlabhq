@@ -97,6 +97,7 @@ RSpec.describe Gitlab::Orchestrator::Commands::Subcommands::Deployment do
       extra_opt = "opt=val"
       args = [
         *ci_components.map { |c, v| "--set #{c}=#{v}" }.join(' '),
+        "--resource-preset", "default",
         "--set", extra_opt,
         "--chart-sha", chart_sha
       ]

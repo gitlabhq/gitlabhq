@@ -169,7 +169,6 @@ When a vulnerability reachability value shows as "Not Found," exercise caution r
 
 Static reachability analysis has the following limitations:
 
-- Offline GitLab instances are not supported, though this is proposed for the GA release.
 - When a direct dependency is marked as `in use`, all its transitive dependencies are also marked as `in use`.
 - Requires the new [dependency scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning). [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) analyzers are not supported.
 - SRA on beta is not supported in combination with Scan and Pipeline execution policies

@@ -147,7 +147,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
               params: { email: unconfirmed_stranger.email, access_level: Member::DEVELOPER }
 
             expect(response).to have_gitlab_http_status(:created)
-          end.to change { source.members.invite.count }.by(1).and change { source.members.non_invite.count }.by(0)
+          end.to change { source.members.invite.count }.by(1).and not_change { source.members.non_invite.count }
         end
 
         it 'adds a new member as an invite for unconfirmed secondary email' do
@@ -158,7 +158,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
               params: { email: secondary_email.email, access_level: Member::DEVELOPER }
 
             expect(response).to have_gitlab_http_status(:created)
-          end.to change { source.members.invite.count }.by(1).and change { source.members.non_invite.count }.by(0)
+          end.to change { source.members.invite.count }.by(1).and not_change { source.members.non_invite.count }
         end
 
         it 'adds a new member by user_id' do

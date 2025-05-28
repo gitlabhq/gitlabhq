@@ -144,7 +144,9 @@ Do not add an `H1` heading in Markdown, as there can be only one per page.
 
 ### Description lists in Markdown
 
-To define terms, use [description lists](../../../user/markdown.md#description-lists).
+To define terms or differentiate between options, use description lists.
+
+Do not mix description lists with other styles.
 
 ```markdown
 Term 1
@@ -161,15 +163,6 @@ Term 1
 
 Term 2
 : Definition of Term 2
-
-You can also use description lists to differentiate between options.
-For example:
-
-On GitLab Self-Managed
-: This feature works this way.
-
-On GitLab.com
-: This feature works this way.
 
 ### Shortcodes
 

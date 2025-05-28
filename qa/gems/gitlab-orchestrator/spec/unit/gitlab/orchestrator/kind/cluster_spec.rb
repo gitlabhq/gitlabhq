@@ -67,6 +67,11 @@ RSpec.describe Gitlab::Orchestrator::Kind::Cluster do
           kind: Cluster
           networking:
             apiServerAddress: "0.0.0.0"
+          # use google container registry as a mirror to avoid dockerhub rate limits
+          containerdConfigPatches:
+            - |-
+              [plugins."io.containerd.grpc.v1.cri".registry.mirrors."docker.io"]
+                endpoint = ["https://mirror.gcr.io"]
           nodes:
             - role: control-plane
               kubeadmConfigPatches:

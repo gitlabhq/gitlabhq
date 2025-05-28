@@ -131,8 +131,8 @@ RSpec.describe API::Terraform::Modules::V1::ProjectPackages, feature_category: :
     shared_examples 'not creating a package' do |expected_status|
       it 'does not create a package' do
         expect { api_request }
-          .to change { project.packages.count }.by(0)
-          .and change { Packages::PackageFile.count }.by(0)
+          .to not_change { project.packages.count }
+          .and not_change { Packages::PackageFile.count }
         expect(response).to have_gitlab_http_status(expected_status)
       end
     end

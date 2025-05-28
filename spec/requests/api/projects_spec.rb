@@ -1348,7 +1348,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       it 'does not create new project and respond with 403' do
         allow_any_instance_of(User).to receive(:projects_limit_left).and_return(0)
         expect { post api(path, user2), params: { name: 'foo' } }
-          .to change { Project.count }.by(0)
+          .not_to change { Project.count }
         expect(response).to have_gitlab_http_status(:forbidden)
       end
     end

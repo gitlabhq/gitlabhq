@@ -34,6 +34,7 @@ class User < ApplicationRecord
   include Todoable
 
   ignore_column :last_access_from_pipl_country_at, remove_after: '2024-11-17', remove_with: '17.7'
+  ignore_column :role, remove_after: '2025-09-13', remove_with: '18.5'
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 

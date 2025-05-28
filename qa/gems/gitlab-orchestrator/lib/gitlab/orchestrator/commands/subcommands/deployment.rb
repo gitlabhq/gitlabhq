@@ -153,6 +153,7 @@ module Gitlab
                 ["--set", "#{component}=#{version}"]
               end
             cmd = ["orchestrator", "create", "deployment", configuration, *ci_components]
+            cmd.push("--resource-preset", options[:resource_preset])
             cmd.push(*options[:set].flat_map { |opt| ["--set", opt] }) if options[:set]
             cmd.push(*options[:env].flat_map { |opt| ["--env", opt] }) if options[:env]
             cmd.push("--chart-sha", options[:chart_sha]) if options[:chart_sha]

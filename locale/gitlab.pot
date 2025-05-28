@@ -9422,6 +9422,9 @@ msgstr ""
 msgid "Average per day: %{average}"
 msgstr ""
 
+msgid "Avg"
+msgstr ""
+
 msgid "Awaiting user signup"
 msgstr ""
 
@@ -36642,7 +36645,13 @@ msgstr ""
 msgid "Loading full blame…"
 msgstr ""
 
+msgid "Loading items"
+msgstr ""
+
 msgid "Loading more"
+msgstr ""
+
+msgid "Loading more items"
 msgstr ""
 
 msgid "Loading pipeline status"
@@ -37183,6 +37192,9 @@ msgid "MattermostService|Suggestions:"
 msgstr ""
 
 msgid "MattermostService|Use this service to perform common tasks in your project by entering slash commands in Mattermost."
+msgstr ""
+
+msgid "Max"
 msgstr ""
 
 msgid "Max 100,000 events"
@@ -38922,6 +38934,9 @@ msgid "Milestone|Milestone ID copied to clipboard."
 msgstr ""
 
 msgid "Milestone|Milestone actions"
+msgstr ""
+
+msgid "Min"
 msgstr ""
 
 msgid "Min Value"
@@ -41374,6 +41389,15 @@ msgid "NotificationEvent|New note"
 msgstr ""
 
 msgid "NotificationEvent|New release"
+msgstr ""
+
+msgid "NotificationEvent|Pipeline by Service Account fails"
+msgstr ""
+
+msgid "NotificationEvent|Pipeline by Service Account is fixed"
+msgstr ""
+
+msgid "NotificationEvent|Pipeline by Service Account is successful"
 msgstr ""
 
 msgid "NotificationEvent|Pipeline fails"
@@ -54368,6 +54392,9 @@ msgid "SearchToken|Assignee"
 msgstr ""
 
 msgid "SearchToken|Reviewer"
+msgstr ""
+
+msgid "Searching"
 msgstr ""
 
 msgid "Searching by both author and message is currently not supported."

@@ -18335,7 +18335,10 @@ CREATE TABLE notification_settings (
     moved_project boolean DEFAULT true NOT NULL,
     change_reviewer_merge_request boolean,
     merge_when_pipeline_succeeds boolean DEFAULT false NOT NULL,
-    approver boolean DEFAULT false NOT NULL
+    approver boolean DEFAULT false NOT NULL,
+    service_account_failed_pipeline boolean DEFAULT false NOT NULL,
+    service_account_success_pipeline boolean DEFAULT false NOT NULL,
+    service_account_fixed_pipeline boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE notification_settings_id_seq

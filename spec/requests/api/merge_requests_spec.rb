@@ -2538,7 +2538,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
                 target_branch: 'master',
                 author: user
               }
-          end.to change { MergeRequest.count }.by(0)
+          end.not_to change { MergeRequest.count }
 
           expect(response).to have_gitlab_http_status(:conflict)
           expect(json_response['message']).to eq(["Another open merge request already exists for this source branch: !1"])

@@ -149,7 +149,9 @@ module Types
 
     field :permanent_deletion_date, GraphQL::Types::String,
       null: true,
-      description: 'Date when project will be deleted if delayed project deletion is enabled.',
+      description: "For projects pending deletion, returns the project's scheduled deletion date. " \
+        'For projects not pending deletion, returns a theoretical date based on current settings ' \
+        'if marked for deletion today.',
       experiment: { milestone: '16.11' }
 
     field :visibility, GraphQL::Types::String,
@@ -1059,7 +1061,7 @@ module Types
     def permanent_deletion_date
       return unless project.adjourned_deletion_configured?
 
-      permanent_deletion_date_formatted
+      permanent_deletion_date_formatted(project.marked_for_deletion_on || Date.current)
     end
 
     private

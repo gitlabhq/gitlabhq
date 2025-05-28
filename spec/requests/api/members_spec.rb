@@ -608,7 +608,7 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
 
         expect(response).to have_gitlab_http_status(:no_content)
       end.to change { parent_group.members.count }.by(-1)
-          .and change { nested_group.members.count }.by(0)
+          .and not_change { nested_group.members.count }
     end
 
     it 'deletes member and its sub memberships with skip_subresources=false' do
