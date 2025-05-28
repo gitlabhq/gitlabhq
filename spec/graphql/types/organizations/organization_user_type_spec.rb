@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['OrganizationUser'], feature_category: :cell do
+RSpec.describe GitlabSchema.types['OrganizationUser'], feature_category: :organization do
   let(:expected_fields) { %w[access_level badges id is_last_owner user user_permissions] }
 
   specify { expect(described_class.graphql_name).to eq('OrganizationUser') }

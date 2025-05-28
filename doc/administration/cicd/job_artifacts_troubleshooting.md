@@ -28,7 +28,7 @@ reasons are:
   removes these.
 - Artifact files might be left on disk and not deleted by housekeeping. Run the
   [Rake task for _orphaned_ artifact files](../raketasks/cleanup.md#remove-orphan-artifact-files)
-  to remove these. This script should always find work to do because it also removes empty directories (see above).
+  to remove these. This script should always find work to do because it also removes empty directories (see the previous reason).
 - [Artifact housekeeping was changed significantly](#housekeeping-disabled-in-gitlab-150-to-152), and you might need to enable a feature flag to use the updated system.
 - The [keep latest artifacts from most recent success jobs](../../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)
   feature is enabled.
@@ -149,7 +149,7 @@ for more details.
 #### Clean up `unknown` artifacts
 
 The Sidekiq worker that processes all `unknown` artifacts is enabled by default in
-GitLab 15.3 and later. It analyzes the artifacts returned by the above database query and
+GitLab 15.3 and later. It analyzes the artifacts returned by the previous database query and
 determines which should be `locked` or `unlocked`. Artifacts are then deleted
 by that worker if needed.
 
@@ -638,7 +638,7 @@ WARNING: Uploading artifacts as "archive" to coordinator... POST https://gitlab.
 FATAL: invalid argument
 ```
 
-If a job artifact fails to upload with the above error when using consolidated object storage, make sure you are [using separate buckets](../object_storage.md#use-separate-buckets) for each data type.
+If a job artifact fails to upload due to the previous error when using consolidated object storage, make sure you are [using separate buckets](../object_storage.md#use-separate-buckets) for each data type.
 
 ## Job artifacts fail to upload with `FATAL: invalid argument` when using Windows mount
 

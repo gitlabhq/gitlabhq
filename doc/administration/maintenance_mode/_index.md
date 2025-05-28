@@ -89,7 +89,7 @@ If Geo is enabled, Git pushes to both primary and secondaries fail.
 
 ### Merge requests, issues, epics
 
-All write actions except those mentioned above fail. For example, a user cannot update merge requests or issues.
+All write actions except those mentioned previously fail. For example, a user cannot update merge requests or issues.
 
 ### Incoming email
 

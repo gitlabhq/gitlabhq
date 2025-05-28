@@ -250,7 +250,7 @@ The incremental logging process uses Redis as temporary storage and follows this
 1. The runner sends a piece of log to GitLab.
 1. GitLab appends the data to Redis in the `Gitlab::Redis::TraceChunks` namespace.
 1. After the data in Redis reaches 128 KB, the data is flushed to a persistent store.
-1. The above steps repeat until the job is finished.
+1. The previous steps repeat until the job is finished.
 1. After the job is finished, GitLab schedules a Sidekiq worker to archive the log.
 1. The Sidekiq worker archives the log to object storage and cleans up temporary data.
 

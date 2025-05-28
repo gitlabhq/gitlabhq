@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: :cell do
+RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: :organization do
   using RSpec::Parameterized::TableSyntax
 
   describe 'associations' do

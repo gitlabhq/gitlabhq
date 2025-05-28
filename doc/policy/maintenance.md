@@ -111,16 +111,16 @@ release, depending on the severity of the bug.
 
 The decision on whether backporting a change is performed is done at the discretion of the
 [current release managers](https://about.gitlab.com/community/release-managers/),
-based on *all* of the following:
+based on **all** of the following:
 
 1. Estimated severity of the bug:
    Highest possible impact to users based on the current definition of severity.
 1. Estimated priority of the bug:
-   Immediate impact on all impacted users based on the above estimated severity.
+   Immediate impact on all impacted users based on the previous estimated severity.
 1. Potentially incurring data loss and/or security breach.
 1. Potentially affecting one or more strategic accounts due to a proven inability by the user to upgrade to the current stable version.
 
-If *all* of the above are satisfied, the backport releases can be created for
+If **all** the items in the previous list are satisfied, the backport releases can be created for
 the current stable release, and two previous monthly releases. In rare cases a release manager may grant an exception to backport to more than two previous monthly releases.
 For instance, if we release `13.2.1` with a fix for a severe bug introduced in
 `13.0.0`, we could backport the fix to a new `13.0.x`, and `13.1.x` patch release.

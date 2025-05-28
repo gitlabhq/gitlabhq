@@ -39,7 +39,7 @@ GitLab displays your link in the **Admin** area under **Monitoring > Metrics Das
 
 ## Required Scopes
 
-When setting up Grafana through the process above, no scope shows in the screen in
+When setting up Grafana through the previous process, no scope shows in the screen in
 the **Admin** area under **Applications > GitLab Grafana**. However, the `read_user` scope is
 required and is provided to the application automatically. Setting any scope other than
 `read_user` without also including `read_user` leads to this error when you try to sign in using

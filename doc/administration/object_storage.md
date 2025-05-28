@@ -139,7 +139,7 @@ For an example, see how to [use the consolidated form and Amazon S3](#full-examp
 
 #### Disable object storage for specific features
 
-As seen above, object storage can be disabled for specific types by
+As seen previously, object storage can be disabled for specific types by
 setting the `enabled` flag to `false`. For example, to disable object
 storage for CI artifacts:
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillDefaultOrganizationUsers, feature_category: :cell do
+RSpec.describe QueueBackfillDefaultOrganizationUsers, feature_category: :organization do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

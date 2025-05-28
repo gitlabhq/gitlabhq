@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 require 'rspec-parameterized'
 require_relative '../../../../rubocop/cop/gitlab/avoid_current_organization'
 
-RSpec.describe RuboCop::Cop::Gitlab::AvoidCurrentOrganization, feature_category: :cell do
+RSpec.describe RuboCop::Cop::Gitlab::AvoidCurrentOrganization, feature_category: :organization do
   describe 'bad examples' do
     shared_examples 'reference offense' do
       it 'registers an offense' do

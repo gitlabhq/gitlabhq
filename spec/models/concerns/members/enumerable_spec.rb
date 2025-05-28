@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Members::Enumerable, feature_category: :cell do
+RSpec.describe Members::Enumerable, feature_category: :groups_and_projects do
   using RSpec::Parameterized::TableSyntax
 
   before_all do

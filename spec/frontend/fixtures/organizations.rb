@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Organizations::GroupsController, '(JavaScript fixtures)', type: :controller, feature_category: :cell do
+RSpec.describe Organizations::GroupsController, '(JavaScript fixtures)', type: :controller, feature_category: :organization do
   include JavaScriptFixturesHelpers
 
   let_it_be(:current_user) { create(:user) }
@@ -27,7 +27,7 @@ RSpec.describe Organizations::GroupsController, '(JavaScript fixtures)', type: :
   end
 end
 
-RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :cell do
+RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :organization do
   describe GraphQL::Query, type: :request do
     include GraphqlHelpers
     include JavaScriptFixturesHelpers

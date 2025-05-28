@@ -740,7 +740,7 @@ which can happen if you:
 - Attempted the [one step import](#one-step-import) and encountered errors.
 - Attempted the [three-step import](#three-step-import) process and encountered errors.
 - Stopped the import process on purpose.
-- Tried to run the import again after any of the above.
+- Tried to run the import again after any of the previous actions.
 - Ran the import against the wrong configuration file.
 
 To resolve this issue, you must delete the existing entries in the tags table.

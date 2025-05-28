@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe UpdateImportFailuresOrganizationId, migration: :gitlab_main, feature_category: :cell do
+RSpec.describe UpdateImportFailuresOrganizationId, migration: :gitlab_main, feature_category: :organization do
   let(:import_failures) { table(:import_failures) }
   let(:projects) { table(:projects) }
   let(:organizations) { table(:organizations) }

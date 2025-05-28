@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Organizations::OrganizationUsers::UpdateService, feature_category: :cell do
+RSpec.describe Organizations::OrganizationUsers::UpdateService, feature_category: :organization do
   describe '#execute' do
     let_it_be(:organization) { create(:organization) }
     let_it_be_with_reload(:organization_user) { create(:organization_user, organization: organization) }

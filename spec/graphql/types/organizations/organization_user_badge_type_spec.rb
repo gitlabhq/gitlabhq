@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['OrganizationUserBadge'], feature_category: :cell do
+RSpec.describe GitlabSchema.types['OrganizationUserBadge'], feature_category: :organization do
   let(:expected_fields) { %w[text variant] }
 
   specify { expect(described_class.graphql_name).to eq('OrganizationUserBadge') }

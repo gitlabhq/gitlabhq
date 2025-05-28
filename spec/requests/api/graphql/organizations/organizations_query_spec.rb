@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting organizations information', feature_category: :cell do
+RSpec.describe 'getting organizations information', feature_category: :organization do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

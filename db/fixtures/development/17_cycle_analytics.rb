@@ -231,7 +231,7 @@ class Gitlab::Seeder::CycleAnalytics # rubocop:disable Style/ClassAndModuleChild
           confirmed_at: DateTime.now,
           password: ::User.random_password
         ) do |user|
-          user.assign_personal_namespace(Organizations::Organization.default_organization)
+          user.assign_personal_namespace(project.organization)
         end
 
       project.group&.add_developer(user)
@@ -252,6 +252,7 @@ class Gitlab::Seeder::CycleAnalytics # rubocop:disable Style/ClassAndModuleChild
       name: "Value Stream Management Group #{suffix}",
       path: "vsmg-#{suffix}"
     )
+
     project = FactoryBot.create(
       :project,
       :repository,
@@ -260,7 +261,6 @@ class Gitlab::Seeder::CycleAnalytics # rubocop:disable Style/ClassAndModuleChild
       creator: admin,
       namespace: namespace
     )
-
     project.create_repository
     project
   end

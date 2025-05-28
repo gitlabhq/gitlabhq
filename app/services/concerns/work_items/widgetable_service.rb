@@ -42,6 +42,10 @@ module WorkItems
       handle_widget_quick_actions!(work_item)
     end
 
+    def params_include_state_and_status_changes?
+      params.include?(:state_event) && widget_params.dig(:status_widget, :status)
+    end
+
     private
 
     def new_type_excludes_widget?(widget, resource_parent)

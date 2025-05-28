@@ -189,7 +189,7 @@ The response contains the data from the API endpoint, and a `correlation_id` val
 
 You can then view the database details for this request:
 
-1. Paste the `x-request-id` value into the `request details` field of the [performance bar](../monitoring/performance/performance_bar.md) and press <kbd>Enter/Return</kbd>. This example uses the `x-request-id` value `01FGN8P881GF2E5J91JYA338Y3`, returned by the above response:
+1. Paste the `x-request-id` value into the `request details` field of the [performance bar](../monitoring/performance/performance_bar.md) and press <kbd>Enter/Return</kbd>. This example uses the `x-request-id` value `01FGN8P881GF2E5J91JYA338Y3`, returned by the previous response:
 
    ![The request details field of the performance bar containing an example value](img/paste-request-id-into-progress-bar_v14_3.png)
 

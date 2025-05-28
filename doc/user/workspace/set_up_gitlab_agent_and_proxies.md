@@ -108,12 +108,28 @@ To configure the `remote_development` module in the agent project:
 
 For a full list of configuration options, see the workspace [configuration reference](settings.md#configuration-reference).
 
+{{< alert type="note" >}}
+
+The GitLab agent is configured in one project, but you can use it in other project workspaces.
+A separate agent is not required for each project.
+
+The configured agent is not visible until you
+[allow the agent in your group](#allow-the-gitlab-agent-in-your-group).
+
+{{< /alert >}}
+
 ## Allow the GitLab agent in your group
 
-When you allow an agent in a group, the group and its subgroups can use that agent.
-Carefully consider the group where you allow the GitLab agent.
+When you allow an agent in a group, the group, its subgroups, and all projects in those groups can
+use that agent.
 
-To allow your GitLab agent in a group and its subgroups:
+{{< alert type="note" >}}
+
+Only one agent is required. You can create workspaces from all projects in a group with the same agent.
+
+{{< /alert >}}
+
+To allow your GitLab agent in a group and make it available to all projects in that group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Workspaces**.

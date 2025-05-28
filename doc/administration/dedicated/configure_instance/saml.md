@@ -56,7 +56,7 @@ To add a SAML provider for your GitLab Dedicated instance:
    - **Security**
 1. To start using this provider, select the **Enable this provider** checkbox.
 1. Select **Save**.
-1. To add another SAML provider, select **Add SAML provider** again and follow the steps above. You can add up to ten providers.
+1. To add another SAML provider, select **Add SAML provider** again and follow the previous steps. You can add up to ten providers.
 1. Scroll up to the top of the page. The **Initiated changes** banner explains that your SAML configuration changes are applied during the next maintenance window. To apply the changes immediately, select **Apply changes now**.
 
 After the changes are applied, you can sign in to your GitLab Dedicated instance using this SAML provider. To use group sync, [configure the SAML group links](../../../user/group/saml_sso/group_sync.md#configure-saml-group-links).

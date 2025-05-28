@@ -52,7 +52,7 @@ Error response from daemon: Get registry.example.com/v1/users/: x509: certificat
 ```
 
 The Docker daemon running the command expects a cert signed by a recognized CA,
-thus the error above.
+thus the previous error.
 
 While GitLab doesn't support using self-signed certificates with Container
 Registry out of the box, it is possible to make it work by
@@ -583,7 +583,7 @@ docker login example.s3.amazonaws.com:5050
 docker push example.s3.amazonaws.com:5050/root/docker-test/docker-image
 ```
 
-In the example above, we see the following trace on the mitmproxy window:
+In the previous example, we see the following trace on the mitmproxy window:
 
 ```plaintext
 PUT https://example.s3.amazonaws.com:4567/v2/root/docker-test/blobs/uploads/(UUID)/(QUERYSTRING)

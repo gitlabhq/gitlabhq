@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Organizations::Create, feature_category: :cell do
+RSpec.describe Mutations::Organizations::Create, feature_category: :organization do
   include GraphqlHelpers
   include WorkhorseHelpers
 

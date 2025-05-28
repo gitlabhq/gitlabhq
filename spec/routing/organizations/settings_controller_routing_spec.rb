@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Organizations::SettingsController, :routing, feature_category: :cell do
+RSpec.describe Organizations::SettingsController, :routing, feature_category: :organization do
   let_it_be(:organization) { build(:organization) }
 
   it 'routes to settings#general' do

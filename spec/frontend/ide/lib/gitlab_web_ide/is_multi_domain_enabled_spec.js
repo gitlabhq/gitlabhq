@@ -13,22 +13,14 @@ describe('isMultiDomainEnabled', () => {
   });
 
   it.each`
-    dot_com  | features | expected
-    ${true}  | ${true}  | ${true}
-    ${true}  | ${false} | ${false}
-    ${false} | ${true}  | ${false}
-    ${false} | ${false} | ${false}
-  `(
-    'returns $expected when gon.dot_com is $dot_com and gon.features.webIdeMultiDomain is $features',
-    ({ dot_com, features, expected }) => {
-      window.gon = {
-        dot_com,
-        features: {
-          webIdeMultiDomain: features,
-        },
-      };
+    dot_com  | expected
+    ${true}  | ${true}
+    ${false} | ${false}
+  `('returns $expected when gon.dot_com is $dot_com', ({ dot_com, expected }) => {
+    window.gon = {
+      dot_com,
+    };
 
-      expect(isMultiDomainEnabled()).toBe(expected);
-    },
-  );
+    expect(isMultiDomainEnabled()).toBe(expected);
+  });
 });

@@ -14,92 +14,88 @@ RSpec.describe Namespaces::EnableDescendantsCacheCronWorker, '#perform', :clean_
 
   subject(:worker) { described_class.new }
 
-  context 'when periodical_namespace_descendants_cache_worker feature is enabled' do
-    before do
-      stub_feature_flags(periodical_namespace_descendants_cache_worker: true)
+  before do
+    stub_const("#{described_class}::CACHE_THRESHOLD", 4)
+    stub_const("#{described_class}::GROUP_BATCH_SIZE", 1)
+    stub_const("#{described_class}::NAMESPACE_BATCH_SIZE", 1)
+  end
 
-      stub_const("#{described_class}::CACHE_THRESHOLD", 4)
-      stub_const("#{described_class}::GROUP_BATCH_SIZE", 1)
-      stub_const("#{described_class}::NAMESPACE_BATCH_SIZE", 1)
-    end
+  it 'creates the cache record for the top level group and the subgroup' do
+    metadata = worker.perform
 
-    it 'creates the cache record for the top level group and the subgroup' do
-      metadata = worker.perform
+    cache_records = Namespaces::Descendants.all
+    ids = cache_records.map(&:id)
+    expect(ids).to match_array([group.id, subgroup.id])
 
-      cache_records = Namespaces::Descendants.all
-      ids = cache_records.map(&:id)
+    outdated_ats = cache_records.map(&:outdated_at)
+    expect(outdated_ats).to all(be_present)
+
+    expect(metadata).to eq({ over_time: false, last_id: nil, cache_count: 2 })
+  end
+
+  context 'when cached record already exist' do
+    it 'does not fail' do
+      create(:namespace_descendants, namespace: group)
+
+      worker.perform
+
+      ids = Namespaces::Descendants.pluck(:namespace_id)
       expect(ids).to match_array([group.id, subgroup.id])
-
-      outdated_ats = cache_records.map(&:outdated_at)
-      expect(outdated_ats).to all(be_present)
-
-      expect(metadata).to eq({ over_time: false, last_id: nil, cache_count: 2 })
     end
+  end
 
-    context 'when cached record already exist' do
-      it 'does not fail' do
-        create(:namespace_descendants, namespace: group)
-
-        worker.perform
-
-        ids = Namespaces::Descendants.pluck(:namespace_id)
-        expect(ids).to match_array([group.id, subgroup.id])
-      end
-    end
-
-    context 'when time limit is reached' do
-      it 'stores the last processed group id as the cursor' do
-        # Reach the limit after finishing counting the first group's descendants:
-        # group, subgroup, subsubgroup, project1
-        allow_next_instance_of(Gitlab::Metrics::RuntimeLimiter) do |limiter|
-          call_count = 0
-          allow(limiter).to receive(:over_time?).and_wrap_original do |_, _name|
-            # on the 4th call, we reach over time
-            call_count += 1
-            if call_count >= 4
-              limiter.instance_variable_set(:@last_check, true)
-              true
-            else
-              false
-            end
+  context 'when time limit is reached' do
+    it 'stores the last processed group id as the cursor' do
+      # Reach the limit after finishing counting the first group's descendants:
+      # group, subgroup, subsubgroup, project1
+      allow_next_instance_of(Gitlab::Metrics::RuntimeLimiter) do |limiter|
+        call_count = 0
+        allow(limiter).to receive(:over_time?).and_wrap_original do |_, _name|
+          # on the 4th call, we reach over time
+          call_count += 1
+          if call_count >= 4
+            limiter.instance_variable_set(:@last_check, true)
+            true
+          else
+            false
           end
         end
-
-        metadata = worker.perform
-
-        ids = Namespaces::Descendants.pluck(:namespace_id)
-        expect(ids).to match_array([group.id])
-
-        value = Gitlab::Redis::SharedState.with { |redis| redis.get(described_class::CURSOR_KEY) }
-        expect(Integer(value)).to eq(group.id)
-
-        expect(metadata).to eq({ over_time: true, last_id: group.id, cache_count: 1 })
       end
+
+      metadata = worker.perform
+
+      ids = Namespaces::Descendants.pluck(:namespace_id)
+      expect(ids).to match_array([group.id])
+
+      value = Gitlab::Redis::SharedState.with { |redis| redis.get(described_class::CURSOR_KEY) }
+      expect(Integer(value)).to eq(group.id)
+
+      expect(metadata).to eq({ over_time: true, last_id: group.id, cache_count: 1 })
     end
+  end
 
-    context 'when cursor is present' do
-      it 'continues processing from the cursor' do
-        # Assume that the first group was already processed
-        Gitlab::Redis::SharedState.with { |redis| redis.set(described_class::CURSOR_KEY, group.id) }
+  context 'when cursor is present' do
+    it 'continues processing from the cursor' do
+      # Assume that the first group was already processed
+      Gitlab::Redis::SharedState.with { |redis| redis.set(described_class::CURSOR_KEY, group.id) }
 
-        worker.perform
+      worker.perform
 
-        ids = Namespaces::Descendants.pluck(:namespace_id)
-        expect(ids).to match_array([subgroup.id])
-      end
+      ids = Namespaces::Descendants.pluck(:namespace_id)
+      expect(ids).to match_array([subgroup.id])
     end
+  end
 
-    context 'when reaching the end of the table' do
-      it 'clears the cursor' do
-        Gitlab::Redis::SharedState.with { |redis| redis.set(described_class::CURSOR_KEY, group.id) }
+  context 'when reaching the end of the table' do
+    it 'clears the cursor' do
+      Gitlab::Redis::SharedState.with { |redis| redis.set(described_class::CURSOR_KEY, group.id) }
 
-        metadata = worker.perform
+      metadata = worker.perform
 
-        value = Gitlab::Redis::SharedState.with { |redis| redis.get(described_class::CURSOR_KEY) }
-        expect(value).to be_nil
+      value = Gitlab::Redis::SharedState.with { |redis| redis.get(described_class::CURSOR_KEY) }
+      expect(value).to be_nil
 
-        expect(metadata).to eq({ over_time: false, last_id: nil, cache_count: 1 })
-      end
+      expect(metadata).to eq({ over_time: false, last_id: nil, cache_count: 1 })
     end
   end
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe UpdateNamespacesOrganizationId, migration: :gitlab_main, feature_category: :cell do
+RSpec.describe UpdateNamespacesOrganizationId, migration: :gitlab_main, feature_category: :organization do
   let(:namespaces) { table(:namespaces) }
 
   let!(:group_with_organization) { namespaces.create!(name: 'my_org', path: 'my-org-1', organization_id: 10) }

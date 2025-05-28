@@ -426,8 +426,8 @@ To reset broken tokens:
 
 ## Troubleshooting
 
-The following are solutions to problems you might discover using the Rake tasks documented
-above.
+The following are solutions to problems you might discover using the Rake tasks
+documented previously.
 
 ### Dangling objects
 

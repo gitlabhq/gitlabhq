@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupMember, feature_category: :cell do
+RSpec.describe GroupMember, feature_category: :groups_and_projects do
   describe 'default values' do
     subject(:goup_member) { build(:group_member) }
 

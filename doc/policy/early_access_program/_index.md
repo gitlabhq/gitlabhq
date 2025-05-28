@@ -26,7 +26,8 @@ You are more than welcome to [request a free trial](https://about.gitlab.com/fre
 
 ## Add a feature to the program
 
-Create a merge request and add your feature to the [table above](#features-included-in-the-gitlab-early-access-program). Assign `@nick_vh` and `@knockfog-ext` as reviewers. In addition, post a message in the `#developer-relations-early-access-program` Slack channel for details.
+Create a merge request and add your feature to the [previous table](#features-included-in-the-gitlab-early-access-program).
+Assign `@nick_vh` and `@knockfog-ext` as reviewers. In addition, post a message in the `#developer-relations-early-access-program` Slack channel for details.
 
 <!--
 ## Features previously enrolled

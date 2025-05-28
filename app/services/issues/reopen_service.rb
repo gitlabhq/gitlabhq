@@ -2,10 +2,10 @@
 
 module Issues
   class ReopenService < Issues::BaseService
-    def execute(issue, skip_authorization: false)
+    def execute(issue, skip_authorization: false, status: nil)
       return issue unless can_reopen?(issue, skip_authorization: skip_authorization)
 
-      after_reopen(issue) if reopen_issue(issue)
+      after_reopen(issue, status) if reopen_issue(issue)
 
       issue
     end
@@ -13,7 +13,7 @@ module Issues
     private
 
     # overriden in EE
-    def after_reopen(issue)
+    def after_reopen(issue, _status)
       event_service.reopen_issue(issue, current_user)
 
       if current_user.project_bot?
@@ -22,7 +22,8 @@ module Issues
       end
 
       create_note(issue, 'reopened')
-      notification_service.async.reopen_issue(issue, current_user)
+      user = current_user
+      issue.run_after_commit_or_now { NotificationService.new.async.reopen_issue(issue, user) }
       perform_incident_management_actions(issue)
       execute_hooks(issue, 'reopen')
       invalidate_cache_counts(issue, users: issue.assignees)

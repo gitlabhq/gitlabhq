@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe SetDefaultOrganizationVisibilityToPublic, feature_category: :cell do
+RSpec.describe SetDefaultOrganizationVisibilityToPublic, feature_category: :organization do
   let(:organizations) { table(:organizations) }
   let(:default_organization) do
     organizations.create!(

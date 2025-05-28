@@ -75,6 +75,13 @@ module ApplicationSettingsHelper
   def global_search_settings_checkboxes(form)
     [
       form.gitlab_ui_checkbox_component(
+        :anonymous_searches_allowed,
+        _("Allow unauthenticated users to use search"),
+        checkbox_options: {
+          checked: @application_setting.anonymous_searches_allowed, multiple: false
+        }
+      ),
+      form.gitlab_ui_checkbox_component(
         :global_search_block_anonymous_searches_enabled,
         _("Restrict global search to authenticated users only"),
         checkbox_options: {

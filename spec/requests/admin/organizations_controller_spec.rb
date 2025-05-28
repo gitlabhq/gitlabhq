@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::OrganizationsController, type: :request, feature_category: :cell do
+RSpec.describe Admin::OrganizationsController, type: :request, feature_category: :organization do
   describe 'GET #index' do
     subject(:gitlab_request) { get admin_organizations_path }
 

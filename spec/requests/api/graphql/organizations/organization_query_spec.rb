@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting organization information', feature_category: :cell do
+RSpec.describe 'getting organization information', feature_category: :organization do
   include GraphqlHelpers
   using RSpec::Parameterized::TableSyntax
 

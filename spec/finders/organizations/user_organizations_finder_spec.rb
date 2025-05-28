@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Organizations::UserOrganizationsFinder, '#execute', feature_category: :cell do
+RSpec.describe Organizations::UserOrganizationsFinder, '#execute', feature_category: :organization do
   let_it_be(:admin) { create(:user, :admin) }
   let_it_be(:another_user) { create(:user) }
 

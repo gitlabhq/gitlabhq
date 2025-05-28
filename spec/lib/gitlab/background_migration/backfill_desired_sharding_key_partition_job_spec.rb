@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillDesiredShardingKeyPartitionJob, migration: :gitlab_ci, feature_category: :cell do
+RSpec.describe Gitlab::BackgroundMigration::BackfillDesiredShardingKeyPartitionJob, migration: :gitlab_ci, feature_category: :organization do
   let(:example_job_class) do
     Class.new(described_class) do
       operation_name :backfill_test_batch_table_project_id
-      feature_category :cell
+      feature_category :organization
     end
   end
 

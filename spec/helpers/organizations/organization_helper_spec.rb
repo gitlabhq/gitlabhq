@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
+RSpec.describe Organizations::OrganizationHelper, feature_category: :organization do
   include Devise::Test::ControllerHelpers
 
   let_it_be(:user) { build_stubbed(:user, organization_groups_projects_sort: 'name_asc') }

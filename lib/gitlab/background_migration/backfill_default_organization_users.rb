@@ -5,7 +5,7 @@ module Gitlab
     class BackfillDefaultOrganizationUsers < BatchedMigrationJob
       operation_name :backfill_default_organization_users # This is used as the key on collecting metrics
       scope_to ->(relation) { relation.where(admin: false) } # true handled in BackfillDefaultOrganizationOwnersAgain
-      feature_category :cell
+      feature_category :organization
 
       DEFAULT_ACCESS_LEVEL = 10
       DEFAULT_ORGANIZATION_ID = 1

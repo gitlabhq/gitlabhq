@@ -6624,6 +6624,9 @@ msgstr ""
 msgid "Allow top-level group owners to create Service accounts."
 msgstr ""
 
+msgid "Allow unauthenticated users to use search"
+msgstr ""
+
 msgid "Allow use of licensed EE features"
 msgstr ""
 

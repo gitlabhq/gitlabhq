@@ -101,7 +101,9 @@ Gitlab::Seeder.quiet do
 
   Sidekiq::Testing.inline! do
     COMPOSER_PACKAGES.each do |path, versions|
-      project = Gitlab::Seeder::ComposerPackages.new(organization: Organizations::Organization.default_organization)
+      organization = User.admins.first.organizations.first
+
+      project = Gitlab::Seeder::ComposerPackages.new(organization: organization)
       project.create_real_project!(path)
 
       versions.each do |version|

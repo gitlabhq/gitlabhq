@@ -182,7 +182,7 @@ RSpec.describe Admin::GroupsController, "routing" do
   end
 end
 
-RSpec.describe Admin::OrganizationsController, "routing", feature_category: :cell do
+RSpec.describe Admin::OrganizationsController, "routing", feature_category: :organization do
   it "to #index" do
     expect(get("/admin/organizations")).to route_to('admin/organizations#index')
   end

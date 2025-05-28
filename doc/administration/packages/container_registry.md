@@ -1689,7 +1689,7 @@ flowchart LR
     linkStyle 2 stroke-width:4px,stroke:green
 ```
 
-The flow described by the diagram above:
+The flow described by the previous diagram:
 
 1. A user runs `docker login registry.gitlab.example` on their client. This reaches the web server (or LB) on port 443.
 1. Web server connects to the Registry backend pool (by default, using port 5000). Because the user

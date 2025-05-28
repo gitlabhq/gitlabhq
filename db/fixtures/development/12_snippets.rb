@@ -33,7 +33,7 @@ Gitlab::Seeder.quiet do
       title: FFaker::Lorem.sentence(3),
       file_name:  'file.rb',
       visibility_level: Gitlab::VisibilityLevel.values.sample,
-      organization: Organizations::Organization.default_organization,
+      organization: User.admins.first.organizations.first,
       content: 'foo'
     }).tap do |snippet|
       snippet.repository.expire_exists_cache

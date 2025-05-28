@@ -174,4 +174,4 @@ to apply to their experimental and beta features:
   a different direction would provide more value or a better user experience. If open questions must be answered
   to decide if the feature is worth putting in the product, list and answer those.
 
-For the exit criteria of **AI features**, in addition to the above, see the UX maturity requirements.
+For the exit criteria of **AI features**, in addition to the list documented previously, see the UX maturity requirements.

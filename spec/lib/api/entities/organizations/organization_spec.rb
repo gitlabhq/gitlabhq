@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Entities::Organizations::Organization, feature_category: :cell do
+RSpec.describe API::Entities::Organizations::Organization, feature_category: :organization do
   let(:avatar_url) { 'https://example.com/uploads/-/system/organizations/organization_detail/avatar/1/avatar.png' }
   let(:organization) { build_stubbed(:organization) }
 

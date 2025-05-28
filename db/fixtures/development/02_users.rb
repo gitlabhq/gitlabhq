@@ -192,6 +192,7 @@ class Gitlab::Seeder::Users
 end
 
 Gitlab::Seeder.quiet do
-  users = Gitlab::Seeder::Users.new(organization: Organizations::Organization.default_organization)
+  organization = User.admins.first.organizations.first
+  users = Gitlab::Seeder::Users.new(organization: organization)
   users.seed!
 end
