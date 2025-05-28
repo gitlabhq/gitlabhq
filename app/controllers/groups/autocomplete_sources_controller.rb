@@ -16,12 +16,12 @@ class Groups::AutocompleteSourcesController < Groups::ApplicationController
   def issues
     render json: issuable_serializer.represent(
       autocomplete_service.issues(confidential_only: params[:confidential_only], issue_types: params[:issue_types]),
-      parent_group: @group
+      parent: @group
     )
   end
 
   def merge_requests
-    render json: issuable_serializer.represent(autocomplete_service.merge_requests, parent_group: @group)
+    render json: issuable_serializer.represent(autocomplete_service.merge_requests, parent: @group)
   end
 
   def labels
@@ -43,7 +43,7 @@ class Groups::AutocompleteSourcesController < Groups::ApplicationController
   end
 
   def issuable_serializer
-    GroupIssuableAutocompleteSerializer.new
+    ::Autocomplete::IssuableSerializer.new
   end
 
   def target

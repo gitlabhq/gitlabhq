@@ -429,7 +429,7 @@ something in the check fails. There are many reasons why this may happen:
 
 To diagnose this problem, try to reproduce the problem and then see if there
 is a Puma worker that is spinning via `top`. Try to use the `gdb`
-techniques above. In addition, using `strace` may help isolate issues:
+techniques documented previously. In addition, using `strace` may help isolate issues:
 
 ```shell
 strace -ttTfyyy -s 1024 -p <PID of puma worker> -o /tmp/puma.txt

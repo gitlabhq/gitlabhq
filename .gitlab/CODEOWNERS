@@ -19,14 +19,14 @@
 ## These rules override the * rule above, so that changes to docs and templates
 ## can be merged by any user who has maintainer rights, but is not included in
 ## the * rule (usually technical writers).
-/.gitlab/issue_templates/*.md
-/.gitlab/merge_request_templates/*.md
-/doc/*.md
-/doc/**/*.md
-/doc/**/*.jpg
-/doc/**/*.png
-/doc/**/*.svg
-/data/**/*.yml
+!/.gitlab/issue_templates/*.md
+!/.gitlab/merge_request_templates/*.md
+!/doc/*.md
+!/doc/**/*.md
+!/doc/**/*.jpg
+!/doc/**/*.png
+!/doc/**/*.svg
+!/data/**/*.yml
 
 ## Technical writing files that do not need `*` rule approval,
 ## but still require an approval from a TW team DRI for each file.

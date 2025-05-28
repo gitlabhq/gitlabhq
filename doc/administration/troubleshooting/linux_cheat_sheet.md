@@ -283,7 +283,7 @@ PID 16815
        0.038    22:46:22.174610           -           /opt/gitlab/embedded/service/gitlab-rails/config/database.yml
 ```
 
-In the example above, we can see which files took longer to open for `PID 16815`.
+In the previous example, we can see which files took longer to open for `PID 16815`.
 
 When nothing stands out in the results, a good way to get more context is to run `strace`
 on your own GitLab instance while performing the action performed by the customer,

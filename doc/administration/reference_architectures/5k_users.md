@@ -57,7 +57,7 @@ specifically the [Before you start](_index.md#before-you-start) and [Deciding wh
    Also, the sizing depends on selected Load Balancer and additional factors such as Network Bandwidth. Refer to [Load Balancers](_index.md#load-balancers) for more information.
 5. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 6. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
-   Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/_index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
+   Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/_index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed in the previous table for `Gitaly`.
 7. Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
    However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can *significantly* impact Git and Gitaly performance and further adjustments will likely be required.
 8. Can be placed in Auto Scaling Groups (ASGs) as the component doesn't store any [stateful data](_index.md#autoscaling-of-stateful-nodes).
@@ -310,7 +310,7 @@ GitLab Pages requires a separate virtual IP address. Configure DNS to point the
 Some organizations have policies against opening SSH port 22. In this case,
 it may be helpful to configure an alternate SSH hostname that allows users
 to use SSH on port 443. An alternate SSH hostname will require a new virtual IP address
-compared to the other GitLab HTTP configuration above.
+compared to the other GitLab HTTP configuration documented previously.
 
 Configure DNS for an alternate SSH hostname such as `altssh.gitlab.example.com`.
 
@@ -2203,7 +2203,7 @@ Refer to [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127) for more
 ### Cluster topology
 
 The following tables and diagram detail the hybrid environment using the same formats
-as the typical environment above.
+as the typical environment documented previously.
 
 First are the components that run in Kubernetes. These run across several node groups, although you can change
 the overall makeup as desired as long as the minimum CPU and Memory requirements are observed.
@@ -2247,7 +2247,7 @@ services where applicable):
    Also, the sizing depends on selected Load Balancer and additional factors such as Network Bandwidth. Refer to [Load Balancers](_index.md#load-balancers) for more information.
 5. Should be run on reputable Cloud Provider or Self Managed solutions. See [Configure the object storage](#configure-the-object-storage) for more information.
 6. Gitaly Cluster provides the benefits of fault tolerance, but comes with additional complexity of setup and management.
-   Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/_index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed above for `Gitaly`.
+   Review the existing [technical limitations and considerations before deploying Gitaly Cluster](../gitaly/_index.md#before-deploying-gitaly-cluster). If you want sharded Gitaly, use the same specs listed in the previous table for `Gitaly`.
 7. Gitaly specifications are based on high percentiles of both usage patterns and repository sizes in good health.
    However, if you have [large monorepos](_index.md#large-monorepos) (larger than several gigabytes) or [additional workloads](_index.md#additional-workloads) these can *significantly* impact Git and Gitaly performance and further adjustments will likely be required.
 <!-- markdownlint-enable MD029 -->
@@ -2358,7 +2358,7 @@ Each Sidekiq pod is recommended to be run with the following configuration:
 - 2 GB memory (request)
 - 4 GB memory (limit)
 
-Similar to the standard deployment above, an initial target of 8 Sidekiq workers has been used here.
+Similar to the standard deployment documented previously, an initial target of 8 Sidekiq workers has been used here.
 Additional workers may be required depending on your specific workflow.
 
 For further information on Sidekiq resource usage, see the Charts documentation on [Sidekiq resources](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/#resources).
@@ -2376,7 +2376,7 @@ pool as given, you can increase the node pool accordingly. Conversely, if the po
 
 ### Example config file
 
-An example for the GitLab Helm Charts targeting the above 100 RPS or 5,000 reference architecture configuration [can be found in the Charts project](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/examples/ref/5k.yaml).
+An example for the GitLab Helm Charts targeting the 100 RPS or 5,000 users reference architecture configuration [can be found in the Charts project](https://gitlab.com/gitlab-org/charts/gitlab/-/blob/master/examples/ref/5k.yaml).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#set-up-components">

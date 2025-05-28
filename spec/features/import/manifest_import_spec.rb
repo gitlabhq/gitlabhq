@@ -34,6 +34,7 @@ RSpec.describe 'Import multiple repositories by uploading a manifest file', :js,
     page.within(second_row) do
       click_on 'Import'
     end
+    click_on 'Continue import'
 
     wait_for_requests
 

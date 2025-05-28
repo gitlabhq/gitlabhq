@@ -1,0 +1,10 @@
+---
+name: allow_group_items_in_project_autocompletion
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/467391
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190648
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/543707
+milestone: '18.1'
+group: group::product planning
+type: gitlab_com_derisk
+default_enabled: false

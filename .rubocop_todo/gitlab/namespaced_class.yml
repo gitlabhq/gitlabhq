@@ -515,8 +515,6 @@ Gitlab/NamespacedClass:
     - 'app/serializers/group_deploy_key_serializer.rb'
     - 'app/serializers/group_deploy_keys_group_entity.rb'
     - 'app/serializers/group_entity.rb'
-    - 'app/serializers/group_issuable_autocomplete_entity.rb'
-    - 'app/serializers/group_issuable_autocomplete_serializer.rb'
     - 'app/serializers/group_serializer.rb'
     - 'app/serializers/issuable_entity.rb'
     - 'app/serializers/issuable_sidebar_basic_entity.rb'

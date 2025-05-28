@@ -38,11 +38,11 @@ Personas are described at https://handbook.gitlab.com/handbook/product/personas/
 
 <!-- What is the single user experience workflow this problem addresses?
 For example, "The user should be able to use the UI/API/.gitlab-ci.yml with GitLab to <perform a specific task>"
-https://about.gitlab.com/handbook/product/ux/ux-research-training/user-story-mapping/ -->
+https://handbook.gitlab.com/handbook/product/ux/ux-research/user-story-mapping/ -->
 
 ### Proposal
 
-<!-- How are we going to solve the problem? Try to include the user journey! https://about.gitlab.com/handbook/journeys/#user-journey -->
+<!-- How are we going to solve the problem? Try to include the user journey! https://handbook.gitlab.com/handbook/marketing/journeys/#user-journey -->
 
 ### Further details
 
@@ -105,7 +105,7 @@ Test Planning: https://handbook.gitlab.com/handbook/engineering/infrastructure/t
 <!--
 Define both the success metrics and acceptance criteria. Note that success metrics indicate the desired business outcomes, while acceptance criteria indicate when the solution is working correctly. If there is no way to measure success, link to an issue that will implement a way to measure this.
 
-Explore (../../doc/development/internal_analytics/internal_event_instrumentation/quick_start.md) for a guide.
+For a guide, see https://docs.gitlab.com/development/internal_analytics/internal_event_instrumentation/quick_start/
 -->
 
 ### What is the type of buyer?
@@ -127,7 +127,7 @@ Make sure to add the appropriate labels for the product stage and/or group (e.g 
 Use the following resources to find the appropriate labels:
 - Use only one tier label choosing the lowest tier this is intended for
 - https://gitlab.com/gitlab-org/gitlab/-/labels
-- https://about.gitlab.com/handbook/product/categories/features/
+- https://handbook.gitlab.com/handbook/product/categories/features/
 
 Examples: 
 /label ~group:: ~section:: ~Category:

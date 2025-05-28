@@ -24852,6 +24852,9 @@ msgstr ""
 msgid "Epic actions"
 msgstr ""
 
+msgid "Epic and its work item parent must be the same"
+msgstr ""
+
 msgid "Epic boards"
 msgstr ""
 
@@ -32030,12 +32033,6 @@ msgid "ImportProjects|Requesting namespaces failed"
 msgstr ""
 
 msgid "ImportProjects|Requesting your %{provider} repositories failed"
-msgstr ""
-
-msgid "ImportProjects|Select a destination namespace."
-msgstr ""
-
-msgid "ImportProjects|Select namespace"
 msgstr ""
 
 msgid "ImportProjects|Select the repositories you want to import"

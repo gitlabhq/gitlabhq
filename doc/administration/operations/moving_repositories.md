@@ -250,7 +250,7 @@ sudo -u git  sh -c 'rsync -a --delete /var/opt/gitlab/git-data/repositories/. \
   /mnt/gitlab/repositories'
 ```
 
-The `/.` in the command above is very important, without it you can
+The `/.` in the previous command is very important, without it you can
 get the wrong directory structure in the target directory.
 If you want to see progress, replace `-a` with `-av`.
 

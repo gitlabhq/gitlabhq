@@ -23,10 +23,12 @@ RSpec.describe MergeRequests::DeleteNonLatestDiffsService, :clean_gitlab_redis_s
 
       expect(diffs.count).to eq(4)
 
+      expected_ids = diffs.first(2).map { |d| [d.id] }
+
       freeze_time do
         expect(DeleteDiffFilesWorker)
           .to receive(:bulk_perform_in)
-          .with(5.minutes, [[diffs.first.id], [diffs.second.id]])
+          .with(5.minutes, match_array(expected_ids))
         expect(DeleteDiffFilesWorker)
           .to receive(:bulk_perform_in)
           .with(10.minutes, [[diffs.third.id]])

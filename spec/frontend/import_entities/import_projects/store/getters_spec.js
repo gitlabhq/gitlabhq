@@ -99,7 +99,7 @@ describe('import_projects store getters', () => {
 
       expect(getImportTarget(localState)(IMPORTABLE_REPO.importSource.id)).toStrictEqual({
         newName: IMPORTABLE_REPO.importSource.sanitizedName,
-        targetNamespace: null,
+        targetNamespace: localState.defaultTargetNamespace,
       });
     });
 

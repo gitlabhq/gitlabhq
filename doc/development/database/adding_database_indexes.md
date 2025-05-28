@@ -328,12 +328,12 @@ Be aware that certain factors can give the false impression that an index is unu
           parent_idx.relname = '<PARENT_INDEX_NAME>';
         ```
 
-1. For GitLab.com, you can view index usage data in [Grafana](https://dashboards.gitlab.net/goto/shHCmIxHg?orgId=1).
+1. For GitLab.com, you can view index usage data in [Grafana](https://dashboards.gitlab.net/goto/TsYVxcBHR?orgId=1).
    - Query the metric `pg_stat_user_indexes_idx_scan` filtered by the relevant index(s) for at least the last 6 months.
-     The query below shows index usage across all database instances combined.
+     The query below shows index usage rate across all database instances combined.
 
      ```sql
-     sum by (indexrelname) (pg_stat_user_indexes_idx_scan{env="gprd", relname=~"<TABLE_NAME_REGEX>", indexrelname=~"<INDEX_NAME_REGEX>"})
+     sum by (indexrelname) (rate(pg_stat_user_indexes_idx_scan{env="gprd", relname=~"<TABLE_NAME_REGEX>", indexrelname=~"<INDEX_NAME_REGEX>"}[30d]))
      ```
 
    - For partitioned tables, we must check that **all child indexes are unused** prior to dropping the parent.

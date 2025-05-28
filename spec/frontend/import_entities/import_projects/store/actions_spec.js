@@ -55,7 +55,7 @@ describe('import_projects store actions', () => {
   let localState;
   const importRepoId = 1;
   const otherImportRepoId = 2;
-  const defaultTargetNamespace = null;
+  const defaultTargetNamespace = 'default';
   const sanitizedName = 'sanitizedName';
   const defaultImportTarget = { newName: sanitizedName, targetNamespace: defaultTargetNamespace };
 

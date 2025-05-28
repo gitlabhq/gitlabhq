@@ -94,8 +94,7 @@ These versions of Ubuntu are supported.
 ## Packages for ARM64
 
 GitLab provides arm64/aarch64 packages for some supported operating systems.
-You can see if your operating system architecture is supported in the table
-above.
+You can see if your operating system architecture is supported in the previous table.
 
 {{< alert type="warning" >}}
 

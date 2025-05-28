@@ -488,7 +488,7 @@ Configure GitLab to use this database. These steps are for Linux package and Doc
 
 #### Manually set up the database schema (optional)
 
-The reconfigure in the [steps above](#configure-gitlab) handles these steps automatically. These steps are provided in case something went wrong.
+The reconfigure command in the [previously listed steps](#configure-gitlab) handles these steps automatically. These steps are provided in case something went wrong.
 
 1. This task creates the database schema. It requires the database user to be a superuser.
 

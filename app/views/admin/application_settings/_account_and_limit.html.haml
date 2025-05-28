@@ -41,10 +41,6 @@
       = f.gitlab_ui_checkbox_component :disable_feed_token, s_('AdminSettings|Disable feed token')
 
     = render_if_exists 'admin/application_settings/disable_personal_access_tokens', form: f
-    %h5= s_('AccessTokens|Access token expiration')
-    .form-group
-      = render 'admin/application_settings/require_access_token_expiry', form: f
-      = render_if_exists 'admin/application_settings/service_accounts_pats_expiration_enforced', form: f
     .form-group
       = f.label :personal_access_token_prefix, s_('AccessTokens|Access token prefix')
       = f.text_field :personal_access_token_prefix, placeholder: _('Maximum 20 characters'), class: 'form-control gl-form-input'
@@ -52,6 +48,10 @@
       .form-group
         = f.label :instance_token_prefix, s_('AccessTokens|Instance token prefix')
         = f.text_field :instance_token_prefix, placeholder: _('Maximum 20 characters'), class: 'form-control gl-form-input'
+    %h5= s_('AccessTokens|Access token expiration')
+    .form-group
+      = render 'admin/application_settings/require_access_token_expiry', form: f
+      = render_if_exists 'admin/application_settings/service_accounts_pats_expiration_enforced', form: f
     = render_if_exists 'admin/application_settings/personal_access_token_expiration_policy', form: f
 
     = render_if_exists 'admin/application_settings/ssh_key_expiration_policy', form: f

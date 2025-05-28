@@ -263,7 +263,7 @@ For more information, see the [recommended cloud providers and services](#recomm
 
 ### Decision Tree
 
-Read through the above guidance in full first before you refer to the following decision tree.
+Read through the guidance documented previously in full first before you refer to the following decision tree.
 
 ```mermaid
 %%{init: { 'theme': 'base' } }%%
@@ -645,7 +645,7 @@ Each reference architecture is tested against specific throughput targets based 
 - Git (Pull): 2 RPS
 - Git (Push): 0.4 RPS (rounded to the nearest integer)
 
-The above RPS targets were selected based on real customer data of total environmental loads corresponding to the user count, including CI and other workloads.
+The listed RPS targets were selected based on real customer data of total environmental loads corresponding to the user count, including CI and other workloads.
 
 {{< alert type="note" >}}
 

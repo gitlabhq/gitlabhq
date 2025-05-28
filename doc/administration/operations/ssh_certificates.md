@@ -141,7 +141,7 @@ message about this being an invalid user.
 
 ## Interaction with the `authorized_keys` file
 
-If SSH certificates are set up as described above, they can be used with the `authorized_keys` file so that the `authorized_keys` file serves as a fallback.
+If SSH certificates are set up as described previously, they can be used with the `authorized_keys` file so that the `authorized_keys` file serves as a fallback.
 
 When the `AuthorizedPrincipalsCommand` is unable to authenticate a user, OpenSSH reverts to checking the `~/.ssh/authorized_keys` file or using the `AuthorizedKeysCommand`.
 Therefore, you might still need to use [Fast lookup of authorized SSH keys in the database](fast_ssh_key_lookup.md) with SSH certificates.

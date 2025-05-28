@@ -155,7 +155,7 @@ or for users to re-add their keys.
 
 ### How to go back to using the `authorized_keys` file
 
-This overview is brief. Refer to the above instructions for more context.
+This overview is brief. Refer to the previous instructions for more context.
 
 1. [Rebuild the `authorized_keys` file](../raketasks/maintenance.md#rebuild-authorized_keys-file).
 1. Enable writes to the `authorized_keys` file.
