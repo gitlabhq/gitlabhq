@@ -14,8 +14,6 @@ module Ci
 
     partitionable scope: :job
 
-    alias_attribute :secret_value, :value
-
     validates :key, uniqueness: { scope: :job_id }, unless: :dotenv_source?
     validates :project_id, presence: true, on: :create
 

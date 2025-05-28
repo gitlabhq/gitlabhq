@@ -73,7 +73,6 @@ module Clusters
     delegate :status_reason, to: :provider, allow_nil: true
 
     alias_attribute :base_domain, :domain
-    alias_attribute :provided_by_user?, :user?
 
     enum :cluster_type, {
       instance_type: 1,
@@ -90,6 +89,7 @@ module Clusters
       gcp: 1,
       aws: 2
     }
+    alias_method :provided_by_user?, :user?
 
     scope :enabled, -> { where(enabled: true) }
     scope :disabled, -> { where(enabled: false) }

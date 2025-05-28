@@ -21,16 +21,24 @@ describe('VisibilityLevel', () => {
     },
   };
 
-  const createComponent = () => {
+  const defaultPropsData = {
+    id: 'organization-settings-visibility',
+    expanded: false,
+  };
+
+  const createComponent = ({ propsData = {} } = {}) => {
     wrapper = mountExtended(VisibilityLevel, {
       provide: defaultProvide,
+      propsData: {
+        ...defaultPropsData,
+        ...propsData,
+      },
       stubs: {
         SettingsBlock,
       },
     });
   };
 
-  const findSettingsBlockTitle = () => wrapper.findByTestId('settings-block-title');
   const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
   const findVisibilityLevelRadioButtons = () => wrapper.findComponent(VisibilityLevelRadioButtons);
   const findHelpPageLink = () => wrapper.findComponent(HelpPageLink);
@@ -39,9 +47,19 @@ describe('VisibilityLevel', () => {
     createComponent();
   });
 
-  it('renders settings block with title and description', () => {
-    expect(findSettingsBlockTitle().text()).toBe('Visibility');
+  it('renders settings block with correct props and description', () => {
+    expect(findSettingsBlock().props()).toEqual({ title: 'Visibility', ...defaultPropsData });
     expect(findSettingsBlock().text()).toContain('Choose organization visibility level.');
+  });
+
+  describe('when SettingsBlock component emits `toggle-expand` event', () => {
+    beforeEach(() => {
+      findSettingsBlock().vm.$emit('toggle-expand', true);
+    });
+
+    it('emits `toggle-expand` event', () => {
+      expect(wrapper.emitted('toggle-expand')).toEqual([[true]]);
+    });
   });
 
   it('renders visibility level field with the current visibility as the only option', () => {

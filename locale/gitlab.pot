@@ -42192,6 +42192,9 @@ msgstr ""
 msgid "Observability|Last 7 days"
 msgstr ""
 
+msgid "Observability|Observability Dashboard"
+msgstr ""
+
 msgid "Observability|Related issues"
 msgstr ""
 
@@ -68419,9 +68422,6 @@ msgid "We're experiencing difficulties and this tab content is currently unavail
 msgstr ""
 
 msgid "We're sorry, your GitLab Duo Enterprise trial could not be created because our system did not respond successfully."
-msgstr ""
-
-msgid "We're sorry, your GitLab Duo Pro trial could not be created because our system did not respond successfully."
 msgstr ""
 
 msgid "We're sorry, your trial could not be created because our system did not respond successfully."

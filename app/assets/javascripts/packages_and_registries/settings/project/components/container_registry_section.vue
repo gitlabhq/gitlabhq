@@ -35,7 +35,7 @@ export default {
 <template>
   <settings-block
     id="container-registry-settings"
-    :default-expanded="expanded"
+    :expanded="expanded"
     :title="s__('ContainerRegistry|Container registry')"
   >
     <template #description>

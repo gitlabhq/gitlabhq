@@ -20,8 +20,6 @@ module Ci
     query_constraints :id, :partition_id
     partitionable scope: :pipeline, partitioned: true
 
-    alias_attribute :secret_value, :value
-
     validates :key, :pipeline, presence: true
     validates :project_id, presence: true
 

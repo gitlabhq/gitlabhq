@@ -40,7 +40,7 @@ describe('Settings Block', () => {
     expect(findDescriptionSlot().exists()).toBe(true);
   });
 
-  describe('when `defaultExpanded` prop is `false` and URL hash does not match `id`', () => {
+  describe('when `expanded` prop is `false` and URL hash does not match `id`', () => {
     it('renders collapse as closed', () => {
       mountComponent();
 
@@ -48,9 +48,9 @@ describe('Settings Block', () => {
     });
   });
 
-  describe('when `defaultExpanded` prop is `true`', () => {
+  describe('when `expanded` prop is `true`', () => {
     it('renders collapse as expanded', () => {
-      mountComponent({ defaultExpanded: true });
+      mountComponent({ expanded: true });
 
       expect(wrapper.findComponent(GlCollapse).props('visible')).toBe(true);
     });
@@ -83,6 +83,10 @@ describe('Settings Block', () => {
       it('expands the collapse', () => {
         expect(wrapper.findComponent(GlCollapse).props('visible')).toBe(true);
       });
+
+      it('emits `toggle-expand` event', () => {
+        expect(wrapper.emitted('toggle-expand')).toEqual([[true]]);
+      });
     });
 
     describe('when title is clicked', () => {
@@ -94,11 +98,21 @@ describe('Settings Block', () => {
         expect(wrapper.findComponent(GlCollapse).props('visible')).toBe(true);
       });
     });
+
+    describe('when `expanded` prop is changed', () => {
+      beforeEach(async () => {
+        await wrapper.setProps({ expanded: true });
+      });
+
+      it('expands the collapse', () => {
+        expect(wrapper.findComponent(GlCollapse).props('visible')).toBe(true);
+      });
+    });
   });
 
   describe('when collapse is expanded', () => {
     beforeEach(() => {
-      mountComponent({ defaultExpanded: true });
+      mountComponent({ expanded: true });
     });
 
     it('renders button with `Collapse` text', () => {

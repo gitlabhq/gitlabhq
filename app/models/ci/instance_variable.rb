@@ -11,8 +11,6 @@ module Ci
     self.limit_name = 'ci_instance_level_variables'
     self.limit_scope = Limitable::GLOBAL_SCOPE
 
-    alias_attribute :secret_value, :value
-
     validates :description, length: { maximum: 255 }, allow_blank: true
     validates :key, uniqueness: {
       message: ->(object, data) { _("(%{value}) has already been taken") }

@@ -12,11 +12,26 @@ export default {
       description: s__('Organization|Perform advanced options such as deleting the organization.'),
     },
   },
+  props: {
+    id: {
+      type: String,
+      required: true,
+    },
+    expanded: {
+      type: Boolean,
+      required: true,
+    },
+  },
 };
 </script>
 
 <template>
-  <settings-block id="organization-settings-advanced" :title="$options.i18n.settingsBlock.title">
+  <settings-block
+    :id="id"
+    :expanded="expanded"
+    :title="$options.i18n.settingsBlock.title"
+    @toggle-expand="$emit('toggle-expand', $event)"
+  >
     <template #description>{{ $options.i18n.settingsBlock.description }}</template>
     <template #default>
       <change-url />

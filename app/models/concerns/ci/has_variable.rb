@@ -28,6 +28,9 @@ module Ci
         key: :db_key_base,
         algorithm: 'aes-256-cbc'
 
+      alias_method :secret_value, :value
+      alias_method :secret_value=, :value=
+
       def key=(new_key)
         super(new_key.to_s.strip)
       end

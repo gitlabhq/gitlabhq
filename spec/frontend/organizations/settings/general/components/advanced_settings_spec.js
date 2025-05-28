@@ -5,8 +5,14 @@ import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 
 describe('AdvancedSettings', () => {
   let wrapper;
+
+  const defaultPropsData = {
+    id: 'organization-settings-advanced',
+    expanded: false,
+  };
+
   const createComponent = () => {
-    wrapper = shallowMountExtended(AdvancedSettings);
+    wrapper = shallowMountExtended(AdvancedSettings, { propsData: defaultPropsData });
   };
 
   const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
@@ -15,11 +21,21 @@ describe('AdvancedSettings', () => {
     createComponent();
   });
 
-  it('renders settings block', () => {
-    expect(findSettingsBlock().exists()).toBe(true);
+  it('renders settings block with correct props', () => {
+    expect(findSettingsBlock().props()).toEqual({ title: 'Advanced', ...defaultPropsData });
   });
 
   it('renders `ChangeUrl` component', () => {
     expect(findSettingsBlock().findComponent(ChangeUrl).exists()).toBe(true);
+  });
+
+  describe('when SettingsBlock component emits `toggle-expand` event', () => {
+    beforeEach(() => {
+      findSettingsBlock().vm.$emit('toggle-expand', true);
+    });
+
+    it('emits `toggle-expand` event', () => {
+      expect(wrapper.emitted('toggle-expand')).toEqual([[true]]);
+    });
   });
 });

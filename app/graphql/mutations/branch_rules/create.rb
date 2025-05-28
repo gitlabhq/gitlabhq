@@ -5,6 +5,8 @@ module Mutations
     class Create < BaseMutation
       graphql_name 'BranchRuleCreate'
 
+      authorize :create_branch_rule
+
       argument :project_path, GraphQL::Types::ID,
         required: true,
         description: 'Full path to the project that the branch is associated with.'
@@ -19,7 +21,7 @@ module Mutations
         description: 'Branch rule after mutation.'
 
       def resolve(project_path:, name:)
-        project = Project.find_by_full_path(project_path)
+        project = authorized_find!(project_path)
 
         service_params = protected_branch_params(name)
         protected_branch = ::ProtectedBranches::CreateService.new(project, current_user, service_params).execute
@@ -50,6 +52,12 @@ module Mutations
           {},
           with_defaults: true
         ).access_levels
+      end
+
+      private
+
+      def find_object(full_path)
+        Project.find_by_full_path(full_path)
       end
     end
   end

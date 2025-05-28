@@ -1317,6 +1317,11 @@ See the [Container registry metadata database](container_registry_metadata_datab
 
 ## Container registry garbage collection
 
+Prerequisites:
+
+- You must have installed GitLab by using a Linux package or the
+  [GitLab Helm chart](https://docs.gitlab.com/charts/charts/registry/#garbage-collection).
+
 {{< alert type="note" >}}
 
 Retention policies in your object storage provider, such as Amazon S3 Lifecycle, may prevent
@@ -1332,22 +1337,24 @@ alone does not delete image layers, it only leaves the underlying image manifest
 To more effectively free up space, the container registry has a garbage collector that can
 delete unreferenced layers and (optionally) untagged manifests.
 
-To start the garbage collector, use the `registry-garbage-collect` command provided by `gitlab-ctl`.
+To start the garbage collector, run the following `gitlab-ctl` command:
 
-{{< alert type="warning" >}}
-
-This command shuts down the container registry prior to the garbage collection and
-only starts it again after garbage collection completes. If you prefer to avoid downtime,
-you can manually set the container registry to [read-only mode and bypass `gitlab-ctl`](#performing-garbage-collection-without-downtime).
-
-{{< /alert >}}
+```shell
+`registry-garbage-collect`
+```
 
 The time required to perform garbage collection is proportional to the container registry data size.
 
-Prerequisites:
+{{< alert type="warning" >}}
 
-- You must have installed GitLab by using a Linux package or the
-  [GitLab Helm chart](https://docs.gitlab.com/charts/charts/registry/#garbage-collection).
+The `registry-garbage-collect` command shuts down the container registry prior to the garbage collection and
+only starts it again after garbage collection completes. If you prefer to avoid downtime,
+you can manually set the container registry to [read-only mode and bypass `gitlab-ctl`](#performing-garbage-collection-without-downtime).
+
+This command proceeds only if the metadata is in object storage. This command does not proceed
+if the [container registry metadata database](#container-registry-metadata-database) is enabled. 
+
+{{< /alert >}}
 
 ### Understanding the content-addressable layers
 

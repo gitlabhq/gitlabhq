@@ -12,7 +12,9 @@ module Gitlab
       end
 
       def self.frame_src
-        "https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://www.googletagmanager.com/ns.html"
+        base_urls = "https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://www.googletagmanager.com/ns.html"
+
+        ENV['O11Y_URL'].present? ? "#{base_urls} #{ENV['O11Y_URL']}" : base_urls
       end
 
       def self.script_src

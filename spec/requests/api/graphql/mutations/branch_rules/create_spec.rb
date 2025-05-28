@@ -9,11 +9,12 @@ RSpec.describe 'BranchRuleCreate', feature_category: :source_code_management do
 
   let(:params) do
     {
-      project_path: project.full_path,
+      project_path: project_path,
       name: branch_name
     }
   end
 
+  let(:project_path) { project.full_path }
   let(:branch_name) { 'branch_name/*' }
   let(:mutation) { graphql_mutation(:branch_rule_create, params) }
   let(:mutation_response) { graphql_mutation_response(:branch_rule_create) }
@@ -28,7 +29,7 @@ RSpec.describe 'BranchRuleCreate', feature_category: :source_code_management do
 
     it_behaves_like 'a mutation that returns a top-level access error'
 
-    it 'does not create the board' do
+    it 'does not create the protected branch' do
       expect { post_mutation }.not_to change { ProtectedBranch.count }
     end
   end
@@ -48,6 +49,18 @@ RSpec.describe 'BranchRuleCreate', feature_category: :source_code_management do
       expect(mutation_response).to have_key('branchRule')
       expect(mutation_response['branchRule']['name']).to eq(branch_name)
       expect(mutation_errors).to be_empty
+    end
+
+    context 'when project path is not found' do
+      let(:project_path) { 'missing_path' }
+
+      it 'does not create the protected branch' do
+        expect { post_mutation }.not_to change { ProtectedBranch.count }
+      end
+
+      it_behaves_like 'a mutation that returns top-level errors', errors: [<<~ERROR.chomp]
+        The resource that you are attempting to access does not exist or you don't have permission to perform this action
+      ERROR
     end
 
     context 'when the branch rule already exist' do

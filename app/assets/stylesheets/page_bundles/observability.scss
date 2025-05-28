@@ -1,0 +1,6 @@
+@import 'mixins_and_variables_and_functions';
+
+.observability-container {
+  height: $calc-application-viewport-height;
+  min-height: 600px;
+}

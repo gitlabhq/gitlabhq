@@ -464,11 +464,6 @@ module Gitlab
         ::Gitlab.config.omniauth.providers.map(&:name)
       end
 
-      # Overridden in EE
-      def available_integrations
-        Integration.available_integration_names(include_dev: false, include_disabled: true) # rubocop: disable UsageData/LargeTable -- not counting data
-      end
-
       # LDAP provider names are set by customers and could include
       # sensitive info (server names, etc). LDAP providers normally
       # don't appear in omniauth providers but filter to ensure

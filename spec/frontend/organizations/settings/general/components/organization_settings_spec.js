@@ -41,20 +41,29 @@ describe('OrganizationSettings', () => {
     },
   };
 
+  const defaultPropsData = {
+    id: 'organization-settings',
+    expanded: false,
+  };
+
   const file = new File(['foo'], 'foo.jpg', {
     type: 'text/plain',
   });
 
   const successfulResponseHandler = jest.fn().mockResolvedValue(organizationUpdateResponse);
 
+  const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
+
   const createComponent = ({
     handlers = [[organizationUpdateMutation, successfulResponseHandler]],
     provide = {},
+    propsData = {},
   } = {}) => {
     mockApollo = createMockApollo(handlers);
 
     wrapper = shallowMountExtended(OrganizationSettings, {
       provide: { ...defaultProvide, ...provide },
+      propsData: { ...defaultPropsData, ...propsData },
       apolloProvider: mockApollo,
     });
   };
@@ -79,8 +88,11 @@ describe('OrganizationSettings', () => {
     mockApollo = null;
   });
 
-  it('renders settings block', () => {
-    expect(wrapper.findComponent(SettingsBlock).exists()).toBe(true);
+  it('renders settings block with correct props', () => {
+    expect(findSettingsBlock().props()).toEqual({
+      title: 'Organization settings',
+      ...defaultPropsData,
+    });
   });
 
   it('renders form with correct props', () => {
@@ -90,6 +102,16 @@ describe('OrganizationSettings', () => {
       loading: false,
       initialFormValues: defaultProvide.organization,
       fieldsToRender: [FORM_FIELD_NAME, FORM_FIELD_ID, FORM_FIELD_DESCRIPTION, FORM_FIELD_AVATAR],
+    });
+  });
+
+  describe('when SettingsBlock component emits `toggle-expand` event', () => {
+    beforeEach(() => {
+      findSettingsBlock().vm.$emit('toggle-expand', true);
+    });
+
+    it('emits `toggle-expand` event', () => {
+      expect(wrapper.emitted('toggle-expand')).toEqual([[true]]);
     });
   });
 

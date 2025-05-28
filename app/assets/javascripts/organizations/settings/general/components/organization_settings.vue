@@ -31,6 +31,16 @@ export default {
     successMessage: s__('Organization|Organization was successfully updated.'),
   },
   fieldsToRender: [FORM_FIELD_NAME, FORM_FIELD_ID, FORM_FIELD_DESCRIPTION, FORM_FIELD_AVATAR],
+  props: {
+    id: {
+      type: String,
+      required: true,
+    },
+    expanded: {
+      type: Boolean,
+      required: true,
+    },
+  },
   data() {
     return {
       loading: false,
@@ -101,9 +111,10 @@ export default {
 
 <template>
   <settings-block
-    id="organization-settings"
+    :id="id"
+    :expanded="expanded"
     :title="$options.i18n.settingsBlock.title"
-    default-expanded
+    @toggle-expand="$emit('toggle-expand', $event)"
   >
     <template #description>{{ $options.i18n.settingsBlock.description }}</template>
     <template #default>

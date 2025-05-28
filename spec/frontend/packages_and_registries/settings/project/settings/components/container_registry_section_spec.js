@@ -41,7 +41,7 @@ describe('Container registry project settings section', () => {
 
     it('renders with title', () => {
       expect(findSettingsBlock().props('title')).toBe('Container registry');
-      expect(findSettingsBlock().props('defaultExpanded')).toBe(false);
+      expect(findSettingsBlock().props('expanded')).toBe(false);
     });
 
     it('renders with description', () => {
@@ -69,8 +69,8 @@ describe('Container registry project settings section', () => {
       mountComponent({ props: { expanded: true } });
     });
 
-    it('sets settings block `defaultExpanded` prop to true', () => {
-      expect(findSettingsBlock().props('defaultExpanded')).toBe(true);
+    it('sets settings block `expanded` prop to true', () => {
+      expect(findSettingsBlock().props('expanded')).toBe(true);
     });
   });
 

@@ -834,3 +834,21 @@ By default, the online garbage collector will only start deleting unreferenced l
 that all tags they were associated with were deleted. This delay ensures that the garbage collector does
 not interfere with long-running or interrupted image pushes, as layers are pushed to the registry before
 they are associated with an image and tag.
+
+### Error: `permission denied for schema public (SQLSTATE 42501)`
+
+During a registry migration, you might get one of the following errors:
+
+- `ERROR: permission denied for schema public (SQLSTATE 42501)`
+- `ERROR: relation "public.blobs" does not exist (SQLSTATE 42P01)` 
+
+These types of errors are due to a change in PostgreSQL 15+, which removes the default CREATE privileges on the public schema for security reasons. 
+By default, only database owners can create objects in the public schema in PostgreSQL 15+.
+
+To resolve the error, run the following command to give a registry user owner privileges of the registry database:
+
+```sql
+ALTER DATABASE <registry_database_name> OWNER TO <registry_user>;
+```
+
+This gives the registry user the necessary permissions to create tables and run migrations successfully.

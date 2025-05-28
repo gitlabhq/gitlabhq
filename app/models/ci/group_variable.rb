@@ -13,8 +13,6 @@ module Ci
 
     belongs_to :group, class_name: "::Group"
 
-    alias_attribute :secret_value, :value
-
     validates :description, length: { maximum: 255 }, allow_blank: true
     validates :key, uniqueness: {
       scope: [:group_id, :environment_scope],
