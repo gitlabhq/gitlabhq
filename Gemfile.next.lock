@@ -2139,7 +2139,7 @@ DEPENDENCIES
   faraday_middleware-aws-sigv4 (~> 1.0.1)
   fast_blank (~> 1.0.1)
   ffaker (~> 2.24)
-  ffi (~> 1.17)
+  ffi (~> 1.17.2)
   flipper (~> 0.28.0)
   flipper-active_record (~> 0.28.0)
   flipper-active_support_cache_store (~> 0.28.0)

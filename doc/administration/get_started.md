@@ -20,15 +20,15 @@ and back up GitLab.
 
 Authentication is the first step in making your installation secure.
 
-- [Enforce two-factor authentication (2FA) for all users](../security/two_factor_authentication.md). We highly recommended 2FA for GitLab Self-Managed instances.
+- [Enforce two-factor authentication (2FA) for all users](../security/two_factor_authentication.md). You should use 2FA for GitLab Self-Managed instances.
 - Ensure users do the following:
   - Choose a strong, secure password. If possible, store it in a password management system.
-  - If it is not configured for everyone, enable [two-factor authentication (2FA)](../user/profile/account/two_factor_authentication.md) for your account.
+  - If it is not configured for everyone, turn on [two-factor authentication (2FA)](../user/profile/account/two_factor_authentication.md) for your account.
     This one-time secret code is an additional safeguard that keeps intruders out, even if they have your password.
   - Add a backup email. If you lose access to your account, the GitLab Support team can help you more quickly.
   - Save or print your recovery codes. If you can't access your authentication device, you can use these recovery codes to sign in to your GitLab account.
-  - Add [an SSH key](../user/ssh.md) to your profile. You can generate new recovery codes as needed with SSH.
-  - Enable [personal access tokens](../user/profile/personal_access_tokens.md). When using 2FA, you can use these tokens to access the GitLab API.
+  - Add [an SSH key](../user/ssh.md) to your profile. You can generate recovery codes as needed with SSH.
+  - Create [personal access tokens](../user/profile/personal_access_tokens.md). When you use 2FA, you can use these tokens to access the GitLab API.
 
 ## Projects and groups
 
@@ -48,7 +48,7 @@ Get started:
 - [Add members](../user/group/_index.md#add-users-to-a-group) to the group.
 - Create a [subgroup](../user/group/subgroups/_index.md#create-a-subgroup).
 - [Add members](../user/group/subgroups/_index.md#subgroup-membership) to the subgroup.
-- Enable [external authorization control](settings/external_authorization.md#configuration).
+- Turn on [external authorization control](settings/external_authorization.md#configuration).
 
 **More resources**
 
@@ -60,10 +60,10 @@ Get started:
 
 ## Import projects
 
-You may need to import projects from external sources like GitHub, Bitbucket, or another instance of GitLab. Many external sources can be imported into GitLab.
+You might have to import projects from external sources like GitHub, Bitbucket, or another instance of GitLab. Many external sources can be imported into GitLab.
 
 - Review the [GitLab projects documentation](../user/project/_index.md).
-- Consider [repository mirroring](../user/project/repository/mirror/_index.md), an [alternative to project migrations](../ci/ci_cd_for_external_repos/_index.md).
+- Consider [Repository Mirroring](../user/project/repository/mirror/_index.md), an [alternative to project migrations](../ci/ci_cd_for_external_repos/_index.md).
 - Check out our [migration index](../user/project/import/_index.md) for documentation on common migration paths.
 - Schedule your project exports with our [import/export API](../api/project_import_export.md#schedule-an-export).
 
@@ -82,18 +82,18 @@ While this isn't an exhaustive list, following these steps gives you a solid sta
 
 - Use a long root password, stored in a vault.
 - Install trusted SSL certificate and establish a process for renewal and revocation.
-- [Configure SSH key restrictions](../security/ssh_keys_restrictions.md) per your organization's guidelines.
-- [Disable new sign-ups](settings/sign_up_restrictions.md#disable-new-sign-ups).
+- [Configure SSH key restrictions](../security/ssh_keys_restrictions.md) according to your organization's guidelines.
+- [Turn off new sign-ups](settings/sign_up_restrictions.md#disable-new-sign-ups).
 - Require email confirmation.
 - Set password length limit, configure SSO or SAML user management.
 - Limit email domains if allowing sign-up.
 - Require two-factor authentication (2FA).
-- [Disable password authentication](settings/sign_in_restrictions.md#password-authentication-enabled) for Git over HTTPS.
+- [Turn off password authentication](settings/sign_in_restrictions.md#password-authentication-enabled) for Git over HTTPS.
 - Set up [email notification for unknown sign-ins](settings/sign_in_restrictions.md#email-notification-for-unknown-sign-ins).
 - Configure [user and IP rate limits](https://about.gitlab.com/blog/2020/05/20/gitlab-instance-security-best-practices/#user-and-ip-rate-limits).
 - Limit [webhooks local access](https://about.gitlab.com/blog/2020/05/20/gitlab-instance-security-best-practices/#webhooks).
 - Set [rate limits for protected paths](settings/protected_paths.md).
-- Sign up for [Security Alerts](https://about.gitlab.com/company/preference-center/) from the Communication Preference Center.
+- Subscribe to [Security Alerts](https://about.gitlab.com/company/preference-center/) from the Communication Preference Center.
 - Keep track of security best practices on our [blog page](https://about.gitlab.com/blog/2020/05/20/gitlab-instance-security-best-practices/).
 
 ## Monitor GitLab performance
@@ -104,7 +104,7 @@ Unlike other monitoring solutions (for example, Zabbix or New Relic), Prometheus
 - [Prometheus](monitoring/prometheus/_index.md) captures
   [these GitLab metrics](monitoring/prometheus/gitlab_metrics.md#metrics-available).
 - Learn more about GitLab [bundled software metrics](monitoring/prometheus/_index.md#bundled-software-metrics).
-- Prometheus and its exporters are on by default. However, you need to [configure the service](monitoring/prometheus/_index.md#configuring-prometheus).
+- Prometheus and its exporters are on by default. However, you must [configure the service](monitoring/prometheus/_index.md#configuring-prometheus).
 - Find out why [application performance metrics](https://about.gitlab.com/blog/2020/05/07/working-with-performance-metrics/) matter.
 - Integrate Grafana to [build visual dashboards](https://youtu.be/f4R7s0An1qE) based on performance metrics.
 
@@ -134,7 +134,7 @@ GitLab provides backup methods to keep your data safe and recoverable. Whether y
 
 The routine differs, depending on whether you deployed with the Linux package or the Helm chart.
 
-When backing up (single node) GitLab server installed using the Linux package, you can use a single Rake task.
+To back up a single-node installation that uses the Linux package, you can use a single Rake task.
 
 Learn about [backing up Linux package or Helm variations](backup_restore/_index.md).
 This process backs up your entire instance, but does not back up the configuration files. Ensure those are backed up separately.
@@ -174,18 +174,18 @@ All backups are encrypted. After 90 days, backups are deleted.
 
 You should not use [direct transfer](../user/group/import/_index.md) or
 [project export files](../user/project/settings/import_export.md) to back up your data.
-Using project export files for backups does not always work, and not all items are exported.
+Project export files do not always work for data backups, and not all items are exported.
 
 {{< /alert >}}
 
 ### Alternative backup strategies
 
-In some situations the Rake task for backups may not be the most optimal solution. Here are some
+In some situations the Rake task for backups might not be the most optimal solution. Here are some
 [alternatives](backup_restore/_index.md) to consider if the Rake task does not work for you.
 
 #### Option 1: File system snapshot
 
-If your GitLab server contains a lot of Git repository data, you may find the GitLab backup script to be too slow. It can be especially slow when backing up to an offsite location.
+If your GitLab server contains a lot of Git repository data, you might find the GitLab backup script to be too slow. It can be especially slow when backing up to an offsite location.
 
 Slowness typically starts at a Git repository data size of around 200 GB. In this case, you might consider using file system snapshots as part of your backup strategy.
 For example, consider a GitLab server with the following components:
@@ -195,7 +195,7 @@ For example, consider a GitLab server with the following components:
 
 The EC2 instance meets the requirements for an application data backup by taking an EBS snapshot. The backup includes all repositories, uploads, and PostgreSQL data.
 
-In general, if you're running GitLab on a virtualized server, you can create VM snapshots of the entire GitLab server.
+If you're running GitLab on a virtualized server, you can create VM snapshots of the entire GitLab server.
 It is common for a VM snapshot to require you to power down the server.
 
 #### Option 2: GitLab Geo

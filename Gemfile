@@ -34,9 +34,9 @@ gem 'bootsnap', '~> 1.18.3', require: false, feature_category: :shared
 # Avoid the precompiled native gems because Omnibus needs to build this to ensure
 # LD_LIBRARY_PATH is correct: https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/7730
 if RUBY_PLATFORM.include?('darwin')
-  gem 'ffi', '~> 1.17', feature_category: :shared
+  gem 'ffi', '~> 1.17.2', feature_category: :shared
 else
-  gem 'ffi', '~> 1.17', force_ruby_platform: true, feature_category: :shared
+  gem 'ffi', '~> 1.17.2', force_ruby_platform: true, feature_category: :shared
 end
 
 gem 'openssl', '~> 3.0', feature_category: :shared

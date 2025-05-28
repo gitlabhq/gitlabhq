@@ -1056,6 +1056,15 @@ Considering these, you should carefully plan your PostgreSQL upgrade:
    sudo gitlab-ctl pg-upgrade
    ```
 
+1. Ensure that the compatible versions of `pg_dump` and `pg_restore` are used
+   on the GitLab Rails instance to avoid version mismatch errors when performing
+   a backup or restore. You can do this by specifying the PostgreSQL version
+   in `/etc/gitlab/gitlab.rb` on the Rails instance:
+
+   ```shell
+   postgresql['version'] = 16
+   ```
+
 If issues are encountered upgrading the replicas,
 [there is a troubleshooting section](replication_and_failover_troubleshooting.md#postgresql-major-version-upgrade-fails-on-a-patroni-replica) that might be the solution.
 

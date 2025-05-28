@@ -229,6 +229,9 @@ When this feature is enabled, GitLab runs a daily job to deactivate the dormant 
 
 A maximum of 100,000 users can be deactivated per day.
 
+By default, users receive an email notification when their account is deactivated.
+You can disable [user deactivation emails](settings/email.md#user-deactivation-emails).
+
 {{< alert type="note" >}}
 
 GitLab generated bots are excluded from the automatic deactivation of dormant users.
