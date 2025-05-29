@@ -3,6 +3,7 @@ stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 gitlab_dedicated: yes
+description: Two-factor authentication (2FA) adds an extra layer of security to your GitLab account by requiring a second form of verification in addition to your password.
 title: Two-factor authentication
 ---
 

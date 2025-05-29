@@ -183,7 +183,7 @@ that works for this problem. Follow these steps to use the tool in Auto DevOps:
      - remote: https://gitlab.com/shinya.maeda/ci-templates/-/raw/master/map-deprecated-api.gitlab-ci.yml
 
    variables:
-     HELM_VERSION_FOR_MAPKUBEAPIS: "v2" # If you're using auto-depoy-image v2 or above, please specify "v3".
+     HELM_VERSION_FOR_MAPKUBEAPIS: "v2" # If you're using auto-depoy-image v2 or later, please specify "v3".
    ```
 
 1. Run the job `<environment-name>:map-deprecated-api`. Ensure that this job succeeds before moving

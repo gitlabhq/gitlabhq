@@ -12,10 +12,10 @@ title: Job Artifacts API
 
 {{< /details >}}
 
-Use the job artifacts API to download or delete job artifacts.
+Use this API to interact with [job artifacts](../ci/jobs/job_artifacts.md).
 
 Authentication with a [CI/CD job token](../ci/jobs/job_artifacts.md#with-a-cicd-job-token)
-available in the Premium and Ultimate tier.
+is available in the Premium and Ultimate tier.
 
 ## Get job artifacts
 

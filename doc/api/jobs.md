@@ -12,6 +12,8 @@ title: Jobs API
 
 {{< /details >}}
 
+Use this API to interact with [CI/CD jobs](../ci/jobs/_index.md).
+
 ## List project jobs
 
 {{< history >}}

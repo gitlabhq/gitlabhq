@@ -143,7 +143,7 @@ displays a list of test suites and cases reported from the XML file.
 You can view all the known test suites and select each of these to see further
 details, including the cases that make up the suite.
 
-You can also retrieve the reports via the [GitLab API](../../api/pipelines.md#get-a-pipelines-test-report).
+You can also retrieve the reports via the [GitLab API](../../api/pipelines.md#get-a-test-report-for-a-pipeline).
 
 ### Unit test reports parsing errors
 

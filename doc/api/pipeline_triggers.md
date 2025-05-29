@@ -12,7 +12,7 @@ title: Pipeline trigger tokens API
 
 {{< /details >}}
 
-You can read more about [triggering pipelines through the API](../ci/triggers/_index.md).
+Use this API to [trigger pipelines](../ci/triggers/_index.md).
 
 ## List project trigger tokens
 

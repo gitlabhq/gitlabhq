@@ -12,7 +12,7 @@ title: Pipeline schedules API
 
 {{< /details >}}
 
-You can read more about [pipeline schedules](../ci/pipelines/schedules.md).
+Use this API to interact with [pipeline schedules](../ci/pipelines/schedules.md).
 
 ## Get all pipeline schedules
 

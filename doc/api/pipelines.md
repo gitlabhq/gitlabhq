@@ -12,12 +12,7 @@ title: Pipelines API
 
 {{< /details >}}
 
-## Pipelines pagination
-
-By default, `GET` requests return 20 results at a time because the API results
-are paginated.
-
-Read more on [pagination](rest/_index.md#pagination).
+Use this API to interact with [CI/CD pipelines](../ci/pipelines/_index.md).
 
 ## List project pipelines
 
@@ -40,6 +35,9 @@ are not included in the results. To return child pipelines, set `source` to `par
 ```plaintext
 GET /projects/:id/pipelines
 ```
+
+Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to
+control the pagination of results.
 
 | Attribute        | Type           | Required | Description |
 |------------------|----------------|----------|-------------|
@@ -114,6 +112,9 @@ You can also get a single [child pipeline](../ci/pipelines/downstream_pipelines.
 GET /projects/:id/pipelines/:pipeline_id
 ```
 
+Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to
+control the pagination of results.
+
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
 | `id`          | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
@@ -169,7 +170,7 @@ Example of response
 }
 ```
 
-### Get the latest pipeline
+## Get the latest pipeline
 
 {{< history >}}
 
@@ -183,6 +184,9 @@ Get the latest pipeline for the most recent commit on a specific ref in a projec
 ```plaintext
 GET /projects/:id/pipelines/latest
 ```
+
+Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to
+control the pagination of results.
 
 | Attribute | Type   | Required | Description |
 |-----------|--------|----------|-------------|
@@ -238,7 +242,7 @@ Example of response
 }
 ```
 
-### Get variables of a pipeline
+## Get variables for a pipeline
 
 Get the variables of a pipeline. Does not include variables that come from a pipeline schedule.
 For more information, see [issue 250850](https://gitlab.com/gitlab-org/gitlab/-/issues/250850).
@@ -246,6 +250,9 @@ For more information, see [issue 250850](https://gitlab.com/gitlab-org/gitlab/-/
 ```plaintext
 GET /projects/:id/pipelines/:pipeline_id/variables
 ```
+
+Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to
+control the pagination of results.
 
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
@@ -272,7 +279,7 @@ Example of response
 ]
 ```
 
-### Get a pipeline's test report
+## Get a test report for a pipeline
 
 {{< alert type="note" >}}
 
@@ -283,6 +290,9 @@ This API route is part of the [Unit test report](../ci/testing/unit_test_reports
 ```plaintext
 GET /projects/:id/pipelines/:pipeline_id/test_report
 ```
+
+Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to
+control the pagination of results.
 
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
@@ -329,7 +339,7 @@ Sample response:
 }
 ```
 
-### Get a pipeline's test report summary
+## Get a test report summary for a pipeline
 
 {{< alert type="note" >}}
 
@@ -340,6 +350,9 @@ This API route is part of the [Unit test report](../ci/testing/unit_test_reports
 ```plaintext
 GET /projects/:id/pipelines/:pipeline_id/test_report_summary
 ```
+
+Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to
+control the pagination of results.
 
 | Attribute     | Type           | Required | Description |
 |---------------|----------------|----------|-------------|
@@ -509,7 +522,7 @@ Response:
 }
 ```
 
-## Cancel a pipeline's jobs
+## Cancel all jobs for a pipeline
 
 ```plaintext
 POST /projects/:id/pipelines/:pipeline_id/cancel

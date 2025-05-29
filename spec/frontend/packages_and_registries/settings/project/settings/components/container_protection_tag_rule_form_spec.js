@@ -20,18 +20,12 @@ import { containerProtectionTagRuleMutationInput } from '../mock_data';
 
 Vue.use(VueApollo);
 
-describe('container Protection Rule Form', () => {
+describe('Container Protection Rule Form', () => {
   let wrapper;
   let fakeApollo;
 
   const defaultProvidedValues = {
     projectPath: 'path',
-    glFeatures: {
-      containerRegistryImmutableTags: true,
-    },
-    glAbilities: {
-      createContainerRegistryProtectionImmutableTagRule: true,
-    },
   };
 
   const rule =
@@ -39,14 +33,8 @@ describe('container Protection Rule Form', () => {
       .containerProtectionTagRule;
 
   const findForm = () => wrapper.findComponent(GlForm);
-  const findProtectionTypeProtectedRadio = () =>
-    wrapper.findByRole('radio', { name: /protected/i });
-  const findProtectionTypeImmutableRadio = () =>
-    wrapper.findByRole('radio', { name: /immutable/i });
   const findTagNamePatternInput = () =>
     wrapper.findByRole('textbox', { name: /protect container tags matching/i });
-  const findImmutableTagNamePatternInput = () =>
-    wrapper.findByRole('textbox', { name: /apply immutability rule to tags matching/i });
   const findMinimumAccessLevelForPushSelect = () =>
     wrapper.findByRole('combobox', { name: /minimum role allowed to push/i });
   const findMinimumAccessLevelForDeleteSelect = () =>
@@ -89,24 +77,6 @@ describe('container Protection Rule Form', () => {
   };
 
   describe('form fields', () => {
-    describe('form field "protectionType"', () => {
-      beforeEach(() => {
-        mountComponent();
-      });
-
-      describe('form field "protectionType"', () => {
-        it('protected radio exists and is checked by default', () => {
-          expect(findProtectionTypeProtectedRadio().element.value).toBe('protected');
-          expect(findProtectionTypeProtectedRadio().element.checked).toBe(true);
-        });
-
-        it('immutable radio exists and default value', () => {
-          expect(findProtectionTypeImmutableRadio().element.value).toBe('immutable');
-          expect(findProtectionTypeImmutableRadio().element.checked).toBe(false);
-        });
-      });
-    });
-
     describe('form field "tagNamePattern"', () => {
       it('exists', () => {
         mountComponent();
@@ -190,65 +160,6 @@ describe('container Protection Rule Form', () => {
 
       it('displays a loading spinner', () => {
         expect(findSubmitButton().props('loading')).toBe(true);
-      });
-    });
-  });
-
-  describe('when form field "protectionType"', () => {
-    beforeEach(() => {
-      mountComponent();
-    });
-
-    describe('is set to immutable', () => {
-      beforeEach(() => {
-        extendedWrapper(findProtectionTypeImmutableRadio()).setChecked();
-      });
-
-      it('form field "tagNamePattern" exists', () => {
-        expect(findImmutableTagNamePatternInput().exists()).toBe(true);
-      });
-
-      it('form field "minimumAccessLevelForPush" is hidden', () => {
-        expect(findMinimumAccessLevelForPushSelect().exists()).toBe(false);
-      });
-
-      it('form field "minimumAccessLevelForDelete" is hidden', () => {
-        expect(findMinimumAccessLevelForDeleteSelect().exists()).toBe(false);
-      });
-    });
-
-    describe('and form is submitted', () => {
-      const createMutationResolver = jest
-        .fn()
-        .mockResolvedValue(createContainerProtectionTagRuleMutationPayload);
-      const updateMutationResolver = jest
-        .fn()
-        .mockResolvedValue(updateContainerProtectionTagRuleMutationPayload);
-
-      const submitForm = () => {
-        findImmutableTagNamePatternInput().setValue(
-          containerProtectionTagRuleMutationInput.tagNamePattern,
-        );
-        findForm().trigger('submit');
-        return waitForPromises();
-      };
-
-      beforeEach(() => {
-        mountComponentWithApollo({ createMutationResolver, updateMutationResolver });
-      });
-
-      it('dispatches correct apollo mutation', async () => {
-        await extendedWrapper(findProtectionTypeImmutableRadio()).setChecked();
-
-        await submitForm();
-
-        expect(createMutationResolver).toHaveBeenCalledWith({
-          input: {
-            projectPath: 'path',
-            tagNamePattern: containerProtectionTagRuleMutationInput.tagNamePattern,
-          },
-        });
-        expect(updateMutationResolver).not.toHaveBeenCalled();
       });
     });
   });
@@ -443,39 +354,16 @@ describe('container Protection Rule Form', () => {
     });
   });
 
-  describe('when user does not have ability to create immutable tag rule', () => {
-    beforeEach(() => {
-      mountComponent({
-        provide: {
-          ...defaultProvidedValues,
-          glAbilities: {
-            createContainerRegistryProtectionImmutableTagRule: false,
-          },
-        },
-      });
-    });
+  describe('when isProtectedTagRuleType prop is passed', () => {
+    it.each`
+      propValue | label                                         | description
+      ${true}   | ${'Protect container tags matching'}          | ${'Tags with names that match this regex pattern are protected. Must be less than 100 characters. What regex patterns are supported?'}
+      ${false}  | ${'Apply immutability rule to tags matching'} | ${'Tags with names that match this regex pattern are immutable. Must be less than 100 characters. What regex patterns are supported?'}
+    `('test', ({ propValue, label, description }) => {
+      mountComponent({ props: { isProtectedTagRuleType: propValue } });
 
-    it('form field "protectionType" does not exist', () => {
-      expect(findProtectionTypeProtectedRadio().exists()).toBe(false);
-      expect(findProtectionTypeImmutableRadio().exists()).toBe(false);
-    });
-  });
-
-  describe('when `containerRegistryImmutableTags` feature flag is turned off', () => {
-    beforeEach(() => {
-      mountComponent({
-        provide: {
-          ...defaultProvidedValues,
-          glFeatures: {
-            containerRegistryImmutableTags: false,
-          },
-        },
-      });
-    });
-
-    it('form field "protectionType" does not exist', () => {
-      expect(findProtectionTypeProtectedRadio().exists()).toBe(false);
-      expect(findProtectionTypeImmutableRadio().exists()).toBe(false);
+      expect(wrapper.text()).toContain(label);
+      expect(wrapper.text()).toContain(description);
     });
   });
 });

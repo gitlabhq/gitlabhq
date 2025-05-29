@@ -2052,10 +2052,6 @@ feedback: false
 The default is to leave it there. If you want to omit it from a document, you
 must check with a technical writer before doing so.
 
-The click events in the feedback section are tracked with Google Tag Manager.
-The conversions can be viewed on Google Analytics by navigating to
-**Behavior > Events > Top events > docs**.
-
 ### GitLab restart
 
 When a restart or reconfigure of GitLab is required, avoid duplication by linking

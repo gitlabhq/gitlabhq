@@ -12,7 +12,7 @@ title: GitLab Docs
   <h3>Visit <a href="https://docs.gitlab.com/ee/">docs.gitlab.com</a> for the latest version
   of this help information with enhanced navigation, formatting, and search.</h3>
 </div>
-<!-- the div above will not display on the docs site but will display on /help -->
+<!-- the div tag will not display on the docs site but will display on /help -->
 
 <!-- markdownlint-enable MD044 -->
 

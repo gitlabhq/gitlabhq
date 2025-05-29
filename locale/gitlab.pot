@@ -7885,9 +7885,6 @@ msgstr ""
 msgid "AppleAppStore|Use GitLab to build and release an app in the Apple App Store."
 msgstr ""
 
-msgid "Application"
-msgstr ""
-
 msgid "Application ID"
 msgstr ""
 
@@ -18961,9 +18958,6 @@ msgid "Created %{time_ago}"
 msgstr ""
 
 msgid "Created %{timestamp}"
-msgstr ""
-
-msgid "Created At"
 msgstr ""
 
 msgid "Created Date"
@@ -40374,9 +40368,6 @@ msgstr ""
 msgid "New %{type} in %{project}"
 msgstr ""
 
-msgid "New Application"
-msgstr ""
-
 msgid "New File"
 msgstr ""
 
@@ -40402,9 +40393,6 @@ msgid "New Protected Branch"
 msgstr ""
 
 msgid "New Security findings"
-msgstr ""
-
-msgid "New application"
 msgstr ""
 
 msgid "New branch"
@@ -71611,9 +71599,6 @@ msgid "Your activity"
 msgstr ""
 
 msgid "Your applications"
-msgstr ""
-
-msgid "Your authorized applications"
 msgstr ""
 
 msgid "Your browser doesn't support WebAuthn. Please use a supported browser, e.g. Chrome (67+) or Firefox (60+)."

@@ -173,7 +173,7 @@ controller to external clients and, indirectly, to any application running insid
 Bare-metal environments lack this commodity, requiring a slightly different setup to offer the
 same kind of access to external consumers.
 
-The docs linked above explain the issue and present possible solutions, for example:
+The documentation linked previously explains the issue and provides possible solutions, for example:
 
 - Through [MetalLB](https://github.com/metallb/metallb).
 - Through [PorterLB](https://github.com/kubesphere/porterlb).

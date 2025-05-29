@@ -33259,6 +33259,8 @@ CREATE UNIQUE INDEX i_pm_package_versions_on_package_id_and_version ON pm_packag
 
 CREATE UNIQUE INDEX i_pm_packages_purl_type_and_name ON pm_packages USING btree (purl_type, name);
 
+CREATE INDEX i_project_compliance_violations_on_namespace_id_created_at_id ON project_compliance_violations USING btree (namespace_id, created_at DESC, id DESC);
+
 CREATE INDEX i_project_requirement_statuses_on_namespace_id_framework_id ON project_requirement_compliance_statuses USING btree (namespace_id, compliance_framework_id, id);
 
 CREATE INDEX i_project_requirement_statuses_on_namespace_id_project_id ON project_requirement_compliance_statuses USING btree (namespace_id, project_id, id);
@@ -33598,8 +33600,6 @@ CREATE INDEX idx_project_audit_events_on_project_created_at_id ON ONLY project_a
 CREATE INDEX idx_project_audit_events_on_project_id_author_created_at_id ON ONLY project_audit_events USING btree (project_id, author_id, created_at, id DESC);
 
 CREATE INDEX idx_project_compliance_violations_on_control_id ON project_compliance_violations USING btree (compliance_requirements_control_id);
-
-CREATE INDEX idx_project_compliance_violations_on_namespace_id ON project_compliance_violations USING btree (namespace_id);
 
 CREATE INDEX idx_project_compliance_violations_on_project_id ON project_compliance_violations USING btree (project_id);
 
