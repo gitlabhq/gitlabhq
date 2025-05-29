@@ -174,7 +174,7 @@ module Gitlab
                 initialBackoff: '0.4s',
                 maxBackoff: '1.4s',
                 backoffMultiplier: 2, # Maximum retry duration is 2400ms.
-                retryableStatusCodes: ['UNAVAILABLE']
+                retryableStatusCodes: %w[UNAVAILABLE ABORTED]
               }
             }
           ]

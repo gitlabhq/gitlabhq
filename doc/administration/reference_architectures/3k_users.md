@@ -23,7 +23,6 @@ For a full list of reference architectures, see
 
 > - **Target Load**: API: 60 RPS, Web: 6 RPS, Git (Pull): 6 RPS, Git (Push): 1 RPS
 > - **High Availability**: Yes, although [Praefect](#configure-praefect-postgresql) needs a third-party PostgreSQL solution
-> - **Cost calculator template**: [See cost calculator templates section](_index.md#cost-calculator-templates)
 > - **Cloud Native Hybrid Alternative**: [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
 > - **Unsure which Reference Architecture to use?** [Go to this guide for more info](_index.md#deciding-which-architecture-to-start-with).
 

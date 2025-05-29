@@ -20,7 +20,6 @@ For a full list of reference architectures, see
 > - **Target Load**: API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS
 > - **High Availability**: No. For a highly-available environment, you can
 >   follow a modified [3K or 60 RPS reference architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
-> - **Cost calculator template**: [See cost calculator templates section](_index.md#cost-calculator-templates)
 > - **Cloud Native Hybrid**: [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
 > - **Unsure which Reference Architecture to use?** [Go to this guide for more info](_index.md#deciding-which-architecture-to-start-with).
 

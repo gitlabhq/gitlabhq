@@ -26,7 +26,6 @@ specifically the [Before you start](_index.md#before-you-start) and [Deciding wh
 
 > - **Target load**: API: 500 RPS, Web: 50 RPS, Git (Pull): 50 RPS, Git (Push): 10 RPS
 > - **High Availability**: Yes ([Praefect](#configure-praefect-postgresql) needs a third-party PostgreSQL solution for HA)
-> - **Cost calculator template**: [See cost calculator templates section](_index.md#cost-calculator-templates)
 > - **Cloud Native Hybrid Alternative**: [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
 > - **Unsure which Reference Architecture to use?** [Go to this guide for more info](_index.md#deciding-which-architecture-to-start-with)
 

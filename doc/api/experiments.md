@@ -27,7 +27,8 @@ GET /experiments
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/experiments"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/experiments"
 ```
 
 Example response:

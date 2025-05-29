@@ -226,6 +226,16 @@ In the following steps, replace `<ssh_host_key_path>` with the one you're using:
    gitlab_rails['geo_node_name'] = '<site_name_here>'
    ```
 
+{{< alert type="warning" >}}
+
+When the site name is configured to match the external URL, it is important to ensure
+that you add the trailing slash of the URL to the `gitlab_rails['geo_node_name']`
+definition in `/etc/gitlab/gitlab.rb`. Otherwise, it can cause the site to be
+misconfigured after updating the site's data from the Admin page.
+For more information, see [issue 536444](https://gitlab.com/gitlab-org/gitlab/-/issues/536444).
+
+{{< /alert >}}
+
 1. Reconfigure **each Rails and Sidekiq node on your secondary** site for the change to take effect:
 
    ```shell

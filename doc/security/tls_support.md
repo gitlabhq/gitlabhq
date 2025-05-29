@@ -93,7 +93,7 @@ with the Linux package are compatible with OpenSSL 3. However, before upgrading
 to GitLab 17.7, use the [OpenSSL 3 guide](https://docs.gitlab.com/omnibus/settings/ssl/openssl_3.html)
 to identify and assess the compatibility of your external integrations.
 
-## Bypassing OpenSSL 3's requirement for `close_notify`
+## Bypassing the OpenSSL 3 requirement for `close_notify`
 
 {{< history >}}
 
