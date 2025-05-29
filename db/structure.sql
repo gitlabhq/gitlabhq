@@ -33125,15 +33125,15 @@ CREATE INDEX index_ci_runner_machines_on_version ON ONLY ci_runner_machines USIN
 
 CREATE INDEX group_type_ci_runner_machines_687967fa8a_version_idx ON group_type_ci_runner_machines USING btree (version);
 
-CREATE INDEX index_ci_runner_machines_on_major_version_trigram ON ONLY ci_runner_machines USING btree ("substring"(version, '^\d+\.'::text), version, runner_id);
+CREATE INDEX index_ci_runner_machines_on_major_version ON ONLY ci_runner_machines USING btree ("substring"(version, '^\d+\.'::text), version, runner_id);
 
 CREATE INDEX group_type_ci_runner_machines_6_substring_version_runner_id_idx ON group_type_ci_runner_machines USING btree ("substring"(version, '^\d+\.'::text), version, runner_id);
 
-CREATE INDEX index_ci_runner_machines_on_minor_version_trigram ON ONLY ci_runner_machines USING btree ("substring"(version, '^\d+\.\d+\.'::text), version, runner_id);
+CREATE INDEX index_ci_runner_machines_on_minor_version ON ONLY ci_runner_machines USING btree ("substring"(version, '^\d+\.\d+\.'::text), version, runner_id);
 
 CREATE INDEX group_type_ci_runner_machines__substring_version_runner_id_idx1 ON group_type_ci_runner_machines USING btree ("substring"(version, '^\d+\.\d+\.'::text), version, runner_id);
 
-CREATE INDEX index_ci_runner_machines_on_patch_version_trigram ON ONLY ci_runner_machines USING btree ("substring"(version, '^\d+\.\d+\.\d+'::text), version, runner_id);
+CREATE INDEX index_ci_runner_machines_on_patch_version ON ONLY ci_runner_machines USING btree ("substring"(version, '^\d+\.\d+\.\d+'::text), version, runner_id);
 
 CREATE INDEX group_type_ci_runner_machines__substring_version_runner_id_idx2 ON group_type_ci_runner_machines USING btree ("substring"(version, '^\d+\.\d+\.\d+'::text), version, runner_id);
 
@@ -40865,11 +40865,11 @@ ALTER INDEX index_ci_runner_machines_on_sharding_key_id_when_not_null ATTACH PAR
 
 ALTER INDEX index_ci_runner_machines_on_version ATTACH PARTITION group_type_ci_runner_machines_687967fa8a_version_idx;
 
-ALTER INDEX index_ci_runner_machines_on_major_version_trigram ATTACH PARTITION group_type_ci_runner_machines_6_substring_version_runner_id_idx;
+ALTER INDEX index_ci_runner_machines_on_major_version ATTACH PARTITION group_type_ci_runner_machines_6_substring_version_runner_id_idx;
 
-ALTER INDEX index_ci_runner_machines_on_minor_version_trigram ATTACH PARTITION group_type_ci_runner_machines__substring_version_runner_id_idx1;
+ALTER INDEX index_ci_runner_machines_on_minor_version ATTACH PARTITION group_type_ci_runner_machines__substring_version_runner_id_idx1;
 
-ALTER INDEX index_ci_runner_machines_on_patch_version_trigram ATTACH PARTITION group_type_ci_runner_machines__substring_version_runner_id_idx2;
+ALTER INDEX index_ci_runner_machines_on_patch_version ATTACH PARTITION group_type_ci_runner_machines__substring_version_runner_id_idx2;
 
 ALTER INDEX ci_runner_machines_pkey ATTACH PARTITION group_type_ci_runner_machines_pkey;
 
@@ -41029,11 +41029,11 @@ ALTER INDEX p_ci_builds_name_id_idx ATTACH PARTITION index_security_ci_builds_on
 
 ALTER INDEX index_ci_runner_machines_on_runner_id_and_type_and_system_xid ATTACH PARTITION instance_type_ci_runner_machi_runner_id_runner_type_system__idx;
 
-ALTER INDEX index_ci_runner_machines_on_minor_version_trigram ATTACH PARTITION instance_type_ci_runner_machin_substring_version_runner_id_idx1;
+ALTER INDEX index_ci_runner_machines_on_minor_version ATTACH PARTITION instance_type_ci_runner_machin_substring_version_runner_id_idx1;
 
-ALTER INDEX index_ci_runner_machines_on_patch_version_trigram ATTACH PARTITION instance_type_ci_runner_machin_substring_version_runner_id_idx2;
+ALTER INDEX index_ci_runner_machines_on_patch_version ATTACH PARTITION instance_type_ci_runner_machin_substring_version_runner_id_idx2;
 
-ALTER INDEX index_ci_runner_machines_on_major_version_trigram ATTACH PARTITION instance_type_ci_runner_machine_substring_version_runner_id_idx;
+ALTER INDEX index_ci_runner_machines_on_major_version ATTACH PARTITION instance_type_ci_runner_machine_substring_version_runner_id_idx;
 
 ALTER INDEX index_ci_runner_machines_on_contacted_at_desc_and_id_desc ATTACH PARTITION instance_type_ci_runner_machines_687967fa8a_contacted_at_id_idx;
 
@@ -41189,9 +41189,9 @@ ALTER INDEX index_uploads_9ba88c4165_on_uploader_and_path ATTACH PARTITION proje
 
 ALTER INDEX index_ci_runner_machines_on_runner_id_and_type_and_system_xid ATTACH PARTITION project_type_ci_runner_machin_runner_id_runner_type_system__idx;
 
-ALTER INDEX index_ci_runner_machines_on_minor_version_trigram ATTACH PARTITION project_type_ci_runner_machine_substring_version_runner_id_idx1;
+ALTER INDEX index_ci_runner_machines_on_minor_version ATTACH PARTITION project_type_ci_runner_machine_substring_version_runner_id_idx1;
 
-ALTER INDEX index_ci_runner_machines_on_patch_version_trigram ATTACH PARTITION project_type_ci_runner_machine_substring_version_runner_id_idx2;
+ALTER INDEX index_ci_runner_machines_on_patch_version ATTACH PARTITION project_type_ci_runner_machine_substring_version_runner_id_idx2;
 
 ALTER INDEX index_ci_runner_machines_on_contacted_at_desc_and_id_desc ATTACH PARTITION project_type_ci_runner_machines_687967fa8a_contacted_at_id_idx;
 
@@ -41203,7 +41203,7 @@ ALTER INDEX index_ci_runner_machines_on_version ATTACH PARTITION project_type_ci
 
 ALTER INDEX ci_runner_machines_pkey ATTACH PARTITION project_type_ci_runner_machines_pkey;
 
-ALTER INDEX index_ci_runner_machines_on_major_version_trigram ATTACH PARTITION project_type_ci_runner_machines_substring_version_runner_id_idx;
+ALTER INDEX index_ci_runner_machines_on_major_version ATTACH PARTITION project_type_ci_runner_machines_substring_version_runner_id_idx;
 
 ALTER INDEX index_ci_runners_on_active_and_id ATTACH PARTITION project_type_ci_runners_e59bb2812d_active_id_idx;
 

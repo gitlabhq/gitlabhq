@@ -32,14 +32,13 @@ features. Premium gets access to only a subset of GitLab Duo features.
 
 1. Follow [the process to obtain a Premium/Ultimate license](https://handbook.gitlab.com/handbook/engineering/developer-onboarding/#working-on-gitlab-ee-developer-licenses)
 for your local instance
-1. On the page with the subscription activation code, select the ellipse menu … > Buy Duo Pro add-on to buy Duo seats. Duo Enterprise is not available but you can set that up with the GDK script.
 1. [Upload the EE license](../../administration/license_file.md).
 1. [Set environment variables](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/runit.md#using-environment-variables) in GDK:
 
       ```shell
       export GITLAB_LICENSE_MODE=test
       export CUSTOMER_PORTAL_URL=https://customers.staging.gitlab.com
-      export GITLAB_SIMULATE_SAAS=0
+      export CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1
       ```
 
 ## (Alternatively) Connect to staging AI Gateway
@@ -66,11 +65,12 @@ Ai::Setting.instance.update!(ai_gateway_url: 'https://cloud.staging.gitlab.com/a
 
 If you're having issues with your Duo license setup:
 
-- Run the [Duo health check](../../user/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo) to identify specific issues
+- Run the [Duo health check](../../user/gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo) to identify specific issues. Note that if you have Duo licenses that were generated from a setup script locally, this will show "Cloud Connector access token is missing" but that is OK.
 - Verify your license is active by checking the Admin Area
 - Ensure your user has a Duo seat assigned. The GDK setup scripts assign a Duo
   seat to the `root` user only. If you want to test with other users, make sure
   to [assign them a seat](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
+- To more deeply debug why the root user cannot access a feature like Duo Chat, you can run `GlobalPolicy.new(User.first, User.first).debug(:access_duo_chat)`. This [Declarative Policy debug output](../policies.md#scores-order-performance) will help you dive into the specific access logic for more granular debugging.
 - Check logs for any authentication or license validation errors
 - For cloud license issues, reach out to `#s_fulfillment_engineering` in Slack
 - For AI Gateway connection issues, reach out to `#g_ai_framework` in Slack

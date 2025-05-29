@@ -15,21 +15,13 @@ For detailed instructions on setting up GitLab Duo licensing in your development
 
 See [GitLab Duo licensing for local development](ai_development_license.md).
 
-## Required: Install AI gateway
+### Required: Install AI gateway
 
 **Why:** Duo features (except for Duo Workflow) route LLM requests through the AI gateway.
 
 **How:**
-Follow [these instructions](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md#install)
-to install the AI gateway with GDK. Installing through GDK is the best route for most users.
-
-You can also install AI gateway by:
-
-1. [Cloning the repository directly](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist).
-1. [Running the server locally](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#how-to-run-the-server-locally).
-
-We only recommend this for users who have a specific reason for *not* running
-the AI gateway through GDK.
+Follow [these instructions](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md)
+to install the AI gateway with GDK.
 
 ### Required: Run `gitlab:duo:setup` script
 

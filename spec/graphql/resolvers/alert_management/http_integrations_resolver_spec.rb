@@ -52,6 +52,36 @@ RSpec.describe Resolvers::AlertManagement::HttpIntegrationsResolver, feature_cat
 
         it { is_expected.to be_empty }
       end
+
+      context 'when integration does not match expected type' do
+        let(:params) { { id: global_id_of(inactive_http_integration), types: ['PROMETHEUS'] } }
+
+        it { is_expected.to be_empty }
+      end
+    end
+
+    context 'when all types are given' do
+      let(:params) { { types: %w[HTTP PROMETHEUS] } }
+
+      it { is_expected.to contain_exactly(active_http_integration, migrated_integration) }
+    end
+
+    context 'when types value is explictly excluded' do
+      let(:params) { { types: nil } }
+
+      it { is_expected.to contain_exactly(active_http_integration, migrated_integration) }
+    end
+
+    context 'when types value is explictly emptied' do
+      let(:params) { { types: [] } }
+
+      it { is_expected.to contain_exactly(active_http_integration, migrated_integration) }
+    end
+
+    context 'when types value is filtered' do
+      let(:params) { { types: ['PROMETHEUS'] } }
+
+      it { is_expected.to contain_exactly(migrated_integration) }
     end
   end
 
