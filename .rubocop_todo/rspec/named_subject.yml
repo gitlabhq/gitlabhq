@@ -257,7 +257,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/ee/gitlab/checks/push_rule_check_spec.rb'
     - 'ee/spec/lib/ee/gitlab/checks/push_rules/branch_check_spec.rb'
     - 'ee/spec/lib/ee/gitlab/checks/push_rules/commit_check_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/checks/push_rules/file_size_check_spec.rb'
     - 'ee/spec/lib/ee/gitlab/checks/push_rules/tag_check_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/config/entry/bridge_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/config/entry/need_spec.rb'

@@ -1,9 +1,0 @@
----
-name: push_rule_file_size_limit
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/505364
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183600
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/523497
-milestone: '17.10'
-type: beta
-group: group::source code
-default_enabled: true

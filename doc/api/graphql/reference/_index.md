@@ -10822,6 +10822,28 @@ Input type: `SetSecretPushProtectionInput`
 | <a id="mutationsetsecretpushprotectionprereceivesecretdetectionenabled"></a>`preReceiveSecretDetectionEnabled` | [`Boolean`](#boolean) | Whether the feature is enabled. |
 | <a id="mutationsetsecretpushprotectionsecretpushprotectionenabled"></a>`secretPushProtectionEnabled` | [`Boolean`](#boolean) | Whether the feature is enabled. |
 
+### `Mutation.setValidityChecks`
+
+Enable/disable secret detection validity checks for the given project.
+
+Input type: `SetValidityChecksInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsetvaliditychecksclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsetvaliditychecksenable"></a>`enable` | [`Boolean!`](#boolean) | Desired status for validity checks feature. |
+| <a id="mutationsetvaliditychecksnamespacepath"></a>`namespacePath` | [`ID!`](#id) | Full path of the namespace (project). |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsetvaliditychecksclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsetvaliditycheckserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationsetvaliditychecksvaliditychecksenabled"></a>`validityChecksEnabled` | [`Boolean`](#boolean) | Whether the feature is enabled. |
+
 ### `Mutation.starProject`
 
 {{< details >}}
@@ -20734,6 +20756,7 @@ A user with add-on data.
 | <a id="addonuserorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
 | <a id="addonuserpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="addonuserprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
+| <a id="addonuserprojectcount"></a>`projectCount` | [`Int`](#int) | Project count for the user. |
 | <a id="addonuserprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="addonuserpronouns"></a>`pronouns` | [`String`](#string) | Pronouns of the user. |
 | <a id="addonuserpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
@@ -21874,6 +21897,7 @@ Core representation of a GitLab user.
 | <a id="autocompleteduserorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
 | <a id="autocompleteduserpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="autocompleteduserprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
+| <a id="autocompleteduserprojectcount"></a>`projectCount` | [`Int`](#int) | Project count for the user. |
 | <a id="autocompleteduserprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="autocompleteduserpronouns"></a>`pronouns` | [`String`](#string) | Pronouns of the user. |
 | <a id="autocompleteduserpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
@@ -24841,6 +24865,7 @@ The currently authenticated GitLab user.
 | <a id="currentuserorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
 | <a id="currentuserpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="currentuserprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
+| <a id="currentuserprojectcount"></a>`projectCount` | [`Int`](#int) | Project count for the user. |
 | <a id="currentuserprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="currentuserpronouns"></a>`pronouns` | [`String`](#string) | Pronouns of the user. |
 | <a id="currentuserpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
@@ -31437,6 +31462,7 @@ A user assigned to a merge request.
 | <a id="mergerequestassigneeorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
 | <a id="mergerequestassigneepreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="mergerequestassigneeprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
+| <a id="mergerequestassigneeprojectcount"></a>`projectCount` | [`Int`](#int) | Project count for the user. |
 | <a id="mergerequestassigneeprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestassigneepronouns"></a>`pronouns` | [`String`](#string) | Pronouns of the user. |
 | <a id="mergerequestassigneepublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
@@ -31860,6 +31886,7 @@ The author of the merge request.
 | <a id="mergerequestauthororganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
 | <a id="mergerequestauthorpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="mergerequestauthorprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
+| <a id="mergerequestauthorprojectcount"></a>`projectCount` | [`Int`](#int) | Project count for the user. |
 | <a id="mergerequestauthorprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestauthorpronouns"></a>`pronouns` | [`String`](#string) | Pronouns of the user. |
 | <a id="mergerequestauthorpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
@@ -32334,6 +32361,7 @@ A user participating in a merge request.
 | <a id="mergerequestparticipantorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
 | <a id="mergerequestparticipantpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="mergerequestparticipantprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
+| <a id="mergerequestparticipantprojectcount"></a>`projectCount` | [`Int`](#int) | Project count for the user. |
 | <a id="mergerequestparticipantprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestparticipantpronouns"></a>`pronouns` | [`String`](#string) | Pronouns of the user. |
 | <a id="mergerequestparticipantpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
@@ -32776,6 +32804,7 @@ A user assigned to a merge request as a reviewer.
 | <a id="mergerequestreviewerorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
 | <a id="mergerequestreviewerpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="mergerequestreviewerprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
+| <a id="mergerequestreviewerprojectcount"></a>`projectCount` | [`Int`](#int) | Project count for the user. |
 | <a id="mergerequestreviewerprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestreviewerpronouns"></a>`pronouns` | [`String`](#string) | Pronouns of the user. |
 | <a id="mergerequestreviewerpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
@@ -40386,6 +40415,7 @@ Core representation of a GitLab user.
 | <a id="usercoreorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
 | <a id="usercorepreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="usercoreprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
+| <a id="usercoreprojectcount"></a>`projectCount` | [`Int`](#int) | Project count for the user. |
 | <a id="usercoreprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="usercorepronouns"></a>`pronouns` | [`String`](#string) | Pronouns of the user. |
 | <a id="usercorepublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |
@@ -49229,6 +49259,7 @@ Implementations:
 | <a id="userorganization"></a>`organization` | [`String`](#string) | Who the user represents or works for. |
 | <a id="userpreferencesgitpodpath"></a>`preferencesGitpodPath` | [`String`](#string) | Web path to the Gitpod section within user preferences. |
 | <a id="userprofileenablegitpodpath"></a>`profileEnableGitpodPath` | [`String`](#string) | Web path to enable Gitpod for the user. |
+| <a id="userprojectcount"></a>`projectCount` | [`Int`](#int) | Project count for the user. |
 | <a id="userprojectmemberships"></a>`projectMemberships` | [`ProjectMemberConnection`](#projectmemberconnection) | Project memberships of the user. (see [Connections](#connections)) |
 | <a id="userpronouns"></a>`pronouns` | [`String`](#string) | Pronouns of the user. |
 | <a id="userpublicemail"></a>`publicEmail` | [`String`](#string) | User's public email. |

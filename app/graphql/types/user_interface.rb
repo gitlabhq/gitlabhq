@@ -88,6 +88,9 @@ module Types
     field :group_count,
       resolver: Resolvers::Users::GroupCountResolver,
       description: 'Group count for the user.'
+    field :project_count,
+      resolver: Resolvers::Users::ProjectCountResolver,
+      description: 'Project count for the user.'
     field :status,
       type: Types::UserStatusType,
       null: true,

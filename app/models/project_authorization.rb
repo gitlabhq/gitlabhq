@@ -13,10 +13,15 @@ class ProjectAuthorization < ApplicationRecord
   validates :user, uniqueness: { scope: :project }, presence: true
 
   scope :for_project, ->(projects) { where(project: projects) }
+  scope :for_user, ->(user_ids) { where(user_id: user_ids) }
   scope :non_guests, -> { where('access_level > ?', ::Gitlab::Access::GUEST) }
   scope :owners, -> { where(access_level: ::Gitlab::Access::OWNER) }
 
   scope :preload_users, -> { preload(:user) }
+
+  scope :count_by_user_id, -> do
+    group(:user_id).count
+  end
 
   # TODO: To be removed after https://gitlab.com/gitlab-org/gitlab/-/issues/418205
   before_create :assign_is_unique

@@ -101,4 +101,7 @@ Users with phone numbers from partially supported countries can try [credit card
 
 In addition to email and phone number verification, you might have to provide a valid credit card number.
 
+To verify your account, you might need to provide a valid credit card number in addition to your
+email address and phone number. GitLab does not store your card details directly or make any charges.
+
 You cannot verify an account with a credit card number associated with a banned user.

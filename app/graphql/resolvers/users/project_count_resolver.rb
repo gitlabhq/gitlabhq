@@ -2,24 +2,24 @@
 
 module Resolvers
   module Users
-    class GroupCountResolver < BaseResolver
+    class ProjectCountResolver < BaseResolver
       type GraphQL::Types::Int, null: true
 
       alias_method :user, :object
 
-      def resolve(**args)
-        return unless can_read_group_count?
+      def resolve(**_args)
+        return unless can_read_project_count?
 
         BatchLoader::GraphQL.for(user.id).batch do |user_ids, loader|
-          results = UserGroupsCounter.new(user_ids).execute
+          counts = ProjectAuthorization.for_user(user_ids).count_by_user_id
 
-          results.each do |user_id, count|
-            loader.call(user_id, count)
+          user_ids.each do |id|
+            loader.call(id, counts.fetch(id, 0))
           end
         end
       end
 
-      def can_read_group_count?
+      def can_read_project_count?
         current_user&.can?(:read_user_membership_counts, user)
       end
     end

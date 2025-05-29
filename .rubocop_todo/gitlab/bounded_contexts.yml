@@ -3342,6 +3342,7 @@ Gitlab/BoundedContexts:
     - 'ee/app/services/protected_environments/search_service.rb'
     - 'ee/app/services/protected_environments/update_service.rb'
     - 'ee/app/services/push_rules/create_or_update_service.rb'
+    - 'ee/app/services/push_rules/create_predefined_rule_service.rb'
     - 'ee/app/services/quality_management/test_cases/create_service.rb'
     - 'ee/app/services/registration_features/maintenance_mode.rb'
     - 'ee/app/services/registrations/base_namespace_create_service.rb'

@@ -79,6 +79,7 @@ Gitlab/FeatureAvailableUsage:
     - 'ee/app/services/iterations/create_service.rb'
     - 'ee/app/services/iterations/update_service.rb'
     - 'ee/app/services/merge_requests/update_blocks_service.rb'
+    - 'ee/app/services/push_rules/create_predefined_rule_service.rb'
     - 'ee/app/services/requirements_management/process_test_reports_service.rb'
     - 'ee/app/services/security/store_scans_service.rb'
     - 'ee/app/workers/analytics/code_review_metrics_worker.rb'

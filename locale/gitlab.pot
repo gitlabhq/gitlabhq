@@ -27374,9 +27374,6 @@ msgid_plural "Geo|%d shards selected"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Geo|%{action} %{replicableType}"
-msgstr ""
-
 msgid "Geo|%{boldStart}Not applicable%{boldEnd}: Geo does not verify this component yet. See the %{linkStart}data types we plan to support%{linkEnd}."
 msgstr ""
 
@@ -27812,10 +27809,16 @@ msgstr ""
 msgid "Geo|Resync all"
 msgstr ""
 
+msgid "Geo|Resync all %{type}"
+msgstr ""
+
 msgid "Geo|Reverify"
 msgstr ""
 
 msgid "Geo|Reverify all"
+msgstr ""
+
+msgid "Geo|Reverify all %{type}"
 msgstr ""
 
 msgid "Geo|Review replication status, and resynchronize and reverify items with the primary site."
@@ -27950,7 +27953,10 @@ msgstr ""
 msgid "Geo|This GitLab instance is subscribed to the %{insufficient_license} tier. Geo is only available for users who have at least a Premium subscription."
 msgstr ""
 
-msgid "Geo|This will %{action} %{replicableType}. It may take some time to complete. Are you sure you want to continue?"
+msgid "Geo|This will resync all %{type}. It may take some time to complete. Are you sure you want to continue?"
+msgstr ""
+
+msgid "Geo|This will reverify all %{type}. It may take some time to complete. Are you sure you want to continue?"
 msgstr ""
 
 msgid "Geo|Time in seconds"
@@ -60005,12 +60011,6 @@ msgstr ""
 msgid "SubscriptionGroupsNew|Your group will only be displayed in the list above if:"
 msgstr ""
 
-msgid "SubscriptionMangement|If you'd like to add more seats, upgrade your plan, or purchase additional products, contact your GitLab sales representative."
-msgstr ""
-
-msgid "SubscriptionMangement|This is a custom subscription managed by the GitLab Sales team"
-msgstr ""
-
 msgid "SubscriptionMangement|To make changes to a read-only subscription or purchase additional products, contact your GitLab Partner."
 msgstr ""
 
@@ -73285,7 +73285,7 @@ msgstr ""
 msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} denied licenses must be removed."
 msgstr ""
 
-msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} new changes were just added."
+msgid "mrWidget|%{boldStart}Merge blocked:%{boldEnd} to see new changes and rerun this merge check, refresh this page."
 msgstr ""
 
 msgid "mrWidget|%{boldStart}Merge unavailable:%{boldEnd} merge requests are read-only in a secondary Geo node."
