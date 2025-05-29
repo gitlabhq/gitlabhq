@@ -34749,6 +34749,8 @@ CREATE INDEX index_cicd_settings_on_namespace_id_where_stale_pruning_enabled ON 
 
 CREATE INDEX index_cis_vulnerability_reads_on_cluster_agent_id ON vulnerability_reads USING btree (casted_cluster_agent_id) WHERE (report_type = 7);
 
+CREATE INDEX index_closed_incidents_on_namespace_id_closed_at ON issues USING btree (namespace_id, closed_at) WHERE ((state_id = 2) AND (work_item_type_id = 2));
+
 CREATE INDEX index_cluster_agent_migrations_on_agent_id ON cluster_agent_migrations USING btree (agent_id);
 
 CREATE UNIQUE INDEX index_cluster_agent_migrations_on_cluster_id ON cluster_agent_migrations USING btree (cluster_id);
@@ -35747,7 +35749,11 @@ CREATE INDEX index_issues_on_milestone_id_and_id ON issues USING btree (mileston
 
 CREATE INDEX index_issues_on_moved_to_id ON issues USING btree (moved_to_id) WHERE (moved_to_id IS NOT NULL);
 
+CREATE INDEX index_issues_on_namespace_id_created_at_id_state_id ON issues USING btree (namespace_id, created_at, id, state_id);
+
 CREATE UNIQUE INDEX index_issues_on_namespace_id_iid_unique ON issues USING btree (namespace_id, iid);
+
+CREATE INDEX index_issues_on_namespace_id_relative_position_id_state_id ON issues USING btree (namespace_id, relative_position, id, state_id);
 
 CREATE INDEX index_issues_on_project_health_status_asc_work_item_type ON issues USING btree (project_id, health_status, id DESC, state_id, work_item_type_id);
 
@@ -35768,6 +35774,8 @@ CREATE INDEX index_issues_on_title_trigram_non_latin ON issues USING gin (title 
 CREATE INDEX index_issues_on_updated_at ON issues USING btree (updated_at);
 
 CREATE INDEX index_issues_on_updated_by_id ON issues USING btree (updated_by_id) WHERE (updated_by_id IS NOT NULL);
+
+CREATE INDEX index_issues_on_work_item_type_id_namespace_id_created_at_state ON issues USING btree (work_item_type_id, namespace_id, created_at, state_id);
 
 CREATE INDEX index_issues_on_work_item_type_id_project_id_created_at_state ON issues USING btree (work_item_type_id, project_id, created_at, state_id);
 
@@ -36478,6 +36486,8 @@ CREATE INDEX index_on_value_stream_dashboard_aggregations_last_run_at_and_id ON 
 CREATE UNIQUE INDEX index_onboarding_progresses_on_namespace_id ON onboarding_progresses USING btree (namespace_id);
 
 CREATE INDEX index_oncall_shifts_on_rotation_id_and_starts_at_and_ends_at ON incident_management_oncall_shifts USING btree (rotation_id, starts_at, ends_at);
+
+CREATE INDEX index_open_issues_on_namespace_id_confidential_author_id_id ON issues USING btree (namespace_id, confidential, author_id, id) WHERE (state_id = 1);
 
 CREATE INDEX index_operations_feature_flags_issues_on_issue_id ON operations_feature_flags_issues USING btree (issue_id);
 
