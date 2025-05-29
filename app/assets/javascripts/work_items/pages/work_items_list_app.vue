@@ -84,6 +84,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CreateWorkItemModal from '../components/create_work_item_modal.vue';
 import WorkItemHealthStatus from '../components/work_item_health_status.vue';
 import WorkItemDrawer from '../components/work_item_drawer.vue';
+import WorkItemListHeading from '../components/work_item_list_heading.vue';
 import {
   BASE_ALLOWED_CREATE_TYPES,
   DETAIL_VIEW_QUERY_PARAM_NAME,
@@ -131,6 +132,7 @@ export default {
     EmptyStateWithoutAnyIssues,
     CreateWorkItemModal,
     LocalBoard,
+    WorkItemListHeading,
   },
   mixins: [glFeatureFlagMixin()],
   inject: [
@@ -628,6 +630,9 @@ export default {
     enableClientSideBoardsExperiment() {
       return this.glFeatures.workItemsClientSideBoards;
     },
+    isPlanningViewsEnabled() {
+      return this.glFeatures.workItemPlanningView;
+    },
     preselectedWorkItemType() {
       return this.isEpicsList ? WORK_ITEM_TYPE_NAME_EPIC : WORK_ITEM_TYPE_NAME_ISSUE;
     },
@@ -638,6 +643,7 @@ export default {
       if (!this.hasAnyIssues) {
         this.isInitialLoadComplete = false;
       }
+      this.$apollo.queries.workItemStateCounts.refetch();
       this.$apollo.queries.workItemsFull.refetch();
       this.$apollo.queries.workItemsSlim.refetch();
     },
@@ -708,7 +714,7 @@ export default {
     },
     calculateDocumentTitle(data) {
       const middleCrumb = this.isGroup ? data.group.name : data.project.name;
-      if (this.glFeatures.workItemPlanningView) {
+      if (this.isPlanningViewsEnabled) {
         return `${s__('WorkItem|Work items')} · ${middleCrumb} · GitLab`;
       }
       if (this.isGroup && this.isEpicsList) {
@@ -953,7 +959,6 @@ export default {
       />
       <issuable-list
         :active-issuable="activeItem"
-        :add-padding="!withTabs"
         :current-tab="state"
         :default-page-size="pageSize"
         :error="error"
@@ -988,7 +993,7 @@ export default {
         @sort="handleSort"
         @select-issuable="handleToggle"
       >
-        <template #nav-actions>
+        <template v-if="!isPlanningViewsEnabled" #nav-actions>
           <div class="gl-flex gl-gap-3">
             <gl-button
               v-if="enableClientSideBoardsExperiment"
@@ -1014,6 +1019,36 @@ export default {
               @workItemCreated="refetchItems"
             />
           </div>
+        </template>
+
+        <template v-if="isPlanningViewsEnabled" #list-header>
+          <work-item-list-heading>
+            <div class="gl-flex gl-gap-3">
+              <gl-button
+                v-if="enableClientSideBoardsExperiment"
+                data-testid="show-local-board-button"
+                @click="showLocalBoard = true"
+              >
+                {{ __('Launch board') }}
+              </gl-button>
+              <gl-button
+                v-if="allowBulkEditing"
+                :disabled="showBulkEditSidebar"
+                data-testid="bulk-edit-start-button"
+                @click="showBulkEditSidebar = true"
+              >
+                {{ __('Bulk edit') }}
+              </gl-button>
+              <create-work-item-modal
+                v-if="showNewWorkItem"
+                :allowed-work-item-types="allowedWorkItemTypes"
+                :always-show-work-item-type-select="!isEpicsList"
+                :is-group="isGroup"
+                :preselected-work-item-type="preselectedWorkItemType"
+                @workItemCreated="refetchItems"
+              />
+            </div>
+          </work-item-list-heading>
         </template>
 
         <template #timeframe="{ issuable = {} }">

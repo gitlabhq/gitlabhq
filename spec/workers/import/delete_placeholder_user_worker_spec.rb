@@ -6,7 +6,7 @@ RSpec.describe Import::DeletePlaceholderUserWorker, feature_category: :importers
   let_it_be(:placeholder_user) { create(:user, :placeholder) }
   let_it_be(:source_user) { create(:import_source_user, placeholder_user: placeholder_user) }
 
-  let(:job_args) { [placeholder_user.id, { type: 'placeholder_user' }] }
+  let(:job_args) { [placeholder_user.id, { 'type' => 'placeholder_user' }] }
 
   subject(:perform) { described_class.new.perform(*job_args) }
 
@@ -68,7 +68,7 @@ RSpec.describe Import::DeletePlaceholderUserWorker, feature_category: :importers
   end
 
   context 'when there is no placeholder user' do
-    let(:job_args) { [-1, { type: 'placeholder_user' }] }
+    let(:job_args) { [-1, { 'type' => 'placeholder_user' }] }
 
     it 'does not delete the placeholder_user and does not log an issue' do
       expect(::Import::Framework::Logger).not_to receive(:warn)
@@ -80,7 +80,7 @@ RSpec.describe Import::DeletePlaceholderUserWorker, feature_category: :importers
 
   context 'when attempting to delete a user who is not a placeholder' do
     let_it_be(:user) { create(:user, :import_user) }
-    let(:job_args) { [user.id, { type: 'placeholder_user' }] }
+    let(:job_args) { [user.id, { 'type' => 'placeholder_user' }] }
 
     it 'does not delete the user' do
       expect(DeleteUserWorker).not_to receive(:perform_async)

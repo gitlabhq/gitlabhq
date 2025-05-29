@@ -121,5 +121,22 @@ module Emails
         subject: subject(title)
       )
     end
+
+    def import_source_user_complete(source_user_id)
+      @source_user = Import::SourceUser.find(source_user_id)
+      @reassign_to_user = @source_user.reassign_to_user
+      # We don't need to check if admin bypass is fully enabled, only if this was sent due to admin or group bypass
+      @admin_bypass_enabled = Gitlab::CurrentSettings.allow_bypass_placeholder_confirmation
+
+      title = safe_format(
+        s_('UserMapping|Reassignments in %{group} completed'),
+        group: @source_user.namespace.full_path
+      )
+
+      email_with_layout(
+        to: @reassign_to_user.notification_email_or_default,
+        subject: subject(title)
+      )
+    end
   end
 end

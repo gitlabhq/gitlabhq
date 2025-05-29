@@ -1,0 +1,42 @@
+- source_hostname = @source_user.source_hostname
+- source_name = @source_user.source_name
+- source_username = "@#{@source_user.source_username}"
+- reassign_to_name = @reassign_to_user.name
+- reassign_to_username = link_to @reassign_to_user.to_reference, user_url(@reassign_to_user)
+- reassigned_by = @source_user.reassigned_by_user
+- reassigned_by_name = reassigned_by.name
+- reassigned_by_username = link_to reassigned_by.to_reference, user_url(reassigned_by)
+- destination_group = "#{@source_user.namespace.name} (/#{@source_user.namespace.full_path})"
+
+- text_style = 'font-size:16px; text-align:center; line-height:24px; margin-top: 24px;'
+- heading_style = 'font-size:14px; line-height:20px; margin-top: 16px; margin-bottom: 8px;'
+- details_text_style = 'font-size:14px; line-height:20px; margin-top: 8px; margin-bottom: 8px;'
+
+%p{ style: text_style }
+  %span= safe_format(s_('UserMapping|You\'ve been reassigned contributions and memberships in %{destination_group} on %{source_hostname}.'),
+    source_hostname: source_hostname,
+    destination_group: destination_group)
+  - if @admin_bypass_enabled
+    %span= safe_format(s_('UserMapping|For more information, contact %{reassigned_by_name} or another administrator.'),
+    reassigned_by_name: reassigned_by_name)
+  - else
+    %span= safe_format(s_('UserMapping|For more information, contact %{reassigned_by_name} or another group owner.'),
+    reassigned_by_name: reassigned_by_name)
+
+%hr
+
+%h5{ style: heading_style }
+  = s_('UserMapping|Import details:')
+%p{ style: details_text_style }
+  = safe_format(s_('UserMapping|Imported from: %{source_hostname}'), source_hostname: source_hostname)
+%p{ style: details_text_style }
+  = safe_format(s_('UserMapping|Imported to: %{destination_group}'), destination_group: destination_group)
+
+%h5{ style: heading_style }
+  = s_('UserMapping|Reassignment details:')
+%p{ style: details_text_style }
+  = safe_format(s_('UserMapping|Reassigned from: %{source_name} (%{source_username})'), source_name: source_name, source_username: source_username)
+%p{ style: details_text_style }
+  = safe_format(s_('UserMapping|Reassigned to: %{reassign_to_name} (%{reassign_to_username})'), reassign_to_name: reassign_to_name, reassign_to_username: reassign_to_username)
+%p{ style: details_text_style }
+  = safe_format(s_('UserMapping|Reassigned by: %{reassigned_by_name} (%{reassigned_by_username})'), reassigned_by_name: reassigned_by_name, reassigned_by_username: reassigned_by_username)

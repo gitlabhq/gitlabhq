@@ -18,17 +18,11 @@ RSpec.describe 'User views Release', :js, feature_category: :continuous_delivery
   end
 
   before do
-    resize_window(1920, 1080)
-
     project.add_developer(user)
 
     sign_in(user)
 
     visit project_release_path(project, release)
-  end
-
-  after do
-    restore_window_size
   end
 
   it_behaves_like 'page meta description', 'Lorem ipsum dolor sit amet'

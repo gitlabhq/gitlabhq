@@ -86,14 +86,6 @@ describe('IssuableTabs', () => {
 
       expect(button.text()).toBe('New issuable');
     });
-
-    it('renders contents for slot "title"', () => {
-      wrapper = createComponent();
-
-      const title = wrapper.find('h1.title');
-
-      expect(title.text()).toBe('Tab title slot');
-    });
   });
 
   describe('counts', () => {

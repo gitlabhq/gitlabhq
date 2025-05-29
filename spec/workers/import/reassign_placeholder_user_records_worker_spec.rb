@@ -53,9 +53,32 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsWorker, feature_category: :
 
       it 'queues a DeletePlaceholderUserWorker with the placeholder user ID' do
         expect(Import::DeletePlaceholderUserWorker)
-          .to receive(:perform_async).with(import_source_user.placeholder_user_id, { type: 'placeholder_user' })
+          .to receive(:perform_async).with(import_source_user.placeholder_user_id, { 'type' => 'placeholder_user' })
 
         perform_multiple(job_args)
+      end
+
+      it 'does not send the reassigned user an email by default' do
+        expect(Notify).not_to receive(:import_source_user_complete)
+
+        perform_multiple(job_args)
+      end
+
+      context 'when placeholder confirmation is bypassed' do
+        let(:job_args) { [import_source_user.id, { 'confirmation_skipped' => true }] }
+
+        it 'sends an email notification to active reassigned users' do
+          expect(Notify).to receive_message_chain(:import_source_user_complete, :deliver_later)
+
+          perform_multiple(job_args)
+        end
+
+        it 'does not send an email notification to inactive reassigned users' do
+          import_source_user.reassign_to_user.block!
+          expect(Notify).not_to receive(:import_source_user_complete)
+
+          perform_multiple(job_args)
+        end
       end
     end
   end

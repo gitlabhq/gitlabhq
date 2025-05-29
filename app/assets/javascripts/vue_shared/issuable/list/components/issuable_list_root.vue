@@ -227,11 +227,6 @@ export default {
       required: false,
       default: '',
     },
-    addPadding: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     detailLoading: {
       type: Boolean,
       required: false,
@@ -329,21 +324,19 @@ export default {
 
 <template>
   <div class="issuable-list-container">
-    <issuable-tabs
-      :add-padding="addPadding"
-      :tabs="tabs"
-      :tab-counts="tabCounts"
-      :current-tab="currentTab"
-      :truncate-counts="truncateCounts"
-      @click="$emit('click-tab', $event)"
-    >
-      <template #nav-actions>
-        <slot name="nav-actions"></slot>
-      </template>
-      <template #title>
-        <slot name="title"></slot>
-      </template>
-    </issuable-tabs>
+    <slot name="list-header">
+      <issuable-tabs
+        :tabs="tabs"
+        :tab-counts="tabCounts"
+        :current-tab="currentTab"
+        :truncate-counts="truncateCounts"
+        @click="$emit('click-tab', $event)"
+      >
+        <template #nav-actions>
+          <slot name="nav-actions"></slot>
+        </template>
+      </issuable-tabs>
+    </slot>
     <filtered-search-bar
       :namespace="namespace"
       :recent-searches-storage-key="recentSearchesStorageKey"

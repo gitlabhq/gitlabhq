@@ -165,15 +165,7 @@ RSpec.describe "Admin::Projects", feature_category: :groups_and_projects do
   end
 
   describe 'project edit', :js do
-    before do
-      resize_window(1920, 1080)
-    end
-
-    after do
-      restore_window_size
-    end
-
-    it 'shows all breadcrumbs' do
+    it 'shows breadcrumbs' do
       project_params = { id: project.to_param, namespace_id: project.namespace.to_param }
       visit edit_admin_namespace_project_path(project_params)
 

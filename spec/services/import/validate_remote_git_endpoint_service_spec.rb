@@ -71,6 +71,14 @@ RSpec.describe Import::ValidateRemoteGitEndpointService, feature_category: :impo
       end
     end
 
+    context 'when remote times out' do
+      before do
+        allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).and_raise(GRPC::DeadlineExceeded)
+      end
+
+      include_examples 'error response'
+    end
+
     context 'with auth credentials' do
       let(:user) { 'foo' }
       let(:password) { 'bar' }

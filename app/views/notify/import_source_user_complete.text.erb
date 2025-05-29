@@ -1,0 +1,31 @@
+<% source_hostname = @source_user.source_hostname %>
+<% source_name = @source_user.source_name %>
+<% source_username = "@#{@source_user.source_username}" %>
+<% reassign_to_name = @reassign_to_user.name %>
+<% reassign_to_username = "#{@reassign_to_user.to_reference} - #{user_url(@reassign_to_user)}" %>
+<% reassigned_by = @source_user.reassigned_by_user %>
+<% reassigned_by_name = reassigned_by.name %>
+<% reassigned_by_username = "#{reassigned_by.to_reference} - #{user_url(reassigned_by)}" %>
+<% destination_group = "#{@source_user.namespace.name} (/#{@source_user.namespace.full_path})" %>
+<%= s_('UserMapping|You\'ve been reassigned contributions and memberships in %{destination_group} on %{source_hostname}.') % { reassigned_by_name: reassigned_by_name,
+    reassigned_by_username: reassigned_by_username,
+    source_name: source_name,
+    source_username: source_username,
+    source_hostname: source_hostname,
+    destination_group: destination_group } %>
+<% if @admin_bypass_enabled %>
+<%= s_('UserMapping|For more information, contact %{reassigned_by_name} or another administrator.') %
+    { reassigned_by_name: reassigned_by_name } %>
+<% else %>
+<%= s_('UserMapping|For more information, contact %{reassigned_by_name} or another group owner.') %
+    { reassigned_by_name: reassigned_by_name } %>
+<% end %>
+
+<%= s_('UserMapping|Import details:') %>
+<%= safe_format(s_('UserMapping|Imported from: %{source_hostname}'), source_hostname: source_hostname) %>
+<%= safe_format(s_('UserMapping|Imported to: %{destination_group}'), destination_group: destination_group) %>
+
+<%= s_('UserMapping|Reassignment details:') %>
+<%= safe_format(s_('UserMapping|Reassigned from: %{source_name} (%{source_username})'), source_name: source_name, source_username: source_username) %>
+<%= safe_format(s_('UserMapping|Reassigned to: %{reassign_to_name} (%{reassign_to_username})'), reassign_to_name: reassign_to_name, reassign_to_username: reassign_to_username) %>
+<%= safe_format(s_('UserMapping|Reassigned by: %{reassigned_by_name} (%{reassigned_by_username})'), reassigned_by_name: reassigned_by_name, reassigned_by_username: reassigned_by_username) %>

@@ -11,7 +11,6 @@ import {
 } from './super_sidebar_collapsed_state_manager';
 import SuperSidebar from './components/super_sidebar.vue';
 import SuperSidebarToggle from './components/super_sidebar_toggle.vue';
-import AdvancedSearchModal from './components/global_search/components/global_search_header_app.vue';
 
 export { initPageBreadcrumbs } from './super_sidebar_breadcrumbs';
 
@@ -197,58 +196,3 @@ export const initSuperSidebarToggle = () => {
     },
   });
 };
-
-export function initAdvancedSearchModal({
-  rootPath,
-  isSaas,
-  sidebarData,
-  searchPath,
-  issuesPath,
-  mrPath,
-  autocompletePath,
-  searchContext,
-  projectsPath,
-  groupsPath,
-  projectFilesPath,
-  projectBlobPath,
-  commandPaletteCommands,
-  commandPaletteLinks,
-  contextSwitcherLinks,
-  isGroup,
-}) {
-  const el = document.querySelector('#js-advanced-search-modal');
-
-  if (!el) return false;
-
-  return new Vue({
-    el,
-    name: 'SuperSidebarRoot',
-    apolloProvider,
-    provide: {
-      rootPath,
-      commandPaletteCommands,
-      commandPaletteLinks,
-      contextSwitcherLinks,
-      autocompletePath,
-      searchContext,
-      projectFilesPath,
-      projectBlobPath,
-      projectsPath,
-      groupsPath,
-      fullPath: sidebarData.work_items?.full_path,
-      isGroup,
-      isSaas: parseBoolean(isSaas),
-    },
-    store: createStore({
-      searchPath,
-      issuesPath,
-      mrPath,
-      autocompletePath,
-      searchContext,
-      search: '',
-    }),
-    render(h) {
-      return h(AdvancedSearchModal);
-    },
-  });
-}

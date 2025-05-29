@@ -206,7 +206,7 @@ export default {
       />
     </div>
 
-    <div v-if="!glFeatures.searchButtonTopRight" class="gl-grow">
+    <div class="gl-grow">
       <gl-button
         id="super-sidebar-search"
         v-gl-tooltip.bottom.html="searchTooltip"

@@ -9,6 +9,7 @@ import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_st
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import WorkItemBulkEditSidebar from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_sidebar.vue';
 import WorkItemHealthStatus from '~/work_items/components/work_item_health_status.vue';
+import WorkItemListHeading from '~/work_items/components/work_item_list_heading.vue';
 import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
@@ -103,6 +104,7 @@ describeSkipVue3(skipReason, () => {
   const findCreateWorkItemModal = () => wrapper.findComponent(CreateWorkItemModal);
   const findBulkEditStartButton = () => wrapper.find('[data-testid="bulk-edit-start-button"]');
   const findBulkEditSidebar = () => wrapper.findComponent(WorkItemBulkEditSidebar);
+  const findWorkItemListHeading = () => wrapper.findComponent(WorkItemListHeading);
 
   const mountComponent = ({
     provide = {},
@@ -111,6 +113,7 @@ describeSkipVue3(skipReason, () => {
     sortPreferenceMutationResponse = mutationHandler,
     workItemsViewPreference = false,
     workItemsToggleEnabled = true,
+    workItemPlanningView = false,
     props = {},
     additionalHandlers = [],
   } = {}) => {
@@ -133,6 +136,7 @@ describeSkipVue3(skipReason, () => {
       provide: {
         glFeatures: {
           okrsMvc: true,
+          workItemPlanningView,
         },
         autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
         canBulkUpdate: true,
@@ -399,10 +403,12 @@ describeSkipVue3(skipReason, () => {
         await waitForPromises();
 
         expect(defaultQueryHandler).toHaveBeenCalledTimes(1);
+        expect(defaultCountsQueryHandler).toHaveBeenCalledTimes(1);
 
         await wrapper.setProps({ eeWorkItemUpdateCount: 1 });
 
         expect(defaultQueryHandler).toHaveBeenCalledTimes(2);
+        expect(defaultCountsQueryHandler).toHaveBeenCalledTimes(2);
       });
     });
   });
@@ -1099,6 +1105,15 @@ describeSkipVue3(skipReason, () => {
       await nextTick();
 
       expect(findIssuableList().props('showBulkEditSidebar')).toBe(true);
+    });
+  });
+
+  describe('when workItemPlanningView flag is enabled', () => {
+    it('renders the WorkItemListHeading component', async () => {
+      mountComponent({ workItemPlanningView: true });
+      await waitForPromises();
+
+      expect(findWorkItemListHeading().exists()).toBe(true);
     });
   });
 });

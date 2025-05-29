@@ -29039,12 +29039,6 @@ msgstr ""
 msgid "GlobalSearch|Search labels"
 msgstr ""
 
-msgid "GlobalSearch|Search or go to… %{kbdStart}/%{kbdEnd}"
-msgstr ""
-
-msgid "GlobalSearch|Search or go to… (or use the / keyboard shortcut)"
-msgstr ""
-
 msgid "GlobalSearch|Search results are loading"
 msgstr ""
 
@@ -66389,6 +66383,12 @@ msgstr ""
 msgid "UserMapping|Drop your file here or %{linkStart}click to upload%{linkEnd}."
 msgstr ""
 
+msgid "UserMapping|For more information, contact %{reassigned_by_name} or another administrator."
+msgstr ""
+
+msgid "UserMapping|For more information, contact %{reassigned_by_name} or another group owner."
+msgstr ""
+
 msgid "UserMapping|For more information, see %{link_start}accept contribution reassignment%{link_end}. %{strong_open}If you do not recognize this request, %{report_link_start}report abuse%{report_link_end}.%{strong_close}"
 msgstr ""
 
@@ -66503,6 +66503,9 @@ msgstr ""
 msgid "UserMapping|Reassigned by: %{reassigned_by_name} (%{reassigned_by_username})"
 msgstr ""
 
+msgid "UserMapping|Reassigned from: %{source_name} (%{source_username})"
+msgstr ""
+
 msgid "UserMapping|Reassigned to"
 msgstr ""
 
@@ -66549,6 +66552,9 @@ msgid "UserMapping|Reassignment waiting on user approval."
 msgstr ""
 
 msgid "UserMapping|Reassignments cannot be undone, so check all data carefully before you continue."
+msgstr ""
+
+msgid "UserMapping|Reassignments in %{group} completed"
 msgstr ""
 
 msgid "UserMapping|Reassignments in %{group} rejected"
@@ -66645,6 +66651,9 @@ msgid "UserMapping|You might have already accepted or rejected the reassignment,
 msgstr ""
 
 msgid "UserMapping|You must upload a CSV file with a .csv file extension."
+msgstr ""
+
+msgid "UserMapping|You've been reassigned contributions and memberships in %{destination_group} on %{source_hostname}."
 msgstr ""
 
 msgid "UserProfile|%{count} %{file}"

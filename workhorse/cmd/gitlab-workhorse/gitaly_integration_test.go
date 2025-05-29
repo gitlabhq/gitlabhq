@@ -7,6 +7,8 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"crypto/rand"
+	"encoding/hex"
 	"fmt"
 	"net/url"
 	"os"
@@ -72,11 +74,40 @@ func skipUnlessRealGitaly(t *testing.T) {
 func realGitalyAuthResponse(gitalyAddress string, apiResponse *api.Response) *api.Response {
 	apiResponse.GitalyServer.Address = gitalyAddress
 
+	// Prevent state of previous tests from interfering with other tests
+	randomBytes := make([]byte, 8)
+	rand.Read(randomBytes)
+	apiResponse.Repository.RelativePath = fmt.Sprintf("foo/bar_%s.git", hex.EncodeToString(randomBytes))
+
 	return apiResponse
 }
 
 func realGitalyOkBody(t *testing.T, gitalyAddress string) *api.Response {
 	return realGitalyAuthResponse(gitalyAddress, gitOkBody(t))
+}
+
+func removeGitalyRepository(_ *testing.T, apiResponse *api.Response) error {
+	ctx, repository, err := gitaly.NewRepositoryClient(context.Background(), apiResponse.GitalyServer)
+	if err != nil {
+		return err
+	}
+
+	// Remove the repository if it already exists, for consistency
+	if _, removeRepoErr := repository.RepositoryServiceClient.RemoveRepository(ctx, &gitalypb.RemoveRepositoryRequest{
+		Repository: &gitalypb.Repository{
+			StorageName:  apiResponse.Repository.StorageName,
+			RelativePath: apiResponse.Repository.RelativePath,
+		},
+	}); removeRepoErr != nil {
+		status, ok := status.FromError(removeRepoErr)
+		if !ok || !(status.Code() == codes.NotFound && (status.Message() == "repository does not exist" || status.Message() == "repository not found")) {
+			return fmt.Errorf("remove repository: %w", removeRepoErr)
+		}
+
+		// Repository didn't exist.
+	}
+
+	return nil
 }
 
 func ensureGitalyRepository(_ *testing.T, apiResponse *api.Response) error {
@@ -132,6 +163,7 @@ func TestAllowedClone(t *testing.T) {
 			// Create the repository in the Gitaly server
 			apiResponse := realGitalyOkBody(t, gitalyAddress)
 			require.NoError(t, ensureGitalyRepository(t, apiResponse))
+			defer removeGitalyRepository(t, apiResponse)
 
 			// Prepare test server and backend
 			ts := testAuthServer(t, nil, nil, 200, apiResponse)
@@ -158,6 +190,7 @@ func TestAllowedShallowClone(t *testing.T) {
 			// Create the repository in the Gitaly server
 			apiResponse := realGitalyOkBody(t, gitalyAddress)
 			require.NoError(t, ensureGitalyRepository(t, apiResponse))
+			defer removeGitalyRepository(t, apiResponse)
 
 			// Prepare test server and backend
 			ts := testAuthServer(t, nil, nil, 200, apiResponse)
@@ -184,6 +217,7 @@ func TestAllowedPush(t *testing.T) {
 			// Create the repository in the Gitaly server
 			apiResponse := realGitalyOkBody(t, gitalyAddress)
 			require.NoError(t, ensureGitalyRepository(t, apiResponse))
+			defer removeGitalyRepository(t, apiResponse)
 
 			// Prepare the test server and backend
 			ts := testAuthServer(t, nil, nil, 200, apiResponse)
@@ -210,6 +244,7 @@ func TestAllowedGetGitBlob(t *testing.T) {
 			// Create the repository in the Gitaly server
 			apiResponse := realGitalyOkBody(t, gitalyAddress)
 			require.NoError(t, ensureGitalyRepository(t, apiResponse))
+			defer removeGitalyRepository(t, apiResponse)
 
 			// the LICENSE file in the test repository
 			oid := "50b27c6518be44c42c4d87966ae2481ce895624c"
@@ -250,6 +285,7 @@ func TestAllowedGetGitArchive(t *testing.T) {
 			// Create the repository in the Gitaly server
 			apiResponse := realGitalyOkBody(t, gitalyAddress)
 			require.NoError(t, ensureGitalyRepository(t, apiResponse))
+			defer removeGitalyRepository(t, apiResponse)
 
 			archivePath := path.Join(t.TempDir(), "my/path")
 			archivePrefix := repo1
@@ -299,6 +335,7 @@ func TestAllowedGetGitArchiveOldPayload(t *testing.T) {
 			apiResponse := realGitalyOkBody(t, gitalyAddress)
 			repo := &apiResponse.Repository
 			require.NoError(t, ensureGitalyRepository(t, apiResponse))
+			defer removeGitalyRepository(t, apiResponse)
 
 			archivePath := path.Join(t.TempDir(), "my/path")
 			archivePrefix := repo1
@@ -349,6 +386,7 @@ func TestAllowedGetGitDiff(t *testing.T) {
 			// Create the repository in the Gitaly server
 			apiResponse := realGitalyOkBody(t, gitalyAddress)
 			require.NoError(t, ensureGitalyRepository(t, apiResponse))
+			defer removeGitalyRepository(t, apiResponse)
 
 			msg := serializedMessage("RawDiffRequest", &gitalypb.RawDiffRequest{
 				Repository:    &apiResponse.Repository,
@@ -379,6 +417,7 @@ func TestAllowedGetGitFormatPatch(t *testing.T) {
 			// Create the repository in the Gitaly server
 			apiResponse := realGitalyOkBody(t, gitalyAddress)
 			require.NoError(t, ensureGitalyRepository(t, apiResponse))
+			defer removeGitalyRepository(t, apiResponse)
 
 			msg := serializedMessage("RawPatchRequest", &gitalypb.RawPatchRequest{
 				Repository:    &apiResponse.Repository,

@@ -185,6 +185,65 @@ RSpec.describe Emails::Imports, feature_category: :importers do
     it_behaves_like 'appearance header and footer not enabled'
   end
 
+  describe '#import_source_user_complete' do
+    let(:user) { build_stubbed(:user) }
+    let(:group) { build_stubbed(:group) }
+    let(:source_user) do
+      build_stubbed(
+        :import_source_user, :completed, :with_reassigned_by_user, namespace: group, reassign_to_user: user
+      )
+    end
+
+    subject { Notify.import_source_user_complete('user_id') }
+
+    before do
+      allow(Import::SourceUser).to receive(:find).and_return(source_user)
+    end
+
+    it 'sends reassignment complete email with reference to group owners for help' do
+      is_expected.to have_subject("Reassignments in #{group.full_path} completed")
+      is_expected.to have_content("Imported from: #{source_user.source_hostname}")
+      is_expected.to have_content("Imported to: #{group.name}")
+      is_expected.to have_content("Reassigned from: #{source_user.source_name} (@#{source_user.source_username})")
+      is_expected.to have_content("Reassigned to: #{user.name} (@#{user.username})")
+      is_expected.to have_content(
+        "Reassigned by: #{source_user.reassigned_by_user.name} (@#{source_user.reassigned_by_user.username})"
+      )
+      is_expected.to have_content("contact #{source_user.reassigned_by_user.name} or another group owner.")
+      is_expected.to have_link(user.to_reference, href: user_url(user))
+      is_expected.to have_link(
+        source_user.reassigned_by_user.to_reference,
+        href: user_url(source_user.reassigned_by_user)
+      )
+    end
+
+    context 'when admin placeholder bypass is enabled' do
+      before do
+        stub_application_setting(allow_bypass_placeholder_confirmation: true)
+      end
+
+      it 'sends reassignment complete email with reference to admins for help' do
+        is_expected.to have_subject("Reassignments in #{group.full_path} completed")
+        is_expected.to have_content("Imported from: #{source_user.source_hostname}")
+        is_expected.to have_content("Imported to: #{group.name}")
+        is_expected.to have_content("Reassigned from: #{source_user.source_name} (@#{source_user.source_username})")
+        is_expected.to have_content("Reassigned to: #{user.name} (@#{user.username})")
+        is_expected.to have_content(
+          "Reassigned by: #{source_user.reassigned_by_user.name} (@#{source_user.reassigned_by_user.username})"
+        )
+        is_expected.to have_content("contact #{source_user.reassigned_by_user.name} or another administrator.")
+        is_expected.to have_link(user.to_reference, href: user_url(user))
+        is_expected.to have_link(
+          source_user.reassigned_by_user.to_reference,
+          href: user_url(source_user.reassigned_by_user)
+        )
+      end
+    end
+
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+  end
+
   # rubocop:disable RSpec/FactoryBot/AvoidCreate -- creates are required in this case
   describe '#project_import_complete' do
     let(:user) { create(:user) }
