@@ -63494,6 +63494,9 @@ msgstr ""
 msgid "Todos|You"
 msgstr ""
 
+msgid "Todos|You now have access to AI-native features. Learn how to set up Code Suggestions and Chat in your IDE"
+msgstr ""
+
 msgid "Todos|You now have access to AI-powered features. Learn how to set up Code Suggestions and Chat in your IDE"
 msgstr ""
 
