@@ -507,7 +507,7 @@
 {"name":"pact-mock_service","version":"3.11.2","platform":"ruby","checksum":"42d9e54546a10229d7915da5383daeb322764c2876a84b4ea521f53c6f1fba51"},
 {"name":"pact-support","version":"1.20.0","platform":"ruby","checksum":"41c343a3124fb379684b9ad9f1a0766c5fa18d3b78d433a52e5552d8b9475871"},
 {"name":"paper_trail","version":"16.0.0","platform":"ruby","checksum":"e9b9f0fb1b8b590c8231cfa931b282ba92f90e066e393930a5e1c61ae4c5019d"},
-{"name":"parallel","version":"1.26.3","platform":"ruby","checksum":"d86babb7a2b814be9f4b81587bf0b6ce2da7d45969fab24d8ae4bf2bb4d4c7ef"},
+{"name":"parallel","version":"1.27.0","platform":"ruby","checksum":"4ac151e1806b755fb4e2dc2332cbf0e54f2e24ba821ff2d3dcf86bf6dc4ae130"},
 {"name":"parser","version":"3.3.8.0","platform":"ruby","checksum":"2476364142b307fa5a1b1ece44f260728be23858a9c71078e956131a75453c45"},
 {"name":"parslet","version":"1.8.2","platform":"ruby","checksum":"08d1ab3721cd3f175bfbee8788b2ddff71f92038f2d69bd65454c22bb9fbd98a"},
 {"name":"pastel","version":"0.8.0","platform":"ruby","checksum":"481da9fb7d2f6e6b1a08faf11fa10363172dc40fd47848f096ae21209f805a75"},
