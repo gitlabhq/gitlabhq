@@ -62,6 +62,20 @@ module QA
         reload!
       end
 
+      def revoked?
+        revoked
+      end
+
+      def revoke!
+        delete(Runtime::API::Request.new(api_client, api_get_path).url) unless revoked?
+
+        @revoked = true
+
+        QA::Runtime::Logger.debug("Revoked personal access token")
+
+        self
+      end
+
       def api_post_path
         "/users/#{user_id}/personal_access_tokens"
       end

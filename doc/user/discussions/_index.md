@@ -262,13 +262,15 @@ GitLab saves your preference, and applies it to every issue, merge request, or e
 
 Reverse the default order and interact with the activity feed sorted by most recent items
 at the top. GitLab saves your preference in local storage and applies it to every issue,
-merge request, or epic you view.
+merge request, or epic you view. Issues and epics share the same sorting preference, while merge requests maintain their own separate preference.
 
 To change the activity sort order:
 
-1. Open the **Overview** tab in a merge request, issue, or epic.
-1. On the right side of the page, from the **Sort or filter** dropdown list, select the sort order
-   **Newest first** or **Oldest first** (default).
+1. Open an issue, or open the **Overview** tab in a merge request or epic.
+1. Scroll down to the **Activity** heading.
+1. On the right side of the page, change the sort order:
+   - **Issues and epics**: From the **Sort or filter** dropdown list, select **Newest first** or **Oldest first** (default).
+   - **Merge requests**: Use the sort direction arrow button to toggle between **Sort direction: Ascending** (oldest first, default) or **Sort direction: Descending (newest first)**.
 
 ## View description change history
 

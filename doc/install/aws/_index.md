@@ -72,7 +72,7 @@ It can take a few hours to validate a certificate provisioned through ACM. To av
 
 ## Architecture
 
-Below is a diagram of the recommended architecture.
+The following diagram outlines the recommended architecture.
 
 ![A scaled down 2 Availability Zone and Non-HA AWS architecture.](img/aws_ha_architecture_diagram_v17_0.png)
 
@@ -531,7 +531,7 @@ We need a preconfigured, custom GitLab AMI to use in our launch configuration la
 
 From the EC2 dashboard:
 
-1. Use the section below titled "[Find official GitLab-created AMI IDs on AWS](#find-official-gitlab-created-ami-ids-on-aws)" to find the correct AMI and select **Launch**.
+1. Use the following section titled "[Find official GitLab-created AMI IDs on AWS](#find-official-gitlab-created-ami-ids-on-aws)" to find the correct AMI and select **Launch**.
 1. In the **Name and tags** section, set the **Name** to `GitLab`.
 1. In the **Instance type** dropdown list, select an instance type based on your workload. Consult the [hardware requirements](../requirements.md) to choose one that fits your needs (at least `c5.2xlarge`, which is sufficient to accommodate 100 users).
 1. In the **Key pair** section, select **Create new key pair**.

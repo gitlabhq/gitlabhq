@@ -287,7 +287,6 @@ export default {
     'ee/app/assets/javascripts/iterations/components/iteration_form.vue',
     'ee/app/assets/javascripts/iterations/components/iteration_report.vue',
     'ee/app/assets/javascripts/linked_resources/components/resource_links_block.vue',
-    'ee/app/assets/javascripts/logs/list/related_issues/related_issues_provider.vue',
     'ee/app/assets/javascripts/merge_requests/components/reviewers/approval_summary.vue',
     'ee/app/assets/javascripts/metrics/details/metrics_details.vue',
     'ee/app/assets/javascripts/metrics/details/metrics_line_chart.vue',

@@ -34429,8 +34429,6 @@ CREATE INDEX index_ci_build_report_results_on_project_id ON ci_build_report_resu
 
 CREATE UNIQUE INDEX index_ci_build_trace_chunks_on_build_id_and_chunk_index ON ci_build_trace_chunks USING btree (build_id, chunk_index);
 
-CREATE INDEX index_ci_build_trace_chunks_on_partition_id_build_id ON ci_build_trace_chunks USING btree (partition_id, build_id);
-
 CREATE INDEX index_ci_build_trace_chunks_on_project_id ON ci_build_trace_chunks USING btree (project_id);
 
 CREATE INDEX p_ci_builds_auto_canceled_by_id_idx ON ONLY p_ci_builds USING btree (auto_canceled_by_id) WHERE (auto_canceled_by_id IS NOT NULL);
@@ -34717,8 +34715,6 @@ CREATE UNIQUE INDEX index_ci_resource_groups_on_project_id_and_key ON ci_resourc
 
 CREATE INDEX index_ci_resources_on_build_id ON ci_resources USING btree (build_id);
 
-CREATE INDEX index_ci_resources_on_partition_id_build_id ON ci_resources USING btree (partition_id, build_id);
-
 CREATE INDEX index_ci_resources_on_project_id ON ci_resources USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ci_resources_on_resource_group_id_and_build_id ON ci_resources USING btree (resource_group_id, build_id);
@@ -34759,8 +34755,6 @@ CREATE INDEX index_ci_sources_pipelines_on_project_id ON ci_sources_pipelines US
 
 CREATE INDEX index_ci_sources_pipelines_on_source_job_id ON ci_sources_pipelines USING btree (source_job_id);
 
-CREATE INDEX index_ci_sources_pipelines_on_source_partition_id_source_job_id ON ci_sources_pipelines USING btree (source_partition_id, source_job_id);
-
 CREATE INDEX index_ci_sources_pipelines_on_source_pipeline_id ON ci_sources_pipelines USING btree (source_pipeline_id);
 
 CREATE INDEX index_ci_sources_pipelines_on_source_project_id ON ci_sources_pipelines USING btree (source_project_id);
@@ -34788,8 +34782,6 @@ CREATE INDEX index_ci_triggers_on_project_id ON ci_triggers USING btree (project
 CREATE UNIQUE INDEX index_ci_triggers_on_token ON ci_triggers USING btree (token);
 
 CREATE INDEX index_ci_unit_test_failures_on_build_id ON ci_unit_test_failures USING btree (build_id);
-
-CREATE INDEX index_ci_unit_test_failures_on_partition_id_build_id ON ci_unit_test_failures USING btree (partition_id, build_id);
 
 CREATE INDEX index_ci_unit_test_failures_on_project_id ON ci_unit_test_failures USING btree (project_id);
 

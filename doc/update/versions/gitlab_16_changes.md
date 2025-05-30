@@ -1323,7 +1323,7 @@ To protect against configuration mistakes, temporarily disable repository verifi
    Configure `verification_interval: 0`, and apply with `gitlab-ctl reconfigure`.
 1. To apply the new structure to your configuration:
    1. Replace the `...` with the value from the old key.
-   1. When configuring `storage` to replace `git_data_dirs`, **append `/repositories` to value of `path`** as documented below. If
+   1. When configuring `storage` to replace `git_data_dirs`, **append `/repositories` to value of `path`** as documented in the following script. If
       you don't complete this step, your Git repositories are inaccessible until the configuration is fixed. This
       misconfiguration can cause metadata deletion.
    1. Skip any keys you haven't configured a value for previously.
@@ -1334,7 +1334,7 @@ To protect against configuration mistakes, temporarily disable repository verifi
 1. Recommended, if you're running Gitaly Cluster. Reinstate Praefect [repository verification](../../administration/gitaly/praefect.md#repository-verification)
    by removing `verification_interval: 0`.
 
-The new structure is documented below with the old keys described in a comment above the new keys.
+The new structure is documented in the following script with the old keys described in a comment above the new keys.
 
 {{< alert type="warning" >}}
 
@@ -1408,9 +1408,9 @@ gitaly['configuration'] = {
       },
     ],
   },
-  # Storage could previously be configured through either gitaly['storage'] or 'git_data_dirs'. Migrate
-  # the relevant configuration according to the instructions below.
-  # For 'git_data_dirs', migrate only the 'path' to the gitaly['configuration'] and leave the rest of it untouched.
+  # Storage was previously configured with the gitaly['storage'] or 'git_data_dirs' parameters. Use
+  # the following instructions to migrate. For 'git_data_dirs', migrate only the 'path' to the
+  # gitaly['configuration'] and leave the rest untouched.
   storage: [
     {
       # gitaly['storage'][<index>]['name']
@@ -1513,14 +1513,14 @@ To protect against configuration mistakes, temporarily disable repository verifi
 
 1. When applying the new structure to your configuration:
    - Replace the `...` with the value from the old key.
-   - Disable repository verification using `verification_interval: 0`, as shown below.
+   - Disable repository verification using `verification_interval: 0`, as shown in the following script.
    - Skip any keys you haven't configured a value for previously.
    - Recommended. Include a trailing comma for all hash keys so the hash remains valid when keys are re-ordered or additional keys are added.
 1. Apply the change with `gitlab-ctl reconfigure`.
 1. Test Git repository functionality in GitLab.
 1. Remove the old keys from the configuration once migrated, and then re-run `gitlab-ctl reconfigure`.
 
-The new structure is documented below with the old keys described in a comment above the new keys.
+The new structure is documented in the following script with the old keys described in a comment above the new keys.
 
 ```ruby
 praefect['configuration'] = {

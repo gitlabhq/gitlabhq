@@ -17,8 +17,6 @@ When upgrading GitLab, there are two types of migrations to check:
 - Database migrations.
 - Advanced search migrations.
 
-Read below for detailed information about the two types of migrations.
-
 ## Database background migrations
 
 {{< history >}}

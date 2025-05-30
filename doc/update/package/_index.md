@@ -66,7 +66,7 @@ To upgrade a Linux package instance:
 1. [Complete the initial steps](../_index.md#upgrade-gitlab) in the main GitLab upgrade documentation.
 1. If you are upgrading from a non-package installation to a GitLab package installation, follow the steps in
    [Upgrading from a non-package installation to a GitLab package installation](https://docs.gitlab.com/omnibus/update/convert_to_omnibus.html).
-1. Continue the upgrade by following the sections below.
+1. Continue the upgrade by following the next sections.
 
 ### Required services
 

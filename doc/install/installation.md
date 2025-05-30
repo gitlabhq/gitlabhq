@@ -220,15 +220,9 @@ The Ruby interpreter is required to run GitLab.
 See the [requirements section](#software-requirements) for the minimum
 Ruby requirements.
 
-The use of Ruby version managers such as [`RVM`](https://rvm.io/), [`rbenv`](https://github.com/rbenv/rbenv) or [`chruby`](https://github.com/postmodern/chruby) with GitLab
-in production, frequently leads to hard to diagnose problems. Version managers
-are not supported and we strongly advise everyone to follow the instructions
-below to use a system Ruby.
-
-Linux distributions generally have older versions of Ruby available, so these
-instructions are designed to install Ruby from the official source code.
-
-[Install Ruby](https://www.ruby-lang.org/en/documentation/installation/).
+Ruby version managers such as RVM, rbenv, or chruby can cause hard to diagnose problems with GitLab.
+You should instead [install Ruby](https://www.ruby-lang.org/en/documentation/installation/)
+from the official source code.
 
 ## 3. RubyGems
 
@@ -249,7 +243,7 @@ gem update --system
 ## 4. Go
 
 GitLab has several daemons written in Go. To install
-GitLab we need a Go compiler. The instructions below assume you use 64-bit
+GitLab, you must install a Go compiler. The following instructions assume you use 64-bit
 Linux. You can find downloads for other platforms at the
 [Go download page](https://go.dev/dl/).
 
@@ -671,7 +665,7 @@ Make sure you have `bundle` (run `bundle -v`):
 - `< 2.x`.
 
 Install the gems (if you want to use Kerberos for user authentication, omit
-`kerberos` in the `--without` option below):
+`kerberos` in the `--without` option in the following commands):
 
 ```shell
 sudo -u git -H bundle config set --local deployment 'true'
@@ -915,7 +909,7 @@ sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production force=yes
 # When done, you see 'Administrator account created:'
 ```
 
-You can set the Administrator/root password and email by supplying them in environmental variables, `GITLAB_ROOT_PASSWORD` and `GITLAB_ROOT_EMAIL`, as seen below. If you don't set the password (and it is set to the default one), wait to expose GitLab to the public internet until the installation is done and you've logged into the server the first time. During the first login, you are forced to change the default password. An Enterprise Edition subscription may also be activated at this time by supplying the activation code in the `GITLAB_ACTIVATION_CODE` environment variable.
+You can set the Administrator/root password and email by supplying them in environmental variables, `GITLAB_ROOT_PASSWORD` and `GITLAB_ROOT_EMAIL`, as seen in the following command. If you don't set the password (and it is set to the default one), wait to expose GitLab to the public internet until the installation is done and you've logged into the server the first time. During the first login, you are forced to change the default password. An Enterprise Edition subscription may also be activated at this time by supplying the activation code in the `GITLAB_ACTIVATION_CODE` environment variable.
 
 ```shell
 sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=yourpassword GITLAB_ROOT_EMAIL=youremail GITLAB_ACTIVATION_CODE=yourcode
@@ -1018,7 +1012,7 @@ Verify that the installed version is greater than 1.12.1:
 nginx -v
 ```
 
-If it's lower, you may receive the error below:
+If it's lower, you may receive the following error:
 
 ```plaintext
 nginx: [emerg] unknown "start$temp=[filtered]$rest" variable
@@ -1223,7 +1217,7 @@ bundle list | grep google-protobuf
 bundle check | grep google-protobuf
 ```
 
-Below, `3.2.0` is used as an example. Replace it with the version number
+In the following command, `3.2.0` is used as an example. Replace it with the version number
 you found prevously:
 
 ```shell

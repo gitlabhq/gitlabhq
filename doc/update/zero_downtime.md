@@ -173,9 +173,10 @@ This section focuses exclusively on the Praefect component, not its [required Po
 
 {{< /alert >}}
 
-One additional step though for Praefect is that it will also need to run through its database migrations to upgrade its data.
-Migrations need to be run on only one Praefect node to avoid clashes. This is best done by selecting one of the
-nodes to be a deploy node. This target node will be configured to run migrations while the rest are not. We'll refer to this as the **Praefect deploy node** below:
+Praefect must also perform database migrations to upgrade any existing data. To avoid clashes,
+migrations should run on only one Praefect node. To do this, designate a specific node as a
+deploy node that runs the migrations. This is referred to as 
+the **Praefect deploy node** in the following steps:
 
 1. On the **Praefect deploy node**:
 
@@ -393,13 +394,10 @@ not to run the post-deployment migrations until after all the secondaries have b
 
 Run through the same steps for the Primary site as described but stopping at the Rails node step of running the post-deployment migrations.
 
-### Secondary site(s)
+### Secondary sites
 
 The upgrade process for any Secondary sites follow the same steps as the normal process except for the Rails nodes
-where several additional steps are required as detailed below.
-
-To upgrade the site proceed through the normal process steps as normal until the Rails node and instead follow the steps
-below:
+The upgrade process is the same for both primary and secondary sites. However, you must perform the following additional steps for Rails nodes on secondary sites.
 
 #### Rails
 
