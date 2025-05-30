@@ -9,7 +9,7 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
   let_it_be_with_reload(:user2) { create(:user, name: 'John') }
 
   let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, :public, group: group) }
+  let_it_be(:project) { create(:project, :public, :repository, group: group) }
   let_it_be(:label) { create(:label, project: project, title: "testing-label") }
   let_it_be(:label2) { create(:label, project: project, title: "another-label") }
   let_it_be(:work_item) { create(:work_item, project: project, labels: [label]) }
@@ -176,5 +176,51 @@ RSpec.describe 'Work item detail', :js, feature_category: :team_planning do
     end
 
     it_behaves_like 'change type action is not displayed'
+  end
+
+  context 'for development widget' do
+    let_it_be(:merge_request) do
+      create(
+        :merge_request,
+        source_project: project,
+        source_branch: "#{work_item.iid}-feature",
+        target_project: project,
+        target_branch: "master",
+        title: "Related Merge Request",
+        description: "Merge request description, fixes ##{work_item.iid}"
+      )
+    end
+
+    before_all do
+      project.add_developer(user)
+    end
+
+    context 'for user signed in' do
+      before do
+        sign_in(user)
+        visit work_items_path
+
+        wait_for_all_requests
+      end
+
+      it 'shows development widget with merge request' do
+        within_testid('work-item-development') do
+          expect(page.find('li a')[:href]).to include(merge_request_path(merge_request))
+        end
+      end
+    end
+
+    context 'for user not signed in' do
+      before do
+        visit work_items_path
+        wait_for_all_requests
+      end
+
+      it 'shows development widget with merge request' do
+        within_testid('work-item-development') do
+          expect(page.find('li a')[:href]).to include(merge_request_path(merge_request))
+        end
+      end
+    end
   end
 end

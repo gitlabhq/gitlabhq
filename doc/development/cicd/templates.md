@@ -260,7 +260,7 @@ job1:
 ### Backward compatibility
 
 A template might be dynamically included with the `include:template:` keyword. If
-you make a change to an *existing* template, you **must** make sure that it doesn't break
+you make a change to an existing template, you **must** make sure that it doesn't break
 CI/CD in existing projects.
 
 For example, changing a job name in a template could break pipelines in an existing project.

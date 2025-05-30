@@ -107,7 +107,7 @@ graph RL
 - **Vuex mutations**:
   For complex Vuex mutations, you should separate the tests from other parts of the Vuex store to simplify problem-solving.
 
-#### When *not* to use unit tests
+#### When not to use unit tests
 
 - **Non-exported functions or classes**:
   Anything not exported from a module can be considered private or an implementation detail, and doesn't need to be tested.
@@ -130,7 +130,7 @@ graph RL
 - **Asynchronous background operations**:
   Background operations cannot be stopped or waited on, so they continue running in the following tests and cause side effects.
 
-#### What *not* to mock in unit tests
+#### What not to mock in unit tests
 
 - **Non-exported functions or classes**:
   Everything that is not exported can be considered private to the module, and is implicitly tested through the exported classes and functions.
@@ -184,7 +184,7 @@ graph RL
 
 - **Vue components**
 
-#### When *not* to use component tests
+#### When not to use component tests
 
 - **Vue applications**:
   Vue applications may contain many components.
@@ -202,7 +202,7 @@ graph RL
   Every component is tested individually, so child components are mocked.
   See also [`shallowMount()`](https://v1.test-utils.vuejs.org/api/#shallowmount)
 
-#### What *not* to mock in component tests
+#### What not to mock in component tests
 
 - **Methods or computed properties of the component under test**:
   By mocking part of the component under test, the mocks are tested and not the real component.
@@ -290,7 +290,7 @@ graph RL
   Background operations that affect the page must be tested on this level.
   All other background operations cannot be stopped or waited on, so they continue running in the following tests and cause side effects.
 
-#### What *not* to mock in integration tests
+#### What not to mock in integration tests
 
 - **DOM**:
   Testing on the real DOM ensures your components work in the intended environment.
@@ -322,8 +322,8 @@ Formal definitions:
 - <https://en.wikipedia.org/wiki/System_testing>
 - <https://en.wikipedia.org/wiki/White-box_testing>
 
-These kind of tests ensure the GitLab *Rails* application (for example,
-`gitlab-foss`/`gitlab`) works as expected from a *browser* point of view.
+These kind of tests ensure the GitLab Rails application (for example,
+`gitlab-foss`/`gitlab`) works as expected from a browser point of view.
 
 Note that:
 
@@ -334,7 +334,7 @@ Note that:
 These tests should only be used when:
 
 - the functionality/component being tested is small
-- the internal state of the objects/database *needs* to be tested
+- the internal state of the objects/database needs to be tested
 - it cannot be tested at a lower level
 
 For instance, to test the breadcrumbs on a given page, writing a system test

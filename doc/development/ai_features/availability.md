@@ -44,7 +44,7 @@ This cascading behavior means:
 1. When the setting is `true` at a parent level, all child entities are reset to `true`
 1. When the setting is `false` at a parent level, all child entities are reset to `false`
 1. A parent entity can "lock" the setting using `lock_duo_features_enabled: true` (displayed as "Always off" in the UI)
-   - When locked, child entities *cannot* override the parent setting
+   - When locked, child entities cannot override the parent setting
    - This effectively disables GitLab Duo features for the entire hierarchy below that point
 
 ## Feature Accessibility By Context

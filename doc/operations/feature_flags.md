@@ -261,7 +261,7 @@ To get the access credentials that your application needs to communicate with Gi
 1. Select **Configure** to view the following:
    - **API URL**: URL where the client (application) connects to get a list of feature flags.
    - **Instance ID**: Unique token that authorizes the retrieval of the feature flags.
-   - **Application name**: The name of the *environment* the application runs in
+   - **Application name**: The name of the environment the application runs in
      (not the name of the application itself).
 
      For example, if the application runs for a production server, the **Application name**

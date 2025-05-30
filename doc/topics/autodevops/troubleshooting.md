@@ -111,7 +111,7 @@ methods are:
 
 If you receive this error, you can do one of the following actions:
 
-- You can *safely* ignore the warning and continue using the channel 1 PostgreSQL
+- You can safely ignore the warning and continue using the channel 1 PostgreSQL
   database by setting `AUTO_DEVOPS_POSTGRES_CHANNEL` to `1` and redeploying.
 
 - You can delete the channel 1 PostgreSQL database and install a fresh channel 2

@@ -23,6 +23,6 @@ def wait(max: 60, time: 0.1, reload: true)
 end
 ```
 
-- `max`    : Specifies the max amount of *seconds* to wait until the block given is satisfied
+- `max`    : Specifies the max amount of seconds to wait until the block given is satisfied
 - `time`   : The interval/poll time to sleep *in seconds*. If this time reaches `max`, the wait returns `false`
 - `reload` : If the wait is not satiated, the test will sleep then reload the page if `:reload` is set to `true`

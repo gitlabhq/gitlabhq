@@ -1473,7 +1473,7 @@ Assume the following Geo scenario:
 - Both systems have been migrated to object storage
   - The secondary uses the same object storage as the primary
   - The option `Allow this secondary site to replicate content on Object Storage` is deactivated
-- Multiple *uploads* were manually deleted before the object storage migration
+- Multiple uploads were manually deleted before the object storage migration
   - For this example, two images which were uploaded to an issue
 
 In such a scenario, the secondary does no longer need to replicate any data as
@@ -1484,9 +1484,9 @@ On the primary site:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Geo > Sites**.
-1. Look at the **primary site** and check the verification information. All *uploads* were verified:
+1. Look at the **primary site** and check the verification information. All uploads were verified:
    ![The Geo Sites dashboard displaying successful verification of the primary.](img/geo_primary_uploads_verification_v17_11.png)
-1. Look at the **secondary site** and check the verification information. Notice that two *uploads* are still being synced, even though the secondary should use the same object storage. Meaning it should not have to synchronize any uploads:
+1. Look at the **secondary site** and check the verification information. Notice that two uploads are still being synced, even though the secondary should use the same object storage. Meaning it should not have to synchronize any uploads:
    ![The Geo Sites dashboard displaying inconsistencies of the secondary.](img/geo_secondary_uploads_inconsistencies_v17_11.png)
 
 #### Clean up inconsistencies

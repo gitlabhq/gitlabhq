@@ -291,7 +291,7 @@ The process required follows:
 
    We are not adding them at the beginning as they are adding overhead to each insert and they
    would slow down the initial backfilling of the table (in this case for more than half a billion
-   records, which can add up significantly). So we create a lightweight, *vanilla* version of the
+   records, which can add up significantly). So we create a lightweight, vanilla version of the
    table, copy all the data and then add any remaining indexes and foreign keys.
 
 1. Swap the base table with partitioned copy: this is when the partitioned table

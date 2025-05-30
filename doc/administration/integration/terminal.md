@@ -113,7 +113,7 @@ If you self-compiled your installation, you may need to make some changes to you
 for more details.
 
 To disable web terminal support in GitLab, stop passing
-the `Connection` and `Upgrade` hop-by-hop headers in the *first* HTTP reverse
+the `Connection` and `Upgrade` hop-by-hop headers in the first HTTP reverse
 proxy in the chain. For most users, this is the NGINX server bundled with
 Linux package installations. In this case, you need to:
 

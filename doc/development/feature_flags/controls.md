@@ -342,7 +342,7 @@ Previously, to enable a feature 25% of the time, we would run the following in S
 /chatops run feature set new_navigation_bar 25 --random
 ```
 
-This command enables the `new_navigation_bar` feature for GitLab.com. However, this command does *not* enable the feature for 25% of the total users.
+This command enables the `new_navigation_bar` feature for GitLab.com. However, this command does not enable the feature for 25% of the total users.
 Instead, when the feature is checked with `enabled?`, it returns `true` 25% of the time.
 
 Percentage of time feature flags are now deprecated in favor of [percentage of actors](#percentage-based-actor-selection)

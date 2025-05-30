@@ -1050,7 +1050,7 @@ A line code is of the form `<SHA>_<old>_<new>`, like this: `adc83b19e793491b1c6e
 - `<new>` is the line number after the change.
 
 For example, if a commit (`<COMMIT_ID>`) deletes line 463 in the README, you can comment
-on the deletion by referencing line 463 in the *old* file:
+on the deletion by referencing line 463 in the old file:
 
 ```shell
 curl --request POST \
@@ -1063,7 +1063,7 @@ curl --request POST \
 ```
 
 If a commit (`<COMMIT_ID>`) adds line 157 to `hello.rb`, you can comment on the
-addition by referencing line 157 in the *new* file:
+addition by referencing line 157 in the new file:
 
 ```shell
 curl --request POST \

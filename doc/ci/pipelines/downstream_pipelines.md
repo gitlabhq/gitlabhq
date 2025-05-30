@@ -17,9 +17,9 @@ Downstream pipelines run independently and concurrently to the upstream pipeline
 that triggered them.
 
 - A [parent-child pipeline](downstream_pipelines.md#parent-child-pipelines) is a downstream pipeline
-  triggered in the *same* project as the first pipeline.
+  triggered in the same project as the first pipeline.
 - A [multi-project pipeline](#multi-project-pipelines) is a downstream pipeline triggered
-  in a *different* project than the first pipeline.
+  in a different project than the first pipeline.
 
 You can sometimes use parent-child pipelines and multi-project pipelines for similar purposes,
 but there are [key differences](pipeline_architectures.md).

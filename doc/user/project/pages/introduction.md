@@ -251,7 +251,7 @@ public/
 Pages supports reaching each of these files through several different URLs. In
 particular, it always looks for an `index.html` file if the URL only
 specifies the directory. If the URL references a file that doesn't exist, but
-adding `.html` to the URL leads to a file that *does* exist, it's served
+adding `.html` to the URL leads to a file that does exist, it's served
 instead. Here are some examples of what happens given the previous Pages site:
 
 | URL path             | HTTP response |

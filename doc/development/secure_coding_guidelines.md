@@ -2000,7 +2000,7 @@ helper method to redirect the user to a warning page first. For example:
 ```ruby
 # Bad :(
 # This URL comes from User-Land and may not be safe...
-# We need the user to *see* where they are going.
+# We need the user to see where they are going.
 link_to foo_social_url(@user), title: "Foo Social" do
   sprite_icon('question-o')
 end

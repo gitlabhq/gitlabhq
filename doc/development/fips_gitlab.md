@@ -426,7 +426,7 @@ system for which FIPS Linux packages are available.
 ### Nightly Omnibus FIPS builds
 
 The Distribution team has created [nightly FIPS Omnibus builds](https://packages.gitlab.com/gitlab/nightly-fips-builds),
-which can be used for *testing* purposes. These should never be used for production environments.
+which can be used for testing purposes. These should never be used for production environments.
 
 ## Runner
 

@@ -50,7 +50,7 @@ the **primary** node is listed first as `Primary site`.
 and always attempt to synchronize those changes as quickly as possible.
 
 Backfill is the act of populating the **secondary** site with repositories and files that
-existed *before* the **secondary** site was added to the database. Because there may be
+existed before the **secondary** site was added to the database. Because there may be
 extremely large numbers of repositories and files, it's not feasible to attempt to
 download them all at once; so, GitLab places an upper limit on the concurrency of
 these operations.

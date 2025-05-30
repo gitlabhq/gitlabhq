@@ -229,7 +229,7 @@ use them as an argument for another query. In general, moving query logic out of
 and into Ruby is detrimental because PostgreSQL has a query optimizer that performs better
 when it has relatively more context about the desired operation.
 
-If, for some reason, you need to `pluck` and use the results in a *single* query then,
+If, for some reason, you need to `pluck` and use the results in a single query then,
 most likely, a materialized CTE will be a better choice:
 
 ```sql
@@ -638,7 +638,7 @@ Using transactions does not solve this problem.
 To solve this we've added the `ApplicationRecord.safe_find_or_create_by`.
 
 This method can be used the same way as
-`find_or_create_by`, but it wraps the call in a *new* transaction (or a subtransaction) and
+`find_or_create_by`, but it wraps the call in a new transaction (or a subtransaction) and
 retries if it were to fail because of an
 `ActiveRecord::RecordNotUnique` error.
 

@@ -65,7 +65,7 @@ Removal target:
 For regular configuration, removal target should always be the date of the **next major** release. If the date is not known, you can reference the next major version.
 
 For sensitive configuration things are a bit more complicated.
-We should aim to not remove sensitive configuration in the *next major* release if the next major release is 2 minor releases away (This number is chosen to match our security backport release policy).
+We should aim to not remove sensitive configuration in the next major release if the next major release is 2 minor releases away (This number is chosen to match our security backport release policy).
 
 See the table below for some examples:
 

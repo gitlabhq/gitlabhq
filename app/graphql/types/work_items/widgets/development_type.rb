@@ -15,12 +15,14 @@ module Types
         field :closing_merge_requests,
           ::Types::WorkItems::ClosingMergeRequestType.connection_type,
           null: true,
-          description: 'Merge requests that will close the work item when merged.'
+          description: 'Merge requests that will close the work item when merged.',
+          complexity: 10
         field :related_branches,
           ::Types::WorkItems::RelatedBranchType.connection_type,
           calls_gitaly: true,
           description: 'Branches that have referred to the work item, but do not have an associated merge request.',
-          null: true do
+          null: true,
+          complexity: 10 do
             extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
           end
         field :related_merge_requests, # rubocop:disable GraphQL/ExtractType -- no need to extract to related
@@ -29,13 +31,15 @@ module Types
           resolver: ::Resolvers::MergeRequests::WorkItemRelatedResolver,
           description: 'Merge requests where the work item has been mentioned. ' \
             'This field can only be resolved for one work item in any single request.',
-          experiment: { milestone: '17.6' } do
+          experiment: { milestone: '17.6' },
+          complexity: 10 do
             extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
           end
         field :will_auto_close_by_merge_request,
           GraphQL::Types::Boolean,
           null: false,
-          description: 'Whether the work item will automatically be closed when a closing merge request is merged.'
+          description: 'Whether the work item will automatically be closed when a closing merge request is merged.',
+          complexity: 1
 
         def related_branches
           return [] unless object.work_item.project

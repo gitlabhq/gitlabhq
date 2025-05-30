@@ -114,7 +114,7 @@ In order to extract it from `users` into a new table, we'll have to do the follo
    - Update the application to read from the new table, and fallback to the original column when there is no data yet.
    - Start to back-fill the new table
 1. Release N [example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141833)
-   - Finalize the background migration doing the back-fill. This should be done in the next release *after* a [required stop](../../update/upgrade_paths.md).
+   - Finalize the background migration doing the back-fill. This should be done in the next release after a [required stop](../../update/upgrade_paths.md).
 1. Release N + 1 [example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141835)
    - Update the application to read and write from the new table only.
    - Ignore the original column. This starts the process of safely removing database columns, as described in our [guides](avoiding_downtime_in_migrations.md#dropping-columns).

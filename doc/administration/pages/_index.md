@@ -609,7 +609,7 @@ adding a GitLab-controlled verification code to the DNS records for that domain.
 {{< alert type="warning" >}}
 
 Disabling domain verification is unsafe and can lead to various vulnerabilities.
-If you *do* disable it, either ensure that the Pages root domain itself does not point to the
+If you do disable it, either ensure that the Pages root domain itself does not point to the
 secondary IP or add the root domain as custom domain to a project; otherwise, any user can add this
 domain as a custom domain to their project.
 

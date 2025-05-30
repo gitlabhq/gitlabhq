@@ -5704,7 +5704,7 @@ job:
     - postgres
 ```
 
-In this example, only runners with *both* the `ruby` and `postgres` tags can run the job.
+In this example, only runners with both the `ruby` and `postgres` tags can run the job.
 
 **Additional details**:
 

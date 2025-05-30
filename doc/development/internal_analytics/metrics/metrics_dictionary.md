@@ -17,7 +17,7 @@ This guide describes the dictionary and how it's implemented.
 
 We are using [JSON Schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/schema.json) to validate the metrics definition.
 
-This process is meant to ensure consistent and valid metrics defined for Service Ping. All metrics *must*:
+This process is meant to ensure consistent and valid metrics defined for Service Ping. All metrics must:
 
 - Comply with the defined [JSON schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/schema.json).
 - Have a unique `key_path` .

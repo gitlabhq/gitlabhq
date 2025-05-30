@@ -91,7 +91,7 @@ The attribute reader method (`delayed_project_removal`) returns the correct
 cascaded value using the following criteria:
 
 1. Returns the dirty value, if the attribute has changed. This allows standard
-   Rails validators to be used on the attribute, though `nil` values *must* be allowed.
+   Rails validators to be used on the attribute, though `nil` values must be allowed.
 1. Return locked ancestor value.
 1. Return locked instance-level application settings value.
 1. Return this namespace's attribute, if not nil.

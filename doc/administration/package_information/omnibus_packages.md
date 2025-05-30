@@ -81,7 +81,7 @@ Some drawbacks of a package with bundled dependencies:
 ## Why would you install a package from the Linux package when you can use a system package?
 
 The answer can be simplified to: less maintenance required. Instead of handling
-multiple packages that *can* break existing functionality if the versions are
+multiple packages that can break existing functionality if the versions are
 not compatible, only handle one.
 
 Multiple packages require correct configuration in multiple locations.

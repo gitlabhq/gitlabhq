@@ -70,6 +70,7 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
         params: ActionController::Parameters.new)
       allow(controller_instance).to receive_message_chain(:helpers, :diff_view).and_return('inline')
       allow(mock_resource).to receive(:diffs_for_streaming).and_return(mock_diffs)
+      allow(mock_resource).to receive(:first_diffs_slice).with(1, any_args).and_return(diff_files)
       allow(RapidDiffs::DiffFileComponent).to receive_message_chain(:with_collection, :render_in)
         .and_return(diffs_html)
     end

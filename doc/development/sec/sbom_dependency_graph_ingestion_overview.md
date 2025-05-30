@@ -7,7 +7,7 @@ title: SBoM dependency graph ingestion overview
 
 ## Overview
 
-The process starts *after* all `SBoM::Occurence` models have been ingested because we ingest them in slices and it would be tricky to process that in slices as well.
+The process starts after all `SBoM::Occurence` models have been ingested because we ingest them in slices and it would be tricky to process that in slices as well.
 
 All work happens in a background worker which will be added in a subsequent MR so that we do not increase the time it takes to ingest an SBoM report. This means that there will be a delay between when the SBoM report is ingested and before the dependency graph is updated.
 
@@ -22,7 +22,7 @@ All record pertaining to dependency graphs are stored in `sbom_graph_paths` data
 1. After it's done, we fire off [Sbom::BuildDependencyGraphWorker](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/sbom/build_dependency_graph_worker.rb) which kicks off the dependency graph calculation to a background worker.
 1. [Sbom::BuildDependencyGraph](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/services/sbom/build_dependency_graph.rb) does the actual heavy lifting for us. The class is documented so the details are omitted here.
 1. We will [skip calculation](https://gitlab.com/groups/gitlab-org/-/epics/17340) of the dependency graph if the SBoM report did not change.
-1. [Sbom::PathFinder](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/finders/sbom/path_finder.rb) returns *all possible* paths to reach target dependency. Do note that this accepts an `Sbom::Occurrence` because `(name, version)` pair is not precise enough when working with monorepos.
+1. [Sbom::PathFinder](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/finders/sbom/path_finder.rb) returns all possible paths to reach target dependency. Do note that this accepts an `Sbom::Occurrence` because `(name, version)` pair is not precise enough when working with monorepos.
 
 ## Details
 

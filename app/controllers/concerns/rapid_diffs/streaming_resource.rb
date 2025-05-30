@@ -61,9 +61,7 @@ module RapidDiffs
     def stream_diff_files(options, view_context)
       return unless resource
 
-      diffs = resource.diffs_for_streaming(options)
-
-      if params.permit(:offset)[:offset].blank? && diffs.diff_files.empty?
+      if params.permit(:offset)[:offset].blank? && resource.first_diffs_slice(1, options).empty?
         empty_state_component = ::RapidDiffs::EmptyStateComponent.new
         response.stream.write empty_state_component.render_in(view_context)
         return
@@ -73,11 +71,13 @@ module RapidDiffs
       if !!ActiveModel::Type::Boolean.new.cast(params.permit(:diff_blobs)[:diff_blobs])
         stream_diff_blobs(options, view_context)
       else
-        stream_diff_collection(diffs.diff_files(sorted: sorted?), view_context)
+        stream_diff_collection(options, view_context)
       end
     end
 
-    def stream_diff_collection(diff_files, view_context)
+    def stream_diff_collection(options, view_context)
+      diff_files = resource.diffs_for_streaming(options).diff_files(sorted: sorted?)
+
       each_growing_slice(diff_files, 5, 2) do |slice|
         response.stream.write(render_diff_files_collection(slice, view_context))
       end

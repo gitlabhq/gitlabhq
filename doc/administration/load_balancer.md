@@ -28,7 +28,7 @@ options:
 - Each application node terminates SSL
 - The load balancers terminate SSL and communication is not secure between
   the load balancers and the application nodes
-- The load balancers terminate SSL and communication is *secure* between the
+- The load balancers terminate SSL and communication is secure between the
   load balancers and the application nodes
 
 ### Application nodes terminate SSL

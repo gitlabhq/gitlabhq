@@ -59,7 +59,7 @@ To create a confidential merge request:
 1. Select the item that meets your needs:
    - To create both a branch and a merge request, select
      **Create confidential merge request and branch**. Your merge request will
-     target the default branch of your fork, *not* the default branch of the
+     target the default branch of your fork, not the default branch of the
      public upstream project.
    - To create only a branch, select **Create branch**.
 1. Select a **Project** to use. These projects have merge requests enabled, and

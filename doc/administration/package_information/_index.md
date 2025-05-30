@@ -95,13 +95,13 @@ Depending on the init system, this `WARNING` can be one of:
 /sbin/init: unrecognized option '--version'
 ```
 
-when the underlying init system *is not* upstart.
+when the underlying init system is not upstart.
 
 ```plaintext
   -.mount loaded active mounted   /
 ```
 
-when the underlying init system *IS* systemd.
+when the underlying init system is systemd.
 
 These warnings _can be safely ignored_. They are not suppressed because this
 allows everyone to debug possible detection issues faster.

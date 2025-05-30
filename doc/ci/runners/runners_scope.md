@@ -485,7 +485,7 @@ Project runners process jobs by using a first in, first out ([FIFO](https://en.w
 {{< alert type="note" >}}
 
 Project runners do not get instance with forked projects automatically.
-A fork *does* copy the CI/CD settings of the cloned repository.
+A fork does copy the CI/CD settings of the cloned repository.
 
 {{< /alert >}}
 

@@ -114,6 +114,7 @@ Buildah
 Buildkite
 buildpack
 buildpacks
+Buildx
 bundler
 bundlers
 burndown

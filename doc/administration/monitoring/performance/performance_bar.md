@@ -77,9 +77,9 @@ From left to right, the performance bar displays:
   report of the current URL.
 - **Flamegraph** with mode: a link to generate a flamegraph
   of the current URL with the selected [Stackprof mode](https://github.com/tmm1/stackprof#sampling):
-  - The **Wall** mode samples every *interval* of the time on a clock on a wall. The interval is set to `10100` microseconds.
-  - The **CPU** mode samples every *interval* of CPU activity. The interval is set to `10100` microseconds.
-  - The **Object** mode samples every *interval*. The interval is set to `100` allocations.
+  - The **Wall** mode samples every interval of the time on a clock on a wall. The interval is set to `10100` microseconds.
+  - The **CPU** mode samples every interval of CPU activity. The interval is set to `10100` microseconds.
+  - The **Object** mode samples every interval. The interval is set to `100` allocations.
 - **Request Selector**: a select box displayed on the right-hand side of the
   Performance Bar which enables you to view these metrics for any requests made while
   the current page was open. Only the first two requests per unique URL are captured.

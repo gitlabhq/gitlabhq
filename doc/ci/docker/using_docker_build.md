@@ -748,8 +748,10 @@ and [using the OverlayFS storage driver](https://docs.docker.com/storage/storage
 
 ## Docker alternatives
 
-To build Docker images without enabling privileged mode on the runner,
-use [`buildah`](#buildah-example).
+You can build container images without enabling privileged mode on your runner:
+
+- [BuildKit](using_buildkit.md): Includes rootless BuildKit options that eliminate Docker daemon dependency.
+- [Buildah](#buildah-example): Build OCI-compliant images without requiring a Docker daemon.
 
 ### Buildah example
 

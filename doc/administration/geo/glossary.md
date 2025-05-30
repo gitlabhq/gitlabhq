@@ -50,7 +50,7 @@ We provide [example diagrams and statements](#examples) to demonstrate correct u
 
 ## Replicator terms
 
-Geo uses *replicators* to replicate data of individual GitLab components
+Geo uses replicators to replicate data of individual GitLab components
 between primary and secondary sites. They define how the individual [data types](replication/datatypes.md#data-types)
 of these components have to be processed and verified. For example, data of the
 GitLab container registry has to be handled differently than CI job artifacts.

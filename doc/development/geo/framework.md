@@ -166,7 +166,7 @@ the Geo team if you are unsure.
 
 Models that use [CarrierWave's](https://github.com/carrierwaveuploader/carrierwave) `Uploader::Base` are supported by Geo with the `Geo::BlobReplicatorStrategy` module. For example, see how [Geo replication was implemented for Pipeline Artifacts](https://gitlab.com/gitlab-org/gitlab/-/issues/238464).
 
-Each file is expected to have its own primary ID and model. Geo strongly recommends treating *every single file* as a first-class citizen, because in our experience this greatly simplifies tracking replication and verification state.
+Each file is expected to have its own primary ID and model. Geo strongly recommends treating every single file as a first-class citizen, because in our experience this greatly simplifies tracking replication and verification state.
 
 To implement Geo replication of a new blob-type Model, [open an issue with the provided issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Geo%20Replicate%20a%20new%20blob%20type).
 

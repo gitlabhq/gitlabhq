@@ -462,7 +462,7 @@ are run. It's important to maintain a rough correlation between:
 1. When a migration is added to the GitLab codebase.
 1. The timestamp of the migration itself.
 
-A new migration's timestamp should *never* be before the previous [required upgrade stop](database/required_stops.md).
+A new migration's timestamp should never be before the previous [required upgrade stop](database/required_stops.md).
 Migrations are occasionally squashed, and if a migration is added whose timestamp
 falls before the previous required stop, a problem like what happened in
 [issue 408304](https://gitlab.com/gitlab-org/gitlab/-/issues/408304) can occur.

@@ -203,7 +203,7 @@ To reach the definition of done, the merge request must create no regressions an
 - Verified as supporting [Geo](../../administration/geo/_index.md) through the [self-service framework](../geo/framework.md). For more information, see [Geo is a requirement in the definition of done](../geo/framework.md#geo-is-a-requirement-in-the-definition-of-done).
 
 If a regression occurs, we prefer you revert the change.
-Your contribution is *incomplete* until you have made sure it meets all of these
+Your contribution is incomplete until you have made sure it meets all of these
 requirements.
 
 ### Functionality
@@ -277,7 +277,7 @@ requirements.
 
 1. Use available components from the GitLab Design System,
    [Pajamas](https://design.gitlab.com/).
-1. The MR must include *Before* and *After* screenshots if UI changes are made.
+1. The MR must include "Before" and "After" screenshots if UI changes are made.
 1. If the MR changes CSS classes, include the list of affected pages, which
    can be found by running `grep css-class ./app -R`.
 

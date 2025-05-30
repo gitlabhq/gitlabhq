@@ -19,7 +19,7 @@ stakeholders, system, software, or anything else you find important to capture.
 A requirement is an artifact in GitLab which describes the specific behavior of your product.
 Requirements are long-lived and don't disappear unless manually cleared.
 
-If an industry standard *requires* that your application has a certain feature or behavior, you can
+If an industry standard requires that your application has a certain feature or behavior, you can
 [create a requirement](#create-a-requirement) to reflect this.
 When a feature is no longer necessary, you can [archive the related requirement](#archive-a-requirement).
 

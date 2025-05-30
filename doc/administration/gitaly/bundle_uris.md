@@ -245,6 +245,13 @@ go_cloud_url = "s3://<bucket>?region=us-west-1"
 
 #### Configure S3-compatible servers
 
+{{< history >}}
+
+- `awssdk` parameter introduced in GitLab 15.10.
+- `use_path_style` and `disable_https` parameters [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8939) in GitLab 17.4.
+
+{{< /history >}}
+
 S3-compatible servers such as MinIO are configured similarly to S3 with the
 addition of the `endpoint` parameter.
 
@@ -252,8 +259,19 @@ The following parameters are supported:
 
 - `region`: The AWS region.
 - `endpoint`: The endpoint URL.
-- `disabledSSL`: A value of `true` disables SSL.
-- `s3ForcePathStyle`: A value of `true` forces path-style addressing.
+- `disableSSL`: Set to `true` to disable SSL. Available for GitLab 17.4.0 and earlier. For GitLab versions after 17.4.0, use `disable_https`.
+- `disable_https`: Set to `true` to disable HTTPS in the endpoint options.
+- `s3ForcePathStyle`: Set to `true` to force path-style URLs for S3 objects. Unavailable in GitLab versions 17.4.0 to 17.4.3. In those versions, use `use_path_style` instead.
+- `use_path_style`: Set to `true` to enable path-style S3 URLs (`https://<host>/<bucket>` instead of `https://<bucket>.<host>`).
+- `awssdk`: Force a particular version of AWS SDK. Set to `v1` to force AWS SDK v1 or `v2` to force AWS SDK v2. If:
+  - Set to `v1`, you must use `disableSSL` instead of `disable_https`.
+  - Not set, defaults to `v2`.
+
+`use_path_style` was introduced when the Go Cloud Development Kit dependency was updated from v0.38.0 to v0.39.0, which switched from AWS SDK v1 to v2. However, the `s3ForcePathStyle` parameter was restored in GitLab 17.4.4 after the gocloud.dev maintainers added backward compatibility support. For more information, see [issue 6489](https://gitlab.com/gitlab-org/gitaly/-/issues/6489).
+
+`disable_https` was introduced in the Go Cloud Development Kit v0.40.0 (AWS SDK v2).
+
+`awssdk` was introduced in the Go Cloud Development Kit v0.24.0. 
 
 {{< tabs >}}
 
@@ -268,7 +286,7 @@ gitaly['env'] = {
 }
 gitaly['configuration'] = {
     bundle_uri: {
-        go_cloud_url: 's3://<bucket>?region=minio&endpoint=my.minio.local:8080&disableSSL=true&s3ForcePathStyle=true'
+        go_cloud_url: 's3://<bucket>?region=minio&endpoint=my.minio.local:8080&disable_https=true&use_path_style=true'
     }
 }
 ```
@@ -281,7 +299,7 @@ Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
 
 ```toml
 [bundle_uri]
-go_cloud_url = "s3://<bucket>?region=minio&endpoint=my.minio.local:8080&disableSSL=true&s3ForcePathStyle=true"
+go_cloud_url = "s3://<bucket>?region=minio&endpoint=my.minio.local:8080&disable_https=true&use_path_style=true"
 ```
 
 {{< /tab >}}

@@ -407,7 +407,7 @@ When missing files or inconsistencies are present, you can encounter entries in 
 }
 ```
 
-The same errors are also reflected in the UI under **Admin > Geo > Sites** when reviewing the synchronization status of specific replicables. In this scenario, a specific *upload* is missing:
+The same errors are also reflected in the UI under **Admin > Geo > Sites** when reviewing the synchronization status of specific replicables. In this scenario, a specific upload is missing:
 
 ![The Geo Uploads replicable dashboard displaying all failed errors.](img/geo_uploads_file_missing_v17_11.png)
 
@@ -423,7 +423,7 @@ Ensure you have a recent and working backup at hand before issuing any deletion 
 
 To remove those errors, first identify which particular resources are affected. Then, run the appropriate `destroy` commands to ensure the deletion is propagated across all Geo sites and their databases. Based on the previous scenario, an **upload** is causing those errors which is used as an example below.
 
-1. Map the identified inconsistencies to their respective [Geo Model class](#geo-data-type-model-classes) name. The class name is needed in the following steps. In this scenario, for *uploads* it corresponds to `Upload`.
+1. Map the identified inconsistencies to their respective [Geo Model class](#geo-data-type-model-classes) name. The class name is needed in the following steps. In this scenario, for uploads it corresponds to `Upload`.
 1. Start a [Rails console](../../../operations/rails_console.md#starting-a-rails-console-session) on the **Geo primary site**.
 1. Query all resources where verification failed due to missing files based on the *Geo Model class* of the previous step. Adjust or remove the `limit(20)` to display more results. Observe how the listed resources should match the failed ones shown in the UI:
 

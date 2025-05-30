@@ -308,7 +308,7 @@ Documentation quality might be lower, because:
 
 - Having documentation in a separate MR will mean far fewer people will see and
   verify them, increasing the likelihood that issues will be missed.
-- In a *split* workflow, engineers might only create the documentation MR after
+- In a split workflow, engineers might only create the documentation MR after
   the feature MR is ready, or almost ready. This gives the technical writer
   little time to learn about the feature to do a good review. It also
   increases pressure on them to review and merge faster than desired, letting
@@ -321,7 +321,7 @@ process) has many benefits:
 
 - There are no timing issues connected to releases:
   - If a feature slips to the next release, the documentation slips too.
-  - If the feature *just* makes it into a release, the documentation *just*
+  - If the feature just makes it into a release, the documentation just
     makes it in too.
   - If a feature makes it to GitLab.com early, the documentation will be ready
     for our early adopters.
@@ -338,7 +338,7 @@ process) has many benefits:
     to catch issues with examples, and background or concepts that the
     technical writer may not be aware of.
   - Increasing visibility of the documentation also has the side effect of
-    improving *other* engineers' documentation. By reviewing each other's MRs,
+    improving other engineers' documentation. By reviewing each other's MRs,
     each engineer's own documentation skills will improve.
 - Thinking about the documentation early can help engineers generate better
   examples, as they will need to think about what examples a user will want,

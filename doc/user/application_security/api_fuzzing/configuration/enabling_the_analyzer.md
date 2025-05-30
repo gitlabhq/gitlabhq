@@ -19,7 +19,7 @@ Prerequisites:
 
   {{< alert type="warning" >}}
 
-  **Never** run fuzz testing against a production server. Not only can it perform *any* function that
+  **Never** run fuzz testing against a production server. Not only can it perform any function that
   the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
   data. Only run fuzzing against a test server.
 

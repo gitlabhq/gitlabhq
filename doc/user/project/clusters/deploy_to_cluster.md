@@ -101,7 +101,7 @@ an environment's deployment job. This includes `KUBECONFIG`, which gives access 
 any secret available to the associated service account in your cluster.
 To keep your production credentials safe, consider using
 [protected environments](../../../ci/environments/protected_environments.md),
-combined with *one* of the following:
+combined with one of the following:
 
 - A GitLab-managed cluster and namespace per environment.
 - An environment-scoped cluster per protected environment. The same cluster

@@ -273,7 +273,7 @@ namespace.
 
 {{< alert type="warning" >}}
 
-Your apps should *not* be manipulated outside of Helm (using Kubernetes directly).
+Your apps should not be manipulated outside of Helm (using Kubernetes directly).
 This can cause confusion with Helm not detecting the change and subsequent
 deploys with Auto DevOps can undo your changes. Also, if you change something
 and want to undo it by deploying again, Helm may not detect that anything changed
@@ -411,7 +411,7 @@ namespace.
 
 {{< alert type="warning" >}}
 
-Your apps should *not* be manipulated outside of Helm (using Kubernetes directly).
+Your apps should not be manipulated outside of Helm (using Kubernetes directly).
 This can cause confusion with Helm not detecting the change and subsequent
 deploys with Auto DevOps can undo your changes. Also, if you change something
 and want to undo it by deploying again, Helm may not detect that anything changed

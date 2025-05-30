@@ -23,7 +23,7 @@ For example:
    with an expected release date of 2021-10-22.
 1. It is merged on 2021-10-19 and available online the same day at <https://docs.gitlab.com>.
 1. GitLab 14.4 is released on 2021-10-22, based on the `gitlab` codebase from 2021-10-18
-   (one day *before* the update was merged).
+   (one day before the update was merged).
 1. The change shows up in the 14.5 GitLab Self-Managed release, due to missing the release cutoff
    for 14.4.
 

@@ -600,9 +600,7 @@ class Commit
   end
 
   def first_diffs_slice(limit, diff_options = {})
-    diff_options[:max_files] = limit
-
-    diffs(diff_options).diff_files
+    diffs(diff_options.merge(max_files: limit)).diff_files
   end
 
   private

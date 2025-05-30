@@ -9,7 +9,7 @@ This document is a collection of techniques and best practices to consider while
 
 ## Pinning tests
 
-Pinning tests help you ensure that you don't unintentionally change the output or behavior of the entity you're refactoring. This even includes preserving any existing *buggy* behavior, since consumers may rely on those bugs implicitly.
+Pinning tests help you ensure that you don't unintentionally change the output or behavior of the entity you're refactoring. This even includes preserving any existing buggy behavior, since consumers may rely on those bugs implicitly.
 
 ### Example steps
 

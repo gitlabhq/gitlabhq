@@ -287,7 +287,7 @@ job:
     - when: always
 ```
 
-This job does not run when `$CUSTOM_VARIABLE` is false, but it *does* run in **all**
+This job does not run when `$CUSTOM_VARIABLE` is false, but it does run in **all**
 other pipelines, including **both** push (branch) and merge request pipelines. With
 this configuration, every push to an open merge request's source branch
 causes duplicated pipelines.
@@ -420,7 +420,7 @@ Variable pattern matching with regular expressions uses the
 Expressions evaluate as `true` if:
 
 - Matches are found when using `=~`.
-- Matches are *not* found when using `!~`.
+- Matches are not found when using `!~`.
 
 For example:
 

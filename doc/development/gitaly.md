@@ -42,7 +42,7 @@ in `lib/gitlab/git` changes have to be made to Gitaly.
 
 There should be no new code that touches Git repositories by using disk access
 anywhere in the `gitlab` repository. Anything that
-needs direct access to the Git repository *must* be implemented in Gitaly, and
+needs direct access to the Git repository must be implemented in Gitaly, and
 exposed through an RPC.
 
 It's often easier to develop a new feature in Gitaly if you make the changes to
