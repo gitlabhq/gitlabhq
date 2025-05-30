@@ -21,7 +21,6 @@ RSpec.describe 'User Settings > Personal access tokens', :with_current_organizat
     it "allows creation of a personal access token" do
       name = 'My PAT'
       description = 'My PAT description'
-      create(:organization, :default)
 
       visit user_settings_personal_access_tokens_path
 
