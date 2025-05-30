@@ -270,7 +270,7 @@ Supported attributes:
 | :--------- | :------------- | :------- | :---------- |
 | `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `ref`      | string         | no       | The name of a repository branch or tag. If not given, the default branch. |
-| `order_by` | string         | no       | Return contributors ordered by `name`, `email`, or `commits` (orders by commit date) fields. Default is `commits`. |
+| `order_by` | string         | no       | Order contributors by `name`, `email`, or `commits` (number of commits). If not specified, contributors are ordered by commit date. |
 | `sort`     | string         | no       | Return contributors sorted in `asc` or `desc` order. Default is `asc`. |
 
 Example request:

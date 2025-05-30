@@ -1,7 +1,7 @@
 MR: Pending
 
 <!-- NOTE: For context on MR heading, see:
-https://handbook.gitlab.com/handbook/engineering/development/dev/create/remote-development/index.html#relationship-of-issues-to-mrs
+https://handbook.gitlab.com/handbook/engineering/devops/dev/create/remote-development/index.html#relationship-of-issues-to-mrs
 -->
 
 ## Description
@@ -41,7 +41,8 @@ TODO: Fill out (required)
 
 ## Implementation plan
 
-TODO: Fill out or delete (optional)  
+TODO: Fill out or delete (optional)
+
 [Provide a high-level plan for implementation of this issue, including relevant technical and/or design details.]
 
 <!-- NOTE: Feel free to expand with more sections and headers as needed -->
@@ -53,3 +54,5 @@ TODO: Fill out or delete (optional)
 /label ~"devops::create"
 /label ~"group::remote development"
 /label ~"workflow::refinement"
+
+/milestone %Backlog

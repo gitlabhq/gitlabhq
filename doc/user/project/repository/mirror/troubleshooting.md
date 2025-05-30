@@ -333,3 +333,22 @@ To delete and remove all tags from the mirror repository:
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. Select **Update now** ({{< icon name="retry" >}}).
+
+## Push mirroring stuck with large LFS files
+
+You might encounter timeout issues when push mirroring a project that contains large LFS objects.
+This issue occurs when Git LFS operations exceed the default activity timeout.
+This error appears in the mirroring logs:
+
+```plaintext
+push to mirror: git push: exit status 1, stderr: "remote: GitLab: LFS objects are missing. Ensure LFS is properly set up or try a manual \"git lfs push --all\""
+```
+
+To resolve this issue, increase the LFS activity timeout value before configuring the mirror:
+
+```shell
+git config lfs.activitytimeout 240
+```
+
+This command sets the timeout to `240` seconds. You can adjust this value based on your
+file sizes and network conditions.

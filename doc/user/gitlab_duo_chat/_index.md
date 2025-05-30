@@ -104,22 +104,21 @@ This applies to files added via `/include`, and all generation commands.
 ## Use GitLab Duo Chat in the GitLab UI
 
 1. In the upper-right corner, select **GitLab Duo Chat**. A drawer opens on the right side of your screen.
-
-   > The **GitLab Duo Chat** button is **not visible** in the following sections:
-   >
-   > - Any of the **Your work** pages such as your [To-Do List](../todos.md).
-   > - Your [**user profile**](../profile/_index.md).
-   > - **Help**.
-
 1. Enter your question in the chat text box and press **Enter** or select **Send**. It may take a few seconds for the interactive AI chat to produce an answer.
 1. Optional. Ask a follow-up question.
+
+The 25 most recent messages are retained in the chat history.
 
 To ask a new question unrelated to the previous conversation, you might receive better answers
 if you clear the context by typing `/reset` or `/clear` and selecting **Send**.
 
 {{< alert type="note" >}}
 
-Only the last 25 messages are retained in the chat history.
+The **GitLab Duo Chat** button is **not available** on:
+
+- The **Your work** pages, like the [To-Do List](../todos.md).
+- Your [**User settings**](../profile/_index.md) page.
+- The **Help** menu.
 
 {{< /alert >}}
 
@@ -146,15 +145,9 @@ In GitLab 17.10 and later, you can have multiple simultaneous conversations with
 1. To create a new conversation with Chat, you can either:
    - In the top-left corner of the Chat drawer, select **New Chat**.
    - In the text box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
-   A new Chat drawer appears, replacing the previous Chat drawer.
+   A new Chat drawer replaces the previous one.
 
-   There is no limit to the number of simultaneous conversations you can have with Chat.
-
-   {{< alert type="note" >}}
-
-   When you use multiple conversations, the `/new` slash command replaces the `/reset` or `/clear` slash commands.
-
-   {{< /alert >}}
+   You can have an unlimited number of simultaneous conversations with Chat.
 
 1. To view all of your conversations, in the top-left corner of the Chat drawer, select **Chat History**.
 

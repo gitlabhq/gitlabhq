@@ -320,6 +320,10 @@ module ClickHouse
 end
 ```
 
+## Best practices
+
+When building features that require data from ClickHouse, you should first replicate raw data from PostgreSQL tables (such as events or issues) using [Sidekiq workers](#implementing-sidekiq-workers) or another strategy. Then, build separate aggregations on top of that data. By avoiding direct aggregation from PostgreSQL, you can improve maintainability and enable data reprocessing.
+
 ## Testing
 
 ClickHouse is enabled on CI/CD but to avoid significantly affecting the pipeline runtime we've decided to run the ClickHouse server for test cases tagged with `:click_house` only.

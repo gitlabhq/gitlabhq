@@ -235,7 +235,6 @@ behavior of projects that are assigned to a compliance framework.
 | Project not marked for deletion                          | `project_marked_for_deletion`                              | Checks whether the [project is marked for deletion](../project/settings/_index.md). `false` is compliant. |
 | Project pipelines not public                             | `project_pipelines_not_public`                             | Ensures that [project pipelines are not publicly visible](../../ci/pipelines/settings.md). |
 | Project repository exists                                | `project_repo_exists`                                      | Ensures that a [Git repository](../../topics/git/_index.md) exists for the project. |
-| Project user defined variables restricted to maintainers | `project_user_defined_variables_restricted_to_maintainers` | Ensures that only maintainers can create [project variables](../../ci/variables/_index.md). |
 | Project visibility not public                            | `project_visibility_not_public`                            | Ensures that projects are not set to [public visibility](../public_access.md). |
 | Protected branches exist                                 | `protected_branches_set`                                   | Ensures that project contains [protected branches](../project/repository/branches/protected.md). |
 | Push protection enabled                                  | `push_protection_enabled`                                  | Ensures that [push protection](../project/repository/push_rules.md) is enabled for sensitive files. |
@@ -258,6 +257,7 @@ behavior of projects that are assigned to a compliance framework.
 | Status page configured                                   | `status_page_configured`                                   | Ensures that a [status page](../../operations/incident_management/status_page.md) is configured for the project. |
 | Strict Permission for Repository                         | `strict_permissions_for_repo`                              | Ensures that [strict permissions](../permissions.md) are set for repository access. |
 | Terraform enabled                                        | `terraform_enabled`                                        | Ensures that the [Terraform integration](../../administration/terraform_state.md) is enabled for the project. |
+| User-defined CI/CD variables restricted to maintainers   | `project_user_defined_variables_restricted_to_maintainers` | Ensures that only users with the maintainer role or higher can pass [user-defined variables when triggering pipelines](../../ci/variables/_index.md). |
 | Vulnerabilities SLO days over threshold                  | `vulnerabilities_slo_days_over_threshold`                  | Ensures that [vulnerabilities are addressed](../application_security/vulnerabilities/_index.md) inside SLO thresholds (180 days). |
 
 ### External controls

@@ -1044,13 +1044,13 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       before do
         orphaned_job_artifact.connection.transaction do
           orphaned_job_artifact.connection.execute(<<~SQL)
-            ALTER TABLE p_ci_job_artifacts DISABLE TRIGGER ALL;
+            SET session_replication_role = 'replica';
           SQL
 
           orphaned_job_artifact.update_column(:job_id, non_existing_record_id)
 
           orphaned_job_artifact.connection.execute(<<~SQL)
-            ALTER TABLE p_ci_job_artifacts ENABLE TRIGGER ALL;
+            SET session_replication_role = 'origin';
           SQL
         end
       end

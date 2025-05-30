@@ -16092,9 +16092,6 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Configure pipeline settings to restrict public access to CI/CD pipelines."
 msgstr ""
 
-msgid "ComplianceStandardsAdherence|Configure project settings to allow only maintainers to create CI/CD variables."
-msgstr ""
-
 msgid "ComplianceStandardsAdherence|Configure push permissions"
 msgstr ""
 
@@ -16105,6 +16102,9 @@ msgid "ComplianceStandardsAdherence|Configure push rules to reject unsigned comm
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Configure push rules to require that all commits are signed."
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Configure settings to ensures that only users with the maintainer role or higher can pass user-defined variables when triggering pipelines."
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Configure settings to prevent editing of merge request approval rules."
@@ -16584,9 +16584,6 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Restricts access to build artifacts and pipeline outputs."
 msgstr ""
 
-msgid "ComplianceStandardsAdherence|Restricts creation of project variables to maintainers only."
-msgstr ""
-
 msgid "ComplianceStandardsAdherence|Restricts who can push to or merge into protected branches."
 msgstr ""
 
@@ -16726,6 +16723,9 @@ msgid "ComplianceStandardsAdherence|Upgrade to Ultimate license"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Upgrade your GitLab license to Ultimate to access all security and compliance features."
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|User-defined CI/CD variables restricted to maintainers."
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|View details"
