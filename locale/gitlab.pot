@@ -20758,6 +20758,9 @@ msgstr ""
 msgid "Date range too large"
 msgstr ""
 
+msgid "Date updated"
+msgstr ""
+
 msgid "DateRange|%{start_date}–%{end_date}"
 msgstr ""
 
@@ -35867,6 +35870,9 @@ msgstr ""
 msgid "Last repository check (%{last_check_timestamp}) failed. See the 'repocheck.log' file for error messages."
 msgstr ""
 
+msgid "Last scan"
+msgstr ""
+
 msgid "Last seen"
 msgstr ""
 
@@ -44689,6 +44695,9 @@ msgid "Pipeline durations for the last 30 commits"
 msgstr ""
 
 msgid "Pipeline editor"
+msgstr ""
+
+msgid "Pipeline job"
 msgstr ""
 
 msgid "Pipeline must succeed."
