@@ -18,6 +18,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action :disable_query_limiting, only: [:create_merge_request, :move, :bulk_update]
   before_action :disable_show_query_limit!, only: :show
+  before_action :disable_create_query_limit!, only: :create
 
   before_action :check_issues_available!
   before_action :issue, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
@@ -410,6 +411,10 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def disable_show_query_limit!
     Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/544875', new_threshold: 120)
+  end
+
+  def disable_create_query_limit!
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/546668', new_threshold: 110)
   end
 
   def show_work_item?

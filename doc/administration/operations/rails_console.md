@@ -513,7 +513,7 @@ We can also add the bang (Ruby speak for `!`) to `.update`:
 user.update!(password: 'password', password_confirmation: 'hunter2')
 ```
 
-In Ruby, method names ending with `!` are commonly known as "bang methods". By
+In Ruby, method names ending with `!` are commonly known as "bang methods." By
 convention, the bang indicates that the method directly modifies the object it
 is acting on, as opposed to returning the transformed result and leaving the
 underlying object untouched. For Active Record methods that write to the

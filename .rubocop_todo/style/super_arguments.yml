@@ -118,7 +118,6 @@ Style/SuperArguments:
     - 'lib/api/api_guard.rb'
     - 'lib/api/entities/project_with_access.rb'
     - 'lib/backup/targets/database.rb'
-    - 'lib/banzai/filter/blockquote_fence_legacy_filter.rb'
     - 'lib/banzai/filter/jira_import/adf_to_commonmark_filter.rb'
     - 'lib/banzai/filter/markdown_filter.rb'
     - 'lib/banzai/filter/references/milestone_reference_filter.rb'

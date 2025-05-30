@@ -12,7 +12,7 @@ title: Resource group API
 
 {{< /details >}}
 
-You can read more about [controlling the job concurrency with resource groups](../ci/resource_groups/_index.md).
+Use this API to interact with [resource groups](../ci/resource_groups/_index.md).
 
 ## Get all resource groups for a project
 

@@ -48,7 +48,7 @@ To follow along, you must have:
 - A Vault server that you are already using.
 - CI/CD jobs retrieving secrets from Vault with `CI_JOB_JWT`.
 
-In the examples below, replace:
+In the following examples, replace:
 
 - `vault.example.com` with the URL of your Vault server.
 - `gitlab.example.com` with the URL of your GitLab instance.

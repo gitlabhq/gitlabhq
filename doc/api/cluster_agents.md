@@ -2,7 +2,7 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Agents API
+title: Kubernetes agent API
 ---
 
 {{< details >}}
@@ -18,7 +18,7 @@ title: Agents API
 
 {{< /history >}}
 
-Use the Agents API to work with the GitLab agent for Kubernetes.
+Use this API to interact with the [GitLab agent for Kubernetes](../user/clusters/agent/_index.md).
 
 ## List the agents for a project
 

@@ -8,7 +8,7 @@ RSpec.describe RuboCop::Cop::Migration::PreventFeatureFlagsUsage, feature_catego
 
   let(:offense) do
     "Do not use Feature.enabled? or Feature.disabled? in migrations. " \
-      "Use the feature_flag_enabled?(feature_name) migration helper method."
+      "Use the Gitlab::Database::MigrationHelpers::FeatureFlagMigratorHelpers migration helpers."
   end
 
   context 'when in migration' do
@@ -80,10 +80,11 @@ RSpec.describe RuboCop::Cop::Migration::PreventFeatureFlagsUsage, feature_catego
     context 'when using feature_flag_enabled? helper' do
       it 'does not register an offense' do
         expect_no_offenses(<<~RUBY)
-          def change
-            if feature_flag_enabled?(:some_feature)
-              do_something
-            end
+          def up
+            up_migrate_to_jsonb_application_setting(feature_flag_name: :some_flag_name,
+              setting_name: :some_setting_name,
+              jsonb_column_name: :some_jsonb_settings,
+              default_enabled: false)
           end
         RUBY
       end

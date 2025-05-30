@@ -59,7 +59,7 @@ and supports multiple secrets engines.
 
 {{< /alert >}}
 
-You must replace the `vault.example.com` URL below with the URL of your Vault server, and `gitlab.example.com` with the URL of your GitLab instance.
+You must replace the `vault.example.com` URL in the following examples with the URL of your Vault server, and `gitlab.example.com` with the URL of your GitLab instance.
 
 ## Vault Secrets Engines
 

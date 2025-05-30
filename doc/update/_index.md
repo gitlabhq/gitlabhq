@@ -193,7 +193,7 @@ GitLab comes in two flavors: [Community Edition](https://about.gitlab.com/featur
 and [Enterprise Edition](https://about.gitlab.com/features/#enterprise) which builds on top of the Community Edition and
 includes extra features mainly aimed at organizations with more than 100 users.
 
-Below you can find some guides to help you change GitLab editions.
+In the following section you can find some guides to help you change GitLab editions.
 
 ### Community to Enterprise Edition
 
@@ -204,7 +204,7 @@ The following guides are for subscribers of the Enterprise Edition only.
 {{< /alert >}}
 
 If you wish to upgrade your GitLab installation from Community to Enterprise
-Edition, follow the guides below based on the installation method:
+Edition, follow the guides in the following list based on the installation method:
 
 - [Source CE to EE upgrade guides](upgrading_from_ce_to_ee.md) - The steps are very similar
   to a version upgrade: stop the server, get the code, update configuration files for

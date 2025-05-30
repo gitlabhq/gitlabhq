@@ -6,8 +6,12 @@ description: Writing styles, markup, formatting, and other standards for GitLab 
 title: Product availability details
 ---
 
-Product availability details provide information about a feature. If the details apply to the whole page, place them at the top
-of the page, but after the front matter. If they apply to a specific section, place the details under the applicable section titles.
+Product availability details provide information about a feature.
+
+- If the details apply to the whole page, place them at the top
+  of the page, but after the front matter.
+- If they apply to a specific section, place the details under the applicable
+  section titles.
 
 Availability details include the tier, offering, status, and history.
 
@@ -96,10 +100,22 @@ Generally available features should not have a status.
 
 ### History
 
-The documentation site uses [shortcodes](../hugo_migration.md#shortcodes) to render the version history.
+The documentation site uses [shortcodes](../hugo_migration.md#shortcodes) to render the version history,
+for example:
+
+```markdown
+{{</* history */>}}
+
+- [Introduced](https://issue-link) in GitLab 16.3.
+- [Changed](https://issue-link) in GitLab 16.4.
+
+{{</* /history */>}}
+```
 
 In addition:
 
+- Ensure that history notes are listed after the details (if any), and immediately
+  after the heading.
 - Ensure that the output generates properly.
 - Ensure the version history begins with `-`.
 - If possible, include a link to the related issue. If there is no related issue, link to a merge request, or epic.

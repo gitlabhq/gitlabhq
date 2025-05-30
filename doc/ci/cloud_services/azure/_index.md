@@ -30,7 +30,7 @@ Prerequisites:
 - Access to an existing Azure Subscription with `Owner` access level.
 - Access to the corresponding Azure Active Directory Tenant with at least the `Application Developer` access level.
 - A local installation of the [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli).
-  Alternatively, you can follow all the steps below with the [Azure Cloud Shell](https://portal.azure.com/#cloudshell/).
+  Alternatively, you can use all the following steps with the [Azure Cloud Shell](https://portal.azure.com/#cloudshell/).
 - Your GitLab instance must be publicly accessible over the internet as Azure must to connect to the GitLab OIDC endpoint.
 - A GitLab project.
 

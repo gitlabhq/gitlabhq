@@ -235,7 +235,7 @@ RSpec.describe HelpController do
 
       context 'when requested file exists' do
         before do
-          stub_doc_file_read(file_name: 'user/ssh.md', content: fixture_file('blockquote_fence_legacy_after.md'))
+          stub_doc_file_read(file_name: 'user/ssh.md', content: fixture_file('sample_doc.md'))
           stub_application_setting(help_page_documentation_base_url: '')
 
           subject

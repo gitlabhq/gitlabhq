@@ -12,6 +12,14 @@ title: Protected environments API
 
 {{< /details >}}
 
+Use this API to interact with [protected environments](../ci/environments/protected_environments.md).
+
+{{< alert type="note" >}}
+
+For group-level protected environments, see [group-level protected environments API](group_protected_environments.md)
+
+{{< /alert >}}
+
 ## Valid access levels
 
 The access levels are defined in the `ProtectedEnvironments::DeployAccessLevel::ALLOWED_ACCESS_LEVELS` method.

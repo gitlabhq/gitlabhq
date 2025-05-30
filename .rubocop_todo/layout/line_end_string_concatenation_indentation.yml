@@ -329,7 +329,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'lib/api/validations/validators/bulk_imports.rb'
     - 'lib/backup/manager.rb'
     - 'lib/backup/remote_storage.rb'
-    - 'lib/banzai/filter/dollar_math_pre_legacy_filter.rb'
     - 'lib/banzai/filter/spaced_link_filter.rb'
     - 'lib/bulk_imports/error.rb'
     - 'lib/feature/definition.rb'

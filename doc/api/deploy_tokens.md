@@ -2,7 +2,7 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Deploy Tokens API
+title: Deploy tokens API
 ---
 
 {{< details >}}
@@ -11,6 +11,8 @@ title: Deploy Tokens API
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
+
+Use this API to interact with [deploy tokens](../user/project/deploy_tokens/_index.md).
 
 ## List all deploy tokens
 

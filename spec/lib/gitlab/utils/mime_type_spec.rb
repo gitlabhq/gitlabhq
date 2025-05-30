@@ -25,7 +25,7 @@ RSpec.describe Gitlab::Utils::MimeType do
         "rails_sample.bmp"                  | "image/bmp"
         "rails_sample.tif"                  | "image/tiff"
         "sample.ico"                        | "image/vnd.microsoft.icon"
-        "blockquote_fence_legacy_before.md" | "text/plain"
+        "sample_doc.md"                     | "text/plain"
         "csv_empty.csv"                     | "application/x-empty"
       end
 

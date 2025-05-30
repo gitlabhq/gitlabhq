@@ -112,9 +112,6 @@ D, [2024-12-20T13:35:24.246463 #34584] DEBUG -- : 0.000012_s (0.000012_s): Norma
 D, [2024-12-20T13:35:24.246543 #34584] DEBUG -- : 0.000007_s (0.000019_s): TruncateSourceFilter [PreProcessPipeline]
 D, [2024-12-20T13:35:24.246589 #34584] DEBUG -- : 0.000028_s (0.000047_s): FrontMatterFilter [PreProcessPipeline]
 D, [2024-12-20T13:35:24.246662 #34584] DEBUG -- : 0.000005_s (0.000005_s): IncludeFilter [FullPipeline]
-D, [2024-12-20T13:35:24.246684 #34584] DEBUG -- : 0.000003_s (0.000008_s): MarkdownPreEscapeLegacyFilter [FullPipeline]
-D, [2024-12-20T13:35:24.246699 #34584] DEBUG -- : 0.000002_s (0.000010_s): DollarMathPreLegacyFilter [FullPipeline]
-D, [2024-12-20T13:35:24.246715 #34584] DEBUG -- : 0.000003_s (0.000013_s): BlockquoteFenceLegacyFilter [FullPipeline]
 D, [2024-12-20T13:35:24.246816 #34584] DEBUG -- : 0.000088_s (0.000101_s): MarkdownFilter [FullPipeline]
 ...
 D, [2024-12-20T13:35:24.252338 #34584] DEBUG -- : 0.000013_s (0.004394_s): CustomEmojiFilter [FullPipeline]

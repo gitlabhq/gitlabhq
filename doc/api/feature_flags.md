@@ -2,7 +2,7 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Feature flags API
+title: Feature flag API
 ---
 
 {{< details >}}
@@ -19,14 +19,11 @@ title: Feature flags API
 
 {{< /history >}}
 
-API for accessing resources of [GitLab feature flags](../operations/feature_flags.md).
+Use this API to interact with GitLab [feature flags](../operations/feature_flags.md).
 
-Users with at least the Developer [role](../user/permissions.md) can access the feature flag API.
+Prerequisites:
 
-## Feature flags pagination
-
-By default, `GET` requests return 20 results at a time because the API results
-are [paginated](rest/_index.md#pagination).
+- You must have at least the Developer role.
 
 ## List feature flags for a project
 
@@ -35,6 +32,9 @@ Gets all feature flags of the requested project.
 ```plaintext
 GET /projects/:id/feature_flags
 ```
+
+Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to
+control the pagination of results.
 
 | Attribute           | Type             | Required   | Description                                                                                                                 |
 | ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------- |
@@ -135,6 +135,9 @@ Gets a single feature flag.
 ```plaintext
 GET /projects/:id/feature_flags/:feature_flag_name
 ```
+
+Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to
+control the pagination of results.
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|

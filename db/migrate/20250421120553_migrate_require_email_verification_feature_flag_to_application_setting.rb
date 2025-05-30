@@ -5,21 +5,14 @@ class MigrateRequireEmailVerificationFeatureFlagToApplicationSetting < Gitlab::D
   milestone '18.1'
 
   def up
-    return unless feature_flag_enabled?(:require_email_verification)
-
-    execute <<-SQL
-      UPDATE application_settings
-      SET anti_abuse_settings = COALESCE(anti_abuse_settings, '{}'::jsonb) ||
-      '{"require_email_verification_on_account_locked": true}'::jsonb,
-      updated_at = NOW()
-    SQL
+    up_migrate_to_jsonb_setting(feature_flag_name: :require_email_verification,
+      setting_name: :require_email_verification_on_account_locked,
+      jsonb_column_name: :anti_abuse_settings,
+      default_enabled: false)
   end
 
   def down
-    execute <<-SQL
-      UPDATE application_settings
-      SET anti_abuse_settings = COALESCE(anti_abuse_settings, '{}'::jsonb) - 'require_email_verification_on_account_locked',
-      updated_at = NOW()
-    SQL
+    down_migrate_to_jsonb_setting(setting_name: :require_email_verification_on_account_locked,
+      jsonb_column_name: :anti_abuse_settings)
   end
 end

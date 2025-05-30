@@ -265,7 +265,7 @@ You can access a private registry using two approaches. Both require setting the
    private registry, add `DOCKER_AUTH_CONFIG` as an environment variable in the
    runner's configuration.
 
-See below for examples of each.
+See the following sections for examples of each.
 
 #### Determine your `DOCKER_AUTH_CONFIG` data
 
@@ -554,7 +554,7 @@ and manual credential management.
    COPY --from=aws-tools /root/.docker/config.json /root/.docker/config.json
    ```
 
-1. To build the custom GitLab Runner Docker image in a `.gitlab-ci.yml`, include the following example below:
+1. To build the custom GitLab Runner Docker image in a `.gitlab-ci.yml`, include the following example:
 
    ```yaml
    variables:

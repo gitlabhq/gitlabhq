@@ -277,7 +277,8 @@ class User < ApplicationRecord
   belongs_to :created_by, class_name: 'User', optional: true
 
   has_many :organization_users, class_name: 'Organizations::OrganizationUser', inverse_of: :user
-  has_many :organization_user_aliases, class_name: 'Organizations::OrganizationUserAlias', inverse_of: :user
+  has_many :organization_user_aliases, class_name: 'Organizations::OrganizationUserAlias', inverse_of: :user # deprecated
+  has_many :organization_user_details, class_name: 'Organizations::OrganizationUserDetail', inverse_of: :user
 
   has_many :organizations, through: :organization_users, class_name: 'Organizations::Organization', inverse_of: :users,
     disable_joins: true

@@ -18,6 +18,8 @@ title: Deployments API
 
 {{< /history >}}
 
+Use this API to interact with [code deployments](../ci/environments/deployments.md) to GitLab enviroments.
+
 ## List project deployments
 
 Get a list of deployments in a project.

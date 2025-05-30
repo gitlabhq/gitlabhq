@@ -41,7 +41,7 @@ To follow along, you must have:
 
 {{< alert type="note" >}}
 
-You must replace the `vault.example.com` URL below with the URL of your Vault server,
+You must replace the `vault.example.com` URL in the following example with the URL of your Vault server,
 and `gitlab.example.com` with the URL of your GitLab instance.
 
 {{< /alert >}}
@@ -269,7 +269,7 @@ The claim fields listed in [the previous table](#hashicorp-vault-secrets-integra
 [Vault's policy path templating](https://developer.hashicorp.com/vault/tutorials/policies/policy-templating?in=vault%2Fpolicies)
 purposes by using the accessor name of the JWT auth in Vault.
 The [mount accessor name](https://developer.hashicorp.com/vault/tutorials/auth-methods/identity#step-1-create-an-entity-with-alias)
-(`ACCESSOR_NAME` in the example below) can be retrieved by running `vault auth list`.
+(`ACCESSOR_NAME` in the following example) can be retrieved by running `vault auth list`.
 
 Policy template example making use of a named metadata field named `project_path`:
 

@@ -315,7 +315,7 @@ end; nil
 
 If the **primary** site's checksums are in question, then you need to make the **primary** site recalculate checksums. A "full re-verification" is then achieved, because after each checksum is recalculated on a **primary** site, events are generated which propagate to all **secondary** sites, causing them to recalculate their checksums and compare values. Any mismatch marks the registry as `sync failed`, which causes sync retries to be scheduled.
 
-The UI does not provide a button to do a "full re-verification". You can simulate this by setting your **primary** site's `Re-verification interval` to 1 (day) in **Admin > Geo > Nodes > Edit**. The **primary** site will then recalculate the checksum of any resource that has been checksummed more than 1 day ago.
+The UI does not provide a button to do a full re-verification. You can simulate this by setting your **primary** site's `Re-verification interval` to 1 (day) in **Admin > Geo > Nodes > Edit**. The **primary** site will then recalculate the checksum of any resource that has been checksummed more than 1 day ago.
 
 Optionally, you can do this manually:
 
@@ -613,7 +613,7 @@ To validate if you are experiencing this issue:
    ```
 
 1. If `last_sync_failure` no longer includes the error `fatal: could not read Username`, then you are
-   affected by this issue. The state should now be `2`, meaning "synced". If so, then you should upgrade to
+   affected by this issue. The state should now be `2`, which means that it's synced. If so, then you should upgrade to
    a GitLab version with the fix. You may also wish to upvote or comment on
    [issue 466681](https://gitlab.com/gitlab-org/gitlab/-/issues/466681) which would have reduced the severity of this
    issue.

@@ -10301,7 +10301,10 @@ CREATE TABLE board_user_preferences (
     board_id bigint NOT NULL,
     hide_labels boolean,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    group_id bigint,
+    project_id bigint,
+    CONSTRAINT check_86d6706b52 CHECK ((num_nonnulls(group_id, project_id) = 1))
 );
 
 CREATE SEQUENCE board_user_preferences_id_seq
@@ -18829,6 +18832,27 @@ CREATE SEQUENCE organization_user_aliases_id_seq
     CACHE 1;
 
 ALTER SEQUENCE organization_user_aliases_id_seq OWNED BY organization_user_aliases.id;
+
+CREATE TABLE organization_user_details (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    username text NOT NULL,
+    display_name text NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_470dbccf9b CHECK ((char_length(display_name) <= 510)),
+    CONSTRAINT check_dc5e9cf6f2 CHECK ((char_length(username) <= 510))
+);
+
+CREATE SEQUENCE organization_user_details_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE organization_user_details_id_seq OWNED BY organization_user_details.id;
 
 CREATE TABLE organization_users (
     id bigint NOT NULL,
@@ -27762,6 +27786,8 @@ ALTER TABLE ONLY organization_push_rules ALTER COLUMN id SET DEFAULT nextval('or
 
 ALTER TABLE ONLY organization_user_aliases ALTER COLUMN id SET DEFAULT nextval('organization_user_aliases_id_seq'::regclass);
 
+ALTER TABLE ONLY organization_user_details ALTER COLUMN id SET DEFAULT nextval('organization_user_details_id_seq'::regclass);
+
 ALTER TABLE ONLY organization_users ALTER COLUMN id SET DEFAULT nextval('organization_users_id_seq'::regclass);
 
 ALTER TABLE ONLY organizations ALTER COLUMN id SET DEFAULT nextval('organizations_id_seq'::regclass);
@@ -30487,6 +30513,9 @@ ALTER TABLE ONLY organization_settings
 
 ALTER TABLE ONLY organization_user_aliases
     ADD CONSTRAINT organization_user_aliases_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY organization_user_details
+    ADD CONSTRAINT organization_user_details_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY organization_users
     ADD CONSTRAINT organization_users_pkey PRIMARY KEY (id);
@@ -34232,6 +34261,10 @@ CREATE UNIQUE INDEX index_board_project_recent_visits_on_user_project_and_board 
 
 CREATE INDEX index_board_user_preferences_on_board_id ON board_user_preferences USING btree (board_id);
 
+CREATE INDEX index_board_user_preferences_on_group_id ON board_user_preferences USING btree (group_id);
+
+CREATE INDEX index_board_user_preferences_on_project_id ON board_user_preferences USING btree (project_id);
+
 CREATE UNIQUE INDEX index_board_user_preferences_on_user_id_and_board_id ON board_user_preferences USING btree (user_id, board_id);
 
 CREATE INDEX index_boards_epic_board_labels_on_epic_board_id ON boards_epic_board_labels USING btree (epic_board_id);
@@ -36545,6 +36578,10 @@ CREATE UNIQUE INDEX index_ops_strategies_user_lists_on_strategy_id_and_user_list
 CREATE UNIQUE INDEX index_organization_push_rules_on_organization_id ON organization_push_rules USING btree (organization_id);
 
 CREATE INDEX index_organization_user_aliases_on_user_id ON organization_user_aliases USING btree (user_id);
+
+CREATE INDEX index_organization_user_details_on_lower_username ON organization_user_details USING btree (lower(username));
+
+CREATE INDEX index_organization_user_details_on_user_id ON organization_user_details USING btree (user_id);
 
 CREATE INDEX index_organization_users_on_org_id_access_level_user_id ON organization_users USING btree (organization_id, access_level, user_id);
 
@@ -38949,6 +38986,10 @@ CREATE UNIQUE INDEX unique_namespace_cluster_agent_mappings_for_agent_associatio
 CREATE UNIQUE INDEX unique_organization_user_alias_organization_id_user_id ON organization_user_aliases USING btree (organization_id, user_id);
 
 CREATE UNIQUE INDEX unique_organization_user_alias_organization_id_username ON organization_user_aliases USING btree (organization_id, username);
+
+CREATE UNIQUE INDEX unique_organization_user_details_organization_id_user_id ON organization_user_details USING btree (organization_id, user_id);
+
+CREATE UNIQUE INDEX unique_organization_user_details_organization_id_username ON organization_user_details USING btree (organization_id, username);
 
 CREATE UNIQUE INDEX unique_organizations_on_path_case_insensitive ON organizations USING btree (lower(path));
 
@@ -42275,6 +42316,9 @@ ALTER TABLE ONLY project_statistics
 ALTER TABLE ONLY work_item_current_statuses
     ADD CONSTRAINT fk_1bb76463e0 FOREIGN KEY (custom_status_id) REFERENCES work_item_custom_statuses(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY board_user_preferences
+    ADD CONSTRAINT fk_1c0b27016f FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY approval_policy_rule_project_links
     ADD CONSTRAINT fk_1c78796d52 FOREIGN KEY (approval_policy_rule_id) REFERENCES approval_policy_rules(id) ON DELETE CASCADE;
 
@@ -42653,6 +42697,9 @@ ALTER TABLE ONLY todos
 ALTER TABLE ONLY merge_requests_approval_rules_projects
     ADD CONSTRAINT fk_451a9dfe93 FOREIGN KEY (approval_rule_id) REFERENCES merge_requests_approval_rules(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY organization_user_details
+    ADD CONSTRAINT fk_4533918f8e FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY ai_settings
     ADD CONSTRAINT fk_4571bb0ccc FOREIGN KEY (duo_workflow_oauth_application_id) REFERENCES oauth_applications(id) ON DELETE SET NULL;
 
@@ -42901,6 +42948,9 @@ ALTER TABLE ONLY ci_pipeline_chat_data
 
 ALTER TABLE ONLY cluster_agent_tokens
     ADD CONSTRAINT fk_64f741f626 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY organization_user_details
+    ADD CONSTRAINT fk_657140ae14 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY container_repository_states
     ADD CONSTRAINT fk_6591698505 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -44143,6 +44193,9 @@ ALTER TABLE ONLY boards
 
 ALTER TABLE ONLY epic_user_mentions
     ADD CONSTRAINT fk_f1ab52883e FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY board_user_preferences
+    ADD CONSTRAINT fk_f1c3e9b710 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY observability_metrics_issues_connections
     ADD CONSTRAINT fk_f218d84a14 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

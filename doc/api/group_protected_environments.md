@@ -20,7 +20,13 @@ title: Group-level protected environments API
 
 {{< /history >}}
 
-Read more about [group-level protected environments](../ci/environments/protected_environments.md#group-level-protected-environments).
+Use this API to interact with [group-level protected environments](../ci/environments/protected_environments.md#group-level-protected-environments).
+
+{{< alert type="note" >}}
+
+For protected environments, see [protected environments API](protected_environments.md)
+
+{{< /alert >}}
 
 ## Valid access levels
 

@@ -74,7 +74,7 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
    is created in Bitbucket, but the mirroring process copies it to the GitLab mirror. The GitLab
    CI/CD pipeline runs the script, and pushes the status back to Bitbucket.
 
-   Create a file `build_status` and insert the script below and run
+   Create a file `build_status`, insert the following script and run
    `chmod +x build_status` in your terminal to make the script executable.
 
    ```shell

@@ -19,14 +19,15 @@ title: Feature flag user lists API
 
 {{< /history >}}
 
-API for accessing GitLab feature flag user lists.
+Use this API to interact with GitLab feature flags for [user lists](../operations/feature_flags.md#user-list).
 
-Users with at least the Developer [role](../user/permissions.md) can access the feature flag user lists API.
+Prerequisites:
+
+- You must have at least the Developer role.
 
 {{< alert type="note" >}}
 
-`GET` requests return twenty results at a time because the API results
-are [paginated](rest/_index.md#pagination). You can change this value.
+To interact with feature flags for all users, see the [Feature flag API](feature_flags.md).
 
 {{< /alert >}}
 
@@ -37,6 +38,9 @@ Gets all feature flag user lists for the requested project.
 ```plaintext
 GET /projects/:id/feature_flags_user_lists
 ```
+
+Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to
+control the pagination of results.
 
 | Attribute | Type           | Required | Description                                                                      |
 | --------- | -------------- | -------- | -------------------------------------------------------------------------------- |
@@ -121,6 +125,9 @@ Gets a feature flag user list.
 ```plaintext
 GET /projects/:id/feature_flags_user_lists/:iid
 ```
+
+Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to
+control the pagination of results.
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|

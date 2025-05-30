@@ -2,7 +2,7 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Group releases API
+title: Group release API
 ---
 
 {{< details >}}
@@ -19,17 +19,17 @@ title: Group releases API
 
 {{< /history >}}
 
-Review your groups' [releases](../user/project/releases/_index.md) with the REST API.
+Use this API to interact with [projects releases](../user/project/releases/_index.md) in groups.
 
 {{< alert type="note" >}}
 
-For more information about the project releases API, see [Releases API](releases/_index.md).
+To interact with project releases directly, see the [project release API](releases/_index.md).
 
 {{< /alert >}}
 
-## List group releases
+## List all releases in a group
 
-Returns a list of group releases.
+Lists all releases for projects in a specified group.
 
 ```plaintext
 GET /groups/:id/releases
@@ -38,14 +38,15 @@ GET /groups/:id/releases?simple=true
 
 Parameters:
 
-| Attribute           | Type           | Required | Description                                                                                                   |
-|---------------------|----------------|----------|---------------------------------------------------------------------------------------------------------------|
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
-| `sort`              | string         | no       | The direction of the order. Either `desc` (default) for descending order or `asc` for ascending order.        |
-| `simple`            | boolean        | no       | Return only limited fields for each release.                                                                  |
+| Attribute | Type           | Required | Description |
+| --------- | -------------- | -------- | ----------- |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
+| `sort`    | string         | no       | The direction of the order. Possible values: `desc` or `asc`. |
+| `simple`  | boolean        | no       | If `true`, only returns limited fields for each release. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/releases"
+curl --header "PRIVATE-TOKEN: <your_access_token>"
+   --url "https://gitlab.example.com/api/v4/groups/5/releases"
 ```
 
 Example response:
