@@ -59,7 +59,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
           merge_request.mark_as_unchecked!
         end
 
-        context 'with merge status recheck projection' do
+        context 'with merge status recheck protection' do
           it 'does not check mergeability', :sidekiq_inline do
             expect(check_service_class).not_to receive(:new)
 
@@ -114,7 +114,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
             project.add_developer(user2)
           end
 
-          context 'with merge status recheck projection' do
+          context 'with merge status recheck protection' do
             it 'checks mergeability asynchronously in batch', :sidekiq_inline do
               get(api(endpoint_path, user2), params: { with_merge_status_recheck: true })
 
@@ -124,7 +124,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
             end
           end
 
-          context 'without merge status recheck projection' do
+          context 'without merge status recheck protection' do
             it 'does not enqueue a merge status recheck' do
               expect(check_service_class).not_to receive(:new)
 
@@ -137,7 +137,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         end
 
         context 'with a reporter role' do
-          context 'with merge status recheck projection' do
+          context 'with merge status recheck protection' do
             it 'does not check mergeability', :sidekiq_inline do
               expect(check_service_class).not_to receive(:new)
 

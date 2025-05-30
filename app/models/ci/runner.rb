@@ -237,6 +237,10 @@ module Ci
     scope :with_tags, -> { preload(:tags) }
     scope :with_creator, -> { preload(:creator) }
 
+    scope :with_encrypted_tokens, ->(token_values) do
+      where(token_encrypted: Array.wrap(token_values))
+    end
+
     validate :tag_constraints
     validates :sharding_key_id, presence: true, unless: :instance_type?
     validates :name, length: { maximum: 256 }, if: :name_changed?

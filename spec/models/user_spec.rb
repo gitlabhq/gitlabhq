@@ -186,6 +186,7 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:snippets).dependent(:destroy) }
     it { is_expected.to have_many(:members) }
     it { is_expected.to have_many(:member_namespaces) }
+    it { is_expected.to have_many(:namespace_deletion_schedules).class_name('::Namespaces::DeletionSchedule').inverse_of(:deleting_user) }
     it { is_expected.to have_many(:project_members) }
     it { is_expected.to have_many(:group_members) }
     it { is_expected.to have_many(:groups) }

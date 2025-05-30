@@ -164,7 +164,6 @@ module Gitlab
             :assignees,
             :award_emoji,
             :color,
-            :crm_contacts,
             :current_user_todos,
             :custom_fields,
             :description,

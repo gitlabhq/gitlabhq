@@ -17936,6 +17936,21 @@ CREATE SEQUENCE namespace_commit_emails_id_seq
 
 ALTER SEQUENCE namespace_commit_emails_id_seq OWNED BY namespace_commit_emails.id;
 
+CREATE TABLE namespace_deletion_schedules (
+    namespace_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    marked_for_deletion_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE namespace_deletion_schedules_namespace_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE namespace_deletion_schedules_namespace_id_seq OWNED BY namespace_deletion_schedules.namespace_id;
+
 CREATE TABLE namespace_details (
     namespace_id bigint NOT NULL,
     created_at timestamp with time zone,
@@ -27684,6 +27699,8 @@ ALTER TABLE ONLY namespace_cluster_agent_mappings ALTER COLUMN id SET DEFAULT ne
 
 ALTER TABLE ONLY namespace_commit_emails ALTER COLUMN id SET DEFAULT nextval('namespace_commit_emails_id_seq'::regclass);
 
+ALTER TABLE ONLY namespace_deletion_schedules ALTER COLUMN namespace_id SET DEFAULT nextval('namespace_deletion_schedules_namespace_id_seq'::regclass);
+
 ALTER TABLE ONLY namespace_import_users ALTER COLUMN id SET DEFAULT nextval('namespace_import_users_id_seq'::regclass);
 
 ALTER TABLE ONLY namespace_statistics ALTER COLUMN id SET DEFAULT nextval('namespace_statistics_id_seq'::regclass);
@@ -30343,6 +30360,9 @@ ALTER TABLE ONLY namespace_cluster_agent_mappings
 
 ALTER TABLE ONLY namespace_commit_emails
     ADD CONSTRAINT namespace_commit_emails_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY namespace_deletion_schedules
+    ADD CONSTRAINT namespace_deletion_schedules_pkey PRIMARY KEY (namespace_id);
 
 ALTER TABLE ONLY namespace_details
     ADD CONSTRAINT namespace_details_pkey PRIMARY KEY (namespace_id);
@@ -36293,6 +36313,10 @@ CREATE INDEX index_namespace_commit_emails_on_namespace_id ON namespace_commit_e
 
 CREATE UNIQUE INDEX index_namespace_commit_emails_on_user_id_and_namespace_id ON namespace_commit_emails USING btree (user_id, namespace_id);
 
+CREATE INDEX index_namespace_deletion_schedules_on_marked_for_deletion_at ON namespace_deletion_schedules USING btree (marked_for_deletion_at);
+
+CREATE INDEX index_namespace_deletion_schedules_on_user_id ON namespace_deletion_schedules USING btree (user_id);
+
 CREATE INDEX index_namespace_details_on_creator_id ON namespace_details USING btree (creator_id);
 
 CREATE UNIQUE INDEX index_namespace_import_users_on_namespace_id ON namespace_import_users USING btree (namespace_id);
@@ -41959,6 +41983,9 @@ ALTER TABLE ONLY ai_conversation_threads
 ALTER TABLE ONLY ai_active_context_collections
     ADD CONSTRAINT fk_008426fce1 FOREIGN KEY (connection_id) REFERENCES ai_active_context_connections(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY namespace_deletion_schedules
+    ADD CONSTRAINT fk_009a52774d FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY deployments
     ADD CONSTRAINT fk_009fd21147 FOREIGN KEY (environment_id) REFERENCES environments(id) ON DELETE CASCADE;
 
@@ -41970,6 +41997,9 @@ ALTER TABLE ONLY work_item_custom_lifecycles
 
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_013c9f36ca FOREIGN KEY (due_date_sourcing_epic_id) REFERENCES epics(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY namespace_deletion_schedules
+    ADD CONSTRAINT fk_013e35d75a FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY environments
     ADD CONSTRAINT fk_01a033a308 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE SET NULL;

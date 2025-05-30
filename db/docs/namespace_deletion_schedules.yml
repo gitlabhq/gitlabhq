@@ -1,0 +1,13 @@
+---
+table_name: namespace_deletion_schedules
+classes:
+- Namespaces::DeletionSchedule
+feature_categories:
+- groups_and_projects
+description: Stores deletion schedules for namespaces (groups and projects)
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192465
+milestone: '18.1'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces
+table_size: small
