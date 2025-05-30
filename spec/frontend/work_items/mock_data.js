@@ -2024,6 +2024,7 @@ export const workItemResponseFactory = ({
           ? {
               __typename: 'WorkItemWidgetCrmContacts',
               type: 'CRM_CONTACTS',
+              contactsAvailable: crmContacts.length > 0,
               contacts: {
                 nodes: crmContacts,
                 __typename: 'CustomerRelationsContactConnection',
@@ -2364,6 +2365,7 @@ export const workItemChangeTypeWidgets = {
   },
   CRM_CONTACTS: {
     type: 'CRM_CONTACTS',
+    contactsAvailable: true,
     contacts: {
       nodes: [
         {
@@ -6339,6 +6341,7 @@ export const createWorkItemQueryResponse = (widgets = []) => ({
           },
           {
             type: 'CRM_CONTACTS',
+            contactsAvailable: false,
             contacts: {
               nodes: [],
               __typename: 'CustomerRelationsContactConnection',

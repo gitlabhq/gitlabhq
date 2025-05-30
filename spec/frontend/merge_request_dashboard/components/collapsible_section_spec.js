@@ -30,7 +30,8 @@ describe('Merge request dashboard collapsible section', () => {
   it('renders section', () => {
     createComponent();
 
-    expect(wrapper.element).toMatchSnapshot();
+    // Transform snapshot for Vue2 compatiblity
+    expect(wrapper.html().replace(/ison=/g, 'is-on=')).toMatchSnapshot();
   });
 
   it('show empty state when count is 0', () => {

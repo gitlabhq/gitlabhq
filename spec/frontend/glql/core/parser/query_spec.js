@@ -17,7 +17,7 @@ describe('GLQL Query Parser', () => {
     it('parses a simple query by converting it to GraphQL', async () => {
       const query = 'assignee = currentUser()';
       const config = { fields: MOCK_FIELDS, limit: 50 };
-      const result = await parseQuery(query, config);
+      const { query: result } = await parseQuery(query, config);
 
       expect(prettify(result)).toMatchInlineSnapshot(`
 "query GLQL {
@@ -52,7 +52,7 @@ describe('GLQL Query Parser', () => {
     it('handles complex queries with multiple conditions', async () => {
       const query = 'assignee = currentUser() AND label IN ("bug", "feature")';
       const config = { fields: MOCK_FIELDS, limit: 50 };
-      const result = await parseQuery(query, config);
+      const { query: result } = await parseQuery(query, config);
 
       expect(prettify(result)).toMatchInlineSnapshot(`
 "query GLQL {

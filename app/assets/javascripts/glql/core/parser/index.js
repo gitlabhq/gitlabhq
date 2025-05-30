@@ -25,6 +25,7 @@ export const parse = async (glqlQuery, target = 'graphql') => {
   }
 
   const limit = parseInt(config.limit, 10) || undefined;
+  const parsed = await parseQuery(query, { ...config, target, limit });
 
-  return { query: await parseQuery(query, { ...config, target, limit }), config };
+  return { query: parsed.query, variables: parsed.variables, config };
 };

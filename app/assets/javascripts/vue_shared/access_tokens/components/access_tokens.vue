@@ -36,6 +36,21 @@ export default {
       required: false,
       default: false,
     },
+    tokenName: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    tokenDescription: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    tokenScopes: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   computed: {
     ...mapState(useAccessTokens, [
@@ -54,6 +69,7 @@ export default {
     this.setup({
       ...initializeValuesFromQuery(),
       id: this.id,
+      showCreateForm: Boolean(this.tokenName || this.tokenDescription || this.tokenScopes.length),
       urlCreate: this.accessTokenCreate,
       urlRevoke: this.accessTokenRevoke,
       urlRotate: this.accessTokenRotate,
@@ -117,7 +133,12 @@ export default {
       </template>
     </page-heading>
     <access-token v-if="token" />
-    <access-token-form v-if="showCreateForm" />
+    <access-token-form
+      v-if="showCreateForm"
+      :name="tokenName"
+      :description="tokenDescription"
+      :scopes="tokenScopes"
+    />
     <access-token-statistics />
     <div class="gl-my-5 gl-flex gl-flex-col gl-gap-3 md:gl-flex-row">
       <gl-filtered-search

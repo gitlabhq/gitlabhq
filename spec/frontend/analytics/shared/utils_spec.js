@@ -2,6 +2,7 @@ import {
   extractFilterQueryParameters,
   extractPaginationQueryParameters,
   filterBySearchTerm,
+  generateMetricLink,
   generateValueStreamsDashboardLink,
   getDataZoomOption,
   overviewMetricsRequestParams,
@@ -205,6 +206,39 @@ describe('generateValueStreamsDashboardLink', () => {
       expect(generateValueStreamsDashboardLink(namespacePath, isProjectNamespace)).toBe(result);
     });
   });
+});
+
+describe('generateMetricLink', () => {
+  const groupNamespacePath = 'test';
+  const projectNamespacePath = 'test/project';
+
+  it.each`
+    isProjectNamespace | relativeUrlRoot | namespacePath           | result
+    ${false}           | ${undefined}    | ${groupNamespacePath}   | ${`/groups/${groupNamespacePath}/-/issues_analytics`}
+    ${true}            | ${undefined}    | ${projectNamespacePath} | ${`/${projectNamespacePath}/-/analytics/issues_analytics`}
+    ${false}           | ${'/path'}      | ${groupNamespacePath}   | ${`/path/groups/${groupNamespacePath}/-/issues_analytics`}
+    ${true}            | ${'/path'}      | ${projectNamespacePath} | ${`/path/${projectNamespacePath}/-/analytics/issues_analytics`}
+  `(
+    'generates metric link as expected',
+    ({ isProjectNamespace, relativeUrlRoot, namespacePath, result }) => {
+      gon.relative_url_root = relativeUrlRoot;
+
+      expect(generateMetricLink({ metricId: 'issues', isProjectNamespace, namespacePath })).toBe(
+        result,
+      );
+    },
+  );
+
+  it.each`
+    metricId     | namespacePath
+    ${'issues'}  | ${null}
+    ${undefined} | ${groupNamespacePath}
+  `(
+    'returns an empty string when metricId=$metricId and namespacePath=$namespacePath',
+    ({ metricId, namespacePath }) => {
+      expect(generateMetricLink({ metricId, namespacePath })).toBe('');
+    },
+  );
 });
 
 describe('overviewMetricsRequestParams', () => {

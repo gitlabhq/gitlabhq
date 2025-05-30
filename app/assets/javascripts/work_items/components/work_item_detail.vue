@@ -139,7 +139,7 @@ export default {
       import('ee_component/work_items/components/work_item_vulnerabilities.vue'),
   },
   mixins: [glFeatureFlagMixin(), trackingMixin],
-  inject: ['fullPath', 'groupPath', 'hasSubepicsFeature', 'hasLinkedItemsEpicsFeature'],
+  inject: ['groupPath', 'hasSubepicsFeature', 'hasLinkedItemsEpicsFeature'],
   props: {
     isModal: {
       type: Boolean,
@@ -156,7 +156,7 @@ export default {
       required: false,
       default: null,
     },
-    modalWorkItemFullPath: {
+    workItemFullPath: {
       type: String,
       required: false,
       default: '',
@@ -301,9 +301,6 @@ export default {
     },
   },
   computed: {
-    workItemFullPath() {
-      return this.modalWorkItemFullPath || this.fullPath;
-    },
     workItemProjectId() {
       return this.workItem?.project?.id;
     },

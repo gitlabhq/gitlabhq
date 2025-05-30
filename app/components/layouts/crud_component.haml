@@ -25,8 +25,10 @@
             size: :small,
             button_text_classes: '!gl-overflow-visible',
             button_options: { class: '-gl-mr-2 js-crud-collapsible-button has-tooltip', title: _('Collapse'), 'aria-expanded': 'true', 'aria-controls': id, data: { collapse_title: _('Expand'), expand_title: _('Collapse') } }) do
-            = sprite_icon('chevron-lg-up', css_class: '!-gl-mx-2 js-crud-collapsible-collapse')
-            = sprite_icon('chevron-lg-down', css_class: '!-gl-mx-2 gl-hidden js-crud-collapsible-expand')
+            = render Pajamas::AnimatedIconComponent.new(icon: :chevron_lg_down_up,
+              variant: :current,
+              is_on: true,
+              icon_options: { class: 's16 !-gl-mx-2 js-crud-collapsible-icon' })
 
   - if form?
     .gl-p-5.gl-pt-4.gl-bg-subtle.gl-border-b.gl-border-section{ form_options_attrs }

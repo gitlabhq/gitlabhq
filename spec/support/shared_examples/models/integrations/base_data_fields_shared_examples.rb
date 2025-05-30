@@ -51,7 +51,6 @@ RSpec.shared_examples Integrations::BaseDataFields do
         'integration_id',
         'created_at',
         'updated_at',
-        'instance_integration_id',
         'group_id',
         'project_id',
         'organization_id'
@@ -69,38 +68,12 @@ RSpec.shared_examples Integrations::BaseDataFields do
       it { is_expected.to be_valid }
     end
 
-    context 'when instance integration is present' do
-      before do
-        model.instance_integration = build(:instance_integration)
-        model.organization_id = 1
-      end
-
-      it { is_expected.to be_valid }
-    end
-
-    context 'when both instance and non instance integrations are present' do
-      it 'validates mutual exclusion correctly' do
-        model.integration = build(:integration)
-        model.instance_integration = build(:instance_integration)
-
-        expect(model.valid?).to eq(false)
-        expect(model.errors.full_messages).to contain_exactly(
-          'Integration must be blank',
-          'Instance integration must be blank',
-          'one of integration or instance_integration must be present',
-          'one of project_id, group_id or organization_id must be present'
-        )
-      end
-    end
-
-    context 'when both instance and non instance integrations are missing' do
-      it 'validates presence correctly' do
-        expect(model.valid?).to eq(false)
-        expect(model.errors.full_messages).to contain_exactly(
-          'one of integration or instance_integration must be present',
-          'one of project_id, group_id or organization_id must be present'
-        )
-      end
+    it 'validates presence correctly' do
+      expect(model.valid?).to eq(false)
+      expect(model.errors.full_messages).to contain_exactly(
+        "Integration can't be blank",
+        'one of project_id, group_id or organization_id must be present'
+      )
     end
 
     context 'when sharding key is not set' do

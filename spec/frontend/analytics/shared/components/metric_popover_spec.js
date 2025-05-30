@@ -1,23 +1,19 @@
 import { GlLink, GlIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import MetricPopover from '~/analytics/shared/components/metric_popover.vue';
-import { METRIC_POPOVER_LABEL } from '~/analytics/shared/constants';
-
-const MOCK_METRIC = {
-  key: 'deployment-frequency',
-  label: 'Deployment frequency',
-  value: '10.0',
-  unit: '/day',
-  description: 'Average number of deployments to production per day.',
-  links: [],
-};
 
 describe('MetricPopover', () => {
   let wrapper;
 
+  const defaultMetricData = {
+    label: 'Deployment frequency',
+    description: 'Average number of deployments to production per day.',
+  };
+
   const createComponent = (props = {}) => {
-    return shallowMountExtended(MetricPopover, {
+    wrapper = shallowMountExtended(MetricPopover, {
       propsData: {
+        metric: defaultMetricData,
         target: 'deployment-frequency',
         ...props,
       },
@@ -34,63 +30,54 @@ describe('MetricPopover', () => {
   const findMetricDocsLinkIcon = () => findMetricDocsLink().findComponent(GlIcon);
   const findMetricDetailsIcon = () => findMetricLink().findComponent(GlIcon);
 
-  it('renders the metric label', () => {
-    wrapper = createComponent({ metric: MOCK_METRIC });
-    expect(findMetricLabel().text()).toBe(MOCK_METRIC.label);
-  });
+  describe('default', () => {
+    beforeEach(() => {
+      createComponent();
+    });
 
-  it('renders the metric description', () => {
-    wrapper = createComponent({ metric: MOCK_METRIC });
-    expect(findMetricDescription().text()).toBe(MOCK_METRIC.description);
+    it(`renders the metric's label`, () => {
+      expect(findMetricLabel().text()).toBe('Deployment frequency');
+    });
+
+    it(`renders the metric's description`, () => {
+      expect(findMetricDescription().text()).toBe(
+        'Average number of deployments to production per day.',
+      );
+    });
+
+    it(`does not render the metric's link`, () => {
+      expect(findMetricLink().exists()).toBe(false);
+    });
+
+    it(`does not render the metric's docs link`, () => {
+      expect(findMetricDocsLink().exists()).toBe(false);
+    });
   });
 
   describe('with links', () => {
-    const METRIC_NAME = 'Deployment frequency';
-    const LINK_URL = '/groups/gitlab-org/-/analytics/ci_cd?tab=deployment-frequency';
-    const links = [
-      {
-        name: METRIC_NAME,
-        url: LINK_URL,
-        label: 'Dashboard',
-      },
-    ];
-    const docsLink = {
-      name: 'Deployment frequency',
-      url: '/help/user/analytics/index#definitions',
-      label: 'Go to docs',
-      docs_link: true,
-    };
-    const linksWithDocs = [...links, docsLink];
+    beforeEach(() => {
+      const metric = {
+        ...defaultMetricData,
+        docsLink: '/help/user/analytics/dora_metrics#deployment-frequency',
+      };
 
-    describe.each`
-      hasDocsLink | allLinks
-      ${true}     | ${linksWithDocs}
-      ${false}    | ${links}
-    `('when one link has docs_link=$hasDocsLink', ({ hasDocsLink, allLinks }) => {
-      beforeEach(() => {
-        wrapper = createComponent({ metric: { ...MOCK_METRIC, links: allLinks } });
-      });
+      createComponent({ metric, metricUrl: '-/analytics/dashboards/dora_metrics' });
+    });
 
-      describe('Metric title row', () => {
-        it(`renders a link for "${METRIC_NAME}"`, () => {
-          expect(findMetricLink().text()).toContain(METRIC_POPOVER_LABEL);
-          expect(findMetricLink().findComponent(GlLink).attributes('href')).toBe(LINK_URL);
-        });
+    it(`renders the metric's link`, () => {
+      expect(findMetricLink().text()).toContain('View details');
+      expect(findMetricLink().findComponent(GlLink).attributes('href')).toBe(
+        '-/analytics/dashboards/dora_metrics',
+      );
+      expect(findMetricDetailsIcon().attributes('name')).toBe('chart');
+    });
 
-        it('renders the chart icon', () => {
-          expect(findMetricDetailsIcon().attributes('name')).toBe('chart');
-        });
-      });
-
-      it(`${hasDocsLink ? 'renders' : "doesn't render"} a docs link`, () => {
-        expect(findMetricDocsLink().exists()).toBe(hasDocsLink);
-
-        if (hasDocsLink) {
-          expect(findMetricDocsLink().attributes('href')).toBe(docsLink.url);
-          expect(findMetricDocsLink().text()).toBe(docsLink.label);
-          expect(findMetricDocsLinkIcon().attributes('name')).toBe('external-link');
-        }
-      });
+    it(`renders the metric's docs link`, () => {
+      expect(findMetricDocsLink().text()).toBe('Go to docs');
+      expect(findMetricDocsLink().attributes('href')).toBe(
+        '/help/user/analytics/dora_metrics#deployment-frequency',
+      );
+      expect(findMetricDocsLinkIcon().attributes('name')).toBe('external-link');
     });
   });
 });

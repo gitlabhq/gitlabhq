@@ -2,6 +2,8 @@
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import { countFloatingPointDigits } from '~/lib/utils/number_utils';
 import { visitUrl } from '~/lib/utils/url_utility';
+import { generateMetricLink } from '~/analytics/shared/utils';
+import { FLOW_METRICS } from '~/analytics/shared/constants';
 import MetricPopover from './metric_popover.vue';
 
 const MAX_DISPLAYED_DECIMAL_PRECISION = 2;
@@ -17,6 +19,15 @@ export default {
       type: Object,
       required: true,
     },
+    namespacePath: {
+      type: String,
+      required: true,
+    },
+    isProjectNamespace: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     decimalPlaces() {
@@ -28,14 +39,21 @@ export default {
       }
       return 0;
     },
-    hasLinks() {
-      return this.metric.links?.length && this.metric.links[0].url;
+    metricUrl() {
+      const { metric, namespacePath, isProjectNamespace } = this;
+      const { LEAD_TIME, CYCLE_TIME } = FLOW_METRICS;
+
+      // Both of these metrics drill down to VSA, so we return an empty string here
+      // to avoid circular redirect
+      if ([LEAD_TIME, CYCLE_TIME].includes(metric.identifier)) return '';
+
+      return generateMetricLink({ metricId: metric.identifier, namespacePath, isProjectNamespace });
     },
   },
   methods: {
-    clickHandler({ links }) {
-      if (this.hasLinks) {
-        visitUrl(links[0].url);
+    clickHandler() {
+      if (this.metricUrl) {
+        visitUrl(this.metricUrl);
       }
     },
   },
@@ -50,12 +68,12 @@ export default {
       :unit="metric.unit || ''"
       :should-animate="true"
       :animation-decimal-places="decimalPlaces"
-      :class="{ 'hover:gl-cursor-pointer': hasLinks }"
+      :class="{ 'hover:gl-cursor-pointer': metricUrl }"
       data-testid="metric-tile"
       tabindex="0"
       use-delimiters
-      @click="clickHandler(metric)"
+      @click="clickHandler"
     />
-    <metric-popover :metric="metric" :target="metric.identifier" />
+    <metric-popover :metric="metric" :metric-url="metricUrl" :target="metric.identifier" />
   </div>
 </template>

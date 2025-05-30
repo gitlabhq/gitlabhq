@@ -129,7 +129,13 @@ namespace :gitlab do
     def insert_db_identifier(db_config)
       ActiveRecord::Base.establish_connection(db_config) # rubocop: disable Database/EstablishConnection
 
-      internal_metadata = ActiveRecord::Base.connection.internal_metadata # rubocop: disable Database/MultipleDatabases
+      internal_metadata =
+        if ::Gitlab.next_rails?
+          ActiveRecord::Base.connection_pool.internal_metadata # rubocop: disable Database/MultipleDatabases
+        else
+          ActiveRecord::Base.connection.internal_metadata # rubocop: disable Database/MultipleDatabases
+        end
+
       internal_metadata[DB_CONFIG_NAME_KEY] = db_config.name if internal_metadata.table_exists?
     rescue ActiveRecord::ConnectionNotEstablished, PG::ConnectionBad => err
       warn "WARNING: Could not establish database connection for #{db_config.name}: #{err.message}"
@@ -143,7 +149,12 @@ namespace :gitlab do
     def get_db_identifier(db_config)
       ActiveRecord::Base.establish_connection(db_config) # rubocop: disable Database/EstablishConnection
 
-      internal_metadata = ActiveRecord::Base.connection.internal_metadata # rubocop: disable Database/MultipleDatabases
+      internal_metadata =
+        if ::Gitlab.next_rails?
+          ActiveRecord::Base.connection_pool.internal_metadata # rubocop: disable Database/MultipleDatabases
+        else
+          ActiveRecord::Base.connection.internal_metadata # rubocop: disable Database/MultipleDatabases
+        end
 
       # rubocop:disable Database/MultipleDatabases
       if internal_metadata.table_exists?

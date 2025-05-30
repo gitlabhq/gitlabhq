@@ -36,18 +36,6 @@ RSpec.describe 'validate database config', feature_category: :cell do
     allow(Rails.application).to receive(:config).and_return(rails_configuration)
   end
 
-  shared_examples 'with SKIP_CELL_CONFIG_VALIDATION=true' do
-    before do
-      stub_env('SKIP_CELL_CONFIG_VALIDATION', 'true')
-      # Wrong Cell configuration, because cell.id is missing
-      stub_config(cell: { enabled: true, id: nil, topology_service_client: valid_topology_service_client_config })
-    end
-
-    it 'does not raise exception' do
-      expect { validate_config }.not_to raise_error
-    end
-  end
-
   context 'when cell is correctly configured' do
     before do
       stub_config(cell: { id: 1, enabled: true, topology_service_client: valid_topology_service_client_config })
@@ -90,8 +78,6 @@ RSpec.describe 'validate database config', feature_category: :cell do
         expect { validate_config }.to raise_error("Cell ID is not set to a valid positive integer.#{dev_message}")
       end
 
-      it_behaves_like 'with SKIP_CELL_CONFIG_VALIDATION=true'
-
       context 'when not dev environment' do
         before do
           stub_rails_env('production')
@@ -111,8 +97,6 @@ RSpec.describe 'validate database config', feature_category: :cell do
       it 'raises exception about missing cell id' do
         expect { validate_config }.to raise_error("Cell ID is not set to a valid positive integer.#{dev_message}")
       end
-
-      it_behaves_like 'with SKIP_CELL_CONFIG_VALIDATION=true'
     end
 
     context 'when cell is enabled' do
@@ -123,8 +107,6 @@ RSpec.describe 'validate database config', feature_category: :cell do
       it 'raises exception about missing topology service client config' do
         expect { validate_config }.to raise_error("Topology Service Client setting 'address' is not set.#{dev_message}")
       end
-
-      it_behaves_like 'with SKIP_CELL_CONFIG_VALIDATION=true'
     end
   end
 end

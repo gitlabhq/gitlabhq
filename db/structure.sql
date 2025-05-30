@@ -22375,7 +22375,8 @@ CREATE TABLE resource_weight_events (
     weight integer,
     created_at timestamp with time zone NOT NULL,
     previous_weight integer,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_30317d1ce0 CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE resource_weight_events_id_seq

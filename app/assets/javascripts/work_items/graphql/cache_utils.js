@@ -398,6 +398,7 @@ export const setNewWorkItemCache = async (
       if (widgetName === WIDGET_TYPE_CRM_CONTACTS) {
         widgets.push({
           type: 'CRM_CONTACTS',
+          contactsAvailable: false,
           contacts: {
             nodes: [],
             __typename: 'CustomerRelationsContactConnection',

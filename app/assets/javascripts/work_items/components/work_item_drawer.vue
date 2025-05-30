@@ -313,7 +313,7 @@ export default {
       <work-item-detail
         :key="activeItem.iid"
         :work-item-iid="activeItem.iid"
-        :modal-work-item-full-path="activeItemFullPath"
+        :work-item-full-path="activeItemFullPath"
         :modal-is-group="modalIsGroup"
         :new-comment-template-paths="newCommentTemplatePaths"
         :is-board="isBoard"

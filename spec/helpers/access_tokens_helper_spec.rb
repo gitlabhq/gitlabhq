@@ -75,16 +75,21 @@ RSpec.describe AccessTokensHelper, feature_category: :system_access do
     end
 
     it 'returns data for the PATs UI in the user settings' do
-      expect(helper.personal_access_token_data).to match(a_hash_including({
-        access_token: {
-          max_date: '2022-03-02',
-          min_date: '2022-03-02',
-          create: '/-/user_settings/personal_access_tokens',
-          revoke: '/api/v4/personal_access_tokens',
-          rotate: '/api/v4/personal_access_tokens',
-          show: '/api/v4/personal_access_tokens?user_id=:id'
-        }
-      }))
+      expect(helper.personal_access_token_data({ name: 'My token',
+        description: 'My description',
+        scopes: [:api, :sudo] })).to match(a_hash_including({
+          access_token: {
+            max_date: '2022-03-02',
+            min_date: '2022-03-02',
+            name: 'My token',
+            description: 'My description',
+            scopes: '["api","sudo"]',
+            create: '/-/user_settings/personal_access_tokens',
+            revoke: '/api/v4/personal_access_tokens',
+            rotate: '/api/v4/personal_access_tokens',
+            show: '/api/v4/personal_access_tokens?user_id=:id'
+          }
+        }))
     end
   end
 

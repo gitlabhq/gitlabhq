@@ -4,8 +4,8 @@ import { present } from './presenter';
 import { transform } from './transformer/data';
 
 export const executeAndPresentQuery = async (glqlQuery, queryKey) => {
-  const { query, config } = await parse(glqlQuery);
-  const data = await execute(query);
+  const { query, config, variables } = await parse(glqlQuery);
+  const data = await execute(query, variables);
   const transformed = transform(data, config);
   return present(transformed, config, { queryKey });
 };

@@ -23,13 +23,15 @@ describe('AccessTokenForm', () => {
   const accessTokenMaxDate = '2021-07-06';
   const accessTokenMinDate = '2020-07-06';
 
-  const createComponent = (provide = {}) => {
+  const createComponent = (props = {}) => {
     wrapper = mountExtended(AccessTokenForm, {
       pinia,
       provide: {
         accessTokenMaxDate,
         accessTokenMinDate,
-        ...provide,
+      },
+      propsData: {
+        ...props,
       },
     });
   };
@@ -145,6 +147,22 @@ describe('AccessTokenForm', () => {
           );
         });
       });
+    });
+  });
+
+  describe('when token name, description or scopes are provided', () => {
+    it('pre-fills the form', () => {
+      createComponent({
+        name: 'My token',
+        description: 'My description',
+        scopes: ['read_service_ping', 'read_user'],
+      });
+
+      expect(findInput().props('value')).toBe('My token');
+      expect(findTextArea().props('value')).toBe('My description');
+      expect(findCheckboxes().at(0).find('input').element.checked).toBe(true);
+      expect(findCheckboxes().at(1).find('input').element.checked).toBe(true);
+      expect(findCheckboxes().at(2).find('input').element.checked).toBe(false);
     });
   });
 });

@@ -244,20 +244,20 @@ describe('WorkItemDrawer', () => {
       const fullPath = '/gitlab-org';
       createComponent({ activeItem: { fullPath } });
 
-      expect(findWorkItem().props('modalWorkItemFullPath')).toBe(fullPath);
+      expect(findWorkItem().props('workItemFullPath')).toBe(fullPath);
     });
 
     describe('when active issuable has no fullPath property', () => {
       it('uses injected fullPath if active issuable has no reference path or full path', () => {
         createComponent({ activeItem: {} });
 
-        expect(findWorkItem().props('modalWorkItemFullPath')).toBe('gitlab-org/gitlab');
+        expect(findWorkItem().props('workItemFullPath')).toBe('gitlab-org/gitlab');
       });
 
       it('passes correctly calculated path if active issuable is an issue', () => {
         createComponent({ activeItem: { referencePath: 'gitlab-org/gitlab#35' } });
 
-        expect(findWorkItem().props('modalWorkItemFullPath')).toBe('gitlab-org/gitlab');
+        expect(findWorkItem().props('workItemFullPath')).toBe('gitlab-org/gitlab');
       });
 
       it('passes correctly calculated fullPath if active issuable is an epic', () => {
@@ -266,7 +266,7 @@ describe('WorkItemDrawer', () => {
           issuableType: TYPE_EPIC,
         });
 
-        expect(findWorkItem().props('modalWorkItemFullPath')).toBe('gitlab-org/gitlab');
+        expect(findWorkItem().props('workItemFullPath')).toBe('gitlab-org/gitlab');
       });
     });
   });

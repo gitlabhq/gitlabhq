@@ -6,6 +6,11 @@ export default {
       required: false,
       default: () => [],
     },
+    urlFullPath: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
     withTabs: {
       type: Boolean,
       required: false,
@@ -24,6 +29,7 @@ export default {
   <router-view
     :key="pageKey"
     :new-comment-template-paths="newCommentTemplatePaths"
+    :url-full-path="urlFullPath"
     :with-tabs="withTabs"
     data-testid="work-item-router-view"
   />

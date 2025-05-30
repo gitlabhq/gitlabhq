@@ -9,6 +9,7 @@ import {
   MAX_METRIC_PRECISION,
   UNITS,
   VALUE_STREAM_METRIC_DISPLAY_UNITS,
+  VALUE_STREAM_METRIC_METADATA,
   VALUE_STREAM_METRIC_TILE_METADATA,
 } from './constants';
 
@@ -165,6 +166,32 @@ export const generateValueStreamsDashboardLink = (
   const segments = [gon.relative_url_root || '', '/', formattedNamespacePath, dashboardsSlug];
 
   return joinPaths(...segments);
+};
+
+/**
+ * Generates a URL link to the metric's report based on the namespace type.
+ * @param {String} metricId – Metric's identifier
+ * @param {String} namespacePath - Path of the specified namespace
+ * @param {Boolean} isProjectNamespace
+ * @returns {String} URL link to the metric's report
+ */
+export const generateMetricLink = ({
+  metricId = null,
+  namespacePath = null,
+  isProjectNamespace = false,
+} = {}) => {
+  const { groupLink, projectLink } = VALUE_STREAM_METRIC_METADATA[metricId] ?? {};
+  const hasLinks = groupLink || projectLink;
+
+  if (!hasLinks || !namespacePath) return '';
+
+  return joinPaths(
+    '/',
+    gon.relative_url_root,
+    !isProjectNamespace ? 'groups' : '',
+    namespacePath,
+    isProjectNamespace ? projectLink : groupLink,
+  );
 };
 
 /**

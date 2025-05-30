@@ -6,7 +6,7 @@
 # We need to set the following up to override the ActiveJob adapater
 # so as to ensure that mailer jobs are enqueued in a shard-aware manner.
 
-if Gem::Version.new(Rails.gem_version) >= Gem::Version.new('7.2')
+if Gem::Version.new(Rails.gem_version) >= Gem::Version.new('7.3')
   raise 'New version of Rails detected, please remove or update this patch'
 end
 

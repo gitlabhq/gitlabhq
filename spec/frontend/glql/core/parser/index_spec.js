@@ -61,6 +61,7 @@ describe('parse', () => {
   }
 }
 ",
+  "variables": [],
 }
 `);
   });
@@ -124,6 +125,7 @@ assignee = currentUser()`),
   }
 }
 ",
+  "variables": [],
 }
 `);
   });
@@ -188,6 +190,7 @@ query: assignee = currentUser()
   }
 }
 ",
+  "variables": [],
 }
 `);
   });

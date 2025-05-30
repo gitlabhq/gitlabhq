@@ -177,6 +177,7 @@ describe('WorkItemDetail component', () => {
       ]),
       isLoggedIn: isLoggedIn(),
       propsData: {
+        workItemFullPath: 'group/project',
         workItemId,
         isModal,
         workItemIid,
@@ -195,7 +196,6 @@ describe('WorkItemDetail component', () => {
           workItemsAlpha: workItemsAlphaEnabled,
         },
         hasSubepicsFeature,
-        fullPath: 'group/project',
         groupPath: 'group',
         hasLinkedItemsEpicsFeature,
       },

@@ -29197,6 +29197,9 @@ msgstr ""
 msgid "Go to definition"
 msgstr ""
 
+msgid "Go to docs"
+msgstr ""
+
 msgid "Go to environments"
 msgstr ""
 
@@ -36637,6 +36640,9 @@ msgid "Loading"
 msgstr ""
 
 msgid "Loading %{name}"
+msgstr ""
+
+msgid "Loading file actions"
 msgstr ""
 
 msgid "Loading files, directories, and submodules in the path %{path} for commit reference %{ref}"

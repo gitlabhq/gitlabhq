@@ -33,7 +33,6 @@ export default {
     GlButton,
     GlAlert,
   },
-  inject: ['fullPath'],
   props: {
     designNoteMutation: {
       type: Object,

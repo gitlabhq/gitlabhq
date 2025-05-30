@@ -84,11 +84,9 @@ describe('WorkItemParent component', () => {
         [workItemsByReferencesQuery, workItemReferencesSuccessHandler],
         [getAllowedWorkItemParentTypes, allowedParentTypesHandler],
       ]),
-      provide: {
-        fullPath: mockFullPath,
-      },
       propsData: {
         canUpdate,
+        fullPath: mockFullPath,
         parent,
         workItemId,
         workItemType,

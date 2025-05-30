@@ -22,7 +22,7 @@
 # We can probably drop this patch for Rails 7.1 and up, but we might
 # want to wait for https://github.com/rails/rails/pull/51441 or some
 # mechanism that can disable the `Link` header.
-if Gem::Version.new(ActionView.version) >= Gem::Version.new('7.2')
+if Gem::Version.new(ActionView.version) >= Gem::Version.new('7.3')
   raise 'New version of ActionView detected. This patch can likely be removed.'
 end
 

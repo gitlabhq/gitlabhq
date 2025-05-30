@@ -149,6 +149,7 @@ export const initWorkItemsRoot = ({ workspaceType, withTabs } = {}) => {
       return createElement(App, {
         props: {
           newCommentTemplatePaths: JSON.parse(newCommentTemplatePaths),
+          urlFullPath: fullPath,
           withTabs,
         },
       });

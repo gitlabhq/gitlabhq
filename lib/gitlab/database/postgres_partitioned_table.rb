@@ -18,7 +18,7 @@ module Gitlab
       end
 
       def self.find_by_name_in_current_schema(name)
-        find_by("identifier = concat(current_schema(), '.', ?)", name)
+        find_by("identifier = concat(current_schema(), '.', ?::text)", name)
       end
 
       def self.each_partition(table_name, &block)

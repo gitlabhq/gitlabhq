@@ -17,8 +17,19 @@ module Gitlab
         end
 
         def versions_to_create
-          versions_from_database = @connection.schema_migration.versions
-          versions_from_migration_files = @connection.migration_context.migrations.map { |m| m.version.to_s }
+          versions_from_database =
+            if ::Gitlab.next_rails?
+              @connection.pool.schema_migration.versions
+            else
+              @connection.schema_migration.versions
+            end
+
+          versions_from_migration_files =
+            if ::Gitlab.next_rails?
+              @connection.pool.migration_context.migrations.map { |m| m.version.to_s }
+            else
+              @connection.migration_context.migrations.map { |m| m.version.to_s }
+            end
 
           versions_from_database & versions_from_migration_files
         end

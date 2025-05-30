@@ -49,13 +49,18 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
           aria-label="Collapse"
           buttontextclasses=""
           category="tertiary"
-          class="-gl-mr-2 gl-self-start"
+          class="-gl-mr-2 btn-icon gl-self-start"
           data-testid="crud-collapse-toggle"
-          icon="chevron-lg-up"
+          icon=""
           size="small"
           title="Collapse"
           variant="default"
-        />
+        >
+          <gl-animated-chevron-lg-down-up-icon-stub
+            is-on="true"
+            variant="default"
+          />
+        </gl-button-stub>
       </div>
     </div>
   </header>

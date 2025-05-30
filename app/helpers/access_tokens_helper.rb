@@ -35,10 +35,13 @@ module AccessTokensHelper
     }.to_json
   end
 
-  def personal_access_token_data
+  def personal_access_token_data(token)
     {
       access_token: {
         **expires_at_field_data,
+        name: token[:name],
+        description: token[:description],
+        scopes: token[:scopes].to_json,
         create: user_settings_personal_access_tokens_path,
         revoke: api_v4_personal_access_tokens_path,
         rotate: api_v4_personal_access_tokens_path,

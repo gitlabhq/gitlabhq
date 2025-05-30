@@ -8662,6 +8662,14 @@ RSpec.describe User, feature_category: :user_profile do
 
       it_behaves_like 'does not require password to be present'
     end
+
+    context 'when user is a placeholder user' do
+      before do
+        user.user_type = 'placeholder'
+      end
+
+      it_behaves_like 'does not require password to be present'
+    end
   end
 
   describe 'can_trigger_notifications?' do
@@ -9486,7 +9494,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
-  describe 'support pin methods' do
+  describe 'support pin methods', :freeze_time do
     let_it_be(:user_with_pin) { create(:user) }
     let_it_be(:user_no_pin) { create(:user) }
     let(:pin_data) { { pin: '123456', expires_at: 7.days.from_now } }
@@ -9520,7 +9528,7 @@ RSpec.describe User, feature_category: :user_profile do
       it 'returns the expiration time when it exists' do
         allow(retrieve_service).to receive(:execute).and_return(pin_data)
 
-        expect(user_with_pin.support_pin_expires_at).to be_within(2.seconds).of(pin_data[:expires_at])
+        expect(user_with_pin.support_pin_expires_at).to eq(pin_data[:expires_at])
       end
 
       it 'returns nil when no expiration time exists' do

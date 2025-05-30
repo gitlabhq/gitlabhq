@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
 import { computed } from 'vue';
 import { __ } from '~/locale';
 import { logError } from '~/lib/logger';
@@ -51,6 +51,7 @@ export default {
   components: {
     OpenMrBadge,
     GlButton,
+    GlLoadingIcon,
     BlobOverflowMenu,
     ForkSuggestionModal,
     WebIdeLink: () => import('ee_else_ce/vue_shared/components/web_ide_link.vue'),
@@ -349,6 +350,15 @@ export default {
       @hide="isForkSuggestionModalVisible = false"
     />
 
+    <gl-loading-icon
+      v-if="isLoadingRepositoryBlob"
+      :label="__('Loading file actions')"
+      class="gl-p-3"
+      size="sm"
+      color="dark"
+      variant="spinner"
+      :inline="false"
+    />
     <blob-overflow-menu
       v-if="!isLoadingRepositoryBlob && glFeatures.blobOverflowMenu"
       :project-path="projectPath"

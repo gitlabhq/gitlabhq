@@ -34,6 +34,23 @@ export default {
       import('ee_component/vue_shared/components/access_tokens/max_expiration_date_message.vue'),
   },
   inject: ['accessTokenMaxDate', 'accessTokenMinDate'],
+  props: {
+    name: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    description: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    scopes: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+  },
   data() {
     const maxDate = this.accessTokenMaxDate ? new Date(this.accessTokenMaxDate) : null;
     if (maxDate) {
@@ -43,7 +60,11 @@ export default {
     }
     const minDate = new Date(this.accessTokenMinDate);
     const expiresAt = defaultDate(maxDate);
-    return { maxDate, minDate, values: { expiresAt } };
+    return {
+      maxDate,
+      minDate,
+      values: { expiresAt, name: this.name, description: this.description, scopes: this.scopes },
+    };
   },
   computed: {
     ...mapState(useAccessTokens, ['busy']),

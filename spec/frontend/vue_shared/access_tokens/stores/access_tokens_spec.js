@@ -560,11 +560,22 @@ describe('useAccessTokens store', () => {
 
     describe('setup', () => {
       it('sets up the store', () => {
-        store.setup({ filters, id, page, sorting, urlCreate, urlRevoke, urlRotate, urlShow });
+        store.setup({
+          filters,
+          id,
+          page,
+          showCreateForm: true,
+          sorting,
+          urlCreate,
+          urlRevoke,
+          urlRotate,
+          urlShow,
+        });
 
         expect(store.filters).toEqual(filters);
         expect(store.id).toBe(id);
         expect(store.page).toBe(page);
+        expect(store.showCreateForm).toBe(true);
         expect(store.sorting).toEqual(sorting);
         expect(store.urlCreate).toBe(urlCreate);
         expect(store.urlRevoke).toBe(urlRevoke);

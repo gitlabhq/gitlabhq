@@ -28,15 +28,17 @@ module Gitlab
       end
 
       def execute
-        user = User.new(
+        user_params = {
           user_type: :placeholder,
           name: placeholder_name,
           username: username_and_email_generator.username,
-          email: username_and_email_generator.email
-        )
+          email: username_and_email_generator.email,
+          organization_id: namespace.organization_id,
+          skip_confirmation: true
+        }
 
-        user.skip_confirmation_notification!
-        user.assign_personal_namespace(namespace.organization)
+        user = Users::AuthorizedBuildService.new(nil, user_params).execute
+
         user.build_placeholder_user_detail(namespace: namespace, organization: namespace.organization)
         user.save!
 

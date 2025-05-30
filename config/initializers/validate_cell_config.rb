@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-return if Gitlab::Utils.to_boolean(ENV['SKIP_CELL_CONFIG_VALIDATION'], default: false)
-
 ValidationError = Class.new(StandardError)
 
 print_error = ->(error_message) do

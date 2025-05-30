@@ -6,6 +6,7 @@ import {
   GlSkeletonLoader,
   GlLink,
   GlTooltipDirective,
+  GlAnimatedChevronLgDownUpIcon,
 } from '@gitlab/ui';
 import { __ } from '~/locale';
 
@@ -16,6 +17,7 @@ export default {
     GlBadge,
     GlSkeletonLoader,
     GlLink,
+    GlAnimatedChevronLgDownUpIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -116,9 +118,6 @@ export default {
       const hasContent =
         this.$scopedSlots.default || this.$scopedSlots.empty || this.$scopedSlots.pagination;
       return !(hasContent && this.isCollapsible && this.isCollapsed);
-    },
-    toggleIcon() {
-      return this.isCollapsed ? 'chevron-lg-down' : 'chevron-lg-up';
     },
     toggleLabel() {
       return this.isCollapsed ? __('Expand') : __('Collapse');
@@ -260,16 +259,17 @@ export default {
           <gl-button
             v-gl-tooltip
             :title="toggleLabel"
-            :icon="toggleIcon"
             category="tertiary"
             size="small"
             :aria-label="toggleLabel"
             :aria-expanded="ariaExpandedAttr"
             :aria-controls="anchorId"
-            class="-gl-mr-2 gl-self-start"
+            class="btn-icon -gl-mr-2 gl-self-start"
             data-testid="crud-collapse-toggle"
             @click="toggleCollapse"
-          />
+          >
+            <gl-animated-chevron-lg-down-up-icon :is-on="!isCollapsed" variant="default" />
+          </gl-button>
         </div>
       </div>
     </header>

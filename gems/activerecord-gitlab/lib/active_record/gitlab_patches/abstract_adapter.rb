@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-if defined?(Gitlab) && ActiveRecord.version.to_s != '7.1.5.1'
-  raise "This patch is only needed in Rails 7.1.5.1 for https://github.com/rails/rails/issues/51780"
+if ActiveRecord.version >= Gem::Version.new("7.3")
+  raise "This patch is only needed in Rails 7.1.x.x and 7.2.x.x for https://github.com/rails/rails/issues/51780"
 end
 
 # rubocop:disable Lint/RescueException -- This is copied directly from Rails.

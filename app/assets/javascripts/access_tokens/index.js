@@ -138,6 +138,9 @@ export const initSharedAccessTokenApp = () => {
   const {
     accessTokenMaxDate,
     accessTokenMinDate,
+    accessTokenName,
+    accessTokenDescription,
+    accessTokenScopes,
     accessTokenCreate,
     accessTokenRevoke,
     accessTokenRotate,
@@ -160,6 +163,9 @@ export const initSharedAccessTokenApp = () => {
       return createElement(AccessTokens, {
         props: {
           id: gon.current_user_id,
+          tokenName: accessTokenName,
+          tokenDescription: accessTokenDescription,
+          tokenScopes: accessTokenScopes && JSON.parse(accessTokenScopes),
         },
       });
     },

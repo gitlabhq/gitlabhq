@@ -186,7 +186,8 @@ export default {
       return this.workItemHierarchy?.hasParent;
     },
     workItemCrmContacts() {
-      return this.isWidgetPresent(WIDGET_TYPE_CRM_CONTACTS);
+      const crmContactsWidget = this.isWidgetPresent(WIDGET_TYPE_CRM_CONTACTS);
+      return crmContactsWidget && crmContactsWidget.contactsAvailable ? crmContactsWidget : null;
     },
     customFields() {
       return this.isWidgetPresent(WIDGET_TYPE_CUSTOM_FIELDS)?.customFieldValues;
@@ -249,6 +250,7 @@ export default {
       v-if="showParent"
       class="work-item-attributes-item"
       :can-update="canUpdateMetadata"
+      :full-path="fullPath"
       :work-item-id="workItem.id"
       :work-item-type="workItemType"
       :parent="workItemParent"

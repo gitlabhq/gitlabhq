@@ -40,6 +40,10 @@ describe('AccessTokens', () => {
     });
   };
 
+  beforeEach(() => {
+    store.showCreateForm = false;
+  });
+
   const findCreateTokenButton = () => wrapper.findByTestId('add-new-token-button');
   const findCreateTokenForm = () => wrapper.findComponent(AccessTokenForm);
   const findFilteredSearch = () => wrapper.findComponent(GlFilteredSearch);
@@ -55,6 +59,7 @@ describe('AccessTokens', () => {
       filters: DEFAULT_FILTER,
       id: 235,
       page: 1,
+      showCreateForm: false,
       sorting: DEFAULT_SORT,
       urlCreate: '/api/v4/groups/1/service_accounts/:id/personal_access_tokens/',
       urlRevoke: '/api/v4/groups/2/service_accounts/:id/personal_access_tokens/',
@@ -62,6 +67,27 @@ describe('AccessTokens', () => {
       urlShow: '/api/v4/groups/4/service_accounts/:id/personal_access_token',
     });
     expect(store.fetchTokens).toHaveBeenCalledTimes(1);
+  });
+
+  describe('when token name, description or scopes are provided', () => {
+    it('shows the token creation form', async () => {
+      createComponent({
+        tokenName: 'My token',
+        tokenDescription: 'My description',
+        tokenScopes: ['api', 'sudo'],
+      });
+      waitForPromises();
+
+      expect(store.setup).toHaveBeenCalledWith(expect.objectContaining({ showCreateForm: true }));
+      store.showCreateForm = true;
+      await nextTick();
+
+      expect(findCreateTokenForm().props()).toMatchObject({
+        name: 'My token',
+        description: 'My description',
+        scopes: ['api', 'sudo'],
+      });
+    });
   });
 
   describe('user avatar', () => {

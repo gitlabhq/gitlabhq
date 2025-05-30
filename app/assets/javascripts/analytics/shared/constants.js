@@ -90,8 +90,6 @@ export const NUMBER_OF_DAYS_SELECTED = (numDays) => {
   return n__('1 day selected', '%d days selected', numDays);
 };
 
-export const METRIC_POPOVER_LABEL = s__('ValueStreamAnalytics|View details');
-
 export const ISSUES_COMPLETED_TYPE = 'issues_completed';
 
 export const ALL_METRICS_QUERY_TYPE = 'ALL_METRICS_QUERY_TYPE';

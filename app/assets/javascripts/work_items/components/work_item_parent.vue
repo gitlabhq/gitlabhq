@@ -39,11 +39,14 @@ export default {
     IssuePopover: () => import('~/issuable/popover/components/issue_popover.vue'),
     WorkItemSidebarDropdownWidget,
   },
-  inject: ['fullPath'],
   props: {
     workItemId: {
       type: String,
       required: true,
+    },
+    fullPath: {
+      required: true,
+      type: String,
     },
     parent: {
       type: Object,

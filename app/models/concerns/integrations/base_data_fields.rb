@@ -12,17 +12,9 @@ module Integrations
       belongs_to :group, inverse_of: self.table_name.to_sym, foreign_key: :group_id, optional: true
       belongs_to :organization, inverse_of: self.table_name.to_sym, foreign_key: :organization_id, optional: true
 
-      belongs_to :instance_integration,
-        inverse_of: self.table_name.to_sym,
-        foreign_key: :instance_integration_id,
-        class_name: 'Integrations::Instance::Integration',
-        optional: true
-
       before_validation :set_sharding_key
 
-      validates :integration, absence: true, if: :instance_integration
-      validates :instance_integration, absence: true, if: :integration
-      validate :validate_mutual_exclusion
+      validates :integration, presence: true
       validate :validate_sharding_key
     end
 
@@ -50,7 +42,6 @@ module Integrations
         'integration_id',
         'created_at',
         'updated_at',
-        'instance_integration_id',
         'group_id',
         'project_id',
         'organization_id'
@@ -58,12 +49,6 @@ module Integrations
     end
 
     private
-
-    def validate_mutual_exclusion
-      return if integration.present? ^ instance_integration.present?
-
-      errors.add(:base, :blank, message: 'one of integration or instance_integration must be present')
-    end
 
     def set_sharding_key
       return if project_id || group_id || organization_id || integration.nil?
