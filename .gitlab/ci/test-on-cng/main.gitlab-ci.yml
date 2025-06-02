@@ -58,11 +58,23 @@ workflow:
   before_script:
     - !reference [.qa-install, before_script]
     - !reference [.cng-deploy-cmd, script]
+    - bundle exec orchestrator metrics start
   after_script:
     - !reference [.failure_category_after_script, after_script]
     - !reference [.gitlab-qa-report, after_script]
-    - bundle exec orchestrator log events --save
-    - bundle exec orchestrator log pods --save --containers all --no-fail-on-missing-pods
+    - |
+      section_start "logs_section" "Saving environment logs"
+      bundle exec orchestrator log events --save || true
+      bundle exec orchestrator log pods --save --containers all --no-fail-on-missing-pods || true
+      section_end "logs_section"
+    - |
+      section_start "cpu_metrics" "Pod CPU Metrics"
+      bundle exec orchestrator metrics serve --type cpu || true
+      section_end "cpu_metrics"
+    - |
+      section_start "memory_metrics" "Pod Memory Metrics"
+      bundle exec orchestrator metrics serve --type memory || true
+      section_end "memory_metrics"
     # This command prints all the necessary arguments to be able to recreate the same deployment as on CI
     - |
       bundle exec orchestrator create deployment "${DEPLOYMENT_TYPE}" \

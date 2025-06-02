@@ -44,6 +44,19 @@ RSpec.describe Gitlab::Orchestrator::CLI do
     it_behaves_like "executable command", Gitlab::Orchestrator::Commands::Log, %w[log events]
   end
 
+  describe "metrics command" do
+    it_behaves_like "command with help", %w[metrics help serve],
+      /Visualize metrics data collected by background process./
+    it_behaves_like "command with help", %w[metrics help start],
+      /Periodically collect and store metrics for pods./
+    it_behaves_like "command with help", %w[metrics help stop],
+      /Stop the metrics collector background process./
+
+    it_behaves_like "executable command", Gitlab::Orchestrator::Commands::Metrics, %w[metrics serve]
+    it_behaves_like "executable command", Gitlab::Orchestrator::Commands::Metrics, %w[metrics start]
+    it_behaves_like "executable command", Gitlab::Orchestrator::Commands::Metrics, %w[metrics stop]
+  end
+
   describe "create command" do
     context "with deployment subcommand" do
       context "with kind deployment" do

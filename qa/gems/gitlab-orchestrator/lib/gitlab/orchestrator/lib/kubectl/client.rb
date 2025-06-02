@@ -16,6 +16,15 @@ module Gitlab
           @namespace = namespace
         end
 
+        # Get namespace data
+        #
+        # @return [String]
+        def get_namespace
+          execute_shell(["kubectl", "get", "namespace", namespace])
+        rescue Helpers::Shell::CommandFailure => e
+          raise(Error, e.message)
+        end
+
         # Create namespace
         #
         # @return [String] command output
@@ -58,6 +67,15 @@ module Gitlab
           run_in_namespace("exec", get_pod_name(pod_name), args: args)
         end
 
+        # Get pod data
+        #
+        # @param pod_name [String]
+        # @return [Hash]
+        def pod(pod_name)
+          output = run_in_namespace("get", "pod", pod_name, args: ["--output", "json"])
+          JSON.parse(output, symbolize_names: true)
+        end
+
         # Get pod logs
         #
         # @param [Array<String>] pods
@@ -87,6 +105,13 @@ module Gitlab
               ])
             ]
           end
+        end
+
+        # Get resource consumption from top pods command
+        #
+        # @return [Array]
+        def top_pods
+          run_in_namespace("top", "pods", args: ["--no-headers"]).split("\n")
         end
 
         # Get events

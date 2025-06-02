@@ -414,7 +414,9 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def disable_create_query_limit!
-    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/546668', new_threshold: 110)
+    # TODO: Investigate threshold after epic-work item sync
+    # issue: https://gitlab.com/gitlab-org/gitlab/-/issues/438295
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/546668', new_threshold: 150)
   end
 
   def show_work_item?

@@ -245,9 +245,10 @@ GEM
       racc
     pastel (0.8.0)
       tty-color (~> 0.5)
-    proc_to_ast (0.1.0)
-      coderay
+    prism (1.4.0)
+    proc_to_ast (0.2.0)
       parser
+      rouge
       unparser
     pry (0.14.1)
       coderay (~> 1.1)
@@ -283,6 +284,7 @@ GEM
     retriable (3.1.2)
     rexml (3.3.9)
     rotp (6.3.0)
+    rouge (4.5.2)
     rspec (3.13.1)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
@@ -295,17 +297,18 @@ GEM
     rspec-mocks (3.13.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
-    rspec-parameterized (1.0.2)
-      rspec-parameterized-core (< 2)
-      rspec-parameterized-table_syntax (< 2)
-    rspec-parameterized-core (1.0.0)
+    rspec-parameterized (2.0.0)
+      rspec-parameterized-core (>= 2, < 3)
+      rspec-parameterized-table_syntax (>= 2, < 3)
+    rspec-parameterized-core (2.0.0)
       parser
-      proc_to_ast
+      prism
+      proc_to_ast (>= 0.2.0)
       rspec (>= 2.13, < 4)
       unparser
-    rspec-parameterized-table_syntax (1.0.0)
+    rspec-parameterized-table_syntax (2.0.0)
       binding_of_caller
-      rspec-parameterized-core (< 2)
+      rspec-parameterized-core (>= 2, < 3)
     rspec-support (3.13.0)
     rspec_junit_formatter (0.6.0)
       rspec-core (>= 2, < 4, != 2.12.0)
@@ -397,7 +400,7 @@ DEPENDENCIES
   rest-client (~> 2.1.0)
   rotp (~> 6.3.0)
   rspec (~> 3.13, >= 3.13.1)
-  rspec-parameterized (~> 1.0.2)
+  rspec-parameterized (~> 2.0.0)
   rspec_junit_formatter (~> 0.6.0)
   ruby-debug-ide (~> 0.7.5)
   selenium-webdriver (= 4.33.0)

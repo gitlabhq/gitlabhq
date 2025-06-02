@@ -1,0 +1,1289 @@
+{
+  "gitlab-sidekiq-all-in-1-v2-555d6f4b9d-k6cwm": {
+    "requests": {
+      "cpu": 0,
+      "memory": 0
+    },
+    "limits": {
+      "cpu": 200,
+      "memory": 1500
+    },
+    "metrics": [
+      {
+        "timestamp": 1748279269,
+        "cpu": 83,
+        "memory": 1396
+      },
+      {
+        "timestamp": 1748279275,
+        "cpu": 49,
+        "memory": 1392
+      },
+      {
+        "timestamp": 1748279280,
+        "cpu": 49,
+        "memory": 1392
+      },
+      {
+        "timestamp": 1748279285,
+        "cpu": 49,
+        "memory": 1392
+      },
+      {
+        "timestamp": 1748279290,
+        "cpu": 49,
+        "memory": 1392
+      },
+      {
+        "timestamp": 1748279295,
+        "cpu": 49,
+        "memory": 1392
+      },
+      {
+        "timestamp": 1748279300,
+        "cpu": 49,
+        "memory": 1392
+      },
+      {
+        "timestamp": 1748279305,
+        "cpu": 80,
+        "memory": 1420
+      },
+      {
+        "timestamp": 1748279310,
+        "cpu": 80,
+        "memory": 1420
+      },
+      {
+        "timestamp": 1748279315,
+        "cpu": 80,
+        "memory": 1420
+      },
+      {
+        "timestamp": 1748279320,
+        "cpu": 58,
+        "memory": 1399
+      },
+      {
+        "timestamp": 1748279326,
+        "cpu": 58,
+        "memory": 1399
+      },
+      {
+        "timestamp": 1748279331,
+        "cpu": 58,
+        "memory": 1399
+      },
+      {
+        "timestamp": 1748279336,
+        "cpu": 42,
+        "memory": 1391
+      },
+      {
+        "timestamp": 1748279341,
+        "cpu": 42,
+        "memory": 1391
+      },
+      {
+        "timestamp": 1748279346,
+        "cpu": 42,
+        "memory": 1391
+      },
+      {
+        "timestamp": 1748279351,
+        "cpu": 40,
+        "memory": 1396
+      },
+      {
+        "timestamp": 1748279356,
+        "cpu": 40,
+        "memory": 1396
+      },
+      {
+        "timestamp": 1748279361,
+        "cpu": 40,
+        "memory": 1396
+      },
+      {
+        "timestamp": 1748279366,
+        "cpu": 99,
+        "memory": 1411
+      },
+      {
+        "timestamp": 1748279371,
+        "cpu": 99,
+        "memory": 1411
+      },
+      {
+        "timestamp": 1748279376,
+        "cpu": 41,
+        "memory": 1391
+      },
+      {
+        "timestamp": 1748279382,
+        "cpu": 41,
+        "memory": 1391
+      },
+      {
+        "timestamp": 1748279387,
+        "cpu": 41,
+        "memory": 1391
+      },
+      {
+        "timestamp": 1748279392,
+        "cpu": 36,
+        "memory": 1400
+      },
+      {
+        "timestamp": 1748279397,
+        "cpu": 36,
+        "memory": 1400
+      },
+      {
+        "timestamp": 1748279402,
+        "cpu": 36,
+        "memory": 1400
+      },
+      {
+        "timestamp": 1748279407,
+        "cpu": 67,
+        "memory": 1402
+      },
+      {
+        "timestamp": 1748279412,
+        "cpu": 67,
+        "memory": 1402
+      },
+      {
+        "timestamp": 1748279417,
+        "cpu": 67,
+        "memory": 1402
+      },
+      {
+        "timestamp": 1748279422,
+        "cpu": 101,
+        "memory": 1391
+      },
+      {
+        "timestamp": 1748279427,
+        "cpu": 101,
+        "memory": 1391
+      },
+      {
+        "timestamp": 1748279432,
+        "cpu": 101,
+        "memory": 1391
+      },
+      {
+        "timestamp": 1748279438,
+        "cpu": 46,
+        "memory": 1402
+      },
+      {
+        "timestamp": 1748279443,
+        "cpu": 46,
+        "memory": 1402
+      },
+      {
+        "timestamp": 1748279448,
+        "cpu": 46,
+        "memory": 1402
+      },
+      {
+        "timestamp": 1748279453,
+        "cpu": 41,
+        "memory": 1392
+      },
+      {
+        "timestamp": 1748279458,
+        "cpu": 41,
+        "memory": 1392
+      },
+      {
+        "timestamp": 1748279463,
+        "cpu": 41,
+        "memory": 1392
+      },
+      {
+        "timestamp": 1748279468,
+        "cpu": 74,
+        "memory": 1401
+      },
+      {
+        "timestamp": 1748279473,
+        "cpu": 74,
+        "memory": 1401
+      },
+      {
+        "timestamp": 1748279478,
+        "cpu": 74,
+        "memory": 1401
+      },
+      {
+        "timestamp": 1748279483,
+        "cpu": 101,
+        "memory": 1419
+      },
+      {
+        "timestamp": 1748279489,
+        "cpu": 101,
+        "memory": 1419
+      },
+      {
+        "timestamp": 1748279494,
+        "cpu": 101,
+        "memory": 1419
+      },
+      {
+        "timestamp": 1748279499,
+        "cpu": 46,
+        "memory": 1408
+      },
+      {
+        "timestamp": 1748279504,
+        "cpu": 46,
+        "memory": 1408
+      },
+      {
+        "timestamp": 1748279509,
+        "cpu": 46,
+        "memory": 1408
+      },
+      {
+        "timestamp": 1748279514,
+        "cpu": 48,
+        "memory": 1395
+      },
+      {
+        "timestamp": 1748279519,
+        "cpu": 48,
+        "memory": 1395
+      },
+      {
+        "timestamp": 1748279524,
+        "cpu": 48,
+        "memory": 1395
+      },
+      {
+        "timestamp": 1748279529,
+        "cpu": 70,
+        "memory": 1393
+      },
+      {
+        "timestamp": 1748279535,
+        "cpu": 70,
+        "memory": 1393
+      },
+      {
+        "timestamp": 1748279540,
+        "cpu": 70,
+        "memory": 1393
+      },
+      {
+        "timestamp": 1748279545,
+        "cpu": 76,
+        "memory": 1401
+      },
+      {
+        "timestamp": 1748279550,
+        "cpu": 76,
+        "memory": 1401
+      },
+      {
+        "timestamp": 1748279555,
+        "cpu": 76,
+        "memory": 1401
+      },
+      {
+        "timestamp": 1748279560,
+        "cpu": 59,
+        "memory": 1397
+      },
+      {
+        "timestamp": 1748279565,
+        "cpu": 59,
+        "memory": 1397
+      },
+      {
+        "timestamp": 1748279570,
+        "cpu": 59,
+        "memory": 1397
+      },
+      {
+        "timestamp": 1748279575,
+        "cpu": 34,
+        "memory": 1395
+      },
+      {
+        "timestamp": 1748279580,
+        "cpu": 34,
+        "memory": 1395
+      },
+      {
+        "timestamp": 1748279585,
+        "cpu": 34,
+        "memory": 1395
+      },
+      {
+        "timestamp": 1748279591,
+        "cpu": 64,
+        "memory": 1400
+      },
+      {
+        "timestamp": 1748279596,
+        "cpu": 64,
+        "memory": 1400
+      },
+      {
+        "timestamp": 1748279601,
+        "cpu": 64,
+        "memory": 1400
+      },
+      {
+        "timestamp": 1748279606,
+        "cpu": 80,
+        "memory": 1418
+      },
+      {
+        "timestamp": 1748279611,
+        "cpu": 80,
+        "memory": 1418
+      },
+      {
+        "timestamp": 1748279616,
+        "cpu": 80,
+        "memory": 1418
+      },
+      {
+        "timestamp": 1748279621,
+        "cpu": 77,
+        "memory": 1408
+      },
+      {
+        "timestamp": 1748279626,
+        "cpu": 77,
+        "memory": 1408
+      },
+      {
+        "timestamp": 1748279631,
+        "cpu": 77,
+        "memory": 1408
+      },
+      {
+        "timestamp": 1748279636,
+        "cpu": 39,
+        "memory": 1393
+      },
+      {
+        "timestamp": 1748279641,
+        "cpu": 39,
+        "memory": 1393
+      },
+      {
+        "timestamp": 1748279647,
+        "cpu": 39,
+        "memory": 1393
+      },
+      {
+        "timestamp": 1748279652,
+        "cpu": 39,
+        "memory": 1393
+      },
+      {
+        "timestamp": 1748279657,
+        "cpu": 90,
+        "memory": 1414
+      },
+      {
+        "timestamp": 1748279662,
+        "cpu": 90,
+        "memory": 1414
+      },
+      {
+        "timestamp": 1748279667,
+        "cpu": 90,
+        "memory": 1414
+      },
+      {
+        "timestamp": 1748279672,
+        "cpu": 90,
+        "memory": 1414
+      },
+      {
+        "timestamp": 1748279677,
+        "cpu": 50,
+        "memory": 1400
+      },
+      {
+        "timestamp": 1748279682,
+        "cpu": 50,
+        "memory": 1400
+      },
+      {
+        "timestamp": 1748279687,
+        "cpu": 50,
+        "memory": 1400
+      },
+      {
+        "timestamp": 1748279692,
+        "cpu": 62,
+        "memory": 1400
+      },
+      {
+        "timestamp": 1748279697,
+        "cpu": 62,
+        "memory": 1400
+      },
+      {
+        "timestamp": 1748279703,
+        "cpu": 62,
+        "memory": 1400
+      },
+      {
+        "timestamp": 1748279708,
+        "cpu": 22,
+        "memory": 1389
+      },
+      {
+        "timestamp": 1748279713,
+        "cpu": 22,
+        "memory": 1389
+      },
+      {
+        "timestamp": 1748279718,
+        "cpu": 22,
+        "memory": 1389
+      },
+      {
+        "timestamp": 1748279723,
+        "cpu": 104,
+        "memory": 1394
+      },
+      {
+        "timestamp": 1748279728,
+        "cpu": 104,
+        "memory": 1394
+      },
+      {
+        "timestamp": 1748279733,
+        "cpu": 104,
+        "memory": 1394
+      },
+      {
+        "timestamp": 1748279738,
+        "cpu": 39,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748279743,
+        "cpu": 39,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748279748,
+        "cpu": 39,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748279753,
+        "cpu": 51,
+        "memory": 1394
+      },
+      {
+        "timestamp": 1748279759,
+        "cpu": 51,
+        "memory": 1394
+      },
+      {
+        "timestamp": 1748279764,
+        "cpu": 51,
+        "memory": 1394
+      },
+      {
+        "timestamp": 1748279769,
+        "cpu": 63,
+        "memory": 1411
+      },
+      {
+        "timestamp": 1748279774,
+        "cpu": 63,
+        "memory": 1411
+      },
+      {
+        "timestamp": 1748279779,
+        "cpu": 63,
+        "memory": 1411
+      },
+      {
+        "timestamp": 1748279784,
+        "cpu": 63,
+        "memory": 1411
+      },
+      {
+        "timestamp": 1748279789,
+        "cpu": 63,
+        "memory": 1411
+      },
+      {
+        "timestamp": 1748279794,
+        "cpu": 63,
+        "memory": 1411
+      },
+      {
+        "timestamp": 1748279799,
+        "cpu": 113,
+        "memory": 1397
+      },
+      {
+        "timestamp": 1748279804,
+        "cpu": 113,
+        "memory": 1397
+      },
+      {
+        "timestamp": 1748279810,
+        "cpu": 113,
+        "memory": 1397
+      },
+      {
+        "timestamp": 1748279815,
+        "cpu": 30,
+        "memory": 1396
+      },
+      {
+        "timestamp": 1748279820,
+        "cpu": 30,
+        "memory": 1396
+      },
+      {
+        "timestamp": 1748279825,
+        "cpu": 30,
+        "memory": 1396
+      },
+      {
+        "timestamp": 1748279830,
+        "cpu": 58,
+        "memory": 1405
+      },
+      {
+        "timestamp": 1748279835,
+        "cpu": 58,
+        "memory": 1405
+      },
+      {
+        "timestamp": 1748279840,
+        "cpu": 58,
+        "memory": 1405
+      },
+      {
+        "timestamp": 1748279845,
+        "cpu": 83,
+        "memory": 1413
+      },
+      {
+        "timestamp": 1748279850,
+        "cpu": 83,
+        "memory": 1413
+      },
+      {
+        "timestamp": 1748279855,
+        "cpu": 83,
+        "memory": 1413
+      },
+      {
+        "timestamp": 1748279861,
+        "cpu": 49,
+        "memory": 1394
+      },
+      {
+        "timestamp": 1748279866,
+        "cpu": 49,
+        "memory": 1394
+      },
+      {
+        "timestamp": 1748279871,
+        "cpu": 49,
+        "memory": 1394
+      },
+      {
+        "timestamp": 1748279876,
+        "cpu": 39,
+        "memory": 1406
+      },
+      {
+        "timestamp": 1748279881,
+        "cpu": 39,
+        "memory": 1406
+      },
+      {
+        "timestamp": 1748279886,
+        "cpu": 39,
+        "memory": 1406
+      },
+      {
+        "timestamp": 1748279891,
+        "cpu": 67,
+        "memory": 1396
+      },
+      {
+        "timestamp": 1748279896,
+        "cpu": 67,
+        "memory": 1396
+      },
+      {
+        "timestamp": 1748279901,
+        "cpu": 67,
+        "memory": 1396
+      },
+      {
+        "timestamp": 1748279906,
+        "cpu": 95,
+        "memory": 1423
+      },
+      {
+        "timestamp": 1748279911,
+        "cpu": 95,
+        "memory": 1423
+      },
+      {
+        "timestamp": 1748279917,
+        "cpu": 50,
+        "memory": 1401
+      },
+      {
+        "timestamp": 1748279922,
+        "cpu": 50,
+        "memory": 1401
+      },
+      {
+        "timestamp": 1748279927,
+        "cpu": 50,
+        "memory": 1401
+      },
+      {
+        "timestamp": 1748279932,
+        "cpu": 51,
+        "memory": 1399
+      },
+      {
+        "timestamp": 1748279937,
+        "cpu": 51,
+        "memory": 1399
+      },
+      {
+        "timestamp": 1748279942,
+        "cpu": 51,
+        "memory": 1399
+      },
+      {
+        "timestamp": 1748279947,
+        "cpu": 51,
+        "memory": 1399
+      },
+      {
+        "timestamp": 1748279952,
+        "cpu": 51,
+        "memory": 1399
+      },
+      {
+        "timestamp": 1748279957,
+        "cpu": 51,
+        "memory": 1399
+      },
+      {
+        "timestamp": 1748279962,
+        "cpu": 77,
+        "memory": 1416
+      },
+      {
+        "timestamp": 1748279967,
+        "cpu": 77,
+        "memory": 1416
+      },
+      {
+        "timestamp": 1748279973,
+        "cpu": 77,
+        "memory": 1416
+      },
+      {
+        "timestamp": 1748279978,
+        "cpu": 55,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748279983,
+        "cpu": 55,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748279988,
+        "cpu": 55,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748279993,
+        "cpu": 56,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748279998,
+        "cpu": 56,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748280003,
+        "cpu": 56,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748280008,
+        "cpu": 31,
+        "memory": 1403
+      },
+      {
+        "timestamp": 1748280013,
+        "cpu": 31,
+        "memory": 1403
+      },
+      {
+        "timestamp": 1748280018,
+        "cpu": 31,
+        "memory": 1403
+      },
+      {
+        "timestamp": 1748280023,
+        "cpu": 115,
+        "memory": 1418
+      },
+      {
+        "timestamp": 1748280028,
+        "cpu": 115,
+        "memory": 1418
+      },
+      {
+        "timestamp": 1748280034,
+        "cpu": 115,
+        "memory": 1418
+      },
+      {
+        "timestamp": 1748280039,
+        "cpu": 115,
+        "memory": 1418
+      },
+      {
+        "timestamp": 1748280044,
+        "cpu": 40,
+        "memory": 1402
+      },
+      {
+        "timestamp": 1748280049,
+        "cpu": 40,
+        "memory": 1402
+      },
+      {
+        "timestamp": 1748280054,
+        "cpu": 42,
+        "memory": 1406
+      },
+      {
+        "timestamp": 1748280059,
+        "cpu": 42,
+        "memory": 1406
+      },
+      {
+        "timestamp": 1748280064,
+        "cpu": 42,
+        "memory": 1406
+      },
+      {
+        "timestamp": 1748280069,
+        "cpu": 91,
+        "memory": 1420
+      },
+      {
+        "timestamp": 1748280074,
+        "cpu": 91,
+        "memory": 1420
+      },
+      {
+        "timestamp": 1748280079,
+        "cpu": 91,
+        "memory": 1420
+      },
+      {
+        "timestamp": 1748280084,
+        "cpu": 38,
+        "memory": 1395
+      },
+      {
+        "timestamp": 1748280090,
+        "cpu": 38,
+        "memory": 1395
+      },
+      {
+        "timestamp": 1748280095,
+        "cpu": 38,
+        "memory": 1395
+      },
+      {
+        "timestamp": 1748280100,
+        "cpu": 54,
+        "memory": 1407
+      },
+      {
+        "timestamp": 1748280105,
+        "cpu": 54,
+        "memory": 1407
+      },
+      {
+        "timestamp": 1748280110,
+        "cpu": 54,
+        "memory": 1407
+      },
+      {
+        "timestamp": 1748280115,
+        "cpu": 36,
+        "memory": 1400
+      },
+      {
+        "timestamp": 1748280120,
+        "cpu": 36,
+        "memory": 1400
+      },
+      {
+        "timestamp": 1748280125,
+        "cpu": 36,
+        "memory": 1400
+      },
+      {
+        "timestamp": 1748280130,
+        "cpu": 36,
+        "memory": 1400
+      },
+      {
+        "timestamp": 1748280135,
+        "cpu": 36,
+        "memory": 1400
+      },
+      {
+        "timestamp": 1748280140,
+        "cpu": 36,
+        "memory": 1400
+      },
+      {
+        "timestamp": 1748280146,
+        "cpu": 108,
+        "memory": 1428
+      },
+      {
+        "timestamp": 1748280151,
+        "cpu": 108,
+        "memory": 1428
+      },
+      {
+        "timestamp": 1748280156,
+        "cpu": 108,
+        "memory": 1428
+      },
+      {
+        "timestamp": 1748280161,
+        "cpu": 59,
+        "memory": 1413
+      },
+      {
+        "timestamp": 1748280166,
+        "cpu": 59,
+        "memory": 1413
+      },
+      {
+        "timestamp": 1748280171,
+        "cpu": 59,
+        "memory": 1413
+      },
+      {
+        "timestamp": 1748280176,
+        "cpu": 37,
+        "memory": 1405
+      },
+      {
+        "timestamp": 1748280181,
+        "cpu": 37,
+        "memory": 1405
+      },
+      {
+        "timestamp": 1748280186,
+        "cpu": 37,
+        "memory": 1405
+      },
+      {
+        "timestamp": 1748280191,
+        "cpu": 70,
+        "memory": 1405
+      },
+      {
+        "timestamp": 1748280196,
+        "cpu": 70,
+        "memory": 1405
+      },
+      {
+        "timestamp": 1748280202,
+        "cpu": 67,
+        "memory": 1410
+      },
+      {
+        "timestamp": 1748280207,
+        "cpu": 67,
+        "memory": 1410
+      },
+      {
+        "timestamp": 1748280212,
+        "cpu": 67,
+        "memory": 1410
+      },
+      {
+        "timestamp": 1748280217,
+        "cpu": 67,
+        "memory": 1410
+      },
+      {
+        "timestamp": 1748280222,
+        "cpu": 67,
+        "memory": 1410
+      },
+      {
+        "timestamp": 1748280227,
+        "cpu": 67,
+        "memory": 1410
+      },
+      {
+        "timestamp": 1748280232,
+        "cpu": 44,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748280237,
+        "cpu": 44,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748280242,
+        "cpu": 44,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748280247,
+        "cpu": 105,
+        "memory": 1423
+      },
+      {
+        "timestamp": 1748280252,
+        "cpu": 105,
+        "memory": 1423
+      },
+      {
+        "timestamp": 1748280257,
+        "cpu": 105,
+        "memory": 1423
+      },
+      {
+        "timestamp": 1748280263,
+        "cpu": 105,
+        "memory": 1423
+      },
+      {
+        "timestamp": 1748280268,
+        "cpu": 105,
+        "memory": 1423
+      },
+      {
+        "timestamp": 1748280273,
+        "cpu": 105,
+        "memory": 1423
+      },
+      {
+        "timestamp": 1748280278,
+        "cpu": 35,
+        "memory": 1410
+      },
+      {
+        "timestamp": 1748280283,
+        "cpu": 35,
+        "memory": 1410
+      },
+      {
+        "timestamp": 1748280288,
+        "cpu": 35,
+        "memory": 1410
+      },
+      {
+        "timestamp": 1748280293,
+        "cpu": 60,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748280298,
+        "cpu": 60,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748280303,
+        "cpu": 60,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748280308,
+        "cpu": 47,
+        "memory": 1413
+      },
+      {
+        "timestamp": 1748280313,
+        "cpu": 47,
+        "memory": 1413
+      },
+      {
+        "timestamp": 1748280319,
+        "cpu": 47,
+        "memory": 1413
+      },
+      {
+        "timestamp": 1748280324,
+        "cpu": 105,
+        "memory": 1424
+      },
+      {
+        "timestamp": 1748280329,
+        "cpu": 105,
+        "memory": 1424
+      },
+      {
+        "timestamp": 1748280334,
+        "cpu": 105,
+        "memory": 1424
+      },
+      {
+        "timestamp": 1748280339,
+        "cpu": 37,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748280344,
+        "cpu": 37,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748280349,
+        "cpu": 37,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748280354,
+        "cpu": 60,
+        "memory": 1409
+      },
+      {
+        "timestamp": 1748280359,
+        "cpu": 60,
+        "memory": 1409
+      },
+      {
+        "timestamp": 1748280364,
+        "cpu": 60,
+        "memory": 1409
+      },
+      {
+        "timestamp": 1748280369,
+        "cpu": 50,
+        "memory": 1403
+      },
+      {
+        "timestamp": 1748280375,
+        "cpu": 50,
+        "memory": 1403
+      },
+      {
+        "timestamp": 1748280380,
+        "cpu": 50,
+        "memory": 1403
+      },
+      {
+        "timestamp": 1748280385,
+        "cpu": 92,
+        "memory": 1412
+      },
+      {
+        "timestamp": 1748280390,
+        "cpu": 92,
+        "memory": 1412
+      },
+      {
+        "timestamp": 1748280395,
+        "cpu": 92,
+        "memory": 1412
+      },
+      {
+        "timestamp": 1748280400,
+        "cpu": 37,
+        "memory": 1399
+      },
+      {
+        "timestamp": 1748280405,
+        "cpu": 37,
+        "memory": 1399
+      },
+      {
+        "timestamp": 1748280410,
+        "cpu": 37,
+        "memory": 1399
+      },
+      {
+        "timestamp": 1748280415,
+        "cpu": 45,
+        "memory": 1405
+      },
+      {
+        "timestamp": 1748280420,
+        "cpu": 45,
+        "memory": 1405
+      },
+      {
+        "timestamp": 1748280425,
+        "cpu": 45,
+        "memory": 1405
+      },
+      {
+        "timestamp": 1748280431,
+        "cpu": 36,
+        "memory": 1411
+      },
+      {
+        "timestamp": 1748280436,
+        "cpu": 36,
+        "memory": 1411
+      },
+      {
+        "timestamp": 1748280441,
+        "cpu": 36,
+        "memory": 1411
+      },
+      {
+        "timestamp": 1748280446,
+        "cpu": 36,
+        "memory": 1411
+      },
+      {
+        "timestamp": 1748280451,
+        "cpu": 36,
+        "memory": 1411
+      },
+      {
+        "timestamp": 1748280456,
+        "cpu": 36,
+        "memory": 1411
+      },
+      {
+        "timestamp": 1748280461,
+        "cpu": 83,
+        "memory": 1412
+      },
+      {
+        "timestamp": 1748280466,
+        "cpu": 83,
+        "memory": 1412
+      },
+      {
+        "timestamp": 1748280471,
+        "cpu": 83,
+        "memory": 1412
+      },
+      {
+        "timestamp": 1748280476,
+        "cpu": 56,
+        "memory": 1402
+      },
+      {
+        "timestamp": 1748280481,
+        "cpu": 56,
+        "memory": 1402
+      },
+      {
+        "timestamp": 1748280487,
+        "cpu": 45,
+        "memory": 1409
+      },
+      {
+        "timestamp": 1748280492,
+        "cpu": 45,
+        "memory": 1409
+      },
+      {
+        "timestamp": 1748280497,
+        "cpu": 45,
+        "memory": 1409
+      },
+      {
+        "timestamp": 1748280502,
+        "cpu": 117,
+        "memory": 1416
+      },
+      {
+        "timestamp": 1748280507,
+        "cpu": 117,
+        "memory": 1416
+      },
+      {
+        "timestamp": 1748280512,
+        "cpu": 117,
+        "memory": 1416
+      },
+      {
+        "timestamp": 1748280517,
+        "cpu": 42,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748280522,
+        "cpu": 42,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748280527,
+        "cpu": 42,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748280532,
+        "cpu": 51,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748280537,
+        "cpu": 51,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748280543,
+        "cpu": 51,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748280548,
+        "cpu": 51,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748280553,
+        "cpu": 51,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748280558,
+        "cpu": 51,
+        "memory": 1404
+      },
+      {
+        "timestamp": 1748280563,
+        "cpu": 86,
+        "memory": 1416
+      }
+    ]
+  }
+}

@@ -1099,10 +1099,6 @@ class Group < Namespace
       licensed_feature_available?(:work_item_status)
   end
 
-  def work_item_status_transitions_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:work_item_status_transitions, type: :wip)
-  end
-
   def continue_indented_text_feature_flag_enabled?
     feature_flag_enabled_for_self_or_ancestor?(:continue_indented_text, type: :wip)
   end
