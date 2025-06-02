@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'parallel'
+require 'timeout'
 require_relative 'gitaly_setup'
 require_relative '../../../lib/gitlab/setup_helper'
 
@@ -186,9 +187,22 @@ module TestEnv
     return if gdk_path.empty?
 
     Bundler.with_unbundled_env do
-      success = system(gdk_path, 'send-telemetry', 'rspec_setup_duration', duration.to_s)
-      warn "Failed to send RSpec setup time via telemetry command." unless success
+      gitlab_sha = begin
+        result = IO.popen(%w[git rev-parse HEAD], chdir: Rails.root) { |p| p.read.strip }
+        result.empty? ? 'unknown' : result
+      rescue StandardError => e
+        warn "Failed to get GitLab SHA: #{e.message}"
+        'unknown'
+      end
+
+      # Add timeout in case GDK command hangs unexpectedly
+      Timeout.timeout(2) do
+        success = system(gdk_path, 'send-telemetry', 'rspec_setup_duration', duration.to_s, "--extra=gitlab_sha:#{gitlab_sha}")
+        warn "Failed to send RSpec setup time via telemetry command." unless success
+      end
     end
+  rescue Timeout::Error
+    warn "Sending telemetry timed out."
   rescue StandardError => e
     warn "Failed to send telemetry: #{e.message}"
   end

@@ -8,11 +8,15 @@ RSpec.describe 'projects/commits/show.html.haml' do
   let(:commits) { [commit] }
   let(:commit) { project.commit }
   let(:path) { 'path/to/doc.md' }
+  let(:ref) { "master" }
 
   before do
     assign(:project, project)
+    assign(:path, path)
     assign(:id, path)
+    assign(:ref, ref)
     assign(:repository, project.repository)
+    assign(:repo, project.repository)
     assign(:commits, commits)
     assign(:hidden_commit_count, 0)
 
@@ -23,6 +27,7 @@ RSpec.describe 'projects/commits/show.html.haml' do
 
     allow(view).to receive(:current_user).and_return(nil)
     allow(view).to receive(:namespace_project_signatures_path).and_return("/")
+    allow(view).to receive(:commit_blob).and_return(true)
   end
 
   context 'tree controls' do
@@ -32,6 +37,10 @@ RSpec.describe 'projects/commits/show.html.haml' do
 
     it 'renders atom feed button with matching path' do
       expect(rendered).to have_link(href: "#{project_commits_path(project, path)}?format=atom")
+    end
+
+    it 'renders "Browse files" button with link to blob or tree at path' do
+      expect(rendered).to have_link("Browse files", href: "/#{project.full_path}/-/blob/#{ref}/#{path}")
     end
   end
 

@@ -4,7 +4,7 @@
   --rd-code-border-adjust: var(--code-border-lightness-adjust, -0.075);
   --rd-line-added-background-color: var(--custom-diff-addition-color, var(--code-new-diff-background-color, $line-number-new));
   --rd-line-removed-background-color: var(--custom-diff-deletion-color, var(--code-old-diff-background-color, $line-number-old));
-  --rd-line-link-color: var(--code-line-nubmer-color, #{$gl-color-neutral-400});
+  --rd-line-link-color: var(--code-line-number-color, #{$gl-color-neutral-400});
   --rd-line-theme-border-color: oklch(from var(--code-background) calc(l + var(--rd-code-border-adjust)) c h);
   background-color: var(--code-background, $gl-color-neutral-0);
   font-family: $monospace-font;
@@ -41,7 +41,7 @@
   --rd-row-bottom-right-radius: var(--rd-diff-file-border-radius);
 }
 
-.rd-text-view-content > tr:last-child td:not(:last-child) {
+.rd-text-view-content > tr:last-child > td:not(:last-child) {
   --rd-row-bottom-right-radius: 0;
 }
 
@@ -127,12 +127,20 @@
   position: relative;
   padding: 0 10px 0 5px;
   text-align: right;
-  background-color: var(--code-line-nubmer-background-color, $white);
+  background-color: var(--code-line-number-background-color, $white);
   scroll-margin-top: var(--rd-diff-file-header-height);
   z-index: constants.$diff-file-line-number-z-index;
 }
 
-.rd-hunk-lines:has(.rd-line-number:target) {
+.rd-line-number:target,
+.rd-line-number:target ~ .rd-line-number {
+  --rd-adjacent-line-border-color: var(--rd-line-border-color);
+}
+
+.rd-hunk-lines:has(> .rd-line-number:target) {
+  --rd-line-background-color-override: var(--code-highlighted-line-background-color);
+  // handle empty cells
+  --code-line-number-background-color: var(--code-highlighted-line-background-color);
   --rd-disable-extended-borders: 1;
   position: relative;
   background-color: var(--code-highlighted-line-background-color);
@@ -141,42 +149,32 @@
   z-index: constants.$diff-file-highlighted-line-number-z-index;
 }
 
-.rd-hunk-lines:has(.rd-line-number:target) .rd-line-number,
-.rd-hunk-lines:has(.rd-line-number:target) .rd-line-content {
-  // handle empty cells
-  --code-line-nubmer-background-color: var(--code-highlighted-line-background-color);
-  --rd-line-background-color: var(--code-highlighted-line-background-color);
-}
-
 // child combinator improves performance of the selector
 // duplicate .rd-hunk-lines-inline selector to override highlighted color
 .rd-hunk-lines-parallel:hover > .rd-line-number:not(:empty),
 .rd-hunk-lines-inline.rd-hunk-lines-inline:hover > .rd-line-number {
-  --rd-line-border-color: var(--code-line-nubmer-hover-border-color, #{$gl-color-purple-200});
+  --rd-line-border-color: var(--code-line-number-hover-border-color, #{$gl-color-purple-200});
   --rd-adjacent-line-border-color: var(--rd-line-border-color);
-  --rd-line-background-color: var(--code-line-nubmer-hover-background-color, #{$gl-color-purple-100});
+  --rd-line-background-color: var(--code-line-number-hover-background-color, #{$gl-color-purple-100});
   background-color: var(--rd-line-background-color);
 }
 
-.rd-line-number:hover:not(:empty) .rd-line-link {
-  color: var(--code-line-nubmer-hover-color, $gl-color-neutral-600);
+.rd-line-number:hover > .rd-line-link {
+  color: var(--code-line-number-hover-color, $gl-color-neutral-600);
 }
 
 .rd-line-number[data-change=removed] {
-  --rd-line-link-color: var(--code-old-diff-line-nubmer-color, #{scale-color($gl-color-neutral-300, $red: -30%, $green: -30%, $blue: -30%)});
+  --rd-line-link-color: var(--code-old-diff-line-number-color, #{scale-color($gl-color-neutral-300, $red: -30%, $green: -30%, $blue: -30%)});
   --rd-line-background-color: var(--custom-diff-deletion-color, var(--code-old-diff-line-number-background-color));
-  background-color: var(--rd-line-background-color);
 }
 
 .rd-line-number[data-change=added] {
-  --rd-line-link-color: var(--code-new-diff-line-nubmer-color, #{scale-color($gl-color-neutral-200, $red: -30%, $green: -30%, $blue: -30%)});
+  --rd-line-link-color: var(--code-new-diff-line-number-color, #{scale-color($gl-color-neutral-200, $red: -30%, $green: -30%, $blue: -30%)});
   --rd-line-background-color: var(--custom-diff-addition-color, var(--code-new-diff-line-number-background-color));
-  background-color: var(--rd-line-background-color);
 }
 
 .rd-line-number[data-change=meta] {
   --rd-line-background-color: var(--code-meta-diff-background-color);
-  background-color: var(--code-meta-diff-background-color);
 }
 
 .rd-line-number-border-right,
@@ -191,8 +189,9 @@
 // consistent border colors for changed lines
 .rd-line-number,
 .rd-line-content {
-  --rd-line-border-color: oklch(from var(--rd-line-background-color) calc(l + var(--rd-code-border-adjust)) c h);
-  background-color: var(--rd-line-background-color);
+  --background-color: var(--rd-line-background-color-override, var(--rd-line-background-color));
+  --rd-line-border-color: oklch(from var(--background-color) calc(l + var(--rd-code-border-adjust)) c h);
+  background-color: var(--background-color);
 }
 
 .rd-line-content[data-change=removed] + .rd-line-number[data-change=added] {
@@ -209,7 +208,7 @@
 }
 
 // table cells can't overflow to the right, we have to reserve space on the neighbouring cell
-.rd-hunk-lines-parallel > .rd-line-number[data-position=new]:empty {
+.rd-hunk-lines-parallel > .rd-line-number[data-position=new]:not([data-change=meta]):empty {
   border-left: 0;
   margin-left: 1px;
 }

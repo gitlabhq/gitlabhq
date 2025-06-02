@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"strings"
 	"sync"
 	"time"
@@ -117,7 +118,13 @@ func (kw *KeyWatcher) receivePubSubStream(ctx context.Context, pubsub *redis.Pub
 	for {
 		msg, err := kw.conn.Receive(ctx)
 		if err != nil {
-			log.WithError(fmt.Errorf("keywatcher: pubsub receive: %v", err)).Error()
+			// EOF errors can happen if the Redis server terminates an idle connection.
+			// These are expected if the server received no subscriptions during the
+			// Redis TIMEOUT period. The EOF message will have been reported by the
+			// go-redis logger.
+			if err != io.EOF {
+				log.WithError(fmt.Errorf("keywatcher: pubsub receive: %v", err)).Error()
+			}
 			return nil
 		}
 

@@ -15,6 +15,7 @@ import (
 	redis "github.com/redis/go-redis/v9"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
+	workhorselog "gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 )
 
 var (
@@ -67,6 +68,16 @@ type SentinelOptions struct {
 	SentinelPassword  string
 	Sentinels         []string
 	SentinelTLSConfig *tls.Config
+}
+
+type redisClientLogger struct{}
+
+func (w *redisClientLogger) Printf(_ context.Context, format string, v ...interface{}) {
+	workhorselog.Info(fmt.Sprintf(format, v...))
+}
+
+func init() {
+	redis.SetLogger(&redisClientLogger{})
 }
 
 // createDialer references https://github.com/redis/go-redis/blob/b1103e3d436b6fe98813ecbbe1f99dc8d59b06c9/options.go#L214

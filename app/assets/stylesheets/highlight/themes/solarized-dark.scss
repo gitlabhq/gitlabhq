@@ -108,14 +108,14 @@ $solarized-dark-il: #2aa198;
 
   --code-background: #{$solarized-dark-pre-bg};
 
-  --code-line-nubmer-background-color: #{$solarized-dark-line-bg};
-  --code-line-nubmer-color: #{$solarized-dark-line-color};
-  --code-line-nubmer-hover-background-color: #{$gl-color-purple-800};
-  --code-line-nubmer-hover-border-color: #{$gl-color-purple-700};
-  --code-line-nubmer-hover-color: #{$gl-color-purple-50};
+  --code-line-number-background-color: #{$solarized-dark-line-bg};
+  --code-line-number-color: #{$solarized-dark-line-color};
+  --code-line-number-hover-background-color: #{$gl-color-purple-800};
+  --code-line-number-hover-border-color: #{$gl-color-purple-700};
+  --code-line-number-hover-color: #{$gl-color-purple-50};
 
   --code-old-diff-line-number-background-color: #{$solarized-dark-old-bg};
-  --code-old-diff-line-nubmer-color: #{$solarized-dark-line-color-old};
+  --code-old-diff-line-number-color: #{$solarized-dark-line-color-old};
   --code-old-diff-sign-color: #{$solarized-dark-line-color-old};
   --code-old-diff-background-color: #{$solarized-dark-old-bg};
   --code-old-diff-border-color: #{$solarized-dark-border};
@@ -123,7 +123,7 @@ $solarized-dark-il: #2aa198;
   --code-old-inline-diff-background-color: #{$solarized-dark-old-idiff};
 
   --code-new-diff-line-number-background-color: #{$solarized-dark-new-bg};
-  --code-new-diff-line-nubmer-color: #{$solarized-dark-line-color-new};
+  --code-new-diff-line-number-color: #{$solarized-dark-line-color-new};
   --code-new-diff-sign-color: #{$solarized-dark-line-color-new};
   --code-new-diff-background-color: #{$solarized-dark-new-bg};
   --code-new-diff-border-color: #{$solarized-dark-border};

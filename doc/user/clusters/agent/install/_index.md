@@ -46,12 +46,18 @@ Prerequisites:
     with the `--path` option, you must pass the same value to the `--manifest-path` option of the
     `glab cluster agent bootstrap` command.
 
-To install the agent:
+To install the agent, either:
 
-- Run `glab cluster agent bootstrap`:
+- Run `glab cluster agent bootstrap` within the directory of your Git repository of your target project:
 
   ```shell
-  glab cluster agent bootstrap <agent-name> --manifest-path <same as --path used in flux bootstrap>
+  glab cluster agent bootstrap <agent-name> --manifest-path <same_path_used_in_flux_bootstrap>
+  ```
+
+- Run `glab -R path-with-namespace cluster agent bootstrap` if you must run the command outside of the Git repo of your target project:
+
+  ```shell
+  glab -R <full/path/to/project> cluster agent bootstrap <agent-name> --manifest-path <same_path_used_in_flux_bootstrap>
   ```
 
 By default, the command:

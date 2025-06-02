@@ -124,6 +124,17 @@ module CommitsHelper
     end
   end
 
+  def path_to_browse_file_or_directory(project, ref, path)
+    return project_tree_path(project, ref) if path.blank?
+
+    path_to_item = tree_join(ref, path)
+    if commit_blob.present?
+      project_blob_path(project, path_to_item)
+    else
+      project_tree_path(project, path_to_item)
+    end
+  end
+
   def commit_options_dropdown_data(project, commit)
     can_collaborate = current_user && can_collaborate_with_project?(project)
 

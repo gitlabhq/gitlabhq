@@ -114,11 +114,11 @@ $solarized-light-il: #2aa198;
 
   --code-background: #{$solarized-light-pre-bg};
 
-  --code-line-nubmer-background-color: #{$solarized-light-line-bg};
-  --code-line-nubmer-color: #{$solarized-light-line-color};
+  --code-line-number-background-color: #{$solarized-light-line-bg};
+  --code-line-number-color: #{$solarized-light-line-color};
 
   --code-old-diff-line-number-background-color: #{$solarized-light-old-bg};
-  --code-old-diff-line-nubmer-color: #{$solarized-light-line-color-old};
+  --code-old-diff-line-number-color: #{$solarized-light-line-color-old};
   --code-old-diff-sign-color: #{$solarized-light-line-color-old};
   --code-old-diff-background-color: #{$solarized-light-old-bg};
   --code-old-diff-border-color: #{$solarized-light-border};
@@ -126,7 +126,7 @@ $solarized-light-il: #2aa198;
   --code-old-inline-diff-background-color: #{$solarized-light-old-idiff};
 
   --code-new-diff-line-number-background-color: #{$solarized-light-new-bg};
-  --code-new-diff-line-nubmer-color: #{$solarized-light-line-color-new};
+  --code-new-diff-line-number-color: #{$solarized-light-line-color-new};
   --code-new-diff-sign-color: #{$solarized-light-line-color-new};
   --code-new-diff-background-color: #{$solarized-light-new-bg};
   --code-new-diff-border-color: #{$solarized-light-border};

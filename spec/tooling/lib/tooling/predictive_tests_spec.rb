@@ -145,7 +145,7 @@ RSpec.describe Tooling::PredictiveTests, feature_category: :tooling do
           expect(event_tracker).to have_received(:send_event).with(
             "glci_predictive_tests_count",
             label: "test-count",
-            value: File.read(matching_tests.path).lines.length,
+            value: File.read(matching_tests.path).split(" ").length,
             property: "described_class"
           )
         end

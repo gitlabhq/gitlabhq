@@ -20,3 +20,4 @@ $diff-file-hunk-header-z-index: functions.more-than($diff-file-line-number-z-ind
 $diff-file-highlighted-line-number-z-index: functions.more-than($diff-file-hunk-header-z-index);
 
 $diff-file-header-z-index: functions.more-than($diff-file-highlighted-line-number-z-index);
+$diff-file-header-active-z-index: functions.more-than($diff-file-header-z-index);

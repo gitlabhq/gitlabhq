@@ -37,6 +37,10 @@
   container-type: scroll-state;
 }
 
+.rd-diff-file-header-sticky:has([data-options-toggle] button[aria-expanded='true']) {
+  z-index: constants.$diff-file-header-active-z-index;
+}
+
 .rd-diff-file-header {
   @apply gl-text-default;
   display: flex;
@@ -49,10 +53,6 @@
   @container scroll-state(stuck: top) {
     border-radius: 0 0 var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius);
   }
-}
-
-.rd-diff-file-header:has([data-options-toggle] button[aria-expanded='true']) {
-  z-index: 10;
 }
 
 .rd-diff-file[data-collapsed] .rd-diff-file-header {

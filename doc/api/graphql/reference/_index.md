@@ -21666,7 +21666,7 @@ Analyzer status (success/fail) for projects.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="analyzerprojectstatustypeanalyzertype"></a>`analyzerType` | [`AnalyzerTypeEnum!`](#analyzertypeenum) | Analyzer type. |
-| <a id="analyzerprojectstatustypebuildid"></a>`buildId` | [`Int`](#int) | Build ID. |
+| <a id="analyzerprojectstatustypebuildid"></a>`buildId` | [`JobID`](#jobid) | Build ID. |
 | <a id="analyzerprojectstatustypelastcall"></a>`lastCall` | [`Time!`](#time) | Last time analyzer was called. |
 | <a id="analyzerprojectstatustypeprojectid"></a>`projectId` | [`Int!`](#int) | Project ID. |
 | <a id="analyzerprojectstatustypestatus"></a>`status` | [`AnalyzerStatusEnum!`](#analyzerstatusenum) | Analyzer status. |

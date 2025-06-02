@@ -45818,6 +45818,9 @@ msgstr ""
 msgid "Pipeline|Pipeline"
 msgstr ""
 
+msgid "Pipeline|Pipeline #%{pipeline_id}"
+msgstr ""
+
 msgid "Pipeline|Pipeline cannot be run."
 msgstr ""
 
