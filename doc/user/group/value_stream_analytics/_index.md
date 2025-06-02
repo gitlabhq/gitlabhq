@@ -13,11 +13,7 @@ title: Value stream analytics
 {{< /details >}}
 
 Value stream analytics calculates the duration of every stage of your software development process.
-This way you can measure how much time it takes to go from an idea to production by tracking merge request or issue events.
-
-A **value stream** is the entire work process that delivers value to customers. For example,
-the [DevOps lifecycle](https://about.gitlab.com/stages-devops-lifecycle/) is a value stream that starts
-with the "manage" stage and ends with the "protect" stage.
+You can measure how much time it takes to go from an idea to production by tracking merge request or issue events.
 
 Use value stream analytics to identify:
 
@@ -33,23 +29,25 @@ Value stream analytics helps businesses:
 - Identify and solve inefficiencies.
 - Optimize their workstreams to deliver more value, faster (for example, [reducing merge request review time](https://about.gitlab.com/blog/2025/02/20/how-we-reduced-mr-review-time-with-value-stream-management/)).
 
-Value stream analytics is available for projects and groups.
-
 For a click-through demo, see [the Value Stream Management product tour](https://gitlab.navattic.com/vsm).
 
-Value stream analytics is made of three core objects:
+Value stream analytics has a hierarchical structure:
 
 - A **value stream** contains a value stream stage list.
 - Each value stream stage list contains one or more **stages**.
-- Each stage has two **events**: start and stop.
-
-## Value stream stages
-
-A stage represents an event pair (start and end events) with additional metadata, such as the name of the stage. You can configure the stages in the pairing rules defined in the backend.
+- Each stage is defined by two **events**: start and end.
 
 ## Value streams
 
-Value streams are container objects for the stages. You can have multiple value streams per group, to focus on different aspects of the DevOps lifecycle.
+A value stream is the entire work process that delivers value to customers.
+Value streams are container objects for stages.
+You can have multiple value streams per group, to focus on different aspects of the DevOps lifecycle.
+
+## Value stream stages
+
+A stage represents an event pair (start and end events) with additional metadata, such as the name of the stage.
+You can use value stream analytics with the built-in default stages, which you can reorder and hide.
+You can also create and add custom stages that align with your specific development workflows.
 
 ## Value stream stage events
 
@@ -59,9 +57,16 @@ Value streams are container objects for the stages. You can have multiple value 
 
 {{< /history >}}
 
-Events are the smallest building blocks of the value stream analytics feature. A stage consists of a start event and an end event.
+Events are the building blocks that define when stages start and end.
+Each event has a start and end time:
 
-The following stage events are available:
+- Start event time marks when work begins in a stage (for example, when an issue is created).
+- End event time marks when work completes in a stage (for example, when an issue is closed).
+
+GitLab calculates stage duration based on the start and end event times, using this formula:
+Stage duration = End event time - Start event time
+
+Value stream analytics supports the following events:
 
 - Issue closed
 - Issue created
@@ -84,9 +89,8 @@ The following stage events are available:
 - MR last pipeline duration
 - MR last approved at
 
-These events play a key role in the duration calculation, which is calculated by the formula: duration = end event time - start event time.
-
-You can share your ideas or feedback about stage events in [issue 520962](https://gitlab.com/gitlab-org/gitlab/-/issues/520962).
+You can share your ideas or feedback about stage events in
+[issue 520962](https://gitlab.com/gitlab-org/gitlab/-/issues/520962).
 
 ## Data aggregation
 
@@ -468,10 +472,9 @@ To view tasks by type:
 
 {{< /history >}}
 
-### With GitLab default stages
+### With default stages
 
-When you create a value stream, you can use GitLab default stages and hide or re-order them. You can also
-create custom stages in addition to those provided in the default template.
+To create a value stream with default stages:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Analyze > Value Stream analytics**.
@@ -494,7 +497,7 @@ If you have recently upgraded to GitLab Premium, it can take up to 30 minutes fo
 
 ### With custom stages
 
-When you create a value stream, you can create and add custom stages that align with your own development workflows.
+To create a value stream with custom stages:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Analyze > Value Stream analytics**.

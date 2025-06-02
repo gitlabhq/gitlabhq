@@ -53,6 +53,7 @@ The information on this page assumes:
 - Kubernetes node cgroup v2. Native, hybrid v1 mode is not supported. Only
   [`systemd`-style cgroup structure](https://kubernetes.io/docs/setup/production-environment/container-runtimes/#systemd-cgroup-driver) is supported (Kubernetes default).
 - Pod access to node mountpoint `/sys/fs/cgroup`.
+- Containerd version 2.1.0 or later.
 - Pod init container (`init-cgroups`) access to `root` user filesystem permissions on `/sys/fs/cgroup`. Used to delegate the pod cgroup to the Gitaly container
   (user `git`, UID `1000`).
 - The cgroups filesystem is not mounted with the `nsdelegate` flag. For more information, see Gitaly issue [6480](https://gitlab.com/gitlab-org/gitaly/-/issues/6480).
@@ -64,6 +65,29 @@ When running Gitaly in Kubernetes, you must:
 - [Address pod disruption](#address-pod-disruption).
 - [Address resource contention and saturation](#address-resource-contention-and-saturation).
 - [Optimize pod rotation time](#optimize-pod-rotation-time).
+
+### Enable cgroup_writable field in Containerd
+
+Cgroup support in Gitaly requires writable access to cgroups for unprivileged containers. Containerd v2.1.0 introduced the `cgroup_writable` configuration option. When enabled, this option ensures that the cgroups filesystem is mounted with read/write permissions.
+
+To enable this field, perform the following steps on the nodes where Gitaly will be deployed. If Gitaly is already deployed, then the pods must be recreated after the configuration is modified.
+
+1. Modify the Containerd configuration file located at `/etc/containerd/config.toml` to include the `cgroup_writable` field:
+
+   ```toml
+   [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+   runtime_type = "io.containerd.runc.v2"
+   cgroup_writable = true
+   ```
+
+1. Restart the Kubelet and Containerd services:
+
+   ```shell
+   sudo systemctl restart kubelet
+   sudo systemctl restart containerd
+   ```
+
+   These commands might mark the node as NotReady if the services take a long time to restart.
 
 ### Address pod disruption
 
