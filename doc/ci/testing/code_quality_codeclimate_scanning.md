@@ -174,7 +174,7 @@ Both the JSON and HTML files are output as job artifacts. The HTML file is conta
 
 #### Output in only HTML format
 
-To download the Code Quality report in _only_ HTML format, set `REPORT_FORMAT` to `html`, overriding
+To download the Code Quality report in only HTML format, set `REPORT_FORMAT` to `html`, overriding
 the default definition of the `code_quality` job.
 
 {{< alert type="note" >}}

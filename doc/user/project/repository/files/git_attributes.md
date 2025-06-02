@@ -26,7 +26,7 @@ to file handling and display, such as:
 
 ## Encoding requirements
 
-The `.gitattributes` file _must_ be encoded in UTF-8 and _must not_ contain a
+The `.gitattributes` file must be encoded in UTF-8 and must not contain a
 Byte Order Mark. If a different encoding is used, the file's contents are
 ignored.
 

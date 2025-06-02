@@ -486,7 +486,7 @@ For Kubernetes deployments, you can create a similar schedule using the CronJob 
 
 - Rebuilding database indexes is a disk-intensive task, so you should perform the
   task during off-peak hours. Running the task during peak hours can lead to
-  _increased_ bloat, and can also cause certain queries to perform slowly.
+  increased bloat, and can also cause certain queries to perform slowly.
 - The task requires free disk space for the index being restored. The created
   indexes are appended with `_ccnew`. If the reindexing task fails, re-running the
   task cleans up the temporary indexes.

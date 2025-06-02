@@ -137,7 +137,7 @@ helps avoid unnecessary queries.
 Fields can be authorized with the `authorize` option.
 
 Fields authorization is checked against the current object, and
-authorization happens _before_ resolution, which means that
+authorization happens before resolution, which means that
 fields do not have access to the resolved resource. If you need to
 apply an authorization check to a field, you probably want to add
 authorization to the resolver, or ideally to the type.

@@ -426,7 +426,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
    {{< /alert >}}
 
-   When prompted, enter the _plaintext_ password you set in the first step for the
+   When prompted, enter the plaintext password you set in the first step for the
    `gitlab_replicator` user. If all worked correctly, you should see
    the list of the **primary** site's databases.
 
@@ -527,7 +527,7 @@ data before running `pg_basebackup`.
 
    {{< /alert >}}
 
-   When prompted, enter the _plaintext_ password you set up for the `gitlab_replicator`
+   When prompted, enter the plaintext password you set up for the `gitlab_replicator`
    user in the first step.
 
    ```shell

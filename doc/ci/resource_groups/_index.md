@@ -194,7 +194,7 @@ there is a case that it doesn't work well with the other CI features.
 
 For example, when you run [a child pipeline](../pipelines/downstream_pipelines.md#parent-child-pipelines)
 that requires the same resource group with the parent pipeline,
-a dead lock could happen. Here is an example of a _bad_ setup:
+a dead lock could happen. Here is an example of a bad setup:
 
 ```yaml
 # BAD

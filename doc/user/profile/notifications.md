@@ -219,7 +219,7 @@ all the options.
 
 #### Events not included in the Watch level
 
-If you set the notification level to **Watch**, you get notified about _almost all_ events, with
+If you set the notification level to **Watch**, you get notified about almost all events, with
 these exceptions:
 
 - Somebody pushes to a merge request.

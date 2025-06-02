@@ -179,7 +179,7 @@ A user's membership in an approver group determines their individual approval pe
 in the following ways:
 
 - Inherited members are not considered approvers. Only direct members can approve merge requests.
-- A user from a group approver group who is later _also_ added as an individual approver
+- A user from a group approver group who is later also added as an individual approver
   counts as one approver, not two.
 - Merge request authors do not count as eligible approvers on their own merge requests by default.
   To change this behavior, disable the

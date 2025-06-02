@@ -753,11 +753,11 @@ The following are Docker image-related CI/CD variables.
 
 1. <a id="sast-excluded-paths-description"></a>You might need to exclude temporary directories used by your build tool as
    these can generate false positives. To exclude paths, copy and paste the default excluded paths, then **add** your
-   own paths to be excluded. If you don't specify the default excluded paths, the defaults are overridden and _only_ the
+   own paths to be excluded. If you don't specify the default excluded paths, the defaults are overridden and only the
    paths you specify are excluded from SAST scans.
 
 1. <a id="sast-excluded-paths-semgrep"></a>For these analyzers, `SAST_EXCLUDED_PATHS` is implemented as a **pre-filter**,
-   which is applied _before_ the scan is executed.
+   which is applied before the scan is executed.
 
    The analyzer skips any files or directories whose path matches one of the comma-separated patterns.
 
@@ -774,7 +774,7 @@ The following are Docker image-related CI/CD variables.
    Each pattern is a glob-style pattern that uses the same syntax as [gitignore](https://git-scm.com/docs/gitignore#_pattern_format).
 
 1. <a id="sast-excluded-paths-all-other-sast-analyzers"></a>For these analyzers, `SAST_EXCLUDED_PATHS` is implemented as
-   a **post-filter**, which is applied _after_ the scan is executed.
+   a **post-filter**, which is applied after the scan is executed.
 
    Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported
    patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns.
@@ -801,7 +801,7 @@ The following are Docker image-related CI/CD variables.
 
    For example, to exclude building and scanning a `maven` project containing a build file with the path `project/subdir/pom.xml`, pass a glob pattern that explicitly matches the build file, such as `project/*/*.xml` or `**/*.xml`, or an exact match such as `project/subdir/pom.xml`.
 
-   Passing a parent directory for the pattern, such as `project` or `project/subdir`, does _not_ exclude the directory from being built, because in this case, the build file is _not_ explicitly matched by the pattern.
+   Passing a parent directory for the pattern, such as `project` or `project/subdir`, does not exclude the directory from being built, because in this case, the build file is not explicitly matched by the pattern.
 
 1. <a id="search-max-depth-description"></a>The [SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/blob/v17.4.1-ee/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml)
    searches the repository to detect the programming languages

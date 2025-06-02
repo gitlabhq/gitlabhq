@@ -60,7 +60,7 @@ to access it. In this case, you can use an SSH key pair.
 
 1. Create a new [file type CI/CD variable](../variables/_index.md#for-a-project).
    - In the **Key** field, enter `SSH_PRIVATE_KEY`.
-   - In the **Value** field, paste the content of your _private_ key from the key pair that you created earlier.
+   - In the **Value** field, paste the content of your private key from the key pair that you created earlier.
      Make sure the file ends with a newline. To add a newline, press
      <kbd>Enter</kbd> or <kbd>Return</kbd> at the end of the last line of the SSH key before saving your changes.
 
@@ -106,7 +106,7 @@ to access it. In this case, you can use an SSH key pair.
 
 1. Make sure the private server's [SSH host keys are verified](#verifying-the-ssh-host-keys).
 
-1. As a final step, add the _public_ key from the one you created in the first
+1. As a final step, add the public key from the one you created in the first
    step to the services that you want to have an access to from inside the build
    environment. If you are accessing a private GitLab repository you must add
    it as a [deploy key](../../user/project/deploy_keys/_index.md).
@@ -135,7 +135,7 @@ on, and use that key for all projects that are run on this machine.
    **Do not** add a passphrase to the SSH key, or the `before_script` will
    prompt for it.
 
-1. As a final step, add the _public_ key from the one you created earlier to the
+1. As a final step, add the public key from the one you created earlier to the
    services that you want to have an access to from inside the build environment.
    If you are accessing a private GitLab repository you must add it as a
    [deploy key](../../user/project/deploy_keys/_index.md).

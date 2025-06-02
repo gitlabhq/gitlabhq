@@ -28,7 +28,7 @@ Engineers, Customer Success Managers, and Development Engineers as users upgrade
 across greater than 1-3 minor releases.
 
 Wherever possible, a required stop should be avoided. If it can't be avoided,
-the required stop should be aligned to a _scheduled_ required stop.
+the required stop should be aligned to a scheduled required stop.
 
 Scheduled required stops are often implemented for the previous `major`.`minor`
 release just prior to a `major` version release in order to accommodate multiple

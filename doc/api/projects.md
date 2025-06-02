@@ -360,7 +360,7 @@ List projects.
 {{< /history >}}
 
 Get a list of all visible projects across GitLab for the authenticated user.
-When accessed without authentication, only public projects with _simple_ fields
+When accessed without authentication, only public projects with simple fields
 are returned.
 
 ```plaintext

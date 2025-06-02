@@ -47,7 +47,7 @@ or
 - `user_id` (integer, 4 bytes)
 
 In these examples, the `id` and `user_id` columns are packed together, which
-means we only need 8 bytes to store _both_ of them. This in turn means each row
+means we only need 8 bytes to store both of them. This in turn means each row
 requires 8 bytes less space.
 
 Since Ruby on Rails 5.1, the default data type for IDs is `bigint`, which uses 8 bytes.

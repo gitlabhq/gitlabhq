@@ -31,11 +31,22 @@ For code search, GitLab uses these types in this order:
 Scopes describe the type of data you're searching.
 The following scopes are available for basic search:
 
-| Search level | Code | Comments | Commits | Epics | Issues | Merge requests | Milestones | Projects | Users | Wikis | Notes                                              |
-|--------------|:----:|:--------:|:-------:|:-----:|:------:|:--------------:|:----------:|:--------:|:-----:|:-----:|----------------------------------------------------|
-| Global       |      |          |         |       |   ✓    |       ✓        |     ✓      |    ✓     |   ✓   |       | An administrator can [disable global search scopes](#disable-global-search-scopes). |
-| Group        |      |          |         |   ✓   |   ✓    |       ✓        |     ✓      |    ✓     |   ✓   |       |                                                    |
-| Project      |  ✓   |    ✓     |    ✓    |       |   ✓    |       ✓        |     ✓      |          |   ✓   |   ✓   |                                                    |
+| Scope          | Global <sup>1</sup>                         | Group                                       | Project |
+|----------------|:-------------------------------------------:|:-------------------------------------------:|:-------:|
+| Code           | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
+| Comments       | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
+| Commits        | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
+| Epics          | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
+| Issues         | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Merge requests | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Milestones     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Projects       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
+| Users          | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Wikis          | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No          | {{< icon name="check-circle-filled" >}} Yes |
+
+**Footnotes**:
+
+1. An administrator can [disable global search scopes](#disable-global-search-scopes).
 
 ## Specify a search type
 

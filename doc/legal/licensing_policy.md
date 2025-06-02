@@ -124,6 +124,8 @@ Cloud Licensing and whenever customers on Offline licenses share their usage dat
 To view this data, the customer can search by `Company` name or `Subscription` name. Also recorded with this data is `Hostname` and `Instance identifier` ID,
 which can help to indicate if the data is from a production or development instance.
 
+In GitLab 18.1 and later, the `Unique instance` ID field can also be used to identify a customer's GitLab Self-Managed instance.
+
 <!-- markdownlint-enable MD013 -->
 
 ### Ability to have some instances using Cloud Licensing, and others air-gapped or offline

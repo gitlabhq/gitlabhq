@@ -16,7 +16,7 @@ To set up testing, follow the configuration on this page.
 ## Use appropriate test data
 
 Make sure you are testing a scenario which has spam/CAPTCHA enabled. For example:
-make sure you are editing a _public_ snippet, as only public snippets are checked for spam.
+make sure you are editing a public snippet, as only public snippets are checked for spam.
 
 ## Enable feature flags
 

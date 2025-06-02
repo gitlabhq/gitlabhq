@@ -369,7 +369,7 @@ them to change their position and epic assignment:
 - To reorder an issue, drag it to the new position in a list.
 - To assign an issue to another epic, drag it to the epic's horizontal lane.
 - To remove an issue from an epic, drag it to the **Issues with no epic assigned** lane.
-- To move an issue to another epic _and_ another list, at the same time, drag the issue diagonally.
+- To move an issue to another epic and another list, at the same time, drag the issue diagonally.
 
 ![Drag issues between swimlanes](img/epics_swimlanes_drag_and_drop_v13_6.png)
 

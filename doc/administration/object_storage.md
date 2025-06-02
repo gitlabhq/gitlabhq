@@ -1139,7 +1139,7 @@ additional complexity and unnecessary redundancy. Because both GitLab
 Rails and Workhorse components need access to object storage, the
 consolidated form avoids excessive duplication of credentials.
 
-The consolidated form is used _only_ if all lines from
+The consolidated form is used only if all lines from
 the original form is omitted. To move to the consolidated form, remove the
 original configuration (for example, `artifacts_object_store_enabled`, or
 `uploads_object_store_connection`)

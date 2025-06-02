@@ -80,7 +80,7 @@ A database may not use an index even when a regular sequence scan
 (iterating over all rows) is faster, especially for small tables.
 
 Consider adding an index if a table is expected to grow, and your query has to filter a lot of rows.
-You may _not_ want to add an index if the table size is small (<`1,000` records),
+You may not want to add an index if the table size is small (<`1,000` records),
 or if existing indexes already filter out enough rows.
 
 ## Maintenance Overhead
@@ -349,7 +349,7 @@ account for the occasional usage.
 
 #### Investigating related queries
 
-The following are ways to find all queries that _may_ utilize the index. It's important to understand the context in
+The following are ways to find all queries that may utilize the index. It's important to understand the context in
 which the queries are or may be executed so that we can determine if the index either:
 
 - Has no queries on GitLab.com nor on self-managed that depend on it.

@@ -26,7 +26,7 @@ API tests either as part your CI/CD workflow, [on-demand](../dast/on-demand_scan
 
 {{< alert type="warning" >}}
 
-Do not run API security testing against a production server. Not only can it perform _any_ function that
+Do not run API security testing against a production server. Not only can it perform any function that
 the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
 data. Only run API security testing against a test server.
 

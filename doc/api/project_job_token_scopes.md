@@ -39,7 +39,7 @@ If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the fol
 
 | Attribute          | Type    | Description |
 |--------------------|---------|-------------|
-| `inbound_enabled`  | boolean | Indicates if the [**Limit access _to_ this project** setting](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) is enabled. If disabled, then [all projects have access](../ci/jobs/ci_job_token.md#allow-any-project-to-access-your-project). |
+| `inbound_enabled`  | boolean | Indicates if the [**Limit access to this project** setting](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) is enabled. If disabled, then [all projects have access](../ci/jobs/ci_job_token.md#allow-any-project-to-access-your-project). |
 | `outbound_enabled` | boolean | Indicates if the CI/CD job token generated in this project has access to other projects. [Deprecated and planned for removal in GitLab 18.0](../update/deprecations.md#cicd-job-token---limit-access-from-your-project-setting-removal). |
 
 Example request:
@@ -61,8 +61,8 @@ Example response:
 
 {{< history >}}
 
-- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) from **Allow access to this project with a CI_JOB_TOKEN** to **Limit access _to_ this project** in GitLab 16.3.
-- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) from **Limit access _to_ this project** to **Authorized groups and projects** in GitLab 17.2.
+- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) from **Allow access to this project with a CI_JOB_TOKEN** to **Limit access to this project** in GitLab 16.3.
+- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) from **Limit access to this project** to **Authorized groups and projects** in GitLab 17.2.
 
 {{< /history >}}
 

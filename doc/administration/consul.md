@@ -30,7 +30,7 @@ Before configuring Consul:
 
 ## Configure the Consul nodes
 
-On _each_ Consul server node:
+On each Consul server node:
 
 1. Follow the instructions to [install](https://about.gitlab.com/install/)
    GitLab by choosing your preferred platform, but do not supply the

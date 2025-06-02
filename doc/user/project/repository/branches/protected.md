@@ -113,7 +113,7 @@ in the **Admin** area.
 ## Use wildcard rules
 
 When using wildcards, multiple rules can apply to a single branch.
-If more than one rule applies to a branch, the _most permissive_ rule controls
+If more than one rule applies to a branch, the most permissive rule controls
 how the branch behaves. For merge controls to work properly, set
 **Allowed to push and merge** to a broader set of users than **Allowed to merge**.
 
@@ -330,7 +330,7 @@ Members who can push to this branch can now also force push.
 {{< /details >}}
 
 For a protected branch, you can require at least one approval by a [Code Owner](../../codeowners/_index.md).
-If a branch is protected by multiple rules, code owner approval is required if _any_ of
+If a branch is protected by multiple rules, code owner approval is required if any of
 the applicable rules have **Required approval from code owners** enabled.
 
 To protect a new branch and enable Code Owner's approval:

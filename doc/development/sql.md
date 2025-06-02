@@ -69,7 +69,7 @@ WHERE title ILIKE '%Draft:%';
 Because the value for `ILIKE` starts with a wildcard the database is not able to
 use an index as it doesn't know where to start scanning the indexes.
 
-Luckily, PostgreSQL _does_ provide a solution: trigram Generalized Inverted Index (GIN) indexes. These
+Luckily, PostgreSQL does provide a solution: trigram Generalized Inverted Index (GIN) indexes. These
 indexes can be created as follows:
 
 ```sql
@@ -97,7 +97,7 @@ For example, a GIN/trigram index for `issues.title` would be called
 
 Due to these indexes taking quite some time to be built they should be built
 concurrently. This can be done by using `CREATE INDEX CONCURRENTLY` instead of
-just `CREATE INDEX`. Concurrent indexes can _not_ be created inside a
+just `CREATE INDEX`. Concurrent indexes can not be created inside a
 transaction. Transactions for migrations can be disabled using the following
 pattern:
 
@@ -295,7 +295,7 @@ get related data or data based on certain criteria, but `JOIN` performance can
 quickly deteriorate as the data involved grows.
 
 For example, if you want to get a list of projects where the name contains a
-value _or_ the name of the namespace contains a value most people would write
+value or the name of the namespace contains a value most people would write
 the following query:
 
 ```sql

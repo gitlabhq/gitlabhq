@@ -45,7 +45,7 @@ check permissions.
 
 ### Frontend
 
-When using an ability check in UI elements, make sure to _also_ use an ability
+When using an ability check in UI elements, make sure to also use an ability
 check for the underlying backend code, if there is any. This ensures there is
 absolutely no way to use the feature until the user has proper access.
 

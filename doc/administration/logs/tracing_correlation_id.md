@@ -127,7 +127,7 @@ find /var/log/gitlab -type f -mtime 0 -exec grep 'LOt9hgi1TV4' '{}' '+'
 ### Searching in distributed architectures
 
 If you have done some horizontal scaling in your GitLab infrastructure, then
-you must search across _all_ of your GitLab nodes. You can do this with
+you must search across all of your GitLab nodes. You can do this with
 some sort of log aggregation software like Loki, ELK, Splunk, or others.
 
 You can use a tool like Ansible or PSSH (parallel SSH) that can execute identical commands across your servers in

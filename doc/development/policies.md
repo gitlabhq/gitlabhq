@@ -239,8 +239,8 @@ class ChildPolicy < BasePolicy
 end
 ```
 
-With this definition, the `ChildPolicy` _never_ looks in the `ParentPolicy` to
-satisfy `:eat_broccoli`, but it _will_ use it for any other abilities. The child
+With this definition, the `ChildPolicy` never looks in the `ParentPolicy` to
+satisfy `:eat_broccoli`, but it will use it for any other abilities. The child
 policy can then define `:eat_broccoli` in a way that makes sense for `Child` and not
 `Parent`.
 

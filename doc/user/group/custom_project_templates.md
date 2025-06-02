@@ -111,7 +111,7 @@ this reassignment when you configure security features like protected branches
 and tags. For example, if the template contains a protected branch:
 
 - In the template, the branch allows the _template owner_ to merge into the default branch.
-- In the project created from the template, the branch allows _you_ to merge into
+- In the project created from the template, the branch allows you to merge into
   the default branch.
 
 ## Troubleshooting

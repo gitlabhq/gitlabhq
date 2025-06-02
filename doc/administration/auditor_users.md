@@ -54,7 +54,7 @@ You can also give users auditor access using [SAML groups](../integration/saml.m
 
 ## Auditor user permissions and restrictions
 
-Auditor access is _not_ a read-only version of administrator access because it doesn't permit access to the **Admin** area.
+Auditor access is not a read-only version of administrator access because it doesn't permit access to the **Admin** area.
 
 For access to their own resources and resources within a group or project where they are a member,
 users with auditor access have the same [permissions](../user/permissions.md) as regular users.

@@ -74,7 +74,7 @@ end
 
 ### Except
 
-Run tests in their typical contexts _except_ as specified.
+Run tests in their typical contexts except as specified.
 
 Matches use:
 

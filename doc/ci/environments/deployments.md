@@ -115,7 +115,7 @@ so that deployed commits are not garbage collected, even if it's not referenced 
 ## Deployment rollback
 
 When you roll back a deployment on a specific commit,
-a _new_ deployment is created. This deployment has its own unique job ID.
+a new deployment is created. This deployment has its own unique job ID.
 It points to the commit you're rolling back to.
 
 For the rollback to succeed, the deployment process must be defined in

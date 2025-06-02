@@ -198,7 +198,7 @@ Version ranges are not supported.
 - Property or variable replacement in `.props` or `.csproj` files do not account for nested project files.
   It replaces any variable that matches a global set of extracted variables and their values.
 - Decompiles downloaded dependencies, so source to line translation may not be 1:1.
-- Libbehave decompiles _all_ .NET versions that exist in a NuGet package. This may be optimized in the future.
+- Libbehave decompiles all .NET versions that exist in a NuGet package. This may be optimized in the future.
   - For example, some dependencies will package multiple DLLs in a single archive targeting
     different framework versions (example: net20/Some.dll, net45/Some.dll).
 

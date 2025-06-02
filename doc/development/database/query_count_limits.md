@@ -32,7 +32,7 @@ Disabling the limit should always associate and prioritize an issue, so the exce
 
 ## Disable query limiting
 
-In the event that you _have_ to disable query limits for a controller, you must first
+In the event that you have to disable query limits for a controller, you must first
 create an issue. This issue should (preferably in the title) mention the
 controller or endpoint and include the appropriate labels (`database`,
 `performance`, and at least a team specific label such as `Discussion`).

@@ -24,7 +24,7 @@ GitLab Runner is installed by default into the `gitlab-managed-apps` namespace o
 
 ## Required variables
 
-For GitLab Runner to function, you _must_ specify the following in your
+For GitLab Runner to function, you must specify the following in your
 `applications/gitlab-runner/values.yaml.gotmpl` file:
 
 - `gitlabUrl`: The GitLab server full URL (for example, `https://gitlab.example.com`)

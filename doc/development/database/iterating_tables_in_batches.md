@@ -39,7 +39,7 @@ User Load (0.7ms)  SELECT  "users"."id" FROM "users" WHERE ("users"."id" >= 4165
 
 The API of this method is similar to `in_batches`, though it doesn't support
 all of the arguments that `in_batches` supports. You should always use
-`each_batch` _unless_ you have a specific need for `in_batches`.
+`each_batch` unless you have a specific need for `in_batches`.
 
 ## Iterating over non-unique columns
 

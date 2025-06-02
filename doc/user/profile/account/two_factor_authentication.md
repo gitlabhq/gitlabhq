@@ -15,7 +15,7 @@ title: Two-factor authentication
 {{< /details >}}
 
 Two-factor authentication (2FA) provides an additional level of security to your GitLab account. For others to access
-your account, they would need your username and password _and_ access to your second factor of authentication.
+your account, they would need your username and password and access to your second factor of authentication.
 
 GitLab supports as a second factor of authentication:
 
@@ -440,7 +440,7 @@ This clears all your 2FA registrations, including mobile applications and WebAut
 - Take care that 2FA keeps working after [restoring a GitLab backup](../../../administration/backup_restore/_index.md).
 - To ensure 2FA authorizes correctly with an OTP server, synchronize your GitLab
   server's time using a service like NTP. Otherwise, authorization can always fail because of time differences.
-- The GitLab WebAuthn implementation does _not_ work when the GitLab instance is accessed from multiple hostnames
+- The GitLab WebAuthn implementation does not work when the GitLab instance is accessed from multiple hostnames
   or FQDNs. Each WebAuthn registration is linked to the _current hostname_ at the time of registration, and
   cannot be used for other hostnames or FQDNs.
 

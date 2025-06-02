@@ -227,7 +227,7 @@ Merge requests can have multiple pipelines if:
 
 - A [`rules`](../../../ci/yaml/_index.md#rules) configuration that causes [duplicate pipelines](../../../ci/jobs/job_rules.md#avoid-duplicate-pipelines):
   one merge request pipeline and one branch pipeline. In this case, the status of the
-  latest _merge request_ pipeline determines if a merge request can merge, not the branch pipeline.
+  latest merge request pipeline determines if a merge request can merge, not the branch pipeline.
 - Pipelines triggered by external tools that target the same branch as the merge request.
 
 In all cases, update your CI/CD configuration to prevent multiple pipeline types for the same merge request.

@@ -13,7 +13,7 @@ title: Repository mirroring
 
 {{< /details >}}
 
-You can _mirror_ a repository to and from external sources. You can select which repository
+You can mirror a repository to and from external sources. You can select which repository
 serves as the source. Branches, tags, and commits are synced automatically.
 
 Several mirroring methods exist:

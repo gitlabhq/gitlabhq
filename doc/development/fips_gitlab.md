@@ -398,9 +398,9 @@ for builds of the Omnibus GitLab which are built with FIPS compliance.
 These GitLab builds are compiled to use the system OpenSSL, instead of
 the Omnibus-embedded version of OpenSSL. These packages are built for:
 
-- RHEL 8 (and compatible)
-- AmazonLinux 2
-- Ubuntu
+- RHEL 8 and 9 (and compatible)
+- AmazonLinux 2 and 2023
+- Ubuntu 20.04
 
 These are [consumed by the GitLab Environment Toolkit](#install-gitlab-with-fips-compliance) (GET).
 

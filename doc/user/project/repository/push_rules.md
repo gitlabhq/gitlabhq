@@ -353,7 +353,7 @@ created in GitLab itself. As expected, commits created outside GitLab and
 pushed to the repository are rejected. For more information about this issue,
 read [issue #19185](https://gitlab.com/gitlab-org/gitlab/-/issues/19185).
 
-### Bulk update push rules for _all_ projects
+### Bulk update push rules for all projects
 
 To update the push rules to be the same for all projects,
 use the [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session),

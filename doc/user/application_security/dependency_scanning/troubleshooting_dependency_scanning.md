@@ -57,7 +57,7 @@ Generally, the approach is the following:
 1. Add [`dependencies: [<your-converter-job>]`](../../../ci/yaml/_index.md#dependencies)
    to your `dependency_scanning` job to make use of the converted definitions files.
 
-For example, Poetry projects that _only_ have a `pyproject.toml`
+For example, Poetry projects that only have a `pyproject.toml`
 file can generate the `poetry.lock` file as follows.
 
 ```yaml

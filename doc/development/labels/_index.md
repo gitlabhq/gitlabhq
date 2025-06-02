@@ -31,7 +31,7 @@ All labels, their meaning and priority are defined on the
 [labels page](https://gitlab.com/gitlab-org/gitlab/-/labels).
 
 If you come across an issue that has none of these, and you're allowed to set
-labels, you can _always_ add the type, stage, group, and often the category/feature labels.
+labels, you can always add the type, stage, group, and often the category/feature labels.
 
 ## Type labels
 

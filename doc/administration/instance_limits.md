@@ -1219,7 +1219,7 @@ ApplicationSetting.update(math_rendering_limits_enabled: false)
 These limits can also be disabled per-group using the GraphQL or REST API.
 
 If the limits are disabled, math is rendered with mostly no limits in issues, merge requests, epics, wikis, and repository files.
-This means a malicious actor _could_ add math that would cause a DoS when viewing in the browser. You must ensure
+This means a malicious actor could add math that would cause a DoS when viewing in the browser. You must ensure
 that only people you trust can add content.
 
 ## Wiki limits

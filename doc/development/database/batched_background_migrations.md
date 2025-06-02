@@ -25,7 +25,7 @@ The batched background migrations framework has ChatOps support. Using ChatOps, 
 
 ## When to use batched background migrations
 
-Use a batched background migration when you migrate _data_ in tables containing
+Use a batched background migration when you migrate data in tables containing
 so many rows that the process would exceed
 [the time limits in our guidelines](../migration_style_guide.md#how-long-a-migration-should-take)
 if performed using a regular Rails migration.
@@ -900,7 +900,7 @@ the previously enqueued BBM to handle any duplicate records.
 
 The following process has been configured to make dependencies more evident while writing a migration.
 
-- Version of the migration that queued the BBM is stored in _batched_background_migrations_ table and in BBM dictionary file.
+- Version of the migration that queued the BBM is stored in `batched_background_migrations` table and in BBM dictionary file.
 - `DEPENDENT_BATCHED_BACKGROUND_MIGRATIONS` constant is added (commented by default) in each migration file.
   To establish the dependency, add `queued_migration_version` of the dependent BBMs. If not, remove
   the commented line.

@@ -133,7 +133,7 @@ For Rails endpoints you can use the
 
 Some features require us to process uploads, for example to extract
 metadata from the uploaded file. There are a couple of different ways
-you can implement this. The main choice is _where_ to implement the
+you can implement this. The main choice is where to implement the
 processing, or "who is the processor".
 
 | Processor | Direct Upload possible? | Can reject HTTP request? | Implementation |
@@ -202,7 +202,7 @@ CarrierWave. Things you can do include:
 CarrierWave pre-processing behaviors such as image resizing
 or encryption require local access to the uploaded file. This forces
 you to upload the processed file from Ruby. This flies against direct
-upload, which is all about _not_ doing the upload in Ruby. If you use
+upload, which is all about not doing the upload in Ruby. If you use
 direct upload with an Uploader with pre-processing behaviors then the
 pre-processing behaviors are skipped silently.
 

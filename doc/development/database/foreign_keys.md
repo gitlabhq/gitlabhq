@@ -163,7 +163,7 @@ end
 ```
 
 INFO:
-By default _add_concurrent_foreign_key_ method validates the foreign key, so explicitly pass `validate: false`.
+By default `add_concurrent_foreign_key` method validates the foreign key, so explicitly pass `validate: false`.
 
 Adding a foreign key without validating it is a fast operation. It only requires a
 short lock on the table before being able to enforce the constraint on new data.
@@ -517,7 +517,7 @@ have a foreign key constraint. If that spec fails, add the column to
 [GitLab schemas](multiple_databases.md#gitlab-schema) that don't
 allow Foreign Keys between them.
 1. The foreign key is replaced by a [Loose Foreign Key](loose_foreign_keys.md) for performance reasons.
-1. The column represents a [polymorphic relationship](polymorphic_associations.md). Note that polymorphic associations should not be used. 
+1. The column represents a [polymorphic relationship](polymorphic_associations.md). Note that polymorphic associations should not be used.
 1. The column is not meant to reference another table. For example, it's common to have `partition_id`
 for partitioned tables.
 
@@ -540,7 +540,7 @@ Should you truly have a need for this it should be approved by a database
 specialist first.
 
 You should also not define any `before_destroy` or `after_destroy` callbacks on
-your models _unless_ absolutely required and only when approved by database
+your models unless absolutely required and only when approved by database
 specialists. For example, if each row in a table has a corresponding file on a
 file system it may be tempting to add a `after_destroy` hook. This however
 introduces non database logic to a model, and means we can no longer rely on

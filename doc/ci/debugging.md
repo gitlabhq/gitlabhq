@@ -448,7 +448,7 @@ Ensure that included configuration files do not create a loop of references to e
 
 {{< history >}}
 
-- **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
+- **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access to this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
 
 {{< /history >}}
 
@@ -474,7 +474,7 @@ For example:
 
 These errors can happen if the following are both true:
 
-- The [**Limit access _to_ this project**](jobs/ci_job_token.md#limit-job-token-scope-for-public-or-internal-projects)
+- The [**Limit access to this project**](jobs/ci_job_token.md#limit-job-token-scope-for-public-or-internal-projects)
   option is enabled in the private project hosting the image.
 - The job attempting to fetch the image is running in a project that is not listed in
   the private project's allowlist.

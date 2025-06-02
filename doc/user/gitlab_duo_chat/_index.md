@@ -403,12 +403,6 @@ Different language models can be the source for GitLab Duo Chat.
 - On GitLab Self-Managed, in GitLab 17.9 and later, [GitLab Duo Self-Hosted with a supported self-hosted model](../../administration/gitlab_duo_self_hosted/_index.md). Self-hosted models maximize
   security and privacy by making sure nothing is sent to an external model.
 
-  {{< alert type="note" >}}
-
-  You cannot use all Chat features with GitLab Duo Self-Hosted. For more information, see [supported Chat features](../../administration/gitlab_duo_self_hosted/_index.md#supported-duo-chat-features).
-
-  {{< /alert >}}
-
 ## Input and output length
 
 For each Chat conversation, input and output length is limited:

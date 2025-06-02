@@ -55,7 +55,7 @@ To complete this tutorial:
 - **Description**: Optional. A description of the pool.
 - **Enabled Pool**: Ensure this option is `true`.
 
-We recommend creating a single _pool_ per GitLab installation per Google Cloud project. If you have multiple GitLab repositories and CI/CD jobs on the same GitLab instance, they can authenticate using different _providers_ against the same _pool_.
+We recommend creating a single pool per GitLab installation per Google Cloud project. If you have multiple GitLab repositories and CI/CD jobs on the same GitLab instance, they can authenticate using different providers against the same pool.
 
 ## Create a workload identity provider
 

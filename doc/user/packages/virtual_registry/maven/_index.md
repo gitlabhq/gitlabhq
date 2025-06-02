@@ -326,7 +326,7 @@ credentials += Credentials("GitLab Virtual Registry", "<host>", "<username>", "<
 - `<username>`: The username.
 - `<token>`: The configured token.
 
-Make sure that the first argument of `Credentials` is `"GitLab Virtual Registry"`. This realm name must _exactly match_ the [Basic Auth realm](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Authentication#www-authenticate_and_proxy-authenticate_headers) sent by the Maven virtual registry.
+Make sure that the first argument of `Credentials` is `"GitLab Virtual Registry"`. This realm name must exactly match the [Basic Auth realm](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Authentication#www-authenticate_and_proxy-authenticate_headers) sent by the Maven virtual registry.
 
 {{< /tab >}}
 

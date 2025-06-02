@@ -145,7 +145,7 @@ Configuration example:
 ...
 ```
 
-Avoid creating configuration sections that modify existing rules _and_ build a custom ruleset, as
+Avoid creating configuration sections that modify existing rules and build a custom ruleset, as
 the latter replaces predefined rules completely.
 
 ### The `[$analyzer]` configuration section

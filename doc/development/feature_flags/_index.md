@@ -588,7 +588,7 @@ happens, we track a `Feature::RecursionError` exception to the error tracker.
 
 ### Frontend
 
-When using a feature flag for UI elements, make sure to _also_ use a feature
+When using a feature flag for UI elements, make sure to also use a feature
 flag for the underlying backend code, if there is any. This ensures there is
 absolutely no way to use the feature until it is enabled.
 

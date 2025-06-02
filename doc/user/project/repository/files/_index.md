@@ -81,7 +81,7 @@ To render an OpenAPI file:
 
 {{< alert type="note" >}}
 
-When `displayOperationId` is present in the query string and has _any_ value, it
+When `displayOperationId` is present in the query string and has any value, it
 evaluates to `true`. This behavior matches the default behavior of Swagger.
 
 {{< /alert >}}

@@ -31,7 +31,7 @@ Deploy keys can't be used for Git operations if [external authorization](../../.
 A deploy key has a defined scope when it is created:
 
 - **Project deploy key**: Access is limited to the selected project.
-- **Public deploy key**: Access can be granted to _any_ project in a GitLab instance. Access to each
+- **Public deploy key**: Access can be granted to any project in a GitLab instance. Access to each
   project must be [granted](#grant-project-access-to-a-public-deploy-key) by a user with at least
   the Maintainer role.
 

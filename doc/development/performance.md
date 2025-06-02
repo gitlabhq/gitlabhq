@@ -50,7 +50,7 @@ The process of solving performance problems is roughly as follows:
    timings, etc) to the issue mentioned in step 1.
 1. Solve the problem.
 1. Create a merge request, assign the "Performance" label and follow the [performance review process](merge_request_concepts/performance.md).
-1. Once a change has been deployed make sure to _again_ measure for at least 24
+1. Once a change has been deployed make sure to again measure for at least 24
    hours to see if your changes have any impact on the production environment.
 1. Repeat until you're done.
 
@@ -137,7 +137,7 @@ In short:
   confirm your findings.
 - X being N times faster than Y is meaningless if you don't know what impact it
   has on your production environment.
-- A production environment is the _only_ benchmark that always tells the truth
+- A production environment is the only benchmark that always tells the truth
   (unless your performance monitoring systems are not set up correctly).
 - If you must write a benchmark use the benchmark-ips Gem instead of Ruby's
   `Benchmark` module.
@@ -707,7 +707,7 @@ end
 ```
 
 Depending on the size of the String and how frequently it would be allocated
-(before the `.freeze` call was added), this _may_ make things faster, but
+(before the `.freeze` call was added), this may make things faster, but
 this isn't guaranteed.
 
 Freezing strings saves memory, as every allocated string uses at least one `RVALUE_SIZE` bytes (40
@@ -921,7 +921,7 @@ production environments.
 
 ### Moving Allocations to Constants
 
-Storing an object as a constant so you only allocate it once _may_ improve
+Storing an object as a constant so you only allocate it once may improve
 performance, but this is not guaranteed. Looking up constants has an
 impact on runtime performance, and as such, using a constant instead of
 referencing an object directly may even slow code down. For example:

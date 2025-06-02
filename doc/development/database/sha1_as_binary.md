@@ -36,6 +36,6 @@ commit.sha = '971604de4cfa324d91c41650fabc129420c8d1cc'
 commit.save
 ```
 
-There is however one requirement: the column used to store the SHA has _must_ be
+There is however one requirement: the column used to store the SHA has must be
 a binary type. For Rails this means you need to use the `:binary` type instead
 of `:text` or `:string`.

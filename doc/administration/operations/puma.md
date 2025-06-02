@@ -284,7 +284,7 @@ consumption. Most Rails application requests usually include a proportion of I/O
 During I/O wait time, MRI Ruby releases the GVL to other threads.
 Multi-threaded Puma can therefore still serve more requests than a single process.
 
-When switching to Puma, any Unicorn server configuration will _not_ carry over
+When switching to Puma, any Unicorn server configuration will not carry over
 automatically, due to differences between the two application servers.
 
 To switch from Unicorn to Puma:

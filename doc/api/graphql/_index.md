@@ -294,7 +294,7 @@ The following limits apply to the GitLab GraphQL API.
 
 ### Maximum query complexity
 
-The GitLab GraphQL API scores the _complexity_ of a query. Generally, larger
+The GitLab GraphQL API scores the complexity of a query. Generally, larger
 queries have a higher complexity score. This limit is designed to protecting
 the API from performing queries that could negatively impact its overall performance.
 

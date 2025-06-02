@@ -173,17 +173,17 @@ See the dedicated [Documentation Style Guide](../documentation/styleguide/_index
 
 ### Guidelines for good practices
 
-*Good practice* examples demonstrate encouraged ways of writing code while
+Good practice examples demonstrate encouraged ways of writing code while
 comparing with examples of practices to avoid. These examples are labeled as
-*Bad* or *Good*. In GitLab development guidelines, when presenting the cases,
-it's recommended to follow a *first-bad-then-good* strategy. First demonstrate
-the *Bad* practice (how things *could* be done, which is often still working
-code), and then how things *should* be done better, using a *Good* example. This
+"Bad" or "Good". In GitLab development guidelines, when presenting the cases,
+it's recommended to follow a "first-bad-then-good" strategy. First demonstrate
+the "Bad" practice (how things *could* be done, which is often still working
+code), and then how things *should* be done better, using a "Good" example. This
 is typically an improved example of the same code.
 
 Consider the following guidelines when offering examples:
 
-- First, offer the *Bad* example, and then the *Good* one.
+- First, offer the "Bad" example, and then the "Good" one.
 - When only one bad case and one good case is given, use the same code block.
 - When more than one bad case or one good case is offered, use separated code
   blocks for each. With many examples being presented, a clear separation helps

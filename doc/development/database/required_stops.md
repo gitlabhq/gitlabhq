@@ -52,7 +52,7 @@ If a migration timestamp is very old (> 3 weeks, or after a before the last stop
 these scenarios may cause issues:
 
 - If the migration depends on another migration with a newer timestamp but introduced in a
-  previous release _after_ a required stop, then the new migration may run sequentially sooner
+  previous release after a required stop, then the new migration may run sequentially sooner
   than the prerequisite migration, and thus fail.
 - If the migration timestamp ID is before the last, it may be inadvertently squashed when the
   team squashes other migrations from the required stop.

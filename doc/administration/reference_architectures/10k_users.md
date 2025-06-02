@@ -466,7 +466,7 @@ To configure Consul:
 
 1. SSH in to the server that will host Consul.
 1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   package of your choice. Be sure to follow only installation steps 1 and 2
    on the page, and to select the correct Linux package, with the same version
    and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
@@ -499,7 +499,7 @@ To configure Consul:
 1. Go through the steps again for all the other Consul nodes, and
    make sure you set up the correct IPs.
 
-A Consul leader is _elected_ when the provisioning of the third Consul server is
+A Consul leader is elected when the provisioning of the third Consul server is
 complete. Viewing the Consul logs `sudo gitlab-ctl tail consul` displays
 `...[INFO] consul: New leader elected: ...`.
 
@@ -901,7 +901,7 @@ a node and change its status from primary to replica (and vice versa).
 
 1. SSH in to the **Primary** Redis server.
 1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   package of your choice. Be sure to follow only installation steps 1 and 2
    on the page, and to select the correct Linux package, with the same version
    and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
@@ -974,7 +974,7 @@ a node and change its status from primary to replica (and vice versa).
 
 1. SSH in to the **replica** Redis server.
 1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   package of your choice. Be sure to follow only installation steps 1 and 2
    on the page, and to select the correct Linux package, with the same version
    and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add same contents as the primary node in the previous section replacing `redis_master_node` with `redis_replica_node`:
@@ -1066,7 +1066,7 @@ a node and change its status from primary to replica (and vice versa).
 
 1. SSH in to the **Primary** Redis server.
 1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   package of your choice. Be sure to follow only installation steps 1 and 2
    on the page, and to select the correct Linux package, with the same version
    and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
@@ -1129,7 +1129,7 @@ a node and change its status from primary to replica (and vice versa).
 
 1. SSH in to the **replica** Redis Persistent server.
 1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   package of your choice. Be sure to follow only installation steps 1 and 2
    on the page, and to select the correct Linux package, with the same version
    and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
@@ -1422,7 +1422,7 @@ To configure the Praefect nodes, on each one:
 
 1. SSH in to the Praefect server.
 1. [Download and install](https://about.gitlab.com/install/) the Linux package
-   of your choice. Be sure to follow _only_ installation steps 1 and 2
+   of your choice. Be sure to follow only installation steps 1 and 2
    on the page.
 1. Edit the `/etc/gitlab/gitlab.rb` file to configure Praefect:
 
@@ -1588,8 +1588,8 @@ The following IPs will be used as an example:
 On each node:
 
 1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package of your choice. Be sure to follow _only_ installation steps 1 and 2
-   on the page, and _do not_ provide the `EXTERNAL_URL` value.
+   package of your choice. Be sure to follow only installation steps 1 and 2
+   on the page, and do not provide the `EXTERNAL_URL` value.
 1. Edit the Gitaly server node's `/etc/gitlab/gitlab.rb` file to configure
    storage paths, enable the network listener, and to configure the token:
 
@@ -1839,7 +1839,7 @@ To configure the Sidekiq nodes, on each one:
    ```
 
 1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   package of your choice. Be sure to follow only installation steps 1 and 2
    on the page.
 1. Create or edit `/etc/gitlab/gitlab.rb` and use the following configuration:
 
@@ -1990,7 +1990,7 @@ The following IPs will be used as an example:
 On each node perform the following:
 
 1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   package of your choice. Be sure to follow only installation steps 1 and 2
    on the page.
 
 1. Edit `/etc/gitlab/gitlab.rb` and use the following configuration.
@@ -2185,7 +2185,7 @@ To configure the Monitoring node:
 
 1. SSH in to the Monitoring node.
 1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package of your choice. Be sure to follow _only_ installation steps 1 and 2
+   package of your choice. Be sure to follow only installation steps 1 and 2
    on the page.
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
@@ -2302,8 +2302,8 @@ The following services are supported:
 - Prometheus
 
 Hybrid installations leverage the benefits of both cloud native and traditional
-compute deployments. With this, _stateless_ components can benefit from cloud native
-workload management benefits while _stateful_ components are deployed in compute VMs
+compute deployments. With this, stateless components can benefit from cloud native
+workload management benefits while stateful components are deployed in compute VMs
 with Linux package installations to benefit from increased permanence.
 
 Refer to the Helm charts [Advanced configuration](https://docs.gitlab.com/charts/advanced/)

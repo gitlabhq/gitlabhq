@@ -221,7 +221,7 @@ Who can be notified:
 
 {{< /history >}}
 
-Use internal notes to protect information added to a _public_ issue, epic, or merge request.
+Use internal notes to protect information added to a public issue, epic, or merge request.
 Internal notes differ from public comments:
 
 - Only project members with least the Reporter role can view the internal note.

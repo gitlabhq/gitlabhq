@@ -88,7 +88,7 @@ To override a job definition, (for example, change properties like `variables` o
 declare a job with the same name as the `secret_detection` job to override. Place this new job after
 the template inclusion and specify any additional keys under it.
 
-In the following example _extract_ of a `.gitlab-ci.yml` file:
+In the following example extract of a `.gitlab-ci.yml` file:
 
 - The `Jobs/Secret-Detection` CI template is [included](../../../../ci/yaml/_index.md#include).
 - In the `secret_detection` job, the CI/CD variable `SECRET_DETECTION_HISTORIC_SCAN` is set to

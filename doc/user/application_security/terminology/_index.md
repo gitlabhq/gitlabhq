@@ -130,8 +130,8 @@ incorporates file path and line number.
 ## Lock file
 
 A lock file exhaustively lists both the direct and indirect dependencies of an application to ensure reproducible builds
-by a package manager. It _may_ also be a [dependency graph export](#dependency-graph-export) like in the case of a
-`Gemfile.lock` file, but listing dependency relationships is _not_ a requirement or guaranteed.
+by a package manager. It may also be a [dependency graph export](#dependency-graph-export) like in the case of a
+`Gemfile.lock` file, but listing dependency relationships is not a requirement or guaranteed.
 
 ## Package managers and package types
 
@@ -244,7 +244,7 @@ A page that displays findings discovered in the associated CI pipeline.
 A software component that is possibly affected by vulnerability. For example, when scanning a
 project for known vulnerabilities, components are first evaluated to see if they match the name
 and [package type](https://github.com/package-url/purl-spec/blob/master/PURL-TYPES.rst).
-During this stage, they're _possibly_ affected by the vulnerability, and are only [known to be affected](#known-affected-component)
+During this stage, they're possibly affected by the vulnerability, and are only [known to be affected](#known-affected-component)
 after it's confirmed that they fall in the affected version range.
 
 ## Post-filter

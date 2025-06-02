@@ -24,7 +24,7 @@ rename_table :events_temporary, :events_for_migration
 ```
 
 This does not require any downtime as long as the 3 `rename_table` calls are
-executed in the _same_ database transaction. Rails by default uses database
+executed in the same database transaction. Rails by default uses database
 transactions for migrations, but if it doesn't you need to start one
 manually:
 

@@ -32,7 +32,7 @@ Additional features and improvements may be available when Gitaly runs with cgro
 ## Before you begin
 
 Enabling limits on your environment should be done with caution and only in select circumstances, such as to protect
-against unexpected traffic. When reached, limits _do_ result in disconnects that negatively impact users. For consistent
+against unexpected traffic. When reached, limits do result in disconnects that negatively impact users. For consistent
 and stable performance, you should first explore other options such as adjusting node specifications, and
 [reviewing large repositories](../../user/project/repository/monorepos/_index.md) or workloads.
 

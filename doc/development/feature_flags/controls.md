@@ -34,7 +34,7 @@ When the changes are deployed to the environments it is time to start
 rolling out the feature to our users. The exact procedure of rolling out a
 change is unspecified, as this can vary from change to change. However, in
 general we recommend rolling out changes incrementally, instead of enabling them
-for everybody right away. We also recommend you to _not_ enable a feature
+for everybody right away. We also recommend you to not enable a feature
 _before_ the code is being deployed.
 This allows you to separate rolling out a feature from a deploy, making it
 easier to measure the impact of both separately.

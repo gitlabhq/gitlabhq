@@ -163,7 +163,7 @@ It's shown as either **Showing latest version** or **Showing version #N**.
 
 ### Skipped designs
 
-When you upload an image with the same filename as an existing uploaded design _and_ that is the
+When you upload an image with the same filename as an existing uploaded design and that is the
 same, it's skipped. This means that no new version of the design is created.
 When designs are skipped, a warning message is displayed.
 

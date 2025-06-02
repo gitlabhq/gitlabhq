@@ -86,7 +86,7 @@ internal/README.md @user4
 README.md @user3
 ```
 
-- The Code Owners for the `README.md` in the _root_ directory are:
+- The Code Owners for the `README.md` in the root directory are:
   - `@admin`, from the unnamed section.
   - `@user1` and `@user2`, from `[README Owners]`.
   - `@user3`, from `[README other owners]`.

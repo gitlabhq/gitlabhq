@@ -64,7 +64,7 @@ As the most permissive option determines the behavior, the resulting permissions
   (which each have stricter permissions), users with the Developer role can merge into the branch.
 - **Allowed to push and merge**: Of the three settings, `Maintainer` is the most permissive, and controls
   branch behavior as a result. Even though branches matching `v*` are set to `No one`, branches
-  that _also_ match `v1.x` or `v1.*` receive the more permissive `Maintainer` permission.
+  that also match `v1.x` or `v1.*` receive the more permissive `Maintainer` permission.
 
 To be certain that a rule controls the behavior of a branch,
 _all_ other patterns that match must apply less or equally permissive rules.

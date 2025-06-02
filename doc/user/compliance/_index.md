@@ -18,7 +18,7 @@ GitLab compliance features for users ensure your GitLab groups and projects meet
 ## Compliant workflow automation
 
 It is important for compliance teams to be confident that their controls and
-requirements are set up correctly, but also that they _stay_ set up correctly.
+requirements are set up correctly, but also that they stay set up correctly.
 One way of doing this is manually checking settings periodically, but this is
 error prone and time consuming. A better approach is to use single-source-of-truth
 settings and automation to ensure that whatever a compliance team has configured,

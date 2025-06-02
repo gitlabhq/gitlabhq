@@ -242,7 +242,7 @@ If you're using Geo:
   - [GitLab 16](versions/gitlab_16_changes.md)
   - [GitLab 15](versions/gitlab_15_changes.md)
 - Review Geo-specific steps when [upgrading the database](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
-- Create an upgrade and rollback plan for _each_ Geo site (primary and each secondary).
+- Create an upgrade and rollback plan for each Geo site (primary and each secondary).
 
 ### GitLab agent for Kubernetes
 

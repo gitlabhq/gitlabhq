@@ -138,9 +138,9 @@ cluster alongside your instance, see
 
 ## Cloud Native Hybrid reference architecture with Helm Charts
 
-In the Cloud Native Hybrid reference architecture setup, the select _stateless_
+In the Cloud Native Hybrid reference architecture setup, the select stateless
 components are deployed in Kubernetes by using our official [Helm Charts](https://docs.gitlab.com/charts/).
-The _stateful_ components are deployed in compute VMs with the Linux package.
+The stateful components are deployed in compute VMs with the Linux package.
 
 The smallest reference architecture available for use in Kubernetes is the [2k or 40 RPS GitLab Cloud Native Hybrid](2k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) (non HA) and [3k or 60 RPS GitLab Cloud Native Hybrid](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative) (HA).
 

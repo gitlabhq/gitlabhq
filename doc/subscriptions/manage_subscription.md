@@ -238,6 +238,12 @@ details are updated.
 
 ### Subscription data
 
+{{< history >}}
+
+- Unique instance ID [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189399) in GitLab 18.1.
+
+{{< /history >}}
+
 The daily synchronization job sends the following information to the
 Customers Portal:
 
@@ -252,6 +258,7 @@ Customers Portal:
 - GitLab version
 - Hostname
 - Instance ID
+- Unique instance ID
 
 Additionally, we also send add-on metrics such as:
 
@@ -271,6 +278,7 @@ Example of a license sync request:
   "billable_users_count": 75,
   "hostname": "gitlab.example.com",
   "instance_id": "9367590b-82ad-48cb-9da7-938134c29088",
+  "unique_instance_id": "a98bab6e-73e3-5689-a487-1e7b89a56901",
   "add_on_metrics": [
     {
       "add_on_type": "duo_enterprise",

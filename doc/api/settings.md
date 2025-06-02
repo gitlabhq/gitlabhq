@@ -823,7 +823,7 @@ of Git pushes you specify.
 
 The `housekeeping_enabled` field enables or disables
 Git housekeeping. To function properly, this field requires `housekeeping_optimize_repository_period`
-to be set, or _all_ of these values to be set:
+to be set, or all of these values to be set:
 
 - `housekeeping_bitmaps_enabled`
 - `housekeeping_full_repack_period`
