@@ -5,9 +5,7 @@ require 'snowplow-tracker'
 module Gitlab
   module Tracking
     module Destinations
-      class Snowplow < Base
-        extend ::Gitlab::Utils::Override
-
+      class Snowplow
         SNOWPLOW_NAMESPACE = 'gl'
         PRODUCT_USAGE_EVENT_COLLECT_ENDPOINT = 'events.gitlab.net'
         PRODUCT_USAGE_EVENT_COLLECT_ENDPOINT_STG = 'events-stg.gitlab.net'
@@ -22,7 +20,6 @@ module Gitlab
           Kernel.at_exit { tracker.flush(async: false) }
         end
 
-        override :event
         def event(category, action, label: nil, property: nil, value: nil, context: nil)
           return unless @event_eligibility_checker.eligible?(action)
 

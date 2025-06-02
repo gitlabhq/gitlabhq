@@ -147,6 +147,13 @@ module Types
       method: :itself,
       experiment: { milestone: '18.1' }
 
+    field :markdown_paths,
+      Types::Namespaces::MarkdownPaths,
+      null: true,
+      description: 'Namespace relevant paths to create markdown links on the UI.',
+      method: :itself,
+      experiment: { milestone: '18.1' }
+
     markdown_field :description_html, null: true
 
     def achievements_path

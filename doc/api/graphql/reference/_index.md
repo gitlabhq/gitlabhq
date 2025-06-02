@@ -17208,6 +17208,29 @@ The edge type for [`LinkedWorkItemType`](#linkedworkitemtype).
 | <a id="linkedworkitemtypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="linkedworkitemtypeedgenode"></a>`node` | [`LinkedWorkItemType`](#linkedworkitemtype) | The item at the end of the edge. |
 
+#### `MavenVirtualRegistryConnection`
+
+The connection type for [`MavenVirtualRegistry`](#mavenvirtualregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mavenvirtualregistryconnectionedges"></a>`edges` | [`[MavenVirtualRegistryEdge]`](#mavenvirtualregistryedge) | A list of edges. |
+| <a id="mavenvirtualregistryconnectionnodes"></a>`nodes` | [`[MavenVirtualRegistry]`](#mavenvirtualregistry) | A list of nodes. |
+| <a id="mavenvirtualregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `MavenVirtualRegistryEdge`
+
+The edge type for [`MavenVirtualRegistry`](#mavenvirtualregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mavenvirtualregistryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="mavenvirtualregistryedgenode"></a>`node` | [`MavenVirtualRegistry`](#mavenvirtualregistry) | The item at the end of the edge. |
+
 #### `MemberApprovalConnection`
 
 The connection type for [`MemberApproval`](#memberapproval).
@@ -27984,8 +28007,10 @@ GPG signature for a signed commit.
 | <a id="grouplinkpaths"></a>`linkPaths` {{< icon name="warning-solid" >}} | [`NamespacesLinkPaths`](#namespaceslinkpaths) | **Introduced** in GitLab 18.1. **Status**: Experiment. Namespace relevant paths to create links on the UI. |
 | <a id="grouplockduofeaturesenabled"></a>`lockDuoFeaturesEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 16.10. **Status**: Experiment. Indicates if the GitLab Duo features enabled setting is enforced for all subgroups. |
 | <a id="grouplockmathrenderinglimitsenabled"></a>`lockMathRenderingLimitsEnabled` | [`Boolean`](#boolean) | Indicates if math rendering limits are locked for all descendant groups. |
+| <a id="groupmarkdownpaths"></a>`markdownPaths` {{< icon name="warning-solid" >}} | [`MarkdownPaths`](#markdownpaths) | **Introduced** in GitLab 18.1. **Status**: Experiment. Namespace relevant paths to create markdown links on the UI. |
 | <a id="groupmarkedfordeletionon"></a>`markedForDeletionOn` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 16.11. **Status**: Experiment. Date when group was scheduled to be deleted. |
 | <a id="groupmathrenderinglimitsenabled"></a>`mathRenderingLimitsEnabled` | [`Boolean`](#boolean) | Indicates if math rendering limits are used for the group. |
+| <a id="groupmavenvirtualregistries"></a>`mavenVirtualRegistries` {{< icon name="warning-solid" >}} | [`MavenVirtualRegistryConnection`](#mavenvirtualregistryconnection) | **Introduced** in GitLab 18.1. **Status**: Experiment. Maven virtual registries registered to the group. |
 | <a id="groupmaxaccesslevel"></a>`maxAccessLevel` | [`AccessLevel!`](#accesslevel) | Maximum access level of the current user in the group. |
 | <a id="groupmentionsdisabled"></a>`mentionsDisabled` | [`Boolean`](#boolean) | Indicates if a group is disabled from getting mentioned. |
 | <a id="groupname"></a>`name` | [`String`](#string) | Name of the group. |
@@ -29955,6 +29980,42 @@ Limited group data accessible to users without full group read access (e.g. non-
 | <a id="groupnamespacelinksreportabuse"></a>`reportAbuse` | [`String`](#string) | Namespace report_abuse. |
 | <a id="groupnamespacelinkssignin"></a>`signIn` | [`String`](#string) | Namespace sign_in_path. |
 
+### `GroupNamespaceMarkdownPaths`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupnamespacemarkdownpathsuploadspath"></a>`uploadsPath` | [`String`](#string) | Uploads path for a given namespace. |
+
+#### Fields with arguments
+
+##### `GroupNamespaceMarkdownPaths.autocompleteSourcesPath`
+
+Path for autocomplete sources for a given namespace.
+
+Returns [`String`](#string).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupnamespacemarkdownpathsautocompletesourcespathautocompletetype"></a>`autocompleteType` | [`AutocompleteType!`](#autocompletetype) | Type of autocomplete source (e.g., members, labels, etc.). |
+| <a id="groupnamespacemarkdownpathsautocompletesourcespathiid"></a>`iid` | [`String`](#string) | IID of the work item. |
+| <a id="groupnamespacemarkdownpathsautocompletesourcespathworkitemtypeid"></a>`workItemTypeId` | [`String`](#string) | ID of the work item type. |
+
+##### `GroupNamespaceMarkdownPaths.markdownPreviewPath`
+
+Path for the markdown preview for given namespace.
+
+Returns [`String`](#string).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupnamespacemarkdownpathsmarkdownpreviewpathiid"></a>`iid` | [`String`](#string) | IID of the target item for markdown preview. |
+
 ### `GroupNamespaceUserLevelPermissions`
 
 #### Fields
@@ -31142,6 +31203,18 @@ Maven metadata.
 | <a id="mavenmetadataid"></a>`id` | [`PackagesMavenMetadatumID!`](#packagesmavenmetadatumid) | ID of the metadatum. |
 | <a id="mavenmetadatapath"></a>`path` | [`String!`](#string) | Path of the Maven package. |
 | <a id="mavenmetadataupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
+
+### `MavenVirtualRegistry`
+
+Represents a Maven virtual registry.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mavenvirtualregistrydescription"></a>`description` | [`String`](#string) | Description of the virtual registry. |
+| <a id="mavenvirtualregistryid"></a>`id` | [`ID!`](#id) | ID of the virtual registry. |
+| <a id="mavenvirtualregistryname"></a>`name` | [`String!`](#string) | Name of the virtual registry. |
 
 ### `MemberApproval`
 
@@ -33538,6 +33611,7 @@ Product analytics events for a specific month and year.
 | <a id="namespacelfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
 | <a id="namespacelifecycles"></a>`lifecycles` {{< icon name="warning-solid" >}} | [`WorkItemLifecycleConnection`](#workitemlifecycleconnection) | **Introduced** in GitLab 18.1. **Status**: Experiment. Lifecycles of work items available to the namespace. |
 | <a id="namespacelinkpaths"></a>`linkPaths` {{< icon name="warning-solid" >}} | [`NamespacesLinkPaths`](#namespaceslinkpaths) | **Introduced** in GitLab 18.1. **Status**: Experiment. Namespace relevant paths to create links on the UI. |
+| <a id="namespacemarkdownpaths"></a>`markdownPaths` {{< icon name="warning-solid" >}} | [`MarkdownPaths`](#markdownpaths) | **Introduced** in GitLab 18.1. **Status**: Experiment. Namespace relevant paths to create markdown links on the UI. |
 | <a id="namespacename"></a>`name` | [`String!`](#string) | Name of the namespace. |
 | <a id="namespacepackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
 | <a id="namespacepath"></a>`path` | [`String!`](#string) | Path of the namespace. |
@@ -38015,6 +38089,42 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="projectnamespacelinksreportabuse"></a>`reportAbuse` | [`String`](#string) | Namespace report_abuse. |
 | <a id="projectnamespacelinkssignin"></a>`signIn` | [`String`](#string) | Namespace sign_in_path. |
 
+### `ProjectNamespaceMarkdownPaths`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectnamespacemarkdownpathsuploadspath"></a>`uploadsPath` | [`String`](#string) | Uploads path for a given namespace. |
+
+#### Fields with arguments
+
+##### `ProjectNamespaceMarkdownPaths.autocompleteSourcesPath`
+
+Path for autocomplete sources for a given namespace.
+
+Returns [`String`](#string).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectnamespacemarkdownpathsautocompletesourcespathautocompletetype"></a>`autocompleteType` | [`AutocompleteType!`](#autocompletetype) | Type of autocomplete source (e.g., members, labels, etc.). |
+| <a id="projectnamespacemarkdownpathsautocompletesourcespathiid"></a>`iid` | [`String`](#string) | IID of the work item. |
+| <a id="projectnamespacemarkdownpathsautocompletesourcespathworkitemtypeid"></a>`workItemTypeId` | [`String`](#string) | ID of the work item type. |
+
+##### `ProjectNamespaceMarkdownPaths.markdownPreviewPath`
+
+Path for the markdown preview for given namespace.
+
+Returns [`String`](#string).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectnamespacemarkdownpathsmarkdownpreviewpathiid"></a>`iid` | [`String`](#string) | IID of the target item for markdown preview. |
+
 ### `ProjectNamespaceUserLevelPermissions`
 
 #### Fields
@@ -40848,6 +40958,42 @@ fields relate to interactions between the two entities.
 | <a id="usernamespacelinksreportabuse"></a>`reportAbuse` | [`String`](#string) | Namespace report_abuse. |
 | <a id="usernamespacelinkssignin"></a>`signIn` | [`String`](#string) | Namespace sign_in_path. |
 
+### `UserNamespaceMarkdownPaths`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="usernamespacemarkdownpathsuploadspath"></a>`uploadsPath` | [`String`](#string) | Uploads path for a given namespace. |
+
+#### Fields with arguments
+
+##### `UserNamespaceMarkdownPaths.autocompleteSourcesPath`
+
+Path for autocomplete sources for a given namespace.
+
+Returns [`String`](#string).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="usernamespacemarkdownpathsautocompletesourcespathautocompletetype"></a>`autocompleteType` | [`AutocompleteType!`](#autocompletetype) | Type of autocomplete source (e.g., members, labels, etc.). |
+| <a id="usernamespacemarkdownpathsautocompletesourcespathiid"></a>`iid` | [`String`](#string) | IID of the work item. |
+| <a id="usernamespacemarkdownpathsautocompletesourcespathworkitemtypeid"></a>`workItemTypeId` | [`String`](#string) | ID of the work item type. |
+
+##### `UserNamespaceMarkdownPaths.markdownPreviewPath`
+
+Path for the markdown preview for given namespace.
+
+Returns [`String`](#string).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="usernamespacemarkdownpathsmarkdownpreviewpathiid"></a>`iid` | [`String`](#string) | IID of the target item for markdown preview. |
+
 ### `UserNamespaceUserLevelPermissions`
 
 #### Fields
@@ -43305,6 +43451,22 @@ Auto stop setting.
 | ----- | ----------- |
 | <a id="autostopsettingalways"></a>`ALWAYS` | Always. |
 | <a id="autostopsettingwith_action"></a>`WITH_ACTION` | With Action. |
+
+### `AutocompleteType`
+
+Type of autocomplete source.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="autocompletetypecommands"></a>`COMMANDS` | Commands autocomplete source. |
+| <a id="autocompletetypecontacts"></a>`CONTACTS` | Contacts autocomplete source (projects only). |
+| <a id="autocompletetypeissues"></a>`ISSUES` | Issues autocomplete source. |
+| <a id="autocompletetypelabels"></a>`LABELS` | Labels autocomplete source. |
+| <a id="autocompletetypemembers"></a>`MEMBERS` | Members autocomplete source. |
+| <a id="autocompletetypemerge_requests"></a>`MERGE_REQUESTS` | Merge requests autocomplete source. |
+| <a id="autocompletetypemilestones"></a>`MILESTONES` | Milestones autocomplete source. |
+| <a id="autocompletetypesnippets"></a>`SNIPPETS` | Snippets autocomplete source (projects only). |
+| <a id="autocompletetypewikis"></a>`WIKIS` | Wikis autocomplete source (projects only). |
 
 ### `AvailabilityEnum`
 
@@ -48872,6 +49034,48 @@ Implementations:
 | <a id="labelinterfacetextcolor"></a>`textColor` | [`String!`](#string) | Text color of the label. |
 | <a id="labelinterfacetitle"></a>`title` | [`String!`](#string) | Content of the label. |
 | <a id="labelinterfaceupdatedat"></a>`updatedAt` | [`Time!`](#time) | When the label was last updated. |
+
+#### `MarkdownPaths`
+
+Implementations:
+
+- [`GroupNamespaceMarkdownPaths`](#groupnamespacemarkdownpaths)
+- [`ProjectNamespaceMarkdownPaths`](#projectnamespacemarkdownpaths)
+- [`UserNamespaceMarkdownPaths`](#usernamespacemarkdownpaths)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="markdownpathsuploadspath"></a>`uploadsPath` | [`String`](#string) | Uploads path for a given namespace. |
+
+##### Fields with arguments
+
+###### `MarkdownPaths.autocompleteSourcesPath`
+
+Path for autocomplete sources for a given namespace.
+
+Returns [`String`](#string).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="markdownpathsautocompletesourcespathautocompletetype"></a>`autocompleteType` | [`AutocompleteType!`](#autocompletetype) | Type of autocomplete source (e.g., members, labels, etc.). |
+| <a id="markdownpathsautocompletesourcespathiid"></a>`iid` | [`String`](#string) | IID of the work item. |
+| <a id="markdownpathsautocompletesourcespathworkitemtypeid"></a>`workItemTypeId` | [`String`](#string) | ID of the work item type. |
+
+###### `MarkdownPaths.markdownPreviewPath`
+
+Path for the markdown preview for given namespace.
+
+Returns [`String`](#string).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="markdownpathsmarkdownpreviewpathiid"></a>`iid` | [`String`](#string) | IID of the target item for markdown preview. |
 
 #### `MemberInterface`
 

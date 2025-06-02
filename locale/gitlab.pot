@@ -6065,9 +6065,6 @@ msgstr ""
 msgid "AiPowered|When turned on, all billable users can access GitLab Duo Chat and Code Suggestions in supported IDEs."
 msgstr ""
 
-msgid "AiPowered|When you save, GitLab Duo will be turned for all groups, subgroups, and projects."
-msgstr ""
-
 msgid "AiPowered|When you save, GitLab Duo will be turned off for all groups, subgroups, and projects."
 msgstr ""
 
@@ -27392,12 +27389,6 @@ msgstr[1] ""
 msgid "Geo|%{boldStart}Not applicable%{boldEnd}: Geo does not verify this component yet. See the %{linkStart}data types we plan to support%{linkEnd}."
 msgstr ""
 
-msgid "Geo|%{component} synced"
-msgstr ""
-
-msgid "Geo|%{component} verified"
-msgstr ""
-
 msgid "Geo|%{label} %{timeAgo}"
 msgstr ""
 
@@ -27416,7 +27407,13 @@ msgstr ""
 msgid "Geo|%{timeAgoStr} (%{pendingEvents} events)"
 msgstr ""
 
-msgid "Geo|%{title} checksum progress"
+msgid "Geo|%{titlePlural} checksum progress"
+msgstr ""
+
+msgid "Geo|%{titlePlural} synced"
+msgstr ""
+
+msgid "Geo|%{titlePlural} verified"
 msgstr ""
 
 msgid "Geo|Add New Site"
@@ -32265,9 +32262,6 @@ msgstr ""
 msgid "In use"
 msgstr ""
 
-msgid "InProductMarketing|%{upper_start}Free 60-day trial%{upper_end} %{lower_start}GitLab Ultimate & GitLab Duo Enterprise%{lower_end} %{last_start}Sign up for a free trial of the most comprehensive AI-native DevSecOps Platform%{last_end}"
-msgstr ""
-
 msgid "InProductMarketing|60-day trial period"
 msgstr ""
 
@@ -32280,6 +32274,9 @@ msgstr ""
 msgid "InProductMarketing|End-to-end security and compliance"
 msgstr ""
 
+msgid "InProductMarketing|Enjoy 60 days of full access to our best plan, after which you'll have access to our free tier forever. Upgrade to the best plan that suits you at any point - Premium or Ultimate."
+msgstr ""
+
 msgid "InProductMarketing|Ensure compliance"
 msgstr ""
 
@@ -32287,6 +32284,9 @@ msgid "InProductMarketing|Experience the power of Ultimate + GitLab Duo Enterpri
 msgstr ""
 
 msgid "InProductMarketing|Free guest users"
+msgstr ""
+
+msgid "InProductMarketing|Get Started with GitLab"
 msgstr ""
 
 msgid "InProductMarketing|GitLab Duo Enterprise: AI across the software development lifecycle"
@@ -39917,7 +39917,7 @@ msgstr ""
 msgid "My reaction"
 msgstr ""
 
-msgid "My reviews and assigned"
+msgid "My reviews and merge requests"
 msgstr ""
 
 msgid "My topic"
@@ -56739,6 +56739,9 @@ msgstr ""
 msgid "SecurityReports|Export"
 msgstr ""
 
+msgid "SecurityReports|Export as PDF"
+msgstr ""
+
 msgid "SecurityReports|Failed to get security report information. Please reload the page or try again later."
 msgstr ""
 
@@ -67636,6 +67639,9 @@ msgid "VirtualRegistry|Failed to fetch cache entries."
 msgstr ""
 
 msgid "VirtualRegistry|Failed to fetch list of maven virtual registries."
+msgstr ""
+
+msgid "VirtualRegistry|Failed to search cache entries."
 msgstr ""
 
 msgid "VirtualRegistry|Get started with virtual registries"

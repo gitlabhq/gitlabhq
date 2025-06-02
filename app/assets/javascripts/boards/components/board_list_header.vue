@@ -447,7 +447,7 @@ export default {
       <!-- EE end -->
 
       <div
-        class="issue-count-badge no-drag gl-inline-flex gl-pr-2 gl-text-sm gl-text-subtle"
+        class="issue-count-badge no-drag gl-inline-flex gl-pr-2"
         data-testid="issue-count-badge"
         :class="{
           '!gl-hidden': list.collapsed && isSwimlanesHeader,
@@ -455,26 +455,42 @@ export default {
         }"
       >
         <span class="gl-inline-flex" :class="{ 'gl-rotate-90': list.collapsed }">
-          <gl-tooltip :target="() => $refs.itemCount" :title="itemsTooltipLabel" />
-          <span ref="itemCount" class="gl-inline-flex gl-items-center" data-testid="item-count">
+          <gl-button
+            ref="itemCount"
+            v-gl-tooltip
+            :title="itemsTooltipLabel"
+            class="!gl-bg-transparent !gl-p-0"
+            data-testid="item-count"
+            category="tertiary"
+            size="small"
+            button-text-classes="gl-flex gl-text-subtle gl-text-sm gl-font-bold"
+          >
             <gl-icon class="gl-mr-2" :name="countIcon" :size="14" />
             <item-count
               v-if="!isLoading"
               :current-count="itemsCount"
               :max-count="list.maxIssueCount"
             />
-          </span>
+          </gl-button>
           <!-- EE start -->
           <template v-if="canShowTotalWeight">
-            <gl-tooltip :target="() => $refs.weightTooltip" :title="weightCountToolTip" />
-            <span ref="weightTooltip" class="gl-ml-3 gl-inline-flex" data-testid="weight">
+            <gl-button
+              ref="weightTooltip"
+              v-gl-tooltip
+              :title="weightCountToolTip"
+              class="gl-ml-3 !gl-bg-transparent !gl-p-0"
+              data-testid="weight"
+              category="tertiary"
+              size="small"
+              button-text-classes="gl-flex gl-text-subtle gl-text-sm gl-font-bold"
+            >
               <gl-icon class="gl-mr-2" name="weight" :size="14" />
               <item-count
                 v-if="!isLoading"
                 :current-count="totalIssueWeight"
                 :max-count="list.maxIssueWeight"
               />
-            </span>
+            </gl-button>
           </template>
           <!-- EE end -->
         </span>

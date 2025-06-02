@@ -56,8 +56,10 @@ export default {
 <template>
   <time
     v-gl-tooltip.viewport="{ placement: tooltipPlacement }"
+    tabindex="0"
     :class="cssClass"
     :title="tooltipText"
+    :aria-label="tooltipText"
     :datetime="time"
     ><slot :time-ago="timeAgo"
       ><template v-if="enableTruncation"><gl-truncate :text="timeAgo" with-tooltip /></template

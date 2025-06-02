@@ -30,11 +30,20 @@ export default {
       treeWidth: TREE_WIDTH,
     };
   },
+  computed: {
+    isProjectOverview() {
+      return this.$route.name === 'projectRoot';
+    },
+  },
 };
 </script>
 
 <template>
-  <file-browser-height :style="{ width: `${treeWidth}px` }" class="repository-tree-list">
+  <file-browser-height
+    v-if="!isProjectOverview"
+    :style="{ width: `${treeWidth}px` }"
+    class="repository-tree-list gl-mt-5"
+  >
     <tree-list
       class="gl-mr-5"
       :project-path="projectPath"

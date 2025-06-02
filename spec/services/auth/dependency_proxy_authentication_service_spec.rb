@@ -56,7 +56,33 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
       it_behaves_like 'returning', status: 403, message: 'access forbidden'
     end
 
-    context 'with a deploy token' do
+    context 'with a project deploy token' do
+      let_it_be(:project_deploy_token) { create(:deploy_token, :project, :dependency_proxy_scopes) }
+
+      let(:params) { { deploy_token: project_deploy_token } }
+      let(:user) { nil }
+
+      it_behaves_like 'returning', status: 403, message: 'access forbidden'
+
+      context 'with packages_dependency_proxy_containers_scope_check disabled' do
+        before do
+          stub_feature_flags(packages_dependency_proxy_containers_scope_check: false)
+        end
+
+        it_behaves_like 'returning', status: 403, message: 'access forbidden'
+
+        [described_class::REQUIRED_USER_ABILITIES,
+          described_class::REQUIRED_CI_ABILITIES].each do |abilities|
+          context "with #{abilities}" do
+            let(:authentication_abilities) { abilities }
+
+            it_behaves_like 'returning', status: 403, message: 'access forbidden'
+          end
+        end
+      end
+    end
+
+    context 'with a group deploy token' do
       let_it_be(:deploy_token_with_dependency_proxy_scopes) { create(:deploy_token, :group, :dependency_proxy_scopes) }
       let_it_be(:deploy_token_with_missing_scopes) { create(:deploy_token, :group, read_registry: false) }
 
@@ -66,6 +92,23 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
         let(:params) { { deploy_token: deploy_token_with_dependency_proxy_scopes } }
 
         it_behaves_like 'returning a token with an encoded field', 'deploy_token'
+
+        context 'with packages_dependency_proxy_containers_scope_check disabled' do
+          before do
+            stub_feature_flags(packages_dependency_proxy_containers_scope_check: false)
+          end
+
+          it_behaves_like 'returning', status: 403, message: 'access forbidden'
+
+          [described_class::REQUIRED_USER_ABILITIES,
+            described_class::REQUIRED_CI_ABILITIES].each do |abilities|
+              context "with #{abilities}" do
+                let(:authentication_abilities) { abilities }
+
+                it_behaves_like 'returning a token with an encoded field', 'deploy_token'
+              end
+            end
+        end
       end
 
       context 'with insufficient scopes' do

@@ -190,7 +190,6 @@ Gitlab/RSpec/MisplacedEeSpecFile:
     - 'ee/spec/models/sent_notification_spec.rb'
     - 'ee/spec/models/snippet_repository_spec.rb'
     - 'ee/spec/models/snippet_spec.rb'
-    - 'ee/spec/models/todo_spec.rb'
     - 'ee/spec/models/upload_spec.rb'
     - 'ee/spec/models/uploads/local_spec.rb'
     - 'ee/spec/models/user_preference_spec.rb'

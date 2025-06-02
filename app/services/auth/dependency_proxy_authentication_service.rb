@@ -48,7 +48,7 @@ module Auth
       if Feature.enabled?(:packages_dependency_proxy_containers_scope_check, feature_user)
         dependency_proxy_containers_scope_check
       else
-        has_required_abilities?
+        has_required_abilities? && (!deploy_token || deploy_token.valid_for_dependency_proxy?)
       end
     end
 

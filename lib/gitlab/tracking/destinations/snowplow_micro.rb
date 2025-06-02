@@ -9,14 +9,17 @@ module Gitlab
 
         delegate :flush, to: :tracker
 
+        COOKIE_DOMAIN = '.gitlab.com'
         DEFAULT_URI = 'http://localhost:9090'
 
         override :snowplow_options
         def snowplow_options(group)
+          # Using camel case as these keys will be used only in JavaScript
           super.merge(
-            protocol: uri.scheme,
+            protocol: protocol,
             port: uri.port,
-            forceSecureTracker: false # Using camel case as this key will be used only in JavaScript
+            forceSecureTracker: false,
+            cookieDomain: COOKIE_DOMAIN
           )
         end
 
@@ -31,32 +34,19 @@ module Gitlab
         end
 
         def uri
-          strong_memoize(:snowplow_uri) do
-            base = base_uri
-            uri = URI(base)
-            uri = URI("http://#{base}") unless %w[http https].include?(uri.scheme)
-            uri
-          end
+          url = Gitlab.config.snowplow_micro.address
+          scheme = Gitlab.config.gitlab.https ? 'https' : 'http'
+          URI("#{scheme}://#{url}")
+        rescue GitlabSettings::MissingSetting
+          URI(DEFAULT_URI)
         end
+        strong_memoize_attr :uri
 
         private
-
-        override :cookie_domain
-        def cookie_domain
-          '.gitlab.com'
-        end
 
         override :protocol
         def protocol
           uri.scheme
-        end
-
-        def base_uri
-          url = Gitlab.config.snowplow_micro.address
-          scheme = Gitlab.config.gitlab.https ? 'https' : 'http'
-          "#{scheme}://#{url}"
-        rescue GitlabSettings::MissingSetting
-          DEFAULT_URI
         end
       end
     end

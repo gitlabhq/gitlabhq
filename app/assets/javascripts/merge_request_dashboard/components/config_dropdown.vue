@@ -66,7 +66,7 @@ export default {
             },
             {
               text: __('Role'),
-              subText: __('My reviews and assigned'),
+              subText: __('My reviews and merge requests'),
               value: 'role_based',
             },
           ],
