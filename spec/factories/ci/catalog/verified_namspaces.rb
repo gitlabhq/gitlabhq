@@ -15,5 +15,9 @@ FactoryBot.define do
     trait :verified_creator_maintained do
       verification_level { :verified_creator_maintained }
     end
+
+    trait :verified_creator_self_managed do
+      verification_level { :verified_creator_self_managed }
+    end
   end
 end

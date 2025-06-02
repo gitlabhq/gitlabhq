@@ -12,14 +12,15 @@ module Groups
       services
       traces-explorer
       logs/logs-explorer
-      metrics-explorer
-      infrastructure-monitoring
+      metrics-explorer/summary
+      infrastructure-monitoring/hosts
       dashboard
       messaging-queues
       api-monitoring/explorer
       alerts
       exceptions
       service-map
+      settings
     ].freeze
 
     def show

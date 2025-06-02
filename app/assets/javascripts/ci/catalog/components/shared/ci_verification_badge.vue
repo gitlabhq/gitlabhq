@@ -6,12 +6,16 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   VERIFICATION_LEVELS,
   VERIFICATION_LEVEL_VERIFIED_CREATOR_MAINTAINED,
+  VERIFICATION_LEVEL_VERIFIED_CREATOR_SELF_MANAGED,
 } from '../../constants';
 
 export default {
   i18n: {
     verifiedCreatorPopoverLink: s__('CiCatalog|What are verified component creators?'),
     verificationLevelPopoverLink: s__('CiCatalog|Learn more about designated creators'),
+    verificationLevelSelfManagedPopoverLink: s__(
+      'CiCatalog|Learn more about verified creators on GitLab Self-Managed or GitLab Dedicated.',
+    ),
   },
   verificationHelpPagePath: helpPagePath('ci/components/_index', {
     anchor: 'verified-component-creators',
@@ -43,9 +47,13 @@ export default {
       return ['sm', 'xs'].includes(GlBreakpointInstance.getBreakpointSize());
     },
     popoverLink() {
-      return this.verificationLevel === VERIFICATION_LEVEL_VERIFIED_CREATOR_MAINTAINED
-        ? this.$options.i18n.verifiedCreatorPopoverLink
-        : this.$options.i18n.verificationLevelPopoverLink;
+      if (this.verificationLevel === VERIFICATION_LEVEL_VERIFIED_CREATOR_MAINTAINED) {
+        return this.$options.i18n.verifiedCreatorPopoverLink;
+      }
+      if (this.verificationLevel === VERIFICATION_LEVEL_VERIFIED_CREATOR_SELF_MANAGED) {
+        return this.$options.i18n.verificationLevelSelfManagedPopoverLink;
+      }
+      return this.$options.i18n.verificationLevelPopoverLink;
     },
     popoverPlacement() {
       return this.isMobile ? 'bottom' : 'right';

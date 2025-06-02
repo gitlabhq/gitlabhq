@@ -1,0 +1,13 @@
+---
+table_name: namespace_ai_settings
+classes:
+- Ai::NamespaceSetting
+feature_categories:
+- ai_abstraction_layer
+description: Stores AI-related settings per namespace
+introduced_by_url:
+milestone: '18.1'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces
+table_size: small

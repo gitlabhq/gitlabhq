@@ -33,7 +33,7 @@ export default {
       label: __('Type'),
     },
     {
-      key: 'default',
+      key: 'value',
       label: __('Value'),
       tdClass: 'md:gl-max-w-26',
     },
@@ -47,7 +47,7 @@ export default {
   emits: ['update'],
   methods: {
     handleValueUpdated({ item, value }) {
-      const updatedInput = { ...item, default: value };
+      const updatedInput = { ...item, value };
       this.$emit('update', updatedInput);
     },
     hasDescription(description) {
@@ -90,7 +90,7 @@ export default {
           />
         </span>
       </template>
-      <template #cell(default)="{ item }">
+      <template #cell(value)="{ item }">
         <dynamic-value-renderer :item="item" @update="handleValueUpdated" />
       </template>
     </gl-table-lite>

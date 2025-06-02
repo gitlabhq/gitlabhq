@@ -2515,6 +2515,9 @@ msgstr ""
 msgid "API Help"
 msgstr ""
 
+msgid "API Monitoring"
+msgstr ""
+
 msgid "API authentication token from Campfire. To get the token, sign in to Campfire and select **My info**."
 msgstr ""
 
@@ -3363,7 +3366,10 @@ msgstr ""
 msgid "Account: %{account}"
 msgstr ""
 
-msgid "AccountTokens|Service Account/Tokens"
+msgid "AccountTokens|Personal Access Token"
+msgstr ""
+
+msgid "AccountTokens|Service Account"
 msgstr ""
 
 msgid "Achievements"
@@ -12809,6 +12815,9 @@ msgid "CiCatalog|How do I publish a component?"
 msgstr ""
 
 msgid "CiCatalog|Learn more about designated creators"
+msgstr ""
+
+msgid "CiCatalog|Learn more about verified creators on GitLab Self-Managed or GitLab Dedicated."
 msgstr ""
 
 msgid "CiCatalog|No component available"
@@ -25541,6 +25550,9 @@ msgstr ""
 msgid "Example"
 msgstr ""
 
+msgid "Example:"
+msgstr ""
+
 msgid "Example: (feature|hotfix)\\/.*"
 msgstr ""
 
@@ -32676,6 +32688,9 @@ msgstr ""
 msgid "Infrastructure"
 msgstr ""
 
+msgid "Infrastructure Monitoring"
+msgstr ""
+
 msgid "Infrastructure as Code (IaC) Scanning"
 msgstr ""
 
@@ -36777,6 +36792,9 @@ msgstr ""
 msgid "Logs"
 msgstr ""
 
+msgid "Logs Explorer"
+msgstr ""
+
 msgid "LogsViewer|Enter full screen"
 msgstr ""
 
@@ -38658,6 +38676,9 @@ msgstr ""
 msgid "Messages"
 msgstr ""
 
+msgid "Messaging Queues"
+msgstr ""
+
 msgid "Method"
 msgstr ""
 
@@ -38707,6 +38728,9 @@ msgid "Metrics Dashboard YAML definition is invalid:"
 msgstr ""
 
 msgid "Metrics Dashboard YAML definition is valid."
+msgstr ""
+
+msgid "Metrics Explorer"
 msgstr ""
 
 msgid "Metrics and profiling"
@@ -40300,6 +40324,9 @@ msgid "Navigation|Monitor"
 msgstr ""
 
 msgid "Navigation|Monitor settings"
+msgstr ""
+
+msgid "Navigation|Observability"
 msgstr ""
 
 msgid "Navigation|Operate"
@@ -51445,9 +51472,6 @@ msgstr ""
 msgid "Repository Graph"
 msgstr ""
 
-msgid "Repository Settings"
-msgstr ""
-
 msgid "Repository already read-only"
 msgstr ""
 
@@ -53679,6 +53703,9 @@ msgstr ""
 msgid "ScanExecutionPolicy|The file path can't be empty"
 msgstr ""
 
+msgid "ScanExecutionPolicy|This is a required variable for this scanner and cannot be removed."
+msgstr ""
+
 msgid "ScanExecutionPolicy|This scan execution policy will generate a large number of pipelines, which can have a significant performance impact. To reduce potential performance issues, consider creating separate policies for smaller subsets of projects."
 msgstr ""
 
@@ -53745,6 +53772,15 @@ msgstr ""
 msgid "ScanResultPolicy|All licenses have been selected"
 msgstr ""
 
+msgid "ScanResultPolicy|Allow entire teams or departments to bypass policies for their specialized workflows."
+msgstr ""
+
+msgid "ScanResultPolicy|Allow specific automation tokens to bypass policies when service accounts aren't available."
+msgstr ""
+
+msgid "ScanResultPolicy|Allow specific types of branches to bypass policies based on naming conventions."
+msgstr ""
+
 msgid "ScanResultPolicy|Allow the merge request to proceed, even if not all criteria are met"
 msgstr ""
 
@@ -53802,6 +53838,9 @@ msgstr ""
 msgid "ScanResultPolicy|Edit denylist"
 msgstr ""
 
+msgid "ScanResultPolicy|Enable automated systems and bots to bypass policies for approved workflows."
+msgstr ""
+
 msgid "ScanResultPolicy|Except"
 msgstr ""
 
@@ -53844,6 +53883,9 @@ msgstr ""
 msgid "ScanResultPolicy|For scanners that require builds, when a project does not have a build pipeline."
 msgstr ""
 
+msgid "ScanResultPolicy|Grant bypass permissions to users based on their organizational role or custom role assignments."
+msgstr ""
+
 msgid "ScanResultPolicy|Groups"
 msgstr ""
 
@@ -53851,6 +53893,21 @@ msgid "ScanResultPolicy|If selected, the following choices will overwrite %{link
 msgstr ""
 
 msgid "ScanResultPolicy|If selected, the following choices will overwrite %{linkStart}project settings%{linkEnd} for approval rules created by this policy."
+msgstr ""
+
+msgid "ScanResultPolicy|If you want to allow all hotfix branches to bypass approval requirements during production incidents, use “hotfix/*” to match branches like hotfix/payment-bug and hotfix/security-patch."
+msgstr ""
+
+msgid "ScanResultPolicy|If your CI/CD Pipeline Token needs to push automated version updates directly to main branch during release deployments, bypassing the normal merge request approval process."
+msgstr ""
+
+msgid "ScanResultPolicy|If your DevOps Team frequently needs to push infrastructure configuration changes that trigger policy violations but are pre-approved through your change management process, add the DevOps Team group to bypass infrastructure policies."
+msgstr ""
+
+msgid "ScanResultPolicy|If your Security Engineer role needs to dismiss false positive findings from security scanners without requiring additional approvals, add the Security Engineer role to bypass security scan policies."
+msgstr ""
+
+msgid "ScanResultPolicy|If your dependabot@company.com service account automatically creates pull requests for dependency updates that may contain license compliance violations requiring manual review."
 msgstr ""
 
 msgid "ScanResultPolicy|Invalid fallback value detected. Please update your selection."
@@ -53911,6 +53968,9 @@ msgid "ScanResultPolicy|Only 1 age criteria is allowed"
 msgstr ""
 
 msgid "ScanResultPolicy|Override project approval settings"
+msgstr ""
+
+msgid "ScanResultPolicy|Personal Access Token"
 msgstr ""
 
 msgid "ScanResultPolicy|Policy Exception settings"
@@ -55977,7 +56037,13 @@ msgstr ""
 msgid "SecurityOrchestration|Settings from outside of the policy can override variables when the policy runs, except the variables defined in the denylist."
 msgstr ""
 
+msgid "SecurityOrchestration|Settings from outside of the policy can override variables when the policy runs."
+msgstr ""
+
 msgid "SecurityOrchestration|Settings from outside of the policy cannot override variables when the policy runs, except for the variables defined in the allowlist."
+msgstr ""
+
+msgid "SecurityOrchestration|Settings from outside of the policy cannot override variables when the policy runs."
 msgstr ""
 
 msgid "SecurityOrchestration|Several merge request approval policy criteria have been deprecated. Policies using these criteria will not work after GitLab 18.0 (May 10, 2025). You must edit these policies to replace or remove the deprecated criteria."
@@ -56172,7 +56238,7 @@ msgstr ""
 msgid "SecurityOrchestration|Variable option"
 msgstr ""
 
-msgid "SecurityOrchestration|Variables override configuration"
+msgid "SecurityOrchestration|Variable precedence"
 msgstr ""
 
 msgid "SecurityOrchestration|Variables override configuration has invalid structure."
@@ -57359,6 +57425,9 @@ msgstr ""
 msgid "Service Desk allows people to create issues in your GitLab instance without their own user account. It provides a unique email address for end users to create issues in a project. Replies can be sent either through the GitLab interface or by email. End users only see threads through email."
 msgstr ""
 
+msgid "Service Map"
+msgstr ""
+
 msgid "Service account"
 msgstr ""
 
@@ -57726,6 +57795,9 @@ msgid "ServicePing|Turn on service ping"
 msgstr ""
 
 msgid "ServicePing|Turn on service ping to review instance-level analytics."
+msgstr ""
+
+msgid "Services"
 msgstr ""
 
 msgid "Session ID"
@@ -59268,7 +59340,7 @@ msgstr ""
 msgid "Source-Branch"
 msgstr ""
 
-msgid "SourceBranchPattern|Source branch patterns"
+msgid "SourceBranchPattern|Source Branch Patterns"
 msgstr ""
 
 msgid "SourceEditor|\"el\" parameter is required for createInstance()"
@@ -64324,6 +64396,9 @@ msgid "TotalRefCountIndicator|1000+"
 msgstr ""
 
 msgid "Trace Details"
+msgstr ""
+
+msgid "Traces Explorer"
 msgstr ""
 
 msgid "Tracing"
@@ -70349,6 +70424,9 @@ msgstr ""
 msgid "Workspaces|Blocking an agent doesn't delete it. Agents can only be deleted in the project where they were created."
 msgstr ""
 
+msgid "Workspaces|Blocking an agent doesn't delete it. Agents can only be deleted in the project where they were created. In addition, existing workspaces using a blocked agent will continue to run."
+msgstr ""
+
 msgid "Workspaces|Cancel"
 msgstr ""
 
@@ -70431,6 +70509,9 @@ msgid "Workspaces|Group members can't create a workspace with a blocked agent. E
 msgstr ""
 
 msgid "Workspaces|If your devfile is not in the root directory of your project, specify a relative path."
+msgstr ""
+
+msgid "Workspaces|In order to make an agent available/blocked, workspaces must be enabled in the agent's configuration."
 msgstr ""
 
 msgid "Workspaces|Instant development environments"

@@ -1,0 +1,28 @@
+---
+description: Pipeline inputs values modified on the pipeline schedule page
+internal_events: true
+action: modify_inputs_on_pipeline_schedule_page
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: Indicates the action - new pipeline schedule or editing existing pipeline schedule
+  property:
+    description: Indicates when the action was performed
+  value:
+    description: Number of inputs modified on current save
+  total_modified:
+    description: Total number of inputs modified for the current pipeline schedule
+  total_inputs:
+    description: Total number of inputs available for the current pipeline schedule
+product_group: pipeline_authoring
+product_categories:
+- ci_variables
+milestone: '18.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191973
+tiers:
+- free
+- premium
+- ultimate

@@ -40,7 +40,7 @@ module Packages
         return false if Feature.disabled?(:packages_protected_packages_helm, @package_file.project)
 
         service_response =
-          Packages::Protection::CheckRuleExistenceService.new(
+          ::Packages::Protection::CheckRuleExistenceService.for_push(
             project: @package_file.project,
             current_user: @package_file.package.creator,
             params: { package_name: chart_name, package_type: :helm }

@@ -1,4 +1,5 @@
 <script>
+import { isEqual } from 'lodash';
 import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { reportToSentry } from '~/ci/utils';
@@ -33,10 +34,9 @@ export default {
       default: () => [],
     },
   },
-  emits: ['update-inputs'],
+  emits: ['update-inputs', 'update-inputs-metadata'],
   data() {
     return {
-      defaultInputValues: {},
       inputs: [],
     };
   },
@@ -55,20 +55,27 @@ export default {
       update({ project }) {
         const queryInputs = project?.ciPipelineCreationInputs || [];
 
-        // Store default values from query for tracking modifications
-        this.defaultInputValues = Object.fromEntries(
-          queryInputs.map((input) => [input.name, input.default]),
-        );
-
         // if there are any saved inputs, overwrite the values
         const savedInputsMap = Object.fromEntries(
           this.savedInputs.map(({ name, value }) => [name, value]),
         );
 
-        return queryInputs.map((input) => ({
-          ...input,
-          default: savedInputsMap[input.name] ?? input.default,
-        }));
+        const processedInputs = queryInputs.map((input) => {
+          const savedValue = savedInputsMap[input.name];
+
+          return {
+            ...input,
+            savedValue,
+            value: savedValue !== undefined ? savedValue : input.default,
+          };
+        });
+
+        this.$emit('update-inputs-metadata', {
+          totalAvailable: processedInputs.length,
+          totalModified: this.modifiedInputs.length,
+        });
+
+        return processedInputs;
       },
       error(error) {
         this.createErrorAlert(error);
@@ -87,7 +94,14 @@ export default {
       return this.$apollo.queries.inputs.loading;
     },
     modifiedInputs() {
-      return this.inputs.filter((input) => input.default !== this.defaultInputValues[input.name]);
+      return this.inputs.filter((input) => !isEqual(input.value, input.default));
+    },
+    newlyModifiedInputs() {
+      return this.inputs.filter((input) => {
+        if (input.savedValue === undefined) return false;
+
+        return !isEqual(input.value, input.savedValue) && !isEqual(input.value, input.default);
+      });
     },
     nameValuePairs() {
       return this.inputsToEmit.map((input) => ({
@@ -106,7 +120,7 @@ export default {
       createAlert({ message });
     },
     formatInputValue(input) {
-      let value = input.default;
+      let { value } = input;
 
       // Convert string to array for ARRAY type inputs
       if (input.type === ARRAY_TYPE && typeof value === 'string' && value) {
@@ -123,6 +137,10 @@ export default {
     handleInputsUpdated(updatedInput) {
       this.updateInputs(updatedInput);
 
+      this.$emit('update-inputs-metadata', {
+        totalModified: this.modifiedInputs.length,
+        newlyModified: this.newlyModifiedInputs.length,
+      });
       this.$emit('update-inputs', this.nameValuePairs);
     },
     updateInputs(updatedInput) {

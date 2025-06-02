@@ -37,7 +37,7 @@ export default {
     dueDate() {
       return this.issue.dueDate || findStartAndDueDateWidget(this.issue)?.dueDate;
     },
-    dueDateText() {
+    datesText() {
       if (this.startDate) {
         return humanTimeframe(newDate(this.startDate), newDate(this.dueDate));
       }
@@ -55,8 +55,8 @@ export default {
       }
       return isInPast(newDate(this.dueDate)) && !this.isClosed;
     },
-    dueDateTitle() {
-      return this.isOverdue ? `${__('Due date')} (${__('overdue')})` : __('Due date');
+    datesTooltipTitle() {
+      return this.isOverdue ? `${__('Dates')} (${__('overdue')})` : __('Dates');
     },
     dateIcon() {
       return this.isOverdue ? 'calendar-overdue' : 'calendar';
@@ -84,12 +84,12 @@ export default {
     </span>
     <slot name="iteration"></slot>
     <work-item-attribute
-      v-if="dueDateText"
+      v-if="datesText"
       anchor-id="issuable-due-date"
       wrapper-component-class="issuable-due-date"
-      :title="dueDateText"
+      :title="datesText"
       title-component-class="gl-mr-3"
-      :tooltip-text="dueDateTitle"
+      :tooltip-text="datesTooltipTitle"
       tooltip-placement="top"
     >
       <template #icon>

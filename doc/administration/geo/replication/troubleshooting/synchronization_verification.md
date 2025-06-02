@@ -558,7 +558,7 @@ def delete_orphaned_uploads(dry_run: true)
 end
 ```
 
-The above script defines a method named `delete_orphaned_uploads` which you can call like this to do a dry run:
+The previous script defines a method named `delete_orphaned_uploads` which you can call like this to do a dry run:
 
 ```ruby
 delete_orphaned_uploads(dry_run: true)

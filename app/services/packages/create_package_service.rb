@@ -38,7 +38,7 @@ module Packages
 
     def package_protected?(package_name:, package_type:)
       service_response =
-        Packages::Protection::CheckRuleExistenceService.new(
+        ::Packages::Protection::CheckRuleExistenceService.for_push(
           project: project,
           current_user: current_user,
           params: { package_name: package_name, package_type: package_type }

@@ -19,6 +19,11 @@ module Sidebars
         add_menu(Sidebars::Groups::Menus::CiCdMenu.new(context))
         add_menu(Sidebars::Groups::Menus::KubernetesMenu.new(context))
         add_menu(Sidebars::Groups::Menus::PackagesRegistriesMenu.new(context))
+
+        if ::Feature.enabled?(:observability_sass_features, context.group)
+          add_menu(Sidebars::Groups::Menus::ObservabilityMenu.new(context))
+        end
+
         add_menu(Sidebars::Groups::Menus::CustomerRelationsMenu.new(context))
         add_menu(Sidebars::Groups::Menus::SettingsMenu.new(context))
       end

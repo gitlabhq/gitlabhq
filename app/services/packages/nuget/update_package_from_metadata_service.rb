@@ -81,7 +81,7 @@ module Packages
         return false if Feature.disabled?(:packages_protected_packages_nuget, @package_file.project)
 
         service_response =
-          Packages::Protection::CheckRuleExistenceService.new(
+          ::Packages::Protection::CheckRuleExistenceService.for_push(
             project: @package_file.project,
             # TODO Remove `@package_file.package.creator`as soon as
             # `user_or_deploy_token` is correctly passed the `Packages::Nuget::ExtractionWorker`,

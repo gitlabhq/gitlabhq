@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Repository Settings > User sees revoke deploy token modal', :js, feature_category: :continuous_delivery do
+RSpec.describe 'Repository settings > User sees revoke deploy token modal', :js, feature_category: :continuous_delivery do
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
   let(:role) { :developer }

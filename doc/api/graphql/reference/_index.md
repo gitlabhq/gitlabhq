@@ -12378,7 +12378,7 @@ Input type: `VerifiedNamespaceCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationverifiednamespacecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationverifiednamespacecreatenamespacepath"></a>`namespacePath` | [`ID!`](#id) | Root namespace path. |
-| <a id="mutationverifiednamespacecreateverificationlevel"></a>`verificationLevel` | [`CiCatalogResourceVerificationLevel!`](#cicatalogresourceverificationlevel) | Verification level used to indicate the verification for namespace given by Gitlab. |
+| <a id="mutationverifiednamespacecreateverificationlevel"></a>`verificationLevel` | [`CiCatalogResourceVerificationLevel!`](#cicatalogresourceverificationlevel) | Verification level for a root namespace. |
 
 #### Fields
 
@@ -43404,6 +43404,7 @@ Values for sorting catalog resources.
 | <a id="cicatalogresourceverificationlevelgitlab_partner_maintained"></a>`GITLAB_PARTNER_MAINTAINED` | The resource is Gitlab Partner Maintained. |
 | <a id="cicatalogresourceverificationlevelunverified"></a>`UNVERIFIED` | The resource is Unverified. |
 | <a id="cicatalogresourceverificationlevelverified_creator_maintained"></a>`VERIFIED_CREATOR_MAINTAINED` | The resource is Verified Creator Maintained. |
+| <a id="cicatalogresourceverificationlevelverified_creator_self_managed"></a>`VERIFIED_CREATOR_SELF_MANAGED` | The resource is Verified Creator Self Managed. |
 
 ### `CiConfigIncludeType`
 

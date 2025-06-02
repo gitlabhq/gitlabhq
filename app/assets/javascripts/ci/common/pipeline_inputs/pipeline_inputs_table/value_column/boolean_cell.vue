@@ -17,10 +17,10 @@ export default {
   computed: {
     inputValue: {
       get() {
-        return this.convertToDisplayValue(this.input.default);
+        return this.convertToDisplayValue(this.input.value);
       },
       set(newValue) {
-        if (newValue === this.convertToDisplayValue(this.input.default)) return;
+        if (newValue === this.convertToDisplayValue(this.input.value)) return;
 
         const value = newValue === 'true';
         this.$emit('update', {

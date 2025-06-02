@@ -8,7 +8,7 @@ describe('DynamicValueRenderer', () => {
   let wrapper;
 
   const defaultProps = {
-    item: { name: 'input1', description: '', type: 'STRING', default: 'value1' },
+    item: { name: 'input1', description: '', type: 'STRING', value: 'value1' },
   };
 
   const createComponent = ({ props = {} } = {}) => {
@@ -97,7 +97,7 @@ describe('DynamicValueRenderer', () => {
             item: {
               ...defaultProps.item,
               type: 'ARRAY',
-              default: ['option1'],
+              value: ['option1'],
               options: ['option1', 'option2', 'option3'],
             },
           },
@@ -181,7 +181,7 @@ describe('DynamicValueRenderer', () => {
         'converts $type value "$value" to display value "$expectedDisplayValue"',
         ({ type, value, expectedDisplayValue, usesDropdown }) => {
           createComponent({
-            props: { item: { ...defaultProps.item, type, default: value } },
+            props: { item: { ...defaultProps.item, type, value } },
           });
 
           const inputType = getInputType(type, usesDropdown);

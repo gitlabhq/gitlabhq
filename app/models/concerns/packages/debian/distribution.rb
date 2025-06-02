@@ -12,10 +12,12 @@ module Packages
           "#{container_type}_id".to_sym
         end
 
-        alias_attribute :container, container_type
         alias_attribute :container_id, "#{container_type}_id"
 
         belongs_to container_type
+        alias_method :container, container_type
+        alias_method :container=, :"#{container_type}="
+
         belongs_to :creator, class_name: 'User'
 
         has_one :key,

@@ -118,7 +118,7 @@ You can customize the:
 
 ## Example Git request handling behavior
 
-After following the configuration steps above, handling for Git requests is now location aware.
+After following the configuration steps documented previously, handling for Git requests is now location aware.
 For requests:
 
 - Outside Europe, all requests are directed to the **primary** site.

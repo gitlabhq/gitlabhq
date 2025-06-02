@@ -230,7 +230,7 @@ exported `.tar.gz` or local repository:
 
    ```ruby
    p.repository.expire_all_method_caches
-   UpdateProjectStatisticsWorker.perform_async(p.id, ["commit_count","repository_size","storage_size","lfs_objects_size"])
+   UpdateProjectStatisticsWorker.perform_async(p.id, ["commit_count","repository_size","storage_size","lfs_objects_size","container_registry_size"])
    ```
 
 1. To check the total artifact storage space:

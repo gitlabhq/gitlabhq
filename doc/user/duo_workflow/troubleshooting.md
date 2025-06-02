@@ -54,15 +54,15 @@ To confirm that you can connect to the Workflow service:
 
 1. In Google Chrome or Firefox, open Developer Tools and select the **Network** tab.
 1. Right-click the column headers to show the **Protocol** column.
-1. In the address bar, enter `https://duo-workflow.runway.gitlab.net/DuoWorkflow/ExecuteWorkflow`.
+1. In the address bar, enter `https://duo-workflow-svc.runway.gitlab.net/DuoWorkflow/ExecuteWorkflow`.
 1. Ensure the request was successful and the **Protocol** column includes `h2` in Chrome or `HTTP/2` in Firefox.
 
 If the request fails or does not show the HTTP/2 protocol:
 
 - A security system like Netskope or Zscaler might be configured to block or inspect traffic.
 - The HTTP/2 protocol downgrades to HTTP/1.1, which prevents Duo Workflow from working correctly.
- 
-To correct this issue, ask your network administrator to put `https://duo-workflow.runway.gitlab.net/DuoWorkflow/ExecuteWorkflow`
+
+To correct this issue, ask your network administrator to put `https://duo-workflow-svc.runway.gitlab.net/DuoWorkflow/ExecuteWorkflow`
 on the correct allowlist, or to exempt it from traffic inspection.
 
 ## Docker setup

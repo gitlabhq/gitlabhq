@@ -9525,7 +9525,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     describe '#support_pin_expires_at' do
-      it 'returns the expiration time when it exists' do
+      it 'returns the expiration time when it exists', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/546655' do
         allow(retrieve_service).to receive(:execute).and_return(pin_data)
 
         expect(user_with_pin.support_pin_expires_at).to eq(pin_data[:expires_at])

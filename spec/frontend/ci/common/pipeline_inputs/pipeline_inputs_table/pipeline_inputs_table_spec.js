@@ -14,10 +14,10 @@ describe('PipelineInputsTable', () => {
         name: 'input1',
         description: 'This is a **markdown** description',
         type: '',
-        default: 'value1',
+        value: 'value1',
         required: true,
       },
-      { name: 'input2', description: '', type: '', default: 'value2' },
+      { name: 'input2', description: '', type: '', value: 'value2' },
     ],
   };
 
@@ -83,7 +83,7 @@ describe('PipelineInputsTable', () => {
     it('renders an info icon if the type is ARRAY', () => {
       createComponent({
         props: {
-          inputs: [{ name: 'input1', description: '', type: 'ARRAY', default: [] }],
+          inputs: [{ name: 'input1', description: '', type: 'ARRAY', value: [] }],
         },
       });
 
@@ -94,7 +94,7 @@ describe('PipelineInputsTable', () => {
     it('does not render an info icon if the type is not ARRAY', () => {
       createComponent({
         props: {
-          inputs: [{ name: 'input1', description: '', type: 'STRING', default: 'value1' }],
+          inputs: [{ name: 'input1', description: '', type: 'STRING', value: 'value1' }],
         },
       });
 
@@ -130,7 +130,7 @@ describe('PipelineInputsTable', () => {
       expect(wrapper.emitted().update).toHaveLength(1);
       expect(wrapper.emitted().update[0][0]).toEqual({
         ...updatedItem,
-        default: newValue,
+        value: newValue,
       });
     });
   });

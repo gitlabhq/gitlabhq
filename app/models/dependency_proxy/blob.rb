@@ -9,7 +9,7 @@ class DependencyProxy::Blob < ApplicationRecord
   include UpdateNamespaceStatistics
 
   belongs_to :group
-  alias_attribute :namespace, :group
+  alias_method :namespace, :group
 
   STORE_COLUMN = :file_store
   MAX_FILE_SIZE = 5.gigabytes.freeze

@@ -6,6 +6,7 @@ import {
   GlPopover,
   GlModal,
   GlFormCheckbox,
+  GlAnimatedChevronRightDownIcon,
 } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -57,6 +58,7 @@ describe('JobArtifactsTable component', () => {
 
   const findCount = () => wrapper.findByTestId('job-artifacts-count');
   const findCountAt = (i) => wrapper.findAllByTestId('job-artifacts-count').at(i);
+  const findCountIcon = () => findCount().findComponent(GlAnimatedChevronRightDownIcon);
 
   const findDeleteModal = () => wrapper.findComponent(ArtifactDeleteModal);
   const findBulkDeleteModal = () => wrapper.findComponent(BulkDeleteModal);
@@ -274,16 +276,19 @@ describe('JobArtifactsTable component', () => {
     describe('row expansion', () => {
       it('toggles the visibility of the row details', async () => {
         expect(findDetailsRows().length).toBe(0);
+        expect(findCountIcon().props('isOn')).toBe(false);
 
         findCount().trigger('click');
         await nextTick();
 
         expect(findDetailsRows().length).toBe(1);
+        expect(findCountIcon().props('isOn')).toBe(true);
 
         findCount().trigger('click');
         await nextTick();
 
         expect(findDetailsRows().length).toBe(0);
+        expect(findCountIcon().props('isOn')).toBe(false);
       });
 
       it('expands and collapses jobs', async () => {

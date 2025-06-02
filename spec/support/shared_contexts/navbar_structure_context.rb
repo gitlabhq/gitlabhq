@@ -178,6 +178,26 @@ RSpec.shared_context 'group navbar structure' do
     }
   end
 
+  let(:observability_nav_item) do
+    {
+      nav_item: _("Observability"),
+      nav_sub_items: [
+        _("Services"),
+        _("Traces Explorer"),
+        _("Logs Explorer"),
+        _("Metrics Explorer"),
+        _("Infrastructure Monitoring"),
+        _("Dashboard"),
+        _("Messaging Queues"),
+        _("API Monitoring"),
+        _("Alerts"),
+        _("Exceptions"),
+        _("Service Map"),
+        _("Settings")
+      ]
+    }
+  end
+
   let(:structure) do
     [
       {
@@ -201,7 +221,8 @@ RSpec.shared_context 'group navbar structure' do
         nav_item: _("Operate"),
         nav_sub_items: [_("Kubernetes")]
       },
-      (analyze_nav_item if Gitlab.ee?)
+      (analyze_nav_item if Gitlab.ee?),
+      observability_nav_item
     ]
   end
 end

@@ -9,6 +9,7 @@ import {
 } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
+import { InternalEvents } from '~/tracking';
 import { visitUrl, queryToObject } from '~/lib/utils/url_utility';
 import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
 import RefSelector from '~/ref/components/ref_selector.vue';
@@ -21,6 +22,12 @@ import getPipelineSchedulesQuery from '../graphql/queries/get_pipeline_schedules
 import PipelineVariablesFormGroup from './pipeline_variables_form_group.vue';
 
 const scheduleId = queryToObject(window.location.search).id;
+
+const trackingMixin = InternalEvents.mixin();
+const EVENT_NAME = 'modify_inputs_on_pipeline_schedule_page';
+const EDIT_EVENT_LABEL = 'edit_pipeline_schedule';
+const NEW_EVENT_LABEL = 'new_pipeline_schedule';
+const EVENT_PROPERTY = 'form_submission';
 
 export default {
   components: {
@@ -36,6 +43,7 @@ export default {
     RefSelector,
     TimezoneDropdown,
   },
+  mixins: [trackingMixin],
   inject: [
     'projectPath',
     'projectId',
@@ -123,6 +131,11 @@ export default {
       scheduleRef: this.defaultBranch,
       updatedVariables: [],
       variables: [],
+      inputsMetadata: {
+        totalAvailable: 0,
+        totalModified: 0,
+        newlyModified: 0,
+      },
     };
   },
   i18n: {
@@ -217,6 +230,7 @@ export default {
         if (errors.length > 0) {
           createAlert({ message: errors[0] });
         } else {
+          this.trackPipelineInputsModification();
           visitUrl(this.schedulesPath);
         }
       } catch {
@@ -248,6 +262,7 @@ export default {
         if (errors.length > 0) {
           createAlert({ message: errors[0] });
         } else {
+          this.trackPipelineInputsModification();
           visitUrl(this.schedulesPath);
         }
       } catch {
@@ -266,6 +281,22 @@ export default {
     },
     setTimezone(timezone) {
       this.cronTimezone = timezone.identifier || '';
+    },
+    trackPipelineInputsModification() {
+      this.trackEvent(EVENT_NAME, {
+        label: this.editing ? EDIT_EVENT_LABEL : NEW_EVENT_LABEL,
+        property: EVENT_PROPERTY,
+        value: this.inputsMetadata.newlyModified,
+        total_modified: this.inputsMetadata.totalModified,
+        total_inputs: this.inputsMetadata.totalAvailable,
+      });
+    },
+    handleInputsMetadataUpdate(data) {
+      if (!data) return;
+      this.inputsMetadata = {
+        ...this.inputsMetadata,
+        ...data,
+      };
     },
   },
 };
@@ -326,6 +357,7 @@ export default {
         :query-ref="scheduleRef"
         class="gl-mb-6"
         @update-inputs="pipelineInputs = $event"
+        @update-inputs-metadata="handleInputsMetadataUpdate"
       />
       <!--Variable List-->
       <pipeline-variables-form-group

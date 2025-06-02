@@ -5,6 +5,8 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Internal Events Payload Samples
 ---
 
+> **Important:** Internal Event Tracking collects data solely for GitLab internal analytics purposes. This data is not shared with any third-party services or tools. GitLab uses components like Snowplow for implementation, but all data is collected, processed, and stored within GitLab infrastructure. User IDs are pseudonymized to protect privacy, and GitLab does not undertake any processes to re-identify users. For more information about data privacy, see [Customer product usage information](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/).
+
 ## Internal Events Payload
 
 This guide provides payload samples for internal events tracked across frontend and backend services. Each event type includes a detailed breakdown of its fields and descriptions. Internal events use Snowplow to track events. For more information, see [Snowplow event parameters guide](https://docs.snowplow.io/docs/sources/trackers/snowplow-tracker-protocol/going-deeper/event-parameters/).

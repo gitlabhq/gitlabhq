@@ -11,7 +11,8 @@ module Snippets
     self.table_name = 'snippet_repository_storage_moves'
 
     belongs_to :container, class_name: 'Snippet', inverse_of: :repository_storage_moves, foreign_key: :snippet_id
-    alias_attribute :snippet, :container
+    alias_method :snippet, :container
+
     alias_attribute :container_id, :snippet_id
 
     override :schedule_repository_storage_update_worker

@@ -17881,6 +17881,11 @@ CREATE TABLE namespace_aggregation_schedules (
     namespace_id bigint NOT NULL
 );
 
+CREATE TABLE namespace_ai_settings (
+    namespace_id bigint NOT NULL,
+    duo_workflow_mcp_enabled boolean DEFAULT false NOT NULL
+);
+
 CREATE TABLE namespace_bans (
     id bigint NOT NULL,
     namespace_id bigint NOT NULL,
@@ -30376,6 +30381,9 @@ ALTER TABLE ONLY namespace_admin_notes
 ALTER TABLE ONLY namespace_aggregation_schedules
     ADD CONSTRAINT namespace_aggregation_schedules_pkey PRIMARY KEY (namespace_id);
 
+ALTER TABLE ONLY namespace_ai_settings
+    ADD CONSTRAINT namespace_ai_settings_pkey PRIMARY KEY (namespace_id);
+
 ALTER TABLE ONLY namespace_bans
     ADD CONSTRAINT namespace_bans_pkey PRIMARY KEY (id);
 
@@ -33286,6 +33294,8 @@ CREATE INDEX i_dast_profiles_tags_on_scanner_profiles_id ON dast_profiles_tags U
 CREATE UNIQUE INDEX i_duo_workflows_events_on_correlation_id ON duo_workflows_events USING btree (correlation_id_value);
 
 CREATE INDEX i_gitlab_subscription_histories_on_namespace_change_type_plan ON gitlab_subscription_histories USING btree (namespace_id, change_type, hosted_plan_id);
+
+CREATE UNIQUE INDEX i_maven_reg_upstreams_on_upstream_and_registry_ids ON virtual_registries_packages_maven_registry_upstreams USING btree (upstream_id, registry_id);
 
 CREATE INDEX i_namespace_cluster_agent_mappings_on_cluster_agent_id ON namespace_cluster_agent_mappings USING btree (cluster_agent_id);
 
@@ -36329,6 +36339,8 @@ CREATE INDEX index_namespace_admin_notes_on_namespace_id ON namespace_admin_note
 
 CREATE UNIQUE INDEX index_namespace_aggregation_schedules_on_namespace_id ON namespace_aggregation_schedules USING btree (namespace_id);
 
+CREATE UNIQUE INDEX index_namespace_ai_settings_on_namespace_id ON namespace_ai_settings USING btree (namespace_id);
+
 CREATE UNIQUE INDEX index_namespace_bans_on_namespace_id_and_user_id ON namespace_bans USING btree (namespace_id, user_id);
 
 CREATE INDEX index_namespace_bans_on_user_id ON namespace_bans USING btree (user_id);
@@ -39042,8 +39054,6 @@ CREATE INDEX user_uploads_store_idx ON user_uploads USING btree (store);
 CREATE INDEX user_uploads_uploaded_by_user_id_idx ON user_uploads USING btree (uploaded_by_user_id);
 
 CREATE INDEX user_uploads_uploader_path_idx ON user_uploads USING btree (uploader, path);
-
-CREATE UNIQUE INDEX virtual_reg_packages_maven_reg_upstreams_on_unique_upstream_ids ON virtual_registries_packages_maven_registry_upstreams USING btree (upstream_id);
 
 CREATE UNIQUE INDEX virtual_reg_pkgs_mvn_registries_on_unique_group_id_and_name ON virtual_registries_packages_maven_registries USING btree (group_id, name);
 
@@ -46018,6 +46028,9 @@ ALTER TABLE ONLY note_metadata
 
 ALTER TABLE ONLY ml_model_metadata
     ADD CONSTRAINT fk_rails_d907835e01 FOREIGN KEY (model_id) REFERENCES ml_models(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY namespace_ai_settings
+    ADD CONSTRAINT fk_rails_d93015e2ed FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_request_reviewers
     ADD CONSTRAINT fk_rails_d9fec24b9d FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;

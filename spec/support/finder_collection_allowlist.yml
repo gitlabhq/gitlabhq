@@ -11,6 +11,8 @@
 - Security::VulnerabilityElasticFinder # Reason: The finder deals with Elasticsearch records and not DB records
 - Security::VulnerabilityElasticAggregationFinder # Reason: The finder deals with Elasticsearch records and not DB records
 - WorkItems::Statuses::Finder # Reason: The finder intentionally returns a single model instance.
+- Security::VulnerabilityReadsElasticFinder # Reason: The finder deals with Elasticsearch records and not DB records
+- Sbom::PathFinder # Reason: we need an [[Sbom::Occurrence]]
 
 # Temporary excludes (aka TODOs)
 # For example:

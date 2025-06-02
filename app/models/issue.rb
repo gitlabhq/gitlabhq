@@ -125,7 +125,7 @@ class Issue < ApplicationRecord
     inverse_of: :work_item,
     autosave: true
 
-  alias_attribute :escalation_status, :incident_management_issuable_escalation_status
+  alias_method :escalation_status, :incident_management_issuable_escalation_status
 
   accepts_nested_attributes_for :issuable_severity, update_only: true
   accepts_nested_attributes_for :sentry_issue

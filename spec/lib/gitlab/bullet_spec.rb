@@ -77,42 +77,5 @@ RSpec.describe Gitlab::Bullet, feature_category: :shared do
         end
       end
     end
-
-    describe '#skip_bullet' do
-      context 'with configure_bullet? == true' do
-        before do
-          allow(described_class).to receive(:configure_bullet?).and_return(true)
-          ::Bullet.enable = true
-        end
-
-        it 'disables Bullet in the block' do
-          bullet_enabled_in_block = described_class.skip_bullet { ::Bullet.enabled? }
-
-          expect(bullet_enabled_in_block).to be false
-        end
-
-        it 'does not change the enable state of Bullet' do
-          expect { described_class.skip_bullet { 42 } }.not_to change { ::Bullet.enabled? }
-        end
-      end
-
-      context 'with configure_bullet? == false' do
-        before do
-          allow(described_class).to receive(:configure_bullet?).and_return(false)
-        end
-
-        it 'does not disable Bullet in the block' do
-          expect(::Bullet).not_to receive(:enable=)
-
-          result = described_class.skip_bullet { 42 }
-
-          expect(result).to eq(42)
-        end
-
-        it 'does not change the enable state of Bullet' do
-          expect { described_class.skip_bullet { 42 } }.not_to change { ::Bullet.enabled? }
-        end
-      end
-    end
   end
 end

@@ -64,10 +64,11 @@ describe('Catalog Verification Badge', () => {
   });
 
   describe.each`
-    verificationLevel                | describeText
-    ${'GITLAB_MAINTAINED'}           | ${'GitLab'}
-    ${'GITLAB_PARTNER_MAINTAINED'}   | ${'a GitLab partner'}
-    ${'VERIFIED_CREATOR_MAINTAINED'} | ${'a verified creator'}
+    verificationLevel                  | describeText
+    ${'GITLAB_MAINTAINED'}             | ${'GitLab'}
+    ${'GITLAB_PARTNER_MAINTAINED'}     | ${'a GitLab partner'}
+    ${'VERIFIED_CREATOR_MAINTAINED'}   | ${'a verified creator'}
+    ${'VERIFIED_CREATOR_SELF_MANAGED'} | ${'a verified creator'}
   `('when the resource is maintained by $describeText', ({ verificationLevel }) => {
     beforeEach(() => {
       createComponent({ ...defaultProps, verificationLevel });

@@ -91,6 +91,7 @@ describe('PipelineInputsForm', () => {
             name: 'deploy_environment',
             description: 'Specify deployment environment',
             default: 'staging',
+            value: 'staging',
             type: 'text',
             required: false,
             options: ['staging', 'production'],
@@ -100,6 +101,7 @@ describe('PipelineInputsForm', () => {
             name: 'api_token',
             description: 'API token for deployment',
             default: '',
+            value: '',
             type: 'text',
             required: true,
             options: [],
@@ -109,6 +111,7 @@ describe('PipelineInputsForm', () => {
             name: 'tags',
             description: 'Tags for deployment',
             default: '',
+            value: '',
             type: 'ARRAY',
             required: false,
             options: [],
@@ -180,11 +183,14 @@ describe('PipelineInputsForm', () => {
       const updatedInput = findInputsTable()
         .props('inputs')
         .find((i) => i.name === 'deploy_environment');
-      expect(updatedInput.default).toBe('saved-value');
+
+      expect(updatedInput.default).toBe('staging');
+      expect(updatedInput.savedValue).toBe('saved-value');
+      expect(updatedInput.value).toBe('saved-value');
     });
   });
 
-  describe('event handling', () => {
+  describe('input update event handling', () => {
     it('processes and emits update events from the table component', async () => {
       pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
       await createComponent();
@@ -199,7 +205,7 @@ describe('PipelineInputsForm', () => {
 
       const expectedEmittedValue = wrapper.vm.inputs.map((input) => ({
         name: input.name,
-        value: input.default,
+        value: input.value,
       }));
       expect(wrapper.emitted()['update-inputs'][0][0]).toEqual(expectedEmittedValue);
     });
@@ -210,7 +216,7 @@ describe('PipelineInputsForm', () => {
 
       const inputs = findInputsTable().props('inputs');
       const totalInputsCount = inputs.length;
-      const inputToModify = { ...inputs[0], default: 'modified-value' };
+      const inputToModify = { ...inputs[0], value: 'modified-value' };
 
       findInputsTable().vm.$emit('update', inputToModify);
 
@@ -230,7 +236,7 @@ describe('PipelineInputsForm', () => {
 
       const updatedInput = {
         ...arrayInput,
-        default: '[1,2,3]',
+        value: '[1,2,3]',
       };
 
       findInputsTable().vm.$emit('update', updatedInput);
@@ -252,7 +258,7 @@ describe('PipelineInputsForm', () => {
 
       const updatedInput = {
         ...arrayInput,
-        default: '[{"key": "value"}, {"another": "object"}]',
+        value: '[{"key": "value"}, {"another": "object"}]',
       };
 
       findInputsTable().vm.$emit('update', updatedInput);
@@ -262,6 +268,33 @@ describe('PipelineInputsForm', () => {
 
       expect(Array.isArray(emittedArrayValue)).toBe(true);
       expect(emittedArrayValue).toEqual([{ key: 'value' }, { another: 'object' }]);
+    });
+  });
+
+  describe('input metadata update event handling', () => {
+    beforeEach(async () => {
+      pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
+      await createComponent();
+    });
+
+    it('emits total available and modified counts when receives the inputs', () => {
+      expect(wrapper.emitted()['update-inputs-metadata']).toHaveLength(1);
+      expect(wrapper.emitted()['update-inputs-metadata'][0][0]).toEqual({
+        totalAvailable: 3,
+        totalModified: 0,
+      });
+    });
+
+    it('emits updated metadata values when inputs are updated', () => {
+      const inputs = findInputsTable().props('inputs');
+      const updatedInput = { ...inputs[0], savedValue: 'saved-value', value: 'new-updated-value' };
+      findInputsTable().vm.$emit('update', updatedInput);
+
+      expect(wrapper.emitted()['update-inputs-metadata']).toHaveLength(2);
+      expect(wrapper.emitted()['update-inputs-metadata'][1][0]).toEqual({
+        totalModified: 1,
+        newlyModified: 1,
+      });
     });
   });
 });

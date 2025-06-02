@@ -51,7 +51,9 @@ class CommitStatus < Ci::ApplicationRecord
   validates :ref, :target_url, :description, length: { maximum: 255 }
   validates :project, presence: true
 
-  alias_attribute :author, :user
+  alias_method :author, :user
+  alias_method :author=, :user=
+
   alias_attribute :pipeline_id, :commit_id
 
   scope :failed_but_allowed, -> do
