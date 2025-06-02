@@ -20,6 +20,7 @@ title: GitLab Advanced SAST
 - Support for JavaScript, TypeScript, and C# added in 17.3.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/474094) in GitLab 17.3.
 - Support for Java Server Pages (JSP) added in GitLab 17.4.
+- Support for PHP [added](https://gitlab.com/groups/gitlab-org/-/epics/14273) in GitLab 18.1.
 
 {{< /history >}}
 
@@ -112,14 +113,31 @@ GitLab Advanced SAST supports the following languages with cross-function and cr
 - Go
 - Java, including Java Server Pages (JSP)
 - JavaScript, TypeScript
+- PHP
 - Python
 - Ruby
+
+### PHP known issues
+
+When analyzing PHP code, GitLab Advanced SAST has the following limitations:
+
+- **Dynamic file inclusion**: Dynamic file inclusion statements (`include`, `include_once`, `require`, `require_once`) using variables for file paths are not supported in this release. Only static file inclusion paths are supported for cross-file analysis. See [issue 527341](https://gitlab.com/gitlab-org/gitlab/-/issues/527341).
+- **Case sensitivity**: PHP's case-insensitive nature for function names, class names, and method names is not fully supported in cross-file analysis. See [issue 526528](https://gitlab.com/gitlab-org/gitlab/-/issues/526528).
 
 ## Configuration
 
 Enable the GitLab Advanced SAST analyzer to discover vulnerabilities in your application by performing
 cross-function and cross-file taint analysis. You can then adjust its behavior by using CI/CD
 variables.
+
+### Available CI/CD variables
+
+GitLab Advanced SAST can be configured using the following CI/CD variables.
+
+| **CI/CD variable**             | **Description**                                                                                 |
+|--------------------------------|-------------------------------------------------------------------------------------------------|
+| `GITLAB_ADVANCED_SAST_ENABLED` | Set to `true` to enable GitLab Advanced SAST scanning, or `false` to disable. Default: `false`. |
+| `FF_GLAS_ENABLE_PHP_SUPPORT`   | Set to `true` to analyze PHP files, or false to disable. Default: `true`.                       |
 
 ### Requirements
 
@@ -141,7 +159,8 @@ You can set this variable in different ways depending on how you manage your CI/
 
 #### Edit the CI/CD pipeline definition manually
 
-If you've already enabled GitLab SAST scanning in your project, add a new CI/CD variable to enable GitLab SAST.
+If you've already enabled GitLab SAST scanning in your project, add a CI/CD variable to enable
+GitLab Advanced SAST.
 
 This minimal YAML file includes the [stable SAST template](_index.md#stable-vs-latest-sast-templates) and enables GitLab Advanced SAST:
 
