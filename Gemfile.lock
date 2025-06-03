@@ -1027,7 +1027,7 @@ GEM
     http-cookie (1.0.5)
       domain_name (~> 0.5)
     http-form_data (2.3.0)
-    httparty (0.22.0)
+    httparty (0.23.1)
       csv
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
@@ -2223,7 +2223,7 @@ DEPENDENCIES
   health_check (~> 3.0)
   html-pipeline (~> 2.14.3)
   html2text
-  httparty (~> 0.22.0)
+  httparty (~> 0.23.0)
   i18n_data (~> 0.13.1)
   icalendar (~> 2.10.1)
   influxdb-client (~> 3.1)

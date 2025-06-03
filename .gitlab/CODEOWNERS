@@ -188,15 +188,15 @@ Dangerfile
 /ee/spec/policies/vulnerability*.rb
 
 ^[Threat Insights frontend] @gitlab-org/govern/threat-insights-frontend-team
-/app/assets/javascripts/vue_merge_request_widget/widgets/security_reports/**
-/ee/app/assets/javascripts/vue_merge_request_widget/widgets/security_reports/**
-/ee/app/assets/javascripts/security_dashboard/**
-/ee/spec/frontend/security_dashboard/**
-/ee/app/assets/javascripts/vulnerabilities/**
-/spec/frontend/vue_merge_request_widget/widgets/security_reports/**
-/ee/spec/frontend/vue_merge_request_widget/widgets/security_reports/**
-/ee/app/assets/javascripts/dependencies/**
-/ee/spec/frontend/dependencies/**
+/app/assets/javascripts/vue_merge_request_widget/widgets/security_reports/
+/ee/app/assets/javascripts/vue_merge_request_widget/widgets/security_reports/
+/ee/app/assets/javascripts/security_dashboard/
+/ee/spec/frontend/security_dashboard/
+/ee/app/assets/javascripts/vulnerabilities/
+/spec/frontend/vue_merge_request_widget/widgets/security_reports/
+/ee/spec/frontend/vue_merge_request_widget/widgets/security_reports/
+/ee/app/assets/javascripts/dependencies/
+/ee/spec/frontend/dependencies/
 
 ^[Composition Analysis backend] @gitlab-org/secure/composition-analysis-be
 /app/events/package_metadata/
@@ -229,74 +229,74 @@ Dangerfile
 /ee/app/services/app_sec/dast/
 
 ^[Security Policies frontend] @gitlab-org/security-risk-management/security-policies/frontend
-/ee/app/assets/javascripts/approvals/components/license_compliance/**
-/ee/app/assets/javascripts/approvals/stores/modules/license_compliance/**
-/ee/app/assets/javascripts/license_compliance/**
-/ee/app/assets/javascripts/pages/projects/licenses/**
-/ee/app/assets/javascripts/pages/projects/pipelines/licenses/**
+/ee/app/assets/javascripts/approvals/components/license_compliance/
+/ee/app/assets/javascripts/approvals/stores/modules/license_compliance/
+/ee/app/assets/javascripts/license_compliance/
+/ee/app/assets/javascripts/pages/projects/licenses/
+/ee/app/assets/javascripts/pages/projects/pipelines/licenses/
 /ee/app/assets/javascripts/pages/projects/pipelines/show/license_report.js
-/ee/app/assets/javascripts/vue_merge_request_widget/widgets/license_compliance/**
-/ee/app/assets/javascripts/vue_shared/license_compliance/**
-/ee/app/views/projects/licenses/**
-/ee/spec/frontend/approvals/components/license_compliance/**
-/ee/spec/frontend/approvals/stores/modules/license_compliance/**
-/ee/spec/frontend/license_compliance/**
-/ee/spec/frontend/vue_merge_request_widget/widgets/license_compliance/**
-/ee/spec/frontend/vue_shared/license_compliance/**
+/ee/app/assets/javascripts/vue_merge_request_widget/widgets/license_compliance/
+/ee/app/assets/javascripts/vue_shared/license_compliance/
+/ee/app/views/projects/licenses/
+/ee/spec/frontend/approvals/components/license_compliance/
+/ee/spec/frontend/approvals/stores/modules/license_compliance/
+/ee/spec/frontend/license_compliance/
+/ee/spec/frontend/vue_merge_request_widget/widgets/license_compliance/
+/ee/spec/frontend/vue_shared/license_compliance/
 
-/ee/app/assets/javascripts/approvals/components/security_orchestration/**
-/ee/app/assets/javascripts/approvals/stores/modules/security_orchestration/**
-/ee/app/assets/javascripts/pages/groups/security/policies/**
-/ee/app/assets/javascripts/pages/projects/security/policies/**
-/ee/app/assets/javascripts/security_orchestration/**
+/ee/app/assets/javascripts/approvals/components/security_orchestration/
+/ee/app/assets/javascripts/approvals/stores/modules/security_orchestration/
+/ee/app/assets/javascripts/pages/groups/security/policies/
+/ee/app/assets/javascripts/pages/projects/security/policies/
+/ee/app/assets/javascripts/security_orchestration/
 /ee/app/views/groups/security/policies
-/ee/app/views/projects/security/policies/**
-/ee/spec/frontend/approvals/components/security_orchestration/**
-/ee/spec/frontend/approvals/stores/modules/security_orchestration/**
-/ee/spec/frontend/security_orchestration/**
-/ee/spec/views/projects/security/policies/**
+/ee/app/views/projects/security/policies/
+/ee/spec/frontend/approvals/components/security_orchestration/
+/ee/spec/frontend/approvals/stores/modules/security_orchestration/
+/ee/spec/frontend/security_orchestration/
+/ee/spec/views/projects/security/policies/
 
 ^[Security Policies backend] @gitlab-org/security-risk-management/security-policies/backend
 /app/models/clusters/applications/cilium.rb
 /ee/app/controllers/groups/security/policies_controller.rb
 /ee/app/controllers/projects/security/policies_controller.rb
 /ee/app/graphql/mutations/concerns/mutations/finds_project_or_group_for_security_policies.rb
-/ee/app/graphql/mutations/security_policy/**
+/ee/app/graphql/mutations/security_policy/
 /ee/app/graphql/resolvers/concerns/resolves_orchestration_policy.rb
-/ee/app/graphql/resolvers/security_orchestration/**
-/ee/app/graphql/types/security_orchestration/**
+/ee/app/graphql/resolvers/security_orchestration/
+/ee/app/graphql/types/security_orchestration/
 /ee/app/helpers/ee/security_orchestration_helper.rb
 /ee/app/models/security/orchestration_policy_configuration.rb
 /ee/app/models/security/orchestration_policy_rule_schedule.rb
-/ee/app/services/security/orchestration/**
-/ee/app/services/security/security_orchestration_policies/**
+/ee/app/services/security/orchestration/
+/ee/app/services/security/security_orchestration_policies/
 /ee/app/validators/json_schemas/security_orchestration_policy.json
 /ee/app/workers/concerns/update_orchestration_policy_configuration.rb
 /ee/app/workers/security/create_orchestration_policy_worker.rb
 /ee/app/workers/security/orchestration_policy_rule_schedule_namespace_worker.rb
 /ee/app/workers/security/orchestration_policy_rule_schedule_worker.rb
 /ee/lib/ee/gitlab/ci/pipeline/chain/validate/security_orchestration_policy.rb
-/ee/lib/gitlab/ci/config/security_orchestration_policies/**
-/ee/lib/gitlab/graphql/aggregations/security_orchestration_policies/**
+/ee/lib/gitlab/ci/config/security_orchestration_policies/
+/ee/lib/gitlab/graphql/aggregations/security_orchestration_policies/
 /ee/spec/controllers/groups/security/policies_controller_spec.rb
 /ee/spec/factories/security_orchestration_policy_configurations.rb
 /ee/spec/factories/security_orchestration_policy_rule_schedules.rb
 /ee/spec/factories/security/policies.rb
-/ee/spec/graphql/mutations/security_policy/**
-/ee/spec/graphql/resolvers/security_orchestration/**
-/ee/spec/graphql/types/security_orchestration/**
+/ee/spec/graphql/mutations/security_policy/
+/ee/spec/graphql/resolvers/security_orchestration/
+/ee/spec/graphql/types/security_orchestration/
 /ee/spec/helpers/ee/security_orchestration_helper_spec.rb
 /ee/spec/lib/ee/gitlab/ci/pipeline/chain/validate/security_orchestration_policy_spec.rb
-/ee/spec/lib/gitlab/ci/config/security_orchestration_policies/**
-/ee/spec/lib/gitlab/graphql/aggregations/security_orchestration_policies/**
+/ee/spec/lib/gitlab/ci/config/security_orchestration_policies/
+/ee/spec/lib/gitlab/graphql/aggregations/security_orchestration_policies/
 /ee/spec/models/security/orchestration_policy_configuration_spec.rb
 /ee/spec/models/security/orchestration_policy_rule_schedule_spec.rb
-/ee/spec/requests/api/graphql/mutations/security_policy/**
-/ee/spec/requests/api/graphql/project/security_orchestration/**
+/ee/spec/requests/api/graphql/mutations/security_policy/
+/ee/spec/requests/api/graphql/project/security_orchestration/
 /ee/spec/requests/projects/security/policies_controller_spec.rb
-/ee/spec/services/security/orchestration/**
-/ee/spec/services/security/security_orchestration_policies/**
-/ee/spec/support/shared_contexts/graphql/resolvers/security_orchestration/**
+/ee/spec/services/security/orchestration/
+/ee/spec/services/security/security_orchestration_policies/
+/ee/spec/support/shared_contexts/graphql/resolvers/security_orchestration/
 /ee/spec/views/projects/security/policies/index.html.haml_spec.rb
 /ee/spec/workers/concerns/update_orchestration_policy_configuration_spec.rb
 /ee/spec/workers/security/create_orchestration_policy_worker_spec.rb
@@ -312,14 +312,14 @@ Dangerfile
 /ee/app/models/sca/license_policy.rb
 /ee/app/models/software_license_policy.rb
 /ee/app/models/software_license.rb
-/ee/app/serializers/license_compliance/**
+/ee/app/serializers/license_compliance/
 /ee/app/serializers/license_entity.rb
 /ee/app/serializers/licenses_list_entity.rb
 /ee/app/serializers/licenses_list_serializer.rb
 /ee/app/serializers/security/license_policy_entity.rb
 /ee/app/services/ci/compare_license_scanning_reports_collapsed_service.rb
 /ee/app/services/ci/compare_license_scanning_reports_service.rb
-/ee/app/services/software_license_policies/**
+/ee/app/services/software_license_policies/
 /ee/app/workers/refresh_license_compliance_checks_worker.rb
 /ee/lib/api/managed_licenses.rb
 /ee/lib/ee/api/entities/managed_license.rb
@@ -328,16 +328,16 @@ Dangerfile
 /ee/spec/factories/software_license.rb
 /ee/spec/factories/spdx_license.rb
 /ee/spec/finders/software_license_policies_finder_spec.rb
-/ee/spec/lib/gitlab/ci/parsers/license_compliance/**
+/ee/spec/lib/gitlab/ci/parsers/license_compliance/
 /ee/spec/models/sca/license_compliance_spec.rb @gitlab-org/security-risk-management/security-policies/backend @gitlab-org/secure/composition-analysis-be
 /ee/spec/models/sca/license_policy_spec.rb
 /ee/spec/models/software_license_policy_spec.rb
 /ee/spec/models/software_license_spec.rb
 /ee/spec/requests/api/managed_licenses_spec.rb
-/ee/spec/serializers/license_compliance/**
+/ee/spec/serializers/license_compliance/
 /ee/spec/services/ci/compare_license_scanning_reports_collapsed_service_spec.rb
 /ee/spec/services/ci/compare_license_scanning_reports_service_spec.rb
-/ee/spec/services/software_license_policies/**
+/ee/spec/services/software_license_policies/
 /spec/finders/security/license_compliance_jobs_finder_spec.rb
 
 [Secure::Secret Detection] @gitlab-org/secure/secret-detection
@@ -556,8 +556,8 @@ lib/gitlab/git_access.rb
 lib/gitlab/git_access_*.rb
 ee/lib/ee/gitlab/git_access.rb
 ee/lib/ee/gitlab/git_access_*.rb
-ee/lib/ee/gitlab/checks/**
-lib/gitlab/checks/**
+ee/lib/ee/gitlab/checks/
+lib/gitlab/checks/
 
 ^[Technical writing] @gitlab-org/technical-writing/tw-docops @gitlab-org/tw-leadership
 /.gitlab/ci/docs.gitlab-ci.yaml
@@ -1210,7 +1210,7 @@ lib/gitlab/checks/**
 
 # i18n Docs
 [Localization Team] @gitlab-com/localization/maintainers
-/doc-locale/**
+/doc-locale/
 /doc/development/i18n/proofreader.md
 /argo_translation.yml
 

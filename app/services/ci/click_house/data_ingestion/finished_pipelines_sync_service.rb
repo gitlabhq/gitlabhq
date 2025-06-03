@@ -19,11 +19,13 @@ module Ci
         PIPELINE_FIELD_NAMES = %i[id duration status source ref].freeze
         PIPELINE_EPOCH_FIELD_NAMES = %i[committed_at created_at started_at finished_at].freeze
         PIPELINE_COMPUTED_FIELD_NAMES = %i[path].freeze
+        PIPELINE_META_FIELD_NAMES = %i[name].freeze
 
         CSV_MAPPING = {
           **PIPELINE_FIELD_NAMES.index_with { |n| n },
           **PIPELINE_EPOCH_FIELD_NAMES.index_with { |n| :"casted_#{n}" },
-          **PIPELINE_COMPUTED_FIELD_NAMES.index_with { |n| n }
+          **PIPELINE_COMPUTED_FIELD_NAMES.index_with { |n| n },
+          **PIPELINE_META_FIELD_NAMES.index_with { |n| n }
         }.freeze
 
         INSERT_FINISHED_PIPELINES_QUERY = <<~SQL.squish
@@ -142,7 +144,7 @@ module Ci
 
           pipelines = Ci::Pipeline.id_in(pipeline_ids)
           pipelines
-            .left_outer_joins(project_mirror: :namespace_mirror)
+            .left_outer_joins(project_mirror: :namespace_mirror, pipeline_metadata: [])
             .select(:finished_at, *finished_pipeline_projections)
             .each do |pipeline|
               records_yielder << pipeline.attributes.symbolize_keys.tap do |record|
@@ -160,7 +162,8 @@ module Ci
             *PIPELINE_FIELD_NAMES.map { |n| "#{::Ci::Pipeline.table_name}.#{n}" },
             *PIPELINE_EPOCH_FIELD_NAMES
                .map { |n| "COALESCE(EXTRACT(epoch FROM #{::Ci::Pipeline.table_name}.#{n}), 0) AS casted_#{n}" },
-            "ARRAY_TO_STRING(#{::Ci::NamespaceMirror.table_name}.traversal_ids, '/') || '/' AS path"
+            "ARRAY_TO_STRING(#{::Ci::NamespaceMirror.table_name}.traversal_ids, '/') || '/' AS path",
+            *PIPELINE_META_FIELD_NAMES.map { |n| "#{::Ci::PipelineMetadata.table_name}.#{n} AS #{n}" }
           ]
         end
         strong_memoize_attr :finished_pipeline_projections

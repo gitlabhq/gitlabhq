@@ -326,7 +326,7 @@
 {"name":"http-accept","version":"1.7.0","platform":"ruby","checksum":"c626860682bfbb3b46462f8c39cd470fd7b0584f61b3cc9df5b2e9eb9972a126"},
 {"name":"http-cookie","version":"1.0.5","platform":"ruby","checksum":"73756d46c7dbdc7023deecdb8a171348ea95a1b99810b31cfe8b4fb4e9a6318f"},
 {"name":"http-form_data","version":"2.3.0","platform":"ruby","checksum":"cc4eeb1361d9876821e31d7b1cf0b68f1cf874b201d27903480479d86448a5f3"},
-{"name":"httparty","version":"0.22.0","platform":"ruby","checksum":"78652a5c9471cf0093d3b2083c2295c9c8f12b44c65112f1846af2b71430fa6c"},
+{"name":"httparty","version":"0.23.1","platform":"ruby","checksum":"3ac1dd62f2010f6ece551716f5ceec2b2012011d89f1751917ab7f724e966b55"},
 {"name":"httpclient","version":"2.8.3","platform":"ruby","checksum":"2951e4991214464c3e92107e46438527d23048e634f3aee91c719e0bdfaebda6"},
 {"name":"i18n","version":"1.14.4","platform":"ruby","checksum":"c7deedead0866ea9102975a4eab7968f53de50793a0c211a37808f75dd187551"},
 {"name":"i18n_data","version":"0.13.1","platform":"ruby","checksum":"e5aa99b09a69b463bb0443fc1f9540351a49f3d1541c5e91316bafa035c63f66"},
