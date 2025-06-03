@@ -109,7 +109,7 @@ You can use oversubscription to maintain a baseline level of performance during 
 small number of high-workload repositories to "burst" when necessary, without impacting unrelated requests.
 Oversubscription refers to assigning more resources than what is technically available on the system.
 
-Using the example above, we can oversubscribe our repository cgroups by allocating 10GiB of memory each, despite the system
+Using the previous example, we can oversubscribe our repository cgroups by allocating 10GiB of memory each, despite the system
 not having 10GiB * 100 of system memory. These values assume that 10GiB is sufficient for normal operations against any
 one repository, but also allows two repositories to burst to 10GiB each while leaving a third bucket of resources to
 maintain baseline performance.

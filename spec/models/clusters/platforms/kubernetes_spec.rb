@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Clusters::Platforms::Kubernetes, feature_category: :kubernetes_managedment do
+RSpec.describe Clusters::Platforms::Kubernetes, feature_category: :deployment_management do
   include KubernetesHelpers
   include ReactiveCachingHelpers
 

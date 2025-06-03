@@ -26,8 +26,8 @@ RSpec.describe Projects::ImportExport::WaitRelationExportsWorker, feature_catego
       finished_export_job = create(:project_export_job, :finished)
 
       expect { described_class.new.perform(finished_export_job.id, user.id, after_export_strategy) }
-        .to change { Projects::ImportExport::ParallelProjectExportWorker.jobs.size }.by(0)
-        .and change { described_class.jobs.size }.by(0)
+        .to not_change { Projects::ImportExport::ParallelProjectExportWorker.jobs.size }
+        .and not_change { described_class.jobs.size }
     end
   end
 
@@ -40,7 +40,7 @@ RSpec.describe Projects::ImportExport::WaitRelationExportsWorker, feature_catego
 
     it 'does not enqueue ParallelProjectExportWorker and re-enqueue WaitRelationExportsWorker' do
       expect { described_class.new.perform(*job_args) }
-        .to change { Projects::ImportExport::ParallelProjectExportWorker.jobs.size }.by(0)
+        .to not_change { Projects::ImportExport::ParallelProjectExportWorker.jobs.size }
         .and change { described_class.jobs.size }.by(1)
     end
   end
@@ -85,7 +85,7 @@ RSpec.describe Projects::ImportExport::WaitRelationExportsWorker, feature_catego
     it 'enqueues ParallelProjectExportWorker and does not reenqueue WaitRelationExportsWorker' do
       expect { described_class.new.perform(*job_args) }
         .to change { Projects::ImportExport::ParallelProjectExportWorker.jobs.size }.by(1)
-        .and change { described_class.jobs.size }.by(0)
+        .and not_change { described_class.jobs.size }
     end
 
     it_behaves_like 'an idempotent worker'
@@ -116,8 +116,8 @@ RSpec.describe Projects::ImportExport::WaitRelationExportsWorker, feature_catego
 
     it 'does not enqueue ParallelProjectExportWorker and re-enqueue WaitRelationExportsWorker' do
       expect { described_class.new.perform(*job_args) }
-        .to change { Projects::ImportExport::ParallelProjectExportWorker.jobs.size }.by(0)
-        .and change { described_class.jobs.size }.by(0)
+        .to not_change { Projects::ImportExport::ParallelProjectExportWorker.jobs.size }
+        .and not_change { described_class.jobs.size }
     end
   end
 end

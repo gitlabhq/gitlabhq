@@ -376,14 +376,14 @@ Checking connectivity: 1381139, done.
 Updating files: 100% (71304/71304), done.
 ```
 
-In the above example:
+In the previous example:
 
 - When not using a Bundle URI, there were 5,271,177 objects received from the
   GitLab server.
 - When using a Bundle URI, there were 1,322,255 objects received from the GitLab
   server.
 
-This reduction means GitLab needs to pack together fewer objects (in the above
+This reduction means GitLab needs to pack together fewer objects (in the previous
 example, roughly a quarter of the number of objects) because the client first
 downloaded the bundle from the storage server.
 

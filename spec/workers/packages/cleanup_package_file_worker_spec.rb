@@ -103,8 +103,9 @@ RSpec.describe Packages::CleanupPackageFileWorker, type: :worker, feature_catego
       it 'deletes the package file but keeps the package' do
         expect(worker).to receive(:log_extra_metadata_on_done).twice
 
-        expect { subject }.to change { Packages::PackageFile.count }.by(-1)
-          .and change { Packages::Package.count }.by(0)
+        expect { subject }
+          .to change { Packages::PackageFile.count }.by(-1)
+          .and not_change { Packages::Package.count }
       end
     end
 

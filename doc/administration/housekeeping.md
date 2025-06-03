@@ -268,7 +268,7 @@ your [Gitaly log](logs/_index.md#gitaly-logs):
 ```
 
 The `actual_duration` (in nanoseconds) indicates how long the scheduled maintenance
-took to execute. In the example above, the scheduled housekeeping completed
+took to execute. In the previous example, the scheduled housekeeping completed
 in just over 5 minutes.
 
 ## Object pool repositories

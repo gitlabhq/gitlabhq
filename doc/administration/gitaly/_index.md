@@ -282,7 +282,7 @@ Improvements to RPO and RTO are proposed in epic [8903](https://gitlab.com/group
 {{< alert type="warning" >}}
 
 If complete cluster failure occurs, disaster recovery plans should be executed. These can affect the
-RPO and RTO discussed above.
+RPO and RTO discussed previously.
 
 {{< /alert >}}
 
@@ -458,7 +458,7 @@ conflict. The first to complete creates the metadata record and the other operat
 The failing creation leaves leftover repositories on the storages. There is on-going work on a
 [background crawler](https://gitlab.com/gitlab-org/gitaly/-/issues/3719) that clean up the leftover repositories from the storages.
 
-The repository IDs are generated from the `repositories_repository_id_seq` in PostgreSQL. In the above example, the failing operation took
+The repository IDs are generated from the `repositories_repository_id_seq` in PostgreSQL. In the previous example, the failing operation took
 one repository ID without successfully creating a repository with it. Failed repository creations are expected lead to gaps in the repository IDs.
 
 ##### Repository deletions

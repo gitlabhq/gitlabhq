@@ -176,7 +176,7 @@ precedence:
 The operator precedence for this syntax is fixed: it's not possible to make `AND`
 have higher precedence than `OR`.
 
-As with the standard queue group syntax above, a single `*` as the
+As with the standard queue group syntax documented previously, a single `*` as the
 entire queue group selects all queues.
 
 ### List of available job classes

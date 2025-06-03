@@ -305,7 +305,7 @@ Samples: 348K of event 'cycles', Event count (approx.): 280908431073
   0.10%            ruby  libc-2.12.so        [.] _int_free
 ```
 
-Above you see sample output from a `perf` report. It shows that 97% of the CPU is
+The sample output from the `perf` report shows that 97% of the CPU is
 being spent inside Nokogiri and `xmlXPathNodeSetMergeAndClear`. For something
 this obvious you should then go investigate what job in GitLab would use
 Nokogiri and XPath. Combine with `TTIN` or `gdb` output to show the
@@ -345,7 +345,7 @@ from /opt/gitlab/embedded/service/gem/ruby/2.1.0/gems/nokogiri-1.6.7.2/lib/nokog
 ...
 ```
 
-If you see a suspicious thread, like the Nokogiri one above, you may want
+If you see a suspicious thread, like the Nokogiri one in the example, you may want
 to get more information:
 
 ```plaintext
@@ -381,7 +381,7 @@ exit
 
 ## Sidekiq kill signals
 
-TTIN was described above as the signal to print backtraces for logging, however
+TTIN was described previously as the signal to print backtraces for logging, however
 Sidekiq responds to other signals as well. For example, TSTP and TERM can be used
 to gracefully shut Sidekiq down, see
 [the Sidekiq Signals docs](https://github.com/mperham/sidekiq/wiki/Signals#ttin).
@@ -389,7 +389,7 @@ to gracefully shut Sidekiq down, see
 ## Check for blocking queries
 
 Sometimes the speed at which Sidekiq processes jobs can be so fast that it can
-cause database contention. Check for blocking queries when backtraces above
+cause database contention. Check for blocking queries when backtraces documented previously
 show that many threads are stuck in the database adapter.
 
 The PostgreSQL wiki has details on the query you can run to see blocking
@@ -476,7 +476,7 @@ queue.each { |job| job.delete if <condition>}
 
 Have a look at the section below for cancelling running jobs.
 
-In the method above, `<queue-name>` is the name of the queue that contains the jobs you want to delete and `<condition>` decides which jobs get deleted.
+In the method documented previously, `<queue-name>` is the name of the queue that contains the jobs you want to delete and `<condition>` decides which jobs get deleted.
 
 Commonly, `<condition>` references the job arguments, which depend on the type of job in question. To find the arguments for a specific queue, you can have a look at the `perform` function of the related worker file, commonly found at `/app/workers/<queue-name>_worker.rb`.
 

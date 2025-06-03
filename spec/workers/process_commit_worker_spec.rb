@@ -39,7 +39,7 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
         let(:project_id) { -1 }
 
         it 'does not close related issues' do
-          expect { perform }.to change { Issues::CloseWorker.jobs.size }.by(0)
+          expect { perform }.to not_change { Issues::CloseWorker.jobs.size }
 
           perform
         end

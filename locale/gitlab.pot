@@ -15463,6 +15463,9 @@ msgstr ""
 msgid "ComplianceFrameworksReport|Framework ID copied to clipboard."
 msgstr ""
 
+msgid "ComplianceFrameworksReport|No controls"
+msgstr ""
+
 msgid "ComplianceFrameworksReport|Policies"
 msgstr ""
 
