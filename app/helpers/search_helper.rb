@@ -471,29 +471,6 @@ module SearchHelper
     Sanitize.clean(str)
   end
 
-  def search_filter_link(scope, label, data: {}, search: {})
-    search_params = params
-      .merge(search)
-      .merge({ scope: scope })
-      .permit(SEARCH_GENERIC_PARAMS)
-
-    if @scope == scope
-      li_class = 'active'
-      count = formatted_count(scope)
-    else
-      badge_class = 'js-search-count hidden'
-      badge_data = { url: search_count_path(search_params) }
-    end
-
-    content_tag :li, class: li_class, data: data do
-      link_to search_path(search_params) do
-        concat label
-        concat ' '
-        concat gl_badge_tag(count, { class: badge_class, data: badge_data })
-      end
-    end
-  end
-
   def active_nav?(active_scope, active_type, type)
     return active_scope unless @scope.to_s == 'issues'
     return active_type if type

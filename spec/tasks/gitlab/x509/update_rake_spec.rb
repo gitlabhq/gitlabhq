@@ -37,6 +37,21 @@ RSpec.describe 'gitlab:x509 namespace rake task', :silence_stdout, feature_categ
         expect { subject }.to change { x509_commit_signature.reload.verification_status }
           .from('unverified').to('verified')
       end
+
+      it 'logs debug message for each updated signature' do
+        logger = Logger.new($stdout)
+
+        allow(Gitlab::X509::Commit).to receive(:new).and_return(x509_commit)
+        expect(x509_commit).to receive(:update_signature!).and_call_original
+
+        allow(Logger).to receive(:new).and_return(logger)
+        expect(logger).to receive(:debug) do |_, &block|
+          expect(block.call).to start_with('Start to update x509 commit signature')
+        end
+
+        expect { subject }.to change { x509_commit_signature.reload.verification_status }
+          .from('unverified').to('verified')
+      end
     end
 
     context 'without commit signatures' do

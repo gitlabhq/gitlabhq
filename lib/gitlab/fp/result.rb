@@ -204,23 +204,27 @@ module Gitlab
       #
       # "#inspect_ok" corresponds to "inspect" in Rust: https://doc.rust-lang.org/std/result/enum.Result.html#method.inspect
       #
-      # But note that we could not call it `inspect` here, because that would conflict with the
-      # Kernel#inspect method in Ruby.
+      # If enforce_immutability is true, the passed method will not be allowed to mutate the value passed to it.
+      #
+      # Note that we could not call this method `inspect` to match the Rust Result.inspect function, because that
+      # would conflict with the Kernel#inspect method in Ruby.
       #
       # @param [Proc, Method] lambda_or_singleton_method
+      # @param [Boolean] enforce_immutability enforces immutability of the value passed to lambda_or_singleton_method
       # @return [Result]
       # @raise [TypeError]
-      def inspect_ok(lambda_or_singleton_method)
+      def inspect_ok(lambda_or_singleton_method, enforce_immutability: true)
         validate_lambda_or_singleton_method(callee: lambda_or_singleton_method, invoking_method: __method__)
 
         # Return/passthrough the Result itself if it is an err
         return self if err?
 
         # If the Result is ok, call the lambda or singleton method with the contained value
-        call_and_enforce_value_is_not_mutated(
+        call_and_optionally_enforce_value_is_not_mutated(
           callee: lambda_or_singleton_method,
           value: value,
-          invoking_method: __method__
+          invoking_method: __method__,
+          enforce_immutability: enforce_immutability
         )
 
         # Return/passthrough the original Result
@@ -236,22 +240,26 @@ module Gitlab
       #
       # If the passed method does not return `nil`, an error will be raised.
       #
+      # If enforce_immutablity is true, the passed method will not be allowed to mutate the value passed to it.
+      #
       # "#inspect_err" corresponds to "inspect_err" in Rust: https://doc.rust-lang.org/std/result/enum.Result.html#method.inspect_err
       #
       # @param [Proc, Method] lambda_or_singleton_method
+      # @param [Boolean] enforce_immutability enforces immutability of the value passed to lambda_or_singleton_method
       # @return [Result]
       # @raise [TypeError]
-      def inspect_err(lambda_or_singleton_method)
+      def inspect_err(lambda_or_singleton_method, enforce_immutability: true)
         validate_lambda_or_singleton_method(callee: lambda_or_singleton_method, invoking_method: __method__)
 
         # Return/passthrough the Result itself if it is an ok
         return self if ok?
 
         # If the Result is err, call the lambda or singleton method with the contained value
-        call_and_enforce_value_is_not_mutated(
+        call_and_optionally_enforce_value_is_not_mutated(
           callee: lambda_or_singleton_method,
           value: value,
-          invoking_method: __method__
+          invoking_method: __method__,
+          enforce_immutability: enforce_immutability
         )
 
         # Return/passthrough the original Result
@@ -327,38 +335,41 @@ module Gitlab
       # @param [Proc, Method] callee
       # @param [Object] value
       # @param [Symbol] invoking_method
+      # @param [Boolean] enforce_immutability enforces immutability of the value passed to lambda_or_singleton_method
       # @return [void]
       # @raise [RuntimeError]
-      def call_and_enforce_value_is_not_mutated(callee:, value:, invoking_method:)
-        value_before = value.clone
-
-        begin
-          marshalled_value_before = Marshal.dump(value)
-        rescue StandardError
-          # Marshal.dump will fail if there are singletons in the object
-          marshalled_value_before = nil
-        end
-
-        return_value_from_call = callee.call(value)
+      def call_and_optionally_enforce_value_is_not_mutated(callee:, value:, invoking_method:, enforce_immutability:)
+        return_value_from_call =
+          if enforce_immutability
+            # If enforce_immutability is true, deep clone and freeze the value before passing it,
+            # so that the callee can't mutate the original value
+            begin
+              callee.call(deep_clone_and_freeze(value))
+            rescue FrozenError => e
+              err_msg = "ERROR: #{callee} must not modify the passed value argument, because it was invoked via " \
+                "Result##{invoking_method}. Ensure that no side effects are being performed which modify any " \
+                "properties of nested objects, such as lazy memoization. " \
+                "Alternately, you can pass 'enforce_immutability: false' to Result##{invoking_method}."
+              raise e.exception("#{e.message}. #{err_msg}")
+            end
+          else
+            callee.call(value)
+          end
 
         validate_return_value_is_void(return_value: return_value_from_call, invoking_method: invoking_method)
+      end
 
-        begin
-          marshalled_value_after = Marshal.dump(value)
-        rescue StandardError
-          # Marshal.dump will fail if there are singletons in the object
-          marshalled_value_after = nil
+      # @param [Object] object
+      # @return [Object]
+      def deep_clone_and_freeze(object)
+        case object
+        when Array
+          object.map { |entry| deep_clone_and_freeze(entry) }.freeze
+        when Hash
+          object.transform_values { |entry| deep_clone_and_freeze(entry) }.freeze
+        else
+          object.clone(freeze: true)
         end
-
-        value_was_mutated =
-          # First do an equality check, but this might return a false positive for some deeply nested objects
-          # or objects which don't implement equality properly, so also do the marshalled value equality check
-          value_before != value || marshalled_value_before != marshalled_value_after
-
-        return unless value_was_mutated
-
-        raise "ERROR: #{callee} must not modify the passed value argument, " \
-          "because it was invoked via Result##{invoking_method}"
       end
 
       # @param [Proc, Method] return_value

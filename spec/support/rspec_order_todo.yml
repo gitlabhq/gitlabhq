@@ -2261,7 +2261,6 @@
 - './ee/spec/validators/ldap_filter_validator_spec.rb'
 - './ee/spec/validators/password/complexity_validator_spec.rb'
 - './ee/spec/validators/user_existence_validator_spec.rb'
-- './ee/spec/views/admin/application_settings/_elasticsearch_form.html.haml_spec.rb'
 - './ee/spec/views/admin/application_settings/general.html.haml_spec.rb'
 - './ee/spec/views/admin/application_settings/_git_abuse_rate_limit.html.haml_spec.rb'
 - './ee/spec/views/admin/dashboard/index.html.haml_spec.rb'

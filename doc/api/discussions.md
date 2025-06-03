@@ -887,7 +887,18 @@ Diff comments also contain position:
         },
         "resolved": false,
         "resolvable": true,
-        "resolved_by": null
+        "resolved_by": null,
+        "suggestions": [
+          {
+            "id": 1,
+            "from_line": 27,
+            "to_line": 27,
+            "appliable": true,
+            "applied": false,
+            "from_content": "x",
+            "to_content": "b"
+          }
+        ]
       }
     ]
   }

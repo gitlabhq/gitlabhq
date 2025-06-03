@@ -142,7 +142,6 @@ Style/FormatString:
     - 'ee/lib/gitlab/geo.rb'
     - 'ee/lib/gitlab/manual_quarterly_co_term_banner.rb'
     - 'ee/spec/controllers/groups/security/policies_controller_spec.rb'
-    - 'ee/spec/features/admin/admin_settings_spec.rb'
     - 'ee/spec/features/admin/admin_users_spec.rb'
     - 'ee/spec/features/groups/analytics/cycle_analytics/filters_and_data_spec.rb'
     - 'ee/spec/features/groups/analytics/cycle_analytics/multiple_value_streams_spec.rb'

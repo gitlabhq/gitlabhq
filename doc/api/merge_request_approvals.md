@@ -108,8 +108,7 @@ your automation should add a wait (or `sleep`) function until:
 
 ## Unapprove merge request
 
-If you did approve a merge request, you can unapprove it using the following
-endpoint:
+If you did approve a merge request, and now want to unapprove it, use this endpoint:
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/unapprove
@@ -148,8 +147,7 @@ curl --request PUT \
 
 Use the [project approval rules](#get-all-approval-rules-for-project) to access this information.
 
-You can request information about a project's approval configuration using the
-following endpoint:
+To request information about a project's approval configuration, use this endpoint:
 
 ```plaintext
 GET /projects/:id/approvals
@@ -189,7 +187,7 @@ Supported attributes:
 | Attribute                                        | Type              | Required | Description |
 |--------------------------------------------------|-------------------|----------|-------------|
 | `id`                                             | integer or string | Yes      | The ID or [URL-encoded path of a project](rest/_index.md#namespaced-paths). |
-| `approvals_before_merge` (deprecated)            | integer           | No       | Number of required approvals before a merge request can merge. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/11132) in GitLab 12.3. Use [Approval Rules](#create-project-approval-rule) instead. |
+| `approvals_before_merge` (deprecated)            | integer           | No       | The number of required approvals before a merge request can merge. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/11132) in GitLab 12.3. Use [Approval Rules](#create-project-approval-rule) instead. <!-- Do not remove line until field is actually removed --> |
 | `disable_overriding_approvers_per_merge_request` | boolean           | No       | Allow or prevent overriding approvers per merge request. |
 | `merge_requests_author_approval`                 | boolean           | No       | Allow or prevent authors from self approving merge requests; `true` means authors can self approve. |
 | `merge_requests_disable_committers_approval`     | boolean           | No       | Allow or prevent committers from self approving merge requests. |
@@ -213,16 +211,7 @@ Supported attributes:
 
 ### Get all approval rules for project
 
-{{< history >}}
-
-- Pagination support introduced in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `approval_rules_pagination`. Enabled by default. GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/31011`
-- `applies_to_all_protected_branches` property [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
-- Pagination support [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/366823) in GitLab 15.7. Feature flag `approval_rules_pagination` removed.
-- `usernames` property [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102446) in GitLab 15.8.
-
-{{< /history >}}
-
-Use this endpoint to request information about a project's approval rules:
+To request information about a project's approval rules, use this endpoint:
 
 ```plaintext
 GET /projects/:id/approval_rules
@@ -404,13 +393,6 @@ Supported attributes:
 
 ### Get single approval rule for project
 
-{{< history >}}
-
-- `applies_to_all_protected_branches` property [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
-- `usernames` property [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102446) in GitLab 15.8.
-
-{{< /history >}}
-
 To request information about a single project's approval rule, use this endpoint:
 
 ```plaintext
@@ -509,15 +491,7 @@ Supported attributes:
 
 ### Create project approval rule
 
-{{< history >}}
-
-- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357300) the Vulnerability-Check feature in GitLab 15.0.
-- `applies_to_all_protected_branches` property [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
-- `usernames` property [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102446) in GitLab 15.8.
-
-{{< /history >}}
-
-To create project approval rules, use this endpoint:
+To create project approval rule, use this endpoint:
 
 ```plaintext
 POST /projects/:id/approval_rules
@@ -530,10 +504,10 @@ Supported attributes:
 | `id`                                | integer or string | Yes      | The ID or [URL-encoded path of a project](rest/_index.md#namespaced-paths). |
 | `approvals_required`                | integer           | Yes      | The number of required approvals for this rule. |
 | `name`                              | string            | Yes      | The name of the approval rule. Limited to 1024 characters. |
-| `applies_to_all_protected_branches` | boolean           | No       | Whether to apply the rule to all protected branches. If set to `true`, ignores the value of `protected_branch_ids`. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3. |
+| `applies_to_all_protected_branches` | boolean           | No       | If `true`, applies the rule to all protected branches and ignores the `protected_branch_ids` attribute. |
 | `group_ids`                         | Array             | No       | The IDs of groups as approvers. |
 | `protected_branch_ids`              | Array             | No       | The IDs of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches). |
-| `report_type`                       | string            | No       | The report type required when the rule type is `report_approver`. The supported report types are `license_scanning` [(Deprecated in GitLab 15.9)](../update/deprecations.md#license-check-and-the-policies-tab-on-the-license-compliance-page) and `code_coverage`. |
+| `report_type`                       | string            | No       | The report type required when the rule type is `report_approver`. The supported report types are `license_scanning` [(Deprecated in GitLab 15.9)](../update/deprecations.md#license-check-and-the-policies-tab-on-the-license-compliance-page) and `code_coverage`. <!-- Do not remove line until field is actually removed -->  |
 | `rule_type`                         | string            | No       | The rule type. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular` (used for regular [merge request approval rules](../user/project/merge_requests/approvals/rules.md)) and `report_approver`. Don't use this field to build approval rules from the API. The `report_approver` field is used when GitLab creates an approval rule from configured and enabled [merge request approval policies](../user/application_security/policies/merge_request_approval_policies.md). |
 | `user_ids`                          | Array             | No       | The IDs of users as approvers. If you provide both `user_ids` and `usernames`, it adds both lists of users. |
 | `usernames`                         | string array      | No       | The usernames of approvers for this rule (same as `user_ids` but requires a list of usernames). If you provide both `user_ids` and `usernames`, it adds both lists of users. |
@@ -642,14 +616,6 @@ curl --request POST \
 
 ### Update project approval rule
 
-{{< history >}}
-
-- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357300) the Vulnerability-Check feature in GitLab 15.0.
-- `applies_to_all_protected_branches` property [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
-- `usernames` property [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102446) in GitLab 15.8.
-
-{{< /history >}}
-
 To update project approval rules, use this endpoint:
 
 ```plaintext
@@ -672,7 +638,7 @@ Supported attributes:
 |-------------------------------------|-------------------|----------|-------------|
 | `approval_rule_id`                  | integer           | Yes      | The ID of a approval rule. |
 | `id`                                | integer or string | Yes      | The ID or [URL-encoded path of a project](rest/_index.md#namespaced-paths). |
-| `applies_to_all_protected_branches` | boolean           | No       | Whether to apply the rule to all protected branches. If set to `true`, it ignores the value of `protected_branch_ids`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3. |
+| `applies_to_all_protected_branches` | boolean           | No       | If `true`, applies the rule to all protected branches and ignores the `protected_branch_ids` attribute. |
 | `approvals_required`                | integer           | No       | The number of required approvals for this rule. |
 | `group_ids`                         | Array             | No       | The IDs of groups as approvers. |
 | `name`                              | string            | No       | The name of the approval rule. Limited to 1024 characters. |
@@ -1029,7 +995,7 @@ Supported attributes:
 
 ### Get a single merge request rule
 
-You can request information about a single merge request approval rule using the following endpoint:
+To request information about a single merge request approval rule, use this endpoint:
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id
@@ -1104,7 +1070,7 @@ Supported attributes:
 
 ### Create merge request rule
 
-You can create merge request approval rules using the following endpoint:
+To create merge request approval rules, use this endpoint:
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/approval_rules
@@ -1198,7 +1164,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rul
 
 This endpoint removes any approvers and groups not in the `users` or `groups` parameters.
 
-You can't update `report_approver` or `code_owner` rules, as these rules are system-generated.
+The `report_approver` or `code_owner` rules are system-generated, and you cannot edit them.
 
 Supported attributes:
 

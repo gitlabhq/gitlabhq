@@ -1469,7 +1469,7 @@ Payload example:
 
 ## Job events
 
-Job events are triggered when the status of a job changes.
+Job events are triggered when the status of a job changes. Trigger jobs are excluded.
 
 The `commit.id` in the payload is the ID of the pipeline, not the ID of the commit.
 

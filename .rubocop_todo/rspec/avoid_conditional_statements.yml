@@ -1,7 +1,6 @@
 ---
 RSpec/AvoidConditionalStatements:
   Exclude:
-    - 'ee/spec/features/admin/admin_settings_spec.rb'
     - 'ee/spec/features/analytics/code_analytics_spec.rb'
     - 'ee/spec/features/billings/billing_plans_spec.rb'
     - 'ee/spec/features/boards/scoped_issue_board_spec.rb'

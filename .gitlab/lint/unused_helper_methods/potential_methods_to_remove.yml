@@ -77,8 +77,6 @@ approve_access_request_project_member_path:
   file: app/helpers/routing/projects/members_helper.rb
 resend_invite_project_member_path:
   file: app/helpers/routing/projects/members_helper.rb
-search_filter_link:
-  file: app/helpers/search_helper.rb
 sidebar_tracking_attributes_by_object:
   file: app/helpers/sidebars_helper.rb
 scope_avatar_classes:

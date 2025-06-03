@@ -48,8 +48,7 @@ module QA
       end
 
       def run
-        # TODO: Remove CLEANUP_ALL_QA_SANDBOX_GROUPS once fully transitioned over to e2e groups
-        if ENV['CLEANUP_ALL_QA_SANDBOX_GROUPS'] || ENV['CLEANUP_ALL_E2E_SANDBOX_GROUPS']
+        if ENV['CLEANUP_ALL_E2E_SANDBOX_GROUPS']
           results = SANDBOX_GROUPS.flat_map do |name|
             group_id = fetch_group_id(@api_client, name)
             delete_projects(group_id)

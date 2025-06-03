@@ -59,7 +59,6 @@ RSpec/ContextWording:
     - 'ee/spec/features/admin/admin_audit_logs_spec.rb'
     - 'ee/spec/features/admin/admin_credentials_inventory_spec.rb'
     - 'ee/spec/features/admin/admin_dev_ops_reports_spec.rb'
-    - 'ee/spec/features/admin/admin_settings_spec.rb'
     - 'ee/spec/features/admin/licenses/admin_adds_license_spec.rb'
     - 'ee/spec/features/analytics/code_analytics_spec.rb'
     - 'ee/spec/features/billings/billing_plans_spec.rb'

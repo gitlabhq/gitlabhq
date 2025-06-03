@@ -46,7 +46,44 @@ RSpec.describe 'cross-database foreign keys', feature_category: :database do
       'appearance_uploads.organization_id'                          # https://gitlab.com/gitlab-org/gitlab/-/issues/534207
     ]
 
-    # gitlab_main_user <=> gitlab_main_clusterwide issues
+    # Pre-existing gitlab_main_cell <=> gitlab_main_clusterwide issues
+    # Epic: https://gitlab.com/groups/gitlab-org/-/epics/16043
+    # NOTE: Converting FK to LFK is not enough.
+    #       The tables, and related features will need to be reworked to be org level
+    keys += [
+      'issues.work_item_type_id',
+      'protected_branch_push_access_levels.deploy_key_id',
+      'protected_tag_create_access_levels.deploy_key_id',
+      'work_item_type_custom_lifecycles.work_item_type_id',
+      'work_item_type_user_preferences.work_item_type_id',
+      'abuse_report_user_mentions.note_id',
+      'ssh_signatures.key_id',
+      'subscription_add_on_purchases.subscription_add_on_id',
+      'audit_events_streaming_http_instance_namespace_filters.audit_events_instance_external_audit_event_destination_id',
+      'oauth_device_grants.application_id',
+      'deploy_tokens.project_id',
+      'deploy_tokens.group_id',
+      'audit_events_streaming_instance_namespace_filters.external_streaming_destination_id',
+      'identities.saml_provider_id',
+      'gitlab_subscriptions.hosted_plan_id',
+      'work_item_type_custom_fields.work_item_type_id',
+      'project_deploy_tokens.deploy_token_id',
+      'gpg_signatures.gpg_key_subkey_id',
+      'gpg_signatures.gpg_key_id',
+      'x509_commit_signatures.x509_certificate_id',
+      'ldap_admin_role_links.member_role_id',
+      'group_deploy_tokens.deploy_token_id',
+      'abuse_report_uploads.project_id',
+      'abuse_report_uploads.namespace_id',
+      'abuse_report_uploads.organization_id',
+      'user_permission_export_upload_uploads.project_id',
+      'user_permission_export_upload_uploads.namespace_id',
+      'user_permission_export_upload_uploads.organization_id',
+      'security_trainings.provider_id',
+      'analytics_language_trend_repository_languages.programming_language_id'
+    ]
+
+    # Pre-existing gitlab_main_user <=> gitlab_main_clusterwide issues
     # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/505754
     # NOTE: Likely converting FK to LFK is not enough.
     #       The tables here needs to be reworked, or shifted to gitlab_main_user

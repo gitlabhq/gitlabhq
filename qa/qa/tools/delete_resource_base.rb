@@ -12,19 +12,7 @@ module QA
 
       ITEMS_PER_PAGE = '100'
       PAGE_CUTOFF = '10'
-      # TODO: Remove groups with qa once fully transitioned over to e2e groups
-      SANDBOX_GROUPS = %w[gitlab-qa-sandbox-group
-        gitlab-qa-sandbox-group-0
-        gitlab-qa-sandbox-group-1
-        gitlab-qa-sandbox-group-2
-        gitlab-qa-sandbox-group-3
-        gitlab-qa-sandbox-group-4
-        gitlab-qa-sandbox-group-5
-        gitlab-qa-sandbox-group-6
-        gitlab-qa-sandbox-group-7
-        gitlab-e2e-sandbox-group
-        gitlab-e2e-sandbox-group-0
-        gitlab-e2e-sandbox-group-1
+      SANDBOX_GROUPS = %w[gitlab-e2e-sandbox-group-1
         gitlab-e2e-sandbox-group-2
         gitlab-e2e-sandbox-group-3
         gitlab-e2e-sandbox-group-4

@@ -80,6 +80,27 @@ Notification scope is applied from the broadest to most specific levels:
 - Your **group** setting overrides your default setting.
 - Your **project** setting overrides the group setting.
 
+When you set the notification level to **Global** for a project or subgroup, it does not directly inherit your global notification settings.
+Instead, it goes up the hierarchy and inherits the next non-global notification level that is configured, in the following order:
+
+1. The project setting.
+1. The parent group setting.
+1. The ancestor groups' settings (going up the hierarchy).
+1. The global notification setting as the final fallback setting.
+
+#### Example
+
+You set your global notification setting to **Watch**, and your group and project notification levels as follows:
+
+```plaintext
+Group A: Global
+├── Subgroup B: Participate
+    └── Project C: Global
+```
+
+In this example, project C inherits the **Participate** notification level from subgroup B.
+It does not inherit the **Watch** notification level from your global notification settings.
+
 ### Notification levels
 
 For each project and group you can select one of the following levels:

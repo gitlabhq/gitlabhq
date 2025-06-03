@@ -246,6 +246,8 @@ Jobs that exceed the timeout are marked as failed.
 When both a project timeout and a [runner timeout](../runners/configure_runners.md#set-the-maximum-job-timeout)
 are set, the lower value takes precedence.
 
+Jobs without an output for one hour are dropped regardless of the timeout. To prevent this from happening, add a script to continuously output progress. For more information, see [issue 25359](https://gitlab.com/gitlab-org/gitlab/-/issues/25359#workaround).
+
 ## Pipeline badges
 
 You can use [pipeline badges](../../user/project/badges.md) to indicate the pipeline status and

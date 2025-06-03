@@ -58801,6 +58801,8 @@ definitions:
         "$ref": "#/definitions/API_Entities_UserBasic"
       resolved_at:
         type: string
+      suggestions:
+        "$ref": "#/definitions/API_Entities_Suggestion"
       confidential:
         type: string
       internal:
@@ -58814,6 +58816,24 @@ definitions:
         type: string
       commands_changes:
         type: string
+  API_Entities_Suggestion:
+    type: object
+    properties:
+      id:
+        type: string
+      from_line:
+        type: string
+      to_line:
+        type: string
+      appliable:
+        type: string
+      applied:
+        type: string
+      from_content:
+        type: string
+      to_content:
+        type: string
+    description: API_Entities_Suggestion model
   API_Entities_PushEventPayload:
     type: object
     properties:
@@ -66024,24 +66044,6 @@ definitions:
         description: A custom commit message to use instead of the default generated
           message or the project's default message
     description: Apply suggestion patch in the Merge Request it was created
-  API_Entities_Suggestion:
-    type: object
-    properties:
-      id:
-        type: string
-      from_line:
-        type: string
-      to_line:
-        type: string
-      appliable:
-        type: string
-      applied:
-        type: string
-      from_content:
-        type: string
-      to_content:
-        type: string
-    description: API_Entities_Suggestion model
   putApiV4SuggestionsBatchApply:
     type: object
     properties:

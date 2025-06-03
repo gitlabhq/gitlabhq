@@ -3,7 +3,6 @@ Performance/CollectionLiteralInLoop:
   Exclude:
     - 'config/application.rb'
     - 'config/initializers/1_settings.rb'
-    - 'ee/spec/features/admin/admin_settings_spec.rb'
     - 'ee/spec/support/shared_examples/features/protected_branches_access_control_shared_examples.rb'
     - 'ee/spec/workers/app_sec/dast/profile_schedule_worker_spec.rb'
     - 'ee/spec/workers/security/orchestration_policy_rule_schedule_worker_spec.rb'

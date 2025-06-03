@@ -23,7 +23,6 @@ RSpec/BeEq:
     - 'ee/spec/controllers/projects/settings/repository_controller_spec.rb'
     - 'ee/spec/controllers/projects_controller_spec.rb'
     - 'ee/spec/features/admin/admin_emails_spec.rb'
-    - 'ee/spec/features/admin/admin_settings_spec.rb'
     - 'ee/spec/features/admin/users/users_spec.rb'
     - 'ee/spec/features/groups/settings/reporting_spec.rb'
     - 'ee/spec/features/issues/user_bulk_edits_issues_spec.rb'

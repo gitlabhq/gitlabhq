@@ -15,25 +15,6 @@ We rely on different sources to present diffs. These include:
 - Database (through `merge_request_diff_files`)
 - Redis (cached highlighted diffs)
 
-## Deep Dive
-
-<!-- vale gitlab_base.Spelling = NO -->
-
-In January 2019, Oswaldo Ferreira hosted a Deep Dive (GitLab team members only:
-`https://gitlab.com/gitlab-org/create-stage/-/issues/1`) on GitLab Diffs and Commenting on Diffs
-functionality to share domain-specific knowledge with anyone who works in this part of the
-codebase in the future:
-
-<!-- vale gitlab_base.Spelling = YES -->
-
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-  [Recording on YouTube](https://www.youtube.com/watch?v=K6G3gMcFyek)
-  <!-- Video published on 2019-01-29 -->
-- Slides on [Google Slides](https://docs.google.com/presentation/d/1bGutFH2AT3bxOPZuLMGl1ANWHqFnrxwQwjiwAZkF-TU/edit)
-
-Everything covered in this deep dive was accurate as of GitLab 11.7, and while specific details might
-have changed since then, it should still serve as a good introduction.
-
 ## Architecture overview
 
 ### Merge request diffs

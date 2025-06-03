@@ -933,7 +933,6 @@ Layout/LineLength:
     - 'ee/spec/factories/vulnerabilities/findings.rb'
     - 'ee/spec/features/admin/admin_audit_logs_spec.rb'
     - 'ee/spec/features/admin/admin_credentials_inventory_spec.rb'
-    - 'ee/spec/features/admin/admin_settings_spec.rb'
     - 'ee/spec/features/admin/admin_users_spec.rb'
     - 'ee/spec/features/admin/geo/admin_geo_nodes_spec.rb'
     - 'ee/spec/features/admin/groups/admin_changes_plan_spec.rb'

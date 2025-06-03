@@ -257,7 +257,6 @@ To change how a merge request shows changed lines:
 
 {{< history >}}
 
-- Introduced in GitLab 15.11 as an [experiment](../../../policy/development_stages_support.md#experiment) on GitLab.com.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) in GitLab 16.8.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
@@ -350,13 +349,6 @@ Files marked as viewed are not shown to you again unless either:
 - You clear the **Viewed** checkbox.
 
 ## Show merge request conflicts in diff
-
-{{< history >}}
-
-- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/276918) in GitLab 15.7.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/276918) in GitLab 15.8. Feature flag `display_merge_conflicts_in_diff` removed.
-
-{{< /history >}}
 
 To avoid displaying changes already on target branch, we compare the merge request's
 source branch with the `HEAD` of the target branch.

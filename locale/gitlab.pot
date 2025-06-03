@@ -12151,6 +12151,9 @@ msgstr ""
 msgid "Can't update snippet: %{err}"
 msgstr ""
 
+msgid "Canada"
+msgstr ""
+
 msgid "Canary"
 msgstr ""
 
@@ -15233,6 +15236,9 @@ msgid "Company"
 msgstr ""
 
 msgid "Company name"
+msgstr ""
+
+msgid "Company name is required."
 msgstr ""
 
 msgid "Compare"
@@ -18547,6 +18553,9 @@ msgid "Counter exceeded max value"
 msgstr ""
 
 msgid "Country or region"
+msgstr ""
+
+msgid "Country or region is required."
 msgstr ""
 
 msgid "Counts"
@@ -26882,6 +26891,9 @@ msgstr ""
 msgid "First name"
 msgstr ""
 
+msgid "First name is required."
+msgstr ""
+
 msgid "First seen"
 msgstr ""
 
@@ -27185,6 +27197,9 @@ msgstr ""
 msgid "Frameworks"
 msgstr ""
 
+msgid "France"
+msgstr ""
+
 msgid "Free Ultimate Trial with GitLab Duo Enterprise"
 msgstr ""
 
@@ -27403,9 +27418,6 @@ msgid "Geo|%d shard selected"
 msgid_plural "Geo|%d shards selected"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "Geo|%{boldStart}Not applicable%{boldEnd}: Geo does not verify this component yet. See the %{linkStart}data types we plan to support%{linkEnd}."
-msgstr ""
 
 msgid "Geo|%{label} %{timeAgo}"
 msgstr ""
@@ -28053,6 +28065,9 @@ msgid "Geo|primary"
 msgstr ""
 
 msgid "Geo|secondary"
+msgstr ""
+
+msgid "Germany"
 msgstr ""
 
 msgid "Get a support subscription"
@@ -35931,6 +35946,9 @@ msgid "Last month"
 msgstr ""
 
 msgid "Last name"
+msgstr ""
+
+msgid "Last name is required."
 msgstr ""
 
 msgid "Last repository check (%{last_check_timestamp}) failed. See the 'repocheck.log' file for error messages."
@@ -59699,6 +59717,9 @@ msgstr ""
 msgid "State"
 msgstr ""
 
+msgid "State or province is required."
+msgstr ""
+
 msgid "State your message to activate"
 msgstr ""
 
@@ -65329,6 +65350,12 @@ msgid "Unique identifier for the target message thread (topic in a forum supergr
 msgstr ""
 
 msgid "Unique identifier for the target room (in the format `!qPKKM111FFKKsfoCVy:matrix.org`)."
+msgstr ""
+
+msgid "United Kingdom"
+msgstr ""
+
+msgid "United States of America"
 msgstr ""
 
 msgid "Units|d"

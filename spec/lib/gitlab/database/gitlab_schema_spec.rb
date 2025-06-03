@@ -292,15 +292,15 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
       where(:schemas, :tables, :result) do
         %i[] | %w[] | false
         %i[gitlab_main] | %w[evidences] | true
-        %i[gitlab_main_clusterwide gitlab_main] | %w[users evidences] | true
+        %i[gitlab_main_clusterwide gitlab_main] | %w[users clusters] | true
         %i[gitlab_main_clusterwide gitlab_ci] | %w[users ci_pipelines] | false
         %i[gitlab_main_clusterwide gitlab_internal] | %w[users schema_migrations] | false
         %i[gitlab_main gitlab_ci] | %w[evidences ci_pipelines] | false
         %i[gitlab_main_clusterwide gitlab_shared] | %w[users detached_partitions] | false
-        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users namespaces] | true
-        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[plans namespaces] | true
-        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users achievements] | true
-        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users agent_group_authorizations] | true
+        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users namespaces] | false
+        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[plans namespaces] | false
+        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users achievements] | false
+        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users agent_group_authorizations] | false
       end
 
       with_them do

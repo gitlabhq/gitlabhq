@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
-  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be_with_reload(:project) { create(:project, :repository, creator: user) }
   let_it_be_with_reload(:project2) { create(:project, :repository) }

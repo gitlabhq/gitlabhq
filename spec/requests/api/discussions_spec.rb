@@ -189,6 +189,32 @@ RSpec.describe API::Discussions, feature_category: :team_planning do
         expect(json_response['notes'].first['commit_id']).to eq(mr_commit)
       end
     end
+
+    context 'when note is a normal note' do
+      it 'does not include suggestions' do
+        create(:suggestion,
+          note: diff_note,
+          from_content: "      raise RuntimeError, \"System commands must be given as an array of strings\"\n",
+          to_content: "      raise RuntimeError, 'Explosion'\n      # explosion?")
+
+        get api("/projects/#{project.id}/merge_requests/#{noteable['iid']}/discussions", user)
+
+        expect(json_response.first['notes'].first['suggestions']).to be_nil
+      end
+    end
+
+    context 'when note is a diff note' do
+      it 'includes suggestions' do
+        create(:suggestion,
+          note: diff_note,
+          from_content: "      raise RuntimeError, \"System commands must be given as an array of strings\"\n",
+          to_content: "      raise RuntimeError, 'Explosion'\n      # explosion?")
+
+        get api("/projects/#{project.id}/merge_requests/#{noteable['iid']}/discussions", user)
+
+        expect(json_response.last['notes'].first['suggestions'].first).to include('id', 'from_line', 'to_line', 'appliable', 'applied', 'from_content', 'to_content')
+      end
+    end
   end
 
   context 'when noteable is a Commit' do
