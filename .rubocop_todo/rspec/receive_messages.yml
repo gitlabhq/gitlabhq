@@ -87,7 +87,6 @@ RSpec/ReceiveMessages:
     - 'ee/spec/models/ee/namespace_spec.rb'
     - 'ee/spec/models/ee/project_spec.rb'
     - 'ee/spec/models/ee/user_spec.rb'
-    - 'ee/spec/models/elastic/migration_record_spec.rb'
     - 'ee/spec/models/group_wiki_spec.rb'
     - 'ee/spec/models/issue_spec.rb'
     - 'ee/spec/models/license_spec.rb'

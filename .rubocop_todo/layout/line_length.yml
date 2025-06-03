@@ -1361,7 +1361,6 @@ Layout/LineLength:
     - 'ee/spec/models/ee/service_desk_setting_spec.rb'
     - 'ee/spec/models/ee/user_spec.rb'
     - 'ee/spec/models/ee/vulnerability_spec.rb'
-    - 'ee/spec/models/elastic/migration_record_spec.rb'
     - 'ee/spec/models/elasticsearch_indexed_namespace_spec.rb'
     - 'ee/spec/models/environment_spec.rb'
     - 'ee/spec/models/epic_spec.rb'
