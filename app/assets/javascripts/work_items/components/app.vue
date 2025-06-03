@@ -6,7 +6,7 @@ export default {
       required: false,
       default: () => [],
     },
-    urlFullPath: {
+    rootPageFullPath: {
       type: String,
       required: false,
       default: undefined,
@@ -29,7 +29,7 @@ export default {
   <router-view
     :key="pageKey"
     :new-comment-template-paths="newCommentTemplatePaths"
-    :url-full-path="urlFullPath"
+    :root-page-full-path="rootPageFullPath"
     :with-tabs="withTabs"
     data-testid="work-item-router-view"
   />

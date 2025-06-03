@@ -19,6 +19,8 @@ module Ci
 
     enum :source, { internal: 0, dotenv: 1 }, suffix: true
 
+    scope :for_jobs, ->(jobs) { where(job: jobs) }
+
     def set_project_id
       self.project_id ||= job&.project_id
     end

@@ -168,12 +168,6 @@ Users can still create branches, but not tags, with the protected names.
 
 ## Allow deploy keys to create protected tags
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325415) in GitLab 15.11.
-
-{{< /history >}}
-
 You can permit a [deploy key](deploy_keys/_index.md) to create protected tags.
 
 Prerequisites:

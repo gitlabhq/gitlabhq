@@ -23,6 +23,10 @@ export default {
   },
   inject: ['isGroup'],
   props: {
+    rootPageFullPath: {
+      type: String,
+      required: true,
+    },
     workItemTypeEnum: {
       type: String,
       required: false,
@@ -150,6 +154,7 @@ export default {
 <template>
   <div>
     <create-work-item
+      :full-path="rootPageFullPath"
       :preselected-work-item-type="workItemType"
       :is-group="isGroup"
       :related-item="relatedItem"

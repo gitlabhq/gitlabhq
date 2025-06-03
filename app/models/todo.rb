@@ -40,11 +40,8 @@ class Todo < ApplicationRecord
     APPROVAL_REQUIRED => :approval_required,
     UNMERGEABLE => :unmergeable,
     DIRECTLY_ADDRESSED => :directly_addressed,
-    MERGE_TRAIN_REMOVED => :merge_train_removed,
     MEMBER_ACCESS_REQUESTED => :member_access_requested,
     REVIEW_SUBMITTED => :review_submitted,
-    OKR_CHECKIN_REQUESTED => :okr_checkin_requested,
-    ADDED_APPROVER => :added_approver,
     SSH_KEY_EXPIRED => :ssh_key_expired,
     SSH_KEY_EXPIRING_SOON => :ssh_key_expiring_soon
   }.freeze

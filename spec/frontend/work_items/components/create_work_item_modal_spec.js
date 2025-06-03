@@ -56,15 +56,13 @@ describe('CreateWorkItemModal', () => {
   } = {}) => {
     wrapper = shallowMount(CreateWorkItemModal, {
       propsData: {
+        fullPath: 'full-path',
         preselectedWorkItemType,
         asDropdownItem,
         hideButton,
         relatedItem,
         alwaysShowWorkItemTypeSelect,
         namespaceFullName,
-      },
-      provide: {
-        fullPath: 'full-path',
       },
       mocks: {
         $toast: {

@@ -141,7 +141,6 @@ describeSkipVue3(skipReason, () => {
         autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
         canBulkUpdate: true,
         canBulkEditEpics: true,
-        fullPath: 'full/path',
         hasEpicsFeature: false,
         hasGroupBulkEditFeature: true,
         hasOkrsFeature: false,
@@ -156,6 +155,7 @@ describeSkipVue3(skipReason, () => {
         ...provide,
       },
       propsData: {
+        rootPageFullPath: 'full/path',
         ...props,
       },
     });

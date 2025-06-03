@@ -365,7 +365,6 @@ Example response:
 ## Authenticate Error Tracking requests
 
 This endpoint is called by the error tracking Go REST API application to authenticate a project.
-> [Introduced](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/1693) in GitLab 15.1.
 
 | Attribute    | Type    | Required | Description                                                        |
 |:-------------|:--------|:---------|:-------------------------------------------------------------------|
@@ -1118,7 +1117,6 @@ Returns an empty response with a `204` status code if successful.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378599) in GitLab 15.8.
 - Group sync support [added](https://gitlab.com/groups/gitlab-org/-/epics/15990) in GitLab 18.0.
 
 {{< /history >}}

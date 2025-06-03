@@ -18,7 +18,6 @@ You can manage project [pull mirroring](../user/project/repository/mirror/pull.m
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354506) in GitLab 15.6.
 - [Extended response](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168377) to include mirror configuration information in GitLab 17.5. The following configuration settings are included: `enabled`, `mirror_trigger_builds`, `only_mirror_protected_branches`, `mirror_overwrites_diverged_branches`, and `mirror_branch_regex`.
 
 {{< /history >}}
@@ -131,8 +130,7 @@ curl --request PUT \
 
 {{< history >}}
 
-- Field `mirror_branch_regex` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
-- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
+- Feature flag `mirror_only_branches_match_regex` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/410354) in GitLab 16.2. Feature flag `mirror_only_branches_match_regex` removed.
 - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/494294) in GitLab 17.6.
 

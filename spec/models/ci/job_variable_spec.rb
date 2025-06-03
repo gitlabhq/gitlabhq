@@ -59,6 +59,19 @@ RSpec.describe Ci::JobVariable, feature_category: :continuous_integration do
     end
   end
 
+  describe '.for_jobs' do
+    it 'fetches job variables for the given jobs' do
+      job_1 = create(:ci_build)
+      job_2 = create(:ci_build)
+      var_1 = create(:ci_job_variable, job: job_1)
+      var_2 = create(:ci_job_variable, job: job_2)
+
+      variables = described_class.for_jobs([job_1, job_2])
+
+      expect(variables).to contain_exactly(var_1, var_2)
+    end
+  end
+
   describe '#set_project_id' do
     it 'sets the project_id before validation' do
       variable = build(:ci_job_variable)

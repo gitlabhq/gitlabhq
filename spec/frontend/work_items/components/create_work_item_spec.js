@@ -114,11 +114,11 @@ describe('Create work item component', () => {
     wrapper = shallowMount(CreateWorkItem, {
       apolloProvider: mockApollo,
       propsData: {
+        fullPath: 'full-path',
         preselectedWorkItemType,
         ...props,
       },
       provide: {
-        fullPath: 'full-path',
         groupPath: 'group-path',
         hasIssuableHealthStatusFeature: false,
         hasIterationsFeature: true,

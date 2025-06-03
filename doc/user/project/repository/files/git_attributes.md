@@ -72,12 +72,6 @@ syntax highlighting files and diffs. For more information, see
 
 {{< /details >}}
 
-{{< history >}}
-
-- Configuring custom merge drivers through GitLab introduced in GitLab 15.10.
-
-{{< /history >}}
-
 GitLab Self-Managed administrators can define [custom merge drivers](https://git-scm.com/docs/gitattributes#_defining_a_custom_merge_driver)
 in a GitLab configuration file, then use the custom merge drivers in a Git `.gitattributes` file. Custom merge drivers are not supported on GitLab.com.
 

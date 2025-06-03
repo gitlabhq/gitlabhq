@@ -91,8 +91,6 @@ if (viewBlobEl) {
     explainCodeAvailable,
     refType,
     canDownloadCode,
-    showDuoWorkflowAction,
-    duoWorkflowInvokePath,
     ...dataset
   } = viewBlobEl.dataset;
   const router = createRouter(projectPath, originalBranch);
@@ -114,8 +112,6 @@ if (viewBlobEl) {
       userId,
       explainCodeAvailable: parseBoolean(explainCodeAvailable),
       canDownloadCode: parseBoolean(canDownloadCode),
-      duoWorkflowInvokePath,
-      showDuoWorkflowAction: parseBoolean(showDuoWorkflowAction),
       ...provideWebIdeLink(dataset),
     },
     render(createElement) {

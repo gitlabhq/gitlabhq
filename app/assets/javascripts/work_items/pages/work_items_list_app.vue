@@ -139,7 +139,6 @@ export default {
     'autocompleteAwardEmojisPath',
     'canBulkUpdate',
     'canBulkEditEpics',
-    'fullPath',
     'hasEpicsFeature',
     'hasGroupBulkEditFeature',
     'hasIssueDateFilterFeature',
@@ -181,6 +180,10 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    rootPageFullPath: {
+      type: String,
+      required: true,
     },
   },
   data() {
@@ -361,7 +364,7 @@ export default {
       const hasGroupFilter = Boolean(this.urlFilterParams.group_path);
       const singleWorkItemType = this.workItemType ? NAME_TO_ENUM_MAP[this.workItemType] : null;
       return {
-        fullPath: this.fullPath,
+        fullPath: this.rootPageFullPath,
         sort: this.sortKey,
         state: this.state,
         search: this.searchQuery,
@@ -396,9 +399,9 @@ export default {
           token: UserToken,
           dataType: 'user',
           operators: OPERATORS_IS_NOT_OR,
-          fullPath: this.fullPath,
+          fullPath: this.rootPageFullPath,
           isProject: !this.isGroup,
-          recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-assignee`,
+          recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-assignee`,
           preloadedUsers,
         },
         {
@@ -409,9 +412,9 @@ export default {
           dataType: 'user',
           defaultUsers: [],
           operators: OPERATORS_IS_NOT_OR,
-          fullPath: this.fullPath,
+          fullPath: this.rootPageFullPath,
           isProject: !this.isGroup,
-          recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-author`,
+          recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-author`,
           preloadedUsers,
         },
         {
@@ -422,16 +425,16 @@ export default {
           operators: OPERATORS_IS_NOT_OR,
           fetchLabels: this.fetchLabels,
           fetchLatestLabels: this.glFeatures.frontendCaching ? this.fetchLatestLabels : null,
-          recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-label`,
+          recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-label`,
         },
         {
           type: TOKEN_TYPE_MILESTONE,
           title: TOKEN_TITLE_MILESTONE,
           icon: 'milestone',
           token: MilestoneToken,
-          recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-milestone`,
+          recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-milestone`,
           shouldSkipSort: true,
-          fullPath: this.fullPath,
+          fullPath: this.rootPageFullPath,
           isProject: !this.isGroup,
         },
         {
@@ -456,7 +459,7 @@ export default {
           unique: true,
           token: GroupToken,
           operators: OPERATORS_IS,
-          fullPath: this.fullPath,
+          fullPath: this.rootPageFullPath,
         });
       }
 
@@ -492,7 +495,7 @@ export default {
           token: EmojiToken,
           unique: true,
           fetchEmojis: this.fetchEmojis,
-          recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-my_reaction`,
+          recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-my_reaction`,
         });
 
         tokens.push({
@@ -737,7 +740,7 @@ export default {
       return this.$apollo
         .query({
           query: searchLabelsQuery,
-          variables: { fullPath: this.fullPath, search, isProject: !this.isGroup },
+          variables: { fullPath: this.rootPageFullPath, search, isProject: !this.isGroup },
           fetchPolicy,
         })
         .then(({ data }) => {
@@ -970,7 +973,7 @@ export default {
         :issuables-loading="isLoading"
         :show-bulk-edit-sidebar="showBulkEditSidebar"
         namespace="work-items"
-        :full-path="fullPath"
+        :full-path="rootPageFullPath"
         recent-searches-storage-key="issues"
         :search-tokens="searchTokens"
         show-filtered-search-friendly-text
@@ -1014,6 +1017,7 @@ export default {
               v-if="showNewWorkItem"
               :allowed-work-item-types="allowedWorkItemTypes"
               :always-show-work-item-type-select="!isEpicsList"
+              :full-path="rootPageFullPath"
               :is-group="isGroup"
               :preselected-work-item-type="preselectedWorkItemType"
               @workItemCreated="refetchItems"
@@ -1043,6 +1047,7 @@ export default {
                 v-if="showNewWorkItem"
                 :allowed-work-item-types="allowedWorkItemTypes"
                 :always-show-work-item-type-select="!isEpicsList"
+                :full-path="rootPageFullPath"
                 :is-group="isGroup"
                 :preselected-work-item-type="preselectedWorkItemType"
                 @workItemCreated="refetchItems"
@@ -1094,7 +1099,7 @@ export default {
           <work-item-bulk-edit-sidebar
             v-if="showBulkEditSidebar"
             :checked-items="checkedIssuables"
-            :full-path="fullPath"
+            :full-path="rootPageFullPath"
             :is-epics-list="isEpicsList"
             :is-group="isGroup"
             @finish="bulkEditInProgress = false"
@@ -1115,6 +1120,7 @@ export default {
       <empty-state-without-any-issues>
         <template #new-issue-button>
           <create-work-item-modal
+            :full-path="rootPageFullPath"
             :is-group="isGroup"
             :preselected-work-item-type="preselectedWorkItemType"
             @workItemCreated="handleWorkItemCreated"

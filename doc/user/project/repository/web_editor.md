@@ -122,12 +122,6 @@ make sure your change will not unintentionally remove theirs.`
 
 #### Markdown preview
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378966) in GitLab 15.6.
-
-{{< /history >}}
-
 To preview a Markdown file in the Web Editor:
 
 1. On the left sidebar, select **Search or go to** and find your project.

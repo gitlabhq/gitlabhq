@@ -44,12 +44,6 @@ can create in their personal namespace:
 
 ## Max attachment size
 
-{{< history >}}
-
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/20061) from 10 MB to 100 MB in GitLab 15.7.
-
-{{< /history >}}
-
 The maximum file size for attachments in GitLab comments and replies is 100 MB.
 To change the maximum attachment size:
 
@@ -230,6 +224,8 @@ number of minutes of inactivity set when you [customize your session duration](#
 - Offering: GitLab Self-Managed
 
 {{< /details >}}
+
+<!-- The history line is too old, but must remain until `feature_flags/development/two_factor_for_cli.yml` is removed -->
 
 {{< history >}}
 
@@ -638,18 +634,10 @@ By default, users can create organizations. GitLab administrators can prevent us
 
 ## Prevent new users from creating top-level groups
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367754) in GitLab 15.5.
-
-{{< /history >}}
-
 By default, new users can create top-level groups. GitLab administrators can prevent new users from creating top-level groups:
 
-- In GitLab 15.5 and later, use either:
-  - The GitLab UI with the steps in this section.
-  - The [Application settings API](../../api/settings.md#update-application-settings).
-- In GitLab 15.4 and earlier, modify a [configuration file](../user_settings.md#prevent-users-from-creating-top-level-groups).
+- In the GitLab UI, with the steps in this section.
+- With the [Application settings API](../../api/settings.md#update-application-settings).
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
@@ -660,7 +648,7 @@ By default, new users can create top-level groups. GitLab administrators can pre
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/426279) in GitLab 16.8
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/426279) in GitLab 16.8.
 
 {{< /history >}}
 
@@ -711,12 +699,6 @@ When you re-enable this setting, the user's
 [previously set profile visibility](../../user/profile/_index.md#make-your-user-profile-page-private) is selected.
 
 ## Set profiles of new users to private by default
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231301) in GitLab 15.8.
-
-{{< /history >}}
 
 By default, newly created users have a public profile. GitLab administrators can set new users to have a private profile by default:
 

@@ -154,6 +154,7 @@ export default {
     <create-work-item-modal
       v-if="showCreateGroupWorkItemModal"
       visible
+      :full-path="fullPath"
       hide-button
       is-group
       data-testid="new-group-work-item-modal"

@@ -32,13 +32,6 @@ GitLab.
 
 ## Cleaner diffs and raw diffs
 
-{{< history >}}
-
-- [Reintroduced toggle](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85079) in GitLab 15.0 [with a flag](../../../../../administration/feature_flags.md) named `ipynb_semantic_diff`. Enabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95373) in GitLab 15.6. Feature flag `ipynb_semantic_diff` removed.
-
-{{< /history >}}
-
 When commits include changes to Jupyter Notebook files, GitLab:
 
 - Transforms the machine-readable `.ipynb` file into a human-readable Markdown file.

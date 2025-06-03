@@ -15,9 +15,6 @@ title: Web IDE
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95169) in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/371084) in GitLab 15.7.
-- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115741) in GitLab 15.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188427) in GitLab 18.0. Feature flag `vscode_web_ide` removed.
 
 {{< /history >}}
@@ -399,7 +396,7 @@ features like Markdown preview.
 
 For security, some parts of the Web IDE must run in a separate origin. To support this
 approach, the Web IDE uses Workhorse to route requests appropriately to and from Web IDE
-assets. The Web IDE assets are static frontend assets, so it’s unnecessary overhead to rely 
+assets. The Web IDE assets are static frontend assets, so it's unnecessary overhead to rely
 on Rails for this effort.
 
 ### Report a problem

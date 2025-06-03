@@ -22,6 +22,7 @@ iac-sast:
     access: 'developer'
     reports:
       sast: gl-sast-report.json
+    paths: [gl-sast-report.json]
   rules:
     - when: never
   # `rules` must be overridden explicitly by each child job

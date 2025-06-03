@@ -26,7 +26,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['fullPath'],
   props: {
     allowedWorkItemTypes: {
       type: Array,
@@ -42,6 +41,10 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    fullPath: {
+      type: String,
+      required: true,
     },
     hideButton: {
       type: Boolean,
@@ -323,6 +326,7 @@ export default {
         :allowed-work-item-types="allowedWorkItemTypes"
         :always-show-work-item-type-select="alwaysShowWorkItemTypeSelect"
         :description="description"
+        :full-path="fullPath"
         hide-form-title
         sticky-form-submit
         :is-group="isGroup"

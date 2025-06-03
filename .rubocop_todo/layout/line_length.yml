@@ -324,7 +324,6 @@ Layout/LineLength:
     - 'app/services/security/ci_configuration/sast_iac_create_service.rb'
     - 'app/services/security/ci_configuration/sast_parser_service.rb'
     - 'app/services/security/ci_configuration/secret_detection_create_service.rb'
-    - 'app/services/snippets/create_service.rb'
     - 'app/services/spam/spam_action_service.rb'
     - 'app/services/spam/spam_verdict_service.rb'
     - 'app/services/system_note_service.rb'

@@ -25,13 +25,6 @@ in the Git internals documentation.
 
 {{< alert type="warning" >}}
 
-This endpoint changed to [keyset-based pagination](rest/_index.md#keyset-based-pagination)
-in GitLab 15.0. Iterating pages of results with a number (`?page=2`) is unsupported.
-
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
 In version 17.7, the error handling behavior when a requested path is not found is updated.
 The endpoint now returns a status code `404 Not Found`. Previously, the status code was `200 OK`.
 
@@ -341,8 +334,6 @@ Example response:
 
 {{< history >}}
 
-- Commit range limits [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89032) in GitLab 15.1 [with a flag](../administration/feature_flags.md) named `changelog_commits_limitation`. Disabled by default.
-- [Enabled on GitLab.com and by default on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/33893) in GitLab 15.3.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/364101) in GitLab 17.3. Feature flag `changelog_commits_limitation` removed.
 
 {{< /history >}}

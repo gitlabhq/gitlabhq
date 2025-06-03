@@ -120,12 +120,6 @@ Use these rules for your commit messages.
 
 ## Reject commits that aren't DCO certified
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98810) in GitLab 15.5.
-
-{{< /history >}}
-
 Commits signed with the [Developer Certificate of Origin](https://developercertificate.org/) (DCO)
 certify the contributor wrote, or has the right to submit, the code contributed in that commit.
 You can require all commits to your project to comply with the DCO. This push rule requires a

@@ -35,7 +35,7 @@ describe('Work items root component', () => {
       },
       propsData: {
         iid: '1',
-        urlFullPath: 'full-path',
+        rootPageFullPath: 'full-path',
       },
       mocks: {
         $toast: {

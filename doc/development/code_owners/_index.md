@@ -5,12 +5,6 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Code Owners development guidelines
 ---
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/219916) in GitLab 15.10.
-
-{{< /history >}}
-
 This document was created to help contributors understand the code design of
 [Code Owners](../../user/project/codeowners/_index.md). You should read this
 document before making changes to the code for this feature.

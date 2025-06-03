@@ -35,8 +35,6 @@ You can manage your branches:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) in GitLab 15.1 with a flag named `branch_rules`. Disabled by default.
-- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363170) in GitLab 15.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123368) in GitLab 16.1. Feature flag `branch_rules` removed.
 
 {{< /history >}}

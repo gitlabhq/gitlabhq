@@ -13,12 +13,6 @@ title: Rate limits on Git SSH operations
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Available by default](https://gitlab.com/gitlab-org/gitlab/-/issues/367998) in GitLab 15.8. [Feature flag](../feature_flags.md) `rate_limit_gitlab_shell` removed.
-
-{{< /history >}}
-
 GitLab applies rate limits to Git operations that use SSH by user account and project. When the rate limit is exceeded, GitLab rejects
 further connection requests from that user for the project.
 

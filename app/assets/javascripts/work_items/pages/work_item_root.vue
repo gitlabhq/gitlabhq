@@ -27,7 +27,7 @@ export default {
       required: false,
       default: () => [],
     },
-    urlFullPath: {
+    rootPageFullPath: {
       type: String,
       required: true,
     },
@@ -79,7 +79,7 @@ export default {
     <gl-alert v-if="error" variant="danger" @dismiss="error = ''">{{ error }}</gl-alert>
     <work-item-detail
       :new-comment-template-paths="newCommentTemplatePaths"
-      :work-item-full-path="urlFullPath"
+      :work-item-full-path="rootPageFullPath"
       :work-item-iid="iid"
       @deleteWorkItem="deleteWorkItem($event)"
     />

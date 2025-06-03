@@ -608,6 +608,7 @@ export default {
     </gl-form>
     <work-item-description-rendered
       v-else
+      :full-path="fullPath"
       :work-item-description="workItemDescription"
       :work-item-id="workItemId"
       :work-item-type="workItemType"

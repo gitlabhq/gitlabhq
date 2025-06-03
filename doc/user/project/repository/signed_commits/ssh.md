@@ -13,13 +13,6 @@ title: Sign commits with SSH keys
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343879) in GitLab 15.7 [with a flag](../../../../administration/feature_flags.md) named `ssh_commit_signatures`. Enabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/384202) in GitLab 15.8. Feature flag `ssh_commit_signatures` removed.
-
-{{< /history >}}
-
 When you sign commits with SSH keys, GitLab uses the SSH public keys associated
 with your GitLab account to cryptographically verify the commit signature.
 If successful, GitLab displays a **Verified** label on the commit.

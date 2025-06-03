@@ -148,13 +148,6 @@ Examples:
 
 ### Set default Code Owner for a section
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371711) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `codeowners_default_owners`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115888) in GitLab 15.11. Feature flag `codeowners_default_owners` removed.
-
-{{< /history >}}
-
 If multiple file paths inside a section share the same ownership, define default
 Code Owners for the section.
 All paths in that section inherit this default, unless you override the section

@@ -20,7 +20,7 @@ export default {
     },
   },
   tableFields: [
-    { key: 'environment', label: __('Environment'), sortable: true },
+    { key: 'environment', label: __('Environment'), sortable: true, isRowHeader: true },
     { key: 'gcp_region', label: __('Region'), sortable: true },
   ],
   i18n: {

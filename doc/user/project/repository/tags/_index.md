@@ -56,12 +56,6 @@ To view all existing tags for a project:
 
 ## View tagged commits in the commits list
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18795) in GitLab 15.10.
-
-{{< /history >}}
-
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Commits**.
 1. Commits with a tag are labeled with a tag icon ({{< icon name="tag" >}}) and the name of the tag.

@@ -811,6 +811,7 @@ export default {
     <create-work-item-modal
       :allowed-work-item-types="allowedWorkItemTypes"
       :always-show-work-item-type-select="!isGroup"
+      :full-path="fullPath"
       :visible="isCreateWorkItemModalVisible"
       :related-item="relatedItemData"
       :preselected-work-item-type="workItemType"

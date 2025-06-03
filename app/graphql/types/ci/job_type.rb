@@ -257,9 +257,15 @@ module Types
 
       def manual_variables
         if object.action?
-          object.manual_variables
+          BatchLoader::GraphQL.for(object.id).batch do |job_ids, loader|
+            variables_by_job_id = ::Ci::JobVariable.for_jobs(job_ids).group_by(&:job_id)
+
+            job_ids.each do |id|
+              loader.call(id, variables_by_job_id[id] || [])
+            end
+          end
         else
-          []
+          ::Ci::JobVariable.none
         end
       end
 

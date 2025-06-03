@@ -1436,10 +1436,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
   integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
 
-"@gitlab/query-language-rust@0.8.2":
-  version "0.8.2"
-  resolved "https://registry.yarnpkg.com/@gitlab/query-language-rust/-/query-language-rust-0.8.2.tgz#77b347e35c01c33b9e0eb1c5be8cc24fcfb4c7c7"
-  integrity sha512-C6L+kWBwrRRd5nlSJvR/badYjynsNlYttKv9vSfIMjW9m1VyODmpF63q/Uo8jpDaZvFmimvQzNYmxB9Y+04UNA==
+"@gitlab/query-language-rust@0.8.3":
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/@gitlab/query-language-rust/-/query-language-rust-0.8.3.tgz#5a90b6a398d21efe60396ec205cfa5533d0c526d"
+  integrity sha512-9MLmcUNu2dBypc7zeE+/JV0/KI/GgN0Ayr2voibFqCjcOxB93wYkTo+GpES9aMONlgFI+/IuW1MsSBnwFhjd+g==
 
 "@gitlab/stylelint-config@6.2.2":
   version "6.2.2"

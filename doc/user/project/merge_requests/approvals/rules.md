@@ -39,12 +39,6 @@ Merge request approvals can be configured globally to apply across all (or a sub
 
 ## Add an approval rule
 
-{{< history >}}
-
-- Approval rules for all protected branches introduced in GitLab 15.3.
-
-{{< /history >}}
-
 Prerequisites:
 
 - You must have at least the Maintainer role for the project.
@@ -281,12 +275,6 @@ To make an approval rule optional, you can also [use the API](../../../../api/me
 
 ## Approvals for protected branches
 
-{{< history >}}
-
-- **All protected branches** target branch option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360930) in GitLab 15.3.
-
-{{< /history >}}
-
 Approval rules are often relevant only to specific branches, like your
 [default branch](../../repository/branches/default.md). To configure an
 approval rule for certain branches:
@@ -311,7 +299,6 @@ approval rule for certain branches:
 
 {{< history >}}
 
-- Security approvals moved to merge request approvals settings [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357021) in GitLab 15.0.
 - Bot comment for approvals [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/411656) in GitLab 16.2 [with a flag](../../../../administration/feature_flags.md) named `security_policy_approval_notification`. Enabled by default.
 - Bot comment for approvals [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130827) in GitLab 16.3. Feature flag `security_policy_approval_notification` removed.
 

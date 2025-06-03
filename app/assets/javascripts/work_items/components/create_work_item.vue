@@ -113,7 +113,7 @@ export default {
     PageHeading,
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['fullPath', 'groupPath'],
+  inject: ['groupPath'],
   i18n: {
     suggestionTitle: s__('WorkItem|Similar items'),
     similarWorkItemHelpText: s__(
@@ -139,6 +139,10 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    fullPath: {
+      type: String,
+      required: true,
     },
     hideFormTitle: {
       type: Boolean,

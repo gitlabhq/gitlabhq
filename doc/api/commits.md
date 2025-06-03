@@ -36,12 +36,6 @@ For more information, see [issue 389582](https://gitlab.com/gitlab-org/gitlab/-/
 
 ## List repository commits
 
-{{< history >}}
-
-- Commits by author [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114417) in GitLab 15.10.
-
-{{< /history >}}
-
 Get a list of repository commits in a project.
 
 ```plaintext
