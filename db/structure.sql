@@ -18906,25 +18906,6 @@ CREATE SEQUENCE p_batched_git_ref_updates_deletions_id_seq
 
 ALTER SEQUENCE p_batched_git_ref_updates_deletions_id_seq OWNED BY p_batched_git_ref_updates_deletions.id;
 
-CREATE TABLE p_catalog_resource_component_usages (
-    id bigint NOT NULL,
-    component_id bigint NOT NULL,
-    catalog_resource_id bigint NOT NULL,
-    project_id bigint NOT NULL,
-    used_by_project_id bigint NOT NULL,
-    used_date date NOT NULL
-)
-PARTITION BY RANGE (used_date);
-
-CREATE SEQUENCE p_catalog_resource_component_usages_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE p_catalog_resource_component_usages_id_seq OWNED BY p_catalog_resource_component_usages.id;
-
 CREATE SEQUENCE p_catalog_resource_sync_events_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -27799,8 +27780,6 @@ ALTER TABLE ONLY organizations ALTER COLUMN id SET DEFAULT nextval('organization
 
 ALTER TABLE ONLY p_batched_git_ref_updates_deletions ALTER COLUMN id SET DEFAULT nextval('p_batched_git_ref_updates_deletions_id_seq'::regclass);
 
-ALTER TABLE ONLY p_catalog_resource_component_usages ALTER COLUMN id SET DEFAULT nextval('p_catalog_resource_component_usages_id_seq'::regclass);
-
 ALTER TABLE ONLY p_catalog_resource_sync_events ALTER COLUMN id SET DEFAULT nextval('p_catalog_resource_sync_events_id_seq'::regclass);
 
 ALTER TABLE ONLY p_ci_builds_metadata ALTER COLUMN id SET DEFAULT nextval('ci_builds_metadata_id_seq'::regclass);
@@ -30533,9 +30512,6 @@ ALTER TABLE ONLY organizations
 
 ALTER TABLE ONLY p_batched_git_ref_updates_deletions
     ADD CONSTRAINT p_batched_git_ref_updates_deletions_pkey PRIMARY KEY (id, partition_id);
-
-ALTER TABLE ONLY p_catalog_resource_component_usages
-    ADD CONSTRAINT p_catalog_resource_component_usages_pkey PRIMARY KEY (id, used_date);
 
 ALTER TABLE ONLY p_catalog_resource_sync_events
     ADD CONSTRAINT p_catalog_resource_sync_events_pkey PRIMARY KEY (id, partition_id);
@@ -33402,10 +33378,6 @@ CREATE INDEX idx_compliance_security_policies_on_framework_id ON compliance_fram
 CREATE INDEX idx_compliance_security_policies_on_policy_configuration_id ON compliance_framework_security_policies USING btree (policy_configuration_id);
 
 CREATE INDEX idx_compliance_security_policies_on_security_policy_and_id ON compliance_framework_security_policies USING btree (security_policy_id, id);
-
-CREATE INDEX idx_component_usages_on_catalog_resource_used_by_proj_used_date ON ONLY p_catalog_resource_component_usages USING btree (catalog_resource_id, used_by_project_id, used_date);
-
-CREATE UNIQUE INDEX idx_component_usages_on_component_used_by_project_and_used_date ON ONLY p_catalog_resource_component_usages USING btree (component_id, used_by_project_id, used_date);
 
 CREATE INDEX idx_container_exp_policies_on_project_id_next_run_at ON container_expiration_policies USING btree (project_id, next_run_at) WHERE (enabled = true);
 
@@ -36600,8 +36572,6 @@ CREATE INDEX index_organizations_on_name_trigram ON organizations USING gin (nam
 CREATE INDEX index_organizations_on_path_trigram ON organizations USING gin (path gin_trgm_ops);
 
 CREATE UNIQUE INDEX index_organizations_on_unique_name_per_group ON customer_relations_organizations USING btree (group_id, lower(name), id);
-
-CREATE INDEX index_p_catalog_resource_component_usages_on_project_id ON ONLY p_catalog_resource_component_usages USING btree (project_id);
 
 CREATE INDEX index_p_catalog_resource_sync_events_on_id_where_pending ON ONLY p_catalog_resource_sync_events USING btree (id) WHERE (status = 1);
 
@@ -44430,9 +44400,6 @@ ALTER TABLE ONLY operations_user_lists
 ALTER TABLE ONLY resource_link_events
     ADD CONSTRAINT fk_rails_0cea73eba5 FOREIGN KEY (child_work_item_id) REFERENCES issues(id) ON DELETE CASCADE;
 
-ALTER TABLE p_catalog_resource_component_usages
-    ADD CONSTRAINT fk_rails_0e15a4677f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY audit_events_google_cloud_logging_configurations
     ADD CONSTRAINT fk_rails_0eb52fc617 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -45528,9 +45495,6 @@ ALTER TABLE ONLY alert_management_alert_assignees
 ALTER TABLE ONLY scim_identities
     ADD CONSTRAINT fk_rails_9421a0bffb FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
-ALTER TABLE p_catalog_resource_component_usages
-    ADD CONSTRAINT fk_rails_9430673479 FOREIGN KEY (catalog_resource_id) REFERENCES catalog_resources(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY packages_debian_project_distributions
     ADD CONSTRAINT fk_rails_94b95e1f84 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -46109,9 +46073,6 @@ ALTER TABLE ONLY abuse_report_label_links
 
 ALTER TABLE ONLY packages_packages
     ADD CONSTRAINT fk_rails_e1ac527425 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE p_catalog_resource_component_usages
-    ADD CONSTRAINT fk_rails_e1ba64b7ee FOREIGN KEY (component_id) REFERENCES catalog_resource_components(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY cluster_platforms_kubernetes
     ADD CONSTRAINT fk_rails_e1e2cf841a FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;

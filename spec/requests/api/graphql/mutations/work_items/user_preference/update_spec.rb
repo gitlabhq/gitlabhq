@@ -129,6 +129,24 @@ RSpec.describe 'Update work items user preferences', feature_category: :team_pla
           expect(mutation_response['userPreferences']).to be_nil
         end
       end
+
+      context 'with hiddenMetadataKeys in display settings' do
+        let(:display_settings) do
+          {
+            'shouldOpenItemsInSidePanel' => true,
+            'hiddenMetadataKeys' => %w[assignee labels milestone]
+          }
+        end
+
+        it 'updates the user preferences with hidden metadata keys' do
+          post_graphql_mutation(mutation, current_user: user)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(graphql_errors).to be_blank
+          expect(mutation_response['errors']).to be_blank
+          expect(mutation_response['userPreferences']['displaySettings']).to eq(display_settings)
+        end
+      end
     end
   end
 

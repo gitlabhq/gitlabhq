@@ -19,9 +19,13 @@ title: Merge request approvals API
 
 {{< /history >}}
 
-Configuration for
-[approvals on all merge requests](../user/project/merge_requests/approvals/_index.md)
-in the project. All endpoints require authentication.
+This API manages the configuration for approvals on merge requests in your project or group:
+
+- Approve and unapprove a merge request as a user.
+- Reset all approvals, not just your own, on a merge request.
+- View and manage approval rules for a project.
+
+All endpoints require authentication.
 
 ## Approve merge request
 
@@ -218,13 +222,14 @@ Supported attributes:
 
 {{< /history >}}
 
-You can request information about a project's approval rules using the following endpoint:
+Use this endpoint to request information about a project's approval rules:
 
 ```plaintext
 GET /projects/:id/approval_rules
 ```
 
-Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to restrict the list of approval rules.
+To restrict the list of approval rules, use the `page` and `per_page`
+[pagination](rest/_index.md#offset-based-pagination) parameters.
 
 Supported attributes:
 
@@ -406,7 +411,7 @@ Supported attributes:
 
 {{< /history >}}
 
-You can request information about a single project's approval rule using the following endpoint:
+To request information about a single project's approval rule, use this endpoint:
 
 ```plaintext
 GET /projects/:id/approval_rules/:approval_rule_id
@@ -512,7 +517,7 @@ Supported attributes:
 
 {{< /history >}}
 
-You can create project approval rules using the following endpoint:
+To create project approval rules, use this endpoint:
 
 ```plaintext
 POST /projects/:id/approval_rules
@@ -615,7 +620,7 @@ Supported attributes:
 }
 ```
 
-You can increase the default number of 0 required approvers like this:
+To increase the default number of 0 required approvers:
 
 ```shell
 curl --request POST \
@@ -625,7 +630,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/<project_id>/approval_rules"
 ```
 
-Another example is creating a user-specific rule:
+Another example is to create a user-specific rule:
 
 ```shell
 curl --request POST \
@@ -645,7 +650,7 @@ curl --request POST \
 
 {{< /history >}}
 
-You can update project approval rules using the following endpoint:
+To update project approval rules, use this endpoint:
 
 ```plaintext
 PUT /projects/:id/approval_rules/:approval_rule_id
@@ -760,7 +765,7 @@ Supported attributes:
 
 ### Delete project approval rule
 
-You can delete project approval rules using the following endpoint:
+To delete project approval rules, use this endpoint:
 
 ```plaintext
 DELETE /projects/:id/approval_rules/:approval_rule_id
@@ -777,8 +782,7 @@ Supported attributes:
 
 Configuration for approvals on a specific merge request. All endpoints require authentication.
 
-You can request information about a merge request's approval status using the
-following endpoint:
+To request information about a merge request's approval status, use this endpoint:
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/approvals
@@ -821,7 +825,7 @@ Supported attributes:
 
 ### Get the approval state of merge requests
 
-You can request information about a merge request's approval state by using the following endpoint:
+To request information about a merge request's approval state, use this endpoint:
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/approval_state
@@ -891,14 +895,7 @@ Supported attributes:
 
 ### Get merge request approval rules
 
-{{< history >}}
-
-- Pagination support introduced in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `approval_rules_pagination`. Enabled by default. GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/31011`
-- Pagination support [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/366823) in GitLab 15.7. Feature flag `approval_rules_pagination` removed.
-
-{{< /history >}}
-
-You can request information about a merge request's approval rules using the following endpoint:
+To request information about a merge request's approval rules, use this endpoint:
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/approval_rules
@@ -1277,13 +1274,13 @@ Supported attributes:
 
 ### Delete merge request rule
 
-You can delete merge request approval rules using the following endpoint:
+To delete merge request approval rules, use this endpoint:
 
 ```plaintext
 DELETE /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id
 ```
 
-You can't update `report_approver` or `code_owner` rules, as these rules are system-generated.
+The `report_approver` or `code_owner` rules are system-generated, and you cannot edit them.
 
 Supported attributes:
 
@@ -1315,7 +1312,7 @@ This feature is not ready for production use.
 
 {{< /alert >}}
 
-Group approval rules apply to all protected branches of projects belonging to the group. This feature is an [experiment](../policy/development_stages_support.md).
+Group approval rules apply to all protected branches of projects belonging to the group.
 
 ### Get group approval rules
 

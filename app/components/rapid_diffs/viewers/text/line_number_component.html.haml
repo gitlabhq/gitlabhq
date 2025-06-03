@@ -2,5 +2,4 @@
   %td.rd-line-number{ id: id, class: border_class, data: { legacy_id: legacy_id, change: change_type, position: @position } }
     = link_to '', "##{id}", { class: 'rd-line-link', data: { line_number: line_number }, aria: { label: label } }
 - else
-  -# tabindex="-1" allows us to start text selection on an empty line number row
-  %td.rd-line-number{ class: border_class, data: { change: change_type, position: @position }, tabindex: '-1' }
+  %td.rd-line-number{ class: border_class, data: { change: change_type, position: @position } }

@@ -13,10 +13,8 @@ title: Draft Notes API
 
 {{< /details >}}
 
-Draft notes are pending, unpublished comments on merge requests. They can either:
-
-- Start a discussion.
-- Continue an existing discussion as a reply.
+Use this API to manage draft notes. These notes are pending, unpublished comments on merge requests.
+Draft notes can start a discussion, or continue an existing discussion as a reply.
 
 Before publishing, draft notes are visible only to the author.
 

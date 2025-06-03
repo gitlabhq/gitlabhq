@@ -6,6 +6,27 @@
     "shouldOpenItemsInSidePanel": {
       "description": "Setting to toggle the drawer capability in listing pages.",
       "type": "boolean"
+    },
+    "hiddenMetadataKeys": {
+      "description": "Array of metadata keys that should be hidden in the work item display",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "assignee",
+          "blocked",
+          "blocking",
+          "dates",
+          "health",
+          "labels",
+          "milestone",
+          "popularity",
+          "weight",
+          "comments",
+          "iteration"
+        ]
+      },
+      "uniqueItems": true
     }
   },
   "additionalProperties": false

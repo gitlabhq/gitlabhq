@@ -296,7 +296,8 @@ metrics:
     - !reference [.rules:test:omnibus-base, rules]
     - if: $QA_SUITES =~ /Test::Integration::Metrics/
 
-elasticsearch:
+# TODO: Enable job when https://gitlab.com/gitlab-org/gitlab/-/issues/541380 is completed
+.elasticsearch:
   extends: .omnibus-e2e
   variables:
     QA_SCENARIO: "Test::Integration::Elasticsearch"

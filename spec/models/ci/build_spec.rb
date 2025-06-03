@@ -5691,7 +5691,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     it 'delegates to Ci::BuildTraceMetadata' do
       expect(Ci::BuildTraceMetadata)
         .to receive(:find_or_upsert_for!)
-        .with(build.id, build.partition_id)
+        .with(build.id, build.partition_id, build.project_id)
 
       build.ensure_trace_metadata!
     end

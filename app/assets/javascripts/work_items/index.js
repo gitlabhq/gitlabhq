@@ -61,6 +61,7 @@ export const initWorkItemsRoot = ({ workspaceType, withTabs } = {}) => {
     newProjectPath,
     hasIssueDateFilterFeature,
     timeTrackingLimitToHours,
+    hasStatusFeature,
   } = el.dataset;
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
@@ -134,6 +135,7 @@ export const initWorkItemsRoot = ({ workspaceType, withTabs } = {}) => {
       newProjectPath,
       hasIssueDateFilterFeature: parseBoolean(hasIssueDateFilterFeature),
       timeTrackingLimitToHours: parseBoolean(timeTrackingLimitToHours),
+      hasStatusFeature: parseBoolean(hasStatusFeature),
     },
     mounted() {
       performanceMarkAndMeasure({

@@ -27985,6 +27985,7 @@ GPG signature for a signed commit.
 | <a id="groupdescendantgroupscount"></a>`descendantGroupsCount` | [`Int!`](#int) | Count of direct descendant groups of the group. |
 | <a id="groupdescription"></a>`description` | [`String`](#string) | Description of the namespace. |
 | <a id="groupdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
+| <a id="groupdesignatedascsp"></a>`designatedAsCsp` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Indicates whether the namespace is designated to centrally manage security policies. |
 | <a id="groupdora"></a>`dora` | [`GroupDora`](#groupdora) | Group's DORA metrics. |
 | <a id="groupduofeaturesenabled"></a>`duoFeaturesEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 16.10. **Status**: Experiment. Indicates whether GitLab Duo features are enabled for the group. |
 | <a id="groupemailsdisabled"></a>`emailsDisabled` | [`Boolean`](#boolean) | Indicates if a group has email notifications disabled. |
@@ -33606,6 +33607,7 @@ Product analytics events for a specific month and year.
 | <a id="namespacecrossprojectpipelineavailable"></a>`crossProjectPipelineAvailable` | [`Boolean!`](#boolean) | Indicates if the cross_project_pipeline feature is available for the namespace. |
 | <a id="namespacedescription"></a>`description` | [`String`](#string) | Description of the namespace. |
 | <a id="namespacedescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
+| <a id="namespacedesignatedascsp"></a>`designatedAsCsp` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Indicates whether the namespace is designated to centrally manage security policies. |
 | <a id="namespacefullname"></a>`fullName` | [`String!`](#string) | Full name of the namespace. |
 | <a id="namespacefullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace. |
 | <a id="namespaceid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
