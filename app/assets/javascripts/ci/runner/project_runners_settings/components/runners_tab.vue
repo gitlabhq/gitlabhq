@@ -1,5 +1,5 @@
 <script>
-import { GlLink, GlTab, GlBadge, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlLink, GlTab, GlBadge, GlLoadingIcon } from '@gitlab/ui';
 import { captureException } from '~/ci/runner/sentry_utils';
 import { fetchPolicies } from '~/lib/graphql';
 
@@ -15,6 +15,7 @@ import { getPaginationVariables } from '../../utils';
 export default {
   name: 'RunnersTab',
   components: {
+    GlAlert,
     GlLink,
     GlTab,
     GlBadge,
@@ -109,11 +110,19 @@ export default {
       <div class="gl-flex gl-gap-2">
         {{ title }}
         <gl-loading-icon v-if="isLoading" size="sm" />
-        <gl-badge v-else-if="runners.count !== null">{{ runners.count }}</gl-badge>
+        <gl-badge v-else-if="runners.count">{{ runners.count }}</gl-badge>
       </div>
     </template>
 
-    <p v-if="isEmpty" data-testid="empty-message" class="gl-px-5 gl-pt-5 gl-text-subtle">
+    <div v-if="$scopedSlots.settings" class="gl-mx-5 gl-mb-5 gl-mt-3">
+      <slot name="settings"></slot>
+    </div>
+    <div v-if="$scopedSlots.description" class="gl-mx-5 gl-mb-5">
+      <gl-alert variant="tip" :dismissible="false">
+        <slot name="description"></slot>
+      </gl-alert>
+    </div>
+    <p v-if="isEmpty" data-testid="empty-message" class="gl-mx-5 gl-mb-5 gl-text-subtle">
       <slot name="empty"></slot>
     </p>
     <runner-list v-else :runners="runners.items" :loading="isLoading">

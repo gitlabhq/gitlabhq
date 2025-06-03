@@ -2,7 +2,7 @@
 
 module Emails
   module Groups
-    include NamespacesHelper
+    include Namespaces::DeletableHelper
 
     def group_was_exported_email(current_user, group)
       group_email(current_user, group, _('Group was exported'))

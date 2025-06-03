@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe GroupsController, :with_current_organization, factory_default: :keep, feature_category: :code_review_workflow do
   include ExternalAuthorizationServiceHelpers
   include AdminModeHelper
-  include NamespacesHelper
+  include Namespaces::DeletableHelper
 
   let_it_be(:group_organization) { current_organization }
   let_it_be_with_refind(:group) { create_default(:group, :public, organization: group_organization) }

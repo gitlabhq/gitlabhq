@@ -111,10 +111,12 @@ namespace :ci do
   end
 
   desc "Export frontend code paths mapping to GCP"
-  task :export_code_paths_mapping, [:glob] do |_, args|
+  task :export_frontend_code_paths_mapping, [:glob] do |_, args|
     raise("Code paths mapping JSON glob pattern is required") unless args[:glob]
 
+    filename = File.basename(args[:glob])
+    prefix = "#{filename.split('*').first}merged-pipeline"
     QA::Tools::Ci::CodePathsMapping.export(args[:glob], bucket: "code-path-mappings",
-      file_name: "js-coverage-by-example-merged-pipeline")
+      file_name: prefix)
   end
 end

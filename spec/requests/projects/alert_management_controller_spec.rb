@@ -13,18 +13,34 @@ RSpec.describe Projects::AlertManagementController, feature_category: :incident_
   end
 
   describe 'GET #index' do
-    context 'when user is authorized' do
-      let(:user) { developer }
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(hide_incident_management_features: false)
+      end
 
-      it 'shows the page' do
-        get project_alert_management_index_path(project)
+      context 'when user is authorized' do
+        let(:user) { developer }
 
-        expect(response).to have_gitlab_http_status(:ok)
+        it 'shows the page' do
+          get project_alert_management_index_path(project)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when user is unauthorized' do
+        let(:user) { reporter }
+
+        it 'shows 404' do
+          get project_alert_management_index_path(project)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
 
-    context 'when user is unauthorized' do
-      let(:user) { reporter }
+    context 'when feature flag is enabled' do
+      let(:user) { developer }
 
       it 'shows 404' do
         get project_alert_management_index_path(project)
@@ -35,24 +51,40 @@ RSpec.describe Projects::AlertManagementController, feature_category: :incident_
   end
 
   describe 'GET #details' do
-    context 'when user is authorized' do
-      let(:user) { developer }
-
-      it 'shows the page' do
-        get project_alert_management_alert_path(project, id)
-
-        expect(response).to have_gitlab_http_status(:ok)
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(hide_incident_management_features: false)
       end
 
-      it 'sets alert id from the route' do
-        get project_alert_management_alert_path(project, id)
+      context 'when user is authorized' do
+        let(:user) { developer }
 
-        expect(assigns(:alert_id)).to eq(id.to_s)
+        it 'shows the page' do
+          get project_alert_management_alert_path(project, id)
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it 'sets alert id from the route' do
+          get project_alert_management_alert_path(project, id)
+
+          expect(assigns(:alert_id)).to eq(id.to_s)
+        end
+      end
+
+      context 'when user is unauthorized' do
+        let(:user) { reporter }
+
+        it 'shows 404' do
+          get project_alert_management_alert_path(project, id)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
 
-    context 'when user is unauthorized' do
-      let(:user) { reporter }
+    context 'when feature flag is enabled' do
+      let(:user) { developer }
 
       it 'shows 404' do
         get project_alert_management_alert_path(project, id)

@@ -12,6 +12,7 @@ module Packages
       before_validation :prevent_concurrent_inserts, on: :create
 
       validates :version, format: { with: Gitlab::Regex.maven_version_regex }, if: -> { version? }
+      validates :name, format: { with: Gitlab::Regex.package_name_regex }
 
       def self.only_maven_packages_with_path(path, use_cte: false)
         if use_cte

@@ -3,13 +3,25 @@ import { GlTabs } from '@gitlab/ui';
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '~/ci/runner/constants';
 import RunnersTab from './runners_tab.vue';
 import RunnerToggleAssignButton from './runner_toggle_assign_button.vue';
+import GroupRunnersToggle from './group_runners_toggle.vue';
+import GroupRunnersTabEmptyState from './group_runners_tab_empty_state.vue';
 
 export default {
   name: 'RunnersTabs',
   components: {
     GlTabs,
     RunnersTab,
+    GroupRunnersToggle,
+    GroupRunnersTabEmptyState,
     RunnerToggleAssignButton,
+  },
+  inject: {
+    canCreateRunnerForGroup: {
+      default: false,
+    },
+    groupRunnersPath: {
+      default: null,
+    },
   },
   props: {
     projectFullPath: {
@@ -18,6 +30,11 @@ export default {
     },
   },
   emits: ['error'],
+  data() {
+    return {
+      groupRunnersEnabled: null,
+    };
+  },
   methods: {
     onError(event) {
       this.$emit('error', event);
@@ -26,6 +43,10 @@ export default {
       this.$toast?.show(message);
 
       this.$refs.assignedRunners.refresh();
+    },
+    onGroupRunnersToggled(value) {
+      this.groupRunnersEnabled = value;
+      this.$refs.groupRunners.refresh();
     },
   },
   INSTANCE_TYPE,
@@ -61,13 +82,24 @@ export default {
       </template>
     </runners-tab>
     <runners-tab
+      ref="groupRunners"
       :title="s__('Runners|Group')"
       :runner-type="$options.GROUP_TYPE"
       :project-full-path="projectFullPath"
       @error="onError"
     >
+      <template #description>
+        {{ __('These runners are shared across projects in this group.') }}
+      </template>
+      <template #settings>
+        <group-runners-toggle
+          :project-full-path="projectFullPath"
+          @change="onGroupRunnersToggled"
+          @error="onError"
+        />
+      </template>
       <template #empty>
-        {{ s__('Runners|No group runners found.') }}
+        <group-runners-tab-empty-state :group-runners-enabled="groupRunnersEnabled" />
       </template>
     </runners-tab>
     <runners-tab

@@ -7,6 +7,9 @@ import RunnersTab from '~/ci/runner/project_runners_settings/components/runners_
 import RunnersTabs from '~/ci/runner/project_runners_settings/components/runners_tabs.vue';
 import RunnerToggleAssignButton from '~/ci/runner/project_runners_settings/components/runner_toggle_assign_button.vue';
 
+import GroupRunnersToggle from '~/ci/runner/project_runners_settings/components/group_runners_toggle.vue';
+import GroupRunnersTabEmptyState from '~/ci/runner/project_runners_settings/components/group_runners_tab_empty_state.vue';
+
 import { projectRunnersData } from 'jest/ci/runner/mock_data';
 
 const mockRunner = projectRunnersData.data.project.runners.edges[0].node;
@@ -31,9 +34,14 @@ describe('RunnersTabs', () => {
             return { runner: mockRunner };
           },
           methods: {
-            refresh: mockRefresh,
+            refresh() {
+              // identify which tabs refreshed
+              mockRefresh(this.title);
+            },
           },
           template: `<div>
+            <slot name="description" />
+            <slot name="settings" />
             <slot name="empty" />
             <slot name="other-runner-actions" :runner="runner"></slot>
           </div>`,
@@ -104,6 +112,7 @@ describe('RunnersTabs', () => {
       expect(mockShowToast).toHaveBeenCalledWith('Runner unassigned.');
 
       expect(mockRefresh).toHaveBeenCalledTimes(1);
+      expect(mockRefresh).toHaveBeenCalledWith('Assigned project runners');
     });
 
     it('emits an error event', () => {
@@ -120,7 +129,29 @@ describe('RunnersTabs', () => {
         runnerType: GROUP_TYPE,
         projectFullPath: 'group/project',
       });
-      expect(findRunnerTabAt(1).text()).toBe('No group runners found.');
+
+      expect(findRunnerTabAt(1).text()).toContain(
+        'These runners are shared across projects in this group.',
+      );
+      expect(findRunnerTabAt(1).findComponent(GroupRunnersToggle).exists()).toEqual(true);
+      expect(findRunnerTabAt(1).findComponent(GroupRunnersTabEmptyState).exists()).toEqual(true);
+    });
+
+    it('updates list and empty state on toggle', async () => {
+      findRunnerTabAt(1).findComponent(GroupRunnersToggle).vm.$emit('change', false);
+      await nextTick();
+
+      expect(mockRefresh).toHaveBeenCalledTimes(1);
+      expect(mockRefresh).toHaveBeenCalledWith('Group');
+      expect(
+        findRunnerTabAt(1).findComponent(GroupRunnersTabEmptyState).props('groupRunnersEnabled'),
+      ).toEqual(false);
+    });
+
+    it('emits an error event from toggle', () => {
+      findRunnerTabAt(1).findComponent(GroupRunnersToggle).vm.$emit('error', error);
+
+      expect(wrapper.emitted().error[0]).toEqual([error]);
     });
 
     it('emits an error event', () => {

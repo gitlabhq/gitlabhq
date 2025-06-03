@@ -2,7 +2,7 @@
 
 module Emails
   module Projects
-    include NamespacesHelper
+    include Namespaces::DeletableHelper
 
     def project_was_moved_email(project_id, user_id, old_path_with_namespace)
       @current_user = @user = User.find user_id

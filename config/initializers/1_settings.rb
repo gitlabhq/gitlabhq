@@ -1023,6 +1023,9 @@ Gitlab.ee do
   Settings.cron_jobs['ai_active_context_bulk_process_worker'] ||= {}
   Settings.cron_jobs['ai_active_context_bulk_process_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['ai_active_context_bulk_process_worker']['job_class'] ||= 'Ai::ActiveContext::BulkProcessWorker'
+  Settings.cron_jobs['ai_active_context_code_scheduling_worker'] ||= {}
+  Settings.cron_jobs['ai_active_context_code_scheduling_worker']['cron'] ||= '*/1 * * * *'
+  Settings.cron_jobs['ai_active_context_code_scheduling_worker']['job_class'] ||= 'Ai::ActiveContext::Code::SchedulingWorker'
   Settings.cron_jobs['ai_active_context_migration_worker'] ||= {}
   Settings.cron_jobs['ai_active_context_migration_worker']['cron'] ||= '*/5 * * * *'
   Settings.cron_jobs['ai_active_context_migration_worker']['job_class'] ||= 'Ai::ActiveContext::MigrationWorker'

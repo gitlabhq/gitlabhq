@@ -21,6 +21,25 @@ describe('formatListBoxItems', () => {
   `('should correctly format listbox items', ({ branches, tags, commits, expectedResult }) => {
     expect(formatListBoxItems(branches, tags, commits)).toStrictEqual(expectedResult);
   });
+
+  it('should sort the default branch to the top', () => {
+    const mockBranchesUnsorted = [
+      { name: 'feature', default: false },
+      { name: 'develop', default: false },
+      { name: 'main', default: true },
+      { name: 'bugfix', default: false },
+    ];
+
+    const sortedOptions = formatListBoxItems(mockBranchesUnsorted)[0].options;
+
+    // The first item should be the default branch
+    expect(sortedOptions[0].text).toBe('main');
+
+    // Verify order is preserved among non-default items
+    expect(sortedOptions[1].text).toBe('feature');
+    expect(sortedOptions[2].text).toBe('develop');
+    expect(sortedOptions[3].text).toBe('bugfix');
+  });
 });
 
 describe('formatErrors', () => {

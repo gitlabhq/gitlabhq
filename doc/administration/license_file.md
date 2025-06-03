@@ -101,7 +101,7 @@ For example, if a license has a start date of January 1, 2024 and an end date of
 - The grace period of 14 days starts at 12:00:00 AM server time January 1, 2025 and ends at 11:59:59 PM server time January 14, 2025.
 - Your instance becomes read-only at 12:00:00 AM server time January 15, 2025.
 
-To resume functionality, [renew your subscription](../subscriptions/self_managed/_index.md#renew-subscription-manually).
+To resume functionality, [renew your subscription](../subscriptions/manage_subscription.md#renew-manually).
 
 If the license has been expired for more than 30 days, you must purchase a [new subscription](../subscriptions/self_managed/_index.md) to resume functionality.
 

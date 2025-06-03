@@ -26,6 +26,10 @@ RSpec.describe Packages::Go::Package, type: :model, feature_category: :package_r
         it { is_expected.not_to allow_value(version).for(:version) }
       end
     end
+
+    describe '#name' do
+      it_behaves_like 'validate package name format', :golang_package
+    end
   end
 
   describe '.installable' do

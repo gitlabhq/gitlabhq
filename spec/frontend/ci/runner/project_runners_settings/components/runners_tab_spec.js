@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlTab, GlBadge } from '@gitlab/ui';
+import { GlAlert, GlTab, GlBadge, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import RunnerList from '~/ci/runner/components/runner_list.vue';
 import RunnerPagination from '~/ci/runner/components/runner_pagination.vue';
@@ -46,6 +46,8 @@ describe('RunnersTab', () => {
         GlTab,
       },
       slots: {
+        settings: 'Some settings',
+        description: 'Some description',
         empty: 'No runners found',
       },
     });
@@ -60,6 +62,7 @@ describe('RunnersTab', () => {
 
   const findTab = () => wrapper.findComponent(GlTab);
   const findBadge = () => wrapper.findComponent(GlBadge);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
   const findRunnerPagination = () => wrapper.findComponent(RunnerPagination);
   const findRunnerActionsCell = () => wrapper.findComponent(RunnerActionsCell);
@@ -92,11 +95,20 @@ describe('RunnersTab', () => {
     });
 
     it('shows runner list in loading state', () => {
+      expect(findLoadingIcon().exists()).toBe(true);
       expect(findRunnerList().props('loading')).toBe(true);
     });
 
     it('shows a disabled pagination', () => {
       expect(findRunnerPagination().attributes('disabled')).toBeDefined();
+    });
+
+    it('renders settings slot', () => {
+      expect(wrapper.text()).toContain('Some settings');
+    });
+
+    it('renders description slot', () => {
+      expect(wrapper.findComponent(GlAlert).text()).toContain('Some description');
     });
   });
 

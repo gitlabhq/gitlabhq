@@ -50,16 +50,12 @@ class Packages::Package < ApplicationRecord
   validates :project, presence: true
   validates :name, presence: true
 
-  validates :name, format: { with: Gitlab::Regex.package_name_regex }, unless: -> { conan? || generic? || debian? }
-
   validates :name,
     uniqueness: {
       scope: %i[project_id version package_type],
       conditions: -> { not_pending_destruction }
     },
     unless: -> { pending_destruction? || conan? }
-
-  validates :version, format: { with: Gitlab::Regex.maven_version_regex }, if: -> { version? && maven? }
 
   scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
   scope :with_name, ->(name) { where(name: name) }

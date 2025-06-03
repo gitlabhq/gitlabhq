@@ -4,15 +4,6 @@ module API
   module Helpers
     module Packages
       module Nuget
-        extend ::Gitlab::Utils::Override
-
-        override :render_api_error!
-        def render_api_error!(message, status)
-          header('X-NuGet-Warning', "GitLab: #{message}") if message.present?
-
-          super
-        end
-
         def find_packages
           packages = package_finder(params[:package_name]).execute
 

@@ -5,7 +5,11 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::MigrationHelpers::WraparoundVacuumHelpers, feature_category: :database do
   include Database::DatabaseHelpers
 
-  let(:table_name) { 'ci_builds' }
+  let(:table_name) { '_test_ci_builds' }
+
+  before do
+    migration.connection.create_table(:_test_ci_builds)
+  end
 
   describe '#check_if_wraparound_in_progress' do
     let(:migration) do
@@ -47,16 +51,20 @@ RSpec.describe Gitlab::Database::MigrationHelpers::WraparoundVacuumHelpers, feat
               16401, current_database(), 178, '2023-03-30 08:10:50.851322+00',
               '2023-03-30 08:10:50.890485+00', now() - '150 minutes'::interval,
               '2023-03-30 08:10:50.890485+00', 'IO', 'DataFileRead', 'active','3214790381'::xid,
-              'autovacuum: VACUUM public.ci_builds (to prevent wraparound)', 'autovacuum worker')
+              'autovacuum: VACUUM public._test_ci_builds (to prevent wraparound)', 'autovacuum worker')
           SQL
         end
 
         it 'outputs a message related to autovacuum' do
           expect { subject }
-            .to output(/Autovacuum with wraparound prevention mode is running on `ci_builds`/).to_stdout
+            .to output(/Autovacuum with wraparound prevention mode is running on `_test_ci_builds`/).to_stdout
         end
 
-        it { expect { subject }.to output(/autovacuum: VACUUM public.ci_builds \(to prevent wraparound\)/).to_stdout }
+        it 'outputs the query related to autovacuum' do
+          expect { subject }
+            .to output(/autovacuum: VACUUM public._test_ci_builds \(to prevent wraparound\)/).to_stdout
+        end
+
         it { expect { subject }.to output(/Current duration: 2 hours, 30 minutes/).to_stdout }
 
         context 'when GITLAB_MIGRATIONS_DISABLE_WRAPAROUND_CHECK is set' do

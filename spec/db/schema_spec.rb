@@ -65,8 +65,6 @@ RSpec.describe 'Database schema',
       catalog_resource_component_last_usages: %w[used_by_project_id], # No FK constraint because we want to preserve usage data even if project is deleted.
       chat_names: %w[chat_id team_id user_id],
       chat_teams: %w[team_id],
-      ci_builds: %w[project_id runner_id user_id erased_by_id trigger_request_id partition_id
-        auto_canceled_by_partition_id execution_config_id upstream_pipeline_partition_id],
       ci_build_needs: %w[project_id],
       ci_build_pending_states: %w[project_id],
       ci_build_trace_chunks: %w[project_id],
@@ -236,6 +234,7 @@ RSpec.describe 'Database schema',
       zoekt_indices: %w[namespace_id], # needed for cells sharding key
       zoekt_repositories: %w[namespace_id project_identifier], # needed for cells sharding key
       zoekt_tasks: %w[project_identifier partition_id zoekt_repository_id zoekt_node_id], # needed for: cells sharding key, partitioning, and performance reasons
+      p_knowledge_graph_tasks: %w[partition_id knowledge_graph_replica_id zoekt_node_id namespace_id], # needed for: partitioning, and performance reasons
       # TODO: To remove with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155256
       approval_group_rules: %w[approval_policy_rule_id],
       approval_project_rules: %w[approval_policy_rule_id],
@@ -264,7 +263,6 @@ RSpec.describe 'Database schema',
   let(:ignored_tables_with_too_many_indexes) do
     {
       approval_merge_request_rules: 17,
-      ci_builds: 26,
       ci_pipelines: 24,
       ci_runners: 16,
       deployments: 18,

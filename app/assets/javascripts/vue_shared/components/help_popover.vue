@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlPopover } from '@gitlab/ui';
 import { __ } from '~/locale';
+import { stripHtml } from '~/lib/utils/text_utility';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 
 /**
@@ -38,6 +39,23 @@ export default {
       default: __('Help'),
     },
   },
+  computed: {
+    composedAriaLabel() {
+      if (this.ariaLabel !== __('Help')) {
+        return this.ariaLabel;
+      }
+      if (this.options.title && this.options.content) {
+        return `${stripHtml(this.options.title)} ${stripHtml(this.options.content)}`;
+      }
+      if (this.options.title) {
+        return stripHtml(this.options.title);
+      }
+      if (this.options.content) {
+        return stripHtml(this.options.content);
+      }
+      return this.ariaLabel;
+    },
+  },
   methods: {
     targetFn() {
       return this.$refs.popoverTrigger?.$el;
@@ -52,7 +70,7 @@ export default {
       :class="triggerClass"
       variant="link"
       :icon="icon"
-      :aria-label="ariaLabel"
+      :aria-label="composedAriaLabel"
     />
     <gl-popover :target="targetFn" v-bind="options">
       <template v-if="options.title" #title>

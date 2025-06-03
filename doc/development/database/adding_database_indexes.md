@@ -652,6 +652,13 @@ end
 
 {{< alert type="note" >}}
 
+Async indexes are only supported for GitLab.com environments,
+so `prepare_async_index` and `prepare_partitioned_async_index` are no-ops for other environments.
+
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
 `prepare_partitioned_async_index` only creates the indexes for partitions asynchronously. It doesn't attach the partition indexes to the partitioned table.
 In the [next step for the partitioned table](#create-the-index-synchronously-for-partitioned-table), `add_concurrent_partitioned_index` will not only add the index synchronously but also attach the partition indexes to the partitioned table.
 

@@ -49,10 +49,11 @@ Prerequisites:
 
   {{< /alert >}}
 
-- A SSH key with the usage type of either **Authentication & Signing** or **Signing**.
-  The SSH key must be one of these types:
-  - [ED25519](../../../ssh.md#ed25519-ssh-keys) (recommended)
-  - [RSA](../../../ssh.md#rsa-ssh-keys)
+- An SSH key with the **Usage type** `Authentication & Signing` or `Signing`.
+  The following SSH key types are supported:
+  - ED25519
+  - RSA
+  - ECDSA
 
 To configure Git to use your key:
 

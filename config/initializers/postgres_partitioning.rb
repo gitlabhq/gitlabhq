@@ -56,7 +56,8 @@ if Gitlab.ee?
       Vulnerabilities::ArchivedRecord,
       Vulnerabilities::ArchiveExport,
       Ai::KnowledgeGraph::EnabledNamespace,
-      Ai::KnowledgeGraph::Replica
+      Ai::KnowledgeGraph::Replica,
+      Ai::KnowledgeGraph::Task
     ])
 else
   Gitlab::Database::Partitioning.register_tables(

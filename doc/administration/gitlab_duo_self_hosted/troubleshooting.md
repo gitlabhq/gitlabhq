@@ -34,13 +34,7 @@ Before you begin troubleshooting, you should:
 - Know the endpoint where your:
   - AI gateway is hosted.
   - Model is hosted.
-- Enable the feature flag `expanded_ai_logging` on the `gitlab-rails` console:
-
-  ```ruby
-  Feature.enable(:expanded_ai_logging)
-  ```
-
-  Now, requests and responses from GitLab to the AI gateway are logged to [`llm.log`](../logs/_index.md#llmlog)
+- [Enable logging](logging.md#enable-logging) to make sure that requests and responses from GitLab to the AI gateway are being logged to [`llm.log`](../logs/_index.md#llmlog).
 
 For more information on troubleshooting GitLab Duo, see:
 
@@ -378,12 +372,7 @@ gitlab-rake gitlab:duo:verify_self_hosted_setup
 
 If no logs are generated in the **AI gateway server**, follow these steps to troubleshoot:
 
-1. Ensure the `expanded_ai_logging` feature flag is enabled:
-
-   ```ruby
-   Feature.enable(:expanded_ai_logging)
-   ```
-
+1. Ensure that [AI logs are enabled](logging.md#enable-logging).
 1. Run the following commands to view the GitLab Rails logs for any errors:
 
    ```shell
@@ -450,7 +439,7 @@ This error typically occurs due to issues with streaming from the model to the A
    'http://localhost:5052/v2/chat/agent' \
    --header 'accept: application/json' \
    --header 'Content-Type: application/json' \
-   --header 'x-gitlab-enabled-feature-flags: expanded_ai_logging' \
+   --header 'x-gitlab-enabled-instance-verbose-ai-logs: true' \
    --data '{
      "messages": [
        {

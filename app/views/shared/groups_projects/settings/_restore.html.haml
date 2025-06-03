@@ -1,22 +1,11 @@
-- return unless context.is_a?(Group) || context.is_a?(Project)
 - return unless context.self_deletion_scheduled?
-
-- date = permanent_deletion_date_formatted(context)
-
-- if context.is_a?(Group)
-  - context_name = _('group')
-  - restore_path = group_restore_path(context)
-- else
-  - context_name = _('project')
-  - restore_path = namespace_project_restore_path(context.namespace, context)
 
 = render Pajamas::CardComponent.new(body_options: { class: 'gl-bg-orange-50' }) do |c|
   - c.with_header do
     .gl-flex.gl-grow
-      %h4.gl-text-base.gl-text-warning.gl-leading-24.gl-m-0= _('Restore %{context}') % { context: context_name }
+      %h4.gl-text-base.gl-text-warning.gl-leading-24.gl-m-0= restore_namespace_title(context)
 
   - c.with_body do
-    %p
-      = safe_format(_("This %{context} has been scheduled for deletion on %{date}. To cancel the scheduled deletion, you can restore this %{context}, including all its resources."), context: context_name, date: tag.strong(date))
-    = render Pajamas::ButtonComponent.new(variant: :confirm, method: :post, href: restore_path) do
-      = _('Restore %{context}') % { context: context_name }
+    %p= restore_namespace_scheduled_for_deletion_message(context)
+    = render Pajamas::ButtonComponent.new(variant: :confirm, method: :post, href: restore_namespace_path(context)) do
+      = restore_namespace_title(context)

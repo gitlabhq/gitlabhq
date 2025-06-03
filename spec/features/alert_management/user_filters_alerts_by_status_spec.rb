@@ -11,6 +11,7 @@ RSpec.describe 'User filters Alert Management table by status', :js, feature_cat
 
   before do
     sign_in(developer)
+    stub_feature_flags(hide_incident_management_features: false)
 
     visit project_alert_management_index_path(project)
     wait_for_requests

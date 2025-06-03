@@ -4,7 +4,7 @@ class GroupChildEntity < Grape::Entity
   include ActionView::Helpers::NumberHelper
   include RequestAwareEntity
   include MarkupHelper
-  include ::NamespacesHelper
+  include Namespaces::DeletableHelper
 
   expose :id, :name, :description, :visibility, :full_name,
     :created_at, :updated_at, :avatar_url

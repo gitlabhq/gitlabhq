@@ -6,7 +6,9 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
   include ExclusiveLeaseHelpers
 
   describe '#execute' do
-    subject(:service_execution) { described_class.new(personal_access_token).execute }
+    let(:service) { described_class.new(personal_access_token) }
+
+    subject(:service_execution) { service.execute }
 
     context 'when the personal access token was used 10 minutes ago', :freeze_time do
       let(:personal_access_token) { create(:personal_access_token, last_used_at: 10.minutes.ago) }
@@ -65,15 +67,44 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
         let(:current_ip_address) { '::1' }
         let(:personal_access_token) { create(:personal_access_token, last_used_at: 30.seconds.ago) }
 
-        it "does not update the personal access token's last used ips" do
+        before do
           allow(Gitlab::IpAddressState).to receive(:current).and_return(current_ip_address)
+        end
 
+        it "does not update the personal access token's last used ips" do
           expect { service_execution }.not_to change { personal_access_token.last_used_ips.count }
           expect(
             Authn::PersonalAccessTokenLastUsedIp
               .where(personal_access_token_id: personal_access_token.id, ip_address: Gitlab::IpAddressState.current)
               .exists?
           ).to be_falsy
+        end
+
+        it "does not obtain exclusive lease" do
+          expect(service).not_to receive(:try_obtain_lease)
+
+          service_execution
+        end
+
+        context 'when pat_last_used_at_optimization FF is disabled' do
+          before do
+            stub_feature_flags(pat_last_used_at_optimization: false)
+          end
+
+          it "does not update the personal access token's last used ips" do
+            expect { service_execution }.not_to change { personal_access_token.last_used_ips.count }
+            expect(
+              Authn::PersonalAccessTokenLastUsedIp
+                .where(personal_access_token_id: personal_access_token.id, ip_address: Gitlab::IpAddressState.current)
+                .exists?
+            ).to be_falsy
+          end
+
+          it "obtains exclusive lease" do
+            expect(service).to receive(:try_obtain_lease)
+
+            service_execution
+          end
         end
       end
 
@@ -192,6 +223,28 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
 
       it 'does not update the last_used_at timestamp' do
         expect { service_execution }.not_to change { personal_access_token.last_used_at }
+      end
+
+      it "does not obtain exclusive lease" do
+        expect(service).not_to receive(:try_obtain_lease)
+
+        service_execution
+      end
+
+      context 'when pat_last_used_at_optimization FF is disabled' do
+        before do
+          stub_feature_flags(pat_last_used_at_optimization: false)
+        end
+
+        it 'does not update the last_used_at timestamp' do
+          expect { service_execution }.not_to change { personal_access_token.last_used_at }
+        end
+
+        it "obtains exclusive lease" do
+          expect(service).to receive(:try_obtain_lease)
+
+          service_execution
+        end
       end
     end
 

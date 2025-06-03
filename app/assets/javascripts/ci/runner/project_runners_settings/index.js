@@ -22,6 +22,8 @@ export const initProjectRunnersSettings = (selector = '#js-project-runners-setti
 
   const {
     canCreateRunner,
+    canCreateRunnerForGroup,
+    groupRunnersPath,
     allowRegistrationToken,
     registrationToken,
     newProjectRunnerPath,
@@ -31,6 +33,10 @@ export const initProjectRunnersSettings = (selector = '#js-project-runners-setti
   return new Vue({
     el,
     apolloProvider,
+    provide: {
+      canCreateRunnerForGroup: parseBoolean(canCreateRunnerForGroup),
+      groupRunnersPath,
+    },
     render(h) {
       return h(ProjectRunnersSettingsApp, {
         props: {

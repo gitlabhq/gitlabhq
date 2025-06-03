@@ -4,7 +4,7 @@ module Types
   class GroupType < NamespaceType
     graphql_name 'Group'
 
-    include ::NamespacesHelper
+    include ::Namespaces::DeletableHelper
 
     implements ::Types::Namespaces::GroupInterface
 

@@ -8,6 +8,6 @@
 
   - c.with_body do
     = form_tag(group, method: :delete, id: remove_form_id) do
-      %p= delete_delayed_group_message(group)
+      %p= delete_delayed_namespace_message(group)
 
       = render 'groups/settings/remove_button', group: group, remove_form_id: remove_form_id

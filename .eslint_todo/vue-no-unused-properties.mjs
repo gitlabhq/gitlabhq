@@ -38,7 +38,6 @@ export default {
     'app/assets/javascripts/ci/pipeline_details/graph/components/links_inner.vue',
     'app/assets/javascripts/ci/pipeline_details/graph/components/root_graph_layout.vue',
     'app/assets/javascripts/ci/pipeline_details/graph/components/stage_column_component.vue',
-    'app/assets/javascripts/ci/pipeline_details/header/pipeline_header.vue',
     'app/assets/javascripts/ci/pipeline_details/manual_variables/variable_table.vue',
     'app/assets/javascripts/ci/pipeline_editor/components/commit/commit_section.vue',
     'app/assets/javascripts/ci/pipeline_editor/components/editor/ci_config_merged_preview.vue',

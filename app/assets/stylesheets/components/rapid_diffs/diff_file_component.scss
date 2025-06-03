@@ -11,7 +11,7 @@
   // top/bottom padding + toggle button size, excluding borders
   $file-header-height: calc($header-padding + $gl-button-small-size);
   --rd-diff-file-header-height: #{$file-header-height};
-  --rd-diff-file-border-radius: #{calc($gl-border-radius-base - 1px)};
+  --rd-diff-file-border-radius: #{$gl-border-radius-base};
 }
 
 .rd-diff-file[data-virtual]:not([data-collapsed]) {

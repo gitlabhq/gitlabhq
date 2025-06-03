@@ -139,6 +139,10 @@ export-code-paths-mapping:
   extends:
     - .export-code-paths-mapping
 
+export-frontend-code-paths-mapping:
+  extends:
+    - .export-frontend-code-paths-mapping
+
 notify-slack:
   extends:
     - .notify-slack

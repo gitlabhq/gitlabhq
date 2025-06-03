@@ -23,7 +23,10 @@ export const formatListBoxItems = (branches, tags, commits) => {
     if (items && items.length > 0) {
       listBoxItems.push({
         text: header,
-        options: convertToListBoxItems(items),
+        options: convertToListBoxItems(items).sort(
+          // Sort by default first: converts booleans to 1/0 for numeric comparison
+          (a, b) => Boolean(b.default) - Boolean(a.default),
+        ),
       });
     }
   };

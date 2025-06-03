@@ -18,6 +18,6 @@ $diff-file-header-padding-y: $gl-spacing-scale-3;
 $diff-file-line-number-z-index: 1;
 $diff-file-hunk-header-z-index: functions.more-than($diff-file-line-number-z-index);
 $diff-file-highlighted-line-number-z-index: functions.more-than($diff-file-hunk-header-z-index);
-
-$diff-file-header-z-index: functions.more-than($diff-file-highlighted-line-number-z-index);
+$diff-file-cell-focused-z-index: functions.more-than($diff-file-highlighted-line-number-z-index);
+$diff-file-header-z-index: functions.more-than($diff-file-cell-focused-z-index);
 $diff-file-header-active-z-index: functions.more-than($diff-file-header-z-index);

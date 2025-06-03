@@ -40,6 +40,10 @@ RSpec.describe Packages::Composer::Package, type: :model, feature_category: :pac
     describe '#version' do
       it_behaves_like 'validating version to be SemVer compliant for', :composer_package
     end
+
+    describe '#name' do
+      it_behaves_like 'validate package name format', :composer_package
+    end
   end
 
   describe '.with_composer_target' do

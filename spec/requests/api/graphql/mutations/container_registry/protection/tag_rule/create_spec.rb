@@ -95,21 +95,6 @@ RSpec.describe 'Creating the container registry tag protection rule', :aggregate
     it_behaves_like 'returning a mutation error', 'Access levels should either both be present or both be nil'
   end
 
-  context 'with an immutable tag rule (both access levels blank)' do
-    let(:input) { super().merge(minimum_access_level_for_delete: nil, minimum_access_level_for_push: nil) }
-
-    context 'with an authorized user' do
-      let_it_be(:current_user) { create(:user, owner_of: project) }
-
-      it_behaves_like 'a successful response'
-    end
-
-    context 'with an unauthorized user' do
-      it_behaves_like 'returning a mutation error',
-        'Unauthorized to create an immutable protection rule for container image tags'
-    end
-  end
-
   context 'with blank input field `tagNamePattern`' do
     let(:input) { super().merge(tag_name_pattern: '') }
 

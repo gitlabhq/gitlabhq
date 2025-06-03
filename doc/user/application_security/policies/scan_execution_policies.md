@@ -366,8 +366,8 @@ rule in the defined policy are met.
 | Field | Type | Possible values | Description |
 |-------|------|-----------------|-------------|
 | `scan` | `string` | `sast`, `sast_iac`, `dast`, `secret_detection`, `container_scanning`, `dependency_scanning` | The action's type. |
-| `site_profile` | `string` | Name of the selected [DAST site profile](../dast/on-demand_scan.md#site-profile). | The DAST site profile to execute the DAST scan. This field should only be set if `scan` type is `dast`. |
-| `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/on-demand_scan.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
+| `site_profile` | `string` | Name of the selected [DAST site profile](../dast/profiles.md#site-profile). | The DAST site profile to execute the DAST scan. This field should only be set if `scan` type is `dast`. |
+| `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/profiles.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
 | `variables` | `object` | | A set of CI/CD variables, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the variable name, with its `value` provided as a string. This parameter supports any variable that the GitLab CI/CD job supports for the specified scan. |
 | `tags` | `array` of `string` | | A list of runner tags for the policy. The policy jobs are run by runner with the specified tags. |
 | `template` | `string` | `default`, `latest` | CI/CD template version to enforce. The `latest` version may introduce breaking changes. See the `stable` and `latest` [security templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Jobs). |
@@ -410,8 +410,8 @@ scan.
 The following requirements apply when enforcing Dynamic Application Security Testing (DAST):
 
 - For every project in the policy's scope the specified
-  [site profile](../dast/on-demand_scan.md#site-profile) and
-  [scanner profile](../dast/on-demand_scan.md#scanner-profile) must exist. If these are not
+  [site profile](../dast/profiles.md#site-profile) and
+  [scanner profile](../dast/profiles.md#scanner-profile) must exist. If these are not
   available, the policy is not applied and a job with an error message is created instead.
 - When a DAST site profile or scanner profile is named in an enabled scan execution policy, the
   profile cannot be modified or deleted. To edit or delete the profile, you must first set the

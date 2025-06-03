@@ -10,6 +10,7 @@
   font-family: $monospace-font;
   line-height: constants.$code-line-height;
   font-size: constants.$code-font-size;
+  border-radius: 0 0 var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius);
 }
 
 // we can only use gl-dark for now because prefers-color-scheme can be overridden by user setting
@@ -112,10 +113,15 @@
   color: var(--code-diff-expand-button-color, var(--gl-text-color-subtle));
   border-radius: 0 0 var(--rd-row-bottom-right-radius) var(--rd-row-bottom-left-radius);
 
-  &:hover,
-  &:focus {
+  &:hover {
     background-color:var(--code-diff-expand-button-hover-background-color, $gray-200);
     color: var(--code-diff-expand-button-hover-color, $gray-800);
+  }
+
+  &:focus-visible {
+    outline: 1px solid var(--gl-focus-ring-outer-color);
+    position: relative;
+    margin: 0 1px;
   }
 }
 
@@ -230,6 +236,10 @@
     color: var(--rd-line-link-color);
   }
 
+  &:focus {
+    outline: none;
+  }
+
   &::before {
     content: attr(data-line-number);
   }
@@ -239,6 +249,15 @@
     position: absolute;
     inset: 0 -1px;
   }
+}
+
+.rd-line-link:focus-visible::after {
+  outline: 1px solid var(--gl-focus-ring-outer-color);
+  inset: 1px 0;
+}
+
+.rd-line-number:has(> .rd-line-link:focus-visible) {
+  z-index: constants.$diff-file-cell-focused-z-index;
 }
 
 .rd-line-content,
@@ -256,7 +275,7 @@
 
   &::before {
     position: absolute;
-    margin-left: -14px;
+    margin-left: -13px;
   }
 }
 

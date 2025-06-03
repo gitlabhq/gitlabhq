@@ -347,23 +347,18 @@ describe('Ref selector component', () => {
 
         it('renders the default branch as a selectable item with a "default" badge', () => {
           const dropdownItems = findBranchDropdownItems();
-
           const defaultBranch = fixtures.branches.find((b) => b.default);
-          const defaultBranchIndex = fixtures.branches.indexOf(defaultBranch);
+          const defaultBranchItem = dropdownItems.at(0);
 
-          expect(trimText(dropdownItems.at(defaultBranchIndex).text())).toBe(
-            `${defaultBranch.name} default`,
-          );
+          expect(trimText(defaultBranchItem.text())).toBe(`${defaultBranch.name} default`);
         });
 
         it('renders the protected branch as a selectable item with a "protected" badge', () => {
           const dropdownItems = findBranchDropdownItems();
           const protectedBranch = fixtures.branches.find((b) => b.protected);
-          const protectedBranchIndex = fixtures.branches.indexOf(protectedBranch);
+          const protectedBranchItem = dropdownItems.at(3);
 
-          expect(trimText(dropdownItems.at(protectedBranchIndex).text())).toBe(
-            `${protectedBranch.name} protected`,
-          );
+          expect(trimText(protectedBranchItem.text())).toBe(`${protectedBranch.name} protected`);
         });
       });
 
@@ -427,11 +422,11 @@ describe('Ref selector component', () => {
         it('renders the protected tag as a selectable item with a "protected" badge', () => {
           const dropdownItems = findBranchDropdownItems();
           const protectedTag = fixtures.tags.find((b) => b.protected);
-          const protectedTagIndex = fixtures.tags.indexOf(protectedTag) + fixtures.branches.length;
+          const protectedTagItem = dropdownItems
+            .filter((item) => item.text().includes(protectedTag.name))
+            .at(0);
 
-          expect(trimText(dropdownItems.at(protectedTagIndex).text())).toBe(
-            `${protectedTag.name} protected`,
-          );
+          expect(trimText(protectedTagItem.text())).toBe(`${protectedTag.name} protected`);
         });
       });
 

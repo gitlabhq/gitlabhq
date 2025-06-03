@@ -223,7 +223,8 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
   end
 
   describe '#project_runners_settings_data' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
 
     subject(:result) { helper.project_runners_settings_data(project) }
 
@@ -234,6 +235,8 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
     context 'when the user has all permissions' do
       before do
         allow(helper).to receive(:can?).with(user, :create_runner, project).and_return(true)
+        allow(helper).to receive(:can?).with(user, :create_runner, project.group).and_return(true)
+        allow(helper).to receive(:can?).with(user, :register_group_runners, project.group).and_return(true)
         allow(helper).to receive(:can?).with(user, :read_runners_registration_token, project).and_return(true)
         allow(project.namespace).to receive(:allow_runner_registration_token?).and_return(true)
       end
@@ -244,7 +247,9 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
           allow_registration_token: 'true',
           registration_token: project.runners_token,
           project_full_path: project.full_path,
-          new_project_runner_path: new_project_runner_path(project)
+          new_project_runner_path: new_project_runner_path(project),
+          can_create_runner_for_group: 'true',
+          group_runners_path: group_runners_path(project.group)
         )
       end
     end
@@ -252,6 +257,8 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
     context 'when user cannot manage runners' do
       before do
         allow(helper).to receive(:can?).with(user, :create_runner, project).and_return(false)
+        allow(helper).to receive(:can?).with(user, :create_runner, project.group).and_return(false)
+        allow(helper).to receive(:can?).with(user, :register_group_runners, project.group).and_return(false)
         allow(helper).to receive(:can?).with(user, :read_runners_registration_token, project).and_return(false)
         allow(project.namespace).to receive(:allow_runner_registration_token?).and_return(false)
       end
@@ -262,7 +269,9 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
           allow_registration_token: 'false',
           registration_token: nil,
           project_full_path: project.full_path,
-          new_project_runner_path: new_project_runner_path(project)
+          new_project_runner_path: new_project_runner_path(project),
+          can_create_runner_for_group: 'false',
+          group_runners_path: group_runners_path(project.group)
         )
       end
     end

@@ -4,7 +4,7 @@ module Types
   class ProjectType < BaseObject
     graphql_name 'Project'
 
-    include ::NamespacesHelper
+    include ::Namespaces::DeletableHelper
 
     connection_type_class Types::CountableConnectionType
 

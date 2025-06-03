@@ -1,6 +1,6 @@
 - if @project.delayed_deletion_ready?
   - if @project.self_deletion_scheduled?
-    %p= delete_immediately_project_scheduled_for_deletion_message(@project)
+    %p= delete_immediately_namespace_scheduled_for_deletion_message(@project)
     #js-project-delete-button{ data: project_delete_immediately_button_data(@project, _('Delete project immediately')) }
   - else
     = render 'delete_delayed'

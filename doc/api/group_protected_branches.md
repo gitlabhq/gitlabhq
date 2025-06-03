@@ -23,6 +23,9 @@ title: Group-level protected branches API
 Use the protected branches API for groups to manage protected branch rules.
 It provides endpoints to list, create, update, and delete protected branch rules that apply to projects belonging to a group.
 
+Group protected branches only support [valid access levels](#valid-access-levels). Individual users
+and groups cannot be specified.
+
 {{< alert type="warning" >}}
 
 Protected branch settings for groups are restricted to top-level groups only.
@@ -72,7 +75,7 @@ Example response:
         "id":  1,
         "access_level": 40,
         "user_id": null,
-        "group_id": 1234,
+        "group_id": null,
         "access_level_description": "Maintainers"
       }
     ],
@@ -81,7 +84,7 @@ Example response:
         "id":  1,
         "access_level": 40,
         "user_id": null,
-        "group_id": 1234,
+        "group_id": null,
         "access_level_description": "Maintainers"
       }
     ],
@@ -105,7 +108,7 @@ Example response:
         "id":  1,
         "access_level": 40,
         "user_id": null,
-        "group_id": 1234,
+        "group_id": null,
         "access_level_description": "Maintainers"
       }
     ],
@@ -152,10 +155,10 @@ Example response:
   "merge_access_levels": [
     {
       "id":  1,
-      "access_level": null,
+      "access_level": 40,
       "user_id": null,
-      "group_id": 1234,
-      "access_level_description": "Example Merge Group"
+      "group_id": null,
+      "access_level_description": "Maintainers"
     }
   ],
   "allow_force_push":false,
@@ -228,61 +231,9 @@ Example response:
 }
 ```
 
-### Example with user and group access
+### Example with access levels
 
-Elements in the `allowed_to_push` / `allowed_to_merge` / `allowed_to_unprotect` array should take the
-form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Each user must have
-access to the project and each group must
-[have this project shared](../user/project/members/sharing_projects_groups.md). These access levels
-allow [more granular control over protected branch access](../user/project/repository/branches/protected.md).
-
-```shell
-curl --request POST \
-  --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/groups/5/protected_branches?name=*-stable&allowed_to_push%5B%5D%5Buser_id%5D=1"
-```
-
-Example response:
-
-```json
-{
-  "id": 1,
-  "name": "*-stable",
-  "push_access_levels": [
-    {
-      "id":  1,
-      "access_level": null,
-      "user_id": 1,
-      "group_id": null,
-      "access_level_description": "Administrator"
-    }
-  ],
-  "merge_access_levels": [
-    {
-      "id":  1,
-      "access_level": 40,
-      "user_id": null,
-      "group_id": null,
-      "access_level_description": "Maintainers"
-    }
-  ],
-  "unprotect_access_levels": [
-    {
-      "id":  1,
-      "access_level": 40,
-      "user_id": null,
-      "group_id": null,
-      "access_level_description": "Maintainers"
-    }
-  ],
-  "allow_force_push":false,
-  "code_owner_approval_required": false
-}
-```
-
-### Example with allow to push and allow to merge access
-
-Example request:
+Use access levels to configure group protected branches:
 
 ```shell
 curl --request POST \
@@ -405,21 +356,10 @@ curl --request PATCH \
 | `allowed_to_unprotect`                       | array          | no       | Array of unprotect access levels, with each described by a hash.                                                                     |
 | `code_owner_approval_required`               | boolean        | no       | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/_index.md). Default: `false`. |
 
-Elements in the `allowed_to_push`, `allowed_to_merge` and `allowed_to_unprotect` arrays should:
+Elements in the `allowed_to_push`, `allowed_to_merge` and `allowed_to_unprotect` arrays should take the form `{access_level: integer}`. Each access level must be a valid value from the [valid access levels](#valid-access-levels).
 
-- Be one of `user_id`, `group_id`, or `access_level`.
-- Take the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`.
-
-To update:
-
-- `user_id`: Ensure the updated user has access to the project. You must also pass the
-  `id` of the `access_level` in the respective hash.
-- `group_id`: Ensure the updated group [has this project shared](../user/project/members/sharing_projects_groups.md).
-  You must also pass the `id` of the `access_level` in the respective hash.
-
-To delete:
-
-- You must pass `_destroy` set to `true`. See the following examples.
+- To update access levels, you must also pass the `id` of the `access_level` in the respective hash.
+- To delete access levels, you must pass `_destroy` set to `true`. See the following examples.
 
 ### Example: create a `push_access_level` record
 

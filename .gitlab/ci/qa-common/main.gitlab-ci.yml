@@ -137,6 +137,18 @@ stages:
   rules:
     - if: '$COVERBAND_ENABLED == "true"'
 
+.export-frontend-code-paths-mapping:
+  extends:
+    - .qa-install
+  stage: report
+  when: always
+  variables:
+    QA_FRONTEND_PATHS_MAPPING_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/js-coverage-by-example-*.json
+  script:
+    - bundle exec rake "ci:export_frontend_code_paths_mapping[$QA_FRONTEND_PATHS_MAPPING_FILE_PATTERN]"
+  rules:
+    - if: '$BABEL_ENV == "istanbul"'
+
 .notify-slack:
   extends:
     - .post-to-slack

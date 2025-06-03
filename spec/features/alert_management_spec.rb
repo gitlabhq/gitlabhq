@@ -12,6 +12,7 @@ RSpec.describe 'Alert management', :js, feature_category: :incident_management d
 
     before do
       sign_in(user)
+      stub_feature_flags(hide_incident_management_features: false)
     end
 
     context 'when actor has permission to see the alert' do

@@ -153,6 +153,19 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION assign_p_knowledge_graph_tasks_id_value() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."id" IS NOT NULL THEN
+  RAISE WARNING 'Manually assigning ids is not allowed, the value will be ignored';
+END IF;
+NEW."id" := nextval('p_knowledge_graph_tasks_id_seq'::regclass);
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION assign_zoekt_tasks_id_value() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -4901,6 +4914,22 @@ CREATE TABLE p_knowledge_graph_replicas (
     CONSTRAINT c_p_knowledge_graph_replicas_retries_status CHECK (((retries_left > 0) OR ((retries_left = 0) AND (state >= 200))))
 )
 PARTITION BY RANGE (namespace_id);
+
+CREATE TABLE p_knowledge_graph_tasks (
+    id bigint NOT NULL,
+    partition_id bigint DEFAULT 1 NOT NULL,
+    zoekt_node_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    knowledge_graph_replica_id bigint NOT NULL,
+    perform_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    state smallint DEFAULT 0 NOT NULL,
+    task_type smallint NOT NULL,
+    retries_left smallint NOT NULL,
+    CONSTRAINT c_p_knowledge_graph_tasks_on_retries_left CHECK (((retries_left > 0) OR ((retries_left = 0) AND (state = 255))))
+)
+PARTITION BY LIST (partition_id);
 
 CREATE TABLE project_audit_events (
     id bigint DEFAULT nextval('shared_audit_event_id_seq'::regclass) NOT NULL,
@@ -10988,56 +11017,6 @@ CREATE SEQUENCE ci_build_trace_chunks_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ci_build_trace_chunks_id_seq OWNED BY ci_build_trace_chunks.id;
-
-CREATE TABLE ci_builds (
-    status character varying,
-    finished_at timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    started_at timestamp without time zone,
-    coverage double precision,
-    name character varying,
-    options text,
-    allow_failure boolean DEFAULT false NOT NULL,
-    stage_idx integer,
-    tag boolean,
-    ref character varying,
-    type character varying,
-    target_url character varying,
-    description character varying,
-    erased_at timestamp without time zone,
-    artifacts_expire_at timestamp without time zone,
-    environment character varying,
-    "when" character varying,
-    yaml_variables text,
-    queued_at timestamp without time zone,
-    lock_version integer DEFAULT 0,
-    coverage_regex character varying,
-    retried boolean,
-    protected boolean,
-    failure_reason integer,
-    scheduled_at timestamp with time zone,
-    token_encrypted character varying,
-    resource_group_id bigint,
-    waiting_for_resource_at timestamp with time zone,
-    processed boolean,
-    scheduling_type smallint,
-    id bigint NOT NULL,
-    stage_id bigint,
-    partition_id bigint NOT NULL,
-    auto_canceled_by_partition_id bigint,
-    auto_canceled_by_id bigint,
-    commit_id bigint,
-    erased_by_id bigint,
-    project_id bigint,
-    runner_id bigint,
-    upstream_pipeline_id bigint,
-    user_id bigint,
-    execution_config_id bigint,
-    upstream_pipeline_partition_id bigint,
-    CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL)),
-    CONSTRAINT check_9aa9432137 CHECK ((project_id IS NOT NULL))
-);
 
 CREATE SEQUENCE ci_builds_id_seq
     START WITH 1
@@ -18969,6 +18948,15 @@ CREATE SEQUENCE p_knowledge_graph_replicas_id_seq
 
 ALTER SEQUENCE p_knowledge_graph_replicas_id_seq OWNED BY p_knowledge_graph_replicas.id;
 
+CREATE SEQUENCE p_knowledge_graph_tasks_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE p_knowledge_graph_tasks_id_seq OWNED BY p_knowledge_graph_tasks.id;
+
 CREATE TABLE packages_build_infos (
     id bigint NOT NULL,
     package_id bigint NOT NULL,
@@ -24985,7 +24973,8 @@ CREATE TABLE vulnerability_exports (
     group_id bigint,
     organization_id bigint NOT NULL,
     expires_at timestamp with time zone,
-    send_email boolean DEFAULT false NOT NULL
+    send_email boolean DEFAULT false NOT NULL,
+    report_data jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 CREATE SEQUENCE vulnerability_exports_id_seq
@@ -26851,8 +26840,6 @@ ALTER TABLE ONLY uploads_9ba88c4165 ATTACH PARTITION alert_management_alert_metr
 ALTER TABLE ONLY uploads_9ba88c4165 ATTACH PARTITION appearance_uploads FOR VALUES IN ('Appearance');
 
 ALTER TABLE ONLY uploads_9ba88c4165 ATTACH PARTITION bulk_import_export_upload_uploads FOR VALUES IN ('BulkImports::ExportUpload');
-
-ALTER TABLE ONLY p_ci_builds ATTACH PARTITION ci_builds FOR VALUES IN ('100');
 
 ALTER TABLE ONLY p_ci_pipelines ATTACH PARTITION ci_pipelines FOR VALUES IN ('100', '101', '102');
 
@@ -29376,12 +29363,6 @@ ALTER TABLE ONLY ci_build_report_results
 ALTER TABLE ONLY ci_build_trace_chunks
     ADD CONSTRAINT ci_build_trace_chunks_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY p_ci_builds
-    ADD CONSTRAINT p_ci_builds_pkey PRIMARY KEY (id, partition_id);
-
-ALTER TABLE ONLY ci_builds
-    ADD CONSTRAINT ci_builds_pkey PRIMARY KEY (id, partition_id);
-
 ALTER TABLE ONLY ci_builds_runner_session
     ADD CONSTRAINT ci_builds_runner_session_pkey PRIMARY KEY (id);
 
@@ -30534,6 +30515,9 @@ ALTER TABLE ONLY p_ci_builds_execution_configs
 ALTER TABLE ONLY p_ci_builds_metadata
     ADD CONSTRAINT p_ci_builds_metadata_pkey PRIMARY KEY (id, partition_id);
 
+ALTER TABLE ONLY p_ci_builds
+    ADD CONSTRAINT p_ci_builds_pkey PRIMARY KEY (id, partition_id);
+
 ALTER TABLE ONLY p_ci_finished_build_ch_sync_events
     ADD CONSTRAINT p_ci_finished_build_ch_sync_events_pkey PRIMARY KEY (build_id, partition);
 
@@ -30569,6 +30553,9 @@ ALTER TABLE ONLY p_knowledge_graph_enabled_namespaces
 
 ALTER TABLE ONLY p_knowledge_graph_replicas
     ADD CONSTRAINT p_knowledge_graph_replicas_pkey PRIMARY KEY (id, namespace_id);
+
+ALTER TABLE ONLY p_knowledge_graph_tasks
+    ADD CONSTRAINT p_knowledge_graph_tasks_pkey PRIMARY KEY (id, partition_id);
 
 ALTER TABLE ONLY packages_build_infos
     ADD CONSTRAINT packages_build_infos_pkey PRIMARY KEY (id);
@@ -33039,10 +33026,6 @@ CREATE INDEX ca_aggregations_last_full_run_at ON analytics_cycle_analytics_aggre
 
 CREATE INDEX ca_aggregations_last_incremental_run_at ON analytics_cycle_analytics_aggregations USING btree (last_incremental_run_at NULLS FIRST) WHERE (enabled IS TRUE);
 
-CREATE INDEX p_ci_builds_status_created_at_project_id_idx ON ONLY p_ci_builds USING btree (status, created_at, project_id) WHERE ((type)::text = 'Ci::Build'::text);
-
-CREATE INDEX ci_builds_gitlab_monitor_metrics ON ci_builds USING btree (status, created_at, project_id) WHERE ((type)::text = 'Ci::Build'::text);
-
 CREATE UNIQUE INDEX ci_job_token_scope_links_source_and_target_project_direction ON ci_job_token_project_scope_links USING btree (source_project_id, target_project_id, direction);
 
 CREATE INDEX ci_pipeline_artifacts_on_expire_at_for_removal ON ci_pipeline_artifacts USING btree (expire_at) WHERE ((locked = 0) AND (expire_at IS NOT NULL));
@@ -33829,10 +33812,6 @@ CREATE INDEX index_ci_runner_machines_on_ip_address ON ONLY ci_runner_machines U
 
 CREATE INDEX index_053d12f7ee ON project_type_ci_runner_machines USING btree (ip_address);
 
-CREATE INDEX index_p_ci_builds_on_execution_config_id ON ONLY p_ci_builds USING btree (execution_config_id) WHERE (execution_config_id IS NOT NULL);
-
-CREATE INDEX index_0928d9f200 ON ci_builds USING btree (execution_config_id) WHERE (execution_config_id IS NOT NULL);
-
 CREATE INDEX index_aa3b4fe8c6 ON group_type_ci_runner_machines USING btree (executor_type);
 
 CREATE INDEX index_abuse_events_on_abuse_report_id ON abuse_events USING btree (abuse_report_id);
@@ -34413,78 +34392,6 @@ CREATE UNIQUE INDEX index_ci_build_trace_chunks_on_build_id_and_chunk_index ON c
 
 CREATE INDEX index_ci_build_trace_chunks_on_project_id ON ci_build_trace_chunks USING btree (project_id);
 
-CREATE INDEX p_ci_builds_auto_canceled_by_id_idx ON ONLY p_ci_builds USING btree (auto_canceled_by_id) WHERE (auto_canceled_by_id IS NOT NULL);
-
-CREATE INDEX index_ci_builds_on_auto_canceled_by_id ON ci_builds USING btree (auto_canceled_by_id) WHERE (auto_canceled_by_id IS NOT NULL);
-
-CREATE INDEX p_ci_builds_commit_id_stage_idx_created_at_idx ON ONLY p_ci_builds USING btree (commit_id, stage_idx, created_at);
-
-CREATE INDEX index_ci_builds_on_commit_id_and_stage_idx_and_created_at ON ci_builds USING btree (commit_id, stage_idx, created_at);
-
-CREATE INDEX p_ci_builds_commit_id_status_type_idx ON ONLY p_ci_builds USING btree (commit_id, status, type);
-
-CREATE INDEX index_ci_builds_on_commit_id_and_status_and_type ON ci_builds USING btree (commit_id, status, type);
-
-CREATE INDEX p_ci_builds_commit_id_type_name_ref_idx ON ONLY p_ci_builds USING btree (commit_id, type, name, ref);
-
-CREATE INDEX index_ci_builds_on_commit_id_and_type_and_name_and_ref ON ci_builds USING btree (commit_id, type, name, ref);
-
-CREATE INDEX p_ci_builds_commit_id_type_ref_idx ON ONLY p_ci_builds USING btree (commit_id, type, ref);
-
-CREATE INDEX index_ci_builds_on_commit_id_and_type_and_ref ON ci_builds USING btree (commit_id, type, ref);
-
-CREATE INDEX p_ci_builds_commit_id_artifacts_expire_at_id_idx ON ONLY p_ci_builds USING btree (commit_id, artifacts_expire_at, id) WHERE (((type)::text = 'Ci::Build'::text) AND ((retried = false) OR (retried IS NULL)) AND ((name)::text = ANY (ARRAY[('sast'::character varying)::text, ('secret_detection'::character varying)::text, ('dependency_scanning'::character varying)::text, ('container_scanning'::character varying)::text, ('dast'::character varying)::text])));
-
-CREATE INDEX index_ci_builds_on_commit_id_artifacts_expired_at_and_id ON ci_builds USING btree (commit_id, artifacts_expire_at, id) WHERE (((type)::text = 'Ci::Build'::text) AND ((retried = false) OR (retried IS NULL)) AND ((name)::text = ANY (ARRAY[('sast'::character varying)::text, ('secret_detection'::character varying)::text, ('dependency_scanning'::character varying)::text, ('container_scanning'::character varying)::text, ('dast'::character varying)::text])));
-
-CREATE INDEX p_ci_builds_project_id_id_idx ON ONLY p_ci_builds USING btree (project_id, id);
-
-CREATE INDEX index_ci_builds_on_project_id_and_id ON ci_builds USING btree (project_id, id);
-
-CREATE INDEX p_ci_builds_project_id_name_ref_idx ON ONLY p_ci_builds USING btree (project_id, name, ref) WHERE (((type)::text = 'Ci::Build'::text) AND ((status)::text = 'success'::text) AND ((retried = false) OR (retried IS NULL)));
-
-CREATE INDEX index_ci_builds_on_project_id_and_name_and_ref ON ci_builds USING btree (project_id, name, ref) WHERE (((type)::text = 'Ci::Build'::text) AND ((status)::text = 'success'::text) AND ((retried = false) OR (retried IS NULL)));
-
-CREATE INDEX p_ci_builds_resource_group_id_status_commit_id_idx ON ONLY p_ci_builds USING btree (resource_group_id, status, commit_id) WHERE (resource_group_id IS NOT NULL);
-
-CREATE INDEX index_ci_builds_on_resource_group_and_status_and_commit_id ON ci_builds USING btree (resource_group_id, status, commit_id) WHERE (resource_group_id IS NOT NULL);
-
-CREATE INDEX p_ci_builds_runner_id_id_idx ON ONLY p_ci_builds USING btree (runner_id, id DESC);
-
-CREATE INDEX index_ci_builds_on_runner_id_and_id_desc ON ci_builds USING btree (runner_id, id DESC);
-
-CREATE INDEX p_ci_builds_stage_id_idx ON ONLY p_ci_builds USING btree (stage_id);
-
-CREATE INDEX index_ci_builds_on_stage_id ON ci_builds USING btree (stage_id);
-
-CREATE INDEX p_ci_builds_status_type_runner_id_idx ON ONLY p_ci_builds USING btree (status, type, runner_id);
-
-CREATE INDEX index_ci_builds_on_status_and_type_and_runner_id ON ci_builds USING btree (status, type, runner_id);
-
-CREATE INDEX p_ci_builds_updated_at_idx ON ONLY p_ci_builds USING btree (updated_at);
-
-CREATE INDEX index_ci_builds_on_updated_at ON ci_builds USING btree (updated_at);
-
-CREATE INDEX p_ci_builds_upstream_pipeline_id_idx ON ONLY p_ci_builds USING btree (upstream_pipeline_id) WHERE (upstream_pipeline_id IS NOT NULL);
-
-CREATE INDEX index_ci_builds_on_upstream_pipeline_id ON ci_builds USING btree (upstream_pipeline_id) WHERE (upstream_pipeline_id IS NOT NULL);
-
-CREATE INDEX p_ci_builds_user_id_idx ON ONLY p_ci_builds USING btree (user_id);
-
-CREATE INDEX index_ci_builds_on_user_id ON ci_builds USING btree (user_id);
-
-CREATE INDEX p_ci_builds_user_id_created_at_idx ON ONLY p_ci_builds USING btree (user_id, created_at) WHERE ((type)::text = 'Ci::Build'::text);
-
-CREATE INDEX index_ci_builds_on_user_id_and_created_at_and_type_eq_ci_build ON ci_builds USING btree (user_id, created_at) WHERE ((type)::text = 'Ci::Build'::text);
-
-CREATE INDEX p_ci_builds_project_id_status_idx ON ONLY p_ci_builds USING btree (project_id, status) WHERE (((type)::text = 'Ci::Build'::text) AND ((status)::text = ANY (ARRAY[('running'::character varying)::text, ('pending'::character varying)::text, ('created'::character varying)::text])));
-
-CREATE INDEX index_ci_builds_project_id_and_status_for_live_jobs_partial2 ON ci_builds USING btree (project_id, status) WHERE (((type)::text = 'Ci::Build'::text) AND ((status)::text = ANY (ARRAY[('running'::character varying)::text, ('pending'::character varying)::text, ('created'::character varying)::text])));
-
-CREATE INDEX p_ci_builds_runner_id_idx ON ONLY p_ci_builds USING btree (runner_id) WHERE (((status)::text = 'running'::text) AND ((type)::text = 'Ci::Build'::text));
-
-CREATE INDEX index_ci_builds_runner_id_running ON ci_builds USING btree (runner_id) WHERE (((status)::text = 'running'::text) AND ((type)::text = 'Ci::Build'::text));
-
 CREATE UNIQUE INDEX index_ci_builds_runner_session_on_build_id ON ci_builds_runner_session USING btree (build_id);
 
 CREATE UNIQUE INDEX index_ci_builds_runner_session_on_partition_id_build_id ON ci_builds_runner_session USING btree (partition_id, build_id);
@@ -34759,7 +34666,7 @@ CREATE INDEX index_ci_trigger_requests_on_trigger_id_and_id ON ci_trigger_reques
 
 CREATE INDEX index_ci_triggers_on_owner_id ON ci_triggers USING btree (owner_id);
 
-CREATE INDEX index_ci_triggers_on_project_id ON ci_triggers USING btree (project_id);
+CREATE INDEX index_ci_triggers_on_project_id_and_id ON ci_triggers USING btree (project_id, id);
 
 CREATE UNIQUE INDEX index_ci_triggers_on_token ON ci_triggers USING btree (token);
 
@@ -36599,6 +36506,8 @@ CREATE INDEX index_p_ci_builds_execution_configs_on_pipeline_id ON ONLY p_ci_bui
 
 CREATE INDEX index_p_ci_builds_execution_configs_on_project_id ON ONLY p_ci_builds_execution_configs USING btree (project_id);
 
+CREATE INDEX index_p_ci_builds_on_execution_config_id ON ONLY p_ci_builds USING btree (execution_config_id) WHERE (execution_config_id IS NOT NULL);
+
 CREATE INDEX index_p_ci_finished_build_ch_sync_events_finished_at ON ONLY p_ci_finished_build_ch_sync_events USING btree (partition, build_finished_at);
 
 CREATE INDEX index_p_ci_finished_build_ch_sync_events_on_project_id ON ONLY p_ci_finished_build_ch_sync_events USING btree (project_id);
@@ -36628,6 +36537,12 @@ CREATE UNIQUE INDEX index_p_knowledge_graph_replicas_on_namespace_id ON ONLY p_k
 CREATE INDEX index_p_knowledge_graph_replicas_on_state ON ONLY p_knowledge_graph_replicas USING btree (state);
 
 CREATE INDEX index_p_knowledge_graph_replicas_on_zoekt_node_id ON ONLY p_knowledge_graph_replicas USING btree (zoekt_node_id);
+
+CREATE INDEX index_p_knowledge_graph_tasks_on_knowledge_graph_replica_id ON ONLY p_knowledge_graph_tasks USING btree (knowledge_graph_replica_id);
+
+CREATE INDEX index_p_knowledge_graph_tasks_on_node_state_and_perform_at ON ONLY p_knowledge_graph_tasks USING btree (zoekt_node_id, state, perform_at);
+
+CREATE INDEX index_p_knowledge_graph_tasks_on_state ON ONLY p_knowledge_graph_tasks USING btree (state);
 
 CREATE INDEX index_packages_build_infos_on_pipeline_id ON packages_build_infos USING btree (pipeline_id);
 
@@ -36852,10 +36767,6 @@ CREATE INDEX index_pages_domains_on_verified_at ON pages_domains USING btree (ve
 CREATE INDEX index_pages_domains_on_verified_at_and_enabled_until ON pages_domains USING btree (verified_at, enabled_until);
 
 CREATE INDEX index_pages_domains_on_wildcard ON pages_domains USING btree (wildcard);
-
-CREATE INDEX p_ci_builds_user_id_name_idx ON ONLY p_ci_builds USING btree (user_id, name) WHERE (((type)::text = 'Ci::Build'::text) AND ((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('license_scanning'::character varying)::text, ('sast'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('secret_detection'::character varying)::text])));
-
-CREATE INDEX index_partial_ci_builds_on_user_id_name_parser_features ON ci_builds USING btree (user_id, name) WHERE (((type)::text = 'Ci::Build'::text) AND ((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('license_scanning'::character varying)::text, ('sast'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('secret_detection'::character varying)::text])));
 
 CREATE INDEX index_pat_on_user_id_and_expires_at ON personal_access_tokens USING btree (user_id, expires_at);
 
@@ -37466,14 +37377,6 @@ CREATE UNIQUE INDEX index_scim_identities_on_lower_extern_uid_and_group_id ON sc
 CREATE UNIQUE INDEX index_scim_identities_on_user_id_and_group_id ON scim_identities USING btree (user_id, group_id);
 
 CREATE UNIQUE INDEX index_scim_oauth_access_tokens_on_group_id_and_token_encrypted ON scim_oauth_access_tokens USING btree (group_id, token_encrypted);
-
-CREATE INDEX p_ci_builds_user_id_name_created_at_idx ON ONLY p_ci_builds USING btree (user_id, name, created_at) WHERE (((type)::text = 'Ci::Build'::text) AND ((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('license_scanning'::character varying)::text, ('sast'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('apifuzzer_fuzz'::character varying)::text, ('apifuzzer_fuzz_dnd'::character varying)::text, ('secret_detection'::character varying)::text])));
-
-CREATE INDEX index_secure_ci_builds_on_user_id_name_created_at ON ci_builds USING btree (user_id, name, created_at) WHERE (((type)::text = 'Ci::Build'::text) AND ((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('license_scanning'::character varying)::text, ('sast'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('apifuzzer_fuzz'::character varying)::text, ('apifuzzer_fuzz_dnd'::character varying)::text, ('secret_detection'::character varying)::text])));
-
-CREATE INDEX p_ci_builds_name_id_idx ON ONLY p_ci_builds USING btree (name, id) WHERE (((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('sast'::character varying)::text, ('secret_detection'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('license_scanning'::character varying)::text, ('apifuzzer_fuzz'::character varying)::text, ('apifuzzer_fuzz_dnd'::character varying)::text])) AND ((type)::text = 'Ci::Build'::text));
-
-CREATE INDEX index_security_ci_builds_on_name_and_id_parser_features ON ci_builds USING btree (name, id) WHERE (((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('sast'::character varying)::text, ('secret_detection'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('license_scanning'::character varying)::text, ('apifuzzer_fuzz'::character varying)::text, ('apifuzzer_fuzz_dnd'::character varying)::text])) AND ((type)::text = 'Ci::Build'::text));
 
 CREATE INDEX index_security_orchestration_policy_rule_schedules_on_namespace ON security_orchestration_policy_rule_schedules USING btree (namespace_id);
 
@@ -38575,6 +38478,18 @@ CREATE INDEX organization_detail_uploads_uploaded_by_user_id_idx ON organization
 
 CREATE INDEX organization_detail_uploads_uploader_path_idx ON organization_detail_uploads USING btree (uploader, path);
 
+CREATE INDEX p_ci_builds_auto_canceled_by_id_idx ON ONLY p_ci_builds USING btree (auto_canceled_by_id) WHERE (auto_canceled_by_id IS NOT NULL);
+
+CREATE INDEX p_ci_builds_commit_id_artifacts_expire_at_id_idx ON ONLY p_ci_builds USING btree (commit_id, artifacts_expire_at, id) WHERE (((type)::text = 'Ci::Build'::text) AND ((retried = false) OR (retried IS NULL)) AND ((name)::text = ANY (ARRAY[('sast'::character varying)::text, ('secret_detection'::character varying)::text, ('dependency_scanning'::character varying)::text, ('container_scanning'::character varying)::text, ('dast'::character varying)::text])));
+
+CREATE INDEX p_ci_builds_commit_id_stage_idx_created_at_idx ON ONLY p_ci_builds USING btree (commit_id, stage_idx, created_at);
+
+CREATE INDEX p_ci_builds_commit_id_status_type_idx ON ONLY p_ci_builds USING btree (commit_id, status, type);
+
+CREATE INDEX p_ci_builds_commit_id_type_name_ref_idx ON ONLY p_ci_builds USING btree (commit_id, type, name, ref);
+
+CREATE INDEX p_ci_builds_commit_id_type_ref_idx ON ONLY p_ci_builds USING btree (commit_id, type, ref);
+
 CREATE INDEX p_ci_builds_metadata_build_id_id_idx ON ONLY p_ci_builds_metadata USING btree (build_id) INCLUDE (id) WHERE (interruptible = true);
 
 CREATE INDEX p_ci_builds_metadata_build_id_idx ON ONLY p_ci_builds_metadata USING btree (build_id) WHERE (has_exposed_artifacts IS TRUE);
@@ -38583,9 +38498,41 @@ CREATE UNIQUE INDEX p_ci_builds_metadata_build_id_partition_id_idx ON ONLY p_ci_
 
 CREATE INDEX p_ci_builds_metadata_project_id_idx ON ONLY p_ci_builds_metadata USING btree (project_id);
 
+CREATE INDEX p_ci_builds_name_id_idx ON ONLY p_ci_builds USING btree (name, id) WHERE (((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('sast'::character varying)::text, ('secret_detection'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('license_scanning'::character varying)::text, ('apifuzzer_fuzz'::character varying)::text, ('apifuzzer_fuzz_dnd'::character varying)::text])) AND ((type)::text = 'Ci::Build'::text));
+
+CREATE INDEX p_ci_builds_project_id_id_idx ON ONLY p_ci_builds USING btree (project_id, id);
+
+CREATE INDEX p_ci_builds_project_id_name_ref_idx ON ONLY p_ci_builds USING btree (project_id, name, ref) WHERE (((type)::text = 'Ci::Build'::text) AND ((status)::text = 'success'::text) AND ((retried = false) OR (retried IS NULL)));
+
+CREATE INDEX p_ci_builds_project_id_status_idx ON ONLY p_ci_builds USING btree (project_id, status) WHERE (((type)::text = 'Ci::Build'::text) AND ((status)::text = ANY (ARRAY[('running'::character varying)::text, ('pending'::character varying)::text, ('created'::character varying)::text])));
+
+CREATE INDEX p_ci_builds_resource_group_id_status_commit_id_idx ON ONLY p_ci_builds USING btree (resource_group_id, status, commit_id) WHERE (resource_group_id IS NOT NULL);
+
+CREATE INDEX p_ci_builds_runner_id_id_idx ON ONLY p_ci_builds USING btree (runner_id, id DESC);
+
+CREATE INDEX p_ci_builds_runner_id_idx ON ONLY p_ci_builds USING btree (runner_id) WHERE (((status)::text = 'running'::text) AND ((type)::text = 'Ci::Build'::text));
+
 CREATE INDEX p_ci_builds_scheduled_at_idx ON ONLY p_ci_builds USING btree (scheduled_at) WHERE ((scheduled_at IS NOT NULL) AND ((type)::text = 'Ci::Build'::text) AND ((status)::text = 'scheduled'::text));
 
+CREATE INDEX p_ci_builds_stage_id_idx ON ONLY p_ci_builds USING btree (stage_id);
+
+CREATE INDEX p_ci_builds_status_created_at_project_id_idx ON ONLY p_ci_builds USING btree (status, created_at, project_id) WHERE ((type)::text = 'Ci::Build'::text);
+
+CREATE INDEX p_ci_builds_status_type_runner_id_idx ON ONLY p_ci_builds USING btree (status, type, runner_id);
+
 CREATE UNIQUE INDEX p_ci_builds_token_encrypted_partition_id_idx ON ONLY p_ci_builds USING btree (token_encrypted, partition_id) WHERE (token_encrypted IS NOT NULL);
+
+CREATE INDEX p_ci_builds_updated_at_idx ON ONLY p_ci_builds USING btree (updated_at);
+
+CREATE INDEX p_ci_builds_upstream_pipeline_id_idx ON ONLY p_ci_builds USING btree (upstream_pipeline_id) WHERE (upstream_pipeline_id IS NOT NULL);
+
+CREATE INDEX p_ci_builds_user_id_created_at_idx ON ONLY p_ci_builds USING btree (user_id, created_at) WHERE ((type)::text = 'Ci::Build'::text);
+
+CREATE INDEX p_ci_builds_user_id_idx ON ONLY p_ci_builds USING btree (user_id);
+
+CREATE INDEX p_ci_builds_user_id_name_created_at_idx ON ONLY p_ci_builds USING btree (user_id, name, created_at) WHERE (((type)::text = 'Ci::Build'::text) AND ((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('license_scanning'::character varying)::text, ('sast'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('apifuzzer_fuzz'::character varying)::text, ('apifuzzer_fuzz_dnd'::character varying)::text, ('secret_detection'::character varying)::text])));
+
+CREATE INDEX p_ci_builds_user_id_name_idx ON ONLY p_ci_builds USING btree (user_id, name) WHERE (((type)::text = 'Ci::Build'::text) AND ((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('license_scanning'::character varying)::text, ('sast'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('secret_detection'::character varying)::text])));
 
 CREATE INDEX p_ci_job_artifacts_expire_at_idx ON ONLY p_ci_job_artifacts USING btree (expire_at) WHERE ((locked = 0) AND (file_type <> 3) AND (expire_at IS NOT NULL));
 
@@ -38638,8 +38585,6 @@ CREATE INDEX pages_deployments_deleted_at_null_index ON pages_deployments USING 
 CREATE UNIQUE INDEX partial_idx_bulk_import_exports_on_group_user_and_relation ON bulk_import_exports USING btree (group_id, relation, user_id) WHERE ((group_id IS NOT NULL) AND (user_id IS NOT NULL));
 
 CREATE UNIQUE INDEX partial_idx_bulk_import_exports_on_project_user_and_relation ON bulk_import_exports USING btree (project_id, relation, user_id) WHERE ((project_id IS NOT NULL) AND (user_id IS NOT NULL));
-
-CREATE INDEX partial_index_ci_builds_on_scheduled_at_with_scheduled_jobs ON ci_builds USING btree (scheduled_at) WHERE ((scheduled_at IS NOT NULL) AND ((type)::text = 'Ci::Build'::text) AND ((status)::text = 'scheduled'::text));
 
 CREATE INDEX partial_index_slack_integrations_with_bot_user_id ON slack_integrations USING btree (id) WHERE (bot_user_id IS NOT NULL);
 
@@ -38900,8 +38845,6 @@ CREATE UNIQUE INDEX unique_audit_events_group_namespace_filters_namespace_id ON 
 CREATE UNIQUE INDEX unique_audit_events_instance_namespace_filters_destination_id ON audit_events_streaming_http_instance_namespace_filters USING btree (audit_events_instance_external_audit_event_destination_id);
 
 CREATE UNIQUE INDEX unique_batched_background_migrations_queued_migration_version ON batched_background_migrations USING btree (queued_migration_version);
-
-CREATE UNIQUE INDEX unique_ci_builds_token_encrypted_and_partition_id ON ci_builds USING btree (token_encrypted, partition_id) WHERE (token_encrypted IS NOT NULL);
 
 CREATE UNIQUE INDEX unique_compliance_security_policies_framework_id_policy_index ON compliance_framework_security_policies USING btree (framework_id, policy_configuration_id, policy_index) WHERE (security_policy_id IS NULL);
 
@@ -40811,10 +40754,6 @@ ALTER INDEX index_uploads_9ba88c4165_on_uploaded_by_user_id ATTACH PARTITION bul
 
 ALTER INDEX index_uploads_9ba88c4165_on_uploader_and_path ATTACH PARTITION bulk_import_export_upload_uploads_uploader_path_idx;
 
-ALTER INDEX p_ci_builds_status_created_at_project_id_idx ATTACH PARTITION ci_builds_gitlab_monitor_metrics;
-
-ALTER INDEX p_ci_builds_pkey ATTACH PARTITION ci_builds_pkey;
-
 ALTER INDEX p_ci_pipelines_pkey ATTACH PARTITION ci_pipelines_pkey;
 
 ALTER INDEX ci_runner_taggings_pkey ATTACH PARTITION ci_runner_taggings_group_type_pkey;
@@ -40969,45 +40908,7 @@ ALTER INDEX index_ci_runner_machines_on_executor_type ATTACH PARTITION index_012
 
 ALTER INDEX index_ci_runner_machines_on_ip_address ATTACH PARTITION index_053d12f7ee;
 
-ALTER INDEX index_p_ci_builds_on_execution_config_id ATTACH PARTITION index_0928d9f200;
-
 ALTER INDEX index_ci_runner_machines_on_executor_type ATTACH PARTITION index_aa3b4fe8c6;
-
-ALTER INDEX p_ci_builds_auto_canceled_by_id_idx ATTACH PARTITION index_ci_builds_on_auto_canceled_by_id;
-
-ALTER INDEX p_ci_builds_commit_id_stage_idx_created_at_idx ATTACH PARTITION index_ci_builds_on_commit_id_and_stage_idx_and_created_at;
-
-ALTER INDEX p_ci_builds_commit_id_status_type_idx ATTACH PARTITION index_ci_builds_on_commit_id_and_status_and_type;
-
-ALTER INDEX p_ci_builds_commit_id_type_name_ref_idx ATTACH PARTITION index_ci_builds_on_commit_id_and_type_and_name_and_ref;
-
-ALTER INDEX p_ci_builds_commit_id_type_ref_idx ATTACH PARTITION index_ci_builds_on_commit_id_and_type_and_ref;
-
-ALTER INDEX p_ci_builds_commit_id_artifacts_expire_at_id_idx ATTACH PARTITION index_ci_builds_on_commit_id_artifacts_expired_at_and_id;
-
-ALTER INDEX p_ci_builds_project_id_id_idx ATTACH PARTITION index_ci_builds_on_project_id_and_id;
-
-ALTER INDEX p_ci_builds_project_id_name_ref_idx ATTACH PARTITION index_ci_builds_on_project_id_and_name_and_ref;
-
-ALTER INDEX p_ci_builds_resource_group_id_status_commit_id_idx ATTACH PARTITION index_ci_builds_on_resource_group_and_status_and_commit_id;
-
-ALTER INDEX p_ci_builds_runner_id_id_idx ATTACH PARTITION index_ci_builds_on_runner_id_and_id_desc;
-
-ALTER INDEX p_ci_builds_stage_id_idx ATTACH PARTITION index_ci_builds_on_stage_id;
-
-ALTER INDEX p_ci_builds_status_type_runner_id_idx ATTACH PARTITION index_ci_builds_on_status_and_type_and_runner_id;
-
-ALTER INDEX p_ci_builds_updated_at_idx ATTACH PARTITION index_ci_builds_on_updated_at;
-
-ALTER INDEX p_ci_builds_upstream_pipeline_id_idx ATTACH PARTITION index_ci_builds_on_upstream_pipeline_id;
-
-ALTER INDEX p_ci_builds_user_id_idx ATTACH PARTITION index_ci_builds_on_user_id;
-
-ALTER INDEX p_ci_builds_user_id_created_at_idx ATTACH PARTITION index_ci_builds_on_user_id_and_created_at_and_type_eq_ci_build;
-
-ALTER INDEX p_ci_builds_project_id_status_idx ATTACH PARTITION index_ci_builds_project_id_and_status_for_live_jobs_partial2;
-
-ALTER INDEX p_ci_builds_runner_id_idx ATTACH PARTITION index_ci_builds_runner_id_running;
 
 ALTER INDEX p_ci_pipelines_id_idx ATTACH PARTITION index_ci_pipelines_for_ondemand_dast_scans;
 
@@ -41058,12 +40959,6 @@ ALTER INDEX index_ci_runner_machines_on_executor_type ATTACH PARTITION index_d58
 ALTER INDEX p_ci_pipelines_trigger_id_id_desc_idx ATTACH PARTITION index_d8ae6ea3f3;
 
 ALTER INDEX index_ci_runner_machines_on_ip_address ATTACH PARTITION index_ee7c87e634;
-
-ALTER INDEX p_ci_builds_user_id_name_idx ATTACH PARTITION index_partial_ci_builds_on_user_id_name_parser_features;
-
-ALTER INDEX p_ci_builds_user_id_name_created_at_idx ATTACH PARTITION index_secure_ci_builds_on_user_id_name_created_at;
-
-ALTER INDEX p_ci_builds_name_id_idx ATTACH PARTITION index_security_ci_builds_on_name_and_id_parser_features;
 
 ALTER INDEX index_ci_runner_machines_on_runner_id_and_type_and_system_xid ATTACH PARTITION instance_type_ci_runner_machi_runner_id_runner_type_system__idx;
 
@@ -41187,8 +41082,6 @@ ALTER INDEX index_uploads_9ba88c4165_on_uploaded_by_user_id ATTACH PARTITION org
 
 ALTER INDEX index_uploads_9ba88c4165_on_uploader_and_path ATTACH PARTITION organization_detail_uploads_uploader_path_idx;
 
-ALTER INDEX p_ci_builds_scheduled_at_idx ATTACH PARTITION partial_index_ci_builds_on_scheduled_at_with_scheduled_jobs;
-
 ALTER INDEX index_uploads_9ba88c4165_on_model_uploader_created_at ATTACH PARTITION project_import_export_relatio_model_id_model_type_uploader__idx;
 
 ALTER INDEX index_uploads_9ba88c4165_on_uploaded_by_user_id ATTACH PARTITION project_import_export_relation_export_u_uploaded_by_user_id_idx;
@@ -41310,8 +41203,6 @@ ALTER INDEX index_uploads_9ba88c4165_on_store ATTACH PARTITION snippet_uploads_s
 ALTER INDEX index_uploads_9ba88c4165_on_uploaded_by_user_id ATTACH PARTITION snippet_uploads_uploaded_by_user_id_idx;
 
 ALTER INDEX index_uploads_9ba88c4165_on_uploader_and_path ATTACH PARTITION snippet_uploads_uploader_path_idx;
-
-ALTER INDEX p_ci_builds_token_encrypted_partition_id_idx ATTACH PARTITION unique_ci_builds_token_encrypted_and_partition_id;
 
 ALTER INDEX index_uploads_9ba88c4165_on_model_uploader_created_at ATTACH PARTITION user_permission_export_upload_model_id_model_type_uploader__idx;
 
@@ -41447,11 +41338,11 @@ CREATE TRIGGER assign_p_ci_pipelines_id_trigger BEFORE INSERT ON p_ci_pipelines 
 
 CREATE TRIGGER assign_p_ci_stages_id_trigger BEFORE INSERT ON p_ci_stages FOR EACH ROW EXECUTE FUNCTION assign_p_ci_stages_id_value();
 
+CREATE TRIGGER assign_p_knowledge_graph_tasks_id_trigger BEFORE INSERT ON p_knowledge_graph_tasks FOR EACH ROW EXECUTE FUNCTION assign_p_knowledge_graph_tasks_id_value();
+
 CREATE TRIGGER assign_zoekt_tasks_id_trigger BEFORE INSERT ON zoekt_tasks FOR EACH ROW EXECUTE FUNCTION assign_zoekt_tasks_id_value();
 
 CREATE TRIGGER chat_names_loose_fk_trigger AFTER DELETE ON chat_names REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
-
-CREATE TRIGGER ci_builds_loose_fk_trigger AFTER DELETE ON ci_builds REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('p_ci_builds');
 
 CREATE TRIGGER ci_pipelines_loose_fk_trigger AFTER DELETE ON ci_pipelines REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('p_ci_pipelines');
 
@@ -44594,9 +44485,6 @@ ALTER TABLE ONLY incident_management_oncall_rotations
 
 ALTER TABLE ONLY ci_unit_test_failures
     ADD CONSTRAINT fk_rails_259da3e79c FOREIGN KEY (unit_test_id) REFERENCES ci_unit_tests(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ci_builds
-    ADD CONSTRAINT fk_rails_25dc49c011 FOREIGN KEY (partition_id, execution_config_id) REFERENCES p_ci_builds_execution_configs(partition_id, id) ON UPDATE CASCADE ON DELETE SET NULL NOT VALID;
 
 ALTER TABLE ONLY cluster_agents
     ADD CONSTRAINT fk_rails_25e9fc2d5d FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

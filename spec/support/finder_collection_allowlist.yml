@@ -8,11 +8,11 @@
 - Groups::EnvironmentScopesFinder # Reason: There is no need to have anything else besides the simple strucutre with the scope name
 - Security::RelatedPipelinesFinder # Reason: There is no need to have anything else besides the IDs of pipelines
 - Llm::ExtraResourceFinder # Reason: The finder does not deal with DB-backend resource for now.
-- Security::VulnerabilityElasticFinder # Reason: The finder deals with Elasticsearch records and not DB records
-- Security::VulnerabilityElasticAggregationFinder # Reason: The finder deals with Elasticsearch records and not DB records
 - WorkItems::Statuses::Finder # Reason: The finder intentionally returns a single model instance.
-- Security::VulnerabilityReadsElasticFinder # Reason: The finder deals with Elasticsearch records and not DB records
 - Sbom::PathFinder # Reason: we need an [[Sbom::Occurrence]]
+- Security::VulnerabilityElasticSearchFinder # Reason: The finder deals with Elasticsearch records and not DB records
+- Security::VulnerabilityElasticIdentifierNamesFinder # Reason: The finder deals with Elasticsearch records and not DB records
+- Security::VulnerabilityElasticCountBySeverityFinder # Reason: The finder deals with Elasticsearch records and not DB records
 
 # Temporary excludes (aka TODOs)
 # For example:

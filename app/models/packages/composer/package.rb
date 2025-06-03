@@ -12,6 +12,7 @@ module Packages
       validate :valid_composer_global_name
       validates :version, format: { with: Gitlab::Regex.semver_regex, message: Gitlab::Regex.semver_regex_message },
         unless: -> { Gitlab::Regex.composer_dev_version_regex.match(version.to_s) }
+      validates :name, format: { with: Gitlab::Regex.package_name_regex }
 
       scope :with_composer_target, ->(target) do
         includes(:composer_metadatum)

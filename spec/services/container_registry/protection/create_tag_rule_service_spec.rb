@@ -175,37 +175,6 @@ RSpec.describe ContainerRegistry::Protection::CreateTagRuleService, '#execute', 
 
       it_behaves_like 'a successful service response'
     end
-
-    context 'when the protection rule is immutable' do
-      let(:params) { attributes_for(:container_registry_protection_tag_rule, :immutable, project: project) }
-
-      context 'when the current user is the maintainer' do
-        it_behaves_like 'an erroneous service response',
-          message: 'Unauthorized to create an immutable protection rule for container image tags'
-      end
-
-      context 'when the current user is the owner' do
-        before do
-          project.send(:add_owner, current_user)
-        end
-
-        it_behaves_like 'a successful service response'
-      end
-
-      context 'when the current user is an admin', :enable_admin_mode do
-        let(:current_user) { build_stubbed(:admin) }
-
-        it_behaves_like 'a successful service response'
-      end
-
-      context 'when the feature container_registry_immutable_tags is disabled' do
-        before do
-          stub_feature_flags(container_registry_immutable_tags: false)
-        end
-
-        it_behaves_like 'an erroneous service response', message: 'Not available'
-      end
-    end
   end
 
   context 'when the GitLab API is not supported' do

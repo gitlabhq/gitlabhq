@@ -8,6 +8,7 @@ module Packages
       has_one :pypi_metadatum, inverse_of: :package, class_name: 'Packages::Pypi::Metadatum'
 
       validates :version, format: { with: Gitlab::Regex.pypi_version_regex }
+      validates :name, format: { with: Gitlab::Regex.package_name_regex }
 
       scope :with_normalized_pypi_name, ->(name) do
         where(
