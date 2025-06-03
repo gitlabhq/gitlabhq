@@ -66,7 +66,7 @@ gitaly['configuration'] = {
   Gitaly.
 
 This limits the number of in-flight RPC calls for the given RPCs. The limit is applied per
-repository. In the example above:
+repository. In the previous example:
 
 - Each repository served by the Gitaly server can have at most 20 simultaneous `PostUploadPackWithSidechannel` and
   `SSHUploadPackWithSidechannel` RPC calls in flight.
@@ -123,7 +123,7 @@ gitaly['pack_objects_limiting'] = {
 - `max_queue_length` is the maximum size the concurrency queue (per key) can grow to before requests are rejected by Gitaly.
 - `max_queue_wait` is the maximum amount of time a request can wait in the concurrency queue to be picked up by Gitaly.
 
-In the example above:
+In the previous example:
 
 - Each remote IP can have at most 15 simultaneous pack-object processes in flight on a Gitaly node.
 - If another request comes in from an IP that has used up its 15 slots, that request gets queued.

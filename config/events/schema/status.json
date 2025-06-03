@@ -1,0 +1,44 @@
+{
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "removed"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "removed_by_url",
+          "milestone_removed"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "active"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "removed_by_url": {
+            "type": "null"
+          },
+          "milestone_removed": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -462,7 +462,8 @@ praefect['configuration'] = {
          # ...
          dbname: 'praefect_production_direct',
          # There is no need to repeat the following. Parameters of direct
-         # database connection will fall back to the values above.
+         # database connection will fall back to the values specified in the
+         # database block.
          #
          # host: PGBOUNCER_HOST,
          # port: 6432,
@@ -1044,7 +1045,7 @@ Prerequisites:
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
-1. Repeat the above steps on each Praefect server to use with
+1. Repeat the previous steps on each Praefect server to use with
    service discovery.
 1. On the Praefect clients (except Gitaly servers), edit `gitlab_rails['repositories_storages']` in
    `/etc/gitlab/gitlab.rb` as follows. Replace `CONSUL_SERVER` with the IP or
@@ -1061,7 +1062,7 @@ Prerequisites:
 
 1. Use `dig` from the Praefect clients to confirm that each IP address has been registered to
    `praefect.service.consul` with `dig A praefect.service.consul @CONSUL_SERVER -p 8600`.
-   Replace `CONSUL_SERVER` with the value configured above and all Praefect node IP addresses
+   Replace `CONSUL_SERVER` with the value configured previously and all Praefect node IP addresses
    should be present in the output.
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
@@ -1222,7 +1223,7 @@ For more information on Gitaly server configuration, see our
 
 {{< alert type="note" >}}
 
-The steps above must be completed for each Gitaly node!
+The previous steps must be completed for each Gitaly node!
 
 {{< /alert >}}
 

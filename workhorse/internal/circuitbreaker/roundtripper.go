@@ -7,7 +7,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 	"time"
@@ -20,10 +19,12 @@ import (
 )
 
 const (
-	Timeout             = 60 * time.Second  // Timeout is the duration to transition to half-open when open
-	Interval            = 180 * time.Second // Interval is the duration to clear consecutive failures (and other gobreaker.Counts) when closed
-	MaxRequests         = 1                 // MaxRequests is the number of failed requests to open the circuit breaker when half-open
-	ConsecutiveFailures = 5                 // ConsecutiveFailures is the number of consecutive failures to open the circuit breaker when closed
+	Timeout                    = 60 * time.Second  // Timeout is the duration to transition to half-open when open
+	Interval                   = 180 * time.Second // Interval is the duration to clear consecutive failures (and other gobreaker.Counts) when closed
+	MaxRequests                = 1                 // MaxRequests is the number of failed requests to open the circuit breaker when half-open
+	ConsecutiveFailures        = 5                 // ConsecutiveFailures is the number of consecutive failures to open the circuit breaker when closed
+	enableCircuitBreakerHeader = "Enable-Workhorse-Circuit-Breaker"
+	errorMsg                   = "This endpoint has been requested too many times. Try again later."
 )
 
 type roundTripper struct {
@@ -62,10 +63,7 @@ func (r roundTripper) RoundTrip(req *http.Request) (res *http.Response, err erro
 			return nil, roundTripErr
 		}
 
-		err = roundTripRes.Body.Close()
-		if err != nil {
-			return nil, err
-		}
+		defer func() { _ = roundTripRes.Body.Close() }()
 
 		return roundTripRes, responseToError(roundTripRes)
 	})
@@ -75,7 +73,6 @@ func (r roundTripper) RoundTrip(req *http.Request) (res *http.Response, err erro
 	}
 
 	if errors.Is(executeErr, gobreaker.ErrOpenState) {
-		errorMsg := "This endpoint has been requested too many times. Try again later."
 		resp := &http.Response{
 			StatusCode: http.StatusTooManyRequests,
 			Body:       io.NopCloser(bytes.NewBufferString(errorMsg)),
@@ -141,17 +138,9 @@ func getRedisKey(req *http.Request) (string, error) {
 
 // If there was a Too Many Requests error in the http response, return an error to be passed into IsSuccessful()
 func responseToError(res *http.Response) error {
-	if res.StatusCode != http.StatusTooManyRequests {
+	if res.Header.Get(enableCircuitBreakerHeader) != "true" || res.StatusCode != http.StatusTooManyRequests {
 		return nil
 	}
 
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		return fmt.Errorf("failed to read response body: %w", err)
-	}
-
-	defer func() { _ = res.Body.Close() }()
-	res.Body = io.NopCloser(bytes.NewBuffer(body))
-
-	return errors.New(string(body))
+	return errors.New("rate limited")
 }

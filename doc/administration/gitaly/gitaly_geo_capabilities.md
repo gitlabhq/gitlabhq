@@ -27,7 +27,8 @@ If your availability needs to span multiple zones or multiple locations, read ab
 
 ## Scenarios for failure modes and available mitigation paths
 
-The following table outlines failure modes and mitigation paths for the product offerings detailed in the tables above. Note - Gitaly Cluster install assumes an odd number replication factor of 3 or greater
+The following table outlines failure modes and mitigation paths for the product offerings detailed in the previous tables.
+Gitaly Cluster install assumes an odd number replication factor of 3 or greater.
 
 | Gitaly Mode | Loss of Single Gitaly Node | Application / Data Corruption | Regional Outage (Loss of Instance) | Notes |
 | ----------- | -------------------------- | ----------------------------- | ---------------------------------- | ----- |

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Tracking::EventDefinitionValidator, feature_category: :service_ping do
+  using RSpec::Parameterized::TableSyntax
+
   let(:attributes) do
     {
       description: 'Created issues',
@@ -23,8 +25,6 @@ RSpec.describe Gitlab::Tracking::EventDefinitionValidator, feature_category: :se
   let(:definition) { Gitlab::Tracking::EventDefinition.new(path, attributes) }
 
   describe '#validate' do
-    using RSpec::Parameterized::TableSyntax
-
     where(:attribute, :value) do
       :description          | 1
       :category             | nil
@@ -37,6 +37,9 @@ RSpec.describe Gitlab::Tracking::EventDefinitionValidator, feature_category: :se
       :tiers                | %(pro)
       :product_categories     | 'bad_category'
       :product_categories     | ['bad_category']
+      :status                 | 'destroyed'
+      :removed_by_url         | 'non/url'
+      :milestone_removed      | 'a.b.c'
     end
 
     with_them do
@@ -92,6 +95,43 @@ RSpec.describe Gitlab::Tracking::EventDefinitionValidator, feature_category: :se
           attributes[:additional_properties][:custom] = { description: "custom" } if custom
 
           attributes.delete(:additional_properties) if [label, property, value, custom].all?(&:nil?)
+        end
+
+        subject { described_class.new(definition).validation_errors.any? }
+
+        it { is_expected.to be(error?) }
+      end
+    end
+
+    describe 'status' do
+      let(:attributes) do
+        {
+          description: 'Created issues',
+          category: 'issues',
+          action: 'create',
+          internal_events: true,
+          product_group: 'activation',
+          introduced_by_url: "https://gitlab.com/example/-/merge_requests/123",
+          milestone: "1.0",
+          tiers: %w[free]
+        }
+      end
+
+      where(:status, :milestone_removed, :removed_by_url, :error?) do
+        'active' | nil           | nil | false
+        'removed' | '1.0'        | 'https://gitlab.com/example/-/merge_requests/123' | false
+        'removed' | nil          | 'https://gitlab.com/example/-/merge_requests/123' | true
+        'removed' | '1.0'        | nil           | true
+        'removed' | nil          | nil           | true
+        'active'  | '1.0'        | nil           | true
+        'active'  | nil          | 'https://gitlab.com/example/-/merge_requests/123' | true
+      end
+
+      with_them do
+        before do
+          attributes[:status] = status
+          attributes[:milestone_removed] = milestone_removed if milestone_removed
+          attributes[:removed_by_url] = removed_by_url if removed_by_url
         end
 
         subject { described_class.new(definition).validation_errors.any? }

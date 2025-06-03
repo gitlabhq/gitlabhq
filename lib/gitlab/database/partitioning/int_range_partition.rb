@@ -50,17 +50,6 @@ module Gitlab
           SQL
         end
 
-        def to_sql
-          from_sql = conn.quote(from)
-          to_sql = conn.quote(to)
-
-          <<~SQL
-            CREATE TABLE IF NOT EXISTS #{fully_qualified_partition}
-            PARTITION OF #{conn.quote_table_name(table)}
-            FOR VALUES FROM (#{from_sql}) TO (#{to_sql})
-          SQL
-        end
-
         def ==(other)
           table == other.table && partition_name == other.partition_name && from == other.from && to == other.to
         end

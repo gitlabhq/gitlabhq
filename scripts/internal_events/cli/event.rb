@@ -4,6 +4,7 @@ module InternalEventsCli
   NEW_EVENT_FIELDS = [
     :description,
     :internal_events,
+    :status,
     :category,
     :action,
     :value_type,
@@ -19,6 +20,7 @@ module InternalEventsCli
 
   EVENT_DEFAULTS = {
     internal_events: true,
+    status: 'active',
     product_group: nil,
     introduced_by_url: 'TODO'
   }.freeze

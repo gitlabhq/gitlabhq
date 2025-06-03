@@ -48,14 +48,6 @@ module Gitlab
           SQL
         end
 
-        def to_sql
-          <<~SQL.squish
-            CREATE TABLE IF NOT EXISTS #{fully_qualified_partition}
-            PARTITION OF #{quote_table_name(table)}
-            FOR VALUES IN (#{quoted_values})
-          SQL
-        end
-
         def to_detach_sql
           <<~SQL.squish
             ALTER TABLE #{quote_table_name(table)}

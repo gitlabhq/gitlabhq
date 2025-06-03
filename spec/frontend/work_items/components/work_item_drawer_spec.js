@@ -45,6 +45,7 @@ describe('WorkItemDrawer', () => {
 
   const createComponent = ({
     open = false,
+    isBoard = false,
     activeItem = { id: '1', iid: '1', webUrl: 'test', fullPath: 'gitlab-org/gitlab' },
     issuableType = TYPE_ISSUE,
     clickOutsideExcludeSelector = undefined,
@@ -62,6 +63,7 @@ describe('WorkItemDrawer', () => {
         open,
         issuableType,
         clickOutsideExcludeSelector,
+        isBoard,
       },
       listeners: {
         customEvent: mockListener,
@@ -421,6 +423,52 @@ describe('WorkItemDrawer', () => {
       await nextTick();
 
       expect(document.activeElement).toBe(document.getElementById('listItem-gitlab-org/gitlab/1'));
+      expect(wrapper.emitted('close')).toHaveLength(1);
+    });
+  });
+
+  describe('when drawer is opened from a board', () => {
+    let originalWindow;
+
+    beforeEach(() => {
+      originalWindow = global.window;
+      delete global.window;
+
+      global.window = {
+        ...originalWindow,
+        pendingApolloRequests: 2,
+      };
+    });
+
+    afterEach(() => {
+      global.window = originalWindow;
+    });
+
+    it('does not close drawer immediately when `pendingApolloRequests` exist when clicking to close drawer', () => {
+      createComponent({ isBoard: true, open: true });
+
+      findGlDrawer().vm.$emit('close');
+
+      // `close` wasn't called right away, it has a delay
+      expect(wrapper.emitted('close')).toBeUndefined();
+    });
+
+    it('does not close drawer immediately when `pendingApolloRequests` exist when clicking outside', () => {
+      createComponent({ isBoard: true, open: true });
+
+      document.dispatchEvent(new MouseEvent('click'));
+
+      // `close` wasn't called right away, it has a delay
+      expect(wrapper.emitted('close')).toBeUndefined();
+    });
+
+    it('closes drawer when `bypassPendingRequests` is true regardless of pending mutations', () => {
+      createComponent({ isBoard: true, open: true });
+
+      findGlDrawer().vm.$emit('close', false, true);
+
+      // `close` was force called after the timeout by setting `bypassPendingRequests` to true
+      expect(wrapper.emitted('close')).toHaveLength(1);
     });
   });
 });

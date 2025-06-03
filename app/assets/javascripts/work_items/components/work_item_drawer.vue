@@ -72,6 +72,7 @@ export default {
   data() {
     return {
       copyTooltipText: this.$options.i18n.copyTooltipText,
+      isWaitingForMutation: false,
     };
   },
   computed: {
@@ -181,10 +182,17 @@ export default {
         url: setUrlParams({ [DETAIL_VIEW_QUERY_PARAM_NAME]: params }),
       });
     },
-    handleClose(isClickedOutside) {
+    handleClose(isClickedOutside, bypassPendingRequests = false) {
+      const { queryManager } = this.$apollo.provider.clients.defaultClient;
+      // We only need this check when the user is on a board and the mutation is pending.
+      this.isWaitingForMutation =
+        this.isBoard &&
+        window.pendingApolloRequests - queryManager.inFlightLinkObservables.size > 0;
+
       /* Do not close when a modal is open, or when the user is focused in an editor/input.
        */
       if (
+        (this.isWaitingForMutation && !bypassPendingRequests) ||
         document.body.classList.contains('modal-open') ||
         document.activeElement?.closest('.js-editor') != null ||
         document.activeElement.classList.contains('gl-form-input')
@@ -206,7 +214,7 @@ export default {
 
       this.$emit('close');
     },
-    handleClickOutside(event) {
+    async handleClickOutside(event) {
       for (const selector of this.$options.defaultExcludedSelectors) {
         const excludedElements = document.querySelectorAll(selector);
         for (const parent of excludedElements) {
@@ -225,10 +233,26 @@ export default {
           }
         }
       }
+      // If on board, wait for all tasks to be resolved before closing the drawer.
+      if (this.isBoard) {
+        await this.$nextTick();
+      }
+
       this.handleClose(true);
     },
     focusOnHeaderLink() {
       this.$refs?.workItemUrl?.$el?.focus();
+    },
+    handleWorkItemUpdated(e) {
+      this.$emit('work-item-updated', e);
+
+      // Force to close the drawer after 100ms even if requests are still pending
+      // to not let UI hanging.
+      if (this.isWaitingForMutation) {
+        setTimeout(() => {
+          this.handleClose(false, true);
+        }, 100);
+      }
     },
   },
   i18n: {
@@ -320,6 +344,7 @@ export default {
         is-drawer
         class="work-item-drawer !gl-pt-0 xl:!gl-px-6"
         @deleteWorkItem="deleteWorkItem"
+        @work-item-updated="handleWorkItemUpdated"
         @workItemTypeChanged="$emit('workItemTypeChanged', $event)"
         v-on="$listeners"
       />

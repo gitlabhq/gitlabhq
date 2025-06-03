@@ -31051,6 +31051,7 @@ Represents an instance-level LDAP link.
 | ---- | ---- | ----------- |
 | <a id="ldapadminrolelinkadminmemberrole"></a>`adminMemberRole` | [`AdminMemberRole!`](#adminmemberrole) | Custom admin member role. |
 | <a id="ldapadminrolelinkcn"></a>`cn` | [`String`](#string) | Common Name (CN) of the LDAP group. |
+| <a id="ldapadminrolelinkcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the role link was created. |
 | <a id="ldapadminrolelinkfilter"></a>`filter` | [`String`](#string) | Search filter for the LDAP group. |
 | <a id="ldapadminrolelinkid"></a>`id` | [`ID!`](#id) | ID of the LDAP link. |
 | <a id="ldapadminrolelinklastsuccessfulsyncat"></a>`lastSuccessfulSyncAt` | [`Time`](#time) | Timestamp of the last successful sync. |

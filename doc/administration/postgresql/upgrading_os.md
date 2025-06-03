@@ -333,7 +333,7 @@ reads against a replica with different locale data.
 
 ## Additional Geo variations
 
-The above upgrade procedures are not set in stone. With Geo there are potentially more options,
+The upgrade procedures documented previously are not set in stone. With Geo there are potentially more options,
 because there exists redundant infrastructure. You could consider modifications to suit your use-case,
 but be sure to weigh it against the added complexity. Here are some examples:
 

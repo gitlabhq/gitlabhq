@@ -48,14 +48,6 @@ module Gitlab
           SQL
         end
 
-        def to_sql
-          <<~SQL
-            CREATE TABLE IF NOT EXISTS #{fully_qualified_partition}
-            PARTITION OF #{quote_table_name(table)}
-            FOR VALUES IN (#{quote(value)})
-          SQL
-        end
-
         def to_detach_sql
           <<~SQL
             ALTER TABLE #{quote_table_name(table)}

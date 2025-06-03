@@ -27,13 +27,11 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
         instance_double(Gitlab::Database::Partitioning::TimePartition,
           table: 'bar',
           partition_name: 'foo',
-          to_sql: "SELECT 1",
           to_create_sql: "CREATE TABLE _partition_1",
           to_attach_sql: "ALTER TABLE foo ATTACH PARTITION _partition_1"),
         instance_double(Gitlab::Database::Partitioning::TimePartition,
           table: 'bar',
           partition_name: 'foo2',
-          to_sql: "SELECT 2",
           to_create_sql: "CREATE TABLE _partition_2",
           to_attach_sql: "ALTER TABLE foo2 ATTACH PARTITION _partition_2")
       ]
@@ -49,42 +47,27 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
         expect(partitioning_strategy).to receive(:validate_and_fix)
 
         stub_exclusive_lease(described_class::MANAGEMENT_LEASE_KEY % table, timeout: described_class::LEASE_TIMEOUT)
-        stub_feature_flags(reduce_lock_usage_during_partition_creation: false)
       end
 
-      context 'with reduce_lock_usage_during_partition_creation feature flag enabled' do
-        before do
-          stub_feature_flags(reduce_lock_usage_during_partition_creation: true)
-        end
-
-        it 'creates and attaches the partition in 2 steps', :aggregate_failures do
-          expect(connection).not_to receive(:execute).with("LOCK TABLE \"#{table}\" IN ACCESS EXCLUSIVE MODE")
-          expect(manager).to receive(:create_partition_tables).with(partitions)
-          expect(manager).to receive(:attach_partition_tables).with(partitions)
-
-          sync_partitions
-        end
-      end
-
-      it 'creates the partition' do
-        expect(connection).to receive(:execute).with("LOCK TABLE \"#{table}\" IN ACCESS EXCLUSIVE MODE")
-        expect(connection).to receive(:execute).with(partitions.first.to_sql)
-        expect(connection).to receive(:execute).with(partitions.second.to_sql)
+      it 'creates and attaches the partition in 2 steps', :aggregate_failures do
+        expect(connection).not_to receive(:execute).with("LOCK TABLE \"#{table}\" IN ACCESS EXCLUSIVE MODE")
+        expect(manager).to receive(:create_partition_tables).with(partitions)
+        expect(manager).to receive(:attach_partition_tables).with(partitions)
 
         sync_partitions
       end
 
       context 'with explicitly provided connection' do
         let(:connection) { Ci::ApplicationRecord.connection }
+        let(:manager) { described_class.new(model, connection: connection) }
 
-        it 'uses the explicitly provided connection when any' do
+        it 'uses the explicitly provided connection when any', :aggregate_failures do
           skip_if_multiple_databases_not_setup(:ci)
 
-          expect(connection).to receive(:execute).with("LOCK TABLE \"#{table}\" IN ACCESS EXCLUSIVE MODE")
-          expect(connection).to receive(:execute).with(partitions.first.to_sql)
-          expect(connection).to receive(:execute).with(partitions.second.to_sql)
+          expect(manager).to receive(:create_partition_tables).with(partitions)
+          expect(manager).to receive(:attach_partition_tables).with(partitions)
 
-          described_class.new(model, connection: connection).sync_partitions
+          sync_partitions
         end
       end
 
@@ -331,7 +314,8 @@ RSpec.describe Gitlab::Database::Partitioning::PartitionManager, feature_categor
 
       # Also create all future partitions so that the sync is only trying to detach old partitions
       my_model.partitioning_strategy.missing_partitions.each do |p|
-        connection.execute p.to_sql
+        connection.execute p.to_create_sql
+        connection.execute p.to_attach_sql
       end
     end
 

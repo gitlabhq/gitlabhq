@@ -35624,6 +35624,9 @@ msgstr ""
 msgid "LDAP uid:"
 msgstr ""
 
+msgid "LDAP|%{dateTime} (%{timeAgo})"
+msgstr ""
+
 msgid "LDAP|(Inactive because syncing with an LDAP user filter is not included in the current license)"
 msgstr ""
 
@@ -35651,6 +35654,9 @@ msgstr ""
 msgid "LDAP|Default, minimum permission level for LDAP group members of %{group_name}."
 msgstr ""
 
+msgid "LDAP|Ended at:"
+msgstr ""
+
 msgid "LDAP|Group cn"
 msgstr ""
 
@@ -35672,6 +35678,12 @@ msgstr ""
 msgid "LDAP|LDAP user filter"
 msgstr ""
 
+msgid "LDAP|Last successful sync:"
+msgstr ""
+
+msgid "LDAP|Never synced"
+msgstr ""
+
 msgid "LDAP|No LDAP synchronizations"
 msgstr ""
 
@@ -35690,6 +35702,15 @@ msgstr ""
 msgid "LDAP|Start typing"
 msgstr ""
 
+msgid "LDAP|Started at:"
+msgstr ""
+
+msgid "LDAP|Sync created at:"
+msgstr ""
+
+msgid "LDAP|Sync error:"
+msgstr ""
+
 msgid "LDAP|Sync method"
 msgstr ""
 
@@ -35697,6 +35718,9 @@ msgid "LDAP|Synchronize %{group_name}'s members with this LDAP group."
 msgstr ""
 
 msgid "LDAP|This query must use valid %{ldap_link_start}LDAP Search Filter Syntax%{ldap_link_end}. Synchronize %{group_name}'s members with this LDAP user filter."
+msgstr ""
+
+msgid "LDAP|Total runtime:"
 msgstr ""
 
 msgid "LDAP|User filter"
@@ -37852,6 +37876,9 @@ msgid "MemberRole|Sync all"
 msgstr ""
 
 msgid "MemberRole|Sync scheduled"
+msgstr ""
+
+msgid "MemberRole|Sync status:"
 msgstr ""
 
 msgid "MemberRole|The CSV report contains a list of users, assigned role and access in all groups, subgroups, and projects. When the export is completed, it will be sent as an attachment to %{email}."

@@ -111,20 +111,8 @@ module Gitlab
           # with_lock_retries starts a requires_new transaction most of the time, but not on the last iteration
           with_lock_retries do
             connection.transaction(requires_new: false) do # so we open a transaction here if not already in progress
-              if Feature.enabled?(:reduce_lock_usage_during_partition_creation)
-                create_partition_tables(partitions)
-                attach_partition_tables(partitions)
-              else
-                # Partitions might not get created (IF NOT EXISTS) so explicit locking will not happen.
-                # This LOCK TABLE ensures to have exclusive lock as the first step.
-                quoted_table_name = connection.quote_table_name(model.table_name)
-                connection.execute("LOCK TABLE #{quoted_table_name} IN ACCESS EXCLUSIVE MODE")
-
-                partitions.each do |partition|
-                  connection.execute(partition.to_sql)
-                  process_created_partition(partition)
-                end
-              end
+              create_partition_tables(partitions)
+              attach_partition_tables(partitions)
 
               model.partitioning_strategy.after_adding_partitions
             end

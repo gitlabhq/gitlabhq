@@ -139,15 +139,6 @@ workflow:
       variables:
         <<: *next-ruby-variables
         PIPELINE_NAME: 'Scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
-    # To create mappings with crystalball oneshot coverage strategy, simplecov needs to be disabled
-    # Collect these mappings in nightly schedule only for now
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly"'
-      variables:
-        <<: [*default-ruby-variables, *default-branch-pipeline-failure-variables]
-        CRYSTALBALL: "true"
-        CRYSTALBALL_COVERAGE_STRATEGY: "true"
-        SIMPLECOV: 0
-        PIPELINE_NAME: 'Scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
         <<: [*default-ruby-variables, *default-branch-pipeline-failure-variables]

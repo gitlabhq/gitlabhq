@@ -12,8 +12,7 @@ module CrystalballEnv
 
     # Primary strategy currently used for predictive testing
     enable_described_strategy
-    # Alternative coverage based strategy currently being evaluated for predictive testing
-    # See: https://gitlab.com/groups/gitlab-org/quality/analytics/-/epics/13
+    # Coverage based strategy. See: https://gitlab.com/groups/gitlab-org/quality/analytics/-/epics/13
     enable_coverage_strategy if ENV['CRYSTALBALL_COVERAGE_STRATEGY'] == 'true'
   end
 
@@ -21,7 +20,7 @@ module CrystalballEnv
     Crystalball::MapGenerator.start! do |config|
       config.map_storage_path = "crystalball/described/#{map_storage_name}.yml"
 
-      execution_detector = Crystalball::MapGenerator::ObjectSourcesDetector.new(exclude_prefixes: EXCLUDED_PREFIXES)
+      execution_detector = Crystalball::MapGenerator::ObjectSourcesDetector.new(**excluded_prefixes)
       config.register Crystalball::MapGenerator::DescribedClassStrategy.new(execution_detector: execution_detector)
     end
   end
@@ -29,13 +28,19 @@ module CrystalballEnv
   def enable_coverage_strategy
     Crystalball::MapGenerator.start! do |config|
       config.map_storage_path = "crystalball/coverage/#{map_storage_name}.yml"
+      config.hook_type = :context
 
-      config.register Crystalball::MapGenerator::OneshotCoverageStrategy.new(exclude_prefixes: EXCLUDED_PREFIXES)
+      execution_detector = Crystalball::MapGenerator::CoverageStrategy::ExecutionDetector.new(**excluded_prefixes)
+      config.register Crystalball::MapGenerator::CoverageStrategy.new(execution_detector: execution_detector)
 
-      # https://toptal.github.io/crystalball/map_generators/#actionviewstrategy
+      # https://gitlab.com/gitlab-org/ruby/gems/crystalball/-/blob/main/docs/map_generators.md?ref_type=heads#actionviewstrategy
       # require 'crystalball/rails/map_generator/action_view_strategy'
       # config.register Crystalball::Rails::MapGenerator::ActionViewStrategy.new
     end
+  end
+
+  def excluded_prefixes
+    { exclude_prefixes: EXCLUDED_PREFIXES }
   end
 
   def map_storage_name

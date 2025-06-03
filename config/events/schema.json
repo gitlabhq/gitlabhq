@@ -156,6 +156,27 @@
       ],
       "pattern": "^<?[0-9]+\\.[0-9]+$"
     },
+    "status": {
+      "type": [
+        "string"
+      ],
+      "enum": [
+        "active",
+        "removed"
+      ]
+    },
+    "milestone_removed": {
+      "type": [
+        "string"
+      ],
+      "pattern": "^<?[0-9]+\\.[0-9]+$"
+    },
+    "removed_by_url": {
+      "type": [
+        "string"
+      ],
+      "format": "uri"
+    },
     "classification": {
       "type": [
         "string",
@@ -182,5 +203,10 @@
         "type": "string"
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "$ref": "schema/status.json"
+    }
+  ]
 }

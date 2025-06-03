@@ -1,6 +1,7 @@
 ---
 description: Internal Event CLI is opened
 internal_events: true
+status: active
 action: internal_events_cli_opened
 product_group: analytics_instrumentation
 product_categories:

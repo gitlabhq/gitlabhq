@@ -24,6 +24,17 @@ pages from within your instance.
 
 {{< /alert >}}
 
+## Container registry URL
+
+The URL to the container image you want depends on the version of the GitLab Docs you need. See the following table
+as a guide for the URL to use in the following sections.
+
+| GitLab version | Container registry                                                                           | Container image URL |
+|:---------------|:---------------------------------------------------------------------------------------------|:--------------------|
+| 17.8 and later | <https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/container_registry/8244403> | `registry.gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/archives:<version>` |
+| 15.5 - 17.7    | <https://gitlab.com/gitlab-org/gitlab-docs/container_registry/3631228>                       | `registry.gitlab.com/gitlab-org/gitlab-docs/archives:<version>` |
+| 10.3 - 15.4    | <https://gitlab.com/gitlab-org/gitlab-docs/container_registry/631635>                        | `registry.gitlab.com/gitlab-org/gitlab-docs:<version>` |
+
 ## Documentation self-hosting options
 
 To host the GitLab product documentation, you can use:
@@ -285,23 +296,8 @@ GitLab Docs are using.
 
 ### The Docker image is not found
 
-If you're using version 15.5 and earlier, you should drop `/archives` from the
-Docker image name.
-
-For example:
-
-```plaintext
-registry.gitlab.com/gitlab-org/gitlab-docs:15.5
-```
-
-If you are using version 17.8 or earlier, Docker images are in the
-`gitlab-docs` project.
-
-For example:
-
-```plaintext
-registry.gitlab.com/gitlab-org/gitlab-docs:17.2
-```
+If you get an error that the Docker image is not found, check if you're using
+the [correct registry URL](#container-registry-url).
 
 ### Docker-hosted documentation site fails to redirect
 

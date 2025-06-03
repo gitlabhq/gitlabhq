@@ -49,7 +49,8 @@ func TestRoundTripCircuitBreaker(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			delegateResponseHeader := http.Header{
-				tc.name: []string{tc.name},
+				tc.name:                    []string{tc.name},
+				enableCircuitBreakerHeader: []string{"true"},
 			}
 			mockRT := &mockRoundTripper{
 				response: &http.Response{
@@ -99,6 +100,64 @@ func TestRoundTripCircuitBreaker(t *testing.T) {
 				assert.Equal(t, circuitBreakerHeader, resp.Header)
 			} else {
 				assert.Equal(t, tc.statusCode, resp.StatusCode)
+			}
+		})
+	}
+}
+
+func TestResponseToErrorHeaderCondition(t *testing.T) {
+	testCases := []struct {
+		name           string
+		headerValue    string
+		statusCode     int
+		expectedError  bool
+		expectedErrMsg string
+	}{
+		{
+			name:           "Header true with 429 status",
+			headerValue:    "true",
+			statusCode:     http.StatusTooManyRequests,
+			expectedError:  true,
+			expectedErrMsg: "rate limited",
+		},
+		{
+			name:          "Header false with 429 status",
+			headerValue:   "false",
+			statusCode:    http.StatusTooManyRequests,
+			expectedError: false,
+		},
+		{
+			name:          "Missing header with 429 status",
+			headerValue:   "",
+			statusCode:    http.StatusTooManyRequests,
+			expectedError: false,
+		},
+		{
+			name:          "Header true with 200 status",
+			headerValue:   "true",
+			statusCode:    http.StatusOK,
+			expectedError: false,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			header := http.Header{}
+			if tc.headerValue != "" {
+				header.Set(enableCircuitBreakerHeader, tc.headerValue)
+			}
+
+			res := &http.Response{
+				StatusCode: tc.statusCode,
+				Header:     header,
+			}
+
+			err := responseToError(res)
+
+			if tc.expectedError {
+				require.EqualError(t, err, tc.expectedErrMsg)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}

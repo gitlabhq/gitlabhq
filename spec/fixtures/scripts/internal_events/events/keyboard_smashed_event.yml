@@ -1,6 +1,7 @@
 ---
 description: random event string
 internal_events: true
+status: active
 action: random_name
 identifiers:
 - project

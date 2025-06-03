@@ -48,17 +48,6 @@ module Gitlab
           SQL
         end
 
-        def to_sql
-          from_sql = from ? conn.quote(from.to_date.iso8601) : 'MINVALUE'
-          to_sql = conn.quote(to.to_date.iso8601)
-
-          <<~SQL
-            CREATE TABLE IF NOT EXISTS #{fully_qualified_partition}
-            PARTITION OF #{conn.quote_table_name(table)}
-            FOR VALUES FROM (#{from_sql}) TO (#{to_sql})
-          SQL
-        end
-
         def to_detach_sql
           <<~SQL
             ALTER TABLE #{conn.quote_table_name(table)}

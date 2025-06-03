@@ -6,6 +6,8 @@ module API
     class Base < ::API::Base
       include Gitlab::RackLoadBalancingHelpers
 
+      WORKHORSE_CIRCUIT_BREAKER_HEADER = 'Enable-Workhorse-Circuit-Breaker'
+
       before { authenticate_by_gitlab_shell_token! }
 
       before do
@@ -147,6 +149,12 @@ module API
         def two_factor_push_otp_check
           { success: false, message: 'Feature is not available' }
         end
+
+        def add_workhorse_circuit_breaker_header(params)
+          return unless params[:protocol] == 'ssh' && request.headers['Gitlab-Shell-Api-Request'].present?
+
+          header(WORKHORSE_CIRCUIT_BREAKER_HEADER, "true")
+        end
       end
 
       namespace 'internal' do
@@ -170,6 +178,7 @@ module API
         post "/allowed", feature_category: :source_code_management do
           # It was moved to a separate method so that EE can alter its behaviour more
           # easily.
+          add_workhorse_circuit_breaker_header(params) if Feature.enabled?(:workhorse_circuit_breaker, project)
           check_allowed(params)
         end
 

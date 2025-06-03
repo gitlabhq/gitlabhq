@@ -55,7 +55,7 @@ tokens.
 ## Run Gitaly on its own server
 
 By default, Gitaly is run on the same server as Gitaly clients and is
-configured as above. Single-server installations are best served by
+configured as described previously. Single-server installations are best served by
 this default configuration used by:
 
 - [Linux package installations](https://docs.gitlab.com/omnibus/).

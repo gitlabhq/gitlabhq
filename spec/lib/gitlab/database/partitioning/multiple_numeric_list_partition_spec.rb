@@ -93,12 +93,21 @@ RSpec.describe Gitlab::Database::Partitioning::MultipleNumericListPartition, fea
     end
   end
 
-  describe '#to_sql' do
+  describe '#to_create_sql' do
     subject(:partition) { described_class.new('table', 10) }
 
-    it 'generates SQL' do
-      sql = 'CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."table_10" PARTITION OF "table" FOR VALUES IN (10)'
-      expect(partition.to_sql).to eq(sql)
+    it 'generates SQL to create a table using LIKE' do
+      sql = 'CREATE TABLE IF NOT EXISTS "gitlab_partitions_dynamic"."table_10" (LIKE "table" INCLUDING ALL)'
+      expect(partition.to_create_sql).to eq(sql)
+    end
+  end
+
+  describe '#to_attach_sql' do
+    subject(:partition) { described_class.new('table', 10) }
+
+    it 'generates SQL to attach a partition' do
+      sql = 'ALTER TABLE "table" ATTACH PARTITION "gitlab_partitions_dynamic"."table_10" FOR VALUES IN (10)'
+      expect(partition.to_attach_sql).to eq(sql)
     end
   end
 
