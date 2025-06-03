@@ -84,10 +84,6 @@ RSpec.describe Banzai::Filter::GollumTagsFilter, feature_category: :wiki do
   end
 
   it_behaves_like 'gollum tag parsing' do
-    let_it_be(:context) { { markdown_engine: Banzai::Filter::MarkdownFilter::CMARK_ENGINE } }
-  end
-
-  it_behaves_like 'gollum tag parsing' do
     let_it_be(:context) { { pipeline: :ascii_doc } }
   end
 

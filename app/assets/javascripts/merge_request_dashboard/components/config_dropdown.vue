@@ -26,9 +26,6 @@ export default {
     preferences: {
       query: currentUserPreferencesQuery,
       update: (data) => data.currentUser.userPreferences,
-      skip() {
-        return !this.listTypeToggleEnabled;
-      },
     },
   },
   components: {
@@ -43,7 +40,6 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [InternalEvents.mixin()],
-  inject: { listTypeToggleEnabled: { default: false } },
   data() {
     return {
       isShowingLabels: null,
@@ -53,8 +49,6 @@ export default {
   },
   computed: {
     listTypeItems() {
-      if (!this.listTypeToggleEnabled) return [];
-
       return [
         {
           text: __('Group by'),
@@ -147,7 +141,7 @@ export default {
       :title="__('Change display preferences')"
       no-caret
       text-sr-only
-      :header-text="listTypeToggleEnabled ? __('Change display preferences') : null"
+      :header-text="__('Change display preferences')"
       :toggle-text="__('Change display preferences')"
       placement="bottom-end"
       :loading="savingPreferences"
@@ -161,11 +155,7 @@ export default {
       </template>
       <template #footer>
         <div
-          class="gl-flex gl-flex-col gl-px-4 gl-py-3"
-          :class="{
-            'gl-border-t-1 gl-border-t-dropdown-divider gl-border-t-solid': listTypeToggleEnabled,
-            'toggle-labels-footer': !listTypeToggleEnabled,
-          }"
+          class="gl-flex gl-flex-col gl-border-t-1 gl-border-t-dropdown-divider gl-px-4 gl-py-3 gl-border-t-solid"
         >
           <local-storage-sync
             :value="isShowingLabels"
@@ -181,10 +171,7 @@ export default {
         </div>
       </template>
     </gl-collapsible-listbox>
-    <user-callout-dismisser
-      v-if="listTypeToggleEnabled"
-      feature-name="merge_request_dashboard_display_preferences_popover"
-    >
+    <user-callout-dismisser feature-name="merge_request_dashboard_display_preferences_popover">
       <template #default="{ shouldShowCallout, dismiss }">
         <gl-popover
           v-if="shouldShowCallout"
@@ -212,9 +199,3 @@ export default {
     </user-callout-dismisser>
   </div>
 </template>
-
-<style>
-div:has(+ .toggle-labels-footer) {
-  display: none;
-}
-</style>

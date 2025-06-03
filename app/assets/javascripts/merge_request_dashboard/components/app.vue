@@ -52,7 +52,7 @@ export default {
     CollapsibleSection,
     MergeRequest,
   },
-  inject: ['mergeRequestsSearchDashboardPath', 'listTypeToggleEnabled'],
+  inject: ['mergeRequestsSearchDashboardPath'],
   props: {
     tabs: {
       type: Array,
@@ -263,13 +263,7 @@ export default {
       </template>
     </gl-tabs>
     <div class="gl-mt-6 gl-text-center">
-      <gl-link
-        :href="
-          listTypeToggleEnabled
-            ? 'https://gitlab.com/gitlab-org/gitlab/-/issues/542823'
-            : 'https://gitlab.com/gitlab-org/gitlab/-/issues/515912'
-        "
-      >
+      <gl-link href="https://gitlab.com/gitlab-org/gitlab/-/issues/542823">
         {{ __('Leave feedback') }}
       </gl-link>
       <span class="gl-mx-2">|</span>

@@ -70,7 +70,7 @@ To migrate an existing compliance framework to use the pipeline execution policy
 1. In the banner than appears, select **Migrate pipeline to a policy** to create a new policy in the security policies.
 1. Edit the compliance framework again to remove the compliance pipeline.
 
-For more information, see [Security policy project](../application_security/policies/_index.md#security-policy-project).
+For more information, see [Security policy project](../application_security/policies/security_policy_projects.md).
 
 If you receive a `Pipeline execution policy error: Job names must be unique` error during the migration, see the
 [relevant troubleshooting information](#error-job-names-must-be-unique).

@@ -13,7 +13,7 @@ module Resolvers
     end
 
     def authorized_resource?(object)
-      ability = "read_#{object.class.name.underscore}".to_sym
+      ability = :"read_#{object.class.name.underscore}"
       Ability.allowed?(context[:current_user], ability, object)
     end
 

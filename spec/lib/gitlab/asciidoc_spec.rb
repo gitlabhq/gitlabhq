@@ -72,41 +72,47 @@ module Gitlab
         items = {
           'link with extra attribute' => {
             input: 'link:mylink"onmouseover="alert(1)[Click Here]',
-            output: "<div>\n<p><a href=\"mylink\">Click Here</a></p>\n</div>"
+            output: <<~HTML
+              <div>
+              <p><a href="mylink">Click Here</a></p>
+              </div>
+            HTML
           },
           'link with unsafe scheme' => {
             input: 'link:data://danger[Click Here]',
-            output: "<div>\n<p><a>Click Here</a></p>\n</div>"
+            output: <<~HTML
+              <div>
+              <p><a>Click Here</a></p>
+              </div>
+            HTML
           },
           'image with onerror' => {
             input: 'image:https://localhost.com/image.png[Alt text" onerror="alert(7)]',
-            output: "<div>\n<p><span><a class=\"no-attachment-icon\" href=\"https://localhost.com/image.png\" target=\"_blank\" rel=\"noopener noreferrer\"><img src=\"data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==\" alt='Alt text\" onerror=\"alert(7)' decoding=\"async\" class=\"lazy\" data-src=\"https://localhost.com/image.png\"></a></span></p>\n</div>"
+            output: <<~HTML
+              <div>
+              <p><span><a class="no-attachment-icon" href="https://localhost.com/image.png" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt='Alt text" onerror="alert(7)' decoding="async" class="lazy" data-src="https://localhost.com/image.png"></a></span></p>
+              </div>
+            HTML
+          },
+          'fenced code with inline script' => {
+            input: '```mypre"><script>alert(3)</script>',
+            output: <<~HTML
+              <div>
+              <div>
+              <div class="gl-relative markdown-code-block js-markdown-code">
+              <pre data-canonical-lang="mypre" class="code highlight js-syntax-highlight language-plaintext" v-pre="true"><code></code></pre>
+              <copy-code></copy-code><insert-code-snippet></insert-code-snippet>
+              </div>
+              </div>
+              </div>
+            HTML
           }
         }
 
         items.each do |name, data|
           it "does not convert dangerous #{name} into HTML" do
-            expect(render(data[:input], context)).to include(data[:output])
+            expect(render(data[:input], context)).to include(data[:output].strip)
           end
-        end
-
-        # `stub_feature_flags method` runs AFTER declaration of `items` above.
-        # So the spec in its current implementation won't pass.
-        # Move this test back to the items hash when removing `use_cmark_renderer` feature flag.
-        it "does not convert dangerous fenced code with inline script into HTML" do
-          input = '```mypre"><script>alert(3)</script>'
-          output = <<~HTML
-            <div>
-            <div>
-            <div class="gl-relative markdown-code-block js-markdown-code">
-            <pre data-canonical-lang="mypre" class="code highlight js-syntax-highlight language-plaintext" v-pre="true"><code></code></pre>
-            <copy-code></copy-code><insert-code-snippet></insert-code-snippet>
-            </div>
-            </div>
-            </div>
-          HTML
-
-          expect(render(input, context)).to include(output.strip)
         end
 
         it 'does not allow locked attributes to be overridden' do

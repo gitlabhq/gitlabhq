@@ -22,7 +22,7 @@ module Resolvers
 
       def find_last_deployment(status)
         BatchLoader::GraphQL.for(object).batch(key: status) do |environments, loader, args|
-          association_name = "last_#{args[:key]}_deployment".to_sym
+          association_name = :"last_#{args[:key]}_deployment"
 
           Preloaders::Environments::DeploymentPreloader.new(environments)
             .execute_with_union(association_name, {})

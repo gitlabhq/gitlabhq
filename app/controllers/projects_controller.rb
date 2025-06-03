@@ -636,7 +636,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def check_export_rate_limit!
-    prefixed_action = "project_#{params[:action]}".to_sym
+    prefixed_action = :"project_#{params[:action]}"
 
     project_scope = params[:action] == 'download_export' ? @project : nil
 

@@ -8,8 +8,8 @@ RSpec.describe Banzai::Filter::MarkdownFilter, feature_category: :markdown do
 
   describe 'markdown engine from context' do
     it 'finds the correct engine' do
-      expect(described_class.new('foo', { markdown_engine: :cmark }).render_engine)
-        .to eq Banzai::Filter::MarkdownEngines::Cmark
+      expect(described_class.new('foo', { markdown_engine: :glfm_markdown }).render_engine)
+        .to eq Banzai::Filter::MarkdownEngines::GlfmMarkdown
     end
 
     it 'defaults to the GLFM_ENGINE' do

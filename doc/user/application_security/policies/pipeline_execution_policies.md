@@ -815,7 +815,7 @@ These examples demonstrate what you can achieve with pipeline execution policies
 ### Pipeline execution policy
 
 You can use the following example in a `.gitlab/security-policies/policy.yml` file stored in a
-[security policy project](_index.md#security-policy-project):
+[security policy project](security_policy_projects.md):
 
 ```yaml
 ---

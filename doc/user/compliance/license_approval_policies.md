@@ -53,7 +53,7 @@ Create a license approval policy to enforce license compliance.
 
 To create a license approval policy:
 
-1. [Link a security policy project](../application_security/policies/_index.md#policy-implementation) to your development group, subgroup, or project (the Owner role is required).
+1. [Link a security policy project](../application_security/policies/security_policy_projects.md#link-to-a-security-policy-project) to your development group, subgroup, or project (the Owner role is required).
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Policies**.
 1. Create a new [Merge request approval Policy](../application_security/policies/merge_request_approval_policies.md).

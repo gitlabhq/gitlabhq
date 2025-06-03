@@ -447,7 +447,7 @@
 {"name":"observer","version":"0.1.2","platform":"ruby","checksum":"d8a3107131ba661138d748e7be3dbafc0d82e732fffba9fccb3d7829880950ac"},
 {"name":"octokit","version":"9.2.0","platform":"ruby","checksum":"4fa47ff35ce654127edf2c836ab9269bcc8829f5542dc1e86871f697ce7f4316"},
 {"name":"ohai","version":"18.1.18","platform":"ruby","checksum":"42ee8196945cb935fdeec93ba7aaee757d1d552f7b933912a1f25863c3cc1ff0"},
-{"name":"oj","version":"3.16.10","platform":"ruby","checksum":"7f26bed974e331e16d579b470b0865010757f6fe6ee30ea9b67df653fbe13d7c"},
+{"name":"oj","version":"3.16.11","platform":"ruby","checksum":"2aab609d2bc896529bd3c70d737f591c13932a640ba6164a0f7e414efdb052b1"},
 {"name":"oj-introspect","version":"0.8.0","platform":"ruby","checksum":"5cbb15309d60294881e5c2f65ceb22e3b5798f26d0a1e65ae47a6342b87d9264"},
 {"name":"omniauth","version":"2.1.2","platform":"ruby","checksum":"def03277298b8f8a5d3ff16cdb2eb5edb9bffed60ee7dda24cc0c89b3ae6a0ce"},
 {"name":"omniauth-alicloud","version":"3.0.0","platform":"ruby","checksum":"9c5c4f3abb40d774b946015f177d503fbde99b2b57c0858284c25cc39369013e"},

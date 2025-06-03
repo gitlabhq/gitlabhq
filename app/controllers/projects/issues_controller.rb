@@ -438,7 +438,7 @@ class Projects::IssuesController < Projects::ApplicationController
       errors: result.errors,
       http_status: result.http_status
     )
-    error_method_name = "render_#{result.http_status}".to_sym
+    error_method_name = :"render_#{result.http_status}"
 
     if respond_to?(error_method_name, true)
       send(error_method_name) # rubocop:disable GitlabSecurity/PublicSend

@@ -450,7 +450,7 @@ The availability of support for pipeline execution policies is controlled by a f
 #### Example of `policy_tuning` with a scan execution policy
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
-[security policy project](_index.md#security-policy-project):
+[security policy project](security_policy_projects.md):
 
 ```yaml
 scan_execution_policy:
@@ -504,7 +504,7 @@ For more information, see [Recreate pipeline execution policies created before G
 {{< /alert >}}
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
-[security policy project](_index.md#security-policy-project):
+[security policy project](security_policy_projects.md):
 
 ```yaml
 ---
@@ -559,7 +559,7 @@ specified projects, groups, or compliance framework labels. For more details, se
 ## Example `policy.yml` in a security policy project
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
-[security policy project](_index.md#security-policy-project):
+[security policy project](security_policy_projects.md):
 
 ```yaml
 ---

@@ -1264,7 +1264,7 @@ GEM
       plist (~> 3.1)
       train-core
       wmi-lite (~> 1.0)
-    oj (3.16.10)
+    oj (3.16.11)
       bigdecimal (>= 3.0)
       ostruct (>= 0.2)
     oj-introspect (0.8.0)
@@ -2099,7 +2099,6 @@ DEPENDENCIES
   circuitbox (= 2.0.0)
   click_house-client!
   cloud_profiler_agent (~> 0.0.0)!
-  commonmarker (~> 0.23.10)
   concurrent-ruby (~> 1.1)
   connection_pool (~> 2.5.3)
   countries (~> 4.0.0)

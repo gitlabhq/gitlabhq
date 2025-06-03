@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::AutolinkFilter, feature_category: :markdown do
   include FilterSpecHelper
 
-  let_it_be(:context) { { markdown_engine: Banzai::Filter::MarkdownFilter::CMARK_ENGINE } }
+  let_it_be(:context) { { pipeline: :single_line } }
 
   let(:link) { 'http://about.gitlab.com/' }
   let(:quotes) { ['"', "'"] }

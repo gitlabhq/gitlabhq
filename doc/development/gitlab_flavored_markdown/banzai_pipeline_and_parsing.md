@@ -41,9 +41,7 @@ This pipeline contains the filters for transforming raw Markdown into HTML, hand
 
 #### `Filter::MarkdownFilter`
 
-This filter interfaces with the actual Markdown parser. The primary parser uses our [`gitlab-glfm-markdown`](https://gitlab.com/gitlab-org/ruby/gems/gitlab-glfm-markdown) Ruby gem that uses the [`comrak`](https://github.com/kivikakk/comrak) Rust crate.
-
-A secondary deprecated parser engine uses the [`commonmarker`](https://github.com/gjtorikian/commonmarker/releases/tag/v0.23.11) Ruby gem to interact with the [`cmark-gfm`](https://github.com/github/cmark-gfm) library.
+This filter interfaces with the actual Markdown parser. The parser uses our [`gitlab-glfm-markdown`](https://gitlab.com/gitlab-org/ruby/gems/gitlab-glfm-markdown) Ruby gem that uses the [`comrak`](https://github.com/kivikakk/comrak) Rust crate.
 
 Text is passed into this filter, and by calling the specified parser engine, generates the corresponding basic HTML.
 

@@ -41,14 +41,14 @@ module Banzai
         pre_node.set_attribute(LANG_ATTR, escape_once(lang)) if lang.present?
         pre_node.set_attribute(LANG_PARAMS_ATTR, escape_once(lang_params)) if lang_params.present?
 
-        # cmark-gfm added this, it's now in data-lang-params
+        # markdown rendered added this, it's now in data-lang-params
         pre_node.remove_attribute('data-meta')
         code_node.remove_attribute('data-meta')
       end
 
       private
 
-      # cmark-gfm's FULL_INFO_STRING render option works with the space delimiter.
+      # the `full_info_string` render option works with the space delimiter.
       # Which means the language specified on a code block is parsed with spaces. Anything
       # after the first space is placed in the `data-meta` attribute.
       # However GitLab recognizes `:` as an additional delimiter on the lang attribute.
@@ -67,7 +67,7 @@ module Banzai
 
         language, language_params = language.split(LANG_PARAMS_DELIMITER, 2)
 
-        # cmark-gfm places extra lang parameters into data-meta
+        # markdown renderer places extra lang parameters into data-meta
         language_params = [pre_node.attr('data-meta'), code_node.attr('data-meta'), language_params].compact.join(' ')
 
         [language, language_params]

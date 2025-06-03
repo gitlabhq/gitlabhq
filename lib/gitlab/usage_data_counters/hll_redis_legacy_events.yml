@@ -43,6 +43,7 @@
 - i_ci_secrets_management_id_tokens_build_created
 - i_ci_secrets_management_vault_build_created
 - i_ci_secrets_management_gitlab_secrets_manager_build_created
+- i_ci_secrets_management_aws_secrets_manager_build_created
 - i_code_review_click_diff_view_setting
 - i_code_review_click_file_browser_setting
 - i_code_review_click_single_file_mode_setting

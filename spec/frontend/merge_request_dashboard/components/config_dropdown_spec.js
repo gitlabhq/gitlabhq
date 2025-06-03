@@ -24,11 +24,7 @@ describe('Merge request dashboard config dropdown component', () => {
   const findPopover = () => wrapper.findComponent(GlPopover);
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
-  function createComponent({
-    isShowingLabels = false,
-    listTypeToggleEnabled = false,
-    shouldShowCallout = true,
-  } = {}) {
+  function createComponent({ isShowingLabels = false, shouldShowCallout = true } = {}) {
     setIsShowingLabelsMutationMock = jest.fn();
     updatePreferencesMutationMock = jest.fn().mockResolvedValue({
       data: {
@@ -70,7 +66,6 @@ describe('Merge request dashboard config dropdown component', () => {
 
     wrapper = shallowMountExtended(ConfigDropdown, {
       apolloProvider,
-      provide: { listTypeToggleEnabled },
       stubs: {
         UserCalloutDismisser: makeMockUserCalloutDismisser({
           dismiss: userCalloutDismissSpy,
@@ -207,25 +202,23 @@ describe('Merge request dashboard config dropdown component', () => {
     },
   );
 
-  describe('when listTypeToggleEnabled is true', () => {
-    it('displays explanation popover when shouldShowCallout is true', () => {
-      createComponent({ listTypeToggleEnabled: true, shouldShowCallout: true });
+  it('displays explanation popover when shouldShowCallout is true', () => {
+    createComponent({ shouldShowCallout: true });
 
-      expect(findPopover().exists()).toBe(true);
-    });
+    expect(findPopover().exists()).toBe(true);
+  });
 
-    it('does not display explanation popover when shouldShowCallout is false', () => {
-      createComponent({ listTypeToggleEnabled: true, shouldShowCallout: false });
+  it('does not display explanation popover when shouldShowCallout is false', () => {
+    createComponent({ shouldShowCallout: false });
 
-      expect(findPopover().exists()).toBe(false);
-    });
+    expect(findPopover().exists()).toBe(false);
+  });
 
-    it('calls dismiss method createComponent({ listTypeToggleEnabled: true, shouldShowCallout: true });when hiding popover', () => {
-      createComponent({ listTypeToggleEnabled: true, shouldShowCallout: true });
+  it('calls dismiss method when hiding popover', () => {
+    createComponent({ shouldShowCallout: true });
 
-      findPopover().vm.$emit('hidden');
+    findPopover().vm.$emit('hidden');
 
-      expect(userCalloutDismissSpy).toHaveBeenCalled();
-    });
+    expect(userCalloutDismissSpy).toHaveBeenCalled();
   });
 });

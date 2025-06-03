@@ -364,7 +364,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def check_export_rate_limit!
-    prefixed_action = "group_#{params[:action]}".to_sym
+    prefixed_action = :"group_#{params[:action]}"
 
     scope = params[:action] == :download_export ? @group : nil
 

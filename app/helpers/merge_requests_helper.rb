@@ -566,10 +566,7 @@ module MergeRequestsHelper
     is_author_or_assignee = ::Feature.enabled?(:merge_request_dashboard_author_or_assignee, current_user,
       type: :gitlab_com_derisk)
 
-    if Feature.enabled?(:mr_dashboard_list_type_toggle, current_user, type: :beta) &&
-        current_user.merge_request_dashboard_list_type == 'role_based'
-      return merge_request_dashboard_role_based_data
-    end
+    return merge_request_dashboard_role_based_data if current_user.user_preference.role_based?
 
     {
       tabs: [

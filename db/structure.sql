@@ -16723,7 +16723,9 @@ CREATE TABLE lfs_objects_projects (
     project_id bigint NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    repository_type smallint
+    repository_type smallint,
+    oid text,
+    CONSTRAINT check_76ef4585ad CHECK ((char_length(oid) <= 255))
 );
 
 CREATE SEQUENCE lfs_objects_projects_id_seq
@@ -35813,6 +35815,8 @@ CREATE INDEX index_lfs_objects_on_file_store ON lfs_objects USING btree (file_st
 CREATE UNIQUE INDEX index_lfs_objects_on_oid ON lfs_objects USING btree (oid);
 
 CREATE INDEX index_lfs_objects_projects_on_lfs_object_id ON lfs_objects_projects USING btree (lfs_object_id);
+
+CREATE INDEX index_lfs_objects_projects_on_oid ON lfs_objects_projects USING btree (oid);
 
 CREATE INDEX index_lfs_objects_projects_on_project_id_and_lfs_object_id ON lfs_objects_projects USING btree (project_id, lfs_object_id);
 
