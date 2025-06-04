@@ -132,6 +132,8 @@ describe('Ref selector component', () => {
 
   const findHiddenInputField = () => wrapper.findByTestId('selected-ref-form-field');
 
+  const findCountBadges = () => wrapper.findAllByTestId('count');
+
   //
   // Expecters
   //
@@ -807,6 +809,29 @@ describe('Ref selector component', () => {
           expect.objectContaining({ params: { per_page: 20, search: '' } }),
         );
       });
+    });
+  });
+
+  describe('badges', () => {
+    beforeEach(async () => {
+      const formatRefsModule = await import('~/ref/format_refs');
+      jest.spyOn(formatRefsModule, 'formatListBoxItems').mockReturnValue([
+        { text: DEFAULT_I18N.selected, options: [{ text: 'feature' }] },
+        { text: DEFAULT_I18N.branches, options: [{ text: 'main' }, { text: 'dev' }] },
+        { text: DEFAULT_I18N.tags, options: [{ text: 'v1' }, { text: 'v2' }, { text: 'v3' }] },
+      ]);
+
+      createComponent();
+      return waitForRequests();
+    });
+
+    it('hides badge for selected group, shows badge for other groups', async () => {
+      selectFirstBranch();
+      await nextTick();
+
+      expect(findCountBadges().length).toBe(2);
+      expect(findCountBadges().at(0).text()).toBe('2');
+      expect(findCountBadges().at(1).text()).toBe('3');
     });
   });
 });

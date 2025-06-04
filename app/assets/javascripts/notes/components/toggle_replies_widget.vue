@@ -1,5 +1,13 @@
 <script>
-import { GlButton, GlLink, GlSprintf, GlAvatarLink, GlAvatar, GlAvatarsInline } from '@gitlab/ui';
+import {
+  GlButton,
+  GlLink,
+  GlSprintf,
+  GlAvatarLink,
+  GlAvatar,
+  GlAvatarsInline,
+  GlAnimatedChevronRightDownIcon,
+} from '@gitlab/ui';
 import { uniqBy } from 'lodash';
 import { s__ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -17,6 +25,7 @@ export default {
     GlAvatarLink,
     GlAvatar,
     GlAvatarsInline,
+    GlAnimatedChevronRightDownIcon,
     TimeAgoTooltip,
   },
   props: {
@@ -37,9 +46,6 @@ export default {
       const authors = this.replies.map((reply) => reply.author || {});
 
       return uniqBy(authors, 'username');
-    },
-    buttonIcon() {
-      return this.collapsed ? 'chevron-right' : 'chevron-down';
     },
     buttonLabel() {
       return this.collapsed ? this.$options.i18n.expandReplies : this.$options.i18n.collapseReplies;
@@ -65,15 +71,16 @@ export default {
   >
     <gl-button
       ref="toggle"
-      class="gl-my-2 -gl-ml-3 gl-mr-2 !gl-p-0"
+      class="btn-icon gl-my-2 -gl-ml-3 gl-mr-2 !gl-p-0"
       :class="{ '!gl-text-link': !collapsed }"
       category="tertiary"
-      :icon="buttonIcon"
       :aria-label="buttonLabel"
       data-testid="replies-toggle"
       size="small"
       @click="toggle"
-    />
+    >
+      <gl-animated-chevron-right-down-icon :is-on="!collapsed" />
+    </gl-button>
     <template v-if="collapsed">
       <gl-avatars-inline
         :avatars="uniqueAuthors"

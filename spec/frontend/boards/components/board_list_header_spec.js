@@ -1,4 +1,4 @@
-import { GlButtonGroup } from '@gitlab/ui';
+import { GlButtonGroup, GlAnimatedChevronLgRightDownIcon } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -9,6 +9,7 @@ import {
   mockLabelList,
   updateBoardListResponse,
 } from 'jest/boards/mock_data';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import BoardListHeader from '~/boards/components/board_list_header.vue';
 import updateBoardListMutation from '~/boards/graphql/board_list_update.mutation.graphql';
 import { ListType } from '~/boards/constants';
@@ -176,17 +177,19 @@ describe('Board List Header Component', () => {
     it('should display collapse icon when column is expanded', () => {
       createComponent();
 
-      const icon = findCaret();
+      const icon = findCaret().findComponent(GlAnimatedChevronLgRightDownIcon);
 
-      expect(icon.props('icon')).toBe('chevron-lg-down');
+      // Vue compat doesn't know about component props if it extends other component
+      expect(icon.props('isOn') ?? parseBoolean(icon.attributes('is-on'))).toBe(true);
     });
 
     it('should display expand icon when column is collapsed', () => {
       createComponent({ collapsed: true });
 
-      const icon = findCaret();
+      const icon = findCaret().findComponent(GlAnimatedChevronLgRightDownIcon);
 
-      expect(icon.props('icon')).toBe('chevron-lg-right');
+      // Vue compat doesn't know about component props if it extends other component
+      expect(icon.props('isOn') ?? parseBoolean(icon.attributes('is-on'))).toBe(false);
     });
 
     it('set active board item on client when clicking on card', async () => {

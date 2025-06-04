@@ -115,7 +115,13 @@ export default {
       };
     },
     listBoxItems() {
-      return formatListBoxItems(this.branches, this.tags, this.commits);
+      const { branches, tags, commits } = this;
+      const selectedRef =
+        this.branches.find((ref) => (ref.value ?? ref.name) === this.selectedRef) ||
+        this.tags.find((ref) => (ref.value ?? ref.name) === this.selectedRef) ||
+        this.commits.find((ref) => (ref.value ?? ref.name) === this.selectedRef);
+
+      return formatListBoxItems({ branches, tags, commits, selectedRef });
     },
     branches() {
       return this.enabledRefTypes.includes(REF_TYPE_BRANCHES) ? this.matches.branches.list : [];
@@ -254,6 +260,9 @@ export default {
     totalCountText(count) {
       return count > 999 ? this.i18n.totalCountLabel : `${count}`;
     },
+    isSelectedGroup(text) {
+      return text === this.i18n.selected;
+    },
   },
 };
 </script>
@@ -281,7 +290,10 @@ export default {
       @select="selectRef"
     >
       <template #group-label="{ group }">
-        {{ group.text }} <gl-badge>{{ totalCountText(group.options.length) }}</gl-badge>
+        {{ group.text }}
+        <gl-badge v-if="!isSelectedGroup(group.text)" data-testid="count">{{
+          totalCountText(group.options.length)
+        }}</gl-badge>
       </template>
       <template #list-item="{ item }">
         {{ item.text }}

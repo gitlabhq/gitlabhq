@@ -49,7 +49,8 @@ README @group @group/with-nested/subgroup
 # Specify a Code Owner to a directory and all its contents:
 /docs/ @all-docs
 /docs/* @root-docs
-/docs/**/*.md @root-docs
+/docs/**/*.md @markdown-docs  # Match specific file types in any subdirectory
+/db/**/index.md @index-docs   # Match a specific file name in any subdirectory
 
 # Use a section to group related rules:
 [Documentation]
@@ -380,16 +381,16 @@ file in any directory or subdirectory of the repository.
 
 ### Directory paths
 
-Paths ending with `/` match any file in the directory:
+End a path with `/` to match all files in the directory and its subdirectories:
 
 ```plaintext
-# This is the same as `/docs/**/*`
+# Matches all files in /docs/ and its subdirectories
 /docs/
 ```
 
 ### Wildcard paths
 
-Use wildcards to match multiple characters:
+Use `*` to match multiple characters:
 
 ```plaintext
 # Any markdown files in the docs directory
@@ -410,12 +411,15 @@ Use wildcards to match multiple characters:
 
 ### Globstar paths
 
-Use `**` to match zero or more directories recursively:
+Use `**` to match files or patterns across multiple directory levels:
 
 ```plaintext
-# Matches /docs/index.md, /docs/api/index.md, and /docs/api/graphql/index.md.
+# For example: /docs/index.md, /docs/api/index.md, and /docs/api/graphql/index.md.
 /docs/**/index.md
 ```
+
+To match all files in a directory,
+use [directory paths](#directory-paths) with a trailing slash (`/`).
 
 ### Exclusion patterns
 
@@ -476,7 +480,7 @@ The following guidelines explain how exclusion patterns behave:
   !/config/**/*.rb        # Config Ruby files don't need Ruby team approval.
 
   [Config]
-  /config/**/* @ops-team  # Config files still require ops-team approval.
+  /config/ @ops-team      # Config files still require ops-team approval.
   ```
 
 - Use exclusions for files that are automatically updated:
@@ -487,7 +491,7 @@ The following guidelines explain how exclusion patterns behave:
   # Files updated by automation don't need approval.
   !package-lock.json
   !yarn.lock
-  !**/generated/**/*      # Any files in generated directories.
+  !**/generated/          # Any files in generated directories.
   !.gitlab-ci.yml
   ```
 

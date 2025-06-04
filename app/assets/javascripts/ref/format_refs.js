@@ -14,23 +14,28 @@ function convertToListBoxItems(items) {
  * @param branches list of branches
  * @param tags list of tags
  * @param commits list of commits
+ * @param selectedRef the currently selected ref
  * @returns {*[]} array of group items with header and options
  */
-export const formatListBoxItems = (branches, tags, commits) => {
+export const formatListBoxItems = ({ branches, tags, commits, selectedRef }) => {
   const listBoxItems = [];
 
-  const addToFinalResult = (items, header) => {
-    if (items && items.length > 0) {
-      listBoxItems.push({
-        text: header,
-        options: convertToListBoxItems(items).sort(
-          // Sort by default first: converts booleans to 1/0 for numeric comparison
-          (a, b) => Boolean(b.default) - Boolean(a.default),
-        ),
-      });
-    }
+  const addToFinalResult = (items, header, shouldFilter = true) => {
+    if (!items) return;
+    const filteredItems =
+      shouldFilter && selectedRef ? items.filter((item) => item !== selectedRef) : items; // Filter out the selected
+
+    if (!filteredItems?.length) return;
+    listBoxItems.push({
+      text: header,
+      options: convertToListBoxItems(filteredItems).sort(
+        // Sort by default first: converts booleans to 1/0 for numeric comparison
+        (a, b) => Boolean(b.default) - Boolean(a.default),
+      ),
+    });
   };
 
+  if (selectedRef) addToFinalResult([selectedRef], DEFAULT_I18N.selected, false);
   addToFinalResult(branches, DEFAULT_I18N.branches);
   addToFinalResult(tags, DEFAULT_I18N.tags);
   addToFinalResult(commits, DEFAULT_I18N.commits);

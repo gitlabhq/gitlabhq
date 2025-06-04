@@ -42,7 +42,7 @@ to refresh the `pg_statistic` table after a major version upgrade, because optim
 This should be done for all databases on the upgraded PostgreSQL service/instance/cluster.
 
 When you plan your maintenance window, you should include the `ANALYZE` duration
-because GitLab performance might be significantly degraded during this operation.
+because this operation might significantly degrade GitLab performance.
 
 To speed up the `ANALYZE` operation, use the
 [`vacuumdb` utility](https://www.postgresql.org/docs/16/app-vacuumdb.html),

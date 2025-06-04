@@ -224,7 +224,7 @@ When this setting is enabled:
 
 {{< alert type="note" >}}
 
-After you [specify a user cap for the group](../../group/manage.md#specify-a-user-cap-for-a-group), you cannot disable this setting.
+After you [specify a user cap for the group](../../group/manage.md#specify-a-user-cap-for-a-group) or if you [turn on restricted access](../../group/manage.md#turn-on-restricted-access), you cannot disable this setting.
 
 {{< /alert >}}
 

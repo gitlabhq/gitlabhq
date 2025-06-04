@@ -23,7 +23,7 @@ To use GitLab Duo on a GitLab Self-Managed instance, you can do either of the fo
 
 {{< alert type="note" >}}
 
-You must have an Ultimate subscription with the GitLab Duo Enterprise add-on to use GitLab Duo Self-Hosted.
+You must have a Premium or Ultimate subscription with the GitLab Duo Enterprise add-on to use GitLab Duo Self-Hosted.
 
 {{< /alert >}}
 

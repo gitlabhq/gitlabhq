@@ -3,6 +3,11 @@
 module API
   class Lint < ::API::Base
     feature_category :pipeline_composition
+    include APIGuard
+
+    allow_access_with_scope :ai_workflows, if: ->(request) do
+      request.post?
+    end
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Validates a CI YAML configuration with a namespace' do

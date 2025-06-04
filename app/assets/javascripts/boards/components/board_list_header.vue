@@ -8,6 +8,7 @@ import {
   GlIcon,
   GlSprintf,
   GlTooltipDirective,
+  GlAnimatedChevronLgRightDownIcon,
 } from '@gitlab/ui';
 import { isListDraggable } from '~/boards/boards_util';
 import { isScopedLabel, parseBoolean } from '~/lib/utils/common_utils';
@@ -46,6 +47,7 @@ export default {
     GlTooltip,
     GlIcon,
     GlSprintf,
+    GlAnimatedChevronLgRightDownIcon,
     ItemCount,
   },
   directives: {
@@ -152,9 +154,6 @@ export default {
     },
     chevronTooltip() {
       return this.list.collapsed ? this.$options.i18n.expand : this.$options.i18n.collapse;
-    },
-    chevronIcon() {
-      return this.list.collapsed ? 'chevron-lg-right' : 'chevron-lg-down';
     },
     isNewIssueShown() {
       return (this.listType === ListType.backlog || this.showListHeaderButton) && !this.isEpicBoard;
@@ -344,8 +343,7 @@ export default {
         v-gl-tooltip.hover
         :aria-label="chevronTooltip"
         :title="chevronTooltip"
-        :icon="chevronIcon"
-        class="board-title-caret no-drag gl-cursor-pointer hover:gl-bg-strong"
+        class="board-title-caret no-drag btn-icon gl-cursor-pointer hover:gl-bg-strong"
         :class="{
           '-gl-mt-1': list.collapsed && isLabelList,
           'gl-mb-2': list.collapsed && isLabelList && !isSwimlanesHeader,
@@ -356,7 +354,9 @@ export default {
         size="small"
         data-testid="board-title-caret"
         @click="toggleExpanded"
-      />
+      >
+        <gl-animated-chevron-lg-right-down-icon :is-on="!list.collapsed" />
+      </gl-button>
       <!-- EE start -->
 
       <a
