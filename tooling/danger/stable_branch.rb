@@ -78,6 +78,8 @@ module Tooling
 
         fail PIPELINE_EXPEDITED_ERROR_MESSAGE if has_pipeline_expedited_label?
 
+        return unless has_tier_3_label?
+
         status = package_and_test_bridge_and_pipeline_status
 
         if status.nil? || FAILING_PACKAGE_AND_TEST_STATUSES.include?(status) # rubocop:disable Style/GuardClause
@@ -145,6 +147,10 @@ module Tooling
 
       def bug_fixes_only?
         has_bug_label? || has_only_documentation_changes?
+      end
+
+      def has_tier_3_label?
+        helper.mr_has_labels?('pipeline::tier-3')
       end
 
       def has_only_documentation_changes?
