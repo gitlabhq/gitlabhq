@@ -908,7 +908,6 @@ class ProjectPolicy < BasePolicy
     prevent :update_cluster
     prevent :admin_cluster
     prevent :destroy_cluster
-    prevent :read_templates
   end
 
   rule { container_registry_disabled }.policy do
@@ -1061,7 +1060,6 @@ class ProjectPolicy < BasePolicy
     enable :read_design_activity
     enable :read_issue_link
     enable :read_work_item
-    enable :read_templates
   end
 
   rule { can?(:read_merge_request) }.policy do

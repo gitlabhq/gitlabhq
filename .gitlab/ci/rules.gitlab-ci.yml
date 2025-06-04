@@ -652,6 +652,7 @@
   # Auto-generated files
   - "doc/api/graphql/reference/*"
   - "doc/api/openapi/openapi_v2.yaml"
+  - "doc/user/application_security/dast/browser/configuration/variables.md"
   # CI changes
   - "{,jh/}.gitlab-ci.yml"
   - "{,jh/}.gitlab/ci/**/*"
@@ -1304,6 +1305,18 @@
 # GraphQL rules  #
 ##################
 .graphql:rules:graphql-verify:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-default-branch-schedule-weekly
+      when: never
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
+
+#########################
+# DAST Variables rules  #
+#########################
+.dast_variables:rules:dast-variables-check-docs:
   rules:
     - <<: *if-not-ee
       when: never

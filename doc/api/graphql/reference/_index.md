@@ -21709,6 +21709,7 @@ Represents the approval policy.
 | ---- | ---- | ----------- |
 | <a id="approvalpolicyactionapprovers"></a>`actionApprovers` | [`[PolicyApproversType!]`](#policyapproverstype) | Multiple approvers action. |
 | <a id="approvalpolicyallgroupapprovers"></a>`allGroupApprovers` | [`[PolicyApprovalGroup!]`](#policyapprovalgroup) | All potential approvers of the group type, including groups inaccessible to the user. |
+| <a id="approvalpolicycsp"></a>`csp` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Indicates whether the policy comes from a centralized security policy group. |
 | <a id="approvalpolicycustomroles"></a>`customRoles` | [`[MemberRole!]`](#memberrole) | Approvers of the custom role type. Users belonging to these role(s) alone will be approvers. |
 | <a id="approvalpolicydeprecatedproperties"></a>`deprecatedProperties` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Introduced** in GitLab 16.10. **Status**: Experiment. All deprecated properties in the policy. |
 | <a id="approvalpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
@@ -35172,6 +35173,7 @@ Represents the pipeline execution policy.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="pipelineexecutionpolicycsp"></a>`csp` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Indicates whether the policy comes from a centralized security policy group. |
 | <a id="pipelineexecutionpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
 | <a id="pipelineexecutionpolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
 | <a id="pipelineexecutionpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the policy is enabled. |
@@ -35203,6 +35205,7 @@ Represents the pipeline execution schedule policy.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="pipelineexecutionschedulepolicycsp"></a>`csp` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Indicates whether the policy comes from a centralized security policy group. |
 | <a id="pipelineexecutionschedulepolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
 | <a id="pipelineexecutionschedulepolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
 | <a id="pipelineexecutionschedulepolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the policy is enabled. |
@@ -39250,6 +39253,7 @@ Represents the scan execution policy.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="scanexecutionpolicycsp"></a>`csp` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Indicates whether the policy comes from a centralized security policy group. |
 | <a id="scanexecutionpolicydeprecatedproperties"></a>`deprecatedProperties` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Introduced** in GitLab 17.3. **Status**: Experiment. All deprecated properties in the policy. |
 | <a id="scanexecutionpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
 | <a id="scanexecutionpolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
@@ -39281,6 +39285,7 @@ Represents the scan result policy.
 | ---- | ---- | ----------- |
 | <a id="scanresultpolicyactionapprovers"></a>`actionApprovers` | [`[PolicyApproversType!]`](#policyapproverstype) | Multiple approvers action. |
 | <a id="scanresultpolicyallgroupapprovers"></a>`allGroupApprovers` | [`[PolicyApprovalGroup!]`](#policyapprovalgroup) | All potential approvers of the group type, including groups inaccessible to the user. |
+| <a id="scanresultpolicycsp"></a>`csp` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Indicates whether the policy comes from a centralized security policy group. |
 | <a id="scanresultpolicycustomroles"></a>`customRoles` | [`[MemberRole!]`](#memberrole) | Approvers of the custom role type. Users belonging to these role(s) alone will be approvers. |
 | <a id="scanresultpolicydeprecatedproperties"></a>`deprecatedProperties` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Introduced** in GitLab 16.10. **Status**: Experiment. All deprecated properties in the policy. |
 | <a id="scanresultpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
@@ -39367,6 +39372,7 @@ Represents the security policy.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="securitypolicytypecsp"></a>`csp` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Indicates whether the policy comes from a centralized security policy group. |
 | <a id="securitypolicytypedescription"></a>`description` | [`String!`](#string) | Description of the policy. |
 | <a id="securitypolicytypeeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
 | <a id="securitypolicytypeenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the policy is enabled. |
@@ -41841,6 +41847,7 @@ Represents the vulnerability management policy.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="vulnerabilitymanagementpolicycsp"></a>`csp` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Indicates whether the policy comes from a centralized security policy group. |
 | <a id="vulnerabilitymanagementpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
 | <a id="vulnerabilitymanagementpolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
 | <a id="vulnerabilitymanagementpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the policy is enabled. |
@@ -49237,6 +49244,7 @@ Implementations:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="orchestrationpolicycsp"></a>`csp` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Indicates whether the policy comes from a centralized security policy group. |
 | <a id="orchestrationpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
 | <a id="orchestrationpolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
 | <a id="orchestrationpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the policy is enabled. |

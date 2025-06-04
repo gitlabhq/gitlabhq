@@ -26,6 +26,7 @@ RSpec.describe 'projects/merge_requests/creations/_new_submit.html.haml', featur
   context 'when there are pipelines for merge request but no pipeline for last commit' do
     before do
       assign(:pipelines, Ci::Pipeline.all)
+      assign(:pipeline_display_limit, 100)
       assign(:pipeline, nil)
     end
 

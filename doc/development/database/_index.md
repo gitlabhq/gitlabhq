@@ -15,6 +15,10 @@ title: Database development guidelines
 
 - If you're a database reviewer or want to become one, check out our [introduction to reviewing database changes](database_reviewer_guidelines.md).
 
+## Upgrade
+
+- [Timeline for version upgrades](pg_upgrade_timeline.md)
+
 ## Tooling
 
 - [Understanding EXPLAIN plans](understanding_explain_plans.md)

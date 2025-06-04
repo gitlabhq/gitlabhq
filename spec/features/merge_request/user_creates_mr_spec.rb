@@ -97,6 +97,32 @@ RSpec.describe 'Merge request > User creates MR', feature_category: :code_review
     it_behaves_like 'a creatable merge request with visible selected labels'
   end
 
+  context 'with pipelines' do
+    let!(:commit) do
+      target_project.repository.create_file(user, 'bbb.txt', 'zzzz', message: 'Commit on src', branch_name: 'fix')
+    end
+
+    let!(:pipelines) do
+      create_list(:ci_pipeline, 3,
+        project: target_project,
+        sha: commit,
+        ref: 'fix')
+    end
+
+    before do
+      stub_const('Projects::MergeRequests::ApplicationController::PIPELINE_DISPLAY_LIMIT', 2)
+    end
+
+    include_context 'merge request create context'
+
+    it 'contains a pipeline tab with a limited count', :js do
+      expect(page).to have_link("Pipelines")
+
+      pipeline_text = find('a[data-action="pipelines"] .gl-tab-counter-badge').text
+      expect(pipeline_text).to eq('2+')
+    end
+  end
+
   context 'from a forked project' do
     let(:canonical_project) { create(:project, :public, :repository) }
 

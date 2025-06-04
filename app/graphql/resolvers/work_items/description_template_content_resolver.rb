@@ -11,11 +11,10 @@ module Resolvers
         required: true,
         description: "Input for fetching a specific description template."
 
-      authorize :read_templates
+      authorize :read_project
 
       def resolve(args)
         project = Project.find(args[:template_content_input].project_id)
-        return unless project
 
         authorize!(project)
 

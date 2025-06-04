@@ -530,6 +530,9 @@ Audit event types belong to the following product categories.
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`policy_project_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102154) | The security policy project is updated for a project | {{< icon name="check-circle" >}} Yes | GitLab [15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/377877) | Group, Project |
+| [`security_policy_create`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192797) | A security policy is created | {{< icon name="check-circle" >}} Yes | GitLab [18.1](https://gitlab.com/gitlab-org/gitlab/-/issues/539230) | Project |
+| [`security_policy_delete`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192797) | A security policy is deleted | {{< icon name="check-circle" >}} Yes | GitLab [18.1](https://gitlab.com/gitlab-org/gitlab/-/issues/539230) | Project |
+| [`security_policy_update`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192797) | A security policy is updated | {{< icon name="check-circle" >}} Yes | GitLab [18.1](https://gitlab.com/gitlab-org/gitlab/-/issues/539230) | Project |
 
 ### Security testing configuration
 

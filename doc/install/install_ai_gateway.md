@@ -465,9 +465,39 @@ You should locate your AI gateway in the same geographic region as your GitLab i
 
 ## Troubleshooting
 
-### OpenShift Permission Issues
+When working with the AI gateway, you might encounter the following issues.
 
-When deploying the AI gateway on OpenShift, you might encounter permission errors due to OpenShift's security model.
+### OpenShift permission issues
+
+When deploying the AI gateway on OpenShift, you might encounter permission errors due to the OpenShift security model.
+
+#### Read-only filesystem at `/tmp`
+
+The AI gateway needs to write to `/tmp`. However, based on the OpenShift environment, which is security-restricted,
+`/tmp` might be read-only.
+
+To resolve this issue, create a new `EmptyDir` volume and mount it at `/tmp`.
+You can do this in either of the following ways:
+
+- From the command line:
+  
+  ```shell
+  oc set volume <object_type>/<name> --add --name=tmpVol --type=emptyDir --mountPoint=/tmp
+  ```
+
+- Added to your `values.yaml`:
+
+  ```yaml
+  volumes:
+  - name: tmp-volume
+    emptyDir: {}
+  
+  volumeMounts:
+  - name: tmp-volume
+    mountPath: "/tmp"
+  ```
+
+#### HuggingFace models
 
 By default, the AI gateway uses `/home/aigateway/.hf` for caching HuggingFace models, which may not be writable in OpenShift's
 security-restricted environment. This can result in permission errors like:

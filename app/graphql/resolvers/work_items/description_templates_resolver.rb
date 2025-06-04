@@ -21,7 +21,7 @@ module Resolvers
 
       alias_method :namespace, :object
 
-      authorize :read_templates
+      authorize :read_project
 
       def resolve(**_args)
         project = fetch_root_templates_project(namespace)

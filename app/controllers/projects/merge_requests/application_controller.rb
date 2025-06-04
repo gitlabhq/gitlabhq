@@ -15,6 +15,8 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
 
   private
 
+  PIPELINE_DISPLAY_LIMIT = 100
+
   # Normally the methods with `check_(\w+)_available!` pattern are
   # handled by the `method_missing` defined in `ProjectsController::ApplicationController`
   # but that logic does not take the member roles into account, therefore, we handle this
@@ -76,6 +78,7 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
   end
 
   def set_pipeline_variables
+    @pipeline_display_limit = PIPELINE_DISPLAY_LIMIT
     @pipelines = Ci::PipelinesForMergeRequestFinder
       .new(@merge_request, current_user)
       .execute

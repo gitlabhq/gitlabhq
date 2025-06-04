@@ -19,7 +19,7 @@ RSpec.describe 'getting a WorkItem description template and content', feature_ca
     }
   end
 
-  let_it_be(:project) { create(:project, :public, :custom_repo, files: template_files, group: group) }
+  let_it_be(:project) { create(:project, :custom_repo, files: template_files, group: group) }
 
   let(:expected_graphql_data) { graphql_data['workItemDescriptionTemplateContent'] }
 
@@ -39,6 +39,20 @@ RSpec.describe 'getting a WorkItem description template and content', feature_ca
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(graphql_errors).to be_nil
+    end
+  end
+
+  context 'when user does not have access to the project' do
+    let_it_be(:unauthorized_user) { create(:user) }
+    let(:query) do
+      graphql_query_for(:workItemDescriptionTemplateContent,
+        { templateContentInput: { projectId: project.id, name: "project_issues_template_a" } })
+    end
+
+    it 'does not retrieve the template' do
+      post_graphql(query, current_user: unauthorized_user)
+
+      expect(expected_graphql_data).to be_nil
     end
   end
 
@@ -98,42 +112,6 @@ RSpec.describe 'getting a WorkItem description template and content', feature_ca
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(graphql_errors).to be_nil
-    end
-  end
-
-  context 'when the requesting user is not a member of the project' do
-    let(:query) do
-      graphql_query_for(:workItemDescriptionTemplateContent,
-        { templateContentInput: { projectId: project.id, name: "project_issues_template_a" } })
-    end
-
-    let_it_be(:non_member_user) { create(:user) }
-
-    it 'returns expected template if project does not have restricted repository access' do
-      post_graphql(query, current_user: non_member_user)
-
-      expect(expected_graphql_data["projectId"]).to eq(project.id)
-      expect(expected_graphql_data["name"]).to eq("project_issues_template_a")
-      expect(expected_graphql_data["category"]).to be_nil
-      expect(expected_graphql_data["content"]).to eq("project_issues_template_a content")
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(graphql_errors).to be_nil
-    end
-
-    context 'and the project has limited repository access' do
-      before do
-        project.project_feature.update!(
-          repository_access_level: ProjectFeature::PRIVATE,
-          merge_requests_access_level: ProjectFeature::PRIVATE,
-          builds_access_level: ProjectFeature::PRIVATE
-        )
-      end
-
-      it 'returns nil' do
-        post_graphql(query, current_user: non_member_user)
-        expect(expected_graphql_data).to be_nil
-      end
     end
   end
 end

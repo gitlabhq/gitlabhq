@@ -483,7 +483,8 @@ module Gitlab
               description: s_(
                 "DastProfiles|Ensures that the provided paths are always scanned. " \
                   "Set to a file path containing a list of URL paths relative to `DAST_TARGET_URL`. " \
-                  "The file must be plain text with one path per line."
+                  "The file must be plain text with one path per line. When this is set, " \
+                  "`DAST_CRAWL_MAX_DEPTH` defaults to 1. To prevent this, set `DAST_OVERRIDE_MAX_DEPTH: false`."
               )
             },
             DAST_TARGET_PATHS: {
@@ -493,7 +494,8 @@ module Gitlab
               name: s_("DastProfiles|Target paths"),
               description: s_(
                 "DastProfiles|Ensures that the provided paths are always scanned. " \
-                  "Set to a comma-separated list of URL paths relative to `DAST_TARGET_URL`."
+                  "Set to a comma-separated list of URL paths relative to `DAST_TARGET_URL`. When this is set, " \
+                  "`DAST_CRAWL_MAX_DEPTH` defaults to 1. To prevent this, set `DAST_OVERRIDE_MAX_DEPTH: false`."
               )
             },
             DAST_TARGET_URL: {
@@ -511,7 +513,7 @@ module Gitlab
               description: s_(
                 "DastProfiles|Set to `false` to disable caching. " \
                   "Default: `true`. " \
-                  "**Note:** Disabling cache can cause OOM events or DAST job timeouts."
+                  "**Note**: Disabling cache can cause OOM events or DAST job timeouts."
               )
             }
           },
