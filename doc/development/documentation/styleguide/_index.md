@@ -1084,12 +1084,10 @@ Examples:
 
 ### Link to specific lines of code
 
-<!-- when blob_overflow_menu is removed, change 'button' to 'dropdown item' -->
-
 When linking to specific lines in a file, link to a commit instead of to the
 branch. Lines of code change over time. Linking to a line by using
 the commit link ensures the user lands on the line you're referring to. The
-**Permalink** button, displayed when viewing a file in a project,
+**Permalink** dropdown item in the ellipsis menu, displayed when viewing a file in a project,
 provides a link to the most recent commit of that file.
 
 - Do: `[link to line 3](https://gitlab.com/gitlab-org/gitlab/-/blob/11f17c56d8b7f0b752562d78a4298a3a95b5ce66/.gitlab/issue_templates/Feature%20proposal.md#L3)`
@@ -1696,7 +1694,7 @@ covered in the documentation, you should:
 - Add this detail to the documentation text.
 - Create an issue to review the video and update the page.
 
-Do not upload videos to the product repositories. [Link](#link-to-video) or
+Do not upload videos to the product repositories. [Add a link](#link-to-video) or
 [embed](#embed-videos) them instead.
 
 ### Link to video
@@ -1719,7 +1717,7 @@ The [GitLab documentation site](https://docs.gitlab.com) supports embedded
 videos.
 
 You can embed videos from [the official YouTube account for GitLab](https://www.youtube.com/channel/UCnMGQ8QHMAnVIsI3xJrihhg) only.
-For videos from other sources, [link](#link-to-video) them instead.
+For videos from other sources, [link them](#link-to-video) instead.
 
 In most cases, [link to a video](#link-to-video), because
 embedded videos take up a lot of space on the page and can be distracting to readers.

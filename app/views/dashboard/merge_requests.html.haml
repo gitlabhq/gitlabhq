@@ -3,6 +3,7 @@
   page_title title
   @breadcrumb_link = merge_requests_dashboard_path(assignee_username: current_user.username)
   add_page_specific_style 'page_bundles/issuable_list'
+  @js_action_name = 'merge_requests_v2' if current_user.merge_request_dashboard_enabled? && !current_page?(merge_requests_search_dashboard_path)
 
 = render_dashboard_ultimate_trial(current_user)
 = render_product_usage_data_collection_changes(current_user)

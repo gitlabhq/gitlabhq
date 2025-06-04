@@ -29257,9 +29257,6 @@ msgstr ""
 msgid "Go to file"
 msgstr ""
 
-msgid "Go to file permalink (while viewing a file)"
-msgstr ""
-
 msgid "Go to files"
 msgstr ""
 
@@ -71204,9 +71201,6 @@ msgid "You cannot write to this read-only GitLab instance."
 msgstr ""
 
 msgid "You can’t edit files directly in this project."
-msgstr ""
-
-msgid "You can’t edit files directly in this project. Fork this project and submit a merge request with your changes."
 msgstr ""
 
 msgid "You commented"

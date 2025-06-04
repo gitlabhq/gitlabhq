@@ -7,7 +7,7 @@ module Gitlab
       scope_to ->(relation) { relation.where.not(pipeline_id: nil) }
       feature_category :dependency_management
 
-      class DependencyListExport < ::ApplicationRecord
+      class DependencyListExport < SecApplicationRecord
         FINISHED = 2
         FAILED = -1
 

@@ -24,8 +24,6 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
   let_it_be(:project_with_crlf) { create(:project, :custom_repo, name: 'Project with crlf', files: { 'crlf_file.txt' => crlf_text }) }
 
   before do
-    stub_feature_flags(blob_overflow_menu: false)
-
     sign_in(user)
   end
 
@@ -40,8 +38,11 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
         expect(page).not_to have_text('Edit')
         expect(page).not_to have_text('Web IDE')
 
-        expect(page).not_to have_text('Replace')
-        expect(page).not_to have_text('Delete')
+        within_testid('blob-controls') do
+          click_button 'File actions'
+          expect(page).not_to have_text('Replace')
+          expect(page).not_to have_text('Delete')
+        end
       end
     end
   end
@@ -172,8 +173,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
       expect(page).to have_selector(:link_or_button, 'Fork')
       expect(page).to have_selector(:link_or_button, 'Cancel')
       expect(page).to have_content(
-        "You can’t edit files directly in this project. "\
-        "Fork this project and submit a merge request with your changes."
+        "You're not allowed to make changes to this project directly. "\
+        "Create a fork to make changes and submit a merge request."
       )
     end
 
@@ -194,6 +195,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
 
       expect_fork_status
 
+      edit_in_single_file_editor
+
       find('.file-editor', match: :first)
 
       editor_set_value('*.rbca')
@@ -210,9 +213,21 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
 
       click_link_or_button('Fork')
 
-      within_web_ide do
-        expect(page).to have_text(project2.path.upcase)
-        expect(page).to have_text('.gitignore')
+      expect_fork_status
+
+      click_button 'Edit'
+
+      new_tab = window_opened_by { click_link_or_button 'Web IDE' }
+
+      switch_to_window new_tab
+
+      wait_for_requests
+
+      within_window new_tab do
+        within_web_ide do
+          expect(page).to have_text(project2.path.upcase)
+          expect(page).to have_text('.gitignore')
+        end
       end
     end
 
@@ -222,6 +237,8 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
 
       expect_fork_prompt
       click_link_or_button('Fork')
+
+      edit_in_single_file_editor
 
       find('.file-editor', match: :first)
 

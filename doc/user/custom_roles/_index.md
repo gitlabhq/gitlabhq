@@ -268,6 +268,57 @@ users to custom roles. For more information, see:
 - [Configure SAML Group Links](../group/saml_sso/group_sync.md#configure-saml-group-links).
 - [Manage group memberships via LDAP](../group/access_and_permissions.md#manage-group-memberships-with-ldap).
 
+## Sync LDAP groups to admin roles
+
+You can link a custom admin role to an LDAP group. This link assigns the custom admin role to all users in the group.
+
+If a user belongs to multiple LDAP groups with different assigned custom admin roles, GitLab assigns the role associated with whichever LDAP link was created earlier. For example, if a user is a member of the LDAP groups `owner` and `dev`. If the `owner` group was linked to a custom admin role before the `dev` group, the user would be assigned the role associated with the `owner` group.
+
+For more information on the administration of LDAP and group sync, see [LDAP synchronization](../../administration/auth/ldap/ldap_synchronization.md#group-sync).
+
+{{< alert type="note" >}}
+
+If an LDAP user with a custom admin role is removed from the LDAP group after configuring a sync, the custom role is not removed until the next sync.
+
+{{< /alert >}}
+
+### Link a custom admin role with an LDAP CN
+
+Prerequisites:
+
+- You must have integrated an LDAP server with your instance.
+
+To link a custom admin role with an LDAP CN:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Roles and permissions**.
+1. On the **LDAP Synchronization** tab, select an **LDAP Server**.
+1. In the **Sync method** field, select `Group cn`.
+1. In the **Group cn** field, begin typing the CN of the group. A dropdown list appears with matching CNs in the configured `group_base`.
+1. From the dropdown list, select your CN.
+1. In the **Custom admin role** field, select a custom admin role.
+1. Select **Add**.
+
+GitLab begins linking the role to any matching LDAP users. This process may take over an hour to complete.
+
+### Link a custom admin role with an LDAP filter
+
+Prerequisites:
+
+- You must have integrated an LDAP server with your instance.
+
+To link a custom admin role with an LDAP filter:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Roles and permissions**.
+1. On the **LDAP Synchronization** tab, select an **LDAP Server**.
+1. In the **Sync method** field, select `User filter`.
+1. In **User filter** box, enter a filter. For details, see [Set up LDAP user filter](../../administration/auth/ldap/_index.md#set-up-ldap-user-filter).
+1. In the **Custom admin role** field, select a custom admin role.
+1. Select **Add**.
+
+GitLab begins linking the role to any matching LDAP users. This process may take over an hour to complete.
+
 ## Contribute new permissions
 
 If a permission does not exist, you can:

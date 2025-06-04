@@ -4,10 +4,10 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::ResyncHasVulnerabilities, feature_category: :vulnerability_management do
   let(:project_settings) { table(:project_settings) }
-  let(:findings) { table(:vulnerability_occurrences) }
-  let(:vulnerabilities) { table(:vulnerabilities) }
-  let(:identifiers) { table(:vulnerability_identifiers) }
-  let(:scanners) { table(:vulnerability_scanners) }
+  let(:findings) { table(:vulnerability_occurrences, database: :sec) }
+  let(:vulnerabilities) { table(:vulnerabilities, database: :sec) }
+  let(:identifiers) { table(:vulnerability_identifiers, database: :sec) }
+  let(:scanners) { table(:vulnerability_scanners, database: :sec) }
   let!(:user) { table(:users).create!(email: 'author@example.com', username: 'author', projects_limit: 10) }
   let(:organizations) { table(:organizations) }
   let(:namespaces) { table(:namespaces) }
@@ -68,13 +68,6 @@ RSpec.describe Gitlab::BackgroundMigration::ResyncHasVulnerabilities, feature_ca
 
   subject(:perform_migration) { described_class.new(**args).perform }
 
-  before do
-    # This test shares the db connection to establish it's fixtures, resulting in
-    # incorrect connection usage, so we're skipping it.
-    # Consult https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180764 for more info.
-    skip_if_multiple_databases_are_setup(:sec)
-  end
-
   def create_project_setting(
     name,
     has_vulnerabilities_setting:,
@@ -115,7 +108,6 @@ RSpec.describe Gitlab::BackgroundMigration::ResyncHasVulnerabilities, feature_ca
     finding = findings.create!(
       scanner_id: scanner.id,
       primary_identifier_id: primary_identifier.id,
-      project_fingerprint: SecureRandom.hex(20),
       location_fingerprint: SecureRandom.hex(20),
       uuid: SecureRandom.uuid,
       name: 'name',

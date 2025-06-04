@@ -1,7 +1,6 @@
 <script>
 import { GlButton, GlButtonGroup, GlTooltipDirective } from '@gitlab/ui';
 import { InternalEvents } from '~/tracking';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   RICH_BLOB_VIEWER,
   RICH_BLOB_VIEWER_TITLE,
@@ -21,16 +20,11 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [InternalEvents.mixin(), glFeatureFlagMixin()],
+  mixins: [InternalEvents.mixin()],
   props: {
     value: {
       type: String,
       default: SIMPLE_BLOB_VIEWER,
-      required: false,
-    },
-    docIcon: {
-      type: String,
-      default: 'document',
       required: false,
     },
     showViewerToggles: {
@@ -86,13 +80,12 @@ export default {
       :title="$options.SIMPLE_BLOB_VIEWER_TITLE"
       :selected="isSimpleViewer"
       data-testid="simple-blob-viewer-button"
-      :icon="glFeatures.blobOverflowMenu ? '' : 'code'"
       category="primary"
       variant="default"
       class="js-blob-viewer-switch-btn"
       data-viewer="simple"
       @click="switchToViewer($options.SIMPLE_BLOB_VIEWER)"
-      >{{ glFeatures.blobOverflowMenu ? $options.SIMPLE_BLOB_VIEWER_LABEL : '' }}</gl-button
+      >{{ $options.SIMPLE_BLOB_VIEWER_LABEL }}</gl-button
     >
     <gl-button
       v-if="showViewerToggles"
@@ -100,14 +93,14 @@ export default {
       :aria-label="$options.RICH_BLOB_VIEWER_TITLE"
       :title="$options.RICH_BLOB_VIEWER_TITLE"
       :selected="isRichViewer"
-      :icon="glFeatures.blobOverflowMenu ? '' : docIcon"
+      icon=""
       data-testid="rich-blob-viewer-button"
       category="primary"
       variant="default"
       class="js-blob-viewer-switch-btn"
       data-viewer="rich"
       @click="switchToViewer($options.RICH_BLOB_VIEWER)"
-      >{{ glFeatures.blobOverflowMenu ? $options.RICH_BLOB_VIEWER_LABEL : '' }}</gl-button
+      >{{ $options.RICH_BLOB_VIEWER_LABEL }}</gl-button
     >
     <gl-button
       v-if="showBlameToggle"

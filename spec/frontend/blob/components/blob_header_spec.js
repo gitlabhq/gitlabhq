@@ -1,5 +1,3 @@
-import Vue from 'vue';
-import VueApollo from 'vue-apollo';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import BlobHeader from '~/blob/components/blob_header.vue';
 import DefaultActions from '~/blob/components/blob_header_default_actions.vue';
@@ -7,21 +5,15 @@ import BlobFilepath from '~/blob/components/blob_header_filepath.vue';
 import ViewerSwitcher from '~/blob/components/blob_header_viewer_switcher.vue';
 import { SIMPLE_BLOB_VIEWER } from '~/blob/components/constants';
 import TableContents from '~/blob/components/table_contents.vue';
-import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import WebIdeLink from 'ee_else_ce/vue_shared/components/web_ide_link.vue';
-import userInfoQuery from '~/blob/queries/user_info.query.graphql';
-import applicationInfoQuery from '~/blob/queries/application_info.query.graphql';
-import { Blob, userInfoMock, applicationInfoMock } from './mock_data';
-
-Vue.use(VueApollo);
+import { Blob } from './mock_data';
 
 describe('Blob Header Default Actions', () => {
   let wrapper;
 
   const defaultProvide = {
     blobHash: 'foo-bar',
-    glFeatures: { blobOverflowMenu: true },
   };
 
   const findDefaultActions = () => wrapper.findComponent(DefaultActions);
@@ -30,7 +22,6 @@ describe('Blob Header Default Actions', () => {
   const findBlobFilePath = () => wrapper.findComponent(BlobFilepath);
   const findRichTextEditorBtn = () => wrapper.findByTestId('rich-blob-viewer-button');
   const findSimpleTextEditorBtn = () => wrapper.findByTestId('simple-blob-viewer-button');
-  const findWebIdeLink = () => wrapper.findComponent(WebIdeLink);
   const findDuoWorkflowActionSlot = () => wrapper.findByTestId('ee-duo-workflow-action');
 
   async function createComponent({
@@ -39,21 +30,7 @@ describe('Blob Header Default Actions', () => {
     propsData = {},
     mountFn = shallowMountExtended,
   } = {}) {
-    const userInfoMockResolver = jest.fn().mockResolvedValue({
-      data: { ...userInfoMock },
-    });
-
-    const applicationInfoMockResolver = jest.fn().mockResolvedValue({
-      data: { ...applicationInfoMock },
-    });
-
-    const fakeApollo = createMockApollo([
-      [userInfoQuery, userInfoMockResolver],
-      [applicationInfoQuery, applicationInfoMockResolver],
-    ]);
-
     wrapper = mountFn(BlobHeader, {
-      apolloProvider: fakeApollo,
       provide: {
         ...defaultProvide,
       },
@@ -73,87 +50,6 @@ describe('Blob Header Default Actions', () => {
   describe('rendering', () => {
     beforeEach(() => {
       createComponent();
-    });
-
-    describe('WebIdeLink component', () => {
-      it('does not render WebIdeLink component', () => {
-        expect(findWebIdeLink().exists()).toBe(false);
-      });
-
-      describe('when blob_overflow_menu feature flag is false', () => {
-        it('renders the WebIdeLink component with the correct props', async () => {
-          const { ideEditPath, editBlobPath, gitpodBlobUrl, pipelineEditorPath } = Blob;
-          const showForkSuggestion = false;
-          const showWebIdeForkSuggestion = false;
-          await createComponent({
-            options: {
-              provide: {
-                glFeatures: { blobOverflowMenu: false },
-              },
-            },
-            propsData: { showForkSuggestion, showWebIdeForkSuggestion },
-          });
-
-          expect(findWebIdeLink().props()).toMatchObject({
-            showEditButton: true,
-            buttonVariant: 'confirm',
-            editUrl: editBlobPath,
-            webIdeUrl: ideEditPath,
-            needsToFork: showForkSuggestion,
-            needsToForkWithWebIde: showWebIdeForkSuggestion,
-            showPipelineEditorButton: Boolean(pipelineEditorPath),
-            pipelineEditorUrl: pipelineEditorPath,
-            gitpodUrl: gitpodBlobUrl,
-            isGitpodEnabledForInstance: applicationInfoMock.gitpodEnabled,
-            isGitpodEnabledForUser: userInfoMock.currentUser.gitpodEnabled,
-            disabled: false,
-          });
-        });
-
-        it('disables the WebIdeLink component when file is LFS', async () => {
-          await createComponent({
-            options: {
-              provide: {
-                glFeatures: { blobOverflowMenu: false },
-              },
-            },
-            propsData: { isUsingLfs: true },
-          });
-
-          expect(findWebIdeLink().props('disabled')).toBe(true);
-        });
-
-        it('passes the edit button variant down to the WebIdeLink', () => {
-          const editButtonVariant = 'danger';
-
-          createComponent({
-            options: {
-              provide: {
-                glFeatures: { blobOverflowMenu: false },
-              },
-            },
-            propsData: { editButtonVariant },
-          });
-
-          expect(findWebIdeLink().props('buttonVariant')).toBe(editButtonVariant);
-        });
-
-        it.each([[{ archived: true }], [{ editBlobPath: null }]])(
-          'does not render the WebIdeLink component when blob is archived or does not have an edit path',
-          (blobProps) => {
-            createComponent({
-              blobProps,
-              options: {
-                provide: {
-                  glFeatures: { blobOverflowMenu: false },
-                },
-              },
-            });
-
-            expect(findWebIdeLink().exists()).toBe(false);
-          },
-        );
-      });
     });
 
     describe('default render', () => {
@@ -274,24 +170,6 @@ describe('Blob Header Default Actions', () => {
       await findRichTextEditorBtn().trigger('click');
 
       expect(wrapper.emitted('viewer-changed')).toBeDefined();
-    });
-
-    it('sets different icons depending on the blob file type', async () => {
-      factory();
-
-      expect(findViewSwitcher().props('docIcon')).toBe('document');
-
-      await wrapper.setProps({
-        blob: {
-          ...Blob,
-          richViewer: {
-            ...Blob.richViewer,
-            fileType: 'csv',
-          },
-        },
-      });
-
-      expect(findViewSwitcher().props('docIcon')).toBe('table');
     });
   });
 });

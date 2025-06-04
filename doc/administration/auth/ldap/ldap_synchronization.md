@@ -347,6 +347,11 @@ If you frequently experience connection issues between your LDAP server and GitL
 For information on adding group links by using CNs and filters, refer to the
 [GitLab groups documentation](../../../user/group/access_and_permissions.md#manage-group-memberships-with-ldap).
 
+### Link a custom admin role with an LDAP group
+
+For information on adding custom admin role links by using CNs and filters, refer to the
+[manage users using LDAP documentation](../../../user/custom_roles/_index.md#sync-ldap-groups-to-admin-roles).
+
 ### Administrator sync
 
 As an extension of group sync, you can automatically manage your global GitLab

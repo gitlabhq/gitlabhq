@@ -9,10 +9,6 @@ module QA
         include Page::Component::BlobContent
         include Shared::Editor
 
-        view 'app/assets/javascripts/repository/components/blob_button_group.vue' do
-          element 'lock-button'
-        end
-
         view 'app/assets/javascripts/vue_shared/components/web_ide_link.vue' do
           element 'action-dropdown'
           element 'edit-menu-item', ':data-testid="`${action.key}-menu-item`"' # rubocop:disable QA/ElementWithPattern

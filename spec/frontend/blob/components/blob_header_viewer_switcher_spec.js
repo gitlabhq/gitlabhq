@@ -14,12 +14,9 @@ describe('Blob Header Viewer Switcher', () => {
   let wrapper;
   let trackingSpy;
 
-  function createComponent(propsData = { showViewerToggles: true }, featureFlag = false) {
+  function createComponent(propsData = { showViewerToggles: true }) {
     wrapper = mountExtended(BlobHeaderViewerSwitcher, {
       propsData,
-      provide: {
-        glFeatures: { blobOverflowMenu: featureFlag },
-      },
     });
   }
 
@@ -126,22 +123,10 @@ describe('Blob Header Viewer Switcher', () => {
     );
   });
 
-  describe('with blobOverflowMenu feature flag', () => {
-    it('renders icon toggles, when flag is disabled', () => {
-      createComponent();
-
-      expect(findSimpleViewerButton().props('icon')).toBe('code');
-      expect(findSimpleViewerButton().text()).toBe('');
-      expect(findRichViewerButton().props('icon')).toBe('document');
-      expect(findRichViewerButton().text()).toBe('');
-    });
-
-    it('renders text toggles, when flag is enabled', () => {
-      createComponent({ showViewerToggles: true }, true);
-
-      expect(findSimpleViewerButton().props('icon')).toBe('');
+  describe('viewer toggles', () => {
+    it('renders text toggles', () => {
+      createComponent({ showViewerToggles: true });
       expect(findSimpleViewerButton().text()).toBe('Code');
-      expect(findRichViewerButton().props('icon')).toBe('');
       expect(findRichViewerButton().text()).toBe('Preview');
     });
   });

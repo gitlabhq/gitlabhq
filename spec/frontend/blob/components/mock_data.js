@@ -83,5 +83,3 @@ export const userInfoMock = {
     profileEnableGitpodPath: '/-/profile?user%5Bgitpod_enabled%5D=true',
   },
 };
-
-export const applicationInfoMock = { gitpodEnabled: true };

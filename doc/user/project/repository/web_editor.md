@@ -263,14 +263,9 @@ To cancel changes, edit, upload, or delete a file, from the Web Editor:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519325) in GitLab 17.10 [with a flag](../../../administration/feature_flags.md) named `blob_overflow_menu`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/522993) in GitLab 18.1. Feature flag `blob_overflow_menu` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
 
 The **Actions** ({{< icon name="ellipsis_v" >}}) menu consolidates file operations into the
 dropdown list. From this menu, you can:

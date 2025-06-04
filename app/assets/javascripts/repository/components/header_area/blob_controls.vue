@@ -10,15 +10,12 @@ import getRefMixin from '~/repository/mixins/get_ref';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import initSourcegraph from '~/sourcegraph';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
-import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
-import ShortcutsBlob from '~/behaviors/shortcuts/shortcuts_blob';
 import { shortcircuitPermalinkButton } from '~/blob/utils';
-import BlobLinePermalinkUpdater from '~/blob/blob_line_permalink_updater';
 import {
   keysFor,
   START_SEARCH_PROJECT_FILE,
-  PROJECT_FILES_GO_TO_PERMALINK,
+  PROJECT_FILES_COPY_FILE_PERMALINK,
 } from '~/behaviors/shortcuts/keybindings';
 import { sanitize } from '~/lib/dompurify';
 import { InternalEvents } from '~/tracking';
@@ -32,7 +29,7 @@ import {
 import { showBlameButton, isUsingLfs } from '~/repository/utils/storage_info_utils';
 import blobControlsQuery from '~/repository/queries/blob_controls.query.graphql';
 import userGitpodInfo from '~/repository/queries/user_gitpod_info.query.graphql';
-import applicationInfoQuery from '~/blob/queries/application_info.query.graphql';
+import applicationInfoQuery from '~/repository/queries/application_info.query.graphql';
 import { getRefType } from '~/repository/utils/ref_type';
 import OpenMrBadge from '~/repository/components/header_area/open_mr_badge.vue';
 import BlobOverflowMenu from 'ee_else_ce/repository/components/header_area/blob_overflow_menu.vue';
@@ -75,6 +72,7 @@ export default {
         return !this.filePath;
       },
       error(error) {
+        this.hasProjectQueryErrors = true;
         createAlert({ message: this.$options.i18n.errorMessage });
         logError(
           `Failed to fetch blob controls. See exception details for more information.`,
@@ -139,6 +137,7 @@ export default {
       currentUser: {},
       gitpodEnabled: false,
       isForkSuggestionModalVisible: false,
+      hasProjectQueryErrors: false,
     };
   },
   computed: {
@@ -150,6 +149,9 @@ export default {
     },
     blobInfo() {
       return this.project?.repository?.blobs?.nodes[0] || {};
+    },
+    repository() {
+      return this.project?.repository || DEFAULT_BLOB_INFO.repository;
     },
     userPermissions() {
       return this.project?.userPermissions || DEFAULT_BLOB_INFO.userPermissions;
@@ -172,7 +174,7 @@ export default {
     },
     shortcuts() {
       const findFileKey = keysFor(START_SEARCH_PROJECT_FILE)[0];
-      const permalinkKey = keysFor(PROJECT_FILES_GO_TO_PERMALINK)[0];
+      const permalinkKey = keysFor(PROJECT_FILES_COPY_FILE_PERMALINK)[0];
 
       return {
         findFile: findFileKey,
@@ -220,7 +222,6 @@ export default {
       initSourcegraph();
       this.$nextTick(() => {
         this.initShortcuts();
-        this.initLinksUpdate();
       });
     },
   },
@@ -230,15 +231,6 @@ export default {
     },
     initShortcuts() {
       shortcircuitPermalinkButton();
-      addShortcutsExtension(ShortcutsBlob);
-    },
-    initLinksUpdate() {
-      // eslint-disable-next-line no-new
-      new BlobLinePermalinkUpdater(
-        document.querySelector('.tree-holder'),
-        '.file-line-num[data-line-number], .file-line-num[data-line-number] *',
-        document.querySelectorAll('.js-data-file-blob-permalink-url, .js-blob-blame-link'),
-      );
     },
     handleFindFile() {
       this.trackEvent(FIND_FILE_BUTTON_CLICK);
@@ -287,10 +279,7 @@ export default {
       v-gl-tooltip.html="findFileTooltip"
       :aria-keyshortcuts="findFileShortcutKey"
       data-testid="find"
-      :class="[
-        $options.buttonClassList,
-        { 'gl-hidden sm:gl-inline-flex': glFeatures.blobOverflowMenu },
-      ]"
+      :class="[$options.buttonClassList, 'gl-hidden sm:gl-inline-flex']"
       @click="handleFindFile"
     >
       {{ $options.i18n.findFile }}
@@ -299,30 +288,15 @@ export default {
       v-if="showBlameButton"
       data-testid="blame"
       :href="blobInfo.blamePath"
-      :class="[
-        $options.buttonClassList,
-        { 'gl-hidden sm:gl-inline-flex': glFeatures.blobOverflowMenu },
-      ]"
+      :class="[$options.buttonClassList, 'gl-hidden sm:gl-inline-flex']"
       class="js-blob-blame-link"
       @click="handleBlameClick"
     >
       {{ $options.i18n.blame }}
     </gl-button>
 
-    <gl-button
-      v-if="!glFeatures.blobOverflowMenu"
-      v-gl-tooltip.html="permalinkTooltip"
-      :aria-keyshortcuts="permalinkShortcutKey"
-      data-testid="permalink"
-      :href="blobInfo.permalinkPath"
-      :class="$options.buttonClassList"
-      class="js-data-file-blob-permalink-url"
-    >
-      {{ $options.i18n.permalink }}
-    </gl-button>
-
     <web-ide-link
-      v-if="glFeatures.blobOverflowMenu && showWebIdeLink"
+      v-if="showWebIdeLink && !hasProjectQueryErrors"
       :show-edit-button="!isBinaryFileType"
       class="!gl-m-0"
       :edit-url="blobInfo.editBlobPath"
@@ -344,7 +318,7 @@ export default {
       @edit="onEdit"
     />
     <fork-suggestion-modal
-      v-if="!isLoadingRepositoryBlob"
+      v-if="!isLoadingRepositoryBlob && !hasProjectQueryErrors"
       :visible="isForkSuggestionModalVisible"
       :fork-path="blobInfo.forkAndViewPath"
       @hide="isForkSuggestionModalVisible = false"
@@ -360,11 +334,11 @@ export default {
       :inline="false"
     />
     <blob-overflow-menu
-      v-if="!isLoadingRepositoryBlob && glFeatures.blobOverflowMenu"
+      v-if="!isLoadingRepositoryBlob && !hasProjectQueryErrors"
       :project-path="projectPath"
       :is-binary-file-type="isBinaryFileType"
       :override-copy="true"
-      :is-empty-repository="project.repository.empty"
+      :is-empty-repository="repository.empty"
       :is-using-lfs="isUsingLfs"
       @copy="onCopy"
       @showForkSuggestion="onShowForkSuggestion"

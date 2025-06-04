@@ -157,3 +157,7 @@ used in the search.
 
 Because this is an experimental feature, your feedback is valuable in helping us improve it.
 Share your experiences, suggestions, or issues in [issue 542198](https://gitlab.com/gitlab-org/gitlab/-/issues/542198).
+
+## Related topics
+
+- [Blog: GitLab Duo Chat gets agentic AI makeover](https://about.gitlab.com/blog/2025/05/29/gitlab-duo-chat-gets-agentic-ai-makeover/)

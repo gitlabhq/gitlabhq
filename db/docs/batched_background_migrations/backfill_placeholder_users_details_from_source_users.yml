@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillPlaceholderUsersDetailsFromSourceUsers
+description: Backfill placeholder user details for all existing placeholder users into the Import::PlaceholderUserDetail table.
+feature_category: importers
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192497
+milestone: '18.1'
+queued_migration_version: 20250526065102
+finalized_by: # version of the migration that finalized this BBM

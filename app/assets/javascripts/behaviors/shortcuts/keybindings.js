@@ -390,12 +390,9 @@ export const PROJECT_FILES_GO_BACK = {
   overrideGlobalHotkey: true,
 };
 
-const { blobOverflowMenu } = gon.features ?? {};
-export const PROJECT_FILES_GO_TO_PERMALINK = {
-  id: 'projectFiles.goToFilePermalink',
-  description: blobOverflowMenu
-    ? __('Copy file permalink')
-    : __('Go to file permalink (while viewing a file)'),
+export const PROJECT_FILES_COPY_FILE_PERMALINK = {
+  id: 'projectFiles.copyFilePermalink',
+  description: __('Copy file permalink'),
   defaultKeys: ['y'],
 };
 
@@ -681,7 +678,7 @@ const PROJECT_FILES_SHORTCUTS_GROUP = {
     PROJECT_FILES_MOVE_SELECTION_DOWN,
     PROJECT_FILES_OPEN_SELECTION,
     PROJECT_FILES_GO_BACK,
-    PROJECT_FILES_GO_TO_PERMALINK,
+    PROJECT_FILES_COPY_FILE_PERMALINK,
     PROJECT_FILES_GO_TO_COMPARE,
   ],
 };

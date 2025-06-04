@@ -35,8 +35,8 @@ module WorkItems
           context = { original: original_work_item, user: current_user }
 
           # We need this because move work item is supposed to work with epics and for EpicWorkItem
-          # Issues::CloseService also enqueues a job for ::WorkItems::ValidateEpicWorkItemSyncWorker and because
-          # this is being run within a transaction, we are delaying the close operation until after commit.
+          # Issues::CloseService. Because this is being run within a transaction,
+          # we are delaying the close operation until after commit.
           new_work_item.run_after_commit_or_now do
             close_service = ::Issues::CloseService.new(
               container: context[:original].namespace, current_user: context[:user]

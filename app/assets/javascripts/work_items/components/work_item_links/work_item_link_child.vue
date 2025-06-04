@@ -292,7 +292,7 @@ export default {
           :work-item-full-path="workItemFullPath"
           :show-weight="shouldShowWeight"
           :contextual-view-enabled="contextualViewEnabled"
-          @click="$emit('click', $event)"
+          @click="$emit('toggleDrawer', $event)"
           @removeChild="$emit('removeChild', childItem)"
         />
       </div>
@@ -320,7 +320,7 @@ export default {
         @drop="$emit('drop')"
         @removeChild="$emit('removeChild', childItem)"
         @error="$emit('error', $event)"
-        @click="$emit('click', $event)"
+        @click="$emit('toggleDrawer', $event)"
       />
       <work-item-children-load-more
         v-if="hasNextPage && isExpanded"

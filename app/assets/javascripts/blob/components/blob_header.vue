@@ -1,9 +1,5 @@
 <script>
 import DefaultActions from 'jh_else_ce/blob/components/blob_header_default_actions.vue';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import userInfoQuery from '../queries/user_info.query.graphql';
-import applicationInfoQuery from '../queries/application_info.query.graphql';
 import BlobFilepath from './blob_header_filepath.vue';
 import ViewerSwitcher from './blob_header_viewer_switcher.vue';
 import { SIMPLE_BLOB_VIEWER, BLAME_VIEWER } from './constants';
@@ -15,23 +11,6 @@ export default {
     DefaultActions,
     BlobFilepath,
     TableOfContents,
-    WebIdeLink: () => import('ee_else_ce/vue_shared/components/web_ide_link.vue'),
-  },
-  mixins: [glFeatureFlagMixin()],
-  apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
-    currentUser: {
-      query: userInfoQuery,
-      error() {
-        this.$emit('error');
-      },
-    },
-    gitpodEnabled: {
-      query: applicationInfoQuery,
-      error() {
-        this.$emit('error');
-      },
-    },
   },
   props: {
     blob: {
@@ -73,21 +52,8 @@ export default {
       required: false,
       default: false,
     },
-    showForkSuggestion: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    showWebIdeForkSuggestion: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    projectPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
+    // Used in EE component
+    // eslint-disable-next-line vue/no-unused-properties
     projectId: {
       type: String,
       required: false,
@@ -103,35 +69,15 @@ export default {
       required: false,
       default: true,
     },
-    editButtonVariant: {
-      type: String,
-      required: false,
-      default: 'confirm',
-    },
-    isUsingLfs: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   data() {
     return {
       viewer: this.hideViewerSwitcher ? null : this.activeViewerType,
-      gitpodEnabled: false,
     };
   },
   computed: {
-    showWebIdeLink() {
-      return !this.blob.archived && this.blob.editBlobPath;
-    },
     isEmpty() {
       return this.blob.rawSize === '0';
-    },
-    blobSwitcherDocIcon() {
-      return this.blob.richViewer?.fileType === 'csv' ? 'table' : 'document';
-    },
-    projectIdAsNumber() {
-      return getIdFromGraphQLId(this.projectId);
     },
   },
   watch: {
@@ -151,8 +97,6 @@ export default {
 <template>
   <div class="js-file-title file-title-flex-parent">
     <div class="gl-mb-3 gl-flex gl-gap-3 md:gl-mb-0">
-      <table-of-contents v-if="!glFeatures.blobOverflowMenu" class="gl-pr-2" />
-
       <blob-filepath
         :blob="blob"
         :show-path="showPath"
@@ -169,37 +113,12 @@ export default {
       <viewer-switcher
         v-if="!hideViewerSwitcher"
         v-model="viewer"
-        :doc-icon="blobSwitcherDocIcon"
         :show-blame-toggle="showBlameToggle"
         :show-viewer-toggles="Boolean(blob.simpleViewer && blob.richViewer)"
         v-on="$listeners"
       />
-
-      <table-of-contents v-if="glFeatures.blobOverflowMenu" class="gl-pr-2" />
+      <table-of-contents class="gl-pr-2" />
       <slot name="ee-duo-workflow-action" data-test-id="ee-duo-workflow-action"></slot>
-      <web-ide-link
-        v-if="!glFeatures.blobOverflowMenu && showWebIdeLink"
-        :disabled="isUsingLfs"
-        :show-edit-button="!isBinary"
-        :button-variant="editButtonVariant"
-        class="sm:!gl-ml-0"
-        :edit-url="blob.editBlobPath"
-        :web-ide-url="blob.ideEditPath"
-        :needs-to-fork="showForkSuggestion"
-        :needs-to-fork-with-web-ide="showWebIdeForkSuggestion"
-        :show-pipeline-editor-button="Boolean(blob.pipelineEditorPath)"
-        :pipeline-editor-url="blob.pipelineEditorPath"
-        :gitpod-url="blob.gitpodBlobUrl"
-        :is-gitpod-enabled-for-instance="gitpodEnabled"
-        :is-gitpod-enabled-for-user="currentUser && currentUser.gitpodEnabled"
-        :project-path="projectPath"
-        :project-id="projectIdAsNumber"
-        :user-preferences-gitpod-path="currentUser && currentUser.preferencesGitpodPath"
-        :user-profile-enable-gitpod-path="currentUser && currentUser.profileEnableGitpodPath"
-        is-blob
-        disable-fork-modal
-        v-on="$listeners"
-      />
 
       <slot name="actions"></slot>
 

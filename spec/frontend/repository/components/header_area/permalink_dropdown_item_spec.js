@@ -1,7 +1,7 @@
 import { nextTick } from 'vue';
 import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import PermalinkDropdownItem from '~/repository/components/header_area/permalink_dropdown_item.vue';
-import { keysFor, PROJECT_FILES_GO_TO_PERMALINK } from '~/behaviors/shortcuts/keybindings';
+import { keysFor, PROJECT_FILES_COPY_FILE_PERMALINK } from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { Mousetrap } from '~/lib/mousetrap';
 import { hashState, updateHash } from '~/blob/state';
@@ -169,12 +169,12 @@ describe('PermalinkDropdownItem', () => {
 
       createComponent();
       expect(bindSpy).toHaveBeenCalledWith(
-        keysFor(PROJECT_FILES_GO_TO_PERMALINK),
+        keysFor(PROJECT_FILES_COPY_FILE_PERMALINK),
         expect.any(Function),
       );
 
       wrapper.destroy();
-      expect(unbindSpy).toHaveBeenCalledWith(keysFor(PROJECT_FILES_GO_TO_PERMALINK));
+      expect(unbindSpy).toHaveBeenCalledWith(keysFor(PROJECT_FILES_COPY_FILE_PERMALINK));
     });
 
     it('add and remove event listener for hashChange event', () => {
@@ -193,7 +193,7 @@ describe('PermalinkDropdownItem', () => {
     shouldDisableShortcuts.mockReturnValue(false);
     createComponent();
     expect(wrapper.find('kbd').exists()).toBe(true);
-    expect(wrapper.find('kbd').text()).toBe(keysFor(PROJECT_FILES_GO_TO_PERMALINK)[0]);
+    expect(wrapper.find('kbd').text()).toBe(keysFor(PROJECT_FILES_COPY_FILE_PERMALINK)[0]);
   });
 
   it('does not display the shortcut key when shortcuts are disabled', () => {

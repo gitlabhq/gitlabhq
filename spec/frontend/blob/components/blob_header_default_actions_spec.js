@@ -19,9 +19,6 @@ describe('Blob Header Default Actions', () => {
     wrapper = shallowMountExtended(BlobHeaderActions, {
       provide: {
         blobHash,
-        glFeatures: {
-          blobOverflowMenu: false,
-        },
         ...provided,
       },
       propsData: {
@@ -136,9 +133,9 @@ describe('Blob Header Default Actions', () => {
     });
   });
 
-  describe('when blob_overflow_menu is enabled', () => {
+  describe('default actions layout', () => {
     it('hides default actions for mobile layout', () => {
-      createComponent({}, { glFeatures: { blobOverflowMenu: true } });
+      createComponent();
 
       expect(wrapper.findComponent(GlButtonGroup).attributes('class')).toBe(
         'gl-hidden sm:gl-inline-flex',

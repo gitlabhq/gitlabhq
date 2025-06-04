@@ -252,7 +252,7 @@ export default {
 };
 </script>
 <template>
-  <div>
+  <div data-testid="snippet-header">
     <div class="gl-flex gl-flex-col gl-items-start gl-gap-3 gl-pt-3 sm:gl-flex-row">
       <span
         v-if="snippet.hidden"

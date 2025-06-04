@@ -44,8 +44,7 @@ RSpec.describe Gitlab::Orchestrator::Deployment::ResourcePresets do
         },
         toolbox: {
           resources: {
-            requests: { cpu: "50m", memory: "128Mi" },
-            limits: { cpu: "1100m", memory: "1Gi" }
+            requests: { cpu: "50m", memory: "128Mi" }
           }
         }
       },
@@ -159,8 +158,7 @@ RSpec.describe Gitlab::Orchestrator::Deployment::ResourcePresets do
         },
         toolbox: {
           resources: {
-            requests: { cpu: "50m", memory: "128Mi" },
-            limits: { cpu: "1100m", memory: "1Gi" }
+            requests: { cpu: "50m", memory: "128Mi" }
           }
         }
       },

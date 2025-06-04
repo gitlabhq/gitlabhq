@@ -3,7 +3,7 @@ import Vue from 'vue';
 import { GlDisclosureDropdownItem, GlToast } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { InternalEvents } from '~/tracking';
-import { keysFor, PROJECT_FILES_GO_TO_PERMALINK } from '~/behaviors/shortcuts/keybindings';
+import { keysFor, PROJECT_FILES_COPY_FILE_PERMALINK } from '~/behaviors/shortcuts/keybindings';
 import { Mousetrap } from '~/lib/mousetrap';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { hashState, updateHash } from '~/blob/state';
@@ -34,7 +34,7 @@ export default {
   },
   computed: {
     permalinkShortcutKey() {
-      return keysFor(PROJECT_FILES_GO_TO_PERMALINK)[0];
+      return keysFor(PROJECT_FILES_COPY_FILE_PERMALINK)[0];
     },
     shortcutsDisabled() {
       return shouldDisableShortcuts();
@@ -45,11 +45,11 @@ export default {
   },
   mounted() {
     this.mousetrap = new Mousetrap();
-    this.mousetrap.bind(keysFor(PROJECT_FILES_GO_TO_PERMALINK), this.triggerCopyPermalink);
+    this.mousetrap.bind(keysFor(PROJECT_FILES_COPY_FILE_PERMALINK), this.triggerCopyPermalink);
     window.addEventListener('hashchange', this.onHashChange);
   },
   beforeDestroy() {
-    this.mousetrap.unbind(keysFor(PROJECT_FILES_GO_TO_PERMALINK));
+    this.mousetrap.unbind(keysFor(PROJECT_FILES_COPY_FILE_PERMALINK));
     window.removeEventListener('hashchange', this.onHashChange);
   },
   methods: {

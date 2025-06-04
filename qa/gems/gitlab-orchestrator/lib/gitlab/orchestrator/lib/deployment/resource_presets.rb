@@ -61,7 +61,7 @@ module Gitlab
                     resources: resources("300m", "300Mi")
                   },
                   toolbox: {
-                    resources: resources("50m", "128Mi", "1100m", "1Gi")
+                    resources: resources("50m", "128Mi", no_limits: true)
                   }
                 },
                 registry: {
@@ -124,7 +124,7 @@ module Gitlab
                   # Toolbox create peak load during startup but then consumes very little
                   # Set high limit value but don't request full amount to avoid unnecessary lock
                   toolbox: {
-                    resources: resources("50m", "128Mi", "1100m", "1Gi")
+                    resources: resources("50m", "128Mi", no_limits: true)
                   }
                 },
                 registry: {
