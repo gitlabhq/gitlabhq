@@ -685,7 +685,7 @@ script:
 The previous configuration results in `git fetch` being called this way:
 
 ```shell
-git fetch origin $REFSPECS --depth 50  --prune
+git fetch origin $REFSPECS --depth 20  --prune
 ```
 
 Where `$REFSPECS` is a value provided to the runner internally by GitLab.
@@ -756,7 +756,7 @@ script:
 The previous configuration results in `git submodule update` being called this way:
 
 ```shell
-git submodule update --init --depth 50 --recursive --remote --jobs 4
+git submodule update --init --depth 20 --recursive --remote --jobs 4
 ```
 
 {{< alert type="warning" >}}
@@ -819,7 +819,7 @@ It can be helpful for repositories with a large number of commits or old, large 
 passed to `git fetch` and `git clone`.
 
 Newly-created projects automatically have a
-[default `git depth` value of `50`](../pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone).
+[default `git depth` value of `20`](../pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone).
 
 If you use a depth of `1` and have a queue of jobs or retry
 jobs, jobs may fail.

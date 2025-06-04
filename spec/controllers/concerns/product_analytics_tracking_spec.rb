@@ -70,7 +70,7 @@ RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_a
         additional_properties: {}
       )
       allow(Gitlab::Tracking::EventDefinition).to receive(:find).with(event_name).and_return(event_definition)
-      allow(event_definition).to receive(:extra_tracking_classes).and_return([])
+      allow(event_definition).to receive(:extra_trackers).and_return({})
     end
 
     context 'when user is logged in' do

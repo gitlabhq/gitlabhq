@@ -91,7 +91,7 @@ Prerequisites:
 
 - You must be an administrator or have the Owner role for the group.
 
-To set a compliance framework as [default](../compliance_frameworks.md#default-compliance-frameworks)] from the compliance frameworks report:
+To set a compliance framework as [default](../compliance_frameworks/_index.md#default-compliance-frameworks)] from the compliance frameworks report:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Compliance center**.

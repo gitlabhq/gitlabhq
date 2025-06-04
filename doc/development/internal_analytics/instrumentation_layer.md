@@ -51,20 +51,25 @@ To implement it for your tracking system, you need to:
    end
    ```
 
-1. Extend the event definition with the new tracking class added in `extra_tracking_classes:` property
+1. Extend the event definition with the new tracking class added in `extra_trackers:` property
 
    ```yaml
-   extra_tracking_classes:
-     - Gitlab::Tracking::NewTrackingSystemProcessor
+   extra_trackers:
+    - tracking_class: Gitlab::Tracking::NewTrackingSystemProcessor
+      protected_properties:
+        processor_type:
+          description: The type of the processor
    ```
+
+  `protected_properties` contains properties to be sent exclusively to the specified tracking class.
 
 1. [Trigger the event](internal_event_instrumentation/quick_start.md#trigger-events) in your code using Internal Events framework
 
 `**kwargs` is used to pass additional parameters to the tracking class from the Internal Events framework.
 The actual parameters depend on the tracking parameters passed to the event invocation above.
-Usually, it includes `user`, `namespace` and `project` along with `additional_properties` that can be used to pass any additional data.
+Usually, it includes `user`, `namespace` and `project` along with `protected_properties` that can be used to pass any additional data.
 
-The tracking systems will be triggered by the order of the `extra_tracking_classes:` property.
+The tracking systems are triggered by the order of the `extra_trackers:` property.
 
 ## Systems that use the Single Instrumentation Layer
 

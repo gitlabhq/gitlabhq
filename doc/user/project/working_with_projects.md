@@ -523,7 +523,7 @@ To leave a project:
 
 {{< /details >}}
 
-You can add compliance frameworks to projects in a group that has a [compliance framework](../compliance/compliance_frameworks.md).
+You can add compliance frameworks to projects in a group that has a [compliance framework](../compliance/compliance_frameworks/_index.md).
 
 ## Manage project access through LDAP groups
 

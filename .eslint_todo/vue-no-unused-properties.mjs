@@ -290,8 +290,6 @@ export default {
     'ee/app/assets/javascripts/metrics/details/metrics_details.vue',
     'ee/app/assets/javascripts/metrics/details/metrics_line_chart.vue',
     'ee/app/assets/javascripts/metrics/details/related_issues/related_issues_provider.vue',
-    'ee/app/assets/javascripts/ml/ai_agents/components/agent_list.vue',
-    'ee/app/assets/javascripts/ml/ai_agents/views/list_agents.vue',
     'ee/app/assets/javascripts/notes/components/ai_summary.vue',
     'ee/app/assets/javascripts/oncall_schedules/components/add_edit_schedule_form.vue',
     'ee/app/assets/javascripts/oncall_schedules/components/oncall_schedule.vue',

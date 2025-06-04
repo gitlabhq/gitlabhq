@@ -26,7 +26,7 @@ This change is a breaking change. For more information, see the [migration guide
 
 You can use [compliance pipelines](../../user/compliance/compliance_pipelines.md) to ensure specific
 compliance-related jobs are run on pipelines for all projects in a group. Compliance pipelines are applied
-to projects through [compliance frameworks](../../user/compliance/compliance_frameworks.md).
+to projects through [compliance frameworks](../../user/compliance/compliance_frameworks/_index.md).
 
 In this tutorial, you:
 

@@ -14,25 +14,18 @@ module Gitlab
       include Gitlab::UsageDataCounters::RedisHashCounter
 
       def track_event(event_name, category: nil, additional_properties: {}, **kwargs)
-        unless Gitlab::Tracking::EventDefinition.internal_event_exists?(event_name)
-          Gitlab::AppJsonLogger.warn("InternalEvents.track_event called with undefined event: #{event_name}")
-        end
-
         Gitlab::Tracking::EventValidator.new(event_name, additional_properties, kwargs).validate!
 
-        event_definition = Gitlab::Tracking::EventDefinition.find(event_name)
-        send_snowplow_event = kwargs.fetch(:send_snowplow_event, true)
-
+        send_snowplow_event = kwargs.key?(:send_snowplow_event) ? kwargs.delete(:send_snowplow_event) : true
+        event_router = Gitlab::InternalEvents::EventsRouter.new(event_name, additional_properties, kwargs)
         track_analytics_event(event_name, send_snowplow_event, category: category,
-          additional_properties: additional_properties, **kwargs)
+          additional_properties: event_router.public_additional_properties, **kwargs)
 
-        return unless event_definition
+        event_router.event_definition.extra_trackers.each do |tracking_class, properties|
+          next unless tracking_class
 
-        kwargs[:additional_properties] = additional_properties
-        event_definition.extra_tracking_classes.each do |tracking_class|
-          tracking_class.track_event(event_name, **kwargs)
+          tracking_class.track_event(event_name, **event_router.extra_tracking_data(properties))
         end
-
       rescue StandardError => e
         extra = {}
         kwargs.each_key do |k|

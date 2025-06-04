@@ -24,10 +24,9 @@ Use if you want the most mature, scalable method. This version is also used on G
 
 For more information, see:
 
-- [Linux package](https://docs.gitlab.com/omnibus/installation/)
+- [Linux package](package/_index.md)
 - [Reference architectures](../administration/reference_architectures/_index.md)
 - [System requirements](requirements.md)
-- [Supported Linux operating systems](../administration/package_information/supported_os.md)
 
 ## Helm chart
 
@@ -65,13 +64,13 @@ Use if you're familiar with Docker.
 
 For more information, see [Docker](docker/_index.md).
 
-## Source
+## Self-compiled
 
 Installs GitLab and its components from scratch.
 
 Use if none of the previous methods are available for your platform. Can use for unsupported systems like \*BSD.
 
-For more information, see [Source](installation.md).
+For more information, see [self-compiled installation](installation.md).
 
 ## GitLab Environment Toolkit (GET)
 
@@ -81,30 +80,14 @@ Use to deploy a [reference architecture](../administration/reference_architectur
 
 This installation methods has some [limitations](https://gitlab.com/gitlab-org/gitlab-environment-toolkit#missing-features-to-be-aware-of), and requires manual setup for production environments.
 
-## Unofficial and community-supported distributions
-
-- [Debian Native](https://wiki.debian.org/gitlab/)
-- [FreeBSD](http://www.freshports.org/www/gitlab-ce)
-- [Arch Linux](https://archlinux.org/packages/extra/x86_64/gitlab/)
-- [Puppet Module](https://forge.puppet.com/puppet/gitlab)
-- [Ansible Playbook](https://github.com/geerlingguy/ansible-role-gitlab)
-- [GitLab Virtual Appliance (KVM)](https://marketplace.opennebula.io/appliance/6b54a412-03a5-11e9-8652-f0def1753696)
-- [GitLab on Cloudron](https://cloudron.io/store/com.gitlab.cloudronapp.html)
-
 ## Unsupported Linux distributions and Unix-like operating systems
 
+[Self-compiled installation](installation.md) of GitLab on the following operating systems is possible, but not supported:
+
 - Arch Linux
-- Fedora
 - FreeBSD
 - Gentoo
 - macOS
-
-Installation of GitLab on these operating systems is possible, but not supported.
-
-For more information, see:
-
-- [Installation guides](https://about.gitlab.com/install/)
-- [Supported and unsupported OS versions for Linux package installations](../administration/package_information/supported_os.md#os-versions-that-are-no-longer-supported)
 
 ## Microsoft Windows
 

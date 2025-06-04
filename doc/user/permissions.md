@@ -113,8 +113,8 @@ Group permissions for [compliance](compliance/_index.md) features including comp
 | View [audit events](compliance/audit_events.md)                                       |       |         |          |     ✓     |     ✓      |   ✓   | Users can view only events based on their individual actions. For more details, see the [prerequisites](compliance/audit_events.md#prerequisites). |
 | View licenses in the [dependency list](application_security/dependency_list/_index.md) |       |         |          |     ✓     |     ✓      |   ✓   |       |
 | View the [compliance center](compliance/compliance_center/_index.md)                  |       |         |          |           |            |   ✓   |       |
-| Manage [compliance frameworks](compliance/compliance_frameworks.md)                        |       |         |          |           |            |   ✓   |       |
-| Assign [compliance frameworks](compliance/compliance_frameworks.md) to projects            |       |         |          |           |            |   ✓   |       |
+| Manage [compliance frameworks](compliance/compliance_frameworks/_index.md) |       |         |          |           |            |   ✓   |       |
+| Assign [compliance frameworks](compliance/compliance_frameworks/_index.md) to projects |       |         |          |           |            |   ✓   |       |
 | Manage [audit streams](compliance/audit_event_streaming.md)                           |       |         |          |           |            |   ✓   |       |
 
 ### GitLab Duo group permissions

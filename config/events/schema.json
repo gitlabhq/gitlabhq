@@ -197,10 +197,29 @@
         ]
       }
     },
-    "extra_tracking_classes": {
-      "type": "array",
+    "extra_trackers": {
+      "type": [
+        "array",
+        "null"
+      ],
       "items": {
-        "type": "string"
+        "type": "object",
+        "properties": {
+          "tracking_class": {
+            "type": "string"
+          },
+          "protected_properties": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "description": {
+                "type": "string"
+              }
+            }
+          }
+        }
       }
     }
   },

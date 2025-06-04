@@ -4,7 +4,7 @@ module Gitlab
   module Tracking
     class AiTracking
       # events getting taken care of by instrumentation layer
-      EVENTS_MIGRATED_TO_INSTRUMENTATION_LAYER = ['request_duo_chat_response'].freeze
+      EVENTS_MIGRATED_TO_INSTRUMENTATION_LAYER = %w[request_duo_chat_response code_suggestion_shown_in_ide].freeze
 
       def self.track_event(*args, **kwargs)
         new.track_event(*args, **kwargs)

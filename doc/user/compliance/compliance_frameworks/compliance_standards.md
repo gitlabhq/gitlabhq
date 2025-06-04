@@ -5,8 +5,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Compliance standards
 ---
 
-You can use [GitLab compliance controls](../compliance_frameworks.md#gitlab-compliance-controls) to help meet the
-requirements of many compliance standards.
+You can use [GitLab compliance controls](_index.md#gitlab-compliance-controls) to help meet the requirements of many
+compliance standards.
 
 ## ISO 27001 compliance requirements
 

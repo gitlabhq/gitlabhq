@@ -1,11 +1,11 @@
 ---
-redirect_to: '../compliance/compliance_frameworks.md'
+redirect_to: '../compliance/compliance_frameworks/_index.md'
 remove_date: '2025-05-25'
 ---
 
 <!-- markdownlint-disable -->
 
-This document was moved to [another location](../compliance/compliance_frameworks.md).
+This document was moved to [another location](../compliance/compliance_frameworks/_index.md).
 
 <!-- This redirect file can be deleted after <YYYY-MM-DD>. -->
 <!-- Redirects that point to other docs in the same project expire in three months. -->

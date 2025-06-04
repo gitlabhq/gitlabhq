@@ -214,7 +214,6 @@ class User < ApplicationRecord
   has_many :personal_projects,        through: :namespace, source: :projects
   has_many :project_members, -> { where(requested_at: nil) }
   has_many :projects, through: :project_members
-  has_many :project_deletion_schedules, class_name: '::Projects::DeletionSchedule', inverse_of: :deleting_user
   has_many :created_projects, foreign_key: :creator_id, class_name: 'Project', dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
   has_many :created_namespace_details, foreign_key: :creator_id, class_name: 'Namespace::Detail'
   has_many :projects_with_active_memberships, -> { where(members: { state: ::Member::STATE_ACTIVE }) }, through: :project_members, source: :project

@@ -54,7 +54,7 @@ Other examples of internal users:
 [GitLab Admin Bot](https://gitlab.com/gitlab-org/gitlab/-/blob/1d38cfdbed081f8b3fa14b69dd743440fe85081b/lib/users/internal.rb#L104)
 is an internal user that cannot be accessed or modified by regular users and is responsible for many tasks including:
 
-- Applying [default compliance frameworks](../user/compliance/compliance_frameworks.md#default-compliance-frameworks) to
+- Applying [default compliance frameworks](../user/compliance/compliance_frameworks/_index.md#default-compliance-frameworks) to
   projects.
 - [Automatically deactivating dormant users](moderate_users.md#automatically-deactivate-dormant-users).
 - [Automatically deleting unconfirmed users](moderate_users.md#automatically-delete-unconfirmed-users).

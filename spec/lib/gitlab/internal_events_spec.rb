@@ -24,8 +24,12 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     allow_next_instance_of(Gitlab::Tracking::EventValidator) do |instance|
       allow(instance).to receive(:validate!)
     end
-    allow(event_definition).to receive_messages(event_selection_rules: event_selection_rules, raw_attributes: {})
-    allow(event_definition).to receive(:extra_tracking_classes).and_return([])
+    allow(event_definition).to receive_messages(
+      event_selection_rules: event_selection_rules,
+      raw_attributes: {},
+      additional_properties: additional_properties,
+      extra_trackers: {}
+    )
     allow(fake_snowplow).to receive(:event)
   end
 
@@ -225,6 +229,10 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
         additional_properties.merge(custom: 'custom_property')
       end
 
+      before do
+        allow(event_definition).to receive(:additional_properties).and_return(properties)
+      end
+
       it 'is sent to Snowplow' do
         track_event
 
@@ -288,6 +296,11 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
             "filter:[custom:custom_property]-#{week_suffix}",
             "#{event_name}-#{week_suffix}"
           ]
+        end
+
+        before do
+          allow(event_definition).to receive(:additional_properties)
+                                       .and_return(additional_properties.merge(custom_properties))
         end
 
         it 'updates the correct redis keys' do
@@ -376,6 +389,16 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
             expect_redis_tracking
           end
         end
+      end
+    end
+
+    context 'when additional properties are not defined in the event definition' do
+      let(:properties) { additional_properties.merge(unknown: 'unknown') }
+
+      it 'does not send the additional properties to Snowplow' do
+        track_event
+
+        expect_snowplow_tracking(nil, additional_properties, extra: {})
       end
     end
   end
@@ -565,21 +588,6 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     end
   end
 
-  context 'when event is not defined' do
-    let(:event_name) { 'an_event_that_does_not_exist' }
-
-    before do
-      allow(Gitlab::Tracking::EventDefinition).to receive(:internal_event_exists?).with(event_name).and_return(false)
-    end
-
-    it 'logs a warning' do
-      expect(Gitlab::AppJsonLogger).to receive(:warn)
-        .with("InternalEvents.track_event called with undefined event: an_event_that_does_not_exist")
-
-      described_class.track_event(event_name)
-    end
-  end
-
   describe 'Product Analytics tracking' do
     let(:app_id) { 'foobar' }
     let(:url) { 'http://localhost:4000' }
@@ -733,7 +741,6 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
           context 'when namespace is early access program participant' do
             let(:namespace_participating) { true }
             let(:event_name) { 'g_edit_by_snippet_ide' }
-            let(:additional_properties) { { label: 'label_name' } }
             let(:user) { create(:user) }
 
             before do
@@ -756,7 +763,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
               expect(user.early_access_program_tracking_events.size).to eq 1
               expect(user.early_access_program_tracking_events.first)
                 .to have_attributes(
-                  event_name: 'g_edit_by_snippet_ide', event_label: 'label_name', category: 'InternalEventTracking'
+                  event_name: 'g_edit_by_snippet_ide', category: 'InternalEventTracking'
                 )
             end
           end
@@ -774,7 +781,11 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
   end
 
   describe 'custom tracking classes' do
-    let(:event_kwargs) { { additional_properties: additional_properties, user: user, project: project } }
+    let(:extra_properties) { { private_property: 'private_prop' } }
+    let(:event_kwargs) do
+      additional_properties.merge(extra_properties).merge({ user: user, project: project })
+    end
+
     let(:custom_tracking_class) do
       Class.new do
         def self.track_event(event_name, **kwargs); end
@@ -783,7 +794,8 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
 
     context 'when custom classes are defined' do
       before do
-        allow(event_definition).to receive(:extra_tracking_classes).and_return([custom_tracking_class])
+        custom_tracking = { custom_tracking_class => { extra_properties: [:private_property] } }
+        allow(event_definition).to receive(:extra_trackers).and_return(custom_tracking)
       end
 
       context 'when event is not defined' do
@@ -800,10 +812,11 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
         end
       end
 
-      it 'calls the custom classes' do
+      it 'calls the custom classes with extra tracking properties' do
         expect(custom_tracking_class).to receive(:track_event).with(event_name, **event_kwargs)
 
-        described_class.track_event(event_name, additional_properties: additional_properties, **event_kwargs)
+        # expected_kwags= event_kwargs.merge(private_property: 'private_prop')
+        described_class.track_event(event_name, **event_kwargs)
       end
     end
   end

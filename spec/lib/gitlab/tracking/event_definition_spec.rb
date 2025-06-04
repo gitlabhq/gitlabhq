@@ -143,15 +143,40 @@ RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_pin
     end
   end
 
-  describe '.extra_tracking_classes' do
-    it 'returns an empty array when no extra tracking classes are set' do
-      expect(described_class.new(nil, {}).extra_tracking_classes).to eq([])
+  describe '.extra_trackers' do
+    it 'returns an empty hash when no extra tracking classes are set' do
+      expect(described_class.new(nil, {}).extra_trackers).to eq([])
     end
 
-    it 'returns the extra tracking classes when they are set' do
-      config = attributes.merge({ extra_tracking_classes: ['Gitlab::Tracking::AiTracking'] })
+    it 'returns the hash with extra tracking class and props when they are set' do
+      extra_trackers = {
+        extra_trackers:
+         [
+           {
+             tracking_class: 'Gitlab::Tracking::AiTracking',
+             protected_properties: { prop: { description: 'description' } }
+           }
+         ]
+      }
+      config = attributes.merge(extra_trackers)
 
-      expect(described_class.new(nil, config).extra_tracking_classes).to eq([Gitlab::Tracking::AiTracking])
+      expect(described_class.new(nil, config).extra_trackers)
+        .to eq({ Gitlab::Tracking::AiTracking => { protected_properties: [:prop] } })
+    end
+
+    it 'returns the hash with extra tracking class with empty array when props are not set' do
+      extra_trackers = {
+        extra_trackers:
+         [
+           {
+             tracking_class: 'Gitlab::Tracking::AiTracking'
+           }
+         ]
+      }
+      config = attributes.merge(extra_trackers)
+
+      expect(described_class.new(nil, config).extra_trackers)
+        .to eq({ Gitlab::Tracking::AiTracking => { protected_properties: [] } })
     end
   end
 

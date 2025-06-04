@@ -66,7 +66,7 @@ To migrate an existing compliance framework to use the pipeline execution policy
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Compliance center**.
-1. [Edit](compliance_frameworks.md#create-edit-or-delete-a-compliance-framework) the existing compliance framework.
+1. [Edit](compliance_frameworks/_index.md#create-edit-or-delete-a-compliance-framework) the existing compliance framework.
 1. In the banner than appears, select **Migrate pipeline to a policy** to create a new policy in the security policies.
 1. Edit the compliance framework again to remove the compliance pipeline.
 
@@ -88,7 +88,7 @@ Therefore, communicate with project users about compliance pipeline configuratio
 
 ### Multiple compliance frameworks
 
-You can [apply to a single project](compliance_frameworks.md#apply-a-compliance-framework-to-a-project) multiple compliance frameworks with compliance pipelines configured.
+You can [apply to a single project](compliance_frameworks/_index.md#apply-a-compliance-framework-to-a-project) multiple compliance frameworks with compliance pipelines configured.
 In this case, only the first compliance framework applied to a project has its compliance pipeline included in the project pipeline.
 
 To ensure that the correct compliance pipeline is included in a project:

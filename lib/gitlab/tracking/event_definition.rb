@@ -80,8 +80,15 @@ module Gitlab
         @attributes[:action]
       end
 
-      def extra_tracking_classes
-        @attributes[:extra_tracking_classes]&.map(&:constantize) || []
+      def extra_trackers
+        return [] unless @attributes[:extra_trackers]
+
+        @attributes[:extra_trackers].to_h do |item|
+          [
+            item[:tracking_class].constantize,
+            { protected_properties: item[:protected_properties]&.keys || [] }
+          ]
+        end
       end
 
       def duo_event?

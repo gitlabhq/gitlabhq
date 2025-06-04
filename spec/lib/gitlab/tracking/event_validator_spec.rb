@@ -14,6 +14,7 @@ RSpec.describe Gitlab::Tracking::EventValidator, feature_category: :service_ping
     allow(Gitlab::Tracking::EventDefinition).to receive(:internal_event_exists?).and_return(true)
     allow(Gitlab::Tracking::EventDefinition).to receive(:find).and_return(event_definition)
     allow(event_definition).to receive(:additional_properties).and_return({ lang: { description: 'Language' } })
+    allow(event_definition).to receive(:extra_trackers).and_return({})
   end
 
   describe '#validate!' do
@@ -114,6 +115,18 @@ RSpec.describe Gitlab::Tracking::EventValidator, feature_category: :service_ping
       it 'raises an InvalidPropertyError for unknown properties' do
         expect { validate }.to raise_error(Gitlab::Tracking::EventValidator::InvalidPropertyError,
           'Unknown additional property: custom_property for event_name: test_event')
+      end
+
+      context 'when defined in extra trackers' do
+        before do
+          allow(event_definition).to receive(:extra_trackers).and_return({
+            'Test::ExtraTracker' => { protected_properties: [:custom_property] }
+          })
+        end
+
+        it 'does not raise an error' do
+          expect { validate }.not_to raise_error
+        end
       end
     end
   end

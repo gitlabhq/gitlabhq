@@ -647,11 +647,7 @@ gem 'gitaly', '~> 17.11.2', feature_category: :gitaly
 # KAS GRPC protocol definitions
 gem 'gitlab-kas-grpc', '~> 17.11.0', feature_category: :deployment_management
 
-# Lock the version before issues below are resolved:
-# https://gitlab.com/gitlab-org/gitlab/-/issues/473169#note_2028352939
-# Or we can upgrade to a more recent version as long as we can confirm
-# that it doesn't have the same issues.
-gem 'grpc', '= 1.63.0', feature_category: :shared
+gem 'grpc', '~> 1.72.0', feature_category: :shared
 
 gem 'google-protobuf', '~> 3.25', '>= 3.25.3', feature_category: :shared
 

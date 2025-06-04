@@ -53,9 +53,13 @@ module Gitlab
 
       def validate_additional_properties!
         event_definition = Gitlab::Tracking::EventDefinition.find(event_name)
+        extra_tracking_properties = event_definition.extra_trackers.flat_map do |_, properties|
+          properties[:protected_properties]
+        end
+        declared_properties = event_definition.additional_properties.keys.concat(extra_tracking_properties)
 
         additional_properties.each_key do |property|
-          unless event_definition.additional_properties.has_key?(property)
+          unless declared_properties.include?(property)
             Gitlab::AppJsonLogger.warn("Tracking event: #{event_name}, undocumented property: #{property}")
           end
 
@@ -70,12 +74,12 @@ module Gitlab
         allowed_types = CUSTOM_PROPERTIES_CLASSES
 
         custom_properties.each_key do |key|
-          unless event_definition.additional_properties.has_key?(key)
+          unless declared_properties.include?(key)
             error = InvalidPropertyError.new("Unknown additional property: #{key} for event_name: #{event_name}")
             log_invalid_property(error)
           end
 
-          validate_property!(custom_properties, key, *allowed_types)
+          validate_property!(custom_properties, key, *allowed_types) unless extra_tracking_properties.include?(key)
         end
       end
 

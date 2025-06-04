@@ -19,7 +19,7 @@ PATH
       google-cloud-storage_transfer (~> 1.2.0)
       google-protobuf (~> 3.25, >= 3.25.3)
       googleauth (~> 1.8.1)
-      grpc (= 1.63.0)
+      grpc (~> 1.72.0)
       json (~> 2.7)
       jwt (~> 2.5)
       logger (~> 1.5)
@@ -106,23 +106,23 @@ GEM
       multi_json (~> 1.11)
       os (>= 0.9, < 2.0)
       signet (>= 0.16, < 2.a)
-    grpc (1.63.0)
-      google-protobuf (~> 3.25)
+    grpc (1.72.0)
+      google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.63.0-aarch64-linux)
-      google-protobuf (~> 3.25)
+    grpc (1.72.0-aarch64-linux)
+      google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.63.0-arm64-darwin)
-      google-protobuf (~> 3.25)
+    grpc (1.72.0-arm64-darwin)
+      google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.63.0-x86-linux)
-      google-protobuf (~> 3.25)
+    grpc (1.72.0-x86-linux)
+      google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.63.0-x86_64-darwin)
-      google-protobuf (~> 3.25)
+    grpc (1.72.0-x86_64-darwin)
+      google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.63.0-x86_64-linux)
-      google-protobuf (~> 3.25)
+    grpc (1.72.0-x86_64-linux)
+      google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
@@ -236,7 +236,7 @@ CHECKSUMS
   addressable (2.8.7) sha256=462986537cf3735ab5f3c0f557f14155d778f4b43ea4f485a9deb9c8f7c58232
   ast (2.4.2) sha256=1e280232e6a33754cde542bc5ef85520b74db2aac73ec14acef453784447cc12
   base64 (0.2.0) sha256=0f25e9b21a02a0cc0cea8ef92b2041035d39350946e8789c562b2d1a3da01507
-  bigdecimal (3.1.9)
+  bigdecimal (3.1.9) sha256=2ffc742031521ad69c2dfc815a98e426a230a3d22aeac1995826a75dabfad8cc
   coderay (1.1.3) sha256=dc530018a4684512f8f38143cd2a096c9f02a1fc2459edcfe534787a7fc77d4b
   concurrent-ruby (1.3.4) sha256=d4aa926339b0a86b5b5054a0a8c580163e6f5dcbdfd0f4bb916b1a2570731c32
   diff-lcs (1.5.1) sha256=273223dfb40685548436d32b4733aa67351769c7dea621da7d9dd4813e63ddfe
@@ -262,12 +262,12 @@ CHECKSUMS
   googleapis-common-protos (1.6.0) sha256=d540114a75fd4b34fee936495d28ff7e331d546b7d7ac7898f3b4bb9f13a8d79
   googleapis-common-protos-types (1.15.0) sha256=57b1600c271fa3312096e55a3040d20d2c0f9a5d65d0fde1f16e5cd99bab156b
   googleauth (1.8.1) sha256=814adadaaa1221dce72a67131e3ecbd6d23491a161ec84fb15fd353b87d8c9e7
-  grpc (1.63.0) sha256=5f4383c4ee2886e92c31b90422261b7527f26e3baa585d877e9804e715983686
-  grpc (1.63.0-aarch64-linux) sha256=dc75c5fd570b819470781d9512105dddfdd11d984f38b8e60bb946f92d1f79ee
-  grpc (1.63.0-arm64-darwin) sha256=91b93a354508a9d1772f095554f2e4c04358c2b32d7a670e3705b7fc4695c996
-  grpc (1.63.0-x86-linux) sha256=152140fa2c28e384d3c1ded454a66d5e22fb2ff1d2920c2ef2530b2d707de6fd
-  grpc (1.63.0-x86_64-darwin) sha256=a814414ff178e89ee3ad0cc2a826ce1ca96c68063effb81affe3e5ceff7b44cc
-  grpc (1.63.0-x86_64-linux) sha256=41a90a597f44959c8dbb94619db2b0c0939a768569a5dfad41fffa227eb1287d
+  grpc (1.72.0) sha256=56fa0da2f4f96471f59430a9ef08a612cc77649e8fa118c83ae7d0bb619bea09
+  grpc (1.72.0-aarch64-linux) sha256=4c739fcd66f446d2eb3816a405da0f27c6004902f3a7d46d0de378da1d242009
+  grpc (1.72.0-arm64-darwin) sha256=91d5d5b8fa19f8f8053b0eceb43985134b40a1f18c56798a00c438d2d70f652a
+  grpc (1.72.0-x86-linux) sha256=865d16bef67b61cf0c51a77421c6659cff16ed4641a46342ea5c058f041e8127
+  grpc (1.72.0-x86_64-darwin) sha256=198b5e3eecea88f29e41415db9168bcd1a821763967adc6299bf4946c5137a36
+  grpc (1.72.0-x86_64-linux) sha256=3662b40cb1cddce5fb33ae61016138d8dd905523db7d65ad664e6f5ea5354360
   i18n (1.14.5) sha256=26dcbc05e364b57e27ab430148b3377bc413987d34cc042336271d8f42e9d1b9
   json (2.10.1) sha256=ddc88ad91a1baf3f0038c174f253af3b086d30dc74db17ca4259bbde982f94dc
   jwt (2.8.2) sha256=5a9877315e224d551785560870287267088eedfec02d5239664def148d18bc12
@@ -276,7 +276,7 @@ CHECKSUMS
   method_source (1.1.0) sha256=181301c9c45b731b4769bc81e8860e72f9161ad7d66dd99103c9ab84f560f5c5
   minitest (5.11.3) sha256=78e18aa2c49c58e9bc53c54a0b900e87ad0a96394e92fbbfa58d3ff860a68f45
   multi_json (1.15.0) sha256=1fd04138b6e4a90017e8d1b804c039031399866ff3fbabb7822aea367c78615d
-  mutex_m (0.3.0)
+  mutex_m (0.3.0) sha256=cfcb04ac16b69c4813777022fdceda24e9f798e48092a2b817eb4c0a782b0751
   net-http (0.4.1) sha256=a96efc5ea18bcb9715e24dda4159d10f67ff0345c8a980d04630028055b2c282
   os (1.1.4) sha256=57816d6a334e7bd6aed048f4b0308226c5fb027433b67d90a9ab435f35108d3f
   parallel (1.26.3) sha256=d86babb7a2b814be9f4b81587bf0b6ce2da7d45969fab24d8ae4bf2bb4d4c7ef

@@ -6,9 +6,6 @@ module API
 
     MAXIMUM_TRACKED_EVENTS = 50
 
-    # Insert fields that shouldn't  saved on internal telemetry
-    FIELDS_BLOCKED_FOR_INTERNAL_EVENTS = %i[branch_name].freeze
-
     before { authenticate_non_get! }
 
     feature_category :service_ping
@@ -45,7 +42,7 @@ module API
           user: current_user,
           namespace_id: namespace_id,
           project_id: project_id,
-          additional_properties: additional_properties.except(*FIELDS_BLOCKED_FOR_INTERNAL_EVENTS)
+          additional_properties: additional_properties
         )
       end
     end

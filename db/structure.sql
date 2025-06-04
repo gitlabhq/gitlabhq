@@ -20997,12 +20997,6 @@ CREATE SEQUENCE project_data_transfers_id_seq
 
 ALTER SEQUENCE project_data_transfers_id_seq OWNED BY project_data_transfers.id;
 
-CREATE TABLE project_deletion_schedules (
-    project_id bigint NOT NULL,
-    user_id bigint NOT NULL,
-    marked_for_deletion_at timestamp with time zone NOT NULL
-);
-
 CREATE TABLE project_deploy_tokens (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -30804,9 +30798,6 @@ ALTER TABLE ONLY project_daily_statistics
 ALTER TABLE ONLY project_data_transfers
     ADD CONSTRAINT project_data_transfers_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY project_deletion_schedules
-    ADD CONSTRAINT project_deletion_schedules_pkey PRIMARY KEY (project_id);
-
 ALTER TABLE ONLY project_deploy_tokens
     ADD CONSTRAINT project_deploy_tokens_pkey PRIMARY KEY (id);
 
@@ -36875,10 +36866,6 @@ CREATE UNIQUE INDEX index_project_daily_statistics_on_project_id_and_date ON pro
 CREATE INDEX index_project_data_transfers_on_namespace_id ON project_data_transfers USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_project_data_transfers_on_project_and_namespace_and_date ON project_data_transfers USING btree (project_id, namespace_id, date);
-
-CREATE INDEX index_project_deletion_schedules_on_user_id ON project_deletion_schedules USING btree (user_id);
-
-CREATE INDEX index_project_deletions_on_marked_for_deletion_at_and_user_id ON project_deletion_schedules USING btree (marked_for_deletion_at, user_id);
 
 CREATE INDEX index_project_deploy_tokens_on_deploy_token_id ON project_deploy_tokens USING btree (deploy_token_id);
 
@@ -43466,12 +43453,6 @@ ALTER TABLE ONLY ml_candidate_metadata
 
 ALTER TABLE ONLY design_management_designs_versions
     ADD CONSTRAINT fk_b054e8aa82 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY project_deletion_schedules
-    ADD CONSTRAINT fk_b11f7e2219 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY project_deletion_schedules
-    ADD CONSTRAINT fk_b140171ca8 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY custom_field_select_options
     ADD CONSTRAINT fk_b16c0bad2c FOREIGN KEY (custom_field_id) REFERENCES custom_fields(id) ON DELETE CASCADE;

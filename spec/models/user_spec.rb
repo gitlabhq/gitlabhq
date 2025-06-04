@@ -236,7 +236,6 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:merge_request_assignment_events).class_name('ResourceEvents::MergeRequestAssignmentEvent') }
     it { is_expected.to have_many(:admin_abuse_report_assignees).class_name('Admin::AbuseReportAssignee') }
     it { is_expected.to have_many(:early_access_program_tracking_events).class_name('EarlyAccessProgram::TrackingEvent') }
-    it { is_expected.to have_many(:project_deletion_schedules).class_name('::Projects::DeletionSchedule').inverse_of(:deleting_user) }
 
     describe '#triggers' do
       let(:user) { create(:user) }

@@ -19,4 +19,4 @@ methods:
 
 - [Scan execution policy](../policies/scan_execution_policies.md)
 - [Pipeline execution policy](../policies/pipeline_execution_policies.md)
-- [Compliance framework](../../compliance/compliance_frameworks.md)
+- [Compliance framework](../../compliance/compliance_frameworks/_index.md)
