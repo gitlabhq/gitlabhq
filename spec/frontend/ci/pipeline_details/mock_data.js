@@ -1224,3 +1224,9 @@ export const mockPipelineStatusUpdatedResponse = {
     },
   },
 };
+
+export const mockPipelineStatusNullResponse = {
+  data: {
+    ciPipelineStatusUpdated: null,
+  },
+};
