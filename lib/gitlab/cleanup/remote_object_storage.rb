@@ -75,7 +75,7 @@ module Gitlab
         query = query_for_row_tracking_the_file(file_path)
         is_tracked = query.exists?
 
-        log_file_tracked(file_path: file_path, is_tracked: is_tracked, query: query.to_sql)
+        log_file_tracked(file_path: file_path, is_tracked: is_tracked, query: query.select('1 as one').limit(1).to_sql)
 
         is_tracked
       end

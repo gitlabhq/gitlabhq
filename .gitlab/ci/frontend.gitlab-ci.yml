@@ -1,7 +1,6 @@
 .with-fixtures-needs:
   needs:
     - "rspec-all frontend_fixture"
-    - "rspec-all frontend_fixture clickhouse"
 
 .with-graphql-schema-dump-needs:
   needs:
@@ -154,6 +153,7 @@ retrieve-frontend-fixtures:
     - .default-before_script
     - .failure_category_after_script
     - .ruby-cache
+    - .use-pg16
     - .repo-from-artifacts
   stage: fixtures
   needs:
@@ -176,6 +176,7 @@ retrieve-frontend-fixtures:
         exit 0
       fi
     - !reference [.base-script, script]
+    - run_with_custom_exit_code rspec_parallelized_job
   artifacts:
     name: frontend-fixtures
     expire_in: 31d
@@ -190,23 +191,9 @@ retrieve-frontend-fixtures:
 # Builds FOSS fixtures in the FOSS project.
 rspec-all frontend_fixture:
   extends:
-    - .use-pg16
     - .frontend-fixtures-base
     - .frontend:rules:frontend_fixture
-  script:
-    - !reference [.frontend-fixtures-base, script]
-    - run_with_custom_exit_code rspec_parallelized_job "--tag ~click_house"
   parallel: 7
-
-rspec-all frontend_fixture clickhouse:
-  extends:
-    - .use-pg16-clickhouse25
-    - .frontend-fixtures-base
-    - .frontend:rules:frontend_fixture
-  script:
-    - !reference [.clickhouse-setup, script]
-    - !reference [.frontend-fixtures-base, script]
-    - run_with_custom_exit_code rspec_parallelized_job "--tag click_house"
 
 # Uploads EE fixtures in the EE project.
 # Uploads FOSS fixtures in the FOSS project.

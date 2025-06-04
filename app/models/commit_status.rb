@@ -278,7 +278,7 @@ class CommitStatus < Ci::ApplicationRecord
 
   # Time spent in the pending state.
   def queued_duration
-    calculate_duration(queued_at, started_at)
+    calculate_duration(queued_at, started_at || finished_at)
   end
 
   def latest?

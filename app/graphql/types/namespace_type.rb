@@ -154,6 +154,13 @@ module Types
       method: :itself,
       experiment: { milestone: '18.1' }
 
+    field :licensed_features,
+      Types::Namespaces::LicensedFeaturesType,
+      null: false,
+      description: 'Licensed features available on the namespace.',
+      method: :itself,
+      experiment: { milestone: '18.1' }
+
     markdown_field :description_html, null: true
 
     def achievements_path

@@ -37,6 +37,7 @@ module Banzai
 
           # Allow data-escaped-chars span attribute
           allowlist[:attributes]['span'].push('data-escaped-chars')
+          allowlist[:attributes]['span'].push('data-placeholder')
 
           # Allow html5 details/summary elements
           allowlist[:elements].push('details')
@@ -51,9 +52,11 @@ module Banzai
           allowlist[:attributes]['a'].push('name')
 
           allowlist[:attributes]['a'].push('data-wikilink')
+          allowlist[:attributes]['a'].push('data-placeholder')
 
           allowlist[:attributes]['img'].push('data-diagram')
           allowlist[:attributes]['img'].push('data-diagram-src')
+          allowlist[:attributes]['img'].push('data-placeholder')
 
           # Allow any protocol in `a` elements
           # and then remove links with unsafe protocols in SanitizeLinkFilter

@@ -1,0 +1,10 @@
+---
+name: markdown_placeholders
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/14389
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186028
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/544860
+milestone: '18.1'
+group: group::knowledge
+type: gitlab_com_derisk
+default_enabled: false

@@ -27,7 +27,7 @@ RSpec.shared_examples 'remote object storage cleaner' do
 
   context 'when object_storage is not enabled' do
     before do
-      allow(cleaner).to receive(:config).and_return(GitlabSettings::Options.build({ enabled: false }))
+      allow(cleaner).to receive(:object_store).and_return(GitlabSettings::Options.build({ enabled: false }))
     end
 
     it 'does not connect to any storage' do

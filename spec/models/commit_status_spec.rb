@@ -385,6 +385,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
       before do
         commit_status.queued_at = Time.current - 1.minute
         commit_status.started_at = nil
+        commit_status.finished_at = nil
       end
 
       it { is_expected.to eq(1.minute) }

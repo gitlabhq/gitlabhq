@@ -6,6 +6,7 @@ module Banzai
       def self.filters
         @filters ||= FilterArray[
           Filter::TruncateVisibleFilter,
+          Filter::PlaceholdersPostFilter,
           *internal_link_filters,
           Filter::AbsoluteLinkFilter,
           Filter::BroadcastMessagePlaceholdersFilter
@@ -28,6 +29,8 @@ module Banzai
         context.merge(
           post_process: true
         )
+
+        Filter::AssetProxyFilter.transform_context(context)
       end
     end
   end

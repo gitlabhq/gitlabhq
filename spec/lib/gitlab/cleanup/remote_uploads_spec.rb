@@ -83,7 +83,7 @@ RSpec.describe Gitlab::Cleanup::RemoteUploads do
   context 'when object_storage is not enabled' do
     before do
       allow_next_instance_of(described_class) do |instance|
-        allow(instance).to receive(:config).and_return(double(enabled: false))
+        allow(instance).to receive(:object_store).and_return(double(enabled: false))
       end
     end
 

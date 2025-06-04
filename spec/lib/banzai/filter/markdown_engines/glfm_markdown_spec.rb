@@ -56,4 +56,46 @@ RSpec.describe Banzai::Filter::MarkdownEngines::GlfmMarkdown, feature_category: 
 
     expect(engine.render('http://example.com _emphasis_ $x + y$')).to eq expected
   end
+
+  describe 'placeholder detection' do
+    let_it_be(:project) { create(:project) }
+
+    it 'turns off placeholder detection when :markdown_placeholders disabled' do
+      stub_feature_flags(markdown_placeholders: false)
+
+      engine = described_class.new({ project: project, no_sourcepos: true })
+      expected = <<~TEXT
+        <p>%{test}</p>
+      TEXT
+
+      expect(engine.render('%{test}')).to eq expected
+    end
+
+    it 'defaults to on' do
+      engine = described_class.new({ project: project, no_sourcepos: true })
+      expected = <<~TEXT
+        <p><span data-placeholder>%{test}</span></p>
+      TEXT
+
+      expect(engine.render('%{test}')).to eq expected
+    end
+
+    it 'turns off placeholder detection when :disable_placeholders' do
+      engine = described_class.new({ disable_placeholders: true, project: project, no_sourcepos: true })
+      expected = <<~TEXT
+        <p>%{test}</p>
+      TEXT
+
+      expect(engine.render('%{test}')).to eq expected
+    end
+
+    it 'turns off placeholder detection when :broadcast_message_placeholders' do
+      engine = described_class.new({ broadcast_message_placeholders: true, project: project, no_sourcepos: true })
+      expected = <<~TEXT
+        <p>%{test}</p>
+      TEXT
+
+      expect(engine.render('%{test}')).to eq expected
+    end
+  end
 end
