@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'work items finder group parameter' do
+RSpec.shared_examples 'work items finder group parameter' do |expect_group_items: true|
   context 'when group parameter is present' do
     let_it_be(:group_work_item) { create(:work_item, :group_level, namespace: group, author: user) }
     let_it_be(:group_confidential_work_item) do
@@ -21,32 +21,12 @@ RSpec.shared_examples 'work items finder group parameter' do
     let(:params) { { group_id: group } }
     let(:scope) { 'all' }
 
-    before do
-      stub_licensed_features(epics: true)
-    end
-
-    context 'when namespace_level_work_items and work_item_epics is disabled' do
-      before do
-        stub_feature_flags(namespace_level_work_items: false, work_item_epics: false)
-      end
-
-      it 'does not return group level work items' do
-        expect(items).to contain_exactly(item1, item5)
-      end
-    end
-
-    context 'when work_item_epics is disabled' do
-      before do
-        stub_feature_flags(work_item_epics: false)
-      end
-
-      it 'returns group level work items' do
-        expect(items).to contain_exactly(group_work_item)
-      end
-    end
-
     it 'returns group level work items' do
-      expect(items).to contain_exactly(group_work_item)
+      if expect_group_items
+        expect(items).to contain_exactly(group_work_item)
+      else
+        expect(items).to be_empty
+      end
     end
 
     context 'when user has access to confidential items' do
@@ -55,7 +35,11 @@ RSpec.shared_examples 'work items finder group parameter' do
       end
 
       it 'includes confidential group-level items' do
-        expect(items).to contain_exactly(group_work_item, group_confidential_work_item)
+        if expect_group_items
+          expect(items).to contain_exactly(group_work_item, group_confidential_work_item)
+        else
+          expect(items).to be_empty
+        end
       end
     end
 
@@ -66,7 +50,11 @@ RSpec.shared_examples 'work items finder group parameter' do
 
       context 'when user does not have access to all subgroups' do
         it 'includes work items from subgroups and child projects with access' do
-          expect(items).to contain_exactly(group_work_item, subgroup_work_item, item1, item4, item5)
+          if expect_group_items
+            expect(items).to contain_exactly(group_work_item, subgroup_work_item, item1, item4, item5)
+          else
+            expect(items).to contain_exactly(item1, item4, item5)
+          end
         end
       end
 
@@ -76,14 +64,18 @@ RSpec.shared_examples 'work items finder group parameter' do
         end
 
         it 'includes work items from subgroups and child projects with access' do
-          expect(items).to contain_exactly(
-            group_work_item,
-            subgroup_work_item,
-            subgroup2_work_item,
-            item1,
-            item4,
-            item5
-          )
+          if expect_group_items
+            expect(items).to contain_exactly(
+              group_work_item,
+              subgroup_work_item,
+              subgroup2_work_item,
+              item1,
+              item4,
+              item5
+            )
+          else
+            expect(items).to contain_exactly(item1, item4, item5)
+          end
         end
       end
 
@@ -93,17 +85,21 @@ RSpec.shared_examples 'work items finder group parameter' do
         end
 
         it 'includes confidential items from subgroups and child projects' do
-          expect(items).to contain_exactly(
-            group_work_item,
-            group_confidential_work_item,
-            subgroup_work_item,
-            subgroup_confidential_work_item,
-            subgroup2_work_item,
-            subgroup2_confidential_work_item,
-            item1,
-            item4,
-            item5
-          )
+          if expect_group_items
+            expect(items).to contain_exactly(
+              group_work_item,
+              group_confidential_work_item,
+              subgroup_work_item,
+              subgroup_confidential_work_item,
+              subgroup2_work_item,
+              subgroup2_confidential_work_item,
+              item1,
+              item4,
+              item5
+            )
+          else
+            expect(items).to contain_exactly(item1, item4, item5)
+          end
         end
       end
 
@@ -113,15 +109,19 @@ RSpec.shared_examples 'work items finder group parameter' do
         end
 
         it 'includes confidential items from subgroups and child projects with access' do
-          expect(items).to contain_exactly(
-            group_work_item,
-            subgroup_work_item,
-            subgroup2_work_item,
-            subgroup2_confidential_work_item,
-            item1,
-            item4,
-            item5
-          )
+          if expect_group_items
+            expect(items).to contain_exactly(
+              group_work_item,
+              subgroup_work_item,
+              subgroup2_work_item,
+              subgroup2_confidential_work_item,
+              item1,
+              item4,
+              item5
+            )
+          else
+            expect(items).to contain_exactly(item1, item4, item5)
+          end
         end
       end
 
@@ -131,7 +131,11 @@ RSpec.shared_examples 'work items finder group parameter' do
         end
 
         it 'does not include work items from projects' do
-          expect(items).to contain_exactly(group_work_item, subgroup_work_item)
+          if expect_group_items
+            expect(items).to contain_exactly(group_work_item, subgroup_work_item)
+          else
+            expect(items).to be_empty
+          end
         end
       end
     end
@@ -140,7 +144,11 @@ RSpec.shared_examples 'work items finder group parameter' do
       let(:params) { { group_id: subgroup, include_ancestors: true } }
 
       it 'includes work items from ancestor groups' do
-        expect(items).to contain_exactly(group_work_item, subgroup_work_item)
+        if expect_group_items
+          expect(items).to contain_exactly(group_work_item, subgroup_work_item)
+        else
+          expect(items).to be_empty
+        end
       end
     end
 
@@ -151,7 +159,11 @@ RSpec.shared_examples 'work items finder group parameter' do
       let(:params) { { group_id: subgroup, include_descendants: true, include_ancestors: true } }
 
       it 'includes work items from ancestor groups, subgroups, and child projects' do
-        expect(items).to contain_exactly(group_work_item, subgroup_work_item, sub_subgroup_work_item, item4)
+        if expect_group_items
+          expect(items).to contain_exactly(group_work_item, subgroup_work_item, sub_subgroup_work_item, item4)
+        else
+          expect(items).to contain_exactly(item4)
+        end
       end
     end
   end

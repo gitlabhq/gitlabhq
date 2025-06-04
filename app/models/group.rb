@@ -1124,6 +1124,11 @@ class Group < Namespace
     ::Feature.enabled?(:work_item_epics_list, root_ancestor, type: :wip)
   end
 
+  # overriden in EE
+  def supports_group_work_items?
+    false
+  end
+
   def create_group_level_work_items_feature_flag_enabled?
     ::Feature.enabled?(:create_group_level_work_items, self, type: :wip)
   end

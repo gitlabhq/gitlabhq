@@ -15,8 +15,9 @@ describe('Registry Breadcrumb', () => {
     { name: 'details', path: '/:id', meta: { nameGenerator, path: '/details' } },
   ];
 
-  const mountComponent = ($route) => {
+  const mountComponent = ($route, props = {}) => {
     wrapper = shallowMount(component, {
+      propsData: { staticBreadcrumbs: [], ...props },
       mocks: {
         $route,
         $router: {
@@ -61,5 +62,12 @@ describe('Registry Breadcrumb', () => {
       });
       expect(breadcrumbItems[1].href).toBe('/:id');
     });
+  });
+
+  it('passes static breadcrumbs along with route breadcrumbs', () => {
+    mountComponent(routes[1], { staticBreadcrumbs: [{ text: 'Static', href: '/static' }] });
+    const breadcrumbItems = wrapper.findComponent(GlBreadcrumb).props('items');
+    expect(breadcrumbItems).toHaveLength(3);
+    expect(breadcrumbItems[0]).toEqual({ text: 'Static', href: '/static' });
   });
 });

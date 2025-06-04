@@ -32,7 +32,7 @@ describe('WorkItemBreadcrumb', () => {
       mocks: {
         $route,
       },
-      propsData: props,
+      propsData: { staticBreadcrumbs: [], ...props },
     });
   };
 
@@ -163,7 +163,7 @@ describe('WorkItemBreadcrumb', () => {
     createComponent({
       $route: { name: 'workItem', params: { iid: '1' }, path: '/1' },
       props: {
-        staticBreadcrumbs: { items: [{ text: 'Static', href: '/static' }] },
+        staticBreadcrumbs: [{ text: 'Static', href: '/static' }],
       },
     });
 

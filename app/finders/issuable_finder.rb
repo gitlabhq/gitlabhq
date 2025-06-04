@@ -311,7 +311,7 @@ class IssuableFinder
   end
 
   def by_parent(items)
-    return items.none unless params.projects
+    return items.none unless accessible_projects
 
     if use_namespace_filtering?
       filter_by_namespace(items)
@@ -326,9 +326,9 @@ class IssuableFinder
       # When finding issues for multiple projects it's more efficient
       # to use a JOIN instead of running a sub-query
       # See https://gitlab.com/gitlab-org/gitlab/-/commit/8591cc02be6b12ed60f763a5e0147f2cbbca99e1
-      items.join_project_through_namespace.merge(params.projects.reorder(nil))
+      items.join_project_through_namespace.merge(accessible_projects.reorder(nil))
     else
-      items.in_namespaces(params.projects.map(&:project_namespace_id)).references_project
+      items.in_namespaces(accessible_projects.map(&:project_namespace_id)).references_project
     end
   end
 
@@ -337,12 +337,16 @@ class IssuableFinder
       # When finding issues for multiple projects it's more efficient
       # to use a JOIN instead of running a sub-query
       # See https://gitlab.com/gitlab-org/gitlab/-/commit/8591cc02be6b12ed60f763a5e0147f2cbbca99e1
-      items.merge(params.projects.reorder(nil)).join_project
+      items.merge(accessible_projects.reorder(nil)).join_project
     else
-      items.of_projects(params.projects).references_project
+      items.of_projects(accessible_projects).references_project
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def accessible_projects
+    params.projects
+  end
 
   def use_namespace_filtering?
     ::Feature.enabled?(:use_namespace_id_for_issue_and_work_item_finders, current_user, type: :wip) &&
@@ -351,7 +355,7 @@ class IssuableFinder
 
   def use_join_strategy_for_project?
     strong_memoize(:use_join_strategy_for_project) do
-      params.projects.is_a?(ActiveRecord::Relation)
+      accessible_projects.is_a?(ActiveRecord::Relation)
     end
   end
 
@@ -456,7 +460,7 @@ class IssuableFinder
     elsif params.filter_by_any_milestone?
       items.any_milestone
     elsif params.filter_by_upcoming_milestone?
-      upcoming_ids = Milestone.upcoming_ids(params.projects, params.related_groups,
+      upcoming_ids = Milestone.upcoming_ids(accessible_projects, params.related_groups,
         legacy_filtering_logic: use_legacy_milestone_filtering?)
       items.left_joins_milestones.where(milestone_id: upcoming_ids)
     elsif params.filter_by_started_milestone?

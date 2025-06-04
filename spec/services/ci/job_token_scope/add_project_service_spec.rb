@@ -120,7 +120,7 @@ RSpec.describe Ci::JobTokenScope::AddProjectService, feature_category: :continuo
 
         let(:target_project) { project }
 
-        it_behaves_like 'returns error', "Validation failed: Target project can't be the same as the source project"
+        it_behaves_like 'adds project'
       end
     end
   end

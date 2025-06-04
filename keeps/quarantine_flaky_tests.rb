@@ -74,6 +74,12 @@ module Keeps
       description = match[:description]
 
       file = File.expand_path("../#{filename}", __dir__)
+
+      unless File.exist?(file)
+        puts "#{file} does not exist! Skipping"
+        return
+      end
+
       full_file_content = File.read(file)
 
       file_lines = full_file_content.lines

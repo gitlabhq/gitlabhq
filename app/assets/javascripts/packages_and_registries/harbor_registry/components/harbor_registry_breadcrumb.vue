@@ -11,9 +11,8 @@ export default {
   },
   props: {
     staticBreadcrumbs: {
-      type: Object,
-      default: () => ({ items: [] }),
-      required: false,
+      type: Array,
+      required: true,
     },
   },
   computed: {
@@ -42,9 +41,7 @@ export default {
         });
       }
 
-      const staticCrumbs = this.staticBreadcrumbs.items;
-
-      return [...staticCrumbs, ...routeInfoList];
+      return [...this.staticBreadcrumbs, ...routeInfoList];
     },
     isLoaded() {
       return this.isRootRoute || last(this.currentRoute).text;
@@ -59,9 +56,8 @@ export default {
       if (!this.isRootRoute) {
         crumbs = crumbs.concat(this.currentRoute);
       }
-      const staticCrumbs = this.staticBreadcrumbs.items;
 
-      return [...staticCrumbs, ...crumbs];
+      return [...this.staticBreadcrumbs, ...crumbs];
     },
   },
 };

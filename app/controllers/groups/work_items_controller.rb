@@ -26,7 +26,7 @@ module Groups
     end
 
     def show
-      not_found unless namespace_work_items_enabled?
+      not_found unless !!group&.supports_group_work_items?
 
       @work_item = ::WorkItems::WorkItemsFinder.new(current_user, group_id: group.id)
         .execute.with_work_item_type.find_by_iid(show_params[:iid])

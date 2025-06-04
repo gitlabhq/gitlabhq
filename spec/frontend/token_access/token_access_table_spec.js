@@ -1,4 +1,4 @@
-import { GlTable, GlLoadingIcon } from '@gitlab/ui';
+import { GlBadge, GlTable, GlLoadingIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import TokenAccessTable from '~/token_access/components/token_access_table.vue';
 import { mockGroups, mockProjects } from './mock_data';
@@ -6,14 +6,15 @@ import { mockGroups, mockProjects } from './mock_data';
 describe('Token access table', () => {
   let wrapper;
 
-  const createComponent = (props) => {
+  const createComponent = (props, provided) => {
     wrapper = mountExtended(TokenAccessTable, {
-      provide: { fullPath: 'root/ci-project' },
+      provide: { fullPath: 'root/ci-project2', ...provided },
       propsData: props,
     });
   };
 
   const findTable = () => wrapper.findComponent(GlTable);
+  const findCurrentProjectBadge = () => wrapper.findComponent(GlBadge);
   const findEditButton = () => wrapper.findByTestId('token-access-table-edit-button');
   const findRemoveButton = () => wrapper.findByTestId('token-access-table-remove-button');
   const findAllTableRows = () => findTable().findAll('tbody tr');
@@ -68,13 +69,23 @@ describe('Token access table', () => {
         expect(wrapper.emitted('editItem')[0][0]).toBe(items[0]);
       });
     });
+
+    it('does not show the current project badge', () => {
+      expect(findCurrentProjectBadge().exists()).toBe(false);
+    });
   });
 
   describe('when item is the current project', () => {
-    beforeEach(() => createComponent({ items: [mockProjects.at(-1)] }));
+    beforeEach(() =>
+      createComponent({ items: [mockProjects.at(-1)] }, { fullPath: 'root/ci-project' }),
+    );
 
-    it('does not show edit button', () => {
-      expect(findEditButton().exists()).toBe(false);
+    it('shows the edit button', () => {
+      expect(findEditButton().exists()).toBe(true);
+    });
+
+    it('shows the current project badge', () => {
+      expect(findCurrentProjectBadge().text()).toBe('Current project');
     });
 
     it('does not show remove button', () => {

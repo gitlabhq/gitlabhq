@@ -27,9 +27,8 @@ export default {
   },
   props: {
     staticBreadcrumbs: {
-      type: Object,
-      required: false,
-      default: () => ({ items: [] }),
+      type: Array,
+      required: true,
     },
   },
   computed: {
@@ -69,9 +68,7 @@ export default {
         indexCrumb.href = this.listPath;
       }
 
-      const staticCrumbs = this.staticBreadcrumbs.items;
-
-      const crumbs = [...staticCrumbs, indexCrumb];
+      const crumbs = [...this.staticBreadcrumbs, indexCrumb];
 
       if (this.$route.name === ROUTES.new) {
         crumbs.push({

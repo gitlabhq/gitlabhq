@@ -8,6 +8,9 @@ ENV GITLAB_LICENSE_MODE=test \
     GDK_KILL_CONFIRM=true \
     TOOL_VERSION_MANAGER=mise
 
+# Disable idiomatic version files like .ruby-version by default and only rely on .tool-versions
+RUN mise settings add idiomatic_version_file_enable_tools "[]"
+
 # Clone GDK at specific sha and bootstrap packages
 #
 ARG GDK_SHA

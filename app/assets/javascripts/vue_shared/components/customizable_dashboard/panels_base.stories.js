@@ -4,7 +4,7 @@ import PanelsBase from './panels_base.vue';
 
 export default {
   component: PanelsBase,
-  title: 'vue_shared/components/panels_base',
+  title: 'vue_shared/components/customizable_dashboard/panels_base',
 };
 
 const Template = (args, { argTypes }) => ({

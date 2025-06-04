@@ -19,7 +19,7 @@ describe('Environment Breadcrumb', () => {
     },
   ];
 
-  const mountComponent = ($route, props = {}) => {
+  const mountComponent = ($route, props = { staticBreadcrumbs: [] }) => {
     wrapper = mount(EnvironmentBreadcrumb, {
       mocks: {
         $route,
@@ -75,9 +75,7 @@ describe('Environment Breadcrumb', () => {
   describe('when staticBreadcrumbs are provided', () => {
     beforeEach(() => {
       mountComponent(routes[0], {
-        staticBreadcrumbs: {
-          items: [{ text: 'static', href: '/static' }],
-        },
+        staticBreadcrumbs: [{ text: 'static', href: '/static' }],
       });
     });
 

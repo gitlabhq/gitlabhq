@@ -19,8 +19,13 @@ module Types
       field :access_level, ::Types::Ci::RunnerAccessLevelEnum, null: false,
         description: 'Access level of the runner.'
       field :active, GraphQL::Types::Boolean, null: false,
-        description: 'Indicates the runner is allowed to receive jobs.',
-        deprecated: { reason: 'Use paused', milestone: '14.8' }
+        description: "Indicates the runner is allowed to receive jobs.",
+        deprecated: {
+          reason: 'Use `paused`. ' \
+            "This field is the inverse of `paused` and has no relationship to the runner's job execution status. " \
+            "For more details, see `jobExecutionStatus`",
+          milestone: '14.8'
+        }
       field :admin_url, GraphQL::Types::String, null: true,
         description: 'Admin URL of the runner. Only available for administrators.'
       field :contacted_at, Types::TimeType, null: true,

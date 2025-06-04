@@ -25,7 +25,8 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
         end
 
         context 'when filtering by group id' do
-          let(:params) { { group_id: subgroup.id } }
+          # WorkItemsFinder only fetches project-level work items when `include_descendants: true`
+          let(:params) { { group_id: subgroup.id, include_descendants: true } }
 
           it 'returns no items' do
             expect(items).to be_empty
@@ -1321,7 +1322,9 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
         it_behaves_like 'returns public, does not return hidden or confidential'
 
         it 'does not filter by confidentiality' do
+          allow(items_model).to receive(:where).and_call_original
           expect(items_model).not_to receive(:where).with(a_string_matching('confidential'), anything)
+
           subject
         end
       end
@@ -1356,6 +1359,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
         it_behaves_like 'returns public and confidential, does not return hidden'
 
         it 'does not filter by confidentiality' do
+          allow(items_model).to receive(:where).and_call_original
           expect(items_model).not_to receive(:where).with(a_string_matching('confidential'), anything)
 
           subject
@@ -1371,6 +1375,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
           it_behaves_like 'returns public, confidential, and hidden'
 
           it 'does not filter by confidentiality' do
+            allow(items_model).to receive(:where).and_call_original
             expect(items_model).not_to receive(:where).with(a_string_matching('confidential'), anything)
 
             subject
@@ -1402,6 +1407,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
         end
 
         it 'does not filter by confidentiality' do
+          allow(items_model).to receive(:where).and_call_original
           expect(items_model).not_to receive(:where).with(a_string_matching('confidential'), anything)
 
           subject

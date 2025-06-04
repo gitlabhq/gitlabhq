@@ -30,12 +30,6 @@ module ContainerRegistry
         end
 
         def protected_for_delete?(project:, current_user:)
-          if Feature.enabled?(:container_registry_immutable_tags, project) &&
-              project.container_registry_protection_tag_rules.immutable.present? &&
-              project.has_container_registry_tags?
-            return true
-          end
-
           return false if current_user.can_admin_all_resources?
 
           return false unless project.has_container_registry_protected_tag_rules?(
@@ -50,3 +44,5 @@ module ContainerRegistry
     end
   end
 end
+
+ContainerRegistry::Protection::Concerns::TagRule.prepend_mod

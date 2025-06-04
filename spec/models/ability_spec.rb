@@ -481,6 +481,16 @@ RSpec.describe Ability, feature_category: :system_access do
           expect(subject).to be_falsey
         end
       end
+
+      context 'when delegated user is a composite identity' do
+        let_it_be(:delegated_user) { user }
+
+        it 'returns false' do
+          group.add_developer(user)
+
+          expect(subject).to be_falsey
+        end
+      end
     end
   end
 

@@ -1,5 +1,6 @@
 <script>
 import {
+  GlBadge,
   GlButton,
   GlIcon,
   GlLink,
@@ -15,6 +16,7 @@ import { JOB_TOKEN_POLICIES } from '../constants';
 
 export default {
   components: {
+    GlBadge,
     GlButton,
     GlIcon,
     GlLink,
@@ -89,9 +91,6 @@ export default {
     isCurrentProject(item) {
       return item.fullPath === this.fullPath;
     },
-    shouldShowEditButton(item) {
-      return this.showPolicies && !this.isCurrentProject(item);
-    },
   },
 };
 </script>
@@ -136,6 +135,9 @@ export default {
           class="gl-ml-3 gl-shrink-0"
           data-testid="autopopulated-icon"
         />
+        <gl-badge v-if="isCurrentProject(item)" class="gl-ml-3">{{
+          __('Current project')
+        }}</gl-badge>
       </div>
     </template>
 
@@ -159,7 +161,7 @@ export default {
     <template #cell(actions)="{ item }">
       <div class="gl-flex gl-gap-2">
         <gl-button
-          v-if="shouldShowEditButton(item)"
+          v-if="showPolicies"
           icon="pencil"
           :aria-label="__('Edit')"
           data-testid="token-access-table-edit-button"

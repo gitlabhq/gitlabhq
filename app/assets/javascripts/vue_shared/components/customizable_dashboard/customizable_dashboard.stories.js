@@ -3,7 +3,7 @@ import CustomizableDashboard from './customizable_dashboard.vue';
 
 export default {
   component: CustomizableDashboard,
-  title: 'vue_shared/components/customizable_dashboard',
+  title: 'vue_shared/components/customizable_dashboard/customizable_dashboard',
 };
 
 const Template = (args, { argTypes }) => ({

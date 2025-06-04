@@ -4311,6 +4311,14 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it { is_expected.to be false }
   end
 
+  describe '#supports_group_work_items?' do
+    let(:group) { build(:group) }
+
+    subject { group.supports_group_work_items? }
+
+    it { is_expected.to be false }
+  end
+
   describe '#continue_indented_text_feature_flag_enabled?' do
     it_behaves_like 'checks self and root ancestor feature flag' do
       let(:feature_flag) { :continue_indented_text }

@@ -16944,7 +16944,8 @@ CREATE TABLE merge_request_assignment_events (
     merge_request_id bigint NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     action smallint DEFAULT 1 NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_31395542a4 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE merge_request_assignment_events_id_seq

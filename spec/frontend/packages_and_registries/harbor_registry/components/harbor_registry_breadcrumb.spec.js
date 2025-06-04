@@ -28,7 +28,7 @@ describe('HarborRegistryBreadcrumb', () => {
 
   const createComponent = ({ route, routes, props = {} }) => {
     wrapper = shallowMount(HarborRegistryBreadcrumb, {
-      propsData: props,
+      propsData: { staticBreadcrumbs: [], ...props },
       mocks: {
         $route: route,
         $router: { options: { routes } },
@@ -64,30 +64,26 @@ describe('HarborRegistryBreadcrumb', () => {
     });
   });
 
-  describe('when static breadcrumbs are provided', () => {
-    it('renders static breadcrumbs along with route breadcrumbs', () => {
-      const staticBreadcrumbs = {
-        items: [{ text: 'Static Item', href: '/static' }],
-      };
-      createComponent({
-        route: { name: 'details', meta: detailsRoute.meta },
-        routes: [rootRoute, detailsRoute],
-        props: { staticBreadcrumbs },
-      });
-      const items = findBreadcrumbs().props('items');
-      expect(items[0]).toEqual(staticBreadcrumbs.items[0]);
+  it('renders static breadcrumbs along with route breadcrumbs', () => {
+    const staticBreadcrumbs = [{ text: 'Static Item', href: '/static' }];
+    createComponent({
+      route: { name: 'details', meta: detailsRoute.meta },
+      routes: [rootRoute, detailsRoute],
+      props: { staticBreadcrumbs },
     });
+    const items = findBreadcrumbs().props('items');
+    expect(items[0]).toEqual(staticBreadcrumbs[0]);
+  });
 
-    it('handles empty static breadcrumbs', () => {
-      createComponent({
-        route: { name: 'details', meta: detailsRoute.meta },
-        routes: [rootRoute, detailsRoute],
-        props: { staticBreadcrumbs: { items: [] } },
-      });
-      expect(findBreadcrumbs().props('items')).toStrictEqual([
-        { text: 'Root', to: '/' },
-        { text: 'Details', to: '/details' },
-      ]);
+  it('handles empty static breadcrumbs', () => {
+    createComponent({
+      route: { name: 'details', meta: detailsRoute.meta },
+      routes: [rootRoute, detailsRoute],
+      props: { staticBreadcrumbs: [] },
     });
+    expect(findBreadcrumbs().props('items')).toStrictEqual([
+      { text: 'Root', to: '/' },
+      { text: 'Details', to: '/details' },
+    ]);
   });
 });

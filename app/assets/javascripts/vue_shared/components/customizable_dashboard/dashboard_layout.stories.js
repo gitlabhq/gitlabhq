@@ -2,7 +2,7 @@ import DashboardLayout from './dashboard_layout.vue';
 
 export default {
   component: DashboardLayout,
-  title: 'vue_shared/components/dashboard_layout',
+  title: 'vue_shared/components/customizable_dashboard/dashboard_layout',
 };
 
 const dashboardConfig = {

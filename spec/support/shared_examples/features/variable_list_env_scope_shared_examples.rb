@@ -24,7 +24,7 @@ RSpec.shared_examples 'variable list env scope' do
 
       click_button('All (default)')
       fill_in 'Search', with: 'review/*'
-      find('[data-testid="create-wildcard-button"]').click
+      find('[data-testid="create-scope-button"]').click
 
       click_button('Add variable')
     end

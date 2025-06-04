@@ -77,17 +77,7 @@ export default (id) => {
   };
 
   return {
-    attachBreadcrumb: () =>
-      injectVueAppBreadcrumbs(
-        router,
-        RegistryBreadcrumb,
-        null,
-        {},
-        {
-          // cf. https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186906
-          singleNavOptIn: true,
-        },
-      ),
+    attachBreadcrumb: () => injectVueAppBreadcrumbs(router, RegistryBreadcrumb),
     attachMainComponent,
   };
 };

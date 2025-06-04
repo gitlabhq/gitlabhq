@@ -23487,7 +23487,7 @@ CI/CD variables for a project.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cirunneraccesslevel"></a>`accessLevel` | [`CiRunnerAccessLevel!`](#cirunneraccesslevel) | Access level of the runner. |
-| <a id="cirunneractive"></a>`active` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Deprecated** in GitLab 14.8. Use paused. |
+| <a id="cirunneractive"></a>`active` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Deprecated** in GitLab 14.8. Use `paused`. This field is the inverse of `paused` and has no relationship to the runner's job execution status. For more details, see `jobExecutionStatus`. |
 | <a id="cirunneradminurl"></a>`adminUrl` | [`String`](#string) | Admin URL of the runner. Only available for administrators. |
 | <a id="cirunnercontactedat"></a>`contactedAt` | [`Time`](#time) | Timestamp of last contact from the runner. |
 | <a id="cirunnercreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of creation of the runner. |

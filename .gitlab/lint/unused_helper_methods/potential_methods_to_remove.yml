@@ -51,8 +51,6 @@ text_color_for_bg:
   file: app/helpers/labels_helper.rb
 manage_labels_title:
   file: app/helpers/labels_helper.rb
-show_projects?:
-  file: app/helpers/projects_helper.rb
 request_access_group_members_path:
   file: app/helpers/routing/groups/members_helper.rb
 approve_access_request_group_member_path:

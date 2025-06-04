@@ -11,9 +11,8 @@ export default {
   },
   props: {
     staticBreadcrumbs: {
-      type: Object,
-      required: false,
-      default: () => ({ items: [] }),
+      type: Array,
+      required: true,
     },
   },
   computed: {
@@ -34,7 +33,7 @@ export default {
     },
     allCrumbs() {
       const crumbs = [
-        ...this.staticBreadcrumbs.items,
+        ...this.staticBreadcrumbs,
         {
           text: this.rootRoute.meta.nameGenerator(),
           to: this.rootRoute.path,

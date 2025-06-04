@@ -178,6 +178,10 @@ method as the default:
 1. **Edit** the selected payment method and check the **Make default payment method** checkbox.
 1. Select **Save Changes**.
 
+### Delete a default payment method
+
+You cannot delete your default payment method directly through the Customers Portal. To delete a default payment method, [contact our Billing team](https://customers.gitlab.com/contact_us) for assistance.
+
 ## Pay for an invoice
 
 You can pay for your invoices in the Customers Portal with a credit card.

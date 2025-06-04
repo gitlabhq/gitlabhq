@@ -77,10 +77,7 @@ export const initWorkItemsRoot = ({ workspaceType, withTabs } = {}) => {
     breadcrumbParams.listPath = issuesListPath;
   }
 
-  injectVueAppBreadcrumbs(router, WorkItemBreadcrumb, apolloProvider, breadcrumbParams, {
-    // Cf. https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186906
-    singleNavOptIn: true,
-  });
+  injectVueAppBreadcrumbs(router, WorkItemBreadcrumb, apolloProvider, breadcrumbParams);
 
   apolloProvider.clients.defaultClient.cache.writeQuery({
     query: activeDiscussionQuery,

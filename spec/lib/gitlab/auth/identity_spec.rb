@@ -179,6 +179,22 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
     end
   end
 
+  describe '#valid?' do
+    context 'when a composite identity is linked to another composite identity' do
+      before do
+        allow(primary_user).to receive(:composite_identity_enforced).and_return(true)
+        allow(scoped_user).to receive(:composite_identity_enforced).and_return(true)
+      end
+
+      it 'is not valid' do
+        identity = described_class.fabricate(primary_user)
+        identity.link!(scoped_user)
+
+        expect(identity).not_to be_valid
+      end
+    end
+  end
+
   describe '.sidekiq_restore!' do
     context 'when job has primary and scoped identity stored' do
       let(:job) { { 'jid' => 123, 'sqci' => [primary_user.id, scoped_user.id] } }

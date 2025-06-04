@@ -353,16 +353,6 @@ module ProjectsHelper
     end
   end
 
-  def show_projects?(projects, params)
-    !!(
-      params[:personal] ||
-      params[:name] ||
-      params[:language] ||
-      params[:archived] == 'only' ||
-      any_projects?(projects)
-    )
-  end
-
   def push_to_create_project_command(user = current_user)
     repository_url =
       if Gitlab::CurrentSettings.current_application_settings.enabled_git_access_protocol == 'http'

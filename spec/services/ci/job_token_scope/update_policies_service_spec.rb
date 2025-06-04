@@ -127,6 +127,38 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
               expect(project_link.job_token_policies).to eq(%w[read_deployments])
             end
           end
+
+          context 'when the target project is the current project' do
+            let_it_be(:target) { project }
+
+            context 'when the job token scope does not exist yet' do
+              it 'creates a new job token scope', :aggregate_failures do
+                expect(execute).to be_success
+
+                project_link = execute.payload
+
+                expect(project_link.source_project).to eq(project)
+                expect(project_link.target_project).to eq(project)
+                expect(project_link.default_permissions).to be(false)
+                expect(project_link.job_token_policies).to eq(%w[read_deployments read_packages])
+              end
+            end
+
+            context 'when the job token scope already exists' do
+              before do
+                project_scope_link.update!(target_project: project)
+              end
+
+              it 'updates the existing job token scope', :aggregate_failures do
+                expect(execute).to be_success
+
+                project_link = project_scope_link.reload
+
+                expect(project_link.default_permissions).to be(false)
+                expect(project_link.job_token_policies).to eq(%w[read_deployments read_packages])
+              end
+            end
+          end
         end
       end
     end

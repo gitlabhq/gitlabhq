@@ -7,9 +7,8 @@ export default {
   },
   props: {
     staticBreadcrumbs: {
-      type: Object,
-      required: false,
-      default: () => ({ items: [] }),
+      type: Array,
+      required: true,
     },
   },
   computed: {
@@ -37,7 +36,7 @@ export default {
       if (!this.isLoaded) {
         return [];
       }
-      const breadCrumbs = [...this.staticBreadcrumbs.items, this.rootRoute];
+      const breadCrumbs = [...this.staticBreadcrumbs, this.rootRoute];
 
       if (!this.isRootRoute) {
         breadCrumbs.push(this.logsRoute);

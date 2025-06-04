@@ -414,32 +414,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
-  describe '#show_projects' do
-    let(:projects) do
-      Project.all
-    end
-
-    it 'returns true when there are projects' do
-      expect(helper.show_projects?(projects, {})).to eq(true)
-    end
-
-    it 'returns true when there are no projects but a name is given' do
-      expect(helper.show_projects?(Project.none, name: 'foo')).to eq(true)
-    end
-
-    it 'returns true when there are no projects but personal is present' do
-      expect(helper.show_projects?(Project.none, personal: 'true')).to eq(true)
-    end
-
-    it 'returns false when there are no projects and there is no name' do
-      expect(helper.show_projects?(Project.none, {})).to eq(false)
-    end
-
-    it 'returns true when there are no projects but archived param is "only"' do
-      expect(helper.show_projects?(Project.none, archived: 'only')).to eq(true)
-    end
-  end
-
   describe '#push_to_create_project_command' do
     let(:user) { build_stubbed(:user, username: 'john') }
 

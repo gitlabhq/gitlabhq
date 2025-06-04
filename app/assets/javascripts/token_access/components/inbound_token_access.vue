@@ -142,8 +142,10 @@ export default {
           groups = this.mapAllowlistNodes(allowlist?.groupsAllowlist);
           projects = this.mapAllowlistNodes(allowlist?.projectsAllowlist);
           // Add a dummy entry for the current project. The new ciJobTokenScopeAllowlist endpoint doesn't have an entry
-          // for the current project like the old ciJobTokenScope endpoint did, so we have to add it in manually.
-          projects.push({ ...project, defaultPermissions: true, jobTokenPolicies: [] });
+          // for the current project like the old ciJobTokenScope endpoint did, so we have to add it in manually, if it
+          // doesn't exist yet.
+          if (!projects.some(({ id }) => id === project.id))
+            projects.push({ ...project, defaultPermissions: true, jobTokenPolicies: [] });
         } else {
           projects = project?.ciJobTokenScope?.inboundAllowlist?.nodes ?? [];
           groups = project?.ciJobTokenScope?.groupsAllowlist?.nodes ?? [];
@@ -211,7 +213,7 @@ export default {
     },
     allowlist() {
       const { groups, projects } = this.groupsAndProjectsWithAccess;
-      return [...groups, ...projects];
+      return [...groups, ...projects].sort((a, b) => a.fullPath.localeCompare(b.fullPath));
     },
     disclosureDropdownOptions() {
       return [

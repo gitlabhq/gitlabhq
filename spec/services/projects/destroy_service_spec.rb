@@ -538,20 +538,8 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
               .to receive(:remove_legacy_registry_tags).and_return(true)
           end
 
-          it { is_expected.to be false }
-
-          context 'when the current user is an admin', :enable_admin_mode do
-            let(:user) { build_stubbed(:admin) }
-
-            it { is_expected.to be false }
-          end
-
-          context 'when the feature `container_registry_immutable_tags` is disabled' do
-            before do
-              stub_feature_flags(container_registry_immutable_tags: false)
-            end
-
-            it { is_expected.to be true }
+          it 'ignores the immutable tag protection rules' do
+            is_expected.to be(true)
           end
         end
 

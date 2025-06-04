@@ -19,7 +19,7 @@ describe('Ci environments dropdown', () => {
   const findActiveIconByIndex = (index) => findListboxItemByIndex(index).findComponent(GlIcon);
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findListboxText = () => findListbox().props('toggleText');
-  const findCreateWildcardButton = () => wrapper.findByTestId('create-wildcard-button');
+  const findCreateScopeButton = () => wrapper.findByTestId('create-scope-button');
   const findDropdownDivider = () => wrapper.findComponent(GlDropdownDivider);
   const findSearchQueryNote = () => wrapper.findByTestId('search-query-note');
 
@@ -40,18 +40,18 @@ describe('Ci environments dropdown', () => {
         createComponent({ props: { canCreateWildcard: true }, searchTerm: 'stable/*' });
       });
 
-      it('renders create button during search', () => {
-        expect(findCreateWildcardButton().exists()).toBe(true);
+      it('renders a button to create wildcard', () => {
+        expect(findCreateScopeButton().text()).toBe('Create wildcard: stable/*');
       });
     });
 
     describe('when canCreateWildcard is true and wildcard character is missing from search', () => {
       beforeEach(() => {
-        createComponent({ props: { canCreateWildcard: true }, searchTerm: 'stable/' });
+        createComponent({ props: { canCreateWildcard: true }, searchTerm: 'stable' });
       });
 
-      it('does not render create button during search', () => {
-        expect(findCreateWildcardButton().exists()).toBe(false);
+      it('renders a button to select environment scope', () => {
+        expect(findCreateScopeButton().text()).toBe('Create environment scope: stable');
       });
     });
 
@@ -61,7 +61,7 @@ describe('Ci environments dropdown', () => {
       });
 
       it('does not render create button during search', () => {
-        expect(findCreateWildcardButton().exists()).toBe(false);
+        expect(findCreateScopeButton().exists()).toBe(false);
       });
     });
   });
@@ -77,7 +77,7 @@ describe('Ci environments dropdown', () => {
       });
 
       it('renders create button with search term if environments do not contain search term', () => {
-        const button = findCreateWildcardButton();
+        const button = findCreateScopeButton();
         expect(button.exists()).toBe(true);
         expect(button.text()).toBe('Create wildcard: stable/*');
       });
@@ -101,6 +101,10 @@ describe('Ci environments dropdown', () => {
 
     it('does not display active checkmark', () => {
       expect(findActiveIconByIndex(0).classes('gl-invisible')).toBe(true);
+    });
+
+    it('does not render create button during search', () => {
+      expect(findCreateScopeButton().exists()).toBe(false);
     });
 
     describe('when isEnvironmentRequired is false', () => {
@@ -208,7 +212,7 @@ describe('Ci environments dropdown', () => {
       });
 
       it('sets new environment scope as the selected environment scope', async () => {
-        findCreateWildcardButton().trigger('click');
+        findCreateScopeButton().trigger('click');
 
         await findListbox().vm.$emit('search', searchTerm);
 
@@ -216,7 +220,7 @@ describe('Ci environments dropdown', () => {
       });
 
       it('includes new environment scope in search if it matches search term', async () => {
-        findCreateWildcardButton().trigger('click');
+        findCreateScopeButton().trigger('click');
 
         await findListbox().vm.$emit('search', searchTerm);
 
@@ -225,7 +229,7 @@ describe('Ci environments dropdown', () => {
       });
 
       it('excludes new environment scope in search if it does not match the search term', async () => {
-        findCreateWildcardButton().trigger('click');
+        findCreateScopeButton().trigger('click');
 
         await findListbox().vm.$emit('search', 'not-new-env');
 
