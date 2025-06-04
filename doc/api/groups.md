@@ -1304,7 +1304,7 @@ Parameters:
 | `mentions_disabled`                  | boolean | no       | Disable the capability of a group from getting mentioned. |
 | `organization_id`                    | integer | no       | The organization ID for the group. |
 | `parent_id`                          | integer | no       | The parent group ID for creating nested group. |
-| `project_creation_level`             | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (users with the Maintainer role), or `developer` (users with the Developer or Maintainer role). |
+| `project_creation_level`             | string  | no       | Determine if developers can create projects in the group. Can be `administrator` (users with Admin Mode enabled), `noone` (No one), `maintainer` (users with the Maintainer role), or `developer` (users with the Developer or Maintainer role). |
 | `request_access_enabled`             | boolean | no       | Allow users to request member access. |
 | `require_two_factor_authentication`  | boolean | no       | Require all users in this group to set up two-factor authentication. |
 | `share_with_group_lock`              | boolean | no       | Prevent sharing a project with another group within this group. |

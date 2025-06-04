@@ -73,7 +73,6 @@ Gitlab/FeatureAvailableUsage:
     - 'ee/app/services/ee/merge_requests/build_service.rb'
     - 'ee/app/services/ee/merge_requests/merge_base_service.rb'
     - 'ee/app/services/ee/merge_requests/refresh_service.rb'
-    - 'ee/app/services/ee/projects/create_service.rb'
     - 'ee/app/services/ee/protected_branches/create_service.rb'
     - 'ee/app/services/ee/releases/create_evidence_service.rb'
     - 'ee/app/services/iterations/create_service.rb'

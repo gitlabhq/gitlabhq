@@ -39,6 +39,7 @@ These shortcuts are available in most areas of GitLab:
 | <kbd>Shift</kbd> + <kbd>l</kbd>    | Go to your **Milestones** page. |
 | <kbd>Shift</kbd> + <kbd>s</kbd>    | Go to your **Snippets** page. |
 | <kbd>s</kbd> / <kbd>/</kbd>        | Put cursor in the search bar. |
+| <kbd>f</kbd>                       | Focus filter bar |
 | <kbd>Shift</kbd> + <kbd>i</kbd>    | Go to your **Issues** page. |
 | <kbd>Shift</kbd> + <kbd>m</kbd>    | Go to your [**Merge requests**](project/merge_requests/_index.md) page. |
 | <kbd>Shift</kbd> + <kbd>r</kbd>    | Go to your **Review requests** page. |

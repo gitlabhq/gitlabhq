@@ -8,6 +8,18 @@ require_relative '../../../lib/gitlab/setup_helper'
 module TestEnv
   extend self
 
+  def self.measure_setup_duration(name)
+    start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    result = yield
+    duration = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
+
+    duration = duration.round(3)
+    @durations_mutex.synchronize { @component_durations[name] ||= duration }
+    puts "==> #{name} set up in #{duration} seconds...\n"
+
+    result
+  end
+
   def self.included(_)
     raise "Don't include TestEnv. Use TestEnv.<method> instead."
   end
@@ -166,38 +178,39 @@ module TestEnv
       exit 1
     end
 
-    start = Time.now
+    @component_durations = {}
+    @durations_mutex = Mutex.new
+
+    start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     # Disable mailer for spinach tests
     clean_test_path
 
     # Install components in parallel as most of the setup is I/O.
-    Parallel.each(setup_methods) do |method|
-      public_send(method)
+    Parallel.each(setup_methods, in_threads: setup_methods.size) do |method|
+      measure_setup_duration(method.to_s) { public_send(method) }
     end
+
     post_init
-    duration = Time.now - start
+    duration = (Process.clock_gettime(Process::CLOCK_MONOTONIC) - start)
 
     puts "\nTest environment set up in #{duration} seconds"
-
-    send_rspec_setup_duration_telemetry(duration)
+    send_rspec_setup_duration_telemetry(duration, @component_durations)
   end
 
-  def send_rspec_setup_duration_telemetry(duration)
+  def send_rspec_setup_duration_telemetry(duration, component_durations)
     gdk_path = Gitlab::Utils.which('gdk')
-    return if gdk_path.empty?
+    return unless gdk_path
+
+    extra_args = ["--extra=gitlab_sha:#{gitlab_sha}"]
+    component_durations.each do |name, time|
+      metric_name = name.downcase.gsub(/\s+/, '_').gsub(/[^a-z0-9_]/, '_')
+      extra_args << "--extra=#{metric_name}:#{time}"
+    end
 
     Bundler.with_unbundled_env do
-      gitlab_sha = begin
-        result = IO.popen(%w[git rev-parse HEAD], chdir: Rails.root) { |p| p.read.strip }
-        result.empty? ? 'unknown' : result
-      rescue StandardError => e
-        warn "Failed to get GitLab SHA: #{e.message}"
-        'unknown'
-      end
-
       # Add timeout in case GDK command hangs unexpectedly
       Timeout.timeout(2) do
-        success = system(gdk_path, 'send-telemetry', 'rspec_setup_duration', duration.to_s, "--extra=gitlab_sha:#{gitlab_sha}")
+        success = system(gdk_path, 'send-telemetry', 'rspec_setup_duration', duration.round(3).to_s, *extra_args)
         warn "Failed to send RSpec setup time via telemetry command." unless success
       end
     end
@@ -205,6 +218,11 @@ module TestEnv
     warn "Sending telemetry timed out."
   rescue StandardError => e
     warn "Failed to send telemetry: #{e.message}"
+  end
+
+  def gitlab_sha
+    sha, exit_status = Gitlab::Popen.popen(%W[#{Gitlab.config.git.bin_path} rev-parse HEAD], Rails.root.to_s)
+    exit_status == 0 && !sha.chomp.empty? ? sha.chomp : 'unknown'
   end
 
   # Can be overriden
@@ -268,15 +286,13 @@ module TestEnv
       return
     end
 
-    start = Time.now
+    measure_setup_duration('setup_workhorse') do
+      FileUtils.rm_rf(workhorse_dir)
+      Gitlab::SetupHelper::Workhorse.compile_into(workhorse_dir)
+      Gitlab::SetupHelper::Workhorse.create_configuration(workhorse_dir, nil)
 
-    FileUtils.rm_rf(workhorse_dir)
-    Gitlab::SetupHelper::Workhorse.compile_into(workhorse_dir)
-    Gitlab::SetupHelper::Workhorse.create_configuration(workhorse_dir, nil)
-
-    File.write(workhorse_tree_file, workhorse_tree) if workhorse_source_clean?
-
-    puts "==> GitLab Workhorse set up in #{Time.now - start} seconds...\n"
+      File.write(workhorse_tree_file, workhorse_tree) if workhorse_source_clean?
+    end
   end
 
   def skip_compile_workhorse?
@@ -350,9 +366,7 @@ module TestEnv
     clone_url = "https://gitlab.com/gitlab-org/#{repo_name}.git"
 
     unless File.directory?(repo_path)
-      start = Time.now
-      system(*%W[#{Gitlab.config.git.bin_path} clone --quiet -- #{clone_url} #{repo_path}])
-      puts "==> #{repo_path} set up in #{Time.now - start} seconds...\n"
+      measure_setup_duration(repo_path) { system(*%W[#{Gitlab.config.git.bin_path} clone --quiet -- #{clone_url} #{repo_path}]) }
     end
 
     create_bundle = !File.file?(repo_bundle_path)
@@ -374,9 +388,7 @@ module TestEnv
     end
 
     if create_bundle
-      start = Time.now
-      system(git_env, *%W[#{Gitlab.config.git.bin_path} -C #{repo_path} bundle create #{repo_bundle_path} --exclude refs/remotes/* --all])
-      puts "==> #{repo_bundle_path} generated in #{Time.now - start} seconds...\n"
+      measure_setup_duration(repo_bundle_path) { system(git_env, *%W[#{Gitlab.config.git.bin_path} -C #{repo_path} bundle create #{repo_bundle_path} --exclude refs/remotes/* --all]) }
     end
   end
 
@@ -491,32 +503,30 @@ module TestEnv
   end
 
   def component_timed_setup(component, install_dir:, version:, task:, fresh_install: true, task_args: [])
-    start = Time.now
+    measure_setup_duration(component) do
+      ensure_component_dir_name_is_correct!(component, install_dir)
 
-    ensure_component_dir_name_is_correct!(component, install_dir)
+      # On CI, once installed, components never need update
+      next if File.exist?(install_dir) && ci?
 
-    # On CI, once installed, components never need update
-    return if File.exist?(install_dir) && ci?
+      if component_needs_update?(install_dir, version)
+        puts "==> Starting #{component} (#{version}) set up...\n"
 
-    if component_needs_update?(install_dir, version)
-      puts "==> Starting #{component} (#{version}) set up...\n"
+        # Cleanup the component entirely to ensure we start fresh
+        FileUtils.rm_rf(install_dir) if fresh_install
 
-      # Cleanup the component entirely to ensure we start fresh
-      FileUtils.rm_rf(install_dir) if fresh_install
+        if ENV['SKIP_RAILS_ENV_IN_RAKE']
+          # When we run `scripts/setup-test-env`, we take care of loading the necessary dependencies
+          # so we can run the rake task programmatically.
+          Rake::Task[task].invoke(*task_args)
+        else
+          # In other cases, we run the task via `rake` so that the environment
+          # and dependencies are automatically loaded.
+          raise ComponentFailedToInstallError unless system('rake', "#{task}[#{task_args.join(',')}]")
+        end
 
-      if ENV['SKIP_RAILS_ENV_IN_RAKE']
-        # When we run `scripts/setup-test-env`, we take care of loading the necessary dependencies
-        # so we can run the rake task programmatically.
-        Rake::Task[task].invoke(*task_args)
-      else
-        # In other cases, we run the task via `rake` so that the environment
-        # and dependencies are automatically loaded.
-        raise ComponentFailedToInstallError unless system('rake', "#{task}[#{task_args.join(',')}]")
+        yield if block_given?
       end
-
-      yield if block_given?
-
-      puts "==> #{component} set up in #{Time.now - start} seconds...\n"
     end
   rescue ComponentFailedToInstallError
     puts "\n#{component} failed to install, cleaning up #{install_dir}!\n"

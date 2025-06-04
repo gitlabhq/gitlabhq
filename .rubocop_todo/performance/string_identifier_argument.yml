@@ -131,7 +131,6 @@ Performance/StringIdentifierArgument:
     - 'spec/graphql/mutations/dependency_proxy/image_ttl_group_policy/update_spec.rb'
     - 'spec/graphql/mutations/groups/update_spec.rb'
     - 'spec/graphql/mutations/namespace/package_settings/update_spec.rb'
-    - 'spec/helpers/avatars_helper_spec.rb'
     - 'spec/helpers/packages_helper_spec.rb'
     - 'spec/lib/api/helpers/packages_helpers_spec.rb'
     - 'spec/lib/gitlab/ci/reports/test_report_spec.rb'

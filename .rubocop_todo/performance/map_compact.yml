@@ -88,7 +88,6 @@ Performance/MapCompact:
     - 'scripts/lint_templates_bash.rb'
     - 'spec/controllers/every_controller_spec.rb'
     - 'spec/lib/api/every_api_endpoint_spec.rb'
-    - 'spec/lib/banzai/pipeline/plain_markdown_pipeline_spec.rb'
     - 'spec/lib/gitlab/conflict/file_spec.rb'
     - 'spec/lib/gitlab/import_export/project/tree_restorer_spec.rb'
     - 'spec/lib/gitlab/import_export/references_configuration_spec.rb'

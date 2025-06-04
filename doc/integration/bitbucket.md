@@ -42,7 +42,7 @@ you to use.
    - **Application description**: Optional. Fill this in if you wish.
    - **Callback URL**: (Required in GitLab versions 8.15 and greater)
      The URL to your GitLab installation, such as
-     `https://gitlab.example.com/users/auth`.
+     `https://gitlab.example.com/users/auth/bitbucket/callback`.
      Leaving this field empty
      results in an `Invalid redirect_uri` message.
 
@@ -92,7 +92,7 @@ you to use.
        app_id: "<bitbucket_app_key>",
        app_secret: "<bitbucket_app_secret>",
        url: "https://bitbucket.org/",
-       args: { redirect_uri: "https://gitlab.example.com/users/auth/" },
+       args: { redirect_uri: "https://gitlab.example.com/users/auth/bitbucket/callback" },
      }
    ]
    ```
@@ -108,7 +108,7 @@ you to use.
            app_id: '<bitbucket_app_key>',
            app_secret: '<bitbucket_app_secret>',
            url: 'https://bitbucket.org/',
-           args: { redirect_uri: "https://gitlab.example.com/users/auth/" },
+           args: { redirect_uri: "https://gitlab.example.com/users/auth/bitbucket/callback" },
          }
    ```
 

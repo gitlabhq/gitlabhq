@@ -7,7 +7,6 @@ RSpec/PendingWithoutReason:
     - 'ee/spec/features/projects/merge_requests/user_approves_merge_request_spec.rb'
     - 'ee/spec/graphql/types/pipeline_security_report_finding_type_spec.rb'
     - 'ee/spec/requests/api/wikis_spec.rb'
-    - 'ee/spec/requests/custom_roles/admin_runners/request_spec.rb'
     - 'ee/spec/requests/projects/merge_requests_controller_spec.rb'
     - 'ee/spec/services/merge_requests/approval_service_spec.rb'
     - 'ee/spec/support/shared_examples/models/vulnerabilities/cvss_vector_validator_shared_examples.rb'

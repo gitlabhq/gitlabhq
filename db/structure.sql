@@ -25015,7 +25015,6 @@ CREATE TABLE vulnerability_feedback (
     project_id bigint NOT NULL,
     author_id bigint NOT NULL,
     issue_id bigint,
-    project_fingerprint character varying(40),
     merge_request_id bigint,
     comment_author_id bigint,
     comment text,
@@ -25806,6 +25805,7 @@ CREATE TABLE work_item_custom_statuses (
     color text NOT NULL,
     created_by_id bigint,
     updated_by_id bigint,
+    converted_from_system_defined_status_identifier smallint,
     CONSTRAINT check_4789467800 CHECK ((char_length(color) <= 7)),
     CONSTRAINT check_720a7c4d24 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_8ea8b3c991 CHECK ((char_length(description) <= 255)),
@@ -38014,8 +38014,6 @@ CREATE INDEX index_vulnerability_feedback_on_author_id ON vulnerability_feedback
 
 CREATE INDEX index_vulnerability_feedback_on_comment_author_id ON vulnerability_feedback USING btree (comment_author_id);
 
-CREATE INDEX index_vulnerability_feedback_on_common_attributes ON vulnerability_feedback USING btree (project_id, category, feedback_type, project_fingerprint);
-
 CREATE INDEX index_vulnerability_feedback_on_feedback_type_and_finding_uuid ON vulnerability_feedback USING btree (feedback_type, finding_uuid);
 
 CREATE INDEX index_vulnerability_feedback_on_issue_id ON vulnerability_feedback USING btree (issue_id);
@@ -38025,6 +38023,8 @@ CREATE INDEX index_vulnerability_feedback_on_issue_id_not_null ON vulnerability_
 CREATE INDEX index_vulnerability_feedback_on_merge_request_id ON vulnerability_feedback USING btree (merge_request_id);
 
 CREATE INDEX index_vulnerability_feedback_on_pipeline_id ON vulnerability_feedback USING btree (pipeline_id);
+
+CREATE INDEX index_vulnerability_feedback_on_set_of_common_attributes ON vulnerability_feedback USING btree (project_id, category, feedback_type);
 
 CREATE INDEX index_vulnerability_finding_evidences_on_project_id ON vulnerability_finding_evidences USING btree (project_id);
 

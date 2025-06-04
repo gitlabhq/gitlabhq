@@ -1254,7 +1254,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/services/epics/strategies/due_date_inherited_strategy.rb'
     - 'ee/app/services/epics/strategies/start_date_inherited_strategy.rb'
     - 'ee/app/services/epics/transfer_service.rb'
-    - 'ee/app/services/epics/update_service.rb'
     - 'ee/app/services/geo/container_repository_sync_service.rb'
     - 'ee/app/services/gitlab_subscriptions/add_on_purchases/update_service.rb'
     - 'ee/app/services/gitlab_subscriptions/notify_seats_exceeded_batch_service.rb'

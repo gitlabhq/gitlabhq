@@ -14,7 +14,6 @@ Lint/ConstantDefinitionInBlock:
     - 'ee/app/models/ee/epic.rb'
     - 'ee/app/models/ee/group.rb'
     - 'ee/app/models/ee/issue.rb'
-    - 'ee/app/models/ee/merge_request_diff.rb'
     - 'ee/app/models/ee/namespace_setting.rb'
     - 'ee/app/models/ee/plan.rb'
     - 'ee/app/models/ee/project_import_state.rb'

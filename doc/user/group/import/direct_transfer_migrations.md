@@ -44,18 +44,16 @@ Before migrating by using direct transfer, see the following prerequisites.
 
 ### Versions
 
-To maximize the chance of a successful and performant migration, you should:
+To maximize the chance of a successful and performant migration:
 
-- Upgrade both the source and destination instances to GitLab 16.8 or later to use bulk import and export of relations.
+- Upgrade both the source and destination instances to GitLab 16.8 or later for bulk import and export of relations.
   For more information, see [epic 9036](https://gitlab.com/groups/gitlab-org/-/epics/9036).
-- Migrate between versions that are as new as possible. Update the source and destination instances to as late a version
-  as possible to take advantage of bug fixes and improvements added over time.
+- Migrate between versions that are as late as possible for bug fixes and other improvements.
 
-If the source and destination instances are not the same version:
-
-- The destination instance must be a later version than the source instance.
-- The source instance must not be more than two [minor](../../../policy/maintenance.md#versioning)
-  versions earlier than the destination instance.
+If the source and destination instances are not the same version,
+the source instance must not be more than two [minor](../../../policy/maintenance.md#versioning)
+versions earlier than the destination instance.
+This requirement does not apply for migrations from GitLab.com to GitLab Dedicated.
 
 ### Configuration
 

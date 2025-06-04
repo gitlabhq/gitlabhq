@@ -701,7 +701,7 @@ indentation:
 
 - Unordered list item 4
 
-  ![an image that will nest inside list item 4](image.png)
+  ![An image nested under list item 4.](image.png)
 ````
 
 For ordered lists, use three spaces for each level of indentation:
@@ -1323,7 +1323,7 @@ When you take screenshots:
   review app in the merge request. Make sure the image isn't blurry or overwhelming.
 - **Be consistent.** Coordinate screenshots with the other screenshots already on
   a documentation page for a consistent reading experience. Ensure your navigation theme
-  is set to the default preference **Indigo** and the syntax highlighting theme is also set to the default preference **Light**. 
+  is set to the default preference **Indigo** and the syntax highlighting theme is also set to the default preference **Light**.
 
 #### Add callouts
 
@@ -1334,7 +1334,7 @@ To emphasize an area in a screenshot, use an arrow.
 - Use the arrow style shown in the following image.
 - If you have multiple arrows, make them parallel when possible.
 
-![callout example](img/callouts_v14_6.png)
+![Red arrow callouts highlighting issue and merge request icons in the GitLab user interface.](img/callouts_v14_6.png)
 
 #### Image requirements
 

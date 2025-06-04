@@ -23,10 +23,9 @@ If you're familiar with the GitLab package registry, you might wonder what the d
 
 | Differences   | Dependency list                                               | SBOM |
 |---------------|---------------------------------------------------------------|------|
-| **Scope**     | Shows dependencies for individual projects.                   | Creates an inventory of all packages published across your group. |
+| **Scope**     | Shows dependencies for individual projects or groups.         | Creates an inventory of all packages published across your group. |
 | **Direction** | Tracks what your projects depend on (incoming dependencies).  | Tracks what your group publishes (outgoing packages). |
 | **Coverage**  | Based on package manifests, like `package.json` or `pom.xml`. | Covers actual published artifacts in your package registry. |
-| **Format**    | GitLab-specific feature.                                      | Generates standard CycloneDX SBOMs that can be used with external tools. |
 
 ## What is CycloneDX?
 

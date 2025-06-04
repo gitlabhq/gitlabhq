@@ -3,7 +3,6 @@ Gitlab/RSpec/AvoidCreateDefaultOrganization:
   Details: grace period
   Exclude:
     - 'ee/spec/finders/ai/code_suggestion_events_finder_spec.rb'
-    - 'spec/features/user_settings/personal_access_tokens_spec.rb'
     - 'spec/helpers/organizations/organization_helper_spec.rb'
     - 'spec/lib/gitlab/current/organization_spec.rb'
     - 'spec/lib/gitlab/database_importers/default_organization_importer_spec.rb'

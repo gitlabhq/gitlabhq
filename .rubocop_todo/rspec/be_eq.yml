@@ -351,7 +351,6 @@ RSpec/BeEq:
     - 'ee/spec/requests/api/settings_spec.rb'
     - 'ee/spec/requests/api/status_checks_spec.rb'
     - 'ee/spec/requests/api/users_spec.rb'
-    - 'ee/spec/requests/custom_roles/manage_merge_request_settings/request_spec.rb'
     - 'ee/spec/requests/ee/projects/service_desk_controller_spec.rb'
     - 'ee/spec/requests/ee/registrations_controller_spec.rb'
     - 'ee/spec/requests/gitlab_subscriptions/api/internal/helpers_spec.rb'

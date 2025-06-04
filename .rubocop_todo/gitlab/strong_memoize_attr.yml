@@ -542,7 +542,6 @@ Gitlab/StrongMemoizeAttr:
     - 'lib/gitlab/suggestions/file_suggestion.rb'
     - 'lib/gitlab/task_helpers.rb'
     - 'lib/gitlab/template/gitlab_ci_yml_template.rb'
-    - 'lib/gitlab/tracking/destinations/snowplow_micro.rb'
     - 'lib/gitlab/usage_data.rb'
     - 'lib/gitlab/web_hooks/rate_limiter.rb'
     - 'lib/gitlab/webpack/graphql_known_operations.rb'

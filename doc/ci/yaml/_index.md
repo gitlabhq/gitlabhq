@@ -5582,7 +5582,7 @@ job2:
 
 job3:
   script:
-    - echo "This job also runs in the test stage".
+    - echo "This job also runs in the test stage."
 
 job4:
   stage: deploy

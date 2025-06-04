@@ -76,7 +76,7 @@ for the status of features related to the container registry database.
 Prerequisites:
 
 - GitLab 17.3 or later.
-- PostgreSQL database version 12 or later. It must be accessible from the registry node.
+- PostgreSQL database [version 14 or later](../../install/requirements.md#postgresql). It must be accessible from the registry node.
 
 Follow the instructions that match your situation:
 

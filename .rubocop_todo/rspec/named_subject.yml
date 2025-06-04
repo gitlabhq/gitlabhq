@@ -2728,7 +2728,6 @@ RSpec/NamedSubject:
     - 'spec/serializers/feature_flag_summary_entity_spec.rb'
     - 'spec/serializers/feature_flag_summary_serializer_spec.rb'
     - 'spec/serializers/feature_flags_client_serializer_spec.rb'
-    - 'spec/serializers/group_issuable_autocomplete_entity_spec.rb'
     - 'spec/serializers/import/bulk_import_entity_spec.rb'
     - 'spec/serializers/import/github_org_entity_spec.rb'
     - 'spec/serializers/import/github_org_serializer_spec.rb'

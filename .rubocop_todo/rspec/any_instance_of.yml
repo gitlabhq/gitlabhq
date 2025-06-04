@@ -85,7 +85,6 @@ RSpec/AnyInstanceOf:
     - 'spec/features/groups/members/tabs_spec.rb'
     - 'spec/features/ide/static_object_external_storage_csp_spec.rb'
     - 'spec/features/issuables/issuable_list_spec.rb'
-    - 'spec/features/issues/form_spec.rb'
     - 'spec/features/merge_request/user_creates_image_diff_notes_spec.rb'
     - 'spec/features/merge_request/user_reviews_image_spec.rb'
     - 'spec/features/merge_request/user_sees_diff_spec.rb'

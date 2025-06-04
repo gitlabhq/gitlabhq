@@ -345,6 +345,64 @@ Use the policy editor to create, edit, and delete policies:
    If you are a project owner and a security policy project is not associated with this project,
    a security policy project is created and linked to this project when the merge request is created.
 
+### Annotate IDs in `policy.yml`
+
+{{< details >}}
+
+Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/497774) as an [experiment](../../../policy/development_stages_support.md) in GitLab 18.1 with an `annotate_ids` option defined in the `policy.yml` file.
+
+{{< /history >}}
+
+To simplify your `policy.yml` file, GitLab can automatically add comments after IDs, such as project IDs, group IDs, user IDs, or compliance framework IDs. The annotations help users identify the meaning or origin of each ID, which makes the `policy.yml` file easier to understand and maintain.
+
+To enable this experimental feature, add an `annotate_ids` section to the `experiments` section in the `.gitlab/security-policies/policy.yml` file for your security policy project:
+
+```yaml
+experiments:
+  annotate_ids:
+    enabled: true
+```
+
+After you enable the option, any change to the security policies made with the GitLab [policy editor](#policy-editor) creates annotation comments next to the IDs in the `policy.yml` file.
+
+{{< alert type="note" >}}
+
+To apply the annotations, you must use the policy editor. If you edit the `policy.yml` file manually (for example, with a Git commit), the annotations are not applied.
+
+{{< /alert>}}
+
+For example:
+
+```yaml
+# Example policy.yml with annotated IDs
+approval_policy:
+- name: Your policy name
+  # ... other policy fields ...
+  policy_scope:
+    projects:
+      including:
+      - id: 361 # my-group/my-project
+  actions:
+  - type: require_approval
+    approvals_required: 1
+    user_approvers_ids:
+    - 75 # jane.doe
+    group_approvers_ids:
+    - 203 # security-approvers
+```
+
+{{< alert type="note" >}}
+
+When you apply annotations for the first time, GitLab creates the annotations for all IDs in the `policy.yml` file, including those in policies that you aren't editing.
+
+{{< /alert >}}
+
 ## Troubleshooting
 
 When working with security policies, consider these troubleshooting tips:

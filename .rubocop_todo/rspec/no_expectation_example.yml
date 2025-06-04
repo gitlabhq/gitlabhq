@@ -90,7 +90,6 @@ RSpec/NoExpectationExample:
     - 'spec/lib/backup/database_connection_spec.rb'
     - 'spec/lib/backup/targets/target_spec.rb'
     - 'spec/lib/banzai/filter/escaped_char_filter_spec.rb'
-    - 'spec/lib/banzai/pipeline/plain_markdown_pipeline_spec.rb'
     - 'spec/lib/click_house/migration_support/exclusive_lock_spec.rb'
     - 'spec/lib/container_registry/gitlab_api_client_spec.rb'
     - 'spec/lib/gitlab/auth/request_authenticator_spec.rb'

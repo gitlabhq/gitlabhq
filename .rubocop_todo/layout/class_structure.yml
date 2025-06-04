@@ -262,7 +262,6 @@ Layout/ClassStructure:
     - 'lib/backup/database_configuration.rb'
     - 'lib/banzai/filter/asset_proxy_filter.rb'
     - 'lib/banzai/filter/emoji_filter.rb'
-    - 'lib/banzai/filter/math_filter.rb'
     - 'lib/banzai/filter/references/abstract_reference_filter.rb'
     - 'lib/banzai/filter/references/commit_range_reference_filter.rb'
     - 'lib/bitbucket/representation/base.rb'

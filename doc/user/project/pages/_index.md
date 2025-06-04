@@ -16,9 +16,6 @@ description: Static site hosting, documentation publishing, project websites, an
 
 GitLab Pages publishes static websites directly from a repository in GitLab.
 
-<div class="row">
-<div class="col-md-9">
-<p style="margin-top: 18px;">
 These websites:
 
 - Deploy automatically with GitLab CI/CD pipelines.
@@ -27,11 +24,6 @@ These websites:
 - Connect with custom domains and SSL/TLS certificates.
 - Control access through built-in authentication.
 - Scale reliably for personal, business, or project documentation sites.
-
-</p>
-</div>
-<div class="col-md-3"><img src="img/ssgs_pages_v11_3.png" alt="Examples of SSGs supported by Pages" class="middle display-block"></div>
-</div>
 
 To publish a website with Pages, use any static site generator like Gatsby, Jekyll, Hugo, Middleman, Harp, Hexo, or Brunch.
 Pages also supports websites written directly in plain HTML, CSS, and JavaScript.
@@ -88,10 +80,6 @@ GitLab aware that you're deploying a GitLab Pages website.
 You can either use the GitLab [default domain for GitLab Pages websites](getting_started_part_one.md#gitlab-pages-default-domain-names),
 `*.gitlab.io`, or your own domain (`example.com`). In that case, you
 must be an administrator in your domain's registrar (or control panel) to set it up with Pages.
-
-The following diagrams show the workflows you might follow to get started with Pages.
-
-<img src="img/new_project_for_pages_v12_5.png" alt="New projects for GitLab Pages">
 
 ## Access to your Pages site
 
