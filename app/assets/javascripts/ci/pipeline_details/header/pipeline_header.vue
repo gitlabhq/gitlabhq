@@ -4,9 +4,8 @@ import { BUTTON_TOOLTIP_RETRY, BUTTON_TOOLTIP_CANCEL } from '~/ci/constants';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
 import { setUrlFragment, visitUrl } from '~/lib/utils/url_utility';
 import { __, n__, sprintf, formatNumber } from '~/locale';
-import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
-import { TYPENAME_CI_PIPELINE } from '~/graphql_shared/constants';
 import { reportToSentry } from '~/ci/utils';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
@@ -70,9 +69,6 @@ export default {
     pipelineIid: {
       default: '',
     },
-    pipelineId: {
-      default: '',
-    },
   },
   apollo: {
     pipeline: {
@@ -89,6 +85,40 @@ export default {
       update(data) {
         return data.project.pipeline;
       },
+      result({ data }) {
+        // we use a manual subscribeToMore call due to issues with
+        // the skip hook not working correctly for the subscription
+        if (this.showRealTimePipelineStatus && data?.project?.pipeline?.id) {
+          this.$apollo.queries.pipeline.subscribeToMore({
+            document: pipelineCiStatusUpdatedSubscription,
+            variables: {
+              pipelineId: data.project.pipeline.id,
+            },
+            updateQuery(
+              previousData,
+              {
+                subscriptionData: {
+                  data: { ciPipelineStatusUpdated },
+                },
+              },
+            ) {
+              if (ciPipelineStatusUpdated) {
+                return {
+                  project: {
+                    ...previousData.project,
+                    pipeline: {
+                      ...previousData.project.pipeline,
+                      detailedStatus: ciPipelineStatusUpdated.detailedStatus,
+                    },
+                  },
+                };
+              }
+
+              return previousData;
+            },
+          });
+        }
+      },
       error(error) {
         this.reportFailure(LOAD_FAILURE);
         reportToSentry(this.$options.name, error);
@@ -101,41 +131,6 @@ export default {
           this.isCanceling = false;
           this.isRetrying = false;
         }
-      },
-      subscribeToMore: {
-        document() {
-          return pipelineCiStatusUpdatedSubscription;
-        },
-        variables() {
-          return {
-            pipelineId: convertToGraphQLId(TYPENAME_CI_PIPELINE, this.pipelineId),
-          };
-        },
-        skip() {
-          return !this.showRealTimePipelineStatus;
-        },
-        updateQuery(
-          previousData,
-          {
-            subscriptionData: {
-              data: { ciPipelineStatusUpdated },
-            },
-          },
-        ) {
-          if (ciPipelineStatusUpdated) {
-            return {
-              project: {
-                ...previousData.project,
-                pipeline: {
-                  ...previousData.project.pipeline,
-                  detailedStatus: ciPipelineStatusUpdated.detailedStatus,
-                },
-              },
-            };
-          }
-
-          return previousData;
-        },
       },
     },
   },
