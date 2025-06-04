@@ -60,6 +60,10 @@
     "MergeRequest",
     "WorkItemWidgetCurrentUserTodos"
   ],
+  "CustomRoleInterface": [
+    "AdminMemberRole",
+    "MemberRole"
+  ],
   "DependencyInterface": [
     "Dependency",
     "DependencyAggregation"
@@ -143,6 +147,10 @@
     "PendingGroupMember",
     "PendingProjectMember",
     "ProjectMember"
+  ],
+  "MemberRoleInterface": [
+    "MemberRole",
+    "StandardRole"
   ],
   "NamespaceUnion": [
     "CiDeletedNamespace",

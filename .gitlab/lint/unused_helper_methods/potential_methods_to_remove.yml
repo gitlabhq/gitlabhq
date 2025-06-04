@@ -23,10 +23,6 @@ discover_duo_pro_hand_raise_lead_data:
   file: ee/app/helpers/gitlab_subscriptions/hand_raise_leads_helper.rb
 buy_addon_data:
   file: ee/app/helpers/subscriptions_helper.rb
-group_icon:
-  file: app/helpers/avatars_helper.rb
-topic_icon:
-  file: app/helpers/avatars_helper.rb
 can_view_namespace_catalog?:
   file: app/helpers/ci/catalog/resources_helper.rb
 js_ci_catalog_data:

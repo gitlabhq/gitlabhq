@@ -37689,6 +37689,9 @@ msgstr ""
 msgid "MemberRole|Admin role is assigned to one or more users. Remove role from all users, then delete role."
 msgstr ""
 
+msgid "MemberRole|Admin role is used by one or more LDAP synchronizations. Remove LDAP syncs, then delete role."
+msgstr ""
+
 msgid "MemberRole|Are you sure you want to delete this role?"
 msgstr ""
 

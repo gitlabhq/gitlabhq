@@ -1578,28 +1578,9 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     end
   end
 
-  describe 'container_protection_tag_rules' do
+  describe 'container_protection_tag_rules', unless: Gitlab.ee? do
     let_it_be(:project) { create(:project) }
     let_it_be(:user) { create(:user) }
-
-    before_all do
-      create(:container_registry_protection_tag_rule, :immutable,
-        project: project,
-        tag_name_pattern: 'immutable-1'
-      )
-
-      create(:container_registry_protection_tag_rule,
-        project: project,
-        minimum_access_level_for_push: Gitlab::Access::MAINTAINER,
-        minimum_access_level_for_delete: Gitlab::Access::OWNER,
-        tag_name_pattern: 'mutable'
-      )
-
-      create(:container_registry_protection_tag_rule, :immutable,
-        project: project,
-        tag_name_pattern: 'immutable-2'
-      )
-    end
 
     let(:query) do
       %(
@@ -1618,52 +1599,37 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       )
     end
 
-    subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
+    before_all do
+      create(:container_registry_protection_tag_rule, :immutable,
+        project: project,
+        tag_name_pattern: 'immutable-1'
+      )
+
+      create(:container_registry_protection_tag_rule,
+        project: project,
+        minimum_access_level_for_push: Gitlab::Access::MAINTAINER,
+        minimum_access_level_for_delete: Gitlab::Access::OWNER,
+        tag_name_pattern: 'mutable'
+      )
+    end
+
+    subject do
+      GitlabSchema.execute(query, context: { current_user: user })
+        .as_json.dig('data', 'project', 'containerProtectionTagRules', 'nodes')
+    end
 
     before do
       project.add_maintainer(user)
     end
 
-    it 'returns tag rules with mutable ones first' do
-      result_nodes = subject.dig('data', 'project', 'containerProtectionTagRules', 'nodes')
-
-      expect(result_nodes.size).to eq(3)
-
-      expect(result_nodes[0]).to include(
-        'tagNamePattern' => 'mutable',
-        'minimumAccessLevelForPush' => 'MAINTAINER',
-        'minimumAccessLevelForDelete' => 'OWNER'
-      )
-
-      expect(result_nodes[1]).to include(
-        'tagNamePattern' => 'immutable-1',
-        'minimumAccessLevelForPush' => nil,
-        'minimumAccessLevelForDelete' => nil
-      )
-
-      expect(result_nodes[2]).to include(
-        'tagNamePattern' => 'immutable-2',
-        'minimumAccessLevelForPush' => nil,
-        'minimumAccessLevelForDelete' => nil
-      )
-    end
-
-    context 'when the feature container_registry_immutable_tags is disabled' do
-      before do
-        stub_feature_flags(container_registry_immutable_tags: false)
-      end
-
-      it 'only returns mutable tag rules' do
-        result_nodes = subject.dig('data', 'project', 'containerProtectionTagRules', 'nodes')
-
-        expect(result_nodes.size).to eq(1)
-
-        expect(result_nodes[0]).to include(
+    it do
+      is_expected.to have_attributes(size: 1).and contain_exactly(
+        a_hash_including(
           'tagNamePattern' => 'mutable',
           'minimumAccessLevelForPush' => 'MAINTAINER',
           'minimumAccessLevelForDelete' => 'OWNER'
         )
-      end
+      )
     end
   end
 end

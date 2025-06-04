@@ -570,6 +570,18 @@ Gitlab/AvoidCurrentOrganization:
     - 'spec/**/*'
     - 'ee/spec/**/*'
 
+Gitlab/DisallowCurrentOrganizationIdSafeNavigation:
+  Description: 'Use `Current.organization.id` instead of `Current.organization&.id`. `Current.organization` is expected to be assigned.'
+  Enabled: true
+  Include:
+    - 'app/**/*.rb'
+    - 'ee/app/**/*.rb'
+    - 'lib/**/*.rb'
+    - 'ee/lib/**/*.rb'
+  Exclude:
+    # Exclude the cop's own spec file to prevent self-reporting.
+    - 'spec/rubocop/cop/gitlab/disallow_current_organization_id_safe_navigation_spec.rb'
+
 # See https://gitlab.com/groups/gitlab-org/-/epics/7374
 Gitlab/AvoidGitlabInstanceChecks:
   Enabled: true

@@ -195,6 +195,11 @@ You can use GitLab compliance controls or external controls for framework requir
 GitLab compliance controls can be used in GitLab compliance frameworks. Controls are checks against the configuration or
 behavior of projects that are assigned to a compliance framework.
 
+Combine GitLab compliance controls to help you meet
+[compliance standards](compliance_frameworks/compliance_standards.md).
+
+<!-- Updates to control names must be reflected also in compliance_frameworks/compliance_standards.md -->
+
 | Control name                                             | Control ID                                                 | Description |
 |:---------------------------------------------------------|:-----------------------------------------------------------|:------------|
 | API security running                                     | `scanner_api_security_running`                             | Ensures that [API security scanning](../application_security/api_security/_index.md) is configured and running in the project pipelines. |

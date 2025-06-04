@@ -58,7 +58,7 @@ somewhere within the worker:
        deletion_cutoff = Gitlab::CurrentSettings
                            .deletion_adjourned_period.days.ago.to_date
        projects = Project.with_route.with_namespace
-                    .aimed_for_deletion(deletion_cutoff)
+                    .marked_for_deletion_before(deletion_cutoff)
 
        projects.find_each(batch_size: 100).with_index do |project, index|
          delay = index * INTERVAL

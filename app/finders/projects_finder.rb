@@ -224,19 +224,19 @@ class ProjectsFinder < UnionFinder
   def by_marked_for_deletion_on(items)
     return items unless params[:marked_for_deletion_on].present?
 
-    items.by_marked_for_deletion_on(params[:marked_for_deletion_on])
+    items.marked_for_deletion_on(params[:marked_for_deletion_on])
   end
 
   def by_aimed_for_deletion(items)
     if ::Gitlab::Utils.to_boolean(params[:aimed_for_deletion])
-      items.aimed_for_deletion(Date.current)
+      items.self_or_ancestors_aimed_for_deletion
     else
       items
     end
   end
 
   def by_not_aimed_for_deletion(items)
-    params[:not_aimed_for_deletion].present? ? items.not_aimed_for_deletion : items
+    params[:not_aimed_for_deletion].present? ? items.self_and_ancestors_not_aimed_for_deletion : items
   end
 
   def by_last_activity_after(items)
@@ -280,14 +280,14 @@ class ProjectsFinder < UnionFinder
 
   def by_archived(projects)
     if params[:non_archived]
-      projects.non_archived
+      projects.self_and_ancestors_non_archived
     elsif params.key?(:archived) && !params[:archived].nil?
       if params[:archived] == 'only'
-        projects.archived
+        projects.self_or_ancestors_archived
       elsif Gitlab::Utils.to_boolean(params[:archived])
         projects
       else
-        projects.non_archived
+        projects.self_and_ancestors_non_archived
       end
     else
       projects
@@ -310,15 +310,7 @@ class ProjectsFinder < UnionFinder
   def by_active(items)
     return items if params[:active].nil?
 
-    params[:active] ? active(items) : inactive(items)
-  end
-
-  def active(items)
-    items.non_archived.not_aimed_for_deletion
-  end
-
-  def inactive(items)
-    items.archived.or(items.aimed_for_deletion(Date.current))
+    params[:active] ? items.self_and_ancestors_active : items.self_or_ancestors_inactive
   end
 
   def finder_params

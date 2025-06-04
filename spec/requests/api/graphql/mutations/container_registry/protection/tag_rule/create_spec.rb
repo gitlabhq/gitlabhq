@@ -83,16 +83,16 @@ RSpec.describe 'Creating the container registry tag protection rule', :aggregate
     it_behaves_like 'returning a GraphQL error', [/minimumAccessLevelForPush/, /minimumAccessLevelForDelete/]
   end
 
-  context 'with blank input for the field `minimumAccessLevelForPush`' do
+  context 'with blank input for the field `minimumAccessLevelForPush`', unless: Gitlab.ee? do
     let(:input) { super().merge(minimum_access_level_for_push: nil) }
 
-    it_behaves_like 'returning a mutation error', 'Access levels should either both be present or both be nil'
+    it_behaves_like 'returning a GraphQL error', /minimumAccessLevelForPush/
   end
 
-  context 'with blank input for the field `minimumAccessLevelForDelete`' do
+  context 'with blank input for the field `minimumAccessLevelForDelete`', unless: Gitlab.ee? do
     let(:input) { super().merge(minimum_access_level_for_delete: nil) }
 
-    it_behaves_like 'returning a mutation error', 'Access levels should either both be present or both be nil'
+    it_behaves_like 'returning a GraphQL error', /minimumAccessLevelForDelete/
   end
 
   context 'with blank input field `tagNamePattern`' do

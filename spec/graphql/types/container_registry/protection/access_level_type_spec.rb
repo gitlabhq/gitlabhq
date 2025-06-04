@@ -7,21 +7,15 @@ RSpec.describe GitlabSchema.types['ContainerProtectionAccessLevel'], feature_cat
 
   specify { expect(described_class.description).to be_present }
 
-  describe 'minimum_access_level_for_push' do
+  describe 'minimum_access_level_for_push', unless: Gitlab.ee? do
     subject { described_class.fields['minimumAccessLevelForPush'] }
 
-    it { is_expected.to have_nullable_graphql_type(Types::ContainerRegistry::Protection::TagRuleAccessLevelEnum) }
+    it { is_expected.to have_non_null_graphql_type(Types::ContainerRegistry::Protection::TagRuleAccessLevelEnum) }
   end
 
-  describe 'minimum_access_level_for_delete' do
+  describe 'minimum_access_level_for_delete', unless: Gitlab.ee? do
     subject { described_class.fields['minimumAccessLevelForDelete'] }
 
-    it { is_expected.to have_nullable_graphql_type(Types::ContainerRegistry::Protection::TagRuleAccessLevelEnum) }
-  end
-
-  describe 'immutable' do
-    subject { described_class.fields['immutable'] }
-
-    it { is_expected.to have_non_null_graphql_type(GraphQL::Types::Boolean) }
+    it { is_expected.to have_non_null_graphql_type(Types::ContainerRegistry::Protection::TagRuleAccessLevelEnum) }
   end
 end

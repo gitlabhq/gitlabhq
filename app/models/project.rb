@@ -658,12 +658,29 @@ class Project < ApplicationRecord
   scope :not_hidden, -> { where(hidden: false) }
   scope :not_in_groups, ->(groups) { where.not(group: groups) }
   scope :by_not_in_root_id, ->(root_id) { joins(:project_namespace).where('namespaces.traversal_ids[1] NOT IN (?)', root_id) }
+
+  scope :aimed_for_deletion, -> { where.not(marked_for_deletion_at: nil).without_deleted }
+  scope :self_or_ancestors_aimed_for_deletion, -> do
+    left_joins(:group)
+      .where.not(marked_for_deletion_at: nil)
+      .or(where(Group.self_or_ancestors_deletion_schedule_subquery.exists))
+      .without_deleted
+  end
+
   scope :not_aimed_for_deletion, -> { where(marked_for_deletion_at: nil).without_deleted }
-  scope :aimed_for_deletion, ->(date) { where('marked_for_deletion_at <= ?', date).without_deleted }
-  scope :with_deleting_user, -> { includes(:deleting_user) }
-  scope :by_marked_for_deletion_on, ->(marked_for_deletion_on) do
+  scope :self_and_ancestors_not_aimed_for_deletion, -> do
+    left_joins(:group)
+      .where(marked_for_deletion_at: nil)
+      .where.not(Group.self_or_ancestors_deletion_schedule_subquery.exists)
+      .without_deleted
+  end
+
+  scope :marked_for_deletion_before, ->(date) { where('marked_for_deletion_at <= ?', date).without_deleted }
+  scope :marked_for_deletion_on, ->(marked_for_deletion_on) do
     where(marked_for_deletion_at: marked_for_deletion_on)
   end
+
+  scope :with_deleting_user, -> { includes(:deleting_user) }
 
   scope :with_storage_feature, ->(feature) do
     where(arel_table[:storage_version].gteq(HASHED_STORAGE_FEATURES[feature]))
@@ -798,8 +815,24 @@ class Project < ApplicationRecord
   scope :starred_by, ->(user) { joins(:users_star_projects).where('users_star_projects.user_id': user.id) }
   scope :visible_to_user, ->(user) { where(id: user.authorized_projects.select(:id).reorder(nil)) }
   scope :visible_to_user_and_access_level, ->(user, access_level) { where(id: user.authorized_projects.where('project_authorizations.access_level >= ?', access_level).select(:id).reorder(nil)) }
+
   scope :archived, -> { where(archived: true) }
+  scope :self_or_ancestors_archived, -> do
+    left_joins(:group)
+      .where(archived: true)
+      .or(where(Group.self_or_ancestors_archived_setting_subquery.exists))
+  end
+
   scope :non_archived, -> { where(archived: false) }
+  scope :self_and_ancestors_non_archived, -> do
+    left_joins(:group)
+      .where(archived: false)
+      .where.not(Group.self_or_ancestors_archived_setting_subquery.exists)
+  end
+
+  scope :self_and_ancestors_active, -> { self_and_ancestors_non_archived.self_and_ancestors_not_aimed_for_deletion }
+  scope :self_or_ancestors_inactive, -> { self_or_ancestors_archived.or(self_or_ancestors_aimed_for_deletion) }
+
   scope :with_push, -> { joins(:events).merge(Event.pushed_action) }
   scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
   scope :with_jira_dvcs_server, -> { joins(:feature_usage).merge(ProjectFeatureUsage.with_jira_dvcs_integration_enabled(cloud: false)) }

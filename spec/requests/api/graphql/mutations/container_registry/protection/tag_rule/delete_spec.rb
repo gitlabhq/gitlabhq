@@ -38,20 +38,19 @@ RSpec.describe Mutations::ContainerRegistry::Protection::TagRule::Delete, :aggre
 
   it 'responds with deleted container registry tag protection rule' do
     expect { post_graphql_mutation_request }
-      .to change { ::ContainerRegistry::Protection::TagRule.count }.from(1).to(0)
+      .to change { ::ContainerRegistry::Protection::TagRule.count }.by(-1)
 
     expect(mutation_response).to include(
       'errors' => be_blank,
-      'containerProtectionTagRule' => {
+      'containerProtectionTagRule' => hash_including(
         'id' => container_protection_rule.to_global_id.to_s,
         'tagNamePattern' => container_protection_rule.tag_name_pattern,
         'minimumAccessLevelForDelete' => container_protection_rule.minimum_access_level_for_delete.upcase,
         'minimumAccessLevelForPush' => container_protection_rule.minimum_access_level_for_push.upcase,
-        'immutable' => container_protection_rule.immutable?,
         'userPermissions' => {
           'destroyContainerRegistryProtectionTagRule' => true
         }
-      }
+      )
     )
   end
 

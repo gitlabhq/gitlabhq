@@ -7,54 +7,6 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
 
   let_it_be(:user) { create(:user) }
 
-  describe '#group_icon, #topic_icon' do
-    shared_examples 'resource with a default avatar' do |source_type|
-      it 'returns a default avatar div' do
-        expect(public_send("#{source_type}_icon", *helper_args))
-          .to match(%r{<span class="identicon bg\d+">F</span>})
-      end
-    end
-
-    shared_examples 'resource with a custom avatar' do |source_type|
-      it 'returns a custom avatar image' do
-        expect(public_send("#{source_type}_icon", *helper_args))
-          .to eq "<img src=\"#{resource.avatar.url}\" />"
-      end
-    end
-
-    shared_examples 'Gitaly exception handling' do
-      before do
-        allow(resource).to receive(:avatar_url).and_raise(error_class)
-      end
-
-      it_behaves_like 'resource with a default avatar', 'project'
-    end
-
-    context 'when providing a group' do
-      it_behaves_like 'resource with a default avatar', 'group' do
-        let(:resource) { create(:group, name: 'foo') }
-        let(:helper_args) { [resource] }
-      end
-
-      it_behaves_like 'resource with a custom avatar', 'group' do
-        let(:resource) { create(:group, avatar: File.open(uploaded_image_temp_path)) }
-        let(:helper_args) { [resource] }
-      end
-    end
-
-    context 'when providing a topic' do
-      it_behaves_like 'resource with a default avatar', 'topic' do
-        let(:resource) { create(:topic, name: 'foo') }
-        let(:helper_args) { [resource] }
-      end
-
-      it_behaves_like 'resource with a custom avatar', 'topic' do
-        let(:resource) { create(:topic, avatar: File.open(uploaded_image_temp_path)) }
-        let(:helper_args) { [resource] }
-      end
-    end
-  end
-
   describe '#avatar_icon_for' do
     let!(:user) { create(:user, avatar: File.open(uploaded_image_temp_path), email: 'bar@example.com') }
     let(:email) { 'foo@example.com' }

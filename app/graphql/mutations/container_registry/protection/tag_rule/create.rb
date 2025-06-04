@@ -29,7 +29,7 @@ module Mutations
 
           argument :minimum_access_level_for_delete,
             Types::ContainerRegistry::Protection::TagRuleAccessLevelEnum,
-            required: false,
+            required: true,
             description: copy_field_description(
               Types::ContainerRegistry::Protection::TagRuleType,
               :minimum_access_level_for_delete
@@ -37,7 +37,7 @@ module Mutations
 
           argument :minimum_access_level_for_push,
             Types::ContainerRegistry::Protection::TagRuleAccessLevelEnum,
-            required: false,
+            required: true,
             description: copy_field_description(
               Types::ContainerRegistry::Protection::TagRuleType,
               :minimum_access_level_for_push
@@ -65,3 +65,5 @@ module Mutations
     end
   end
 end
+
+Mutations::ContainerRegistry::Protection::TagRule::Create.prepend_mod

@@ -4261,8 +4261,8 @@ Input type: `createContainerProtectionTagRuleInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatecontainerprotectiontagruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatecontainerprotectiontagruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | Minimum GitLab access level required to delete container image tags from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, no access level can delete tags. Introduced in GitLab 17.8: **Status**: Experiment. |
-| <a id="mutationcreatecontainerprotectiontagruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | Minimum GitLab access level required to push container image tags to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, no access level can push tags. Introduced in GitLab 17.8: **Status**: Experiment. |
+| <a id="mutationcreatecontainerprotectiontagruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | Minimum GitLab access level required to delete container image tags from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. Introduced in GitLab 17.8: **Status**: Experiment. If the value is `nil`, no access level can delete tags. |
+| <a id="mutationcreatecontainerprotectiontagruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | Minimum GitLab access level required to push container image tags to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. Introduced in GitLab 17.8: **Status**: Experiment. If the value is `nil`, no access level can push tags. |
 | <a id="mutationcreatecontainerprotectiontagruleprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project containing the container image tags. |
 | <a id="mutationcreatecontainerprotectiontagruletagnamepattern"></a>`tagNamePattern` | [`String!`](#string) | The pattern that matches container image tags to protect. For example, `v1.*`. Wildcard character `*` allowed. Introduced in GitLab 17.8: **Status**: Experiment. |
 
@@ -21197,9 +21197,9 @@ Represents an admin member role.
 | <a id="adminmemberroleeditpath"></a>`editPath` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Web UI path to edit the custom role. |
 | <a id="adminmemberroleenabledpermissions"></a>`enabledPermissions` {{< icon name="warning-solid" >}} | [`CustomizableAdminPermissionConnection!`](#customizableadminpermissionconnection) | **Introduced** in GitLab 17.7. **Status**: Experiment. Array of all permissions enabled for the custom role. |
 | <a id="adminmemberroleid"></a>`id` | [`ID!`](#id) | Role ID. |
-| <a id="adminmemberrolememberscount"></a>`membersCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.3. **Status**: Experiment. Number of times the role has been directly assigned to a group or project member. |
+| <a id="adminmemberroleldapadminrolelinks"></a>`ldapAdminRoleLinks` {{< icon name="warning-solid" >}} | [`LdapAdminRoleLinkConnection`](#ldapadminrolelinkconnection) | **Introduced** in GitLab 18.1. **Status**: Experiment. LDAP admin role sync configurations that will assign the admin member role. |
 | <a id="adminmemberrolename"></a>`name` | [`String`](#string) | Role name. |
-| <a id="adminmemberroleuserscount"></a>`usersCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.5. **Status**: Experiment. Number of users who have been directly assigned the role in at least one group or project. |
+| <a id="adminmemberroleuserscount"></a>`usersCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.5. **Status**: Experiment. Number of users who have been directly assigned the admin member role. |
 
 ### `AgentConfiguration`
 
@@ -24455,8 +24455,8 @@ Represents the most restrictive permissions for a container image tag.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="containerprotectionaccesslevelimmutable"></a>`immutable` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 17.11. **Status**: Experiment. Returns true when tag rule is for tag immutability. Otherwise, false. |
-| <a id="containerprotectionaccesslevelminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to delete container image tags from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, no access level can delete tags. |
-| <a id="containerprotectionaccesslevelminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to push container image tags to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, no access level can push tags. |
+| <a id="containerprotectionaccesslevelminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to delete container image tags from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. |
+| <a id="containerprotectionaccesslevelminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to push container image tags to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. |
 
 ### `ContainerProtectionRepositoryRule`
 
@@ -24481,8 +24481,8 @@ A container repository tag protection rule designed to prevent users with a cert
 | ---- | ---- | ----------- |
 | <a id="containerprotectiontagruleid"></a>`id` {{< icon name="warning-solid" >}} | [`ContainerRegistryProtectionTagRuleID!`](#containerregistryprotectiontagruleid) | **Introduced** in GitLab 17.8. **Status**: Experiment. ID of the container repository tag protection rule. |
 | <a id="containerprotectiontagruleimmutable"></a>`immutable` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 17.11. **Status**: Experiment. Returns true when tag rule is for tag immutability. Otherwise, false. |
-| <a id="containerprotectiontagruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to delete container image tags from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, no access level can delete tags. |
-| <a id="containerprotectiontagruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to push container image tags to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, no access level can push tags. |
+| <a id="containerprotectiontagruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to delete container image tags from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. |
+| <a id="containerprotectiontagruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to push container image tags to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. |
 | <a id="containerprotectiontagruletagnamepattern"></a>`tagNamePattern` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 17.8. **Status**: Experiment. The pattern that matches container image tags to protect. For example, `v1.*`. Wildcard character `*` allowed. |
 | <a id="containerprotectiontagruleuserpermissions"></a>`userPermissions` | [`ContainerRegistryProtectionTagRulePermissions!`](#containerregistryprotectiontagrulepermissions) | Permissions for the current user on the resource. |
 
@@ -48627,8 +48627,8 @@ Implementations:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="accesslevelinterfaceimmutable"></a>`immutable` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 17.11. **Status**: Experiment. Returns true when tag rule is for tag immutability. Otherwise, false. |
-| <a id="accesslevelinterfaceminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to delete container image tags from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, no access level can delete tags. |
-| <a id="accesslevelinterfaceminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to push container image tags to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, no access level can push tags. |
+| <a id="accesslevelinterfaceminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to delete container image tags from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. |
+| <a id="accesslevelinterfaceminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to push container image tags to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. |
 
 #### `AlertManagementIntegration`
 
@@ -48870,6 +48870,20 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="currentusertodoscurrentusertodosstate"></a>`state` | [`TodoStateEnum`](#todostateenum) | State of the to-do items. |
 
+#### `CustomRoleInterface`
+
+Implementations:
+
+- [`AdminMemberRole`](#adminmemberrole)
+- [`MemberRole`](#memberrole)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="customroleinterfacecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the member role was created. |
+| <a id="customroleinterfaceeditpath"></a>`editPath` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Web UI path to edit the custom role. |
+
 #### `DependencyInterface`
 
 Implementations:
@@ -49110,6 +49124,20 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | ---- | ---- | ----------- |
 | <a id="memberinterfacemergerequestinteractionid"></a>`id` | [`MergeRequestID!`](#mergerequestid) | Global ID of the merge request. |
 
+#### `MemberRoleInterface`
+
+Implementations:
+
+- [`MemberRole`](#memberrole)
+- [`StandardRole`](#standardrole)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="memberroleinterfacememberscount"></a>`membersCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.3. **Status**: Experiment. Number of times the role has been directly assigned to a group or project member. |
+| <a id="memberroleinterfaceuserscount"></a>`usersCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.5. **Status**: Experiment. Number of users who have been directly assigned the role in at least one group or project. |
+
 #### `NamespacesLinkPaths`
 
 Implementations:
@@ -49323,9 +49351,7 @@ Implementations:
 | <a id="roleinterfacedescription"></a>`description` | [`String`](#string) | Role description. |
 | <a id="roleinterfacedetailspath"></a>`detailsPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.4. **Status**: Experiment. URL path to the role details webpage. |
 | <a id="roleinterfaceid"></a>`id` | [`ID!`](#id) | Role ID. |
-| <a id="roleinterfacememberscount"></a>`membersCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.3. **Status**: Experiment. Number of times the role has been directly assigned to a group or project member. |
 | <a id="roleinterfacename"></a>`name` | [`String`](#string) | Role name. |
-| <a id="roleinterfaceuserscount"></a>`usersCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.5. **Status**: Experiment. Number of users who have been directly assigned the role in at least one group or project. |
 
 #### `Service`
 

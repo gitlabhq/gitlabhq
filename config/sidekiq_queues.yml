@@ -639,6 +639,8 @@
   - 1
 - - namespaces_cascade_duo_features_enabled
   - 1
+- - namespaces_cascade_web_based_commit_signing_enabled
+  - 1
 - - namespaces_free_user_cap_group_over_limit_notification
   - 1
 - - namespaces_process_sync_events

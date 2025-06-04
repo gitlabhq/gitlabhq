@@ -876,12 +876,8 @@ module Types
     end
 
     def container_protection_tag_rules
-      rules = object.container_registry_protection_tag_rules
-
-      return rules.mutable unless Feature.enabled?(:container_registry_immutable_tags, object)
-
-      # mutable tag rules come first before immutable
-      rules.mutable + rules.immutable
+      # Immutable tag rules are added in EE extension
+      object.container_registry_protection_tag_rules.mutable
     end
 
     {

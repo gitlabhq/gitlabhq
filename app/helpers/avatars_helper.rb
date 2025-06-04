@@ -3,14 +3,6 @@
 module AvatarsHelper
   DEFAULT_AVATAR_PATH = 'no_avatar.png'
 
-  def group_icon(group, options = {})
-    source_icon(group, options)
-  end
-
-  def topic_icon(topic, options = {})
-    source_icon(topic, options)
-  end
-
   # Takes both user and email and returns the avatar_icon by
   # user (preferred) or email.
   def avatar_icon_for(user = nil, email = nil, size = nil, scale = 2, only_path: true)

@@ -2480,8 +2480,6 @@ Groups::MilestonesController
       returns not found
 
 GroupsHelper
-  group_icon
-    returns an url for the avatar
   group_icon_url
     returns an url for the avatar
     gives default avatar_icon when no avatar is present

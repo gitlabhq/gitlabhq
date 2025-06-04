@@ -669,6 +669,216 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe 'scopes' do
+    shared_examples 'includes projects in hierarchy marked for deletion' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:active_project) { create(:project, group: group) }
+      let_it_be(:for_deletion_project) { create(:project, group: group, marked_for_deletion_at: Date.current) }
+
+      context 'when parent group is active' do
+        it 'returns only projects marked for deletion' do
+          expect(subject).to include(for_deletion_project)
+          expect(subject).not_to include(active_project)
+        end
+      end
+
+      context 'when parent group is marked for deletion' do
+        let_it_be(:group_deletion_schedule) { create(:group_deletion_schedule, group: group) }
+
+        it 'returns all projects in the group' do
+          expect(subject).to include(for_deletion_project, active_project)
+        end
+      end
+    end
+
+    shared_examples 'excludes projects in hierarchy marked for deletion' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:active_project) { create(:project, group: group) }
+      let_it_be(:for_deletion_project) { create(:project, group: group, marked_for_deletion_at: Date.current) }
+
+      context 'when parent group is active' do
+        it 'returns only active projects' do
+          expect(subject).to include(active_project)
+          expect(subject).not_to include(for_deletion_project)
+        end
+      end
+
+      context 'when parent group is marked for deletion' do
+        let_it_be(:group_deletion_schedule) { create(:group_deletion_schedule, group: group) }
+
+        it 'excludes all projects in the group' do
+          expect(subject).not_to include(for_deletion_project, active_project)
+        end
+      end
+    end
+
+    shared_examples 'includes projects in archived hierarchy' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:active_project) { create(:project, group: group) }
+      let_it_be(:archived_project) { create(:project, group: group, archived: true) }
+
+      context 'when parent group is active' do
+        it 'returns only archived projects' do
+          expect(subject).to include(archived_project)
+          expect(subject).not_to include(active_project)
+        end
+      end
+
+      context 'when parent group is archived' do
+        before do
+          group.archive
+        end
+
+        it 'returns all projects in the group' do
+          expect(subject).to include(archived_project, active_project)
+        end
+      end
+    end
+
+    shared_examples 'excludes projects in archived hierarchy' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:active_project) { create(:project, group: group) }
+      let_it_be(:archived_project) { create(:project, group: group, archived: true) }
+
+      context 'when parent group is active' do
+        it 'returns only active projects' do
+          expect(subject).to include(active_project)
+          expect(subject).not_to include(archived_project)
+        end
+      end
+
+      context 'when parent group is archived' do
+        before do
+          group.archive
+        end
+
+        it 'excludes all projects in the group' do
+          expect(subject).not_to include(archived_project, active_project)
+        end
+      end
+    end
+
+    describe '.aimed_for_deletion' do
+      let_it_be(:active_project) { create(:project) }
+      let_it_be(:for_deletion_project) { create(:project, marked_for_deletion_at: Date.current) }
+
+      it 'returns projects marked for deletion' do
+        result = described_class.aimed_for_deletion
+
+        expect(result).to include(for_deletion_project)
+        expect(result).not_to include(active_project)
+      end
+    end
+
+    describe '.self_or_ancestors_aimed_for_deletion' do
+      subject { described_class.self_or_ancestors_aimed_for_deletion }
+
+      it_behaves_like 'includes projects in hierarchy marked for deletion'
+    end
+
+    describe '.not_aimed_for_deletion' do
+      let_it_be(:active_project) { create(:project) }
+      let_it_be(:for_deletion_project) { create(:project, marked_for_deletion_at: Date.current) }
+
+      it 'returns projects not marked for deletion' do
+        result = described_class.not_aimed_for_deletion
+
+        expect(result).to include(active_project)
+        expect(result).not_to include(for_deletion_project)
+      end
+    end
+
+    describe '.self_and_ancestors_not_aimed_for_deletion' do
+      subject { described_class.self_and_ancestors_not_aimed_for_deletion }
+
+      it_behaves_like 'excludes projects in hierarchy marked for deletion'
+    end
+
+    describe '.marked_for_deletion_on' do
+      let_it_be(:active_project) { create(:project) }
+      let_it_be(:for_deletion_project) { create(:project, marked_for_deletion_at: Date.parse('2024-01-01')) }
+
+      context 'when date is provided' do
+        it 'returns projects marked for deletion on that date' do
+          result = described_class.marked_for_deletion_on(Date.parse('2024-01-01'))
+          expect(result).to contain_exactly(for_deletion_project)
+        end
+      end
+
+      context 'when date is nil' do
+        it 'returns projects not marked for deletion' do
+          result = described_class.marked_for_deletion_on(nil)
+          expect(result).to contain_exactly(active_project)
+        end
+      end
+    end
+
+    describe '.marked_for_deletion_before' do
+      let_it_be(:cutoff_date) { 10.days.ago }
+      let_it_be(:active_project) { create(:project) }
+      let_it_be(:marked_after) { create(:project, marked_for_deletion_at: cutoff_date + 2.days) }
+      let_it_be(:marked_before) { create(:project, marked_for_deletion_at: cutoff_date - 2.days) }
+      let_it_be(:marked_on_date) { create(:project, marked_for_deletion_at: cutoff_date) }
+
+      it 'returns projects marked for deletion on or before the specified date' do
+        result = described_class.marked_for_deletion_before(cutoff_date)
+
+        expect(result).to include(marked_before, marked_on_date)
+        expect(result).not_to include(marked_after, active_project)
+      end
+    end
+
+    describe '.archived' do
+      let_it_be(:active_project) { create(:project, archived: false) }
+      let_it_be(:archived_project) { create(:project, archived: true) }
+
+      it 'returns archived projects' do
+        result = described_class.archived
+
+        expect(result).to include(archived_project)
+        expect(result).not_to include(active_project)
+      end
+    end
+
+    describe '.self_or_ancestors_archived' do
+      subject { described_class.self_or_ancestors_archived }
+
+      it_behaves_like 'includes projects in archived hierarchy'
+    end
+
+    describe '.non_archived' do
+      let_it_be(:active_project) { create(:project, archived: false) }
+      let_it_be(:archived_project) { create(:project, archived: true) }
+
+      it 'returns non-archived projects' do
+        result = described_class.non_archived
+
+        expect(result).to include(active_project)
+        expect(result).not_to include(archived_project)
+      end
+    end
+
+    describe '.self_and_ancestors_non_archived' do
+      subject { described_class.self_and_ancestors_non_archived }
+
+      it_behaves_like 'excludes projects in archived hierarchy'
+    end
+
+    describe '.self_and_ancestors_active' do
+      subject { described_class.self_and_ancestors_active }
+
+      it_behaves_like 'excludes projects in archived hierarchy'
+      it_behaves_like 'excludes projects in hierarchy marked for deletion'
+    end
+
+    describe '.self_or_ancestors_inactive' do
+      subject { described_class.self_or_ancestors_inactive }
+
+      it_behaves_like 'includes projects in archived hierarchy'
+      it_behaves_like 'includes projects in hierarchy marked for deletion'
+    end
+  end
+
   describe 'modules' do
     subject { described_class }
 
@@ -2451,32 +2661,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'descending' do
       it { expect(described_class.sorted_by_storage_size_desc).to eq([project_2, project_3, project_1]) }
-    end
-  end
-
-  describe '.not_aimed_for_deletion' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:delayed_deletion_project) { create(:project, marked_for_deletion_at: Date.current) }
-
-    it do
-      expect(described_class.not_aimed_for_deletion).to contain_exactly(project)
-    end
-  end
-
-  describe '.by_marked_for_deletion_on' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:marked_for_deletion_project) { create(:project, marked_for_deletion_at: Date.parse('2024-01-01')) }
-
-    context 'when marked_for_deletion_on is present' do
-      it 'return projects marked for deletion' do
-        expect(described_class.by_marked_for_deletion_on(Date.parse('2024-01-01'))).to contain_exactly(marked_for_deletion_project)
-      end
-    end
-
-    context 'when marked_for_deletion_on is not present' do
-      it 'return projects not marked for deletion' do
-        expect(described_class.by_marked_for_deletion_on(nil)).to contain_exactly(project)
-      end
     end
   end
 
