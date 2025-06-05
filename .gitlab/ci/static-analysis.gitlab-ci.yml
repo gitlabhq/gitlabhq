@@ -216,12 +216,10 @@ semgrep-appsec-custom-rules:
   image: returntocorp/semgrep
   needs: []
   script:
-    - git fetch origin master
-    - git clone $CUSTOM_RULES_REPOSITORY "${CI_BUILDS_DIR}/sast-custom-rules"
-    # Include/exclude list isn't ideal https://github.com/returntocorp/semgrep/issues/5399
+    - git clone $CUSTOM_RULES_REPOSITORY sast-custom-rules
     - |
-      rm "${CI_BUILDS_DIR}/sast-custom-rules/.gitlab-ci.yml" # semgrep fails when there are yaml files that are not rules
-      semgrep ci --metrics off --config "${CI_BUILDS_DIR}/sast-custom-rules" \
+      rm "sast-custom-rules/.gitlab-ci.yml" # semgrep fails when there are yaml files that are not rules
+      semgrep ci --metrics off --config "sast-custom-rules" \
         --include app --include lib --include workhorse \
         --exclude '*_test.go' --exclude spec --exclude qa --exclude tooling --json --verbose > gl-sast-report.json || true
 
