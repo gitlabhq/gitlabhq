@@ -11,11 +11,6 @@ RSpec.describe 'IDE', :js, :with_current_organization, feature_category: :web_id
   let(:user) { create(:user, organizations: [current_organization]) }
 
   before do
-    # TODO - We need to be able to handle requests to https://*.cdn.web-ide.gitlab-static.net
-    #        in order to support `web_ide_extensions_marketplace` in our feature specs.
-    #        https://gitlab.com/gitlab-org/gitlab/-/issues/478626
-    stub_feature_flags(web_ide_extensions_marketplace: false)
-
     project.add_maintainer(user)
     sign_in(user)
   end

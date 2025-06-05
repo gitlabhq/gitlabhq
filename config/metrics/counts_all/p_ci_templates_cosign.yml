@@ -1,0 +1,22 @@
+---
+key_path: redis_hll_counters.ci_templates.p_ci_templates_cosign
+description: Count of pipelines using the Cosign CI template.
+product_group: pipeline_security
+value_type: number
+status: active
+milestone: "16.4"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130339
+time_frame:
+- 28d
+- 7d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+performance_indicator_type: []
+tiers:
+- free
+- premium
+- ultimate
+options:
+  events:
+    - p_ci_templates_cosign

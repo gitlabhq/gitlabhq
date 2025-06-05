@@ -116,7 +116,7 @@ Certain discounts apply based on the project type:
 | Standard projects | [Based on runner type](#cost-factors-of-hosted-runners-for-gitlabcom) | 1 minute per (job duration / 60 × cost factor) |
 | Public projects in [GitLab for Open Source program](../../subscriptions/community_programs.md#gitlab-for-open-source) | `0.5` | 1 minute per 2 minutes of job time |
 | Public forks of [GitLab Open Source program projects](../../subscriptions/community_programs.md#gitlab-for-open-source) | `0.008` | 1 minute per 125 minutes of job time |
-| [Community contributions to GitLab projects](#community-contributions-to-gitlab-projects) | Dynamic discount | See below |
+| [Community contributions to GitLab projects](#community-contributions-to-gitlab-projects) | Dynamic discount | See the following section |
 
 #### Community contributions to GitLab projects
 

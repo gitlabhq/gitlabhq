@@ -1,8 +1,14 @@
 import { __ } from '~/locale';
 import {
+  WORK_ITEM_TYPE_NAME_EPIC,
+  WORK_ITEM_TYPE_NAME_INCIDENT,
+  WORK_ITEM_TYPE_NAME_ISSUE,
   WORK_ITEM_TYPE_NAME_KEY_RESULT,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
+  WORK_ITEM_TYPE_NAME_REQUIREMENTS,
   WORK_ITEM_TYPE_NAME_TASK,
+  WORK_ITEM_TYPE_NAME_TEST_CASE,
+  WORK_ITEM_TYPE_NAME_TICKET,
 } from '~/work_items/constants';
 
 export const STATUS_ALL = 'all';
@@ -47,9 +53,16 @@ export const issuableTypeText = {
   [TYPE_ALERT]: __('alert'),
   [TYPE_INCIDENT]: __('incident'),
   [TYPE_TEST_CASE]: __('test case'),
+
+  [WORK_ITEM_TYPE_NAME_EPIC]: __('epic'),
+  [WORK_ITEM_TYPE_NAME_INCIDENT]: __('incident'),
+  [WORK_ITEM_TYPE_NAME_ISSUE]: __('issue'),
   [WORK_ITEM_TYPE_NAME_KEY_RESULT]: __('key result'),
   [WORK_ITEM_TYPE_NAME_OBJECTIVE]: __('objective'),
+  [WORK_ITEM_TYPE_NAME_REQUIREMENTS]: __('requirement'),
   [WORK_ITEM_TYPE_NAME_TASK]: __('task'),
+  [WORK_ITEM_TYPE_NAME_TEST_CASE]: __('test case'),
+  [WORK_ITEM_TYPE_NAME_TICKET]: __('ticket'),
 };
 
 const SHIFT_KEY = 16;

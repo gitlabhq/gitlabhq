@@ -720,9 +720,6 @@ module ApplicationSettingsHelper
   end
 
   def vscode_extension_marketplace_settings_view
-    # NOTE: This is intentionally not scoped to a specific actor since it affects instance-level settings.
-    return unless Feature.enabled?(:vscode_extension_marketplace_settings, nil)
-
     presets = ::WebIde::ExtensionMarketplacePreset.all.map do |preset|
       preset.to_h.deep_transform_keys { |key| key.to_s.camelize(:lower) }
     end

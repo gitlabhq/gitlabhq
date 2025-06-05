@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Dark mode
 ---
 
-This page is about developing dark mode for GitLab. For more information on how to enable dark mode, see [how to change the UI appearance](../../user/profile/preferences.md#change-the-appearance).
+This page is about developing dark mode for GitLab. For more information on how to enable dark mode, see [how to change the UI appearance](../../user/profile/preferences.md#change-the-mode).
 
 ## How dark mode works
 

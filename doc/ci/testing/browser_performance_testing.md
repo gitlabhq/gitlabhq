@@ -127,7 +127,7 @@ browser_performance:
 ### Configuring degradation threshold
 
 You can configure the sensitivity of degradation alerts to avoid getting alerts for minor drops in metrics.
-This is done by setting the `DEGRADATION_THRESHOLD` CI/CD variable. In the example below, the alert only shows up
+This is done by setting the `DEGRADATION_THRESHOLD` CI/CD variable. In the following example, the alert only shows up
 if the `Total Score` metric degrades by 5 points or more:
 
 ```yaml

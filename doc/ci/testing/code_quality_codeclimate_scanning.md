@@ -489,7 +489,7 @@ To ensure Code Quality jobs can run on a Kubernetes executor:
 
 - If you're using TLS to communicate with the Docker daemon, the executor [must be running in privileged mode](https://docs.gitlab.com/runner/executors/kubernetes/#other-configtoml-settings). Additionally, the certificate directory must be [specified as a volume mount](../docker/using_docker_build.md#docker-in-docker-with-tls-enabled-in-kubernetes).
 - It is possible that the DinD service doesn't start up fully before the Code Quality job starts. This is a limitation documented in
-  [Troubleshooting the Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/troubleshooting.html#docker-cannot-connect-to-the-docker-daemon-at-tcpdocker2375-is-the-docker-daemon-running). To resolve the issue, use `before_script` to wait for the Docker daemon to fully boot up. For an example, see the configuration in the `.gitlab-ci.yml` file below.
+  [Troubleshooting the Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/troubleshooting.html#docker-cannot-connect-to-the-docker-daemon-at-tcpdocker2375-is-the-docker-daemon-running). To resolve the issue, use `before_script` to wait for the Docker daemon to fully boot up. For an example, see the configuration in the `.gitlab-ci.yml` file described in the following section.
 
 #### Kubernetes
 
@@ -568,9 +568,9 @@ impact on [performance](https://docs.docker.com/storage/storagedriver/select-sto
 
 {{< /alert >}}
 
-To configure permissions for the Docker daemon,
+To configure permissions for the Docker daemon:
 
-1. Create a file called `config.toml` with the configuration provided below. This configuration will be used to customized GitLab Runner generated `config.toml`:
+1. Create a `config.toml` file with this configuration template to customize the runner's configuration:
 
 ```toml
 [[runners]]

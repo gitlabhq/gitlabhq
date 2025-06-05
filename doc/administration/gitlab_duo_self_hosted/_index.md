@@ -87,14 +87,14 @@ For more examples of a question you can ask, see
 | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------- |
 | [Generate Commit Message](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message)                        | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later |
 | [Summarize New Merge Request](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes) | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later |
-| [Code Review](../../user/project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code)                                   | {{< icon name="check-circle-filled" >}} Yes | Not applicable         |
+| [Code Review](../../user/project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code)                                   | {{< icon name="dash-circle" >}} No | Not applicable         |
 | [Code Review Summary](../../user/project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review)                                    | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later |
 
 #### GitLab Duo in issues
 
 | Feature                                                                                                                          | Available on GitLab Duo Self-Hosted         | GitLab version         |
 | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------- |
-| [Issue Description Generation](../../user/project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation) | {{< icon name="check-circle-filled" >}} No  | Not applicable         |
+| [Issue Description Generation](../../user/project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation) | {{< icon name="dash-circle" >}} No  | Not applicable         |
 | [Issue Discussion Summary](../../user/discussions/_index.md#summarize-issue-discussions-with-duo-chat)                           | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later |
 
 #### Other features

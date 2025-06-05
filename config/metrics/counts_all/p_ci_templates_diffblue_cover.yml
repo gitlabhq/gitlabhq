@@ -1,0 +1,21 @@
+---
+key_path: redis_hll_counters.ci_templates.p_ci_templates_diffblue_cover
+description: Count of pipelines using the Diffblue Cover template
+product_group: pipeline_authoring
+value_type: number
+status: active
+milestone: "16.7"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137047
+time_frame:
+- 28d
+- 7d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+tiers:
+- free
+- premium
+- ultimate
+options:
+  events:
+    - p_ci_templates_diffblue_cover

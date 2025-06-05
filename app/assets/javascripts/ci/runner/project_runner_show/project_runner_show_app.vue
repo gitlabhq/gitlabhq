@@ -1,10 +1,10 @@
 <script>
-import RunnerDetailsTabs from '../components/runner_details_tabs.vue';
+import RunnerShow from '../components/runner_show.vue';
 
 export default {
   name: 'ProjectRunnerShowApp',
   components: {
-    RunnerDetailsTabs,
+    RunnerShow,
   },
   props: {
     runnerId: {
@@ -23,7 +23,7 @@ export default {
 };
 </script>
 <template>
-  <runner-details-tabs
+  <runner-show
     :runner-id="runnerId"
     :runners-path="runnersPath"
     :edit-path="editPath"

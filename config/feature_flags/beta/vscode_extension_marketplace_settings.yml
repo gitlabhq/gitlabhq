@@ -1,9 +1,0 @@
----
-name: vscode_extension_marketplace_settings
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/508977
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181624
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/508996
-milestone: '17.10'
-group: group::remote development
-type: beta
-default_enabled: true

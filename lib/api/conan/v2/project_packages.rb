@@ -27,10 +27,35 @@ module API
               namespace: project.namespace)
           end
 
+          def destroy_package_entity(entity, event_name)
+            track_conan_package_event(event_name)
+
+            entity.transaction do
+              ::Packages::MarkPackageFilesForDestructionService.new(entity.package_files).execute
+              destroy_conditionally!(entity) do
+                entity.destroy
+
+                # Conan cli expects 200 status code when deleting
+                status 200
+              end
+            end
+          end
+
           def recipe_revision
             package.conan_recipe_revisions.find_by_revision(params[:recipe_revision])
           end
           strong_memoize_attr :recipe_revision
+
+          def package_revisions
+            package.conan_package_revisions
+              .by_recipe_revision_and_package_reference(params[:recipe_revision],
+                params[:conan_package_reference])
+          end
+
+          def package_revision
+            package_revisions.find_by_revision(params[:package_revision])
+          end
+          strong_memoize_attr :package_revision
         end
 
         params do
@@ -108,7 +133,7 @@ module API
                     desc: 'Recipe revision', documentation: { example: 'df28fd816be3a119de5ce4d374436b25' }
                 end
                 namespace ':recipe_revision' do
-                  desc 'Delete Recipe Revision' do
+                  desc 'Delete recipe revision' do
                     detail 'This feature was introduced in GitLab 18.1'
                     success code: 200
                     failure [
@@ -140,21 +165,11 @@ module API
                         status 200
                       end
                     else
-                      track_conan_package_event('delete_recipe_revision')
-
                       if recipe_revision.package_files.size > MAX_FILES_COUNT
                         unprocessable_entity! "Cannot delete more than #{MAX_FILES_COUNT} files"
                       end
 
-                      recipe_revision.transaction do
-                        ::Packages::MarkPackageFilesForDestructionService.new(recipe_revision.package_files).execute
-                        destroy_conditionally!(recipe_revision) do |recipe_revision|
-                          recipe_revision.destroy
-
-                          # Conan cli expects 200 status code when deleting a recipe revision
-                          status 200
-                        end
-                      end
+                      destroy_package_entity(recipe_revision, 'delete_recipe_revision')
                     end
                   end
 
@@ -301,9 +316,7 @@ module API
                       get urgency: :low do
                         not_found!('Package') unless package
 
-                        revision = package.conan_package_revisions
-                          .by_recipe_revision_and_package_reference(params[:recipe_revision],
-                            params[:conan_package_reference]).order_by_id_desc.first
+                        revision = package_revisions.order_by_id_desc.first
 
                         not_found!('Revision') unless revision.present?
 
@@ -328,16 +341,13 @@ module API
                       get urgency: :low do
                         not_found!('Package') unless package
 
-                        package_revisions = package
-                          .conan_package_revisions
-                          .by_recipe_revision_and_package_reference(params[:recipe_revision],
-                            params[:conan_package_reference])
+                        revisions = package_revisions
                           .order_by_id_desc
                           .limit(MAX_PACKAGE_REVISIONS_COUNT)
 
                         package_reference = "#{package.conan_recipe}##{params[:recipe_revision]}:" \
                           "#{params[:conan_package_reference]}"
-                        present({ package_reference:, package_revisions: },
+                        present({ package_reference: package_reference, package_revisions: revisions },
                           with: ::API::Entities::Packages::Conan::PackageRevisions)
                       end
 
@@ -346,6 +356,38 @@ module API
                           desc: 'Package revision', documentation: { example: '3bdd2d8c8e76c876ebd1ac0469a4e72c' }
                       end
                       namespace ':package_revision' do
+                        desc 'Delete package revision' do
+                          detail 'This feature was introduced in GitLab 18.1'
+                          success code: 200
+                          failure [
+                            { code: 400, message: 'Bad Request' },
+                            { code: 401, message: 'Unauthorized' },
+                            { code: 403, message: 'Forbidden' },
+                            { code: 404, message: 'Not Found' }
+                          ]
+                          tags %w[conan_packages]
+                        end
+
+                        route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
+                        route_setting :authorization, job_token_policies: :admin_packages
+
+                        delete urgency: :low do
+                          authorize_destroy_package!(project)
+
+                          not_found!('Package') unless package
+
+                          not_found!('Package Revision') unless package_revision
+
+                          if package_revision.package_files.size > MAX_FILES_COUNT
+                            unprocessable_entity! "Cannot delete more than #{MAX_FILES_COUNT} files"
+                          end
+
+                          if package_revisions.one?
+                            destroy_package_entity(package_revision.package_reference, 'delete_package_reference')
+                          else
+                            destroy_package_entity(package_revision, 'delete_package_revision')
+                          end
+                        end
                         namespace 'files' do
                           desc 'List package files' do
                             detail 'This feature was introduced in GitLab 18.0'

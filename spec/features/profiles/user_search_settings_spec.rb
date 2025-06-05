@@ -23,6 +23,6 @@ RSpec.describe 'User searches their settings', :js, feature_category: :user_prof
       visit profile_preferences_path
     end
 
-    it_behaves_like 'can search settings', 'Syntax highlighting theme', 'Behavior'
+    it_behaves_like 'can search settings', 'Syntax highlights', 'Behavior'
   end
 end

@@ -1,0 +1,21 @@
+---
+key_path: redis_hll_counters.work_items.users_updating_weight_estimate
+description: Unique users updating a work item's weight estimate
+product_group: project_management
+value_type: number
+status: active
+milestone: "15.2"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91957
+time_frame:
+- 28d
+- 7d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+performance_indicator_type: []
+options:
+  events:
+    - users_updating_weight_estimate
+tiers:
+- premium
+- ultimate

@@ -1875,6 +1875,10 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   describe '#add_user' do
     let(:user) { create(:user) }
 
+    before do
+      allow(Notify).to receive(:member_access_granted_email).and_call_original
+    end
+
     it 'adds the user' do
       expect_next_instance_of(GroupMember) do |member|
         expect(member).to receive(:refresh_member_authorized_projects).and_call_original
@@ -1883,6 +1887,38 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       group.add_member(user, GroupMember::MAINTAINER)
 
       expect(group.group_members.maintainers.map(&:user)).to include(user)
+    end
+
+    it 'notifies the user of membership' do
+      member = group.add_member(user, GroupMember::MAINTAINER)
+
+      expect(Notify)
+        .to have_received(:member_access_granted_email)
+        .with(member.real_source_type, member.id)
+    end
+
+    context 'when importing' do
+      let(:owner) { create(:user, owner_of: group) }
+
+      before do
+        group.importing = true
+      end
+
+      it 'does not notify the user of membership' do
+        member = group.add_member(user, GroupMember::MAINTAINER)
+
+        expect(Notify)
+          .not_to have_received(:member_access_granted_email)
+          .with(member.real_source_type, member.id)
+      end
+
+      it 'notifies the user when invited by a user regardless of importing status' do
+        member = group.add_member(user, GroupMember::MAINTAINER, current_user: owner)
+
+        expect(Notify)
+          .to have_received(:member_access_granted_email)
+          .with(member.real_source_type, member.id)
+      end
     end
   end
 

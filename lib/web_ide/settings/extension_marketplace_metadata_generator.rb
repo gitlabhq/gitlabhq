@@ -29,16 +29,13 @@ module WebIde
             vscode_extension_marketplace_home_url: String => marketplace_home_url,
           }
         }
-        options_with_defaults = { user: nil, vscode_extension_marketplace_feature_flag_enabled: nil }.merge(options)
+        options_with_defaults = { user: nil }.merge(options)
         options_with_defaults => {
-          user: ::User | NilClass => user,
-          vscode_extension_marketplace_feature_flag_enabled: TrueClass | FalseClass | NilClass =>
-            extension_marketplace_feature_flag_enabled
+          user: ::User | NilClass => user
         }
 
         extension_marketplace_metadata = build_metadata(
           user: user,
-          flag_enabled: extension_marketplace_feature_flag_enabled,
           marketplace_home_url: marketplace_home_url
         )
 
@@ -49,12 +46,10 @@ module WebIde
       # @param [User, nil] user
       # @param [Boolean, nil] flag_enabled
       # @return [Hash]
-      def self.build_metadata(user:, flag_enabled:, marketplace_home_url:)
+      def self.build_metadata(user:, marketplace_home_url:)
         return metadata_disabled(:no_user) unless user
-        return metadata_disabled(:no_flag) if flag_enabled.nil?
-        return metadata_disabled(:instance_disabled) unless flag_enabled
 
-        unless ::WebIde::ExtensionMarketplace.feature_enabled_from_application_settings?(user: user)
+        unless ::WebIde::ExtensionMarketplace.feature_enabled_from_application_settings?
           return metadata_disabled(:instance_disabled)
         end
 

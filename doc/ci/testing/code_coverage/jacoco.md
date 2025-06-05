@@ -34,8 +34,6 @@ The JaCoCo coverage reports visualization supports:
 To configure your pipeline to generate the coverage reports, add a job to your
 `.gitlab-ci.yml` file. For example:
 
-Below is an example configuration:
-
 ```yaml
 test-jdk11:
   stage: test

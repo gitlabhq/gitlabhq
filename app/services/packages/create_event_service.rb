@@ -5,6 +5,8 @@ module Packages
     INTERNAL_EVENTS_NAMES = {
       'delete_package' => 'delete_package_from_registry',
       'delete_recipe_revision' => 'delete_recipe_revision_from_registry',
+      'delete_package_reference' => 'delete_package_reference_from_registry',
+      'delete_package_revision' => 'delete_package_revision_from_registry',
       'pull_package' => 'pull_package_from_registry',
       'push_package' => 'push_package_to_registry',
       'push_symbol_package' => 'push_symbol_package_to_registry',

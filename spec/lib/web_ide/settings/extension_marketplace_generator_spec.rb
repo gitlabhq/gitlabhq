@@ -41,18 +41,16 @@ RSpec.describe WebIde::Settings::ExtensionMarketplaceGenerator, feature_category
   subject(:result) { described_class.generate(context)[:settings][:vscode_extension_marketplace] }
 
   before do
-    allow(Feature).to receive(:enabled?).with(:vscode_extension_marketplace_settings, user).and_return(settings_flag)
-    allow(Gitlab::CurrentSettings).to receive(:vscode_extension_marketplace).and_return(app_setting)
+    allow(Gitlab::CurrentSettings).to receive(:method_missing).and_return(app_setting)
   end
 
   describe 'default (with setting requested)' do
-    where(:settings_flag, :app_setting, :expectation) do
-      false | {}                         | ::WebIde::ExtensionMarketplacePreset.open_vsx.values
-      true  | {}                         | ::WebIde::ExtensionMarketplacePreset.open_vsx.values
-      true  | { "preset" => 'open_vsx' } | ::WebIde::ExtensionMarketplacePreset.open_vsx.values
-      true  | ref(:custom_app_settings)  | { item_url: "abc", service_url: "def", resource_url_template: "ghi" }
+    where(:app_setting, :expectation) do
+      {}                         | ::WebIde::ExtensionMarketplacePreset.open_vsx.values
+      { "preset" => 'open_vsx' } | ::WebIde::ExtensionMarketplacePreset.open_vsx.values
+      ref(:custom_app_settings)  | { item_url: "abc", service_url: "def", resource_url_template: "ghi" }
       # This should never happen, but lets test it anyways
-      true  | { "preset" => 'DNE' }      | nil
+      { "preset" => 'DNE' }      | nil
     end
 
     with_them do

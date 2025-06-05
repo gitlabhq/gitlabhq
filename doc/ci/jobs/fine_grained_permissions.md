@@ -140,7 +140,8 @@ The following endpoints are available for CI/CD job tokens.
 | Packages: Read and write | `ADMIN_PACKAGES` | `DELETE /projects/:id/packages/:package_id/package_files/:package_file_id` | Delete a package file |
 | Packages: Read and write | `ADMIN_PACKAGES` | `DELETE /projects/:id/packages/:package_id` | Delete a project package |
 | Packages: Read and write | `ADMIN_PACKAGES` | `DELETE /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel` | Delete Package |
-| Packages: Read and write | `ADMIN_PACKAGES` | `DELETE /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision` | Delete Recipe Revision |
+| Packages: Read and write | `ADMIN_PACKAGES` | `DELETE /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision` | Delete package revision |
+| Packages: Read and write | `ADMIN_PACKAGES` | `DELETE /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision` | Delete recipe revision |
 | Packages: Read and write | `ADMIN_PACKAGES` | `DELETE /projects/:id/packages/npm/-/package/*package_name/dist-tags/:tag` | Deletes the given tag |
 | Packages: Read and write | `ADMIN_PACKAGES` | `POST /projects/:id/packages/composer` | Composer packages endpoint for registering packages |
 | Packages: Read and write | `ADMIN_PACKAGES` | `POST /projects/:id/packages/pypi/authorize` | Authorize the PyPi package upload from workhorse |

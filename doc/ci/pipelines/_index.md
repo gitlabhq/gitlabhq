@@ -228,7 +228,7 @@ You can do this straight from the pipeline graph. Select **Run** ({{< icon name=
 
 For example, your pipeline can start automatically, but require a manual action to
 [deploy to production](../environments/deployments.md#configure-manual-deployments).
-In the example below, the `production` stage has a job with a manual action:
+In the following example, the `production` stage has a job with a manual action:
 
 ![Pipeline graph that shows four stages: build, test, canary, and production. First three stages show completed jobs with green checkmarks, while production stage shows a pending deploy job.](img/manual_job_v17_9.png)
 

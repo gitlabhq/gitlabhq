@@ -26,7 +26,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
   let(:mutation_response) { graphql_mutation_response(:userPreferencesUpdate) }
 
   before do
-    stub_application_setting(vscode_extension_marketplace: {
+    Gitlab::CurrentSettings.update!(vscode_extension_marketplace: {
       enabled: false,
       preset: 'custom',
       custom_values: {

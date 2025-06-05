@@ -125,7 +125,7 @@ you can use the [`needs` keyword](../yaml/needs.md) to define dependencies
 between your jobs. When GitLab knows the dependencies between your jobs,
 jobs can run as fast as possible, even starting earlier than other jobs in the same stage.
 
-In the example below, if `build_a` and `test_a` are much faster than `build_b` and
+In the following example, if `build_a` and `test_a` are much faster than `build_b` and
 `test_b`, GitLab starts `deploy_a` even if `build_b` is still running.
 
 ```mermaid

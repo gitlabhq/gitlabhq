@@ -1,0 +1,21 @@
+---
+key_path: redis_hll_counters.work_items.users_updating_work_item_labels
+description: Unique users updating a work item's labels
+product_group: project_management
+value_type: number
+status: active
+milestone: '15.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100485
+time_frame:
+- 28d
+- 7d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - users_updating_work_item_labels
+tiers:
+- free
+- premium
+- ultimate

@@ -25,7 +25,8 @@ module BulkImports
             'lfs_enabled' => data['lfs_enabled'],
             'emails_enabled' => !data['emails_disabled'],
             'mentions_disabled' => data['mentions_disabled'],
-            'share_with_group_lock' => data['share_with_group_lock']
+            'share_with_group_lock' => data['share_with_group_lock'],
+            'importing' => true
           }
 
           if namespace.present?

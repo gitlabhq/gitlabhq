@@ -24,54 +24,20 @@ RSpec.describe WebIde::ExtensionMarketplace, feature_category: :web_ide do
 
   let_it_be_with_reload(:current_user) { create(:user) }
 
-  describe 'feature enabled methods' do
-    where(:web_ide_extensions_marketplace, :vscode_extension_marketplace_settings, :app_setting,
-      :expectation) do
-      ref(:current_user) | false | {}                | true
-      ref(:current_user) | true  | {}                | false
-      ref(:current_user) | true  | { enabled: true } | true
-      false              | false | { enabled: true } | false
-    end
-
-    with_them do
-      before do
-        stub_feature_flags(
-          web_ide_extensions_marketplace: web_ide_extensions_marketplace,
-          vscode_extension_marketplace_settings: vscode_extension_marketplace_settings
-        )
-
-        stub_application_setting(vscode_extension_marketplace: app_setting)
-      end
-
-      describe '#feature_enabled?' do
-        it { expect(described_class.feature_enabled?(user: current_user)).to be(expectation) }
-      end
-
-      describe '#feature_enabled_for_any_user?' do
-        it { expect(described_class.feature_enabled_for_any_user?).to be(expectation) }
-      end
-    end
-  end
-
   describe '#feature_enabled_from_application_settings?' do
-    where(:vscode_extension_marketplace_settings, :app_setting, :user_arg, :expectation) do
-      false              | {}                 | ref(:current_user) | true
-      false              | { enabled: true }  | ref(:current_user) | true
-      false              | { enabled: true }  | nil                | true
-      ref(:current_user) | { enabled: true }  | nil                | true
-      ref(:current_user) | { enabled: true }  | ref(:current_user) | true
-      ref(:current_user) | {}                 | ref(:current_user) | false
-      ref(:current_user) | { enabled: false } | ref(:current_user) | false
+    where(:app_setting, :expectation) do
+      { enabled: true }  | true
+      { enabled: false } | false
+      {}                 | false
     end
 
     subject(:enabled) do
-      described_class.feature_enabled_from_application_settings?(user: user_arg)
+      described_class.feature_enabled_from_application_settings?
     end
 
     with_them do
       before do
-        stub_feature_flags(vscode_extension_marketplace_settings: vscode_extension_marketplace_settings)
-        stub_application_setting(vscode_extension_marketplace: app_setting)
+        Gitlab::CurrentSettings.update!(vscode_extension_marketplace: app_setting)
       end
 
       it { is_expected.to be(expectation) }
@@ -79,11 +45,10 @@ RSpec.describe WebIde::ExtensionMarketplace, feature_category: :web_ide do
   end
 
   describe '#marketplace_home_url' do
-    where(:vscode_extension_marketplace_settings, :app_setting, :expectation) do
-      false | {}                         | "https://open-vsx.org"
-      true  | {}                         | "https://open-vsx.org"
-      true  | ref(:custom_app_setting)   | "https://example.com:8444"
-      true  | ref(:open_vsx_app_setting) | "https://open-vsx.org"
+    where(:app_setting, :expectation) do
+      {}                         | "https://open-vsx.org"
+      ref(:open_vsx_app_setting) | "https://open-vsx.org"
+      ref(:custom_app_setting)   | "https://example.com:8444"
     end
 
     subject(:marketplace_home_url) do
@@ -92,8 +57,7 @@ RSpec.describe WebIde::ExtensionMarketplace, feature_category: :web_ide do
 
     with_them do
       before do
-        stub_feature_flags(vscode_extension_marketplace_settings: vscode_extension_marketplace_settings)
-        stub_application_setting(vscode_extension_marketplace: app_setting)
+        Gitlab::CurrentSettings.update!(vscode_extension_marketplace: app_setting)
       end
 
       it { is_expected.to eq(expectation) }
@@ -107,30 +71,21 @@ RSpec.describe WebIde::ExtensionMarketplace, feature_category: :web_ide do
   end
 
   describe '#webide_extension_marketplace_settings' do
-    # rubocop:disable Layout/LineLength -- last parameter extens past line but is preferable to rubocop's suggestion
-    where(:web_ide_extensions_marketplace, :vscode_extension_marketplace_settings, :app_setting, :opt_in_status, :opt_in_url, :expectation) do
-      # web_ide_extensions_marketplace | vscode_extension_marketplace_settings | app_setting                | opt_in_status | opt_in_url            | expectation
-      true                            | false                                 | {}                         | :enabled      | nil                   | lazy { { enabled: true, vscode_settings: ::WebIde::ExtensionMarketplacePreset.open_vsx.values } }
-      true                            | false                                 | {}                         | :unset        | nil                   | lazy { { enabled: false, reason: :opt_in_unset, help_url: /#{help_url}/, user_preferences_url: /#{user_preferences_url}/ } }
-      true                            | false                                 | {}                         | :disabled     | nil                   | lazy { { enabled: false, reason: :opt_in_disabled, help_url: /#{help_url}/, user_preferences_url: /#{user_preferences_url}/ } }
-      false                           | false                                 | {}                         | :enabled      | nil                   | lazy { { enabled: false, reason: :instance_disabled, help_url: /#{help_url}/ } }
-      true                            | true                                  | {}                         | :enabled      | nil                   | lazy { { enabled: false, reason: :instance_disabled, help_url: /#{help_url}/ } }
-      true                            | true                                  | { enabled: false }         | :enabled      | nil                   | lazy { { enabled: false, reason: :instance_disabled, help_url: /#{help_url}/ } }
-      true                            | true                                  | ref(:custom_app_setting)   | :enabled      | nil                   | lazy { { enabled: false, reason: :opt_in_unset, help_url: /#{help_url}/, user_preferences_url: /#{user_preferences_url}/ } }
-      true                            | true                                  | ref(:custom_app_setting)   | :enabled      | ref(:custom_home_url) | lazy { { enabled: true, vscode_settings: custom_app_setting[:custom_values] } }
-      true                            | true                                  | ref(:open_vsx_app_setting) | :enabled      | nil                   | lazy { { enabled: true, vscode_settings: ::WebIde::ExtensionMarketplacePreset.open_vsx.values } }
+    # rubocop:disable Layout/LineLength -- last parameter extends past line but is preferable to rubocop's suggestion
+    where(:app_setting, :opt_in_status, :opt_in_url, :expectation) do
+      # app_setting              | opt_in_status | opt_in_url            | expectation
+      {}                         | :enabled      | nil                   | lazy { { enabled: false, reason: :instance_disabled, help_url: /#{help_url}/ } }
+      { enabled: false }         | :enabled      | nil                   | lazy { { enabled: false, reason: :instance_disabled, help_url: /#{help_url}/ } }
+      ref(:custom_app_setting)   | :enabled      | nil                   | lazy { { enabled: false, reason: :opt_in_unset, help_url: /#{help_url}/, user_preferences_url: /#{user_preferences_url}/ } }
+      ref(:custom_app_setting)   | :enabled      | ref(:custom_home_url) | lazy { { enabled: true, vscode_settings: custom_app_setting[:custom_values] } }
+      ref(:open_vsx_app_setting) | :enabled      | nil                   | lazy { { enabled: true, vscode_settings: ::WebIde::ExtensionMarketplacePreset.open_vsx.values } }
     end
     # rubocop:enable Layout/LineLength
 
     subject(:webide_settings) { described_class.webide_extension_marketplace_settings(user: current_user) }
 
     before do
-      stub_feature_flags(
-        vscode_extension_marketplace_settings: vscode_extension_marketplace_settings,
-        web_ide_extensions_marketplace: web_ide_extensions_marketplace
-      )
-
-      stub_application_setting(vscode_extension_marketplace: app_setting)
+      Gitlab::CurrentSettings.update!(vscode_extension_marketplace: app_setting)
 
       current_user.update!(
         extensions_marketplace_opt_in_status: opt_in_status,

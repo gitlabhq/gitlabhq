@@ -54,6 +54,12 @@ To set up DNS records for a custom hostname with GitLab Dedicated:
 
 1. Save your changes and wait for the DNS changes to propagate.
 
+{{< alert type="note" >}}
+
+DNS records must stay in place as long as you use the BYOD feature.
+
+{{< /alert >}}
+
 ### DNS requirements for Let's Encrypt certificates
 
 When using custom hostnames with GitLab Dedicated, your domain must be publicly resolvable

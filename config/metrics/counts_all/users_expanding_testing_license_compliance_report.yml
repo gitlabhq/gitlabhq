@@ -1,0 +1,21 @@
+---
+data_category: optional
+key_path: redis_hll_counters.testing.users_expanding_testing_license_compliance_report
+description: Count of expanding the license compliance widget
+product_group: composition_analysis
+value_type: number
+status: active
+milestone: '14.6'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75643
+time_frame:
+- 28d
+- 7d
+data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - users_expanding_testing_license_compliance_report
+tiers:
+  - free
+  - premium
+  - ultimate

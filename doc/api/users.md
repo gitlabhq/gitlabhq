@@ -797,7 +797,7 @@ Supported attributes:
 | `shared_runners_minutes_limit`       | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. Premium and Ultimate only. |
 | `skip_confirmation`                  | No       | Skip confirmation - true or false (default) |
 | `skype`                              | No       | Skype ID    |
-| `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-color-theme) for more information) |
+| `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-navigation-theme) for more information) |
 | `twitter`                            | No       | X (formerly Twitter) account |
 | `discord`                            | No       | Discord account |
 | `github`                             | No       | GitHub username |
@@ -863,7 +863,7 @@ Supported attributes:
 | `shared_runners_minutes_limit`       | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0`. Premium and Ultimate only. |
 | `skip_reconfirmation`                | No       | Skip reconfirmation - true or false (default) |
 | `skype`                              | No       | Skype ID    |
-| `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-color-theme) for more information) |
+| `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-navigation-theme) for more information) |
 | `twitter`                            | No       | X (formerly Twitter) account |
 | `discord`                            | No       | Discord account |
 | `github`                             | No       | GitHub username |

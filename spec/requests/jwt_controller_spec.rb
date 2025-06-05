@@ -343,28 +343,10 @@ RSpec.describe JwtController, feature_category: :system_access do
       it_behaves_like 'with valid credentials'
       it_behaves_like 'a token that expires today'
 
-      # TODO: Cleanup code related to packages_dependency_proxy_containers_scope_check
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/520321
-      context 'packages_dependency_proxy_containers_scope_check disabled' do
-        before do
-          stub_feature_flags(packages_dependency_proxy_containers_scope_check: false)
-        end
-
-        it_behaves_like 'with valid credentials'
-      end
-
       context 'without the required scopes' do
         let(:credential_password) { personal_access_token_without_required_scopes.token }
 
-        # TODO: Cleanup code related to packages_dependency_proxy_containers_scope_check
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/520321
-        context 'packages_dependency_proxy_containers_scope_check disabled' do
-          before do
-            stub_feature_flags(packages_dependency_proxy_containers_scope_check: false)
-          end
-
-          it_behaves_like 'returning response status', :forbidden
-        end
+        it_behaves_like 'returning response status', :forbidden
       end
     end
 
@@ -379,19 +361,13 @@ RSpec.describe JwtController, feature_category: :system_access do
       let(:credential_user) { group_access_token.user.username }
       let(:credential_password) { group_access_token.token }
 
+      before_all do
+        group.add_guest(bot_user)
+      end
+
       context 'with the required scopes' do
         it_behaves_like 'with valid credentials'
         it_behaves_like 'a token that expires today'
-
-        # TODO: Cleanup code related to packages_dependency_proxy_containers_scope_check
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/520321
-        context 'packages_dependency_proxy_containers_scope_check disabled' do
-          before do
-            stub_feature_flags(packages_dependency_proxy_containers_scope_check: false)
-          end
-
-          it_behaves_like 'with valid credentials'
-        end
 
         context 'revoked' do
           before do
@@ -416,16 +392,6 @@ RSpec.describe JwtController, feature_category: :system_access do
         end
 
         it_behaves_like 'returning response status', :forbidden
-
-        # TODO: Cleanup code related to packages_dependency_proxy_containers_scope_check
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/520321
-        context 'packages_dependency_proxy_containers_scope_check disabled' do
-          before do
-            stub_feature_flags(packages_dependency_proxy_containers_scope_check: false)
-          end
-
-          it_behaves_like 'with valid credentials'
-        end
       end
     end
 
@@ -443,16 +409,6 @@ RSpec.describe JwtController, feature_category: :system_access do
       let(:credential_password) { job.token }
 
       it_behaves_like 'with valid credentials'
-
-      # TODO: Cleanup code related to packages_dependency_proxy_containers_scope_check
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/520321
-      context 'packages_dependency_proxy_containers_scope_check disabled' do
-        before do
-          stub_feature_flags(packages_dependency_proxy_containers_scope_check: false)
-        end
-
-        it_behaves_like 'with valid credentials'
-      end
     end
 
     context 'with project deploy token' do

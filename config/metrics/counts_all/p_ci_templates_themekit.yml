@@ -1,0 +1,21 @@
+---
+key_path: redis_hll_counters.ci_templates.p_ci_templates_themekit
+description: ''
+product_group: pipeline_authoring
+value_type: number
+status: active
+milestone: "14.10"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52279
+time_frame:
+- 28d
+- 7d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - p_ci_templates_themekit
+tiers:
+- free
+- premium
+- ultimate

@@ -57,7 +57,8 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer, fe
         'share_with_group_lock' => false,
         'require_two_factor_authentication' => false,
         'two_factor_grace_period' => 100,
-        'request_access_enabled' => false
+        'request_access_enabled' => false,
+        'importing' => true
       })
     end
 
@@ -80,7 +81,8 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer, fe
           'share_with_group_lock' => nil,
           'emails_enabled' => true,
           'lfs_enabled' => nil,
-          'mentions_disabled' => nil
+          'mentions_disabled' => nil,
+          'importing' => true
         })
       end
     end

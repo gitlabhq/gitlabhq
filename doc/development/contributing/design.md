@@ -69,7 +69,7 @@ Check visual design properties using your browser's elements inspector ([Chrome]
   or propose new ones according to [iconography](https://design.gitlab.com/product-foundations/iconography/)
   and [illustration](https://design.gitlab.com/product-foundations/illustration/)
   guidelines.
-- Optional: Consider dark mode. For more information, see [Change the appearance](../../user/profile/preferences.md#change-the-appearance).
+- Optional: Consider dark mode. For more information, see [Change the mode](../../user/profile/preferences.md#change-the-mode).
 
 ### Dark Mode
 

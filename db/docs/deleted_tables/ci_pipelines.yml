@@ -1,0 +1,15 @@
+---
+table_name: ci_pipelines
+classes:
+- Ci::Pipeline
+feature_categories:
+- continuous_integration
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/c6ae290cea4b88ecaa9cfe0bc9d88e8fd32070c1
+milestone: '9.0'
+gitlab_schema: gitlab_ci
+sharding_key:
+  project_id: projects
+table_size: over_limit
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191333
+removed_in_milestone: '18.1'

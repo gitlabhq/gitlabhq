@@ -208,7 +208,7 @@ GitLab supports [Libravatar](https://www.libravatar.org) is for avatar images, b
 
 {{< /details >}}
 
-To [change the default color theme](../user/profile/preferences.md#change-the-color-theme) for all new users:
+To [change the default navigation theme](../user/profile/preferences.md#change-the-navigation-theme) for all new users:
 
 1. Add `gitlab_rails['gitlab_default_theme']` to your GitLab configuration file at `/etc/gitlab/gitlab.rb`:
 

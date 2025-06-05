@@ -42,24 +42,7 @@ module Auth
     attr_reader :authentication_abilities
 
     def valid_user_actor?
-      feature_user = deploy_token&.user || current_user
-      # TODO: Cleanup code related to packages_dependency_proxy_containers_scope_check
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/520321
-      if Feature.enabled?(:packages_dependency_proxy_containers_scope_check, feature_user)
-        dependency_proxy_containers_scope_check
-      else
-        has_required_abilities? && (!deploy_token || deploy_token.valid_for_dependency_proxy?)
-      end
-    end
-
-    def dependency_proxy_containers_scope_check
-      if deploy_token
-        deploy_token.valid_for_dependency_proxy?
-      elsif current_user&.project_bot?
-        group_access_token&.active? && has_required_abilities?
-      else
-        current_user
-      end
+      has_required_abilities? && (!deploy_token || deploy_token.valid_for_dependency_proxy?)
     end
 
     def has_required_abilities?

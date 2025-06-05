@@ -65,9 +65,7 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
       let_it_be(:token) { create(:personal_access_token, user: user, scopes: [Gitlab::Auth::READ_API_SCOPE]) }
       let_it_be(:jwt) { build_jwt(token) }
 
-      context 'not under the group' do
-        it { is_expected.to have_gitlab_http_status(:not_found) }
-      end
+      it { is_expected.to have_gitlab_http_status(:not_found) }
 
       context 'with sufficient scopes, but not active' do
         %i[expired revoked].each do |status|
@@ -80,20 +78,6 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
 
             it { is_expected.to have_gitlab_http_status(:not_found) }
           end
-        end
-      end
-
-      context 'with insufficient scopes' do
-        it { is_expected.to have_gitlab_http_status(:not_found) }
-
-        # TODO: Cleanup code related to packages_dependency_proxy_containers_scope_check
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/520321
-        context 'packages_dependency_proxy_containers_scope_check disabled' do
-          before do
-            stub_feature_flags(packages_dependency_proxy_containers_scope_check: false)
-          end
-
-          it { is_expected.to have_gitlab_http_status(:not_found) }
         end
       end
     end

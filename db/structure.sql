@@ -4744,6 +4744,44 @@ CREATE TABLE p_ci_pipeline_variables (
 )
 PARTITION BY LIST (partition_id);
 
+CREATE TABLE p_ci_pipelines (
+    ref character varying,
+    sha character varying,
+    before_sha character varying,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    tag boolean DEFAULT false,
+    yaml_errors text,
+    committed_at timestamp without time zone,
+    project_id bigint,
+    status character varying,
+    started_at timestamp without time zone,
+    finished_at timestamp without time zone,
+    duration integer,
+    user_id bigint,
+    lock_version integer DEFAULT 0,
+    pipeline_schedule_id bigint,
+    source integer,
+    config_source integer,
+    protected boolean,
+    failure_reason integer,
+    iid integer,
+    merge_request_id bigint,
+    source_sha bytea,
+    target_sha bytea,
+    external_pull_request_id bigint,
+    ci_ref_id bigint,
+    locked smallint DEFAULT 1 NOT NULL,
+    partition_id bigint NOT NULL,
+    id bigint NOT NULL,
+    auto_canceled_by_id bigint,
+    auto_canceled_by_partition_id bigint,
+    trigger_id bigint,
+    CONSTRAINT check_2ba2a044b9 CHECK ((project_id IS NOT NULL)),
+    CONSTRAINT check_d7e99a025e CHECK ((lock_version IS NOT NULL))
+)
+PARTITION BY LIST (partition_id);
+
 CREATE TABLE p_ci_pipelines_config (
     pipeline_id bigint NOT NULL,
     partition_id bigint NOT NULL,
@@ -11622,81 +11660,6 @@ CREATE SEQUENCE ci_pipeline_variables_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ci_pipeline_variables_id_seq OWNED BY p_ci_pipeline_variables.id;
-
-CREATE TABLE p_ci_pipelines (
-    ref character varying,
-    sha character varying,
-    before_sha character varying,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    tag boolean DEFAULT false,
-    yaml_errors text,
-    committed_at timestamp without time zone,
-    project_id bigint,
-    status character varying,
-    started_at timestamp without time zone,
-    finished_at timestamp without time zone,
-    duration integer,
-    user_id bigint,
-    lock_version integer DEFAULT 0,
-    pipeline_schedule_id bigint,
-    source integer,
-    config_source integer,
-    protected boolean,
-    failure_reason integer,
-    iid integer,
-    merge_request_id bigint,
-    source_sha bytea,
-    target_sha bytea,
-    external_pull_request_id bigint,
-    ci_ref_id bigint,
-    locked smallint DEFAULT 1 NOT NULL,
-    partition_id bigint NOT NULL,
-    id bigint NOT NULL,
-    auto_canceled_by_id bigint,
-    auto_canceled_by_partition_id bigint,
-    trigger_id bigint,
-    CONSTRAINT check_2ba2a044b9 CHECK ((project_id IS NOT NULL)),
-    CONSTRAINT check_d7e99a025e CHECK ((lock_version IS NOT NULL))
-)
-PARTITION BY LIST (partition_id);
-
-CREATE TABLE ci_pipelines (
-    ref character varying,
-    sha character varying,
-    before_sha character varying,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    tag boolean DEFAULT false,
-    yaml_errors text,
-    committed_at timestamp without time zone,
-    project_id bigint,
-    status character varying,
-    started_at timestamp without time zone,
-    finished_at timestamp without time zone,
-    duration integer,
-    user_id bigint,
-    lock_version integer DEFAULT 0,
-    pipeline_schedule_id bigint,
-    source integer,
-    config_source integer,
-    protected boolean,
-    failure_reason integer,
-    iid integer,
-    merge_request_id bigint,
-    source_sha bytea,
-    target_sha bytea,
-    external_pull_request_id bigint,
-    ci_ref_id bigint,
-    locked smallint DEFAULT 1 NOT NULL,
-    partition_id bigint NOT NULL,
-    id bigint NOT NULL,
-    auto_canceled_by_id bigint,
-    auto_canceled_by_partition_id bigint,
-    trigger_id bigint,
-    CONSTRAINT check_2ba2a044b9 CHECK ((project_id IS NOT NULL)),
-    CONSTRAINT check_d7e99a025e CHECK ((lock_version IS NOT NULL))
-);
 
 CREATE SEQUENCE ci_pipelines_id_seq
     START WITH 1
@@ -25993,7 +25956,8 @@ CREATE TABLE work_item_progresses (
     rollup_progress boolean DEFAULT true NOT NULL,
     reminder_frequency smallint DEFAULT 0 NOT NULL,
     last_reminder_sent_at timestamp with time zone,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_60f0b9e790 CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE TABLE work_item_related_link_restrictions (
@@ -26927,8 +26891,6 @@ ALTER TABLE ONLY uploads_9ba88c4165 ATTACH PARTITION alert_management_alert_metr
 ALTER TABLE ONLY uploads_9ba88c4165 ATTACH PARTITION appearance_uploads FOR VALUES IN ('Appearance');
 
 ALTER TABLE ONLY uploads_9ba88c4165 ATTACH PARTITION bulk_import_export_upload_uploads FOR VALUES IN ('BulkImports::ExportUpload');
-
-ALTER TABLE ONLY p_ci_pipelines ATTACH PARTITION ci_pipelines FOR VALUES IN ('100', '101', '102');
 
 ALTER TABLE ONLY ci_runner_taggings ATTACH PARTITION ci_runner_taggings_group_type FOR VALUES IN ('2');
 
@@ -29533,12 +29495,6 @@ ALTER TABLE ONLY ci_pipeline_schedule_variables
 ALTER TABLE ONLY ci_pipeline_schedules
     ADD CONSTRAINT ci_pipeline_schedules_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY p_ci_pipelines
-    ADD CONSTRAINT p_ci_pipelines_pkey PRIMARY KEY (id, partition_id);
-
-ALTER TABLE ONLY ci_pipelines
-    ADD CONSTRAINT ci_pipelines_pkey PRIMARY KEY (id, partition_id);
-
 ALTER TABLE ONLY ci_project_mirrors
     ADD CONSTRAINT ci_project_mirrors_pkey PRIMARY KEY (id);
 
@@ -30627,6 +30583,9 @@ ALTER TABLE ONLY p_ci_pipeline_variables
 
 ALTER TABLE ONLY p_ci_pipelines_config
     ADD CONSTRAINT p_ci_pipelines_config_pkey PRIMARY KEY (pipeline_id, partition_id);
+
+ALTER TABLE ONLY p_ci_pipelines
+    ADD CONSTRAINT p_ci_pipelines_pkey PRIMARY KEY (id, partition_id);
 
 ALTER TABLE ONLY p_ci_runner_machine_builds
     ADD CONSTRAINT p_ci_runner_machine_builds_pkey PRIMARY KEY (build_id, partition_id);
@@ -33438,10 +33397,6 @@ CREATE INDEX idx_catalog_resource_cpmt_last_usages_on_cpmt_project_id ON catalog
 
 CREATE UNIQUE INDEX idx_ci_job_token_authorizations_on_accessed_and_origin_project ON ci_job_token_authorizations USING btree (accessed_project_id, origin_project_id);
 
-CREATE INDEX p_ci_pipelines_ci_ref_id_id_idx ON ONLY p_ci_pipelines USING btree (ci_ref_id, id) WHERE (locked = 1);
-
-CREATE INDEX idx_ci_pipelines_artifacts_locked ON ci_pipelines USING btree (ci_ref_id, id) WHERE (locked = 1);
-
 CREATE INDEX idx_ci_running_builds_on_runner_type_and_owner_xid_and_id ON ci_running_builds USING btree (runner_type, runner_owner_namespace_xid, runner_id);
 
 CREATE INDEX idx_compliance_requirements_controls_on_namespace_id ON compliance_requirements_controls USING btree (namespace_id);
@@ -34622,90 +34577,6 @@ CREATE INDEX index_ci_pipeline_schedules_on_owner_id_and_id_and_active ON ci_pip
 
 CREATE INDEX index_ci_pipeline_schedules_on_project_id ON ci_pipeline_schedules USING btree (project_id);
 
-CREATE INDEX p_ci_pipelines_id_idx ON ONLY p_ci_pipelines USING btree (id) WHERE (source = 13);
-
-CREATE INDEX index_ci_pipelines_for_ondemand_dast_scans ON ci_pipelines USING btree (id) WHERE (source = 13);
-
-CREATE INDEX p_ci_pipelines_auto_canceled_by_id_idx ON ONLY p_ci_pipelines USING btree (auto_canceled_by_id);
-
-CREATE INDEX index_ci_pipelines_on_auto_canceled_by_id ON ci_pipelines USING btree (auto_canceled_by_id);
-
-CREATE INDEX p_ci_pipelines_ci_ref_id_id_source_status_idx ON ONLY p_ci_pipelines USING btree (ci_ref_id, id DESC, source, status) WHERE (ci_ref_id IS NOT NULL);
-
-CREATE INDEX index_ci_pipelines_on_ci_ref_id_and_more ON ci_pipelines USING btree (ci_ref_id, id DESC, source, status) WHERE (ci_ref_id IS NOT NULL);
-
-CREATE INDEX p_ci_pipelines_external_pull_request_id_idx ON ONLY p_ci_pipelines USING btree (external_pull_request_id) WHERE (external_pull_request_id IS NOT NULL);
-
-CREATE INDEX index_ci_pipelines_on_external_pull_request_id ON ci_pipelines USING btree (external_pull_request_id) WHERE (external_pull_request_id IS NOT NULL);
-
-CREATE INDEX p_ci_pipelines_merge_request_id_idx ON ONLY p_ci_pipelines USING btree (merge_request_id) WHERE (merge_request_id IS NOT NULL);
-
-CREATE INDEX index_ci_pipelines_on_merge_request_id ON ci_pipelines USING btree (merge_request_id) WHERE (merge_request_id IS NOT NULL);
-
-CREATE INDEX p_ci_pipelines_pipeline_schedule_id_id_idx ON ONLY p_ci_pipelines USING btree (pipeline_schedule_id, id);
-
-CREATE INDEX index_ci_pipelines_on_pipeline_schedule_id_and_id ON ci_pipelines USING btree (pipeline_schedule_id, id);
-
-CREATE INDEX p_ci_pipelines_project_id_id_idx ON ONLY p_ci_pipelines USING btree (project_id, id DESC);
-
-CREATE INDEX index_ci_pipelines_on_project_id_and_id_desc ON ci_pipelines USING btree (project_id, id DESC);
-
-CREATE UNIQUE INDEX p_ci_pipelines_project_id_iid_partition_id_idx ON ONLY p_ci_pipelines USING btree (project_id, iid, partition_id) WHERE (iid IS NOT NULL);
-
-CREATE UNIQUE INDEX index_ci_pipelines_on_project_id_and_iid_and_partition_id ON ci_pipelines USING btree (project_id, iid, partition_id) WHERE (iid IS NOT NULL);
-
-CREATE INDEX p_ci_pipelines_project_id_ref_status_id_idx ON ONLY p_ci_pipelines USING btree (project_id, ref, status, id);
-
-CREATE INDEX index_ci_pipelines_on_project_id_and_ref_and_status_and_id ON ci_pipelines USING btree (project_id, ref, status, id);
-
-CREATE INDEX p_ci_pipelines_project_id_sha_idx ON ONLY p_ci_pipelines USING btree (project_id, sha);
-
-CREATE INDEX index_ci_pipelines_on_project_id_and_sha ON ci_pipelines USING btree (project_id, sha);
-
-CREATE INDEX p_ci_pipelines_project_id_source_idx ON ONLY p_ci_pipelines USING btree (project_id, source);
-
-CREATE INDEX index_ci_pipelines_on_project_id_and_source ON ci_pipelines USING btree (project_id, source);
-
-CREATE INDEX p_ci_pipelines_project_id_status_config_source_idx ON ONLY p_ci_pipelines USING btree (project_id, status, config_source);
-
-CREATE INDEX index_ci_pipelines_on_project_id_and_status_and_config_source ON ci_pipelines USING btree (project_id, status, config_source);
-
-CREATE INDEX p_ci_pipelines_project_id_status_created_at_idx ON ONLY p_ci_pipelines USING btree (project_id, status, created_at);
-
-CREATE INDEX index_ci_pipelines_on_project_id_and_status_and_created_at ON ci_pipelines USING btree (project_id, status, created_at);
-
-CREATE INDEX p_ci_pipelines_project_id_status_updated_at_idx ON ONLY p_ci_pipelines USING btree (project_id, status, updated_at);
-
-CREATE INDEX index_ci_pipelines_on_project_id_and_status_and_updated_at ON ci_pipelines USING btree (project_id, status, updated_at);
-
-CREATE INDEX p_ci_pipelines_project_id_user_id_status_ref_idx ON ONLY p_ci_pipelines USING btree (project_id, user_id, status, ref) WHERE (source <> 12);
-
-CREATE INDEX index_ci_pipelines_on_project_id_and_user_id_and_status_and_ref ON ci_pipelines USING btree (project_id, user_id, status, ref) WHERE (source <> 12);
-
-CREATE INDEX p_ci_pipelines_project_id_ref_id_idx ON ONLY p_ci_pipelines USING btree (project_id, ref, id DESC);
-
-CREATE INDEX index_ci_pipelines_on_project_idandrefandiddesc ON ci_pipelines USING btree (project_id, ref, id DESC);
-
-CREATE INDEX p_ci_pipelines_status_id_idx ON ONLY p_ci_pipelines USING btree (status, id);
-
-CREATE INDEX index_ci_pipelines_on_status_and_id ON ci_pipelines USING btree (status, id);
-
-CREATE INDEX p_ci_pipelines_user_id_created_at_config_source_idx ON ONLY p_ci_pipelines USING btree (user_id, created_at, config_source);
-
-CREATE INDEX index_ci_pipelines_on_user_id_and_created_at_and_config_source ON ci_pipelines USING btree (user_id, created_at, config_source);
-
-CREATE INDEX p_ci_pipelines_user_id_created_at_source_idx ON ONLY p_ci_pipelines USING btree (user_id, created_at, source);
-
-CREATE INDEX index_ci_pipelines_on_user_id_and_created_at_and_source ON ci_pipelines USING btree (user_id, created_at, source);
-
-CREATE INDEX p_ci_pipelines_user_id_id_idx ON ONLY p_ci_pipelines USING btree (user_id, id) WHERE ((status)::text = ANY (ARRAY[('running'::character varying)::text, ('waiting_for_resource'::character varying)::text, ('preparing'::character varying)::text, ('pending'::character varying)::text, ('created'::character varying)::text, ('scheduled'::character varying)::text]));
-
-CREATE INDEX index_ci_pipelines_on_user_id_and_id_and_cancelable_status ON ci_pipelines USING btree (user_id, id) WHERE ((status)::text = ANY (ARRAY[('running'::character varying)::text, ('waiting_for_resource'::character varying)::text, ('preparing'::character varying)::text, ('pending'::character varying)::text, ('created'::character varying)::text, ('scheduled'::character varying)::text]));
-
-CREATE INDEX p_ci_pipelines_user_id_id_idx1 ON ONLY p_ci_pipelines USING btree (user_id, id DESC) WHERE (failure_reason = 3);
-
-CREATE INDEX index_ci_pipelines_on_user_id_and_id_desc_and_user_not_verified ON ci_pipelines USING btree (user_id, id DESC) WHERE (failure_reason = 3);
-
 CREATE INDEX index_ci_project_mirrors_on_namespace_id ON ci_project_mirrors USING btree (namespace_id);
 
 CREATE UNIQUE INDEX index_ci_project_mirrors_on_project_id ON ci_project_mirrors USING btree (project_id);
@@ -34949,10 +34820,6 @@ CREATE UNIQUE INDEX index_cycle_analytics_stage_event_hashes_on_org_id_sha_256 O
 CREATE INDEX index_d2746151f0 ON instance_type_ci_runner_machines USING btree (ip_address);
 
 CREATE INDEX index_d58435d85e ON project_type_ci_runner_machines USING btree (executor_type);
-
-CREATE INDEX p_ci_pipelines_trigger_id_id_desc_idx ON ONLY p_ci_pipelines USING btree (trigger_id, id DESC);
-
-CREATE INDEX index_d8ae6ea3f3 ON ci_pipelines USING btree (trigger_id, id DESC);
 
 CREATE UNIQUE INDEX index_daily_build_group_report_results_unique_columns ON ci_daily_build_group_report_results USING btree (project_id, ref_path, date, group_name);
 
@@ -38686,6 +38553,52 @@ CREATE INDEX p_ci_job_artifacts_project_id_idx1 ON ONLY p_ci_job_artifacts USING
 
 CREATE UNIQUE INDEX p_ci_pipeline_variables_pipeline_id_key_partition_id_idx ON ONLY p_ci_pipeline_variables USING btree (pipeline_id, key, partition_id);
 
+CREATE INDEX p_ci_pipelines_auto_canceled_by_id_idx ON ONLY p_ci_pipelines USING btree (auto_canceled_by_id);
+
+CREATE INDEX p_ci_pipelines_ci_ref_id_id_idx ON ONLY p_ci_pipelines USING btree (ci_ref_id, id) WHERE (locked = 1);
+
+CREATE INDEX p_ci_pipelines_ci_ref_id_id_source_status_idx ON ONLY p_ci_pipelines USING btree (ci_ref_id, id DESC, source, status) WHERE (ci_ref_id IS NOT NULL);
+
+CREATE INDEX p_ci_pipelines_external_pull_request_id_idx ON ONLY p_ci_pipelines USING btree (external_pull_request_id) WHERE (external_pull_request_id IS NOT NULL);
+
+CREATE INDEX p_ci_pipelines_id_idx ON ONLY p_ci_pipelines USING btree (id) WHERE (source = 13);
+
+CREATE INDEX p_ci_pipelines_merge_request_id_idx ON ONLY p_ci_pipelines USING btree (merge_request_id) WHERE (merge_request_id IS NOT NULL);
+
+CREATE INDEX p_ci_pipelines_pipeline_schedule_id_id_idx ON ONLY p_ci_pipelines USING btree (pipeline_schedule_id, id);
+
+CREATE INDEX p_ci_pipelines_project_id_id_idx ON ONLY p_ci_pipelines USING btree (project_id, id DESC);
+
+CREATE UNIQUE INDEX p_ci_pipelines_project_id_iid_partition_id_idx ON ONLY p_ci_pipelines USING btree (project_id, iid, partition_id) WHERE (iid IS NOT NULL);
+
+CREATE INDEX p_ci_pipelines_project_id_ref_id_idx ON ONLY p_ci_pipelines USING btree (project_id, ref, id DESC);
+
+CREATE INDEX p_ci_pipelines_project_id_ref_status_id_idx ON ONLY p_ci_pipelines USING btree (project_id, ref, status, id);
+
+CREATE INDEX p_ci_pipelines_project_id_sha_idx ON ONLY p_ci_pipelines USING btree (project_id, sha);
+
+CREATE INDEX p_ci_pipelines_project_id_source_idx ON ONLY p_ci_pipelines USING btree (project_id, source);
+
+CREATE INDEX p_ci_pipelines_project_id_status_config_source_idx ON ONLY p_ci_pipelines USING btree (project_id, status, config_source);
+
+CREATE INDEX p_ci_pipelines_project_id_status_created_at_idx ON ONLY p_ci_pipelines USING btree (project_id, status, created_at);
+
+CREATE INDEX p_ci_pipelines_project_id_status_updated_at_idx ON ONLY p_ci_pipelines USING btree (project_id, status, updated_at);
+
+CREATE INDEX p_ci_pipelines_project_id_user_id_status_ref_idx ON ONLY p_ci_pipelines USING btree (project_id, user_id, status, ref) WHERE (source <> 12);
+
+CREATE INDEX p_ci_pipelines_status_id_idx ON ONLY p_ci_pipelines USING btree (status, id);
+
+CREATE INDEX p_ci_pipelines_trigger_id_id_desc_idx ON ONLY p_ci_pipelines USING btree (trigger_id, id DESC);
+
+CREATE INDEX p_ci_pipelines_user_id_created_at_config_source_idx ON ONLY p_ci_pipelines USING btree (user_id, created_at, config_source);
+
+CREATE INDEX p_ci_pipelines_user_id_created_at_source_idx ON ONLY p_ci_pipelines USING btree (user_id, created_at, source);
+
+CREATE INDEX p_ci_pipelines_user_id_id_idx ON ONLY p_ci_pipelines USING btree (user_id, id) WHERE ((status)::text = ANY (ARRAY[('running'::character varying)::text, ('waiting_for_resource'::character varying)::text, ('preparing'::character varying)::text, ('pending'::character varying)::text, ('created'::character varying)::text, ('scheduled'::character varying)::text]));
+
+CREATE INDEX p_ci_pipelines_user_id_id_idx1 ON ONLY p_ci_pipelines USING btree (user_id, id DESC) WHERE (failure_reason = 3);
+
 CREATE INDEX p_ci_stages_pipeline_id_id_idx ON ONLY p_ci_stages USING btree (pipeline_id, id) WHERE (status = ANY (ARRAY[0, 1, 2, 8, 9, 10]));
 
 CREATE UNIQUE INDEX p_ci_stages_pipeline_id_name_partition_id_idx ON ONLY p_ci_stages USING btree (pipeline_id, name, partition_id);
@@ -40880,8 +40793,6 @@ ALTER INDEX index_uploads_9ba88c4165_on_uploaded_by_user_id ATTACH PARTITION bul
 
 ALTER INDEX index_uploads_9ba88c4165_on_uploader_and_path ATTACH PARTITION bulk_import_export_upload_uploads_uploader_path_idx;
 
-ALTER INDEX p_ci_pipelines_pkey ATTACH PARTITION ci_pipelines_pkey;
-
 ALTER INDEX ci_runner_taggings_pkey ATTACH PARTITION ci_runner_taggings_group_type_pkey;
 
 ALTER INDEX index_ci_runner_taggings_on_runner_id_and_runner_type ATTACH PARTITION ci_runner_taggings_group_type_runner_id_runner_type_idx;
@@ -41010,8 +40921,6 @@ ALTER INDEX index_ci_runners_on_token_and_runner_type_when_token_not_null ATTACH
 
 ALTER INDEX ci_runners_pkey ATTACH PARTITION group_type_ci_runners_pkey;
 
-ALTER INDEX p_ci_pipelines_ci_ref_id_id_idx ATTACH PARTITION idx_ci_pipelines_artifacts_locked;
-
 ALTER INDEX index_uploads_9ba88c4165_on_checksum ATTACH PARTITION import_export_upload_uploads_checksum_idx;
 
 ALTER INDEX index_uploads_9ba88c4165_on_model_uploader_created_at ATTACH PARTITION import_export_upload_uploads_model_id_model_type_uploader_c_idx;
@@ -41050,53 +40959,9 @@ ALTER INDEX index_ci_runners_on_organization_id ATTACH PARTITION index_a3343eff0
 
 ALTER INDEX index_ci_runner_machines_on_executor_type ATTACH PARTITION index_aa3b4fe8c6;
 
-ALTER INDEX p_ci_pipelines_id_idx ATTACH PARTITION index_ci_pipelines_for_ondemand_dast_scans;
-
-ALTER INDEX p_ci_pipelines_auto_canceled_by_id_idx ATTACH PARTITION index_ci_pipelines_on_auto_canceled_by_id;
-
-ALTER INDEX p_ci_pipelines_ci_ref_id_id_source_status_idx ATTACH PARTITION index_ci_pipelines_on_ci_ref_id_and_more;
-
-ALTER INDEX p_ci_pipelines_external_pull_request_id_idx ATTACH PARTITION index_ci_pipelines_on_external_pull_request_id;
-
-ALTER INDEX p_ci_pipelines_merge_request_id_idx ATTACH PARTITION index_ci_pipelines_on_merge_request_id;
-
-ALTER INDEX p_ci_pipelines_pipeline_schedule_id_id_idx ATTACH PARTITION index_ci_pipelines_on_pipeline_schedule_id_and_id;
-
-ALTER INDEX p_ci_pipelines_project_id_id_idx ATTACH PARTITION index_ci_pipelines_on_project_id_and_id_desc;
-
-ALTER INDEX p_ci_pipelines_project_id_iid_partition_id_idx ATTACH PARTITION index_ci_pipelines_on_project_id_and_iid_and_partition_id;
-
-ALTER INDEX p_ci_pipelines_project_id_ref_status_id_idx ATTACH PARTITION index_ci_pipelines_on_project_id_and_ref_and_status_and_id;
-
-ALTER INDEX p_ci_pipelines_project_id_sha_idx ATTACH PARTITION index_ci_pipelines_on_project_id_and_sha;
-
-ALTER INDEX p_ci_pipelines_project_id_source_idx ATTACH PARTITION index_ci_pipelines_on_project_id_and_source;
-
-ALTER INDEX p_ci_pipelines_project_id_status_config_source_idx ATTACH PARTITION index_ci_pipelines_on_project_id_and_status_and_config_source;
-
-ALTER INDEX p_ci_pipelines_project_id_status_created_at_idx ATTACH PARTITION index_ci_pipelines_on_project_id_and_status_and_created_at;
-
-ALTER INDEX p_ci_pipelines_project_id_status_updated_at_idx ATTACH PARTITION index_ci_pipelines_on_project_id_and_status_and_updated_at;
-
-ALTER INDEX p_ci_pipelines_project_id_user_id_status_ref_idx ATTACH PARTITION index_ci_pipelines_on_project_id_and_user_id_and_status_and_ref;
-
-ALTER INDEX p_ci_pipelines_project_id_ref_id_idx ATTACH PARTITION index_ci_pipelines_on_project_idandrefandiddesc;
-
-ALTER INDEX p_ci_pipelines_status_id_idx ATTACH PARTITION index_ci_pipelines_on_status_and_id;
-
-ALTER INDEX p_ci_pipelines_user_id_created_at_config_source_idx ATTACH PARTITION index_ci_pipelines_on_user_id_and_created_at_and_config_source;
-
-ALTER INDEX p_ci_pipelines_user_id_created_at_source_idx ATTACH PARTITION index_ci_pipelines_on_user_id_and_created_at_and_source;
-
-ALTER INDEX p_ci_pipelines_user_id_id_idx ATTACH PARTITION index_ci_pipelines_on_user_id_and_id_and_cancelable_status;
-
-ALTER INDEX p_ci_pipelines_user_id_id_idx1 ATTACH PARTITION index_ci_pipelines_on_user_id_and_id_desc_and_user_not_verified;
-
 ALTER INDEX index_ci_runner_machines_on_ip_address ATTACH PARTITION index_d2746151f0;
 
 ALTER INDEX index_ci_runner_machines_on_executor_type ATTACH PARTITION index_d58435d85e;
-
-ALTER INDEX p_ci_pipelines_trigger_id_id_desc_idx ATTACH PARTITION index_d8ae6ea3f3;
 
 ALTER INDEX index_ci_runner_machines_on_organization_id ATTACH PARTITION index_e4459c2bb7;
 
@@ -41487,8 +41352,6 @@ CREATE TRIGGER assign_p_knowledge_graph_tasks_id_trigger BEFORE INSERT ON p_know
 CREATE TRIGGER assign_zoekt_tasks_id_trigger BEFORE INSERT ON zoekt_tasks FOR EACH ROW EXECUTE FUNCTION assign_zoekt_tasks_id_value();
 
 CREATE TRIGGER chat_names_loose_fk_trigger AFTER DELETE ON chat_names REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
-
-CREATE TRIGGER ci_pipelines_loose_fk_trigger AFTER DELETE ON ci_pipelines REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('p_ci_pipelines');
 
 CREATE TRIGGER ci_runner_machines_loose_fk_trigger AFTER DELETE ON ci_runner_machines REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('ci_runner_machines');
 

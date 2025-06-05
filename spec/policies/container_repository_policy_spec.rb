@@ -42,14 +42,14 @@ RSpec.describe ContainerRepositoryPolicy, feature_category: :container_registry 
               project.send(:"add_#{user_role}", user)
             end
 
-            it { expect_disallowed(:destroy_container_image) }
+            it { expect_allowed(:destroy_container_image) }
           end
         end
 
         context 'when the current user is an admin', :enable_admin_mode do
           let(:user) { build_stubbed(:admin) }
 
-          it { expect_disallowed(:destroy_container_image) }
+          it { expect_allowed(:destroy_container_image) }
         end
       end
 

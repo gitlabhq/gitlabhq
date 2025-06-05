@@ -7,19 +7,20 @@ RSpec.describe BulkImports::Groups::Pipelines::GroupPipeline, feature_category: 
     let_it_be(:user) { create(:user) }
     let_it_be(:parent) { create(:group) }
     let_it_be(:bulk_import) { create(:bulk_import, user: user) }
+    let_it_be(:destination_slug) { 'my-destination-group' }
 
-    let_it_be(:entity) do
+    let_it_be_with_reload(:entity) do
       create(
         :bulk_import_entity,
         bulk_import: bulk_import,
         source_full_path: 'source/full/path',
-        destination_slug: 'my-destination-group',
+        destination_slug: destination_slug,
         destination_namespace: parent.full_path
       )
     end
 
-    let_it_be(:tracker) { create(:bulk_import_tracker, entity: entity) }
-    let_it_be(:context) { BulkImports::Pipeline::Context.new(tracker) }
+    let_it_be_with_reload(:tracker) { create(:bulk_import_tracker, entity: entity) }
+    let(:context) { BulkImports::Pipeline::Context.new(tracker) }
 
     let(:group_data) do
       {
@@ -48,15 +49,13 @@ RSpec.describe BulkImports::Groups::Pipelines::GroupPipeline, feature_category: 
     end
 
     it 'imports new group into destination group' do
-      group_path = 'my-destination-group'
-
       subject.run
 
-      imported_group = Group.find_by_path(group_path)
+      imported_group = Group.find_by_path(destination_slug)
 
       expect(imported_group).not_to be_nil
       expect(imported_group.parent).to eq(parent)
-      expect(imported_group.path).to eq(group_path)
+      expect(imported_group.path).to eq(destination_slug)
       expect(imported_group.description).to eq(group_data['description'])
       expect(imported_group.visibility).to eq(group_data['visibility'])
       expect(imported_group.project_creation_level).to eq(Gitlab::Access.project_creation_string_options[group_data['project_creation_level']])
@@ -66,9 +65,22 @@ RSpec.describe BulkImports::Groups::Pipelines::GroupPipeline, feature_category: 
       expect(imported_group.mentions_disabled?).to eq(group_data['mentions_disabled'])
     end
 
-    it 'skips duplicates on pipeline rerun', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/509519' do
+    it 'skips duplicates on pipeline rerun' do
       expect { subject.run }.to change { Group.count }.by(1)
       expect { subject.run }.not_to change { Group.count }
+    end
+
+    it 'does not send an email to owner on group creation' do
+      group_data['emails_disabled'] = false
+      allow(Notify).to receive(:member_access_granted_email).and_call_original
+
+      subject.run
+
+      imported_group_owner = Group.find_by_path(destination_slug).all_owner_members.first
+
+      expect(Notify)
+        .not_to have_received(:member_access_granted_email)
+        .with(imported_group_owner.real_source_type, imported_group_owner.id)
     end
   end
 

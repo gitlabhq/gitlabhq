@@ -29,8 +29,8 @@ For more in depth details on the dashboard layout framework, see the [architectu
 
 Try it in your browser using our interactive examples:
 
-- [dashboard_layout](https://gitlab-org.gitlab.io/gitlab/storybook/?path=/docs/vue-shared-components-dashboard-layout--docs)
-- [panels_base](https://gitlab-org.gitlab.io/gitlab/storybook/?path=/docs/vue-shared-components-panels-base--docs)
+- [dashboard_layout](https://gitlab-org.gitlab.io/gitlab/storybook/?path=/docs/vue-shared-components-customizable-dashboard-dashboard-layout--docs)
+- [panels_base](https://gitlab-org.gitlab.io/gitlab/storybook/?path=/docs/vue-shared-components-customizable-dashboard-panels-base--docs)
 
 ## When to use this component
 

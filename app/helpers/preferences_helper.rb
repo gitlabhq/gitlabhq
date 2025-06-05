@@ -163,7 +163,7 @@ module PreferencesHelper
   private
 
   def extensions_marketplace_view
-    return unless WebIde::ExtensionMarketplace.feature_enabled?(user: current_user)
+    return unless WebIde::ExtensionMarketplace.feature_enabled_from_application_settings?
 
     build_extensions_marketplace_view(
       title: s_("Preferences|Web IDE"),

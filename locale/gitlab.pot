@@ -23871,6 +23871,9 @@ msgstr ""
 msgid "Edit user: %{user_name}"
 msgstr ""
 
+msgid "Edit value"
+msgstr ""
+
 msgid "Edit video description"
 msgstr ""
 
@@ -46489,25 +46492,25 @@ msgstr ""
 msgid "Preferences|%{link_start}List of keyboard shortcuts%{link_end}"
 msgstr ""
 
-msgid "Preferences|Appearance"
-msgstr ""
-
 msgid "Preferences|Automatically add new list items"
 msgstr ""
 
 msgid "Preferences|Behavior"
 msgstr ""
 
-msgid "Preferences|Choose the appearance of the application."
+msgid "Preferences|Choose a color mode."
+msgstr ""
+
+msgid "Preferences|Choose a color scheme for removed and added lines in diffs."
+msgstr ""
+
+msgid "Preferences|Choose a highlight color scheme for viewing and editing code."
 msgstr ""
 
 msgid "Preferences|Choose the default editor for writing content. You can switch editors temporarily when editing."
 msgstr ""
 
 msgid "Preferences|Choose the navigation theme."
-msgstr ""
-
-msgid "Preferences|Choose the syntax highlighting theme used when viewing or editing code in GitLab."
 msgstr ""
 
 msgid "Preferences|Choose what content you want to see by default on your homepage."
@@ -46540,13 +46543,10 @@ msgstr ""
 msgid "Preferences|Customize the behavior of the system layout and default views."
 msgstr ""
 
-msgid "Preferences|Customize the colors of removed and added lines in diffs."
-msgstr ""
-
 msgid "Preferences|Default text editor"
 msgstr ""
 
-msgid "Preferences|Diff colors"
+msgid "Preferences|Diffs"
 msgstr ""
 
 msgid "Preferences|Enable %{link_start}Code Suggestions%{link_end} for the following groups.%{br_tag}Only groups that have purchased the Code Suggestion add-on and have available seats are listed here.%{br_tag} If you were expecting to see a group and it is missing from the list, please contact the group owner."
@@ -46603,10 +46603,13 @@ msgstr ""
 msgid "Preferences|Layout width"
 msgstr ""
 
+msgid "Preferences|Mode"
+msgstr ""
+
 msgid "Preferences|Must be a number between %{min} and %{max}"
 msgstr ""
 
-msgid "Preferences|Navigation theme"
+msgid "Preferences|Navigation"
 msgstr ""
 
 msgid "Preferences|Preview"
@@ -46633,7 +46636,7 @@ msgstr ""
 msgid "Preferences|Surround text selection when typing quotes or brackets"
 msgstr ""
 
-msgid "Preferences|Syntax highlighting theme"
+msgid "Preferences|Syntax highlights"
 msgstr ""
 
 msgid "Preferences|Tab width"
@@ -54698,6 +54701,9 @@ msgstr ""
 msgid "Secrets|Are you sure you want to delete secret %{secretName}? This action cannot be undone, and the secret cannot be recovered."
 msgstr ""
 
+msgid "Secrets|Are you sure you want to update secret %{secretName}? Saving these changes can cause disruptions, such as loss of access to connected services or failed deployments."
+msgstr ""
+
 msgid "Secrets|Created"
 msgstr ""
 
@@ -54707,7 +54713,7 @@ msgstr ""
 msgid "Secrets|Delete secret"
 msgstr ""
 
-msgid "Secrets|Edit %{id}"
+msgid "Secrets|Edit %{name}"
 msgstr ""
 
 msgid "Secrets|Enable the Secrets Manager to securely store and manage sensitive information for this project."
@@ -54750,6 +54756,9 @@ msgid "Secrets|Rotation reminder"
 msgstr ""
 
 msgid "Secrets|Secret %{secretName} has been deleted."
+msgstr ""
+
+msgid "Secrets|Secret %{secretName} was successfully updated."
 msgstr ""
 
 msgid "Secrets|Secret manager user permissions"
@@ -70610,6 +70619,9 @@ msgstr ""
 msgid "Workspaces|Connected"
 msgstr ""
 
+msgid "Workspaces|Could not load agents. Refresh the page to try again."
+msgstr ""
+
 msgid "Workspaces|Could not load available agents. Refresh the page to try again."
 msgstr ""
 
@@ -74339,6 +74351,9 @@ msgstr[1] ""
 msgid "repository:"
 msgstr ""
 
+msgid "requirement"
+msgstr ""
+
 msgid "rule"
 msgid_plural "rules"
 msgstr[0] ""
@@ -74551,6 +74566,9 @@ msgid "then"
 msgstr ""
 
 msgid "this document"
+msgstr ""
+
+msgid "ticket"
 msgstr ""
 
 msgid "to"

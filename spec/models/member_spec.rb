@@ -1774,6 +1774,20 @@ RSpec.describe Member, feature_category: :groups_and_projects do
         it_behaves_like 'performs all the common hooks'
       end
     end
+
+    context 'when importing' do
+      let(:member) { create(:group_member, source: source, importing: true) }
+
+      it 'does not invoke a notification' do
+        allow(Notify).to receive(:member_access_granted_email).and_call_original
+
+        create_member
+
+        expect(Notify)
+          .not_to have_received(:member_access_granted_email)
+          .with(member.real_source_type, member.id)
+      end
+    end
   end
 
   context 'when after_create :update_two_factor_requirement' do
