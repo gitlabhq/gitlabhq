@@ -377,6 +377,7 @@ describe('Markdown field header component', () => {
 
     const findFindInput = () => wrapper.findByTestId('find-btn');
     const findCloneDiv = () => formWrapper.findByTestId('find-and-replace-clone');
+    const findFindAndReplaceBar = () => wrapper.findByTestId('find-and-replace');
 
     const showFindAndReplace = async () => {
       $(document).triggerHandler('markdown-editor:find-and-replace:show', [$('form')]);
@@ -405,12 +406,12 @@ describe('Markdown field header component', () => {
         ),
       ]);
 
-      expect(wrapper.findByTestId('find-and-replace').exists()).toBe(false);
+      expect(findFindAndReplaceBar().exists()).toBe(false);
     });
 
     it('displays find-and-replace bar when shortcut event is emitted', async () => {
       await showFindAndReplace();
-      expect(wrapper.findByTestId('find-and-replace').exists()).toBe(true);
+      expect(findFindAndReplaceBar().exists()).toBe(true);
     });
 
     it('prevents submitting the form when Enter key is pressed', async () => {
@@ -422,16 +423,14 @@ describe('Markdown field header component', () => {
 
     it('closes the find-and-replace bar when Escape key is pressed', async () => {
       await showFindAndReplace();
-      expect(wrapper.findByTestId('find-and-replace').exists()).toBe(true);
+      expect(findFindAndReplaceBar().exists()).toBe(true);
       await closeFindAndReplace();
-      expect(wrapper.findByTestId('find-and-replace').exists()).toBe(false);
+      expect(findFindAndReplaceBar().exists()).toBe(false);
     });
 
     it('embeds a clone to div to color highlighted text', async () => {
       await showFindAndReplace();
-
-      findFindInput().vm.$emit('keyup', { target: { value: 'my-text' } });
-
+      await findFindInput().vm.$emit('keyup', { target: { value: 'my-text' } });
       await nextTick();
       expect(findCloneDiv().exists()).toBe(true);
 
@@ -448,11 +447,13 @@ describe('Markdown field header component', () => {
 
       // Text that does not match
       await findFindInput().vm.$emit('keyup', { target: { value: 'my-text' } });
+      await nextTick();
 
       expect(formWrapper.element.querySelector('.js-highlight')).toBe(null);
 
       // Text that matches
       await findFindInput().vm.$emit('keyup', { target: { value: 'lorem' } });
+      await nextTick();
 
       expect(formWrapper.element.querySelector('.js-highlight').innerHTML).toBe('lorem');
     });
@@ -465,6 +466,22 @@ describe('Markdown field header component', () => {
       expect(findCloneDiv().element.innerHTML).toBe(
         'lorem ipsum dolor sit amet &lt;img src="<span class="js-highlight" style="background-color: orange; display: inline-block;">prompt</span>"&gt;',
       );
+    });
+
+    it('displays total number of matches', async () => {
+      await showFindAndReplace();
+
+      // Text that does not match
+      await findFindInput().vm.$emit('keyup', { target: { value: 'my-text' } });
+      await nextTick();
+
+      expect(findFindAndReplaceBar().text()).toBe('0 of 0');
+
+      // Text that matches
+      await findFindInput().vm.$emit('keyup', { target: { value: 'lorem' } });
+      await nextTick();
+
+      expect(findFindAndReplaceBar().text()).toBe('1 of 1');
     });
   });
 });

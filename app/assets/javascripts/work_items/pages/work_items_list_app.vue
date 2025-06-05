@@ -45,6 +45,7 @@ import {
   OPERATOR_IS,
   OPERATORS_AFTER_BEFORE,
   OPERATORS_IS,
+  OPERATORS_IS_NOT,
   OPERATORS_IS_NOT_OR,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
@@ -468,8 +469,9 @@ export default {
           type: TOKEN_TYPE_TYPE,
           title: TOKEN_TITLE_TYPE,
           icon: 'issues',
+          unique: true,
           token: GlFilteredSearchToken,
-          operators: OPERATORS_IS,
+          operators: OPERATORS_IS_NOT,
           options: this.typeTokenOptions,
         });
       }

@@ -441,6 +441,38 @@ RSpec.describe SearchController, feature_category: :global_search do
           end
         end
       end
+
+      context 'when search term is invalid' do
+        it 'sets @scope even when search_term_valid? returns false' do
+          long_search_term = 'a' * (Gitlab::Search::Params::SEARCH_CHAR_LIMIT + 1)
+
+          get :show, params: { search: long_search_term, scope: 'issues' }
+
+          expect(assigns(:scope)).to be_present
+          expect(assigns(:search_type)).to be_present
+          expect(assigns(:scope)).to eq('issues')
+
+          expect(flash[:alert]).to include('characters')
+        end
+
+        it 'sets @scope even when terms count is invalid' do
+          too_many_terms = Array.new(Gitlab::Search::Params::SEARCH_TERM_LIMIT + 1, 'term').join(' ')
+
+          get :show, params: { search: too_many_terms, scope: 'projects' }
+          expect(assigns(:scope)).to be_present
+          expect(assigns(:search_type)).to be_present
+          expect(assigns(:scope)).to eq('projects')
+
+          expect(flash[:alert]).to include('terms')
+        end
+
+        it 'debugs scope behavior when term is empty' do
+          get :show, params: { search: '', scope: 'blobs', project_id: 1 }
+
+          expect(assigns(:scope)).to be_present
+          expect(assigns(:search_type)).to be_present
+        end
+      end
     end
 
     describe 'GET #count', :aggregate_failures do

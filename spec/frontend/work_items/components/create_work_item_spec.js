@@ -18,6 +18,7 @@ import WorkItemCrmContacts from '~/work_items/components/work_item_crm_contacts.
 import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 import WorkItemParent from '~/work_items/components/work_item_parent.vue';
 import WorkItemProjectsListbox from '~/work_items/components/work_item_links/work_item_projects_listbox.vue';
+import WorkItemNamespaceListbox from '~/work_items/components/shared/work_item_namespace_listbox.vue';
 import TitleSuggestions from '~/issues/new/components/title_suggestions.vue';
 import {
   WORK_ITEM_TYPE_NAME_EPIC,
@@ -75,6 +76,7 @@ describe('Create work item component', () => {
   const findMilestoneWidget = () => wrapper.findComponent(WorkItemMilestone);
   const findParentWidget = () => wrapper.findComponent(WorkItemParent);
   const findProjectsSelector = () => wrapper.findComponent(WorkItemProjectsListbox);
+  const findGroupProjectSelector = () => wrapper.findComponent(WorkItemNamespaceListbox);
   const findSelect = () => wrapper.findComponent(GlFormSelect);
   const findTitleSuggestions = () => wrapper.findComponent(TitleSuggestions);
   const findConfidentialCheckbox = () => wrapper.find('[data-testid="confidential-checkbox"]');
@@ -93,6 +95,7 @@ describe('Create work item component', () => {
     mutationHandler = createWorkItemSuccessHandler,
     preselectedWorkItemType = WORK_ITEM_TYPE_NAME_EPIC,
     isGroupWorkItem = false,
+    workItemPlanningViewEnabled = false,
   } = {}) => {
     const namespaceResponseCopy = cloneDeep(namespaceWorkItemTypesQueryResponse);
     namespaceResponseCopy.data.workspace.id = 'gid://gitlab/Group/33';
@@ -123,6 +126,7 @@ describe('Create work item component', () => {
         hasIssuableHealthStatusFeature: false,
         hasIterationsFeature: true,
         hasIssueWeightsFeature: false,
+        workItemPlanningViewEnabled,
       },
       stubs: {
         PageHeading,
@@ -263,6 +267,16 @@ describe('Create work item component', () => {
 
       expect(findProjectsSelector().props('currentProjectName')).toBe(namespaceFullName);
       expect(findProjectsSelector().props('selectedProjectFullPath')).toBe('full-path');
+    });
+  });
+
+  describe('Group/project selector', () => {
+    it('renders with the current namespace selected by default', async () => {
+      createComponent({ workItemPlanningViewEnabled: true });
+      await waitForPromises();
+
+      expect(findGroupProjectSelector().exists()).toBe(true);
+      expect(findGroupProjectSelector().props('fullPath')).toBe('full-path');
     });
   });
 

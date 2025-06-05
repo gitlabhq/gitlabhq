@@ -258,6 +258,7 @@ export default {
         emit-modified-only
         :project-path="projectPath"
         :query-ref="refQueryParam"
+        :empty-selection-text="s__('Pipeline|Select inputs to create a new pipeline.')"
         @update-inputs="handleInputsUpdated"
       />
       <pipeline-variables-form

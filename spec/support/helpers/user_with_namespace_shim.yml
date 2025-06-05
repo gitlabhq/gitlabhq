@@ -26,7 +26,6 @@
 - ee/spec/features/epics/gfm_autocomplete_spec.rb
 - ee/spec/features/epics/issue_promotion_spec.rb
 - ee/spec/features/epics/referencing_epics_spec.rb
-- ee/spec/features/epics/update_epic_spec.rb
 - ee/spec/features/groups/analytics/productivity_analytics_spec.rb
 - ee/spec/features/groups/member_roles_spec.rb
 - ee/spec/features/groups/members/list_members_spec.rb

@@ -183,6 +183,7 @@ describe('Pipeline schedules form', () => {
       expect(findPipelineInputsForm().props()).toMatchObject({
         queryRef: 'main',
         savedInputs: [],
+        emptySelectionText: 'Select inputs to create a new scheduled pipeline.',
       });
     });
 

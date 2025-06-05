@@ -65,7 +65,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/features/epic_boards/epic_boards_sidebar_spec.rb'
     - 'ee/spec/features/epic_boards/epic_boards_spec.rb'
     - 'ee/spec/features/epic_boards/new_epic_spec.rb'
-    - 'ee/spec/features/epics/epic_show_spec.rb'
     - 'ee/spec/features/gitlab_subscriptions/seat_count_alert_spec.rb'
     - 'ee/spec/features/group_protected_branches_spec.rb'
     - 'ee/spec/features/groups/analytics/ci_cd_analytics_spec.rb'

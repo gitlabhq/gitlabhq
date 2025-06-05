@@ -546,6 +546,7 @@ export const mockList = {
   maxIssueCount: 0,
   maxIssueWeight: 0,
   limitMetric: 'issue_count',
+  status: null,
   metadata: {
     epicsCount: 1,
   },
@@ -594,6 +595,7 @@ export const mockLabelList = {
   issuesCount: 0,
   maxIssueCount: 0,
   maxIssueWeight: 0,
+  status: null,
   limitMetric: 'issue_count',
   __typename: 'BoardList',
 };

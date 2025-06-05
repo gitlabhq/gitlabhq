@@ -347,8 +347,8 @@ rspec:
 
 GitLab can display the results of one or more reports in:
 
-- The merge request [code quality widget](../testing/unit_test_reports.md#unit-test-reporting-workflow).
-- The [full report](../testing/unit_test_reports.md#view-unit-test-reports-on-gitlab).
+- The merge request [**Test summary** panel](../testing/unit_test_reports.md#view-test-results-in-merge-requests).
+- The [pipeline **Tests** tab](../testing/unit_test_reports.md#view-test-results-in-pipelines).
 
 Some JUnit tools export to multiple XML files. You can specify multiple test report paths in a single job to
 concatenate them into a single file. Use either:

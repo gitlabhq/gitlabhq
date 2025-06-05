@@ -303,91 +303,108 @@ export default {
 </script>
 
 <template>
-  <div class="col-lg-8 gl-pl-0">
-    <gl-loading-icon v-if="loading && editing" size="lg" />
-    <gl-form v-else @submit.prevent="scheduleHandler">
-      <!--Description-->
-      <gl-form-group :label="$options.i18n.description" label-for="schedule-description">
-        <gl-form-input
-          id="schedule-description"
-          v-model="description"
-          type="text"
-          :placeholder="$options.i18n.shortDescriptionPipeline"
-          data-testid="schedule-description"
-          required
-        />
-      </gl-form-group>
-      <!--Timezone-->
-      <gl-form-group :label="$options.i18n.cronTimezoneText" label-for="schedule-timezone">
-        <timezone-dropdown
-          id="schedule-timezone"
-          :value="cronTimezone"
-          :timezone-data="timezoneData"
-          name="schedule-timezone"
-          required
-          @input="setTimezone"
-        />
-      </gl-form-group>
-      <!--Interval Pattern-->
-      <gl-form-group :label="$options.i18n.intervalPattern" label-for="schedule-interval">
-        <interval-pattern-input
-          id="schedule-interval"
-          :initial-cron-interval="cron"
-          :daily-limit="dailyLimit"
-          :send-native-errors="false"
-          @cronValue="setCronValue"
-        />
-      </gl-form-group>
-      <!--Branch/Tag Selector-->
-      <gl-form-group :label="$options.i18n.targetBranchTag" label-for="schedule-target-branch-tag">
-        <ref-selector
-          id="schedule-target-branch-tag"
-          v-model="scheduleRef"
-          :enabled-ref-types="getEnabledRefTypes"
-          :project-id="projectId"
-          :value="scheduleRef"
-          :use-symbolic-ref-names="true"
-          :translations="dropdownTranslations"
-          class="gl-w-full"
-        />
-      </gl-form-group>
-      <!--Pipeline inputs-->
-      <pipeline-inputs-form
-        :saved-inputs="savedInputs"
-        :query-ref="scheduleRef"
-        class="gl-mb-6"
-        @update-inputs="pipelineInputs = $event"
-        @update-inputs-metadata="handleInputsMetadataUpdate"
+  <gl-loading-icon v-if="loading && editing" size="lg" />
+  <gl-form v-else @submit.prevent="scheduleHandler">
+    <!--Description-->
+    <gl-form-group
+      :label="$options.i18n.description"
+      label-for="schedule-description"
+      class="lg:gl-w-2/3"
+    >
+      <gl-form-input
+        id="schedule-description"
+        v-model="description"
+        type="text"
+        :placeholder="$options.i18n.shortDescriptionPipeline"
+        data-testid="schedule-description"
+        required
       />
-      <!--Variable List-->
-      <pipeline-variables-form-group
-        v-if="canSetPipelineVariables"
-        :initial-variables="variables"
-        :editing="editing"
-        @update-variables="updatedVariables = $event"
+    </gl-form-group>
+    <!--Timezone-->
+    <gl-form-group
+      :label="$options.i18n.cronTimezoneText"
+      label-for="schedule-timezone"
+      class="lg:gl-w-2/3"
+    >
+      <timezone-dropdown
+        id="schedule-timezone"
+        :value="cronTimezone"
+        :timezone-data="timezoneData"
+        name="schedule-timezone"
+        required
+        @input="setTimezone"
       />
+    </gl-form-group>
+    <!--Interval Pattern-->
+    <gl-form-group
+      :label="$options.i18n.intervalPattern"
+      label-for="schedule-interval"
+      class="lg:gl-w-2/3"
+    >
+      <interval-pattern-input
+        id="schedule-interval"
+        :initial-cron-interval="cron"
+        :daily-limit="dailyLimit"
+        :send-native-errors="false"
+        @cronValue="setCronValue"
+      />
+    </gl-form-group>
+    <!--Branch/Tag Selector-->
+    <gl-form-group
+      :label="$options.i18n.targetBranchTag"
+      label-for="schedule-target-branch-tag"
+      class="lg:gl-w-2/3"
+    >
+      <ref-selector
+        id="schedule-target-branch-tag"
+        v-model="scheduleRef"
+        :enabled-ref-types="getEnabledRefTypes"
+        :project-id="projectId"
+        :value="scheduleRef"
+        :use-symbolic-ref-names="true"
+        :translations="dropdownTranslations"
+        class="gl-w-full"
+      />
+    </gl-form-group>
+    <!--Pipeline inputs-->
+    <pipeline-inputs-form
+      :saved-inputs="savedInputs"
+      :query-ref="scheduleRef"
+      :empty-selection-text="
+        s__('PipelineSchedules|Select inputs to create a new scheduled pipeline.')
+      "
+      class="gl-mb-6"
+      @update-inputs="pipelineInputs = $event"
+      @update-inputs-metadata="handleInputsMetadataUpdate"
+    />
+    <!--Variable List-->
+    <pipeline-variables-form-group
+      v-if="canSetPipelineVariables"
+      :initial-variables="variables"
+      :editing="editing"
+      @update-variables="updatedVariables = $event"
+    />
 
-      <!--Activated-->
-      <gl-form-checkbox id="schedule-active" v-model="activated" class="gl-mb-3">
-        {{ $options.i18n.activated }}
-      </gl-form-checkbox>
-      <div class="gl-flex gl-flex-wrap gl-gap-3">
-        <gl-button
-          type="submit"
-          variant="confirm"
-          data-testid="schedule-submit-button"
-          class="gl-w-full sm:gl-w-auto"
-        >
-          {{ buttonText }}
-        </gl-button>
-        <gl-button
-          :href="schedulesPath"
-          data-testid="schedule-cancel-button"
-          class="gl-w-full sm:gl-w-auto"
-        >
-          {{ $options.i18n.cancel }}
-        </gl-button>
-      </div>
-    </gl-form>
-  </div>
+    <!--Activated-->
+    <gl-form-checkbox id="schedule-active" v-model="activated" class="gl-mb-3">
+      {{ $options.i18n.activated }}
+    </gl-form-checkbox>
+    <div class="gl-flex gl-flex-wrap gl-gap-3">
+      <gl-button
+        type="submit"
+        variant="confirm"
+        data-testid="schedule-submit-button"
+        class="gl-w-full sm:gl-w-auto"
+      >
+        {{ buttonText }}
+      </gl-button>
+      <gl-button
+        :href="schedulesPath"
+        data-testid="schedule-cancel-button"
+        class="gl-w-full sm:gl-w-auto"
+      >
+        {{ $options.i18n.cancel }}
+      </gl-button>
+    </div>
+  </gl-form>
 </template>

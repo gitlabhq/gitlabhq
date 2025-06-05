@@ -5216,6 +5216,30 @@ Input type: `DeleteConversationThreadInput`
 | <a id="mutationdeleteconversationthreaderrors"></a>`errors` | [`[String!]!`](#string) | List of errors that occurred whilst trying to delete the thread. |
 | <a id="mutationdeleteconversationthreadsuccess"></a>`success` | [`Boolean!`](#boolean) | Returns true if thread was successfully deleted. |
 
+### `Mutation.deleteDuoWorkflowsWorkflow`
+
+{{< details >}}
+**Introduced** in GitLab 18.1.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `DeleteDuoWorkflowsWorkflowInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdeleteduoworkflowsworkflowclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdeleteduoworkflowsworkflowworkflowid"></a>`workflowId` | [`AiDuoWorkflowsWorkflowID!`](#aiduoworkflowsworkflowid) | Global ID of the workflow to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdeleteduoworkflowsworkflowclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdeleteduoworkflowsworkflowerrors"></a>`errors` | [`[String!]!`](#string) | List of errors that occurred whilst trying to delete the workflow. |
+| <a id="mutationdeleteduoworkflowsworkflowsuccess"></a>`success` | [`Boolean!`](#boolean) | Returns true if workflow was successfully deleted. |
+
 ### `Mutation.deletePackagesProtectionRule`
 
 Deletes a protection rule for packages.
@@ -46012,7 +46036,7 @@ Values for the archived argument.
 | Value | Description |
 | ----- | ----------- |
 | <a id="projectarchivedexclude"></a>`EXCLUDE` | Exclude archived projects. |
-| <a id="projectarchivedinclude"></a>`INCLUDE` | Include archvied projects. |
+| <a id="projectarchivedinclude"></a>`INCLUDE` | Include archived projects. |
 | <a id="projectarchivedonly"></a>`ONLY` | Only archived projects. |
 
 ### `ProjectComplianceControlStatus`

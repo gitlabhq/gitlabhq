@@ -122,6 +122,8 @@ export default {
         find: '',
         replace: '',
         shouldShowBar: false,
+        totalMatchCount: 0,
+        highlightedMatchIndex: 0,
       },
       modifierKey,
       shiftKey: modifierKey === '⌘' ? '⇧' : 'Shift+',
@@ -160,6 +162,12 @@ export default {
       return (
         this.glFeatures.findAndReplace && !this.restrictedToolBarItems.includes('find-and-replace')
       );
+    },
+    findAndReplace_MatchCountText() {
+      return sprintf(s__('MarkdownEditor|%{currentHighlight} of %{totalHighlights}'), {
+        currentHighlight: this.findAndReplace.highlightedMatchIndex,
+        totalHighlights: this.findAndReplace.totalMatchCount,
+      });
     },
   },
   watch: {
@@ -305,6 +313,13 @@ export default {
       this.cloneDiv.scrollTop = textArea.scrollTop;
     },
     findAndReplace_safeReplace(textArea, textToFind) {
+      this.findAndReplace.totalMatchCount = 0;
+      this.findAndReplace.highlightedMatchIndex = 0;
+
+      if (!textToFind) {
+        return;
+      }
+
       const regex = new RegExp(`(${textToFind})`, 'g');
       const segments = textArea.value.split(regex);
 
@@ -320,12 +335,17 @@ export default {
           span.style.display = 'inline-block';
           span.textContent = segment; // Use textContent for safe text insertion
           this.cloneDiv.appendChild(span);
+          this.findAndReplace.totalMatchCount += 1;
         } else {
           // Otherwise, just append the plain text
           const textNode = document.createTextNode(segment);
           this.cloneDiv.appendChild(textNode);
         }
       });
+
+      if (this.findAndReplace.totalMatchCount > 0) {
+        this.findAndReplace.highlightedMatchIndex = 1;
+      }
     },
     async findAndReplace_highlightMatchingText(text) {
       const textArea = this.getCurrentTextArea();
@@ -705,7 +725,7 @@ export default {
     </div>
     <div
       v-if="findAndReplace.shouldShowBar"
-      class="gl-border gl-absolute gl-right-0 gl-z-3 gl-flex gl-w-34 gl-rounded-bl-base gl-border-r-0 gl-bg-section gl-p-3 gl-shadow-sm"
+      class="gl-border gl-absolute gl-right-0 gl-z-3 gl-flex gl-w-34 gl-items-center gl-rounded-bl-base gl-border-r-0 gl-bg-section gl-p-3 gl-shadow-sm"
       data-testid="find-and-replace"
     >
       <gl-form-input
@@ -716,6 +736,9 @@ export default {
         @keydown="findAndReplace_handleKeyDown"
         @keyup="findAndReplace_handleKeyUp"
       />
+      <div class="gl-ml-4 gl-min-w-12 gl-whitespace-nowrap">
+        {{ findAndReplace_MatchCountText }}
+      </div>
     </div>
   </div>
 </template>

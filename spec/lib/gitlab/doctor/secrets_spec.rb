@@ -97,4 +97,19 @@ RSpec.describe Gitlab::Doctor::Secrets, feature_category: :shared do
       doctor_secrets
     end
   end
+
+  context 'when secrets doctor is called' do
+    it 'meets the necessary Ci::Build prerequisites' do
+      subj = described_class.new(logger)
+
+      # Tokens of Ci::Builds are nil-ed when a job finishes.
+      # For a more performant secrets check, all builds with a nil token are filtered out via a query.
+      # A prerequisite for this optimization is that the token is the only field to be checked.
+      expect(subj).to receive(:check_model_attributes).with(
+        a_hash_including(Ci::Build => [:token])
+      )
+
+      subj.run!
+    end
+  end
 end

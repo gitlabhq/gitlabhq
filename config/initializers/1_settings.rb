@@ -984,6 +984,9 @@ Gitlab.ee do
   Settings.cron_jobs['click_house_user_add_on_assignments_sync_worker'] ||= {}
   Settings.cron_jobs['click_house_user_add_on_assignments_sync_worker']['cron'] = "*/3 * * * *"
   Settings.cron_jobs['click_house_user_add_on_assignments_sync_worker']['job_class'] = 'ClickHouse::UserAddOnAssignmentsSyncWorker'
+  Settings.cron_jobs['click_house_user_addon_assignment_versions_sync'] ||= {}
+  Settings.cron_jobs['click_house_user_addon_assignment_versions_sync']['cron'] = "*/3 * * * *"
+  Settings.cron_jobs['click_house_user_addon_assignment_versions_sync']['job_class'] = 'ClickHouse::UserAddonAssignmentVersionsSyncWorker'
   Settings.cron_jobs['click_house_event_authors_consistency_cron_worker'] ||= {}
   Settings.cron_jobs['click_house_event_authors_consistency_cron_worker']['cron'] ||= "*/30 * * * *"
   Settings.cron_jobs['click_house_event_authors_consistency_cron_worker']['job_class'] = 'ClickHouse::EventAuthorsConsistencyCronWorker'

@@ -16,8 +16,9 @@ describe('PipelineInputsTable', () => {
         type: '',
         value: 'value1',
         required: true,
+        isSelected: true,
       },
-      { name: 'input2', description: '', type: '', value: 'value2' },
+      { name: 'input2', description: '', type: '', value: 'value2', isSelected: true },
     ],
   };
 
@@ -53,6 +54,22 @@ describe('PipelineInputsTable', () => {
     });
   });
 
+  describe('selected inputs', () => {
+    it('only renders rows for selected inputs', () => {
+      createComponent({
+        props: {
+          inputs: [
+            { name: 'input1', description: '', type: '', value: 'value1', isSelected: true },
+            { name: 'input2', description: '', type: '', value: 'value2', isSelected: false },
+          ],
+        },
+      });
+      expect(findRows()).toHaveLength(1);
+      expect(findRows().at(0).text()).toContain('input1');
+      expect(findRows().at(0).text()).not.toContain('input2');
+    });
+  });
+
   describe('name column', () => {
     it('shows a red asterisk for required inputs', () => {
       createComponent();
@@ -83,7 +100,7 @@ describe('PipelineInputsTable', () => {
     it('renders an info icon if the type is ARRAY', () => {
       createComponent({
         props: {
-          inputs: [{ name: 'input1', description: '', type: 'ARRAY', value: [] }],
+          inputs: [{ name: 'input1', description: '', type: 'ARRAY', value: [], isSelected: true }],
         },
       });
 

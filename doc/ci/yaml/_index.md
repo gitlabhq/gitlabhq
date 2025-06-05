@@ -1703,7 +1703,7 @@ failure.
 - `on_success` (default): Upload artifacts only when the job succeeds.
 - `on_failure`: Upload artifacts only when the job fails.
 - `always`: Always upload artifacts (except when jobs time out). For example, when
-  [uploading artifacts](../testing/unit_test_reports.md#view-junit-screenshots-on-gitlab)
+  [uploading artifacts](../testing/unit_test_reports.md#add-screenshots-to-test-reports)
   required to troubleshoot failing tests.
 
 **Example of `artifacts:when`**:

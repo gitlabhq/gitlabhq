@@ -114,7 +114,7 @@ module Gitlab
                   # TODO: if limits are defined, git operations start failing in e2e tests, investigate potential cause
                   # https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/3699
                   "gitlab-shell": {
-                    minReplicas: 1,
+                    minReplicas: 2,
                     resources: resources("60m", "32Mi", no_limits: true),
                     hpa: cpu_utilization
                   },

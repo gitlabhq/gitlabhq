@@ -39,6 +39,7 @@ export const ListTypeTitles = {
   assignee: __('Assignee'),
   milestone: __('Milestone'),
   iteration: __('Iteration'),
+  status: __('Status'),
   label: __('Label'),
   backlog: __('Open'),
 };

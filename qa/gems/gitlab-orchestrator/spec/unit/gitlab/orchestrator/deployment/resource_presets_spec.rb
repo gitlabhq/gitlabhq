@@ -139,7 +139,7 @@ RSpec.describe Gitlab::Orchestrator::Deployment::ResourcePresets do
           }
         },
         "gitlab-shell": {
-          minReplicas: 1,
+          minReplicas: 2,
           resources: {
             requests: { cpu: "60m", memory: "32Mi" }
           },

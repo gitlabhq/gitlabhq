@@ -59,9 +59,16 @@ module Gitlab
           failures_per_row = Hash.new { |h, k| h[k] = [] }
 
           with_skipped_callbacks_for(model) do
-            model.find_each do |data|
-              attributes.each do |att|
-                failures_per_row[data.id] << att unless valid_attribute?(data, att)
+            query = model
+            # Performance optimization
+            # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190206
+            query = query.with_token_present if model == Ci::Build
+
+            query.each_batch do |batch|
+              batch.each do |entry|
+                attributes.each do |attr|
+                  failures_per_row[entry.id] << attr unless valid_attribute?(entry, attr)
+                end
               end
             end
           end

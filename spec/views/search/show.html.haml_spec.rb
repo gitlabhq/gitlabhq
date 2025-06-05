@@ -33,12 +33,6 @@ RSpec.describe 'search/show', feature_category: :global_search do
   end
 
   context 'when the search page is opened' do
-    it 'does not render the results partial' do
-      render
-
-      expect(rendered).not_to render_template('search/_results')
-    end
-
     it 'does render the sidebar' do
       render
 

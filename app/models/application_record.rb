@@ -12,6 +12,7 @@ class ApplicationRecord < ActiveRecord::Base
   include HasCheckConstraints
   include IgnorableColumns
   include PopulatesShardingKey
+  include EachBatch
 
   self.abstract_class = true
 

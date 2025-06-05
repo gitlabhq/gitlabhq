@@ -71,6 +71,7 @@ import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.qu
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
 import WorkItemProjectsListbox from './work_item_links/work_item_projects_listbox.vue';
+import WorkItemNamespaceListbox from './shared/work_item_namespace_listbox.vue';
 import WorkItemTitle from './work_item_title.vue';
 import WorkItemDescription from './work_item_description.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
@@ -99,6 +100,7 @@ export default {
     WorkItemLoading,
     WorkItemCrmContacts,
     WorkItemProjectsListbox,
+    WorkItemNamespaceListbox,
     TitleSuggestions,
     WorkItemParent,
     WorkItemDates,
@@ -113,7 +115,7 @@ export default {
     PageHeading,
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['groupPath'],
+  inject: ['groupPath', 'workItemPlanningViewEnabled'],
   i18n: {
     suggestionTitle: s__('WorkItem|Similar items'),
     similarWorkItemHelpText: s__(
@@ -215,6 +217,7 @@ export default {
       loading: false,
       initialLoadingWorkItem: true,
       initialLoadingWorkItemTypes: true,
+      selectedNamespacePath: null,
       showWorkItemTypeSelect: false,
       discussionToResolve: getParameterByName('discussion_to_resolve'),
       mergeRequestToResolveDiscussionsOf: getParameterByName('merge_request_id'),
@@ -556,6 +559,18 @@ export default {
       }
       return this.isGroupWorkItem ? `${rootPath}/-/uploads` : `${rootPath}/uploads`;
     },
+    inputNamespacePath() {
+      if (this.workItemPlanningViewEnabled) {
+        return this.selectedNamespacePath;
+      }
+      return this.selectedProjectFullPath;
+    },
+    showItemTypeSelect() {
+      if (this.workItemPlanningViewEnabled) {
+        return true;
+      }
+      return this.showWorkItemTypeSelect || this.alwaysShowWorkItemTypeSelect;
+    },
   },
   watch: {
     shouldDiscardDraft: {
@@ -657,7 +672,7 @@ export default {
       const workItemCreateInput = {
         title: this.workItemTitle,
         workItemTypeId: this.selectedWorkItemTypeId,
-        namespacePath: this.selectedProjectFullPath,
+        namespacePath: this.inputNamespacePath || this.fullPath,
         confidential: this.workItem.confidential,
         descriptionWidget: {
           description: this.workItemDescription || '',
@@ -881,23 +896,36 @@ export default {
         {{ error }}
       </gl-alert>
       <page-heading v-if="!hideFormTitle" :heading="titleText" />
+
       <div class="gl-flex gl-items-center gl-gap-4">
-        <gl-form-group
-          v-if="showProjectSelector"
-          class="gl-max-w-26 gl-flex-grow"
-          :label="__('Project')"
-        >
-          <work-item-projects-listbox
-            v-model="selectedProjectFullPath"
-            :full-path="fullPath"
-            :is-group="isGroup"
-            :current-project-name="namespaceFullName"
-          />
-        </gl-form-group>
+        <template v-if="workItemPlanningViewEnabled">
+          <gl-form-group class="gl-mr-4 gl-max-w-26 gl-flex-grow" :label="__('Group/project')">
+            <work-item-namespace-listbox
+              v-model="selectedNamespacePath"
+              :full-path="fullPath"
+              :is-group="isGroup"
+            />
+          </gl-form-group>
+        </template>
+
+        <template v-else>
+          <gl-form-group
+            v-if="showProjectSelector"
+            class="gl-max-w-26 gl-flex-grow"
+            :label="__('Project')"
+          >
+            <work-item-projects-listbox
+              v-model="selectedProjectFullPath"
+              :full-path="fullPath"
+              :is-group="isGroup"
+              :current-project-name="namespaceFullName"
+            />
+          </gl-form-group>
+        </template>
 
         <gl-loading-icon v-if="$apollo.queries.namespace.loading" size="lg" />
         <gl-form-group
-          v-else-if="showWorkItemTypeSelect || alwaysShowWorkItemTypeSelect"
+          v-else-if="showItemTypeSelect"
           class="gl-max-w-26 gl-flex-grow"
           :label="__('Type')"
           label-for="work-item-type"

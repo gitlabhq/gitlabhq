@@ -152,6 +152,16 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         is_expected.to contain_exactly(new_build)
       end
     end
+
+    describe 'with_token_present' do
+      it 'returns the builds with a non nil token' do
+        expect(described_class.with_token_present).to include(old_build)
+
+        old_build.remove_token!
+
+        expect(described_class.with_token_present).not_to include(old_build)
+      end
+    end
   end
 
   describe 'callbacks' do

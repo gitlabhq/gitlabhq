@@ -62,6 +62,7 @@ export const initWorkItemsRoot = ({ workspaceType, withTabs } = {}) => {
     hasIssueDateFilterFeature,
     timeTrackingLimitToHours,
     hasStatusFeature,
+    workItemPlanningViewEnabled,
   } = el.dataset;
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
@@ -133,6 +134,7 @@ export const initWorkItemsRoot = ({ workspaceType, withTabs } = {}) => {
       hasIssueDateFilterFeature: parseBoolean(hasIssueDateFilterFeature),
       timeTrackingLimitToHours: parseBoolean(timeTrackingLimitToHours),
       hasStatusFeature: parseBoolean(hasStatusFeature),
+      workItemPlanningViewEnabled: parseBoolean(workItemPlanningViewEnabled),
     },
     mounted() {
       performanceMarkAndMeasure({

@@ -303,8 +303,18 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "vulnerability_export_part_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "vulnerability_export_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "vulnerability_archive_export_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "vulnerability_remediation_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199"
+      "vulnerability_remediation_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       # End of uploads related tables
+      "ci_runner_machines" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
+      "instance_type_ci_runners" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
+      "group_type_ci_runner_machines" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
+      "project_type_ci_runner_machines" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
+      "ci_runner_taggings" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
+      "ci_runner_taggings_instance_type" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
+      "ci_runners" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
+      "group_type_ci_runners" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
+      "instance_type_ci_runner_machines" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
+      "project_type_ci_runners" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293"
     }
 
     has_lfk = ->(lfks) { lfks.any? { |k| k.options[:column] == 'organization_id' && k.to_table == 'organizations' } }

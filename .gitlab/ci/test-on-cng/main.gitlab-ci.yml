@@ -58,7 +58,7 @@ workflow:
   before_script:
     - !reference [.qa-install, before_script]
     - !reference [.cng-deploy-cmd, script]
-    - bundle exec orchestrator metrics start
+    - bundle exec orchestrator metrics start --interval 1
   after_script:
     - !reference [.failure_category_after_script, after_script]
     - !reference [.gitlab-qa-report, after_script]

@@ -183,6 +183,9 @@ ci_runners:
   - table: users
     column: creator_id
     on_delete: async_nullify
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
 ci_running_builds:
   - table: projects
     column: project_id

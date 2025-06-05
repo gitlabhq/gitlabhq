@@ -7,7 +7,7 @@ module Types
       description 'Values for the archived argument'
 
       value 'ONLY', 'Only archived projects.', value: 'only'
-      value 'INCLUDE', 'Include archvied projects.', value: true
+      value 'INCLUDE', 'Include archived projects.', value: true
       value 'EXCLUDE', 'Exclude archived projects.', value: false
     end
   end

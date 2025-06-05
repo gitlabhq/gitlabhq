@@ -10556,6 +10556,9 @@ msgstr ""
 msgid "Boards|An error occurred while fetching recent boards. Please try again."
 msgstr ""
 
+msgid "Boards|An error occurred while fetching statuses. Please try again."
+msgstr ""
+
 msgid "Boards|An error occurred while fetching the board lists. Please reload the page."
 msgstr ""
 
@@ -29937,6 +29940,9 @@ msgstr ""
 msgid "Group-level wiki is disabled."
 msgstr ""
 
+msgid "Group/project"
+msgstr ""
+
 msgid "Group: %{group_name}"
 msgstr ""
 
@@ -37114,6 +37120,9 @@ msgid "Markdown is supported"
 msgstr ""
 
 msgid "Markdown supported."
+msgstr ""
+
+msgid "MarkdownEditor|%{currentHighlight} of %{totalHighlights}"
 msgstr ""
 
 msgid "MarkdownEditor|Add a link (%{modifierKey}K)"
@@ -45129,6 +45138,9 @@ msgstr ""
 msgid "PipelineSchedules|Save changes"
 msgstr ""
 
+msgid "PipelineSchedules|Select inputs to create a new scheduled pipeline."
+msgstr ""
+
 msgid "PipelineSchedules|Successfully scheduled a pipeline to run. Go to the %{linkStart}Pipelines page%{linkEnd} for details. "
 msgstr ""
 
@@ -45380,6 +45392,9 @@ msgstr ""
 msgid "Pipelines|Auto DevOps"
 msgstr ""
 
+msgid "Pipelines|Available"
+msgstr ""
+
 msgid "Pipelines|By revoking a trigger token you will break any processes making use of it. Are you sure?"
 msgstr ""
 
@@ -45527,6 +45542,9 @@ msgstr ""
 msgid "Pipelines|Pipeline editor"
 msgstr ""
 
+msgid "Pipelines|Pipeline inputs empty state image"
+msgstr ""
+
 msgid "Pipelines|Pipeline inputs now available!"
 msgstr ""
 
@@ -45555,6 +45573,15 @@ msgid "Pipelines|Revoke trigger"
 msgstr ""
 
 msgid "Pipelines|Scheduled"
+msgstr ""
+
+msgid "Pipelines|Search input name"
+msgstr ""
+
+msgid "Pipelines|Select inputs"
+msgstr ""
+
+msgid "Pipelines|Selected"
 msgstr ""
 
 msgid "Pipelines|Something went wrong while cleaning runners cache."
@@ -45897,6 +45924,9 @@ msgid "Pipeline|Run pipeline"
 msgstr ""
 
 msgid "Pipeline|Running"
+msgstr ""
+
+msgid "Pipeline|Select inputs to create a new pipeline."
 msgstr ""
 
 msgid "Pipeline|Skipped"
@@ -49611,6 +49641,9 @@ msgstr ""
 msgid "Protected Tag"
 msgstr ""
 
+msgid "Protected Tags"
+msgstr ""
+
 msgid "Protected branches"
 msgstr ""
 
@@ -49996,16 +50029,31 @@ msgstr ""
 msgid "ProtectedTag|By default, protected tags restrict who can modify the tag."
 msgstr ""
 
+msgid "ProtectedTag|Couldn't find any matching tags."
+msgstr ""
+
+msgid "ProtectedTag|Last commit"
+msgstr ""
+
 msgid "ProtectedTag|Learn more."
 msgstr ""
 
 msgid "ProtectedTag|Limit access to creating and updating tags."
 msgstr ""
 
+msgid "ProtectedTag|Matching Tags"
+msgstr ""
+
 msgid "ProtectedTag|Protected tags"
 msgstr ""
 
+msgid "ProtectedTag|Tag"
+msgstr ""
+
 msgid "ProtectedTag|What are protected tags?"
+msgstr ""
+
+msgid "ProtectedTag|default"
 msgstr ""
 
 msgid "Provide Feedback"
@@ -59514,7 +59562,7 @@ msgstr ""
 msgid "Specify an email address regex pattern to identify default internal users."
 msgstr ""
 
-msgid "Specify the input values to use in this pipeline."
+msgid "Specify the input values to use in this pipeline. Any inputs left unselected will use their default values."
 msgstr ""
 
 msgid "Spent at can't be a future date and time."
@@ -61984,7 +62032,7 @@ msgstr ""
 msgid "The pipeline has been deleted"
 msgstr ""
 
-msgid "The policy is associated with a non-existing Pipeline configuration file."
+msgid "The policy is associated with a non-existing pipeline configuration file."
 msgstr ""
 
 msgid "The policy is disabled"
@@ -70139,10 +70187,19 @@ msgstr ""
 msgid "WorkItem|Search or paste URL"
 msgstr ""
 
+msgid "WorkItem|Search status"
+msgstr ""
+
 msgid "WorkItem|Select a group"
 msgstr ""
 
+msgid "WorkItem|Select a namespace"
+msgstr ""
+
 msgid "WorkItem|Select a project"
+msgstr ""
+
+msgid "WorkItem|Select a status"
 msgstr ""
 
 msgid "WorkItem|Select parent"

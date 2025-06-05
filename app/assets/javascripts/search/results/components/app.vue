@@ -62,9 +62,6 @@ export default {
 
         return variables;
       },
-      skip() {
-        return !this.query.search;
-      },
       result({ data }) {
         this.hasError = false;
         this.loaded = true;
@@ -91,6 +88,7 @@ export default {
       if (!this.loaded && !this.$apollo?.queries?.blobSearch?.loading) {
         return true;
       }
+
       return this.$apollo.queries.blobSearch.loading;
     },
     hasResults() {

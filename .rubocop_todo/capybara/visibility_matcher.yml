@@ -1,9 +1,6 @@
 ---
 Capybara/VisibilityMatcher:
   Exclude:
-    - 'ee/spec/features/epics/epic_show_spec.rb'
-    - 'ee/spec/features/epics/todo_spec.rb'
-    - 'ee/spec/features/epics/update_epic_spec.rb'
     - 'ee/spec/features/groups/analytics/cycle_analytics/filters_and_data_spec.rb'
     - 'ee/spec/features/groups/issues_spec.rb'
     - 'ee/spec/features/issues/related_issues_spec.rb'
