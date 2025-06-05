@@ -87,6 +87,9 @@
 .if-merge-request-targeting-stable-branch: &if-merge-request-targeting-stable-branch
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee|-jh)?$/'
 
+.if-merge-request-targeting-stable-branch-is-tier-3: &if-merge-request-targeting-stable-branch-is-tier-3
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee|-jh)?$/ && $CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-3/'
+
 .if-merge-request-labels-as-if-foss: &if-merge-request-labels-as-if-foss
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-foss/'
 
@@ -1871,7 +1874,7 @@
     - !reference [".qa:rules:e2e-test-never-run", rules]
     - <<: *if-merge-request-labels-run-all-e2e
     # this rule needs to be synced with .notify:rules:notify-test-on-omnibus-failure to produce failure notification in stable branch merge requests
-    - <<: *if-merge-request-targeting-stable-branch
+    - <<: *if-merge-request-targeting-stable-branch-is-tier-3
       changes: *setup-test-env-patterns
       variables:
         MR_STABLE_BRANCH_CODE_PATTERNS: "true"
