@@ -90,7 +90,11 @@ RSpec::Matchers.define :have_scheduled_batched_migration do |gitlab_schema: nil,
     attributes[:min_value] = attributes.delete :batch_min_value if attributes.include?(:batch_min_value)
     attributes[:max_value] = attributes.delete :batch_max_value if attributes.include?(:batch_max_value)
 
-    expect(batched_migrations).to all(have_attributes(attributes)) if attributes.present?
+    if attributes.present?
+      expect(batched_migrations).to all(have_attributes(attributes))
+    else
+      true
+    end
   end
 
   define_method :does_not_match? do |migration|

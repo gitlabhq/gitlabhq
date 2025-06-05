@@ -2,11 +2,15 @@
 import { uniqueId } from 'lodash';
 import { GlFormGroup, GlFormInput } from '@gitlab/ui';
 import { __ } from '~/locale';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 
 export default {
   components: {
     GlFormGroup,
     GlFormInput,
+  },
+  directives: {
+    SafeHtml,
   },
   i18n: {
     titleLabel: __('Title (required)'),
@@ -16,6 +20,11 @@ export default {
     title: {
       type: String,
       required: true,
+    },
+    titleHtml: {
+      type: String,
+      required: false,
+      default: null,
     },
     isEditing: {
       type: Boolean,
@@ -37,6 +46,11 @@ export default {
     return {
       inputId: uniqueId('work-item-title-'),
     };
+  },
+  computed: {
+    workItemTitle() {
+      return this.titleHtml || this.title;
+    },
   },
 };
 </script>
@@ -67,6 +81,6 @@ export default {
     data-testid="work-item-title"
     class="gl-heading-1 !gl-m-0 gl-w-full gl-wrap-anywhere"
   >
-    {{ title }}
+    <span v-safe-html="workItemTitle"></span>
   </component>
 </template>

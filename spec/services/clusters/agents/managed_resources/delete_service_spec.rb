@@ -14,6 +14,13 @@ RSpec.describe Clusters::Agents::ManagedResources::DeleteService, feature_catego
       allow(Gitlab::Kas::Client).to receive(:new).and_return(kas_client)
     end
 
+    shared_context 'with delete environment mocked' do
+      before do
+        allow(kas_client).to receive(:delete_environment).with(managed_resource: managed_resource)
+          .and_return(kas_response)
+      end
+    end
+
     context 'when the managed resource is not in the correct initial state' do
       before do
         managed_resource.update!(status: :completed)
@@ -29,6 +36,8 @@ RSpec.describe Clusters::Agents::ManagedResources::DeleteService, feature_catego
     end
 
     context 'when KAS returns an error' do
+      include_context 'with delete environment mocked'
+
       let(:attempt_count) { 1 }
 
       let(:namespace) { managed_resource.tracked_objects.first }
@@ -57,11 +66,6 @@ RSpec.describe Clusters::Agents::ManagedResources::DeleteService, feature_catego
         )
       end
 
-      before do
-        allow(kas_client).to receive(:delete_environment).with(managed_resource: managed_resource)
-          .and_return(kas_response)
-      end
-
       it 'queues a worker for the next deletion attempt' do
         expect(Clusters::Agents::ManagedResources::DeleteWorker).to receive(:perform_in)
           .with(described_class::POLLING_SCHEDULE.first, managed_resource.id, attempt_count)
@@ -88,6 +92,8 @@ RSpec.describe Clusters::Agents::ManagedResources::DeleteService, feature_catego
     end
 
     context 'when all resources are deleted' do
+      include_context 'with delete environment mocked'
+
       let(:kas_response) do
         Gitlab::Agent::ManagedResources::Rpc::DeleteEnvironmentResponse.new(
           errors: [],
@@ -96,17 +102,40 @@ RSpec.describe Clusters::Agents::ManagedResources::DeleteService, feature_catego
       end
 
       it 'sets the status to deleted' do
-        expect(kas_client).to receive(:delete_environment).with(managed_resource: managed_resource)
-          .and_return(kas_response)
-
         execute
 
         expect(managed_resource.status).to eq('deleted')
         expect(managed_resource.tracked_objects).to be_empty
       end
+
+      it 'emits deletion events for all deleted resources' do
+        expect { execute }
+          .to trigger_internal_events('delete_gvk_resource_for_managed_resource')
+          .with(
+            project: managed_resource.environment.project,
+            category: 'InternalEventTracking',
+            additional_properties: {
+              label: 'core/v1/Namespace',
+              property: managed_resource.environment.tier,
+              value: managed_resource.environment_id
+            }
+          )
+          .and trigger_internal_events('delete_gvk_resource_for_managed_resource')
+          .with(
+            project: managed_resource.environment.project,
+            category: 'InternalEventTracking',
+            additional_properties: {
+              label: 'rbac.authorization.k8s.io/v1/RoleBinding',
+              property: managed_resource.environment.tier,
+              value: managed_resource.environment_id
+            }
+          )
+      end
     end
 
     context 'when deletion is still in progress' do
+      include_context 'with delete environment mocked'
+
       let(:attempt_count) { 1 }
       let(:in_progress_object) do
         {
@@ -126,9 +155,6 @@ RSpec.describe Clusters::Agents::ManagedResources::DeleteService, feature_catego
       end
 
       it 'queues a worker for the next deletion attempt' do
-        expect(kas_client).to receive(:delete_environment).with(managed_resource: managed_resource)
-          .and_return(kas_response)
-
         expect(Clusters::Agents::ManagedResources::DeleteWorker).to receive(:perform_in)
           .with(described_class::POLLING_SCHEDULE.first, managed_resource.id, attempt_count)
           .and_call_original
@@ -139,15 +165,26 @@ RSpec.describe Clusters::Agents::ManagedResources::DeleteService, feature_catego
         expect(managed_resource.tracked_objects).to contain_exactly(in_progress_object)
       end
 
+      it 'emits a deletion event for the deleted resource' do
+        expect { execute }
+          .to trigger_internal_events('delete_gvk_resource_for_managed_resource')
+          .with(
+            project: managed_resource.environment.project,
+            category: 'InternalEventTracking',
+            additional_properties: {
+              label: 'rbac.authorization.k8s.io/v1/RoleBinding',
+              property: managed_resource.environment.tier,
+              value: managed_resource.environment_id
+            }
+          )
+      end
+
       context 'when the attempt limit is reached' do
         let(:attempt_count) { described_class::POLLING_SCHEDULE.length }
 
         subject(:execute) { described_class.new(managed_resource, attempt_count: attempt_count).execute }
 
         it 'sets the status to delete_failed' do
-          expect(kas_client).to receive(:delete_environment).with(managed_resource: managed_resource)
-            .and_return(kas_response)
-
           expect(Clusters::Agents::ManagedResources::DeleteWorker).not_to receive(:perform_in)
 
           expect_next_instance_of(Gitlab::Kubernetes::Logger) do |logger|

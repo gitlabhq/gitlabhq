@@ -42,11 +42,12 @@
 }
 
 .rd-diff-file-header {
+  --rd-diff-file-header-horizontal-padding: #{$gl-spacing-scale-4};
   @apply gl-text-default;
   display: flex;
   background-color: var(--gl-background-color-subtle);
   border: 1px solid var(--gl-border-color-default);
-  padding: constants.$diff-file-header-padding-y $gl-spacing-scale-4;
+  padding: #{constants.$diff-file-header-padding-y} var(--rd-diff-file-header-horizontal-padding);
   border-radius: var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius) 0 0;
   word-break: break-word;
 
@@ -61,14 +62,17 @@
 
 .rd-diff-file-header-main {
   position: relative;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
   // extra spacing to avoid accidental file collapse clicks
   padding: $gl-spacing-scale-3;
   margin: -$gl-spacing-scale-3;
-  gap: $gl-padding-4;
   z-index: 1;
+}
+
+// we shouldn't use flex to align these items because it forces copy button to always wrap to a new line
+.rd-diff-file-header-submodule,
+.rd-diff-file-title,
+.rd-diff-file-deleted {
+  display: inline;
 }
 
 .rd-diff-file-title {
@@ -78,7 +82,30 @@
   margin: 0;
 }
 
+.rd-diff-file-title .commit-sha {
+  font-size: 85%;
+  font-weight: normal;
+}
+
+.rd-diff-file-header-submodule,
+.rd-diff-file-title,
+.rd-file-mode-change,
+.rd-copy-path,
+.rd-diff-file-deleted,
+.rd-submodule-icon.rd-submodule-icon {
+  vertical-align: middle;
+}
+
+.rd-diff-file-title,
+.rd-file-mode-change,
+.rd-copy-path,
+.rd-diff-file-deleted,
+.rd-submodule-icon {
+  margin-right: $gl-padding-4;
+}
+
 .rd-diff-file-moved {
+  margin: 0 $gl-padding-4;
   font-weight: $gl-font-weight-normal;
 }
 
@@ -94,7 +121,7 @@
 .rd-diff-file-toggle-button::before {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: 1px;
 }
 
 .rd-diff-file-info {
@@ -103,9 +130,8 @@
   align-self: flex-start;
   align-items: center;
   // extra spacing to avoid accidental file collapse clicks
-  padding: $gl-spacing-scale-3;
-  margin: -$gl-spacing-scale-3;
-  margin-left: auto;
+  padding:  $gl-spacing-scale-3       var(--rd-diff-file-header-horizontal-padding)         $gl-spacing-scale-3  $gl-spacing-scale-3;
+  margin: (-$gl-spacing-scale-3) calc(var(--rd-diff-file-header-horizontal-padding) * -1) (-$gl-spacing-scale-3) auto;
   gap: $gl-padding;
   z-index: 1;
 }

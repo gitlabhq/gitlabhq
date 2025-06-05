@@ -205,7 +205,7 @@ module Keeps
         - close the merge request in favor of another merge request to delete the test
 
         Please follow the
-        [Flaky tests management process](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/flaky-tests-management-and-processes/#flaky-tests-management-process)
+        [Flaky tests management process](https://handbook.gitlab.com/handbook/engineering/testing/flaky-tests/#flaky-tests-management-process)
         to help us increase `master` stability.
 
         Please let us know your feedback in the

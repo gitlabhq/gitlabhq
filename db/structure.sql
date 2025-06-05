@@ -44974,9 +44974,6 @@ ALTER TABLE ONLY incident_management_oncall_participants
 ALTER TABLE ONLY work_item_parent_links
     ADD CONSTRAINT fk_rails_601d5bec3a FOREIGN KEY (work_item_id) REFERENCES issues(id) ON DELETE CASCADE;
 
-ALTER TABLE vulnerability_archived_records
-    ADD CONSTRAINT fk_rails_601e008d4b FOREIGN KEY (archive_id, date) REFERENCES vulnerability_archives(id, date) ON DELETE CASCADE;
-
 ALTER TABLE ONLY system_access_microsoft_graph_access_tokens
     ADD CONSTRAINT fk_rails_604908851f FOREIGN KEY (system_access_microsoft_application_id) REFERENCES system_access_microsoft_applications(id) ON DELETE CASCADE;
 

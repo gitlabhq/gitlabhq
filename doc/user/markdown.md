@@ -2055,7 +2055,7 @@ For example:
 
   ```markdown
   [^1]: This text is inside a footnote.
-  [footnote-42]: This text is another footnote.
+  [^footnote-42]: This text is another footnote.
   ```
 
 When rendered, footnotes look similar to:

@@ -4,12 +4,18 @@ import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 
 describe('Work Item title', () => {
   let wrapper;
-  const mockTitle = 'Work Item title';
+  const mockTitle = 'Work Item _title_ :smile:';
+  const mockTitleHtml =
+    'Work Item <em>title</em> <gl-emoji title="grinning face with smiling eyes" data-name="smile" data-unicode-version="6.0">😄</gl-emoji>';
+  const mockTitleHtmlResult =
+    '<h1 data-testid="work-item-title" class="gl-heading-1 !gl-m-0 gl-w-full gl-wrap-anywhere"><span>Work Item <em>title</em> <gl-emoji data-unicode-version="6.0" data-name="smile" title="grinning face with smiling eyes">😄</gl-emoji></span></h1>';
+  const mockTitleText = 'Work Item title 😄';
 
   const createComponent = ({ isEditing = false, isModal = false } = {}) => {
     wrapper = shallowMountExtended(WorkItemTitle, {
       propsData: {
         title: mockTitle,
+        titleHtml: mockTitleHtml,
         isEditing,
         isModal,
       },
@@ -27,7 +33,8 @@ describe('Work Item title', () => {
 
     it('renders title', () => {
       expect(findTitle().exists()).toBe(true);
-      expect(findTitle().text()).toBe(mockTitle);
+      expect(findTitle().text()).toBe(mockTitleText);
+      expect(findTitle().html()).toBe(mockTitleHtmlResult);
     });
 
     it.each`

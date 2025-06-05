@@ -91,24 +91,6 @@ RSpec.describe Gitlab::Auth::Ldap::Authentication do
         expect(authentication).to eq(user)
       end
 
-      context 'when allow_ldap_users_to_authenticate_with_gitlab_username FF is disabled' do
-        before do
-          stub_feature_flags(allow_ldap_users_to_authenticate_with_gitlab_username: false)
-        end
-
-        it "does not try to identify the user's LDAP UID and and uses specified login for authentication" do
-          expect(::Gitlab::Auth::Ldap::Person).not_to receive(:find_by_dn)
-
-          expect(adapter).to receive(:bind_as).with(
-            filter: Net::LDAP::Filter.equals(Gitlab::Auth::Ldap::Config.new(provider).uid, login),
-            size: 1,
-            password: password
-          )
-
-          expect(authentication).to be_nil
-        end
-      end
-
       context "when the user's LDAP UID cannot be identified" do
         it 'uses specified login for authentication' do
           stub_ldap_person_find_by_dn(nil, provider)

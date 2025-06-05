@@ -48,7 +48,7 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
     allow(diff_file).to receive(:old_path).and_return(old)
     allow(diff_file).to receive(:new_path).and_return(new)
     render_component
-    expect(header).to have_css("h2[aria-label=\"File moved from #{old} to #{new}\"]", text: "#{old} → #{new}")
+    expect(header).to have_css("h2[aria-label=\"File moved from #{old} to #{new}\"]", text: "#{old}→#{new}")
   end
 
   it "renders mode change" do

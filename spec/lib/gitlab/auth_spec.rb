@@ -1398,24 +1398,6 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
               expect(authentication).to eq(user)
             end
-
-            context 'when allow_ldap_users_to_authenticate_with_gitlab_username FF is disabled' do
-              before do
-                stub_feature_flags(allow_ldap_users_to_authenticate_with_gitlab_username: false)
-              end
-
-              it "does not try to identify the user's LDAP UID and and uses specified login for authentication" do
-                expect(::Gitlab::Auth::Ldap::Person).not_to receive(:find_by_dn)
-
-                expect(adapter).to receive(:bind_as).with(
-                  filter: Net::LDAP::Filter.equals(Gitlab::Auth::Ldap::Config.new(provider).uid, login),
-                  size: 1,
-                  password: password
-                )
-
-                expect(authentication).to be_nil
-              end
-            end
           end
         end
 
@@ -1442,24 +1424,6 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
             ).and_return(ldap_user_entry(uid))
 
             expect(authentication).to eq(user)
-          end
-
-          context 'when allow_ldap_users_to_authenticate_with_gitlab_username FF is disabled' do
-            before do
-              stub_feature_flags(allow_ldap_users_to_authenticate_with_gitlab_username: false)
-            end
-
-            it "does not try to identify the user's LDAP UID and and uses specified login for authentication" do
-              expect(::Gitlab::Auth::Ldap::Person).not_to receive(:find_by_dn)
-
-              expect(adapter).to receive(:bind_as).with(
-                filter: Net::LDAP::Filter.equals(Gitlab::Auth::Ldap::Config.new(provider).uid, login),
-                size: 1,
-                password: password
-              ).and_return(ldap_user_entry(login))
-
-              expect(authentication).to eq(user)
-            end
           end
         end
 
@@ -1491,24 +1455,6 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
               ).and_return(ldap_user_entry(uid))
 
               expect(authentication).to eq(user)
-            end
-
-            context 'when allow_ldap_users_to_authenticate_with_gitlab_username FF is disabled' do
-              before do
-                stub_feature_flags(allow_ldap_users_to_authenticate_with_gitlab_username: false)
-              end
-
-              it "does not try to identify the user's LDAP UID and and uses specified login for authentication" do
-                expect(::Gitlab::Auth::Ldap::Person).not_to receive(:find_by_dn)
-
-                expect(adapter).to receive(:bind_as).with(
-                  filter: Net::LDAP::Filter.equals(Gitlab::Auth::Ldap::Config.new(provider).uid, login),
-                  size: 1,
-                  password: password
-                )
-
-                expect(authentication).to be_nil
-              end
             end
           end
         end

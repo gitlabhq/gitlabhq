@@ -1280,7 +1280,7 @@ describe('CE IssuesListApp component', () => {
 
           await waitForPromises();
 
-          expect(findIssuableList().props('issuables')[0].title).toBe('Updated title');
+          expect(findIssuableList().props('issuables')[0].title).toBe('Updated _title_');
           expect(findIssuableList().props('issuables')[0].confidential).toBe(true);
         });
 

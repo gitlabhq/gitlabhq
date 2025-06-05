@@ -276,7 +276,9 @@ module Gitlab
             end
 
             # Add project for DiffCommitUser to determine organization_id
-            hash['project'] = @importable if @relation_name == :'MergeRequest::DiffCommitUser'
+            if @relation_name == :'MergeRequest::DiffCommitUser' || @relation_name == :MergeRequestDiffCommit
+              hash['project'] = @importable
+            end
 
             hash[importable_class_name] = @importable if relation_class.reflect_on_association(importable_class_name.to_sym)
             hash.delete(importable_column_name)

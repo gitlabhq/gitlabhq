@@ -275,7 +275,7 @@ describe('WorkItemDetail component', () => {
     });
 
     it('updates the document title', () => {
-      expect(document.title).toEqual('Updated title (#1) · Task · test-project-path');
+      expect(document.title).toEqual('Updated _title_ (#1) · Task · test-project-path');
     });
 
     it('renders todos widget if logged in', () => {

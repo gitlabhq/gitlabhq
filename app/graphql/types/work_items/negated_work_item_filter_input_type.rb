@@ -23,6 +23,9 @@ module Types
       argument :my_reaction_emoji, GraphQL::Types::String,
         required: false,
         description: 'Filter by reaction emoji not applied by the current user.'
+      argument :release_tag, [GraphQL::Types::String],
+        required: false,
+        description: "Release tag not associated with the work items's milestone. Ignored when parent is a group."
       argument :types, [::Types::IssueTypeEnum], as: :issue_types,
         description: 'Filter out work items by the given types.',
         required: false

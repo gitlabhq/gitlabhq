@@ -326,7 +326,7 @@ export default {
 <template>
   <div
     :id="computedJobId"
-    class="ci-job-component gl-pipeline-job-width gl-flex gl-justify-between"
+    class="ci-job-component gl-pipeline-job-width gl-flex gl-overflow-hidden"
     data-testid="ci-job-item"
   >
     <component
@@ -335,7 +335,7 @@ export default {
       :title="tooltipText"
       :href="detailsPath"
       :class="jobClasses"
-      class="!gl-no-underline"
+      class="gl-w-full !gl-no-underline"
       data-testid="ci-job-item-content"
       @click="jobItemClick"
       @mouseout="hideTooltips"
@@ -344,7 +344,7 @@ export default {
         <ci-icon :status="job.status" :use-link="false" :show-tooltip="false" />
         <div class="gl-pipeline-job-width gl-flex gl-flex-col gl-pl-3 gl-pr-3">
           <div
-            class="gl-truncate gl-pr-9 gl-text-left gl-leading-normal gl-text-default"
+            class="gl-truncate gl-pr-6 gl-text-left gl-leading-normal gl-text-default"
             :title="job.name"
           >
             {{ job.name }}
@@ -352,7 +352,7 @@ export default {
           <div
             v-if="showStageName"
             data-testid="stage-name-in-job"
-            class="gl-truncate gl-pr-9 gl-text-left gl-text-sm gl-leading-normal gl-text-subtle"
+            class="gl-truncate gl-pr-6 gl-text-left gl-text-sm gl-leading-normal gl-text-subtle"
           >
             {{ stageName }}
           </div>

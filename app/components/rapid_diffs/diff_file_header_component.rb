@@ -17,7 +17,8 @@ module RapidDiffs
         title: _("Copy file path"),
         placement: "top",
         boundary: "viewport",
-        testid: "rd-diff-file-copy-clipboard"
+        testid: "rd-diff-file-copy-clipboard",
+        class: 'rd-copy-path'
       )
     end
 

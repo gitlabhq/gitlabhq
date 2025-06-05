@@ -135,7 +135,7 @@ class GroupChildEntity < Grape::Entity
   def permanent_deletion_date
     return unless object.adjourned_deletion?
 
-    permanent_deletion_date_formatted(object.marked_for_deletion_on || Date.current)
+    permanent_deletion_date_formatted(object) || permanent_deletion_date_formatted
   end
 end
 

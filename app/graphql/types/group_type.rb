@@ -482,7 +482,7 @@ module Types
     def permanent_deletion_date
       return unless group.adjourned_deletion?
 
-      permanent_deletion_date_formatted(group.marked_for_deletion_on || Date.current)
+      permanent_deletion_date_formatted(group) || permanent_deletion_date_formatted
     end
 
     private

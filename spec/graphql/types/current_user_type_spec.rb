@@ -42,7 +42,11 @@ RSpec.describe GitlabSchema.types['CurrentUser'], feature_category: :user_profil
         types
         updatedAfter
         updatedBefore
-        parentIds]
+        parentIds
+        crmContactId
+        crmOrganizationId
+        releaseTagWildcardId
+        releaseTag]
 
       is_expected.to have_graphql_arguments(expected_fields)
       is_expected.to have_graphql_type(Types::WorkItemType.connection_type)

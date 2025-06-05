@@ -221,6 +221,7 @@ RSpec.describe 'Database schema',
       vulnerability_scanners: %w[external_id],
       security_scans: %w[pipeline_id project_id], # foreign key is not added as ci_pipeline table will be moved into different db soon
       dependency_list_exports: %w[pipeline_id], # foreign key is not added as ci_pipeline table is in different db
+      vulnerability_archived_records: %w[archive_id], # having a FK on this table prevents partitions from being detached. See: https://gitlab.com/gitlab-org/gitlab/-/issues/547116
       vulnerability_reads: %w[cluster_agent_id namespace_id], # namespace_id is a denormalization of `project.namespace`
       # See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87584
       # Fixes performance issues with the deletion of web-hooks with many log entries

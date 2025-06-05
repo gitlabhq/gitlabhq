@@ -1057,7 +1057,7 @@ module Types
     def permanent_deletion_date
       return unless project.adjourned_deletion_configured?
 
-      permanent_deletion_date_formatted(project.marked_for_deletion_on || Date.current)
+      permanent_deletion_date_formatted(project) || permanent_deletion_date_formatted
     end
 
     private

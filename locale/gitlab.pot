@@ -50447,6 +50447,9 @@ msgstr ""
 msgid "RapidDiffs|Show options"
 msgstr ""
 
+msgid "RapidDiffs|Submodule"
+msgstr ""
+
 msgid "RapidDiffs|View controls"
 msgstr ""
 
