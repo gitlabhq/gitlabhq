@@ -1,6 +1,7 @@
 package upstream
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -8,6 +9,8 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"gitlab.com/gitlab-org/labkit/metrics"
+
+	wm "gitlab.com/gitlab-org/gitlab/workhorse/internal/metrics"
 )
 
 const (
@@ -28,7 +31,7 @@ var (
 
 	buildHandler = metrics.NewHandlerFactory(
 		metrics.WithNamespace(namespace),
-		metrics.WithLabels("route", "route_id", "backend_id"))
+		metrics.WithLabels("route", "route_id", "backend_id", wm.KeyFetchedExternalURL))
 )
 
 func instrumentRoute(next http.Handler, _ string, metadata routeMetadata) http.Handler {
@@ -36,7 +39,20 @@ func instrumentRoute(next http.Handler, _ string, metadata routeMetadata) http.H
 		map[string]string{
 			"route":      metadata.regexpStr,
 			"route_id":   metadata.routeID,
-			"backend_id": string(metadata.backendID)}))
+			"backend_id": string(metadata.backendID)}),
+		metrics.WithLabelFromContext(
+			wm.KeyFetchedExternalURL,
+			func(ctx context.Context) string {
+				if tracker, ok := wm.FromContext(ctx); ok {
+					val, ok := tracker.GetFlag(wm.KeyFetchedExternalURL)
+					if ok {
+						return val
+					}
+				}
+				return "false"
+			},
+		),
+	)
 }
 
 func instrumentGeoProxyRoute(next http.Handler, _ string, metadata routeMetadata) http.Handler {

@@ -4,5 +4,5 @@ description: Fills analyzer_project_statuses table with initial data
 feature_category: security_asset_inventories
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187214
 milestone: '18.1'
-queued_migration_version: 20250513225311
+queued_migration_version: 20250603110954
 finalized_by:

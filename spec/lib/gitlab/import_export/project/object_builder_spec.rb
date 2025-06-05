@@ -222,12 +222,13 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
 
   context 'merge request diff commit users' do
     it 'finds the existing user' do
-      user = MergeRequest::DiffCommitUser.find_or_create('Alice', 'alice@example.com')
+      user = MergeRequest::DiffCommitUser.find_or_create('Alice', 'alice@example.com', project.organization_id)
 
       found = described_class.build(
         MergeRequest::DiffCommitUser,
         'name' => 'Alice',
-        'email' => 'alice@example.com'
+        'email' => 'alice@example.com',
+        'project' => project
       )
 
       expect(found).to eq(user)
@@ -237,7 +238,8 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
       found = described_class.build(
         MergeRequest::DiffCommitUser,
         'name' => 'Alice',
-        'email' => 'alice@example.com'
+        'email' => 'alice@example.com',
+        'project' => project
       )
 
       expect(found.name).to eq('Alice')
@@ -249,7 +251,7 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
     context 'when the "committer" object is present' do
       it 'uses this object as the committer' do
         user = MergeRequest::DiffCommitUser
-          .find_or_create('Alice', 'alice@example.com')
+          .find_or_create('Alice', 'alice@example.com', project.organization_id)
 
         commit = described_class.build(
           MergeRequestDiffCommit,
@@ -258,7 +260,8 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
             'committer_name' => 'Bla',
             'committer_email' => 'bla@example.com',
             'author_name' => 'Bla',
-            'author_email' => 'bla@example.com'
+            'author_email' => 'bla@example.com',
+            'project' => project
           }
         )
 
@@ -274,7 +277,8 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
             'committer_name' => 'Alice',
             'committer_email' => 'alice@example.com',
             'author_name' => 'Alice',
-            'author_email' => 'alice@example.com'
+            'author_email' => 'alice@example.com',
+            'project' => project
           }
         )
 
@@ -286,7 +290,7 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
     context 'when the "commit_author" object is present' do
       it 'uses this object as the author' do
         user = MergeRequest::DiffCommitUser
-          .find_or_create('Alice', 'alice@example.com')
+          .find_or_create('Alice', 'alice@example.com', project.organization_id)
 
         commit = described_class.build(
           MergeRequestDiffCommit,
@@ -295,7 +299,8 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
             'committer_email' => 'alice@example.com',
             'commit_author' => user,
             'author_name' => 'Bla',
-            'author_email' => 'bla@example.com'
+            'author_email' => 'bla@example.com',
+            'project' => project
           }
         )
 
@@ -311,7 +316,8 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
             'committer_name' => 'Alice',
             'committer_email' => 'alice@example.com',
             'author_name' => 'Alice',
-            'author_email' => 'alice@example.com'
+            'author_email' => 'alice@example.com',
+            'project' => project
           }
         )
 
@@ -325,10 +331,10 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
     context 'when the user already exists' do
       it 'returns the existing user' do
         user = MergeRequest::DiffCommitUser
-          .find_or_create('Alice', 'alice@example.com')
+          .find_or_create('Alice', 'alice@example.com', project.organization_id)
 
         found = described_class
-          .new(MergeRequestDiffCommit, {})
+          .new(MergeRequestDiffCommit, { 'project' => project })
           .send(:find_or_create_diff_commit_user, user.name, user.email)
 
         expect(found).to eq(user)
@@ -338,7 +344,7 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
     context 'when the user does not exist' do
       it 'creates the user' do
         found = described_class
-          .new(MergeRequestDiffCommit, {})
+          .new(MergeRequestDiffCommit, { 'project' => project })
           .send(:find_or_create_diff_commit_user, 'Alice', 'alice@example.com')
 
         expect(found.name).to eq('Alice')
@@ -347,7 +353,7 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
     end
 
     it 'caches the results' do
-      builder = described_class.new(MergeRequestDiffCommit, {})
+      builder = described_class.new(MergeRequestDiffCommit, { 'project' => project })
 
       builder.send(:find_or_create_diff_commit_user, 'Alice', 'alice@example.com')
 

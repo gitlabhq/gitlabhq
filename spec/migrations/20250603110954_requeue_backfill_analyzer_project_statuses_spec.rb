@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillAnalyzerProjectStatuses, migration: :gitlab_sec, feature_category: :security_asset_inventories do
+RSpec.describe RequeueBackfillAnalyzerProjectStatuses, migration: :gitlab_sec, feature_category: :security_asset_inventories do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

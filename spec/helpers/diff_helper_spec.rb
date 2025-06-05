@@ -498,7 +498,7 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
       end
 
       it "filters with safe_params" do
-        expect(helper.params_with_whitespace).to eq({ 'w' => 1 })
+        expect(helper.params_with_whitespace.to_h).to eq({ 'w' => 1 })
       end
     end
 

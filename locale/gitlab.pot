@@ -35770,6 +35770,9 @@ msgstr[1] ""
 msgid "Label %{labelName} was not found"
 msgstr ""
 
+msgid "Label '%{command_label}' for command id '%{command}' must not start with '%{prefix}'"
+msgstr ""
+
 msgid "Label actions dropdown"
 msgstr ""
 

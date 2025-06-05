@@ -134,10 +134,10 @@ variables.
 
 GitLab Advanced SAST can be configured using the following CI/CD variables.
 
-| **CI/CD variable**             | **Description**                                                                                 |
-|--------------------------------|-------------------------------------------------------------------------------------------------|
-| `GITLAB_ADVANCED_SAST_ENABLED` | Set to `true` to enable GitLab Advanced SAST scanning, or `false` to disable. Default: `false`. |
-| `FF_GLAS_ENABLE_PHP_SUPPORT`   | Set to `true` to analyze PHP files, or false to disable. Default: `true`.                       |
+| CI/CD variable                 | Default | Description                                                                   |
+|--------------------------------|---------|-------------------------------------------------------------------------------|
+| `GITLAB_ADVANCED_SAST_ENABLED` | `false` | Set to `true` to enable GitLab Advanced SAST scanning, or `false` to disable. |
+| `FF_GLAS_ENABLE_PHP_SUPPORT`   | `true`  | Set to `true` to analyze PHP files, or false to disable.                      |
 
 ### Requirements
 

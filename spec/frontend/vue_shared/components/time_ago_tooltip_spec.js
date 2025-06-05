@@ -4,7 +4,7 @@ import { GlTruncate } from '@gitlab/ui';
 import timezoneMock from 'timezone-mock';
 import { getTimeago } from '~/lib/utils/datetime_utility';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import { DATE_ONLY_FORMAT } from '~/lib/utils/datetime/locale_dateformat';
+import { DATE_ONLY_FORMAT, localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 
 describe('Time ago with tooltip component', () => {
   let vm;
@@ -86,6 +86,30 @@ describe('Time ago with tooltip component', () => {
       buildVm({ dateTimeFormat: DATE_ONLY_FORMAT });
 
       expect(vm.text()).toEqual('May 8, 2017');
+    });
+  });
+
+  describe('when gon.features.showDateWhenRelativeTimeOverAYear is true', () => {
+    beforeEach(() => {
+      window.gon = { features: { showDateWhenRelativeTimeOverAYear: true } };
+    });
+
+    const timestampOneYearAgo = new Date().getTime() - 60e3 * 60 * 24 * 366;
+
+    describe('with showDateWhenOverAYear: false', () => {
+      it('should render the relative time', () => {
+        buildVm({ time: timestampOneYearAgo, showDateWhenOverAYear: false });
+
+        expect(vm.text()).toEqual('1 year ago');
+      });
+    });
+
+    describe('with showDateWhenOverAYear: true', () => {
+      it('should render the date', () => {
+        buildVm({ time: timestampOneYearAgo, showDateWhenOverAYear: true });
+
+        expect(vm.text()).toEqual(localeDateFormat[DATE_ONLY_FORMAT].format(timestampOneYearAgo));
+      });
     });
   });
 

@@ -898,7 +898,7 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def save_commits
-    MergeRequestDiffCommit.create_bulk(self.id, compare.commits.reverse, skip_commit_data: Feature.enabled?(:optimized_commit_storage, project))
+    MergeRequestDiffCommit.create_bulk(self.id, compare.commits.reverse, project, skip_commit_data: Feature.enabled?(:optimized_commit_storage, project))
     self.class.uncached { merge_request_diff_commits.reset }
   end
 

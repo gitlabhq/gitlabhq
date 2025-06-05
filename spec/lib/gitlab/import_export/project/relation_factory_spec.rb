@@ -732,4 +732,29 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
       end
     end
   end
+
+  describe 'MergeRequest::DiffCommitUser' do
+    let(:relation_sym) { :'MergeRequest::DiffCommitUser' }
+    let(:relation_hash) do
+      {
+        'name' => 'Test Author',
+        'email' => 'test@example.com'
+      }
+    end
+
+    it 'creates a DiffCommitUser object' do
+      expect(created_object).to be_a(MergeRequest::DiffCommitUser)
+      expect(created_object.name).to eq('Test Author')
+      expect(created_object.email).to eq('test@example.com')
+    end
+
+    it 'passes project to ObjectBuilder' do
+      expect(Gitlab::ImportExport::Project::ObjectBuilder).to receive(:build).with(
+        MergeRequest::DiffCommitUser,
+        hash_including('project' => project)
+      ).and_call_original
+
+      created_object
+    end
+  end
 end

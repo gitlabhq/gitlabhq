@@ -266,6 +266,25 @@ module Gitlab
           @relation_hash['namespace_id'] = @importable.project_namespace_id
         end
 
+        def find_or_create_object!
+          return unique_relation_object if unique_relation?
+
+          # Can't use IDs as validation exists calling `group` or `project` attributes
+          finder_hash = parsed_relation_hash.tap do |hash|
+            if relation_class.attribute_method?('group_id') && @importable.is_a?(::Project)
+              hash['group'] = @importable.group
+            end
+
+            # Add project for DiffCommitUser to determine organization_id
+            hash['project'] = @importable if @relation_name == :'MergeRequest::DiffCommitUser'
+
+            hash[importable_class_name] = @importable if relation_class.reflect_on_association(importable_class_name.to_sym)
+            hash.delete(importable_column_name)
+          end
+
+          @object_builder.build(relation_class, finder_hash)
+        end
+
         def compute_relative_position
           return unless max_relative_position
 

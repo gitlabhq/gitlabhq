@@ -59,16 +59,16 @@ export default {
 </script>
 
 <template>
-  <span>
-    <gl-icon
-      v-gl-tooltip.hover="showTooltipOnHover"
-      :name="iconName"
-      :title="workItemTooltipTitle"
-      :variant="iconVariant"
-      :class="iconClass"
-    />
+  <button
+    v-gl-tooltip="showTooltipOnHover"
+    data-testid="work-item-type-icon"
+    :title="workItemTooltipTitle"
+    :aria-label="workItemTypeText"
+    class="!gl-cursor-default gl-border-none gl-bg-transparent gl-p-0"
+  >
+    <gl-icon :name="iconName" :variant="iconVariant" :class="iconClass" />
     <span v-if="workItemTypeText" :class="{ 'gl-sr-only !gl-absolute': !showText }">{{
       workItemTypeText
     }}</span>
-  </span>
+  </button>
 </template>

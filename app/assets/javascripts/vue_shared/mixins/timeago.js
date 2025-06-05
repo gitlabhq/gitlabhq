@@ -10,8 +10,8 @@ import {
  */
 export default {
   methods: {
-    timeFormatted(time, format) {
-      const timeago = getTimeago(format);
+    timeFormatted(time, format, { showDateWhenOverAYear = true } = {}) {
+      const timeago = getTimeago(format, { showDateWhenOverAYear });
 
       return timeago.format(newDate(time), timeagoLanguageCode);
     },

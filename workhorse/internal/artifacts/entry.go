@@ -11,11 +11,16 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"syscall"
 
 	"gitlab.com/gitlab-org/labkit/log"
 	"gitlab.com/gitlab-org/labkit/mask"
+
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/metrics"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/command"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
@@ -35,6 +40,13 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 	if err := e.Unpack(&params, sendData); err != nil {
 		fail.Request(w, r, fmt.Errorf("SendEntry: unpack sendData: %v", err))
 		return
+	}
+
+	if helper.IsURL(params.Archive) {
+		// Get the tracker from context and set flags
+		if tracker, ok := metrics.FromContext(r.Context()); ok {
+			tracker.SetFlag(metrics.KeyFetchedExternalURL, strconv.FormatBool(true))
+		}
 	}
 
 	log.WithContextFields(r.Context(), log.Fields{

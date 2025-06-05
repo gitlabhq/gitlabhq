@@ -24,23 +24,99 @@ The machine type and underlying processor type might change. Jobs optimized for 
 
 GitLab offers the following machine types for hosted runners on Linux x86-64.
 
-| Runner Tag                                             | vCPUs | Memory | Storage |
-|--------------------------------------------------------|-------|--------|---------|
-| `saas-linux-small-amd64` (default)                     | 2     | 8 GB   | 30 GB   |
-| `saas-linux-medium-amd64`                              | 4     | 16 GB  | 50 GB   |
-| `saas-linux-large-amd64` (Premium and Ultimate only)   | 8     | 32 GB  | 100 GB  |
-| `saas-linux-xlarge-amd64` (Premium and Ultimate only)  | 16    | 64 GB  | 200 GB  |
-| `saas-linux-2xlarge-amd64` (Premium and Ultimate only) | 32    | 128 GB | 200 GB  |
+<table id="x86-runner-specs" aria-label="Machine types available for Linux x86-64">
+  <thead>
+    <tr>
+      <th>Runner Tag</th>
+      <th>vCPUs</th>
+      <th>Memory</th>
+      <th>Storage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code class="runner-tag">saas-linux-small-amd64</code> (default)
+      </td>
+      <td class="vcpus">2</td>
+      <td>8 GB</td>
+      <td>30 GB</td>
+    </tr>
+    <tr>
+      <td>
+        <code class="runner-tag">saas-linux-medium-amd64</code>
+      </td>
+      <td class="vcpus">4</td>
+      <td>16 GB</td>
+      <td>50 GB</td>
+    </tr>
+    <tr>
+      <td>
+        <code class="runner-tag">saas-linux-large-amd64</code> (Premium and Ultimate only)
+      </td>
+      <td class="vcpus">8</td>
+      <td>32 GB</td>
+      <td>100 GB</td>
+    </tr>
+    <tr>
+      <td>
+        <code class="runner-tag">saas-linux-xlarge-amd64</code> (Premium and Ultimate only)
+      </td>
+      <td class="vcpus">16</td>
+      <td>64 GB</td>
+      <td>200 GB</td>
+    </tr>
+    <tr>
+      <td>
+        <code class="runner-tag">saas-linux-2xlarge-amd64</code> (Premium and Ultimate only)
+      </td>
+      <td class="vcpus">32</td>
+      <td>128 GB</td>
+      <td>200 GB</td>
+    </tr>
+  </tbody>
+</table>
 
 ## Machine types available for Linux - Arm64
 
 GitLab offers the following machine type for hosted runners on Linux Arm64.
 
-| Runner Tag                                            | vCPUs | Memory | Storage |
-|-------------------------------------------------------|-------|--------|---------|
-| `saas-linux-small-arm64`                              | 2     | 8 GB   | 30 GB   |
-| `saas-linux-medium-arm64` (Premium and Ultimate only) | 4     | 16 GB  | 50 GB   |
-| `saas-linux-large-arm64` (Premium and Ultimate only)  | 8     | 32 GB  | 100 GB  |
+<table id="arm64-runner-specs" aria-label="Machine types available for Linux Arm64">
+  <thead>
+    <tr>
+      <th>Runner Tag</th>
+      <th>vCPUs</th>
+      <th>Memory</th>
+      <th>Storage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code class="runner-tag">saas-linux-small-arm64</code>
+      </td>
+      <td class="vcpus">2</td>
+      <td>8 GB</td>
+      <td>30 GB</td>
+    </tr>
+    <tr>
+      <td>
+        <code class="runner-tag">saas-linux-medium-arm64</code> (Premium and Ultimate only)
+      </td>
+      <td class="vcpus">4</td>
+      <td>16 GB</td>
+      <td>50 GB</td>
+    </tr>
+    <tr>
+      <td>
+        <code class="runner-tag">saas-linux-large-arm64</code> (Premium and Ultimate only)
+      </td>
+      <td class="vcpus">8</td>
+      <td>32 GB</td>
+      <td>100 GB</td>
+    </tr>
+  </tbody>
+</table>
 
 {{< alert type="note" >}}
 

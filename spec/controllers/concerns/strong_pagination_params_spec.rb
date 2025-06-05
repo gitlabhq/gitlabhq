@@ -14,11 +14,9 @@ RSpec.describe StrongPaginationParams, feature_category: :tooling do
   subject(:controller) { controller_class.new }
 
   it 'returns an empty hash if params are not present' do
-    allow(controller).to receive(:params) do
-      ActionController::Parameters.new({})
-    end
+    allow(controller).to receive(:params) { ActionController::Parameters.new({}) }
 
-    expect(controller.pagination_params).to eq({})
+    expect(controller.pagination_params).to eq(ActionController::Parameters.new({}).permit!)
   end
 
   it 'cleans up any params that are not allowed / relevant' do
