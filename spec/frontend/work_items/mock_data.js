@@ -6823,3 +6823,504 @@ export const workItemParentQueryResponse = {
     },
   },
 };
+
+export const mockCreateWorkItemDraftData = {
+  workspace: {
+    __typename: 'Namespace',
+    id: 'gitlab-org-epic-id',
+    workItem: {
+      __typename: 'WorkItem',
+      id: 'gid://gitlab/WorkItem/new-epic',
+      iid: 'new-work-item-iid',
+      archived: false,
+      title: 'ssss',
+      state: 'OPEN',
+      description: null,
+      confidential: false,
+      createdAt: null,
+      closedAt: null,
+      webUrl: 'http://127.0.0.1:3000/groups/gitlab-org/-/work_items/new',
+      reference: '',
+      createNoteEmail: null,
+      namespace: {
+        __typename: 'Namespace',
+        id: 'gitlab-org-epic-id',
+        fullPath: 'gitlab-org',
+        name: 'gitlab-org-epic-id',
+      },
+      author: {
+        __typename: 'UserCore',
+        id: 'gid://gitlab/User/1',
+        avatarUrl:
+          'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
+        name: 'Administrator',
+        username: 'root',
+        webUrl: 'http://127.0.0.1:3000/root',
+        webPath: '/root',
+      },
+      workItemType: {
+        __typename: 'WorkItemType',
+        id: 'gid://gitlab/WorkItems::Type/8',
+        name: 'Epic',
+        iconName: 'issue-type-epic',
+      },
+      userPermissions: {
+        __typename: 'WorkItemPermissions',
+        adminParentLink: true,
+        adminWorkItemLink: true,
+        createNote: true,
+        deleteWorkItem: true,
+        markNoteAsInternal: true,
+        moveWorkItem: true,
+        reportSpam: true,
+        setWorkItemMetadata: true,
+        summarizeComments: true,
+        updateWorkItem: true,
+      },
+      widgets: [
+        {
+          __typename: 'WorkItemWidgetDescription',
+          type: 'DESCRIPTION',
+          description: 'Some **description**',
+          descriptionHtml: '<p>Some <strong>description</strong></p>',
+          lastEditedAt: null,
+          lastEditedBy: null,
+          taskCompletionStatus: null,
+        },
+        {
+          type: 'ASSIGNEES',
+          allowsMultipleAssignees: false,
+          canInviteMembers: false,
+          assignees: {
+            nodes: [
+              {
+                __typename: 'UserCore',
+                id: 'gid://gitlab/User/1',
+                avatarUrl:
+                  'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
+                name: 'Administrator',
+                username: 'root',
+                webUrl: 'http://127.0.0.1:3000/root',
+                webPath: '/root',
+              },
+            ],
+            __typename: 'UserCoreConnection',
+          },
+          __typename: 'WorkItemWidgetAssignees',
+        },
+        {
+          __typename: 'WorkItemWidgetLabels',
+          type: 'LABELS',
+          allowsScopedLabels: true,
+          labels: {
+            __typename: 'LabelConnection',
+            nodes: [
+              {
+                __typename: 'Label',
+                id: 'gid://gitlab/GroupLabel/12',
+                title: 'Brische',
+                description: null,
+                color: '#472821',
+                textColor: '#FFFFFF',
+              },
+            ],
+          },
+        },
+        {
+          __typename: 'WorkItemWidgetWeight',
+          type: 'WEIGHT',
+          weight: 5,
+          rolledUpWeight: 0,
+          rolledUpCompletedWeight: 0,
+          widgetDefinition: { editable: false, rollUp: true },
+        },
+        {
+          __typename: 'WorkItemWidgetStartAndDueDate',
+          type: 'START_AND_DUE_DATE',
+          dueDate: '2026-12-01',
+          startDate: '2025-01-01',
+          rollUp: false,
+          isFixed: false,
+        },
+        {
+          __typename: 'WorkItemWidgetHealthStatus',
+          type: 'HEALTH_STATUS',
+          healthStatus: 'on_track',
+          rolledUpHealthStatus: [],
+        },
+        {
+          __typename: 'WorkItemWidgetLinkedItems',
+          type: 'LINKED_ITEMS',
+          linkedItems: { nodes: [] },
+        },
+        {
+          __typename: 'WorkItemWidgetColor',
+          type: 'COLOR',
+          color: '#1068bf',
+          textColor: '#FFFFFF',
+        },
+        {
+          __typename: 'WorkItemWidgetHierarchy',
+          type: 'HIERARCHY',
+          hasChildren: false,
+          hasParent: false,
+          rolledUpCountsByType: [],
+          parent: {
+            __typename: 'WorkItem',
+            id: 'gid://gitlab/WorkItem/618',
+            iid: '1',
+            title: 'Sample Epic',
+            confidential: false,
+            namespace: {
+              __typename: 'Namespace',
+              id: 'gid://gitlab/Group/104',
+              fullPath: 'work-items-beta',
+            },
+            webUrl: null,
+            workItemType: {
+              __typename: 'WorkItemType',
+              id: 'gid://gitlab/WorkItems::Type/8',
+              name: 'Epic',
+              iconName: 'issue-type-epic',
+            },
+          },
+        },
+        {
+          __typename: 'WorkItemWidgetTimeTracking',
+          type: 'TIME_TRACKING',
+          timeEstimate: 0,
+          timelogs: { __typename: 'WorkItemTimelogConnection', nodes: [] },
+          totalTimeSpent: 0,
+        },
+        {
+          type: 'CRM_CONTACTS',
+          contacts: {
+            nodes: [
+              {
+                __typename: 'CustomerRelationsContact',
+                id: 'gid://gitlab/CustomerRelations::Contact/281',
+                email: 'foo@gdk.test',
+                firstName: 'Foo',
+                lastName: 'Bar',
+                phone: null,
+                description: null,
+                organization: null,
+              },
+            ],
+            __typename: 'CustomerRelationsContactConnection',
+          },
+          __typename: 'WorkItemWidgetCrmContacts',
+        },
+        {
+          __typename: 'WorkItemWidgetCustomFields',
+          type: WIDGET_TYPE_CUSTOM_FIELDS,
+          customFieldValues: null,
+        },
+      ],
+    },
+  },
+};
+
+export const mockNewWorkItemCache = {
+  fullPath: 'gitlab-org',
+  widgetDefinitions: [
+    {
+      __typename: 'WorkItemWidgetDefinitionGeneric',
+      type: 'AWARD_EMOJI',
+    },
+    {
+      __typename: 'WorkItemWidgetDefinitionGeneric',
+      type: 'COLOR',
+    },
+    {
+      __typename: 'WorkItemWidgetDefinitionGeneric',
+      type: 'CURRENT_USER_TODOS',
+    },
+    {
+      __typename: 'WorkItemWidgetDefinitionGeneric',
+      type: 'DESCRIPTION',
+    },
+    {
+      __typename: 'WorkItemWidgetDefinitionGeneric',
+      type: 'HEALTH_STATUS',
+    },
+    {
+      __typename: 'WorkItemWidgetDefinitionHierarchy',
+      type: 'HIERARCHY',
+      allowedChildTypes: {
+        __typename: 'WorkItemTypeConnection',
+        nodes: [
+          {
+            __typename: 'WorkItemType',
+            id: 'gid://gitlab/WorkItems::Type/8',
+            name: 'Epic',
+          },
+          {
+            __typename: 'WorkItemType',
+            id: 'gid://gitlab/WorkItems::Type/1',
+            name: 'Issue',
+          },
+        ],
+      },
+    },
+    {
+      __typename: 'WorkItemWidgetDefinitionLabels',
+      type: 'LABELS',
+      allowsScopedLabels: true,
+    },
+    {
+      __typename: 'WorkItemWidgetDefinitionGeneric',
+      type: 'LINKED_ITEMS',
+    },
+    {
+      __typename: 'WorkItemWidgetDefinitionGeneric',
+      type: 'NOTES',
+    },
+    {
+      __typename: 'WorkItemWidgetDefinitionGeneric',
+      type: 'NOTIFICATIONS',
+    },
+    {
+      __typename: 'WorkItemWidgetDefinitionGeneric',
+      type: 'PARTICIPANTS',
+    },
+    {
+      __typename: 'WorkItemWidgetDefinitionGeneric',
+      type: 'START_AND_DUE_DATE',
+    },
+    {
+      __typename: 'WorkItemWidgetDefinitionGeneric',
+      type: 'STATUS',
+    },
+    {
+      __typename: 'WorkItemWidgetDefinitionGeneric',
+      type: 'TIME_TRACKING',
+    },
+    {
+      __typename: 'WorkItemWidgetDefinitionWeight',
+      type: 'WEIGHT',
+      editable: false,
+      rollUp: true,
+    },
+    {
+      __typename: 'WorkItemWidgetDefinitionCustomFields',
+      type: WIDGET_TYPE_CUSTOM_FIELDS,
+    },
+  ],
+  workItemType: 'EPIC',
+  workItemTypeId: 'gid://gitlab/WorkItems::Type/8 ',
+  workItemTypeIconName: 'issue-type-epic',
+};
+
+export const restoredDraftDataWidgets = [
+  {
+    type: 'DESCRIPTION',
+    description: 'Some **description**',
+    descriptionHtml: '',
+    lastEditedAt: null,
+    lastEditedBy: null,
+    taskCompletionStatus: null,
+    __typename: 'WorkItemWidgetDescription',
+  },
+  {
+    type: 'STATUS',
+    __typename: 'WorkItemWidgetStatus',
+  },
+  {
+    type: 'LABELS',
+    allowsScopedLabels: true,
+    labels: {
+      nodes: [
+        {
+          __typename: 'Label',
+          id: 'gid://gitlab/GroupLabel/12',
+          title: 'Brische',
+          description: null,
+          color: '#472821',
+          textColor: '#FFFFFF',
+        },
+      ],
+      __typename: 'LabelConnection',
+    },
+    __typename: 'WorkItemWidgetLabels',
+  },
+  {
+    type: 'WEIGHT',
+    weight: 5,
+    rolledUpWeight: 0,
+    rolledUpCompletedWeight: 0,
+    widgetDefinition: {
+      editable: false,
+      rollUp: true,
+    },
+    __typename: 'WorkItemWidgetWeight',
+  },
+  {
+    type: 'START_AND_DUE_DATE',
+    dueDate: '2026-12-01',
+    startDate: '2025-01-01',
+    isFixed: false,
+    rollUp: false,
+    __typename: 'WorkItemWidgetStartAndDueDate',
+  },
+  {
+    type: 'HEALTH_STATUS',
+    healthStatus: 'on_track',
+    rolledUpHealthStatus: [],
+    __typename: 'WorkItemWidgetHealthStatus',
+  },
+  {
+    type: 'LINKED_ITEMS',
+    blockingCount: 0,
+    blockedByCount: 0,
+    linkedItems: {
+      nodes: [],
+    },
+    __typename: 'WorkItemWidgetLinkedItems',
+  },
+  {
+    type: 'COLOR',
+    color: '#1068bf',
+    textColor: '#FFFFFF',
+    __typename: 'WorkItemWidgetColor',
+  },
+  {
+    type: 'CUSTOM_FIELDS',
+    customFieldValues: [],
+    __typename: 'WorkItemWidgetCustomFields',
+  },
+  {
+    type: 'HIERARCHY',
+    hasChildren: false,
+    hasParent: false,
+    parent: {
+      __typename: 'WorkItem',
+      id: 'gid://gitlab/WorkItem/618',
+      iid: '1',
+      title: 'Sample Epic',
+      confidential: false,
+      namespace: {
+        __typename: 'Namespace',
+        id: 'gid://gitlab/Group/104',
+        fullPath: 'work-items-beta',
+      },
+      webUrl: null,
+      workItemType: {
+        __typename: 'WorkItemType',
+        id: 'gid://gitlab/WorkItems::Type/8',
+        name: 'Epic',
+        iconName: 'issue-type-epic',
+      },
+    },
+    depthLimitReachedByType: [],
+    rolledUpCountsByType: [],
+    children: {
+      nodes: [],
+      __typename: 'WorkItemConnection',
+    },
+    __typename: 'WorkItemWidgetHierarchy',
+  },
+  {
+    type: 'TIME_TRACKING',
+    timeEstimate: 0,
+    timelogs: {
+      nodes: [],
+      __typename: 'WorkItemTimelogConnection',
+    },
+    totalTimeSpent: 0,
+    __typename: 'WorkItemWidgetTimeTracking',
+  },
+];
+
+export const restoredDraftDataWidgetsEmpty = [
+  {
+    type: 'DESCRIPTION',
+    description: null,
+    descriptionHtml: '',
+    lastEditedAt: null,
+    lastEditedBy: null,
+    taskCompletionStatus: null,
+    __typename: 'WorkItemWidgetDescription',
+  },
+  {
+    type: 'STATUS',
+    __typename: 'WorkItemWidgetStatus',
+  },
+  {
+    type: 'LABELS',
+    allowsScopedLabels: true,
+    labels: {
+      nodes: [],
+      __typename: 'LabelConnection',
+    },
+    __typename: 'WorkItemWidgetLabels',
+  },
+  {
+    type: 'WEIGHT',
+    weight: null,
+    rolledUpWeight: 0,
+    rolledUpCompletedWeight: 0,
+    widgetDefinition: {
+      editable: false,
+      rollUp: true,
+    },
+    __typename: 'WorkItemWidgetWeight',
+  },
+  {
+    type: 'START_AND_DUE_DATE',
+    dueDate: null,
+    startDate: null,
+    isFixed: false,
+    rollUp: false,
+    __typename: 'WorkItemWidgetStartAndDueDate',
+  },
+  {
+    type: 'HEALTH_STATUS',
+    healthStatus: null,
+    rolledUpHealthStatus: [],
+    __typename: 'WorkItemWidgetHealthStatus',
+  },
+  {
+    type: 'LINKED_ITEMS',
+    blockingCount: 0,
+    blockedByCount: 0,
+    linkedItems: {
+      nodes: [],
+    },
+    __typename: 'WorkItemWidgetLinkedItems',
+  },
+  {
+    type: 'COLOR',
+    color: '#1068bf',
+    textColor: '#FFFFFF',
+    __typename: 'WorkItemWidgetColor',
+  },
+  {
+    type: 'CUSTOM_FIELDS',
+    customFieldValues: [],
+    __typename: 'WorkItemWidgetCustomFields',
+  },
+  {
+    type: 'HIERARCHY',
+    hasChildren: false,
+    hasParent: false,
+    parent: null,
+    depthLimitReachedByType: [],
+    rolledUpCountsByType: [],
+    children: {
+      nodes: [],
+      __typename: 'WorkItemConnection',
+    },
+    __typename: 'WorkItemWidgetHierarchy',
+  },
+  {
+    type: 'TIME_TRACKING',
+    timeEstimate: 0,
+    timelogs: {
+      nodes: [],
+      __typename: 'WorkItemTimelogConnection',
+    },
+    totalTimeSpent: 0,
+    __typename: 'WorkItemWidgetTimeTracking',
+  },
+];

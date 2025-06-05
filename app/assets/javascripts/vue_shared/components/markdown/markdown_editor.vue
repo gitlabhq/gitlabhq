@@ -194,7 +194,9 @@ export default {
   mounted() {
     this.autofocusTextarea();
 
-    this.$emit('input', this.markdown);
+    // Second argument (`true`) is passed to identify
+    // that the input event was emitted on component mount.
+    this.$emit('input', this.markdown, true);
     this.saveDraft();
 
     this.setFacade?.({

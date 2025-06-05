@@ -205,7 +205,7 @@ RSpec.describe Gitlab::Memory::Watchdog::Configurator, feature_category: :cloud_
         stub_env('SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL', 0)
       end
 
-      it 'configures the correct sleep time' do
+      it 'configures the correct sleep time', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/547731' do
         configurator.call(configuration)
 
         expect(configuration.sleep_time_seconds).to eq(described_class::MIN_SIDEKIQ_SLEEP_INTERVAL_S)

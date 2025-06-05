@@ -401,6 +401,11 @@ export const makeDrawerUrlParam = (activeItem, fullPath, issuableType = TYPE_ISS
 
 export const getNewWorkItemAutoSaveKey = (fullPath, workItemType) => {
   if (!workItemType || !fullPath) return '';
+
+  const queryParamString = new URLSearchParams(window.location.search).toString();
+  if (queryParamString) {
+    return `new-${fullPath}-${workItemType.toLowerCase()}-${queryParamString}-draft`;
+  }
   return `new-${fullPath}-${workItemType.toLowerCase()}-draft`;
 };
 

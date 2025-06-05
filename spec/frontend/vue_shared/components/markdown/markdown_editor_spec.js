@@ -403,7 +403,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
       textArea.element.value = newValue;
       await findTextarea().trigger('input');
 
-      expect(wrapper.emitted('input')).toEqual([[value], [newValue]]);
+      expect(wrapper.emitted('input')).toEqual([[value, true], [newValue]]);
     });
 
     it('autosaves the markdown value to local storage', async () => {
@@ -502,7 +502,7 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
 
       await findContentEditor().vm.$emit('change', { markdown: newValue });
 
-      expect(wrapper.emitted('input')).toEqual([[value], [newValue]]);
+      expect(wrapper.emitted('input')).toEqual([[value, true], [newValue]]);
     });
 
     it('autosaves the content editor value to local storage', async () => {

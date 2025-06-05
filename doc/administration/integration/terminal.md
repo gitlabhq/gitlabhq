@@ -122,7 +122,7 @@ Linux package installations. In this case, you need to:
   `Connection` and `Upgrade` lines.
 
 For your own load balancer, just reverse the configuration changes recommended
-by the above guides.
+by the previously listed guides.
 
 When these headers are not passed through, Workhorse returns a
 `400 Bad Request` response to users attempting to use a web terminal. In turn,

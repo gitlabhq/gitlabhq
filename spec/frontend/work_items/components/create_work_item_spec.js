@@ -217,13 +217,13 @@ describe('Create work item component', () => {
         findCancelButton().vm.$emit('click');
         await nextTick();
 
-        expect(setNewWorkItemCache).toHaveBeenCalledWith(
-          'full-path',
-          expectedWorkItemTypeData.widgetDefinitions,
-          expectedWorkItemTypeData.name,
-          expectedWorkItemTypeData.id,
-          expectedWorkItemTypeData.iconName,
-        );
+        expect(setNewWorkItemCache).toHaveBeenCalledWith({
+          fullPath: 'full-path',
+          widgetDefinitions: expectedWorkItemTypeData.widgetDefinitions,
+          workItemType: expectedWorkItemTypeData.name,
+          workItemTypeId: expectedWorkItemTypeData.id,
+          workItemTypeIconName: expectedWorkItemTypeData.iconName,
+        });
       },
     );
   });
@@ -791,18 +791,18 @@ describe('Create work item component', () => {
       createComponent();
       await waitForPromises();
 
-      expect(setNewWorkItemCache).toHaveBeenCalledWith(
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-        'i am a title',
-        `i
+      expect(setNewWorkItemCache).toHaveBeenCalledWith({
+        fullPath: expect.anything(),
+        widgetDefinitions: expect.anything(),
+        workItemType: expect.anything(),
+        workItemTypeId: expect.anything(),
+        workItemTypeIconName: expect.anything(),
+        workItemTitle: 'i am a title',
+        workItemDescription: `i
             am
             a
             description!`,
-      );
+      });
     });
   });
 

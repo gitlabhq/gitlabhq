@@ -357,6 +357,15 @@ describe('WorkItemDescription', () => {
       expect(wrapper.emitted('updateDraft')).toEqual([[updatedDesc]]);
     });
 
+    it('does not emit the `updateDraft` event when the description is updated from mounted hook of markdown-editor', () => {
+      createComponent({ editMode: true, isCreateFlow: true });
+      const updatedDesc = 'updated desc with inline editing disabled';
+
+      findMarkdownEditor().vm.$emit('input', updatedDesc, true);
+
+      expect(wrapper.emitted('updateDraft')).toBeUndefined();
+    });
+
     it('emits the `updateWorkItem` event when submitting the description', async () => {
       await createComponent({ isEditing: true });
       editDescription('updated description');

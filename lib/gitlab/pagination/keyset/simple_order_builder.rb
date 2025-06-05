@@ -20,6 +20,7 @@ module Gitlab
           # We need to run 'compact' because 'nil' is not removed from order_values
           # in some cases due to the use of 'default_scope'.
           @order_values = scope.order_values.compact
+          @order_value_names = extract_order_value_names
           @model_class = scope.model
           @arel_table = @model_class.arel_table
           # Support cases where a single logical primary key has been specified, but also cases where there is a true
@@ -29,6 +30,8 @@ module Gitlab
                           else
                             Array.wrap(@model_class.primary_key)
                           end
+
+          @primary_keys.map!(&:to_s)
         end
 
         def build_order
@@ -66,15 +69,14 @@ module Gitlab
 
         private
 
-        attr_reader :scope, :order_values, :model_class, :arel_table, :primary_keys
+        attr_reader :scope, :order_values, :model_class, :arel_table, :primary_keys, :order_value_names
 
         def table_column?(name)
           model_class.column_names.include?(name.to_s)
         end
 
         def primary_keys?(attributes)
-          attrs_as_strings = attributes.map(&:to_s)
-          primary_keys.all? { |pk| attrs_as_strings.include?(arel_table[pk].to_s) }
+          primary_keys.all? { |pk| attributes.include?(pk) }
         end
 
         def lower_named_function?(attribute)
@@ -204,7 +206,6 @@ module Gitlab
         def ordered_by_primary_key?
           return unless order_values.count == primary_keys.count
 
-          order_value_names = order_values.map { |ov| ov.try(:expr) }
           primary_keys?(order_value_names)
         end
 
@@ -227,9 +228,9 @@ module Gitlab
         end
 
         def has_tie_breaker?
-          tie_breaker_attributes = order_values.map { |ov| ov.try(:expr) }.last(primary_keys.count)
+          tie_breaker_attribute_names = order_value_names.last(primary_keys.count)
 
-          primary_keys?(tie_breaker_attributes)
+          primary_keys?(tie_breaker_attribute_names)
         end
 
         def supported_columns?(order_values)
@@ -242,6 +243,18 @@ module Gitlab
               attribute_name: pk,
               order_expression: arel_table[pk].desc
             )
+          end
+        end
+
+        def extract_order_value_names
+          order_values.map do |order_value|
+            expression = order_value.try(:expr)
+            next unless expression
+
+            expression.try(:name) ||
+              expression.try(:expr).try(:name) ||
+              expression.try(:case).try(:name) ||
+              expression.to_s
           end
         end
       end

@@ -40,6 +40,7 @@ import {
   preserveDetailsState,
   getParentGroupName,
   createBranchMRApiPathHelper,
+  getNewWorkItemAutoSaveKey,
 } from '~/work_items/utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { TYPE_EPIC } from '~/issues/constants';
@@ -400,6 +401,31 @@ describe('`makeDrawerUrlParam`', () => {
     expect(result).toEqual(
       btoa(JSON.stringify({ iid: '123', full_path: 'gitlab-org/gitlab', id: 1 })),
     );
+  });
+});
+
+describe('getNewWorkItemAutoSaveKey', () => {
+  let originalWindowLocation;
+
+  beforeEach(() => {
+    originalWindowLocation = window.location;
+    delete window.location;
+    window.location = new URL('https://gitlab.example.com');
+  });
+
+  afterEach(() => {
+    window.location = originalWindowLocation;
+  });
+
+  it('returns the correct key for a new work item', () => {
+    const autosaveKey = getNewWorkItemAutoSaveKey('gitlab-org/gitlab', 'issue');
+    expect(autosaveKey).toEqual('new-gitlab-org/gitlab-issue-draft');
+  });
+
+  it('returns the correct key for a new work item when URL params present', () => {
+    window.location.search = '?foo=bar';
+    const autosaveKey = getNewWorkItemAutoSaveKey('gitlab-org/gitlab', 'issue');
+    expect(autosaveKey).toEqual('new-gitlab-org/gitlab-issue-foo=bar-draft');
   });
 });
 

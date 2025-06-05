@@ -273,15 +273,15 @@ export default {
           ?.textContent.trim();
 
         for await (const workItemType of this.workItemTypes) {
-          await setNewWorkItemCache(
-            this.selectedProjectFullPath,
-            workItemType?.widgetDefinitions,
-            workItemType.name,
-            workItemType.id,
-            workItemType.iconName,
+          await setNewWorkItemCache({
+            fullPath: this.selectedProjectFullPath,
+            widgetDefinitions: workItemType?.widgetDefinitions,
+            workItemType: workItemType.name,
+            workItemTypeId: workItemType.id,
+            workItemTypeIconName: workItemType.iconName,
             workItemTitle,
             workItemDescription,
-          );
+          });
         }
 
         const selectedWorkItemType = this.workItemTypes?.find(
@@ -856,13 +856,13 @@ export default {
 
       const selectedWorkItemWidgets = this.selectedWorkItemType?.widgetDefinitions || [];
 
-      setNewWorkItemCache(
-        this.selectedProjectFullPath,
-        selectedWorkItemWidgets,
-        this.selectedWorkItemTypeName,
-        this.selectedWorkItemTypeId,
-        this.selectedWorkItemTypeIconName,
-      );
+      setNewWorkItemCache({
+        fullPath: this.selectedProjectFullPath,
+        workItemWidgetDefinitions: selectedWorkItemWidgets,
+        workItemType: this.selectedWorkItemTypeName,
+        workItemTypeId: this.selectedWorkItemTypeId,
+        workItemTypeIconName: this.selectedWorkItemTypeIconName,
+      });
     },
     onParentMilestone(parentMilestone) {
       this.selectedParentMilestone = parentMilestone;

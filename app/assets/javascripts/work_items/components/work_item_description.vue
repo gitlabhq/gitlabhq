@@ -412,9 +412,15 @@ export default {
       this.conflictedDescription = '';
       this.initialDescriptionText = this.descriptionText;
     },
-    setDescriptionText(newText) {
+    setDescriptionText(newText, onMountInit = false) {
       this.descriptionText = newText;
-      this.$emit('updateDraft', this.descriptionText);
+      // Ensure that we don't update the draft on mount during create mode as
+      // it will otherwise overwrite localStorage and previously saved data
+      // will be lost. See vue_shared/components/markdown/markdown_editor.vue
+      // mounted hook where onMountInit boolean is passed with $emit('input').
+      if (!onMountInit || !this.isCreateFlow) {
+        this.$emit('updateDraft', this.descriptionText);
+      }
       updateDraft(this.autosaveKey, this.descriptionText);
     },
     handleDescriptionTextUpdated(newText) {

@@ -39,7 +39,7 @@ and the jobs begin running again.
 
 {{< alert type="warning" >}}
 
-The steps in this section can potentially lead to data loss on the above listed items.
+The steps in this section can potentially lead to data loss on the previously listed items.
 Consider opening a [Support Request](https://support.gitlab.com/hc/en-us/requests/new) if you're a Premium or Ultimate customer.
 
 {{< /alert >}}

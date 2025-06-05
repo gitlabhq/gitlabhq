@@ -166,7 +166,7 @@ Prerequisites:
 
 #### Installation
 
-PlantUML recommends to install Tomcat 10.1 or above. The scope of this page only
+PlantUML recommends to install Tomcat 10.1 or later. The scope of this page only
 includes setting up a basic Tomcat server. For more production-ready configurations,
 see the [Tomcat Documentation](https://tomcat.apache.org/tomcat-10.1-doc/index.html).
 

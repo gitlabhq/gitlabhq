@@ -118,7 +118,7 @@ your AsciiDoc or Markdown documentation using delimited blocks:
   Alice -> Bob : hi
   ```
 
-The above blocks are converted to an HTML image tag with source pointing to the
+The delimited blocks are converted to an HTML image tag with source pointing to the
 Kroki instance. If the Kroki server is correctly configured, this should
 render a nice diagram instead of the block:
 

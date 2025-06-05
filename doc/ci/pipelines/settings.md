@@ -208,7 +208,7 @@ You can choose how your repository is fetched from GitLab when a job runs.
      for every job. However, the local working copy is always pristine.
    - `git fetch` is faster because it re-uses the local working copy (and falls
      back to clone if it doesn't exist). This is recommended, especially for
-     [large repositories](../../user/project/repository/monorepos/_index.md#git-strategy).
+     [large repositories](../../user/project/repository/monorepos/_index.md#use-git-fetch-in-cicd-operations).
 
 The configured Git strategy can be overridden by the [`GIT_STRATEGY` variable](../runners/configure_runners.md#git-strategy)
 in the `.gitlab-ci.yml` file.
@@ -227,7 +227,7 @@ a repository.
 
 Newly created projects have a default `git depth` value of `20`.
 
-This value can be overridden by the [`GIT_DEPTH` variable](../../user/project/repository/monorepos/_index.md#shallow-cloning)
+This value can be overridden by the [`GIT_DEPTH` variable](../../user/project/repository/monorepos/_index.md#use-shallow-clones-in-cicd-processes)
 in the `.gitlab-ci.yml` file.
 
 ## Set a limit for how long jobs can run

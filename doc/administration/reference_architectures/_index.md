@@ -375,8 +375,8 @@ If this applies to you, we strongly recommend you follow the linked documentatio
 Large monorepos come with notable cost. If you have such a repository,
 follow these guidance to ensure good performance and to keep costs in check:
 
-- [Optimize the large monorepo](../../user/project/repository/monorepos/_index.md#optimize-gitlab-settings). Using features such as
-  [LFS](../../user/project/repository/monorepos/_index.md#use-lfs-for-large-blobs) to not store binaries, and other approaches for reducing repository size, can
+- [Optimize the large monorepo](../../user/project/repository/monorepos/_index.md). Using features such as
+  [LFS](../../user/project/repository/monorepos/_index.md#use-git-lfs-for-large-binary-files) to not store binaries, and other approaches for reducing repository size, can
   dramatically improve performance and reduce costs.
 - Depending on the monorepo, increased environment specifications may be required to compensate. Gitaly might require additional resources along with Praefect, GitLab Rails, and Load Balancers. This depends on the monorepo itself and its usage.
 - When the monorepo is significantly large (20 gigabytes or more), further additional strategies may be required such as even further increased specifications or in some cases, a separate Gitaly backend for the monorepo alone.
