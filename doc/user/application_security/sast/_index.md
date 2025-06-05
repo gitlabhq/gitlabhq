@@ -74,9 +74,11 @@ The following table lists the GitLab tiers in which each feature is available.
 | [Ruleset customization](customize_rulesets.md)                                           | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | [Advanced Vulnerability Tracking](#advanced-vulnerability-tracking)                      | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 
-## Requirements
+## Getting started
 
-Before you run a SAST analyzer in your instance, make sure you have the following:
+If you are new to SAST, the following steps show how to enable SAST for your project.
+
+Prerequisites:
 
 - Linux-based GitLab Runner with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
   [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor. If you're using
@@ -84,6 +86,126 @@ Before you run a SAST analyzer in your instance, make sure you have the followin
   - Windows Runners are not supported.
   - CPU architectures other than amd64 are not supported.
 - GitLab CI/CD configuration (`.gitlab-ci.yml`) must include the `test` stage, which is included by default. If you redefine the stages in the `.gitlab-ci.yml` file, the `test` stage is required.
+
+To enable SAST:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. If your project does not already have one, create a `.gitlab-ci.yml` file in the root directory.
+1. At the top of the `.gitlab-ci.yml` file, add one of the following lines:
+
+Using a template:
+
+   ```yaml
+   include:
+     - template: Jobs/SAST.gitlab-ci.yml
+   ```
+
+Or using a CI component:
+
+   ```yaml
+   include:
+     - component: gitlab.com/components/sast/sast@main
+   ```
+
+At this point, SAST is enabled in your pipeline.
+If supported source code is present, the appropriate analyzers and default rules automatically scan for vulnerabilities when a pipeline runs.
+The corresponding jobs will appear under the `test` stage in your pipeline.
+
+{{< alert type="note" >}}
+
+You can see a working example in
+[SAST example project](https://gitlab.com/gitlab-org/security-products/demos/analyzer-configurations/semgrep/sast-getting-started).
+
+{{< /alert >}}
+
+After completing these steps, you can:
+
+- Learn more about how to [understand the results](#understanding-the-results).
+- Review [optimization tips](#optimization).
+- Plan a [rollout to more projects](#roll-out).
+
+## Understanding the results
+
+You can review vulnerabilities in a pipeline:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Build > Pipelines**.
+1. Select the pipeline.
+1. Select the **Security** tab.
+1. Select a vulnerability to view its details, including:
+   - Description: Explains the cause of the vulnerability, its potential impact, and recommended remediation steps.
+   - Status: Indicates whether the vulnerability has been triaged or resolved.
+   - Severity: Categorized into six levels based on impact.
+     [Learn more about severity levels](../vulnerabilities/severities.md).
+   - Location: Shows the filename and line number where the issue was found.
+     Selecting the file path opens the corresponding line in the code view.
+   - Scanner: Identifies which analyzer detected the vulnerability.
+   - Identifiers: A list of references used to classify the vulnerability, such as CWE identifiers and the IDs of the rules that detected it.
+
+You can also download the security scan results:
+
+- In the pipeline's **Security** tab, select **Download results**.
+
+For more details, see [Pipeline security report](../vulnerability_report/pipeline.md).
+
+{{< alert type="note" >}}
+
+Findings are generated on feature branches. When they are merged into the default branch, they become vulnerabilities. This distinction is important when evaluating your security posture.
+
+{{< /alert >}}
+
+Additional ways to see SAST results:
+
+- [Merge request widget](#merge-request-widget): Shows newly introduced or resolved findings.
+- [Merge request changes view](#merge-request-changes-view): Shows inline annotations for changed lines.
+- [Vulnerability report](../vulnerability_report/_index.md): Shows confirmed vulnerabilities on the default branch.
+
+## Optimization
+
+To optimize SAST according to your requirements you can:
+
+- Disable a rule.
+- Exclude files or paths from being scanned.
+
+### Disable a rule
+
+To disable a rule, for example because it generates too many false positives:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Create a `.gitlab/sast-ruleset.toml` file at the root of your project if one does not already exist.
+1. In the vulnerability's details, locate the ID of the rule that triggered the finding.
+1. Use the rule ID to disable the rule. For example, to disable `gosec.G107-1`, add the following in `.gitlab/sast-ruleset.toml`:
+
+   ```yaml
+   [semgrep]
+     [[semgrep.ruleset]]
+       disable = true
+       [semgrep.ruleset.identifier]
+         type = "semgrep_id"
+         value = "gosec.G107-1"
+   ```
+
+For more details on customizing rulesets, see [Customize rulesets](customize_rulesets.md).
+
+### Exclude files or paths from being scanned
+
+To exclude files or paths from being scanned, for example test or temporary code, set the `SAST_EXCLUDED_PATHS` variable.
+For example, to skip `rule-template-injection.go`, add the following to your `.gitlab-ci.yml`:
+
+```yaml
+variables:
+  SAST_EXCLUDED_PATHS: "rule-template-injection.go"
+```
+
+For more information about configuration options, see [Available CI/CD variables](#available-cicd-variables).
+
+## Roll out
+
+After you are confident in the SAST results for a single project, you can extend its implementation to additional projects:
+
+- Use [enforced scan execution](../detect/security_configuration.md#create-a-shared-configuration) to apply SAST settings across groups.
+- Share and reuse a central ruleset by [specifying a remote configuration file](customize_rulesets.md#specify-a-remote-configuration-file).
+- If you have unique requirements, SAST can be run in [offline environments](#running-sast-in-an-offline-environment) or under [SELinux](#running-sast-in-selinux) constraints.
 
 ## Supported languages and frameworks
 
@@ -982,7 +1104,7 @@ run successfully. For more information, see [Offline environments](../offline_de
 
 To use SAST in an offline environment, you need:
 
-- GitLab Runner with the [`docker` or `kubernetes` executor](#requirements).
+- GitLab Runner with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor. See [prerequisites](#getting-started) for details.
 - A Docker container registry with locally available copies of SAST [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers) images.
 - Configure certificate checking of packages (optional).
 

@@ -15595,6 +15595,9 @@ msgstr ""
 msgid "ComplianceFrameworks|Create new requirement"
 msgstr ""
 
+msgid "ComplianceFrameworks|Create policies and attach them to this framework."
+msgstr ""
+
 msgid "ComplianceFrameworks|Create requirement"
 msgstr ""
 
@@ -15764,9 +15767,6 @@ msgid "ComplianceFrameworks|Saved changes to compliance framework"
 msgstr ""
 
 msgid "ComplianceFrameworks|Secret token is required"
-msgstr ""
-
-msgid "ComplianceFrameworks|Select policies to enforce on all projects scoped to this framework."
 msgstr ""
 
 msgid "ComplianceFrameworks|Selected projects"

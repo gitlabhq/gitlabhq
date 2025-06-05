@@ -28,14 +28,56 @@ RSpec.describe 'gitlab:x509 namespace rake task', :silence_stdout, feature_categ
 
       before do
         allow(OpenSSL::X509::Store).to receive(:new).and_return(store)
+
+        allow(Gitlab::X509::Commit).to receive(:new).and_return(x509_commit)
       end
 
       it 'changes from unverified to verified if the certificate store contains the root certificate' do
-        allow(Gitlab::X509::Commit).to receive(:new).and_return(x509_commit)
         expect(x509_commit).to receive(:update_signature!).and_call_original
 
-        expect { subject }.to change { x509_commit_signature.reload.verification_status }
-          .from('unverified').to('verified')
+        expect { subject }.to change {
+          x509_commit_signature.reload.verification_status
+        }.from('unverified').to('verified')
+      end
+
+      context 'when error occurrs' do
+        let(:grpc_deadline_error) { GRPC::DeadlineExceeded.new('deadline exceeded') }
+
+        it 'retries updating signature on GRPC::DeadlineExceeded error' do
+          # Simulate GRPC::DeadlineExceeded on first `update_signature!` call, then succeed
+          # Note: Using the mock helper `expect_any_instance_of` leads to a mock error,
+          # see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192543#note_2526028297.
+          expect(x509_commit).to receive(:update_signature!).and_raise(grpc_deadline_error)
+          expect(x509_commit).to receive(:update_signature!).and_call_original
+
+          expect { subject }.to change {
+            x509_commit_signature.reload.verification_status
+          }.from('unverified').to('verified')
+        end
+
+        it 'raises GRPC::DeadlineExceeded error if the retry limit is reached (by default 5 times)' do
+          expect(x509_commit).to(receive(:update_signature!).exactly(5).times.and_raise(grpc_deadline_error))
+
+          expect { subject }.to raise_error(GRPC::DeadlineExceeded)
+        end
+
+        context 'when GRPC_DEADLINE_EXCEEDED_RETRY_LIMIT is set' do
+          before do
+            stub_env('GRPC_DEADLINE_EXCEEDED_RETRY_LIMIT' => '2')
+          end
+
+          it 'raises GRPC::DeadlineExceeded error if the set retry limit is reached' do
+            expect(x509_commit).to(receive(:update_signature!).twice.and_raise(grpc_deadline_error))
+
+            expect { subject }.to raise_error(GRPC::DeadlineExceeded)
+          end
+        end
+
+        it 'raises errors by default' do
+          expect(x509_commit).to(receive(:update_signature!).and_raise(StandardError, 'Some error'))
+
+          expect { subject }.to raise_error(StandardError)
+        end
       end
 
       it 'logs debug message for each updated signature' do

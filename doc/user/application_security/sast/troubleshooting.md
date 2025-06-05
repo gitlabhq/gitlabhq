@@ -57,7 +57,7 @@ of the error messages and recommended actions.
 exec /bin/sh: exec format error` message in job log
 ```
 
-GitLab SAST analyzers [only support](_index.md#requirements) running on the `amd64` CPU architecture.
+GitLab SAST analyzers [only support](_index.md#getting-started) running on the `amd64` CPU architecture.
 This message indicates that the job is being run on a different architecture, such as `arm`.
 
 ### Docker error

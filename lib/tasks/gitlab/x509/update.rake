@@ -26,9 +26,27 @@ namespace :gitlab do
         end
 
         sig.x509_commit&.update_signature!(sig)
+      rescue GRPC::DeadlineExceeded => e
+        logger.error do
+          "GRPC deadline exceeded while updating signature #{sig.id} for commit #{sig.commit_sha}: #{e.message}"
+        end
+
+        error_counter ||= 0
+        error_counter += 1
+        raise e unless error_counter < grpc_deadline_exceeded_retry_limit
+
+        logger.debug("Retrying to update signature #{sig.id} for commit #{sig.commit_sha}")
+        sleep(error_counter)
+        retry
+      else
+        error_counter = 0
       end
 
       logger.info("End update x509 commit signatures")
+    end
+
+    def grpc_deadline_exceeded_retry_limit
+      (ENV['GRPC_DEADLINE_EXCEEDED_RETRY_LIMIT'] || 5).to_i
     end
   end
 end

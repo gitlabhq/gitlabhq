@@ -20453,6 +20453,29 @@ The edge type for [`WorkItemRelatedBranch`](#workitemrelatedbranch).
 | <a id="workitemrelatedbranchedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="workitemrelatedbranchedgenode"></a>`node` | [`WorkItemRelatedBranch`](#workitemrelatedbranch) | The item at the end of the edge. |
 
+#### `WorkItemStatusConnection`
+
+The connection type for [`WorkItemStatus`](#workitemstatus).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemstatusconnectionedges"></a>`edges` | [`[WorkItemStatusEdge]`](#workitemstatusedge) | A list of edges. |
+| <a id="workitemstatusconnectionnodes"></a>`nodes` | [`[WorkItemStatus]`](#workitemstatus) | A list of nodes. |
+| <a id="workitemstatusconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `WorkItemStatusEdge`
+
+The edge type for [`WorkItemStatus`](#workitemstatus).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemstatusedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="workitemstatusedgenode"></a>`node` | [`WorkItemStatus`](#workitemstatus) | The item at the end of the edge. |
+
 #### `WorkItemTimelogConnection`
 
 The connection type for [`WorkItemTimelog`](#workitemtimelog).
@@ -28032,6 +28055,7 @@ GPG signature for a signed commit.
 | <a id="groupsharedrunnerssetting"></a>`sharedRunnersSetting` | [`SharedRunnersSetting`](#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
 | <a id="groupsidebar"></a>`sidebar` {{< icon name="warning-solid" >}} | [`NamespaceSidebar`](#namespacesidebar) | **Introduced** in GitLab 17.6. **Status**: Experiment. Data needed to render the sidebar for the namespace. |
 | <a id="groupstats"></a>`stats` | [`GroupStats`](#groupstats) | Group statistics. |
+| <a id="groupstatuses"></a>`statuses` {{< icon name="warning-solid" >}} | [`WorkItemStatusConnection`](#workitemstatusconnection) | **Introduced** in GitLab 18.1. **Status**: Experiment. Statuses of work items available to the namespace. |
 | <a id="groupstoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | The storage limit (in bytes) included with the root namespace plan. This limit only applies to namespaces under namespace limit enforcement. |
 | <a id="groupsubgroupcreationlevel"></a>`subgroupCreationLevel` | [`String`](#string) | Permission level required to create subgroups within the group. |
 | <a id="groupsubscriptionhistory"></a>`subscriptionHistory` {{< icon name="warning-solid" >}} | [`GitlabSubscriptionHistoryConnection`](#gitlabsubscriptionhistoryconnection) | **Introduced** in GitLab 17.3. **Status**: Experiment. Find subscription history records. |
@@ -33623,6 +33647,7 @@ Product analytics events for a specific month and year.
 | <a id="namespacesecuritypolicyproject"></a>`securityPolicyProject` | [`Project`](#project) | Security policy project assigned to the namespace. |
 | <a id="namespacesharedrunnerssetting"></a>`sharedRunnersSetting` | [`SharedRunnersSetting`](#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
 | <a id="namespacesidebar"></a>`sidebar` {{< icon name="warning-solid" >}} | [`NamespaceSidebar`](#namespacesidebar) | **Introduced** in GitLab 17.6. **Status**: Experiment. Data needed to render the sidebar for the namespace. |
+| <a id="namespacestatuses"></a>`statuses` {{< icon name="warning-solid" >}} | [`WorkItemStatusConnection`](#workitemstatusconnection) | **Introduced** in GitLab 18.1. **Status**: Experiment. Statuses of work items available to the namespace. |
 | <a id="namespacestoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | The storage limit (in bytes) included with the root namespace plan. This limit only applies to namespaces under namespace limit enforcement. |
 | <a id="namespacesubscriptionhistory"></a>`subscriptionHistory` {{< icon name="warning-solid" >}} | [`GitlabSubscriptionHistoryConnection`](#gitlabsubscriptionhistoryconnection) | **Introduced** in GitLab 17.3. **Status**: Experiment. Find subscription history records. |
 | <a id="namespacetimelogcategories"></a>`timelogCategories` {{< icon name="warning-solid" >}} | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in GitLab 15.3. **Status**: Experiment. Timelog categories for the namespace. |
@@ -42295,7 +42320,9 @@ Represents status.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="workitemstatuscategory"></a>`category` {{< icon name="warning-solid" >}} | [`WorkItemStatusCategoryEnum`](#workitemstatuscategoryenum) | **Introduced** in GitLab 18.1. **Status**: Experiment. Category of the status. |
 | <a id="workitemstatuscolor"></a>`color` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.11. **Status**: Experiment. Color of the status. |
+| <a id="workitemstatusdescription"></a>`description` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Description of the status. |
 | <a id="workitemstatusiconname"></a>`iconName` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.11. **Status**: Experiment. Icon name of the status. |
 | <a id="workitemstatusid"></a>`id` {{< icon name="warning-solid" >}} | [`GlobalID`](#globalid) | **Introduced** in GitLab 17.11. **Status**: Experiment. ID of the status. |
 | <a id="workitemstatusname"></a>`name` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.11. **Status**: Experiment. Name of the status. |
@@ -47089,6 +47116,18 @@ Values for work item state events.
 | ----- | ----------- |
 | <a id="workitemstateeventclose"></a>`CLOSE` | Closes the work item. |
 | <a id="workitemstateeventreopen"></a>`REOPEN` | Reopens the work item. |
+
+### `WorkItemStatusCategoryEnum`
+
+Category of the work item status.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="workitemstatuscategoryenumcancelled"></a>`CANCELLED` | Cancelled status category. |
+| <a id="workitemstatuscategoryenumdone"></a>`DONE` | Done status category. |
+| <a id="workitemstatuscategoryenumin_progress"></a>`IN_PROGRESS` | In progress status category. |
+| <a id="workitemstatuscategoryenumto_do"></a>`TO_DO` | To do status category. |
+| <a id="workitemstatuscategoryenumtriage"></a>`TRIAGE` | Triage status category. |
 
 ### `WorkItemTodoUpdateAction`
 

@@ -141,7 +141,7 @@ GitLab Advanced SAST can be configured using the following CI/CD variables.
 
 ### Requirements
 
-Like other GitLab SAST analyzers, the GitLab Advanced SAST analyzer requires a runner and a CI/CD pipeline; see [SAST requirements](_index.md#requirements) for details.
+Like other GitLab SAST analyzers, the GitLab Advanced SAST analyzer requires a runner and a CI/CD pipeline; see [SAST requirements](_index.md#getting-started) for details.
 
 On GitLab Self-Managed, you must also use a GitLab version that supports GitLab Advanced SAST:
 
