@@ -6,12 +6,11 @@
     %p.rd-no-preview-paragraph
       = no_preview_reason
   .rd-no-preview-actions
-    - if @diff_file.collapsed? && expandable? || @diff_file.whitespace_only?
-      - click = @diff_file.whitespace_only? ? 'showWhitespaceChanges' : 'showChanges'
-      = action_button(button_options: { data: { click: click } }) do
+    - if @diff_file.collapsed? && expandable? || @diff_file.whitespace_only? && !@diff_file.too_large?
+      = action_button(button_options: { data: { click: 'showChanges', paths: paths.to_json } }) do
         = _('Show changes')
     - elsif expandable?
-      = action_button(button_options: { data: { click: 'showFileContents' } }) do
+      = action_button(button_options: { data: { click: 'showChanges', paths: paths.to_json } }) do
         = _('Show file contents')
     - elsif @diff_file.content_changed?
       = action_button(href: old_blob_path) do

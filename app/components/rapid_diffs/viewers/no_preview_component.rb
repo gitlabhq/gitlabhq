@@ -45,7 +45,7 @@ module RapidDiffs
       end
 
       def expandable?
-        @diff_file.diffable_text?
+        @diff_file.diffable_text? && !@diff_file.too_large?
       end
 
       def important?
@@ -70,6 +70,13 @@ module RapidDiffs
             yield
           end
         end
+      end
+
+      def paths
+        {
+          old_path: @diff_file.old_path,
+          new_path: @diff_file.new_path
+        }
       end
 
       def project

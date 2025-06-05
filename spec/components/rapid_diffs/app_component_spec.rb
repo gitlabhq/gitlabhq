@@ -11,6 +11,7 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
   let(:update_user_endpoint) { '/update_user' }
   let(:diffs_stats_endpoint) { '/diffs_stats' }
   let(:diff_files_endpoint) { '/diff_files_metadata' }
+  let(:diff_file_endpoint) { '/diff_file' }
   let(:should_sort_metadata_files) { false }
   let(:lazy) { false }
 
@@ -35,6 +36,7 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     expect(data['diff_view_type']).to eq(diff_view)
     expect(data['update_user_endpoint']).to eq(update_user_endpoint)
     expect(data['diffs_stream_url']).to eq(stream_url)
+    expect(data['diff_file_endpoint']).to eq(diff_file_endpoint)
   end
 
   context "with should_sort_metadata_files set to true" do
@@ -150,6 +152,7 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
       update_user_endpoint:,
       diffs_stats_endpoint:,
       diff_files_endpoint:,
+      diff_file_endpoint:,
       should_sort_metadata_files:,
       lazy:
     )

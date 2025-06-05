@@ -2,10 +2,14 @@
 
 # rubocop:disable Gitlab/BoundedContexts -- TODO refactor to use bounded context
 class Namespace::Detail < ApplicationRecord
+  include CacheMarkdownField
+
   belongs_to :namespace, inverse_of: :namespace_details
   belongs_to :creator, class_name: "User", optional: true
   validates :namespace, presence: true
-  validates :description, length: { maximum: 255 }
+  validates :description, length: { maximum: 500 }
+
+  cache_markdown_field :description, pipeline: :description
 
   self.primary_key = :namespace_id
 

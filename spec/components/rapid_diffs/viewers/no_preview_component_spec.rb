@@ -167,14 +167,26 @@ RSpec.describe RapidDiffs::Viewers::NoPreviewComponent, type: :component, featur
         expect(page).to have_button("Show file contents")
       end
 
-      context 'when diff is too large' do
+      context 'when diff is collapsed' do
         before do
-          allow(diff_file).to receive(:collapsed?).and_return(true)
+          allow(diff_file).to receive_messages(collapsed?: true, too_large?: false)
         end
 
         it 'shows preview button' do
           render_component
           expect(page).to have_button("Show changes")
+        end
+
+        context 'when diff is too large' do
+          before do
+            allow(diff_file).to receive_messages(too_large?: true)
+          end
+
+          it 'shows preview button' do
+            render_component
+            expect(page).to have_link("View original file")
+            expect(page).to have_link("View changed file")
+          end
         end
       end
 

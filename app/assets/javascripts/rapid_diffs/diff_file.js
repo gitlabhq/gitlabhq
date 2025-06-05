@@ -43,7 +43,7 @@ export class DiffFile extends HTMLElement {
   disconnectedCallback() {
     // app might be missing if the file was destroyed before mounting
     // for example: changing view settings in the middle of the streaming
-    if (this.app) this.app.unobserve(this);
+    if (this.app) this.unobserveVisibility();
     this.app = undefined;
     this.diffElement = undefined;
     this.sink = undefined;
@@ -62,6 +62,10 @@ export class DiffFile extends HTMLElement {
     if (!this.adapters.some((adapter) => adapter[events.VISIBLE] || adapter[events.INVISIBLE]))
       return;
     this.app.observe(this);
+  }
+
+  unobserveVisibility() {
+    this.app.unobserve(this);
   }
 
   // Delegated to Rapid Diffs App
@@ -98,6 +102,16 @@ export class DiffFile extends HTMLElement {
     // TODO: add outline for active file
   }
 
+  focusFirstButton(options) {
+    this.diffElement.querySelector('button').focus(options);
+  }
+
+  selfReplace(node) {
+    // 'mount' is automagically called by the <diff-file-mounted> component inside the diff file
+    this.replaceWith(node);
+    node.focusFirstButton({ focusVisible: false });
+  }
+
   get data() {
     if (!this[dataCacheKey]) this[dataCacheKey] = camelizeKeys(JSON.parse(this.dataset.fileData));
     return this[dataCacheKey];
@@ -109,7 +123,8 @@ export class DiffFile extends HTMLElement {
       diffElement: this.diffElement,
       sink: this.sink,
       data: this.data,
-      trigger: this.trigger,
+      trigger: this.trigger.bind(this),
+      replaceWith: this.selfReplace.bind(this),
     };
   }
 

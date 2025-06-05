@@ -1022,6 +1022,7 @@ module API
       end
       put ":id/transfer", feature_category: :groups_and_projects do
         authorize! :change_namespace, user_project
+        Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/546376')
 
         namespace = find_namespace!(params[:namespace])
         result = ::Projects::TransferService.new(user_project, current_user).execute(namespace)

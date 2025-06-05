@@ -292,6 +292,7 @@ export default {
         :item-size="rowHeight"
         :buffer="100"
         key-field="key"
+        data-testid="tree-list-scroll"
       >
         <template #default="{ item }">
           <diff-file-row

@@ -1502,6 +1502,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to delegate_method(:maven_package_requests_forwarding).to(:namespace) }
     it { is_expected.to delegate_method(:pypi_package_requests_forwarding).to(:namespace) }
     it { is_expected.to delegate_method(:npm_package_requests_forwarding).to(:namespace) }
+    it { is_expected.to delegate_method(:deletion_schedule).to(:project_namespace) }
 
     describe 'read project settings' do
       %i[

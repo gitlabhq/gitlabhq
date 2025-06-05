@@ -253,7 +253,8 @@ module Gitlab
             identity = ::Gitlab::Auth::Identity.link_from_oauth_token(token)
             return if identity && !identity.valid?
 
-            user = User.id_in(token.resource_owner_id).first
+            resource_owner_id = identity&.composite? ? identity.scoped_user.id : token.resource_owner_id
+            user = User.id_in(resource_owner_id).first
             return unless user && user.can_log_in_with_non_expired_password?
 
             Gitlab::Auth::Result.new(user, nil, :oauth, abilities_for_scopes(token.scopes))

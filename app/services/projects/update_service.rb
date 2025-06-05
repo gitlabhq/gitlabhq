@@ -34,19 +34,18 @@ module Projects
       # If the block added errors, don't try to save the project
       return update_failed! if project.errors.any?
 
-      if project.update(params.except(*non_assignable_project_params))
-        after_update
+      update_project!
+      after_update
 
-        if Feature.enabled?(:destroy_fork_network_on_archive, project) &&
-            project.previous_changes[:archived] == [false, true]
+      if Feature.enabled?(:destroy_fork_network_on_archive, project) &&
+          project.previous_changes[:archived] == [false, true]
 
-          UnlinkForkService.new(project, current_user).execute
-        end
-
-        success
-      else
-        update_failed!
+        UnlinkForkService.new(project, current_user).execute
       end
+
+      success
+    rescue ActiveRecord::ActiveRecordError
+      update_failed!
     rescue ApiError => e
       error(e.message, status: :api_error)
     rescue ValidationError, Gitlab::Pages::UniqueDomainGenerationFailure => e
@@ -60,6 +59,17 @@ module Projects
     end
 
     private
+
+    def update_project!
+      if Feature.disabled?(:replicate_deletion_schedule_operations, project)
+        return project.update!(params.except(*non_assignable_project_params))
+      end
+
+      project.transaction do
+        project.deletion_schedule&.destroy! if params[:remove_deletion_schedule]
+        project.update!(params.except(*non_assignable_project_params))
+      end
+    end
 
     def ensure_ci_cd_settings
       # It's possible that before the fix in https://gitlab.com/gitlab-org/gitlab/-/issues/421050,
@@ -379,7 +389,7 @@ module Projects
     end
 
     def non_assignable_project_params
-      [:default_branch]
+      [:default_branch, :remove_deletion_schedule]
     end
   end
 end

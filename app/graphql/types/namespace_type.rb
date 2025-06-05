@@ -161,7 +161,7 @@ module Types
       method: :itself,
       experiment: { milestone: '18.1' }
 
-    markdown_field :description_html, null: true
+    markdown_field :description_html, null: true, &:namespace_details
 
     def achievements_path
       return unless Feature.enabled?(:achievements, object)

@@ -104,25 +104,27 @@ RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_
     expect(find('.js-source-branch')).to have_content('fix')
   end
 
-  it 'allows to change the diff view' do
-    visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'fix' })
+  context 'on changes tab' do
+    let_it_be(:params) { { target_branch: 'master', source_branch: 'fix' } }
+    let_it_be(:merge_request) do
+      Gitlab::GitalyClient.allow_n_plus_1_calls do
+        @merge_request = ::MergeRequests::BuildService
+                           .new(project: project, current_user: user, params: params)
+                           .execute
+      end
+    end
 
-    click_link 'Changes'
+    let_it_be(:diffs) { merge_request.diffs }
 
-    expect(page).to have_css('[data-testid="hunk-lines-inline"]')
-    expect(page).not_to have_css('[data-testid="hunk-lines-parallel"]')
+    before do
+      visit project_new_merge_request_path(project, merge_request: params)
 
-    open_diff_view_preferences
-    expect(inline_view_option['aria-selected']).to eq('true')
-    expect(parallel_view_option['aria-selected']).not_to eq('true')
+      click_link 'Changes'
 
-    select_parallel_view
-    open_diff_view_preferences
+      wait_for_requests
+    end
 
-    expect(inline_view_option['aria-selected']).not_to eq('true')
-    expect(parallel_view_option['aria-selected']).to eq('true')
-    expect(page).not_to have_css('[data-testid="hunk-lines-inline"]')
-    expect(page).to have_css('[data-testid="hunk-lines-parallel"]')
+    it_behaves_like 'Rapid Diffs application'
   end
 
   context 'without rapid diffs' do

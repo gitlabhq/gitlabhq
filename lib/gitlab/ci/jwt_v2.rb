@@ -31,7 +31,7 @@ module Gitlab
 
       def default_payload
         super.merge({
-          iss: Gitlab.config.gitlab.url,
+          iss: issuer_url,
           sub: sub,
           aud: aud,
           target_audience: target_audience
@@ -86,6 +86,14 @@ module Gitlab
         # We do not check if it's dedicated_gitlab_hosted? since this is used by a deprecated predefined variable
         # at the time of adding dedicated hosted runners
         runner.dot_com_gitlab_hosted? ? GITLAB_HOSTED_RUNNER : SELF_HOSTED_RUNNER
+      end
+
+      def issuer_url
+        if Feature.enabled?(:allow_issuer_claim_customization_for_ci_id_tokens, project)
+          Gitlab.config.ci_id_tokens.issuer_url
+        else
+          Gitlab.config.gitlab.url
+        end
       end
     end
   end

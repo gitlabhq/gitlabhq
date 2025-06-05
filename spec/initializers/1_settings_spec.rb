@@ -142,4 +142,25 @@ RSpec.describe '1_settings', feature_category: :shared do
       end
     end
   end
+
+  describe 'ci_id_tokens_issuer_url' do
+    after do
+      Settings.ci_id_tokens['issuer_url'] = nil
+      load_settings
+    end
+
+    it 'is set as Settings.gitlab.url by default' do
+      Settings.ci_id_tokens['issuer_url'] = nil
+      load_settings
+
+      expect(Settings.ci_id_tokens.issuer_url).to eq Settings.gitlab.url
+    end
+
+    it 'uses the configured value' do
+      Settings.ci_id_tokens['issuer_url'] = 'https://example.com'
+      load_settings
+
+      expect(Settings.ci_id_tokens.issuer_url).to eq('https://example.com')
+    end
+  end
 end

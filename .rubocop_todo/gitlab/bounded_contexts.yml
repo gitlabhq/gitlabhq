@@ -2668,6 +2668,7 @@ Gitlab/BoundedContexts:
     - 'ee/app/models/concerns/ee/issuable_link.rb'
     - 'ee/app/models/concerns/ee/issue_available_features.rb'
     - 'ee/app/models/concerns/ee/iteration_eventable.rb'
+    - 'ee/app/models/concerns/ee/loaded_in_group_list.rb'
     - 'ee/app/models/concerns/ee/linkable_item.rb'
     - 'ee/app/models/concerns/ee/mentionable.rb'
     - 'ee/app/models/concerns/ee/mentionable/reference_regexes.rb'

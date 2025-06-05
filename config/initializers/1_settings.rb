@@ -254,6 +254,9 @@ Settings.gitlab['weak_passwords_digest_set'] ||= YAML.safe_load(File.open(Rails.
 Settings.gitlab['log_decompressed_response_bytesize'] = ENV["GITLAB_LOG_DECOMPRESSED_RESPONSE_BYTESIZE"].to_i > 0 ? ENV["GITLAB_LOG_DECOMPRESSED_RESPONSE_BYTESIZE"].to_i : 0
 Settings.gitlab['initial_gitlab_product_usage_data'] = true if Settings.gitlab['initial_gitlab_product_usage_data'].nil?
 
+Settings['ci_id_tokens'] ||= {}
+Settings.ci_id_tokens['issuer_url'] = Settings.gitlab.url if Settings.ci_id_tokens['issuer_url'].blank?
+
 Gitlab.ee do
   Settings.gitlab['mirror_max_delay'] ||= 300
   Settings.gitlab['mirror_max_capacity'] ||= 30

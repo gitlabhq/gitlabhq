@@ -413,7 +413,9 @@ RSpec.describe Groups::ChildrenController, feature_category: :groups_and_project
 
             matched_project.update!(namespace: public_subgroup)
 
-            expect { get_filtered_list }.not_to exceed_query_limit(control).with_threshold(extra_queries_for_hierarchies)
+            # TODO remove + 1 after we stop manually reloading namespace_details in
+            # https://gitlab.com/gitlab-org/gitlab/-/issues/545723
+            expect { get_filtered_list }.not_to exceed_query_limit(control).with_threshold(extra_queries_for_hierarchies + 1)
           end
         end
       end

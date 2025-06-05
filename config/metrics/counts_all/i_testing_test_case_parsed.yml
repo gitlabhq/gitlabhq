@@ -1,0 +1,25 @@
+---
+data_category: optional
+key_path: redis_hll_counters.testing.i_testing_test_case_parsed
+description: Internal Tracking to count number of unit tests parsed for planning of
+  future code testing features. Data available [here](https://app.periscopedata.com/app/gitlab/788674/Verify:Testing-Group-Metrics?widget=10454394&udv=0)
+product_group: pipeline_execution
+product_categories:
+- code_testing
+value_type: number
+status: active
+time_frame:
+- 28d
+- 7d
+data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+  - i_testing_test_case_parsed
+tiers:
+- free
+- premium
+- ultimate
+performance_indicator_type: []
+milestone: "<13.9"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54332

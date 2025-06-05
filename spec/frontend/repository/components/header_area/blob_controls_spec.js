@@ -5,6 +5,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { logError } from '~/lib/logger';
 import { visitUrl } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -41,6 +42,9 @@ jest.mock('~/lib/utils/common_utils', () => ({
   isLoggedIn: jest.fn().mockReturnValue(true),
 }));
 jest.mock('~/sentry/sentry_browser_wrapper');
+jest.mock('~/behaviors/shortcuts/shortcuts_toggle', () => ({
+  shouldDisableShortcuts: () => false,
+}));
 
 describe('Blob controls component', () => {
   let router;
@@ -110,6 +114,9 @@ describe('Blob controls component', () => {
         glFeatures,
         currentRef: refMock,
       },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
       propsData: {
         projectPath,
         projectIdAsNumber: 1,
@@ -166,6 +173,16 @@ describe('Blob controls component', () => {
 
     it('does not render on mobile layout', () => {
       expect(findFindButton().classes()).toContain('gl-hidden', 'sm:gl-inline-flex');
+    });
+
+    it('correctly formats tooltip', () => {
+      const tooltip = getBinding(findFindButton().element, 'gl-tooltip');
+
+      expect(findFindButton().attributes('aria-keyshortcuts')).toBe('t');
+      expect(findFindButton().attributes('title')).toBe(
+        'Go to find file <kbd aria-hidden="true" class="flat gl-ml-1">t</kbd>',
+      );
+      expect(tooltip).toBeDefined();
     });
 
     it('triggers a `focusSearchFile` shortcut when the findFile button is clicked', () => {

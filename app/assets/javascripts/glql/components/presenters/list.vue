@@ -62,6 +62,14 @@ export default {
     showEmptyState() {
       return !this.items.length && !this.isPreview;
     },
+    liMarginClass() {
+      if (this.listType === 'ul') return '';
+
+      if (this.items.length >= 100) return '!gl-ml-9';
+      if (this.items.length >= 10) return '!gl-ml-8';
+
+      return '!gl-ml-7';
+    },
   },
 };
 </script>
@@ -85,11 +93,7 @@ export default {
         <li
           v-for="i in 5"
           :key="i"
-          class="gl-py-3"
-          :class="{
-            'gl-border-b gl-border-b-section': i !== 4,
-            '!gl-ml-0': config.type == 'list',
-          }"
+          :class="['gl-py-3', liMarginClass, { 'gl-border-b gl-border-b-section': i !== 4 }]"
         >
           <gl-skeleton-loader :width="400" :lines="1" />
         </li>
@@ -98,11 +102,11 @@ export default {
         <li
           v-for="(item, itemIndex) in items"
           :key="itemIndex"
-          class="gl-py-3"
-          :class="{
-            'gl-border-b gl-border-b-section': itemIndex !== items.length - 1,
-            '!gl-ml-0': config.type == 'list',
-          }"
+          :class="[
+            'gl-py-3',
+            liMarginClass,
+            { 'gl-border-b gl-border-b-section': itemIndex !== items.length - 1 },
+          ]"
           :data-testid="`list-item-${itemIndex}`"
         >
           <h3 class="!gl-heading-5 !gl-mb-1">

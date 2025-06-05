@@ -3,23 +3,23 @@
 require 'spec_helper'
 
 RSpec.describe Projects::RestoreService, feature_category: :groups_and_projects do
-  let(:user) { create(:user, :with_namespace) }
-  let(:pending_delete) { nil }
-  let(:project) do
-    create(:project,
-      :repository,
-      path: 'project-1-deleted-177483',
-      name: 'Project1 Name-deleted-177483',
-      namespace: user.namespace,
-      marked_for_deletion_at: 1.day.ago,
-      deleting_user: user,
-      archived: true,
-      hidden: true,
-      pending_delete: pending_delete)
-  end
+  let_it_be(:user) { create(:user, :with_namespace) }
+
+  subject(:execute) { described_class.new(project, user).execute }
 
   context 'when restoring project' do
-    subject(:execute) { described_class.new(project, user).execute }
+    let_it_be_with_reload(:project) do
+      create(
+        :project,
+        :repository,
+        :aimed_for_deletion,
+        path: 'project-1-deleted-177483',
+        name: 'Project1 Name-deleted-177483',
+        namespace: user.namespace,
+        archived: true,
+        hidden: true
+      )
+    end
 
     it 'marks project as not hidden, unarchived and not marked for deletion' do
       expect(Namespaces::ScheduleAggregationWorker).to receive(:perform_async)
@@ -32,6 +32,12 @@ RSpec.describe Projects::RestoreService, feature_category: :groups_and_projects 
       expect(project.hidden).to be(false)
       expect(project.marked_for_deletion_at).to be_nil
       expect(project.deleting_user).to be_nil
+    end
+
+    it 'destroys deletion schedule' do
+      execute
+
+      expect(project.project_namespace.reload.deletion_schedule).to be_nil
     end
 
     context 'when the original project path is not taken' do
@@ -69,15 +75,14 @@ RSpec.describe Projects::RestoreService, feature_category: :groups_and_projects 
     end
 
     context 'when the original project path does not contain the -deleted- suffix' do
-      let(:project) do
+      let_it_be(:project) do
         create(
           :project,
           :repository,
           namespace: user.namespace,
           marked_for_deletion_at: 1.day.ago,
           deleting_user: user,
-          archived: true,
-          pending_delete: pending_delete
+          archived: true
         )
       end
 
@@ -92,11 +97,24 @@ RSpec.describe Projects::RestoreService, feature_category: :groups_and_projects 
   end
 
   context 'when restoring project already in process of removal' do
-    let(:deletion_date) { 2.days.ago }
-    let(:pending_delete) { true }
+    let_it_be(:project) { create(:project, :aimed_for_deletion, pending_delete: true) }
 
     it 'does not allow to restore' do
-      expect(described_class.new(project, user).execute).to include(status: :error)
+      result = execute
+
+      expect(result[:status]).to be(:error)
+      expect(result[:message]).to be(_('Project already deleted'))
+    end
+  end
+
+  context 'when restoring project not marked for deletion' do
+    let_it_be(:project) { create(:project) }
+
+    it 'returns error result' do
+      result = execute
+
+      expect(result[:status]).to be(:error)
+      expect(result[:message]).to be(_('Project has not been marked for deletion'))
     end
   end
 end

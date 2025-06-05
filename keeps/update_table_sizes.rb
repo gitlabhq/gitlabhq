@@ -54,9 +54,7 @@ module Keeps
     strong_memoize_attr :table_sizes
 
     def table_has_data?(table_name)
-      result = postgres_ai.table_has_data?(table_name)
-
-      Gitlab::Utils.to_boolean(result.first.fetch('exists'))
+      postgres_ai.table_has_data?(table_name)
     end
 
     def fetch_table_classification(table_name)

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Namespace < ApplicationRecord
-  include CacheMarkdownField
   include Sortable
   include Gitlab::VisibilityLevel
   include Routable
@@ -24,6 +23,7 @@ class Namespace < ApplicationRecord
 
   extend Gitlab::Utils::Override
 
+  ignore_columns :description, :description_html, :cached_markdown_version, remove_with: '18.3', remove_after: '2025-07-17'
   ignore_column :unlock_membership_to_ldap, remove_with: '18.1', remove_after: '2025-05-20'
 
   ignore_column :emails_disabled, remove_with: '18.1', remove_after: '2025-05-20'
@@ -57,14 +57,12 @@ class Namespace < ApplicationRecord
     uploads_size
   ].freeze
 
-  cache_markdown_field :description, pipeline: :description
-
   has_many :projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :non_archived_projects, -> { where.not(archived: true) }, class_name: 'Project'
   has_many :project_statistics
   has_one :namespace_settings, inverse_of: :namespace, class_name: 'NamespaceSetting', autosave: true
   has_one :ci_cd_settings, inverse_of: :namespace, class_name: 'NamespaceCiCdSetting', autosave: true
-  has_one :namespace_details, inverse_of: :namespace, class_name: 'Namespace::Detail', autosave: true
+  has_one :namespace_details, inverse_of: :namespace, class_name: 'Namespace::Detail', autosave: false
   has_one :namespace_statistics
   has_one :namespace_route, foreign_key: :namespace_id, autosave: false, inverse_of: :namespace, class_name: 'Route'
   has_one :catalog_verified_namespace, class_name: 'Ci::Catalog::VerifiedNamespace', inverse_of: :namespace
@@ -74,6 +72,7 @@ class Namespace < ApplicationRecord
   has_one :namespace_ldap_settings, inverse_of: :namespace, class_name: 'Namespaces::LdapSetting', autosave: true
 
   has_one :namespace_descendants, class_name: 'Namespaces::Descendants'
+  attribute :description
   accepts_nested_attributes_for :namespace_descendants, allow_destroy: true
 
   has_many :runner_namespaces, inverse_of: :namespace, class_name: 'Ci::RunnerNamespace'
@@ -120,14 +119,15 @@ class Namespace < ApplicationRecord
   has_many :bot_users, through: :bot_user_details, source: :user
   has_one :placeholder_user_detail, class_name: 'Import::PlaceholderUserDetail'
 
+  has_one :deletion_schedule, class_name: 'Namespaces::DeletionSchedule'
+  delegate :deleting_user, :marked_for_deletion_at, to: :deletion_schedule, allow_nil: true
+
   validates :owner, presence: true, if: ->(n) { n.owner_required? }
   validates :organization, presence: true
   validates :name,
     presence: true,
     length: { maximum: 255 }
   validates :name, uniqueness: { scope: [:type, :parent_id] }, if: -> { parent_id.present? }
-
-  validates :description, length: { maximum: 500 }
 
   validates :path,
     presence: true,
@@ -172,7 +172,7 @@ class Namespace < ApplicationRecord
     :npm_package_requests_forwarding,
     to: :package_settings
 
-  delegate :add_creator, :deleted_at, :deleted_at=,
+  delegate :add_creator, :deleted_at, :deleted_at=, :description, :description=, :description_html,
     to: :namespace_details, allow_nil: true
 
   with_options to: :namespace_settings do
@@ -206,7 +206,7 @@ class Namespace < ApplicationRecord
   after_update :force_share_with_group_lock_on_descendants, if: -> { saved_change_to_share_with_group_lock? && share_with_group_lock? }
   after_update :expire_first_auto_devops_config_cache, if: -> { saved_change_to_auto_devops_enabled? }
 
-  after_save :reload_namespace_details
+  after_save :save_namespace_details_changes
 
   after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
 
@@ -233,6 +233,7 @@ class Namespace < ApplicationRecord
   scope :ordered_by_name, -> { order(:name) }
   scope :top_level, -> { by_parent(nil) }
   scope :with_project_statistics, -> { includes(projects: :statistics) }
+  scope :with_namespace_details, -> { preload(:namespace_details) }
 
   scope :archived, -> { joins(:namespace_settings).where(namespace_settings: { archived: true }) }
   scope :self_or_ancestors_archived, -> { where(self_or_ancestors_archived_setting_subquery.exists) }
@@ -826,6 +827,10 @@ class Namespace < ApplicationRecord
     traversal_ids.join(',')
   end
 
+  def namespace_details
+    super.presence || build_namespace_details
+  end
+
   private
 
   def parent_organization_match
@@ -946,10 +951,14 @@ class Namespace < ApplicationRecord
     end
   end
 
-  def reload_namespace_details
-    return unless !project_namespace? && (previous_changes.keys & %w[description description_html cached_markdown_version]).any? && namespace_details.present?
+  def save_namespace_details_changes
+    attribute_names_to_sync = Namespace::Detail.attribute_names - ['namespace_id']
+    attributes_to_sync = namespace_details.changes.slice(*attribute_names_to_sync)
+                                          .transform_values { |val| val[1] }
 
-    namespace_details.reset
+    self.namespace_details = Namespace::Detail.find_by_namespace_id(id) || build_namespace_details
+    namespace_details.assign_attributes(attributes_to_sync)
+    namespace_details.save!
   end
 
   def sync_share_with_group_lock_with_parent

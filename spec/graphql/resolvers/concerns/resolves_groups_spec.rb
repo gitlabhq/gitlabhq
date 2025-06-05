@@ -25,6 +25,8 @@ RSpec.describe ResolvesGroups do
   let_it_be(:preloaded_fields) do
     <<~FIELDS
       containerRepositoriesCount
+      description
+      descriptionHtml
       customEmoji { nodes { id } }
       dependencyProxyBlobCount
       dependencyProxyBlobs { nodes { fileName } }

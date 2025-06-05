@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Commit > User view commits', feature_category: :source_code_management do
+  include RepoHelpers
+
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :public) }
 
@@ -61,27 +63,27 @@ RSpec.describe 'Commit > User view commits', feature_category: :source_code_mana
 
   describe 'Single commit', :js do
     let_it_be(:project) { create_default(:project, :public, :repository, group: group) }
-    let_it_be(:branch_name) { 'feature' }
-    let_it_be(:sha) { project.commit(branch_name).sha }
+    let_it_be(:sha) { sample_commit.sha }
 
     it 'passes axe automated accessibility testing' do
       visit project_commit_path(project, sha)
 
-      wait_for_requests # ensures page is fully loaded
+      wait_for_requests
 
       expect(page).to be_axe_clean.within('#content-body').skipping :'color-contrast', :'link-in-text-block',
         :'link-name', :'valid-lang'
     end
 
     context 'when displayed with rapid_diffs' do
-      it 'passes axe automated accessibility testing' do
+      let_it_be(:diffs) { project.commit(sha).diffs }
+
+      before do
         visit project_commit_path(project, sha, rapid_diffs: true)
 
-        wait_for_requests # ensures page is fully loaded
-
-        # remove 'color-contrast' when code highlight themes conform to a contrast of 4.5:1
-        expect(page).to be_axe_clean.within('#content-body').skipping :'color-contrast'
+        wait_for_requests
       end
+
+      it_behaves_like 'Rapid Diffs application'
     end
   end
 end

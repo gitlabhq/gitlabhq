@@ -5,8 +5,40 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Compliance standards
 ---
 
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16620) in GitLab 17.11.
+
+{{< /history >}}
+
 You can use [GitLab compliance controls](_index.md#gitlab-compliance-controls) to help meet the requirements of many
 compliance standards.
+
+## ISMAP compliance requirements
+
+The Information system Security Management and Assessment Program (ISMAP) aims to secure the security level of the government's cloud service procurement
+by evaluating and registering cloud services that meet the security requirements of the government in advance, thereby contributing to the smooth introduction
+of cloud services.
+
+The following table lists the requirements supported by GitLab for ISMAP and the controls for the requirements.
+
+| ISMAP requirement                              | Description                                                                                                                                                                                                                                        | Supported controls |
+|:-----------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-------------------|
+| 6.1.2 Segregation of duties                    | Conflicting duties and areas of responsibility should be segregated to reduce opportunities for unauthorized or unintentional modification or misuse of the organization's assets.                                                                 | <ul><li>At least two approvals</li><li>Author approved merge request is forbidden</li><li>Committers approved merge request is forbidden</li><li>Merge requests approval rules prevent editing</li></ul> |
+| 9.3.1 Use of secret authentication information | Users should be required to follow the organization's practices in the use of secret authentication information.                                                                                                                                   | <ul><li>Secret detection running</li></ul> |
+| 9.4.5 Access control to program source code    | Access to program source code should be restricted.                                                                                                                                                                                                | <ul><li>Default branch protected</li></ul> |
+| 12.1.2 Change management                       | Changes to the organization, business processes, information processing facilities, and systems that affect information security should be controlled.                                                                                             | <ul><li>Default branch protected</li></ul> |
+| 12.6.1 Management of technical vulnerabilities | Information about technical vulnerabilities of information systems being used should be obtained in a timely fashion, the organization's exposure to such vulnerabilities evaluated and appropriate measures taken to address the associated risk. | <ul><li>Dependency scanning running</li><li>Container scanning running</li></ul> |
+| 14.2.1 Secure development policy               | Rules for the development of software and systems should be established and applied to developments in the organization.                                                                                                                           | <ul><li>Dependency scanning running</li><li>Container scanning running</li><li>SAST running</li><li>DAST running</li><li>API security running</li><li>Secret detection running</li><li>Fuzz testing running</li></ul> |
+| 14.2.8 System security testing                 | Testing of security functionality should be carried out during development.                                                                                                                                                                        | <ul><li>Dependency scanning running</li><li>Container scanning running</li><li>SAST running</li><li>DAST running</li><li>API security running</li><li>Secret detection running</li><li>Fuzz testing running</li></ul> |
+| 18.1.2 Intellectual property rights            | Appropriate procedures should be implemented to ensure compliance with legislative, regulatory, and contractual requirements related to intellectual property rights and use of proprietary software products.                                     | <ul><li>License compliance running</li></ul> |
 
 ## ISO 27001 compliance requirements
 

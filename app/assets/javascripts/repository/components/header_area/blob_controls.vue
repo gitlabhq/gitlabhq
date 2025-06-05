@@ -11,12 +11,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import initSourcegraph from '~/sourcegraph';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
-import { shortcircuitPermalinkButton } from '~/blob/utils';
-import {
-  keysFor,
-  START_SEARCH_PROJECT_FILE,
-  PROJECT_FILES_COPY_FILE_PERMALINK,
-} from '~/behaviors/shortcuts/keybindings';
+import { keysFor, START_SEARCH_PROJECT_FILE } from '~/behaviors/shortcuts/keybindings';
 import { sanitize } from '~/lib/dompurify';
 import { InternalEvents } from '~/tracking';
 import { FIND_FILE_BUTTON_CLICK, BLAME_BUTTON_CLICK } from '~/tracking/constants';
@@ -40,8 +35,6 @@ export default {
   i18n: {
     findFile: __('Find file'),
     blame: __('Blame'),
-    permalink: __('Permalink'),
-    permalinkTooltip: __('Go to permalink'),
     errorMessage: __('An error occurred while loading the blob controls.'),
   },
   buttonClassList: 'sm:gl-w-auto gl-w-full sm:gl-mt-0 gl-mt-3',
@@ -169,35 +162,18 @@ export default {
           this.blobInfo.simpleViewer?.fileType !== EMPTY_FILE)
       );
     },
-    rawPath() {
-      return this.blobInfo.externalStorageUrl || this.blobInfo.rawPath;
-    },
     shortcuts() {
-      const findFileKey = keysFor(START_SEARCH_PROJECT_FILE)[0];
-      const permalinkKey = keysFor(PROJECT_FILES_COPY_FILE_PERMALINK)[0];
-
       return {
-        findFile: findFileKey,
-        permalink: permalinkKey,
+        findFile: keysFor(START_SEARCH_PROJECT_FILE)[0],
       };
-    },
-    findFileShortcutKey() {
-      return this.shortcuts.findFile;
     },
     findFileTooltip() {
       if (shouldDisableShortcuts()) return null;
 
       const { description } = START_SEARCH_PROJECT_FILE;
-      return this.formatTooltipWithShortcut(description, this.shortcuts.findFile);
-    },
-    permalinkShortcutKey() {
-      return this.shortcuts.permalink;
-    },
-    permalinkTooltip() {
-      if (shouldDisableShortcuts()) return null;
+      const shortcutKey = this.shortcuts.findFile;
 
-      const description = this.$options.i18n.permalinkTooltip;
-      return this.formatTooltipWithShortcut(description, this.shortcuts.permalink);
+      return this.formatTooltipWithShortcut(description, shortcutKey);
     },
     showWebIdeLink() {
       return !this.blobInfo.archived && this.blobInfo.editBlobPath;
@@ -220,17 +196,11 @@ export default {
   watch: {
     blobInfo() {
       initSourcegraph();
-      this.$nextTick(() => {
-        this.initShortcuts();
-      });
     },
   },
   methods: {
     formatTooltipWithShortcut(description, key) {
       return sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
-    },
-    initShortcuts() {
-      shortcircuitPermalinkButton();
     },
     handleFindFile() {
       this.trackEvent(FIND_FILE_BUTTON_CLICK);
@@ -277,7 +247,8 @@ export default {
     />
     <gl-button
       v-gl-tooltip.html="findFileTooltip"
-      :aria-keyshortcuts="findFileShortcutKey"
+      :title="findFileTooltip"
+      :aria-keyshortcuts="shortcuts.findFile"
       data-testid="find"
       :class="[$options.buttonClassList, 'gl-hidden sm:gl-inline-flex']"
       @click="handleFindFile"

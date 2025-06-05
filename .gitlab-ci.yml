@@ -195,6 +195,15 @@ workflow:
       variables:
         <<: *default-ruby-variables
         PIPELINE_NAME: 'Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "weekly"'
+      variables:
+        <<: *default-ruby-variables
+        PIPELINE_NAME: 'Weekly scheduled Ruby $RUBY_VERSION $CI_COMMIT_BRANCH branch'
+        FAST_QUARANTINE: "false"
+        CREATE_RAILS_FLAKY_TEST_ISSUES: "false"
+        CREATE_RAILS_SLOW_TEST_ISSUES: "false"
+        CREATE_RAILS_TEST_FAILURE_ISSUES: "false"
+        GLCI_PUSH_RAILS_TEST_FAILURE_ISSUES_TO_GCS: "false"
 
 variables:
   PG_VERSION: "14"

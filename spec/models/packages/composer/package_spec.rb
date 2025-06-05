@@ -64,4 +64,87 @@ RSpec.describe Packages::Composer::Package, type: :model, feature_category: :pac
   describe '.installable' do
     it_behaves_like 'installable packages', :composer_package
   end
+
+  describe 'sync with packages_composer_packages table' do
+    let_it_be_with_refind(:package) do
+      create(:composer_package, :with_metadatum, sha: OpenSSL::Digest.hexdigest('SHA256', 'foo'))
+    end
+
+    let_it_be_with_reload(:metadatum) { package.composer_metadatum }
+
+    subject(:composer_package) do
+      package.connection.select_one(<<~SQL)
+        SELECT * FROM packages_composer_packages WHERE id = #{package.id}
+      SQL
+    end
+
+    it 'creates composer package with original attributes' do
+      expect(composer_package).to eq(
+        package.attributes_before_type_cast.except('package_type').merge(
+          metadatum.attributes_before_type_cast.except('package_id')
+        )
+      )
+    end
+
+    context 'when package is updated' do
+      let(:name) { FFaker::Lorem.word }
+
+      before do
+        package.update!(name: name)
+      end
+
+      it 'updates the composer package' do
+        expect(composer_package['name']).to eq(name)
+      end
+    end
+
+    context 'when metadatum is updated' do
+      let(:composer_json) { { 'name' => FFaker::Lorem.word, 'version' => '1.0.1' } }
+
+      before do
+        metadatum.update!(composer_json: composer_json)
+      end
+
+      it 'updates the composer package' do
+        expect(Gitlab::Json.parse(composer_package['composer_json'])).to eq(composer_json)
+      end
+    end
+
+    context 'when package is deleted' do
+      before do
+        package.destroy!
+      end
+
+      it 'deletes the composer package' do
+        expect(composer_package).to be_nil
+      end
+    end
+
+    context 'when created package is not composer' do
+      it 'does not create a new entry in packages_composer_packages table' do
+        count = count_composer_packages
+
+        create(:generic_package)
+
+        expect(count_composer_packages).to eq(count)
+      end
+    end
+
+    context 'when deleting not composer package' do
+      it 'does not delete an entry from packages_composer_packages table' do
+        count = count_composer_packages
+
+        package.update!(package_type: ::Packages::Package.package_types[:maven])
+        package.destroy!
+
+        expect(count_composer_packages).to eq(count)
+      end
+    end
+  end
+
+  def count_composer_packages
+    package.connection.select_value(<<~SQL)
+      SELECT COUNT(*) FROM packages_composer_packages
+    SQL
+  end
 end

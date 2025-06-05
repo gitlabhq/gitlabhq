@@ -1358,7 +1358,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
   end
 
   describe 'POST #restore', feature_category: :groups_and_projects do
-    let_it_be(:project) { create(:project, namespace: user.namespace) }
+    let_it_be(:project) { create(:project, :aimed_for_deletion, namespace: user.namespace) }
 
     before do
       sign_in(user)

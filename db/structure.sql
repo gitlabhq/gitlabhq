@@ -939,6 +939,48 @@ CREATE FUNCTION sync_organization_push_rules_on_insert_update() RETURNS trigger
   END;
  $$;
 
+CREATE FUNCTION sync_packages_composer_with_composer_metadata() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+UPDATE "packages_composer_packages"
+    SET target_sha = NEW.target_sha,
+        composer_json = NEW.composer_json,
+        version_cache_sha = NEW.version_cache_sha
+    WHERE id = NEW.package_id;
+RETURN NULL;
+
+END
+$$;
+
+CREATE FUNCTION sync_packages_composer_with_packages() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF (COALESCE(NEW.package_type, OLD.package_type) = 6) THEN
+  IF (TG_OP = 'INSERT') THEN
+    INSERT INTO "packages_composer_packages" (id, project_id, created_at, updated_at, name, version, creator_id, status, last_downloaded_at, status_message)
+      VALUES (NEW.id, NEW.project_id, NEW.created_at, NEW.updated_at, NEW.name, NEW.version, NEW.creator_id, NEW.status, NEW.last_downloaded_at, NEW.status_message);
+  ELSIF (TG_OP = 'UPDATE') THEN
+    UPDATE "packages_composer_packages"
+        SET project_id = NEW.project_id,
+            updated_at = NEW.updated_at,
+            name = NEW.name,
+            version = NEW.version,
+            creator_id = NEW.creator_id,
+            status = NEW.status,
+            last_downloaded_at = NEW.last_downloaded_at,
+            status_message = NEW.status_message
+        WHERE id = OLD.id;
+  ELSIF (TG_OP = 'DELETE') THEN
+    DELETE FROM "packages_composer_packages" WHERE id = OLD.id;
+  END IF;
+END IF;
+RETURN NULL;
+
+END
+$$;
+
 CREATE FUNCTION sync_project_authorizations_to_migration_table() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -18992,6 +19034,46 @@ CREATE TABLE packages_composer_metadata (
     project_id bigint
 );
 
+CREATE TABLE packages_packages (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    name character varying NOT NULL,
+    version character varying,
+    package_type smallint NOT NULL,
+    creator_id bigint,
+    status smallint DEFAULT 0 NOT NULL,
+    last_downloaded_at timestamp with time zone,
+    status_message text
+);
+
+CREATE SEQUENCE packages_packages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE packages_packages_id_seq OWNED BY packages_packages.id;
+
+CREATE TABLE packages_composer_packages (
+    id bigint DEFAULT nextval('packages_packages_id_seq'::regclass) NOT NULL,
+    project_id bigint NOT NULL,
+    creator_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    last_downloaded_at timestamp with time zone,
+    status smallint DEFAULT 0 NOT NULL,
+    name text NOT NULL,
+    version text,
+    target_sha bytea,
+    version_cache_sha bytea,
+    status_message text,
+    composer_json jsonb DEFAULT '{}'::jsonb NOT NULL,
+    CONSTRAINT check_2168170eb8 CHECK ((char_length(status_message) <= 255))
+);
+
 CREATE TABLE packages_conan_file_metadata (
     id bigint NOT NULL,
     package_file_id bigint NOT NULL,
@@ -19591,29 +19673,6 @@ CREATE SEQUENCE packages_package_files_id_seq
     CACHE 1;
 
 ALTER SEQUENCE packages_package_files_id_seq OWNED BY packages_package_files.id;
-
-CREATE TABLE packages_packages (
-    id bigint NOT NULL,
-    project_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    name character varying NOT NULL,
-    version character varying,
-    package_type smallint NOT NULL,
-    creator_id bigint,
-    status smallint DEFAULT 0 NOT NULL,
-    last_downloaded_at timestamp with time zone,
-    status_message text
-);
-
-CREATE SEQUENCE packages_packages_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE packages_packages_id_seq OWNED BY packages_packages.id;
 
 CREATE TABLE packages_protection_rules (
     id bigint NOT NULL,
@@ -22712,6 +22771,23 @@ CREATE TABLE schema_migrations (
     version character varying NOT NULL,
     finished_at timestamp with time zone DEFAULT now()
 );
+
+CREATE TABLE scim_group_memberships (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    user_id bigint NOT NULL,
+    scim_group_uid uuid NOT NULL
+);
+
+CREATE SEQUENCE scim_group_memberships_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE scim_group_memberships_id_seq OWNED BY scim_group_memberships.id;
 
 CREATE TABLE scim_identities (
     id bigint NOT NULL,
@@ -28038,6 +28114,8 @@ ALTER TABLE ONLY scan_result_policies ALTER COLUMN id SET DEFAULT nextval('scan_
 
 ALTER TABLE ONLY scan_result_policy_violations ALTER COLUMN id SET DEFAULT nextval('scan_result_policy_violations_id_seq'::regclass);
 
+ALTER TABLE ONLY scim_group_memberships ALTER COLUMN id SET DEFAULT nextval('scim_group_memberships_id_seq'::regclass);
+
 ALTER TABLE ONLY scim_identities ALTER COLUMN id SET DEFAULT nextval('scim_identities_id_seq'::regclass);
 
 ALTER TABLE ONLY scim_oauth_access_tokens ALTER COLUMN id SET DEFAULT nextval('scim_oauth_access_tokens_id_seq'::regclass);
@@ -30565,6 +30643,9 @@ ALTER TABLE ONLY packages_cleanup_policies
 ALTER TABLE ONLY packages_composer_metadata
     ADD CONSTRAINT packages_composer_metadata_pkey PRIMARY KEY (package_id);
 
+ALTER TABLE ONLY packages_composer_packages
+    ADD CONSTRAINT packages_composer_packages_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY packages_conan_file_metadata
     ADD CONSTRAINT packages_conan_file_metadata_pkey PRIMARY KEY (id);
 
@@ -31050,6 +31131,9 @@ ALTER TABLE ONLY scan_result_policy_violations
 
 ALTER TABLE ONLY schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+ALTER TABLE ONLY scim_group_memberships
+    ADD CONSTRAINT scim_group_memberships_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY scim_identities
     ADD CONSTRAINT scim_identities_pkey PRIMARY KEY (id);
@@ -33571,6 +33655,10 @@ CREATE INDEX idx_personal_access_tokens_on_previous_personal_access_token_id ON 
 CREATE INDEX idx_pipeline_execution_schedules_on_project_id ON security_pipeline_execution_project_schedules USING btree (project_id);
 
 CREATE INDEX idx_pipeline_execution_schedules_security_policy_id_and_id ON security_pipeline_execution_project_schedules USING btree (security_policy_id, id);
+
+CREATE INDEX idx_pkgs_composer_pkgs_on_creator_id ON packages_composer_packages USING btree (creator_id);
+
+CREATE INDEX idx_pkgs_composer_pkgs_on_project_id ON packages_composer_packages USING btree (project_id);
 
 CREATE INDEX idx_pkgs_conan_file_metadata_on_pkg_file_id_when_recipe_file ON packages_conan_file_metadata USING btree (package_file_id) WHERE (conan_file_type = 1);
 
@@ -37362,6 +37450,8 @@ CREATE INDEX index_scan_result_policy_violations_on_merge_request_id ON scan_res
 
 CREATE UNIQUE INDEX index_scan_result_policy_violations_on_policy_and_merge_request ON scan_result_policy_violations USING btree (scan_result_policy_id, merge_request_id);
 
+CREATE INDEX index_scim_group_memberships_on_scim_group_uid ON scim_group_memberships USING btree (scim_group_uid);
+
 CREATE INDEX index_scim_identities_on_group_id ON scim_identities USING btree (group_id);
 
 CREATE UNIQUE INDEX index_scim_identities_on_lower_extern_uid_and_group_id ON scim_identities USING btree (lower((extern_uid)::text), group_id);
@@ -38919,6 +39009,8 @@ CREATE UNIQUE INDEX unique_postgres_async_fk_validations_name_and_table_name ON 
 CREATE UNIQUE INDEX unique_projects_on_name_namespace_id ON projects USING btree (name, namespace_id);
 
 CREATE UNIQUE INDEX unique_protection_tag_rules_project_id_and_tag_name_pattern ON container_registry_protection_tag_rules USING btree (project_id, tag_name_pattern);
+
+CREATE UNIQUE INDEX unique_scim_group_memberships_user_id_and_scim_group_uid ON scim_group_memberships USING btree (user_id, scim_group_uid);
 
 CREATE UNIQUE INDEX unique_streaming_event_type_filters_destination_id ON audit_events_streaming_event_type_filters USING btree (external_audit_event_destination_id, audit_event_type);
 
@@ -41850,6 +41942,10 @@ CREATE TRIGGER trigger_sync_organization_push_rules_delete BEFORE DELETE ON push
 
 CREATE TRIGGER trigger_sync_organization_push_rules_insert_update AFTER INSERT OR UPDATE ON push_rules FOR EACH ROW EXECUTE FUNCTION sync_organization_push_rules_on_insert_update();
 
+CREATE TRIGGER trigger_sync_packages_composer_with_composer_metadata AFTER INSERT OR UPDATE ON packages_composer_metadata FOR EACH ROW EXECUTE FUNCTION sync_packages_composer_with_composer_metadata();
+
+CREATE TRIGGER trigger_sync_packages_composer_with_packages AFTER INSERT OR DELETE OR UPDATE ON packages_packages FOR EACH ROW EXECUTE FUNCTION sync_packages_composer_with_packages();
+
 CREATE TRIGGER trigger_sync_push_rules_to_group_push_rules AFTER UPDATE ON push_rules FOR EACH ROW EXECUTE FUNCTION sync_push_rules_to_group_push_rules();
 
 CREATE TRIGGER trigger_sync_redirect_routes_namespace_id BEFORE INSERT OR UPDATE ON redirect_routes FOR EACH ROW WHEN ((new.namespace_id IS NULL)) EXECUTE FUNCTION sync_redirect_routes_namespace_id();
@@ -42356,6 +42452,9 @@ ALTER TABLE ONLY vulnerability_merge_request_links
 
 ALTER TABLE ONLY jira_tracker_data
     ADD CONSTRAINT fk_2ef8e4e35b FOREIGN KEY (instance_integration_id) REFERENCES instance_integrations(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY packages_composer_packages
+    ADD CONSTRAINT fk_2f085bfc2a FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY required_code_owners_sections
     ADD CONSTRAINT fk_2f43f5cbbb FOREIGN KEY (protected_branch_project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -43871,6 +43970,9 @@ ALTER TABLE ONLY project_control_compliance_statuses
 
 ALTER TABLE ONLY protected_branches
     ADD CONSTRAINT fk_de9216e774 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY packages_composer_packages
+    ADD CONSTRAINT fk_de97b49a7b FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY snippet_user_mentions
     ADD CONSTRAINT fk_def441dfc3 FOREIGN KEY (snippet_organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
@@ -45596,6 +45698,9 @@ ALTER TABLE ONLY resource_label_events
 
 ALTER TABLE ONLY webauthn_registrations
     ADD CONSTRAINT fk_rails_b15c016782 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY scim_group_memberships
+    ADD CONSTRAINT fk_rails_b16ccc85e2 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_build_infos
     ADD CONSTRAINT fk_rails_b18868292d FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;

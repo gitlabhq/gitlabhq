@@ -812,7 +812,7 @@ test suites use PostgreSQL 16 because there is no dependency between the databas
 |-------------------------------------------------------------------------------------------------|-----------------------|----------------------|----------------------|
 | Merge requests with label `~group::global search` or `~pipeline:run-search-tests`               | 8.X (production)      |                      | 16 (default version) |
 | `nightly` scheduled pipelines for the `master` branch                                           | 7.X, 8.X (production) | 1.X, 2.X             | 16 (default version) |
-| `weekly` scheduled pipelines for the `master` branch                                            |                       | latest               | 16 (default version) |
+| `weekly` scheduled pipelines for the `master` branch                                            | 9.X                   | latest               | 16 (default version) |
 
 ## Monitoring
 

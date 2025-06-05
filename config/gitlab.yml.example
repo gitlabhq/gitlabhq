@@ -217,6 +217,10 @@ production: &base
     # this setting should be toggled from the admin pages in the UI.
     # initial_gitlab_product_usage_data: true
 
+  ## Custom claim values for JWT ID Tokens
+  # ci_id_tokens:
+    # issuer_url: <custom-issuer-url>
+
   # Allows delivery of emails using Microsoft Graph API with OAuth 2.0 client credentials flow.
   microsoft_graph_mailer:
     enabled: false

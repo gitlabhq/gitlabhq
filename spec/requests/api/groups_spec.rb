@@ -684,6 +684,9 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
     context "when authenticated as user" do
       it "returns one of user1's groups", :aggregate_failures do
+        # TODO remove this in https://gitlab.com/gitlab-org/gitlab/-/issues/545723.
+        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(102)
+
         project = create(:project, namespace: group2, path: 'Foo')
         create(:project_group_link, project: project, group: group1)
         group = create(:group)

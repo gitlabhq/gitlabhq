@@ -7,6 +7,8 @@ module ResolvesGroups
 
   PRELOADS = {
     container_repositories_count: [:container_repositories],
+    description: [:namespace_details],
+    description_html: [:namespace_details],
     vulnerability_namespace_statistic: [:vulnerability_namespace_statistic],
     custom_emoji: [:custom_emoji],
     full_path: [:route],

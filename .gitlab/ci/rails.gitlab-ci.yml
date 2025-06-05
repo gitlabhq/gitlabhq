@@ -60,6 +60,7 @@ setup-test-env:
 setup-test-env-fips:
   extends:
     - setup-test-env
+    - .rails:rules:setup-test-env-fips
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-golang-${GO_VERSION}-rust-${RUST_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-exiftool-${EXIFTOOL_VERSION}
   variables:
     BUILD_OS: "ubi"
@@ -647,6 +648,20 @@ rspec:feature-flags:
         scripts/feature_flags/used-feature-flags || (scripts/slack master-broken "☠️ \`${CI_JOB_NAME}\` failed! ☠️ See ${CI_JOB_URL}" ci_failing "GitLab Bot" && exit 1);
       else
         scripts/feature_flags/used-feature-flags;
+      fi
+
+# The weekly tests are used to test latest Elasticsearch and OpenSearch versions
+# This job reports failures to #g_global_search_alerts in Slack
+rspec:schedule-weekly-report-failures:
+  extends:
+    - .rails:rules:default-branch-schedule-weekly--code-backstage-ee-only
+  stage: post-test
+  when: on_failure
+  script:
+    - if [ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]; then
+      (scripts/slack g_global_search_alerts "☠️ \`${CI_JOB_NAME}\` weekly testing pipeline failed! ☠️ See ${CI_JOB_URL}" ci_failing "GitLab Bot" && exit 1);
+      else
+      echo "☠️ \`${CI_JOB_NAME}\` weekly testing pipeline failed! ☠️ See ${CI_JOB_URL}"
       fi
 
 rspec:flaky-tests-report:
@@ -1244,8 +1259,29 @@ rspec-ee system pg17:
 
 ##################################################
 # EE: default branch weekly scheduled jobs #
-# Integration tests with latest OpenSearch versions
+# Integration tests with Elasticsearch 9.X and OpenSearch versions
 # and the actual PG production version (PG16)
+
+rspec-ee unit pg16 es9:
+  extends:
+    - .rspec-base-pg16
+    - .rspec-ee-base-pg16-es9
+    - .rspec-ee-unit-parallel
+    - .rails:rules:default-branch-schedule-weekly--code-backstage-ee-only
+
+rspec-ee integration pg16 es9:
+  extends:
+    - .rspec-base-pg16
+    - .rspec-ee-base-pg16-es9
+    - .rspec-ee-integration-parallel
+    - .rails:rules:default-branch-schedule-weekly--code-backstage-ee-only
+
+rspec-ee system pg16 es9:
+  extends:
+    - .rspec-base-pg16
+    - .rspec-ee-base-pg16-es9
+    - .rspec-ee-system-parallel
+    - .rails:rules:default-branch-schedule-weekly--code-backstage-ee-only
 
 rspec-ee unit pg16 opensearch-latest:
   extends:

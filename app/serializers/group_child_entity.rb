@@ -109,7 +109,8 @@ class GroupChildEntity < Grape::Entity
   end
 
   def markdown_description
-    markdown_field(object, :description)
+    markdown_field_object = object.is_a?(Namespace) ? object.namespace_details : object
+    markdown_field(markdown_field_object, :description)
   end
 
   def can_edit?

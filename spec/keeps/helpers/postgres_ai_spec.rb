@@ -115,14 +115,17 @@ RSpec.describe Keeps::Helpers::PostgresAi, feature_category: :tooling do
     let(:table_name_quoted) { "\"table_name\"" }
     let(:query) { "SELECT EXISTS (SELECT 1 FROM #{table_name_quoted} LIMIT 1)" }
 
-    let(:query_response) { double }
+    let(:query_response) { [{ 'exists' => 't' }] }
 
     subject(:result) { described_class.new.table_has_data?(table_name) }
 
-    it 'fetches if the table contains any data from Postgres AI' do
-      expect(pg_client).to receive(:exec_params).with(query).and_return(query_response)
-      expect(pg_client).to receive(:quote_ident).with(table_name).and_return(table_name_quoted)
-      expect(result).to eq(query_response)
+    context 'when the table contains data from Postgres AI' do
+      it 'return true', :aggregate_failures do
+        expect(pg_client).to receive(:exec_params).with(query).and_return(query_response)
+        expect(pg_client).to receive(:quote_ident).with(table_name).and_return(table_name_quoted)
+
+        expect(result).to be(true)
+      end
     end
 
     context 'when the table does not exist' do
