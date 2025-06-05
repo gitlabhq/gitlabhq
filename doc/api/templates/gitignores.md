@@ -15,7 +15,8 @@ title: .gitignore API
 In GitLab, the `/gitignores` endpoint returns a list of Git `.gitignore` templates. For more information,
 see the [Git documentation for `.gitignore`](https://git-scm.com/docs/gitignore).
 
-Users with the Guest role can't access the .gitignore templates. For more information, see [Project and group visibility](../../user/public_access.md).
+Users with the Guest role can't access the `.gitignore` templates. For more information, see
+[Project and group visibility](../../user/public_access.md).
 
 ## Get all `.gitignore` templates
 

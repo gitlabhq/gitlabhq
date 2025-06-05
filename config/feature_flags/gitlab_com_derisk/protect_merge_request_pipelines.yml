@@ -1,9 +1,0 @@
----
-name: protect_merge_request_pipelines
-feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/17186
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188008
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/535913
-milestone: '18.1'
-group: group::pipeline security
-type: gitlab_com_derisk
-default_enabled: false

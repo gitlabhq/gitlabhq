@@ -12,7 +12,10 @@ title: Keys API
 
 {{< /details >}}
 
-If using a SHA256 fingerprint in an API call, you should URL-encode the fingerprint.
+Use the keys API to identify the user associated with a SSH key, or its fingerprint. Queries about
+deploy key fingerprints also retrieve information about the projects using that key.
+
+If you use a SHA256 fingerprint in an API call, you should URL-encode the fingerprint.
 
 ## Get SSH key with user by ID of an SSH key
 

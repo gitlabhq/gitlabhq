@@ -16275,7 +16275,8 @@ CREATE TABLE issue_metrics (
     first_added_to_board_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_ed784787ee CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE issue_metrics_id_seq
@@ -35245,8 +35246,6 @@ CREATE INDEX index_evidences_on_release_id ON evidences USING btree (release_id)
 
 CREATE INDEX index_excluded_merge_requests_on_merge_request_id ON excluded_merge_requests USING btree (merge_request_id);
 
-CREATE INDEX index_expired_and_not_notified_personal_access_tokens ON personal_access_tokens USING btree (id, expires_at) WHERE ((impersonation = false) AND (revoked = false) AND (expire_notification_delivered = false));
-
 CREATE UNIQUE INDEX index_external_audit_event_destinations_on_namespace_id ON audit_events_external_audit_event_destinations USING btree (namespace_id, destination_url);
 
 CREATE UNIQUE INDEX index_external_pull_requests_on_project_and_branches ON external_pull_requests USING btree (project_id, source_branch, target_branch);
@@ -38790,8 +38789,6 @@ CREATE INDEX tmp_index_for_null_member_namespace_id ON members USING btree (memb
 CREATE INDEX tmp_index_for_project_namespace_id_migration_on_routes ON routes USING btree (id) WHERE ((namespace_id IS NULL) AND ((source_type)::text = 'Project'::text));
 
 CREATE INDEX tmp_index_null_project_id_on_notes ON notes USING btree (id) WHERE (project_id IS NULL);
-
-CREATE INDEX tmp_index_pats_on_notification_columns_and_expires_at ON personal_access_tokens USING btree (id) WHERE ((expire_notification_delivered IS TRUE) AND (seven_days_notification_sent_at IS NULL) AND (expires_at IS NOT NULL));
 
 CREATE INDEX tmp_index_project_statistics_cont_registry_size ON project_statistics USING btree (project_id) WHERE (container_registry_size = 0);
 

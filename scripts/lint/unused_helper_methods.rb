@@ -33,7 +33,7 @@ end
 #
 helpers = source_files.keys.grep(%r{app/helpers}).flat_map do |filename|
   source_files[filename].flat_map do |line|
-    line =~ /def ([^(\s]+)/ ? [{ method: Regexp.last_match(1).chomp, file: filename }] : []
+    line =~ /def ([^(;\s]+)/ ? [{ method: Regexp.last_match(1).chomp, file: filename }] : []
   end
 end
 
@@ -72,11 +72,25 @@ if print_output
   exit 0
 end
 
-potential_methods_count = YAML.load_file(POTENTIAL_METHODS_PATH, symbolize_names: true).size
+potential_methods = YAML.load_file(POTENTIAL_METHODS_PATH, symbolize_names: true)
+potential_methods_count = potential_methods.size
 
 if unused.size > potential_methods_count
-  added = unused.size - potential_methods_count
-  puts Rainbow("ERROR: #{added} unused methods were added. Please remove them.").red.bright
+  added_count = unused.size - potential_methods_count
+
+  current_unused_names = unused.collect { |entry| entry[:method].to_sym }
+  new_unused_method_names = current_unused_names - potential_methods.keys
+  newly_unused = unused.select { |entry| new_unused_method_names.include? entry[:method].to_sym }
+
+  puts Rainbow("❌ We have detected #{added_count} newly unused methods. They are:\n").red.bright
+
+  newly_unused.each do |helper|
+    puts Rainbow("#{helper[:method]}:").red.bright
+    puts Rainbow("  file: #{helper[:file]}").red.bright
+    puts Rainbow("  reason:").red.bright
+  end
+
+  puts Rainbow("\nPlease remove these methods, or if in use, add to #{EXCLUDED_METHODS_PATH}.").red.bright
 
   exit 1
 elsif unused.size < potential_methods_count

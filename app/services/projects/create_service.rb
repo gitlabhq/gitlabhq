@@ -31,7 +31,7 @@ module Projects
       params[:snippets_enabled] = params[:snippets_access_level] if params[:snippets_access_level]
       params[:merge_requests_enabled] = params[:merge_requests_access_level] if params[:merge_requests_access_level]
       params[:issues_enabled] = params[:issues_access_level] if params[:issues_access_level]
-      params[:protect_merge_request_pipelines] = Feature.enabled?(:protect_merge_request_pipelines, current_user)
+      params[:protect_merge_request_pipelines] = true
 
       if create_from_template?
         return ::Projects::CreateFromTemplateService.new(current_user, params).execute

@@ -1381,11 +1381,5 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
       project = create_project(user, opts)
       expect(project.protect_merge_request_pipelines).to be_truthy
     end
-
-    it 'sets the protect_merge_request_pipelines setting as false if the feature flag is disabled' do
-      stub_feature_flags(protect_merge_request_pipelines: false)
-      project = create_project(user, opts)
-      expect(project.protect_merge_request_pipelines).to be_falsey
-    end
   end
 end

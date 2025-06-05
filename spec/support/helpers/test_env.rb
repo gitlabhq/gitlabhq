@@ -15,7 +15,10 @@ module TestEnv
 
     duration = duration.round(3)
     @durations_mutex.synchronize { @component_durations[name] ||= duration }
-    puts "==> #{name} set up in #{duration} seconds...\n"
+
+    name = name.to_s
+    display_name = name.start_with?('setup_') ? name.delete_prefix('setup_').tr('_', ' ').capitalize : name
+    puts "==> #{display_name} set up in #{duration} seconds...\n"
 
     result
   end
@@ -280,18 +283,18 @@ module TestEnv
 
   # Feature specs are run through Workhorse
   def setup_workhorse
-    # Always rebuild the config file
-    if skip_compile_workhorse?
-      Gitlab::SetupHelper::Workhorse.create_configuration(workhorse_dir, nil, force: true)
-      return
-    end
+    measure_setup_duration('GitLab Workhorse') do
+      # Always rebuild the config file
+      if skip_compile_workhorse?
+        puts "==> GitLab Workhorse up to date, skipping rebuild..."
+        Gitlab::SetupHelper::Workhorse.create_configuration(workhorse_dir, nil, force: true)
+      else
+        FileUtils.rm_rf(workhorse_dir)
+        Gitlab::SetupHelper::Workhorse.compile_into(workhorse_dir)
+        Gitlab::SetupHelper::Workhorse.create_configuration(workhorse_dir, nil)
 
-    measure_setup_duration('setup_workhorse') do
-      FileUtils.rm_rf(workhorse_dir)
-      Gitlab::SetupHelper::Workhorse.compile_into(workhorse_dir)
-      Gitlab::SetupHelper::Workhorse.create_configuration(workhorse_dir, nil)
-
-      File.write(workhorse_tree_file, workhorse_tree) if workhorse_source_clean?
+        File.write(workhorse_tree_file, workhorse_tree) if workhorse_source_clean?
+      end
     end
   end
 

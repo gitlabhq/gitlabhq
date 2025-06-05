@@ -14,8 +14,16 @@ title: Control access and visibility
 
 {{< /details >}}
 
-GitLab enables users with administrator access to enforce
-specific controls on branches, projects, snippets, groups, and more.
+Administrators of GitLab instances can enforce specific controls on branches, projects, snippets, groups, and more.
+For example, you can define:
+
+- Which roles can create or delete projects.
+- Retention periods for deleted projects and groups.
+- Visibility of groups, projects, and snippets.
+- Allowed types and lengths for SSH keys.
+- Git settings, such as accepted protocols (SSH or HTTPS) and clone URLs.
+- Allow or prevent push mirroring and pull mirroring.
+- Allow or prevent invitations to groups and projects.
 
 Prerequisites:
 
@@ -51,7 +59,7 @@ Prerequisites:
 {{< alert type="note" >}}
 
 If you select **Administrators** and [Admin Mode](sign_in_restrictions.md#admin-mode)
-is turned on, administrators must enter Admin Mode to create new projects.
+is enabled, administrators must enter Admin Mode to create new projects.
 
 {{< /alert >}}
 
@@ -353,10 +361,10 @@ Prerequisites:
 
 Administrators can combine IP address ranges with
 [IP restrictions per group](../../user/group/access_and_permissions.md#restrict-group-access-by-ip-address).
-Use globally-allowed IP addresses to allow aspects of the GitLab installation to work even when IP address
-restrictions are set per group.
+Globally-allowed IP addresses enable aspects of the GitLab installation to work properly, even when
+groups set their own IP address restrictions.
 
-For example, if the GitLab Pages daemon runs on the `10.0.0.0/24` range, you can specify that range as globally allowed.
+For example, if the GitLab Pages daemon runs on the `10.0.0.0/24` range, globally allow that range.
 GitLab Pages can still fetch artifacts from pipelines, even if IP address restrictions for the group don't
 include the `10.0.0.0/24` range.
 
@@ -383,10 +391,10 @@ Prerequisites:
 
 {{< /history >}}
 
-You can remove the ability for non-administrators to invite users to all groups or projects on the instance. After
-you configure this setting, only administrators can invite users to groups or projects on the instance.
+Administrators can prevent non-administrators from inviting users to all groups or projects on the instance.
+When you configure this setting, only administrators can invite users to groups or projects on the instance.
 
-You can also prevent user invitations for a specific group. For more information, see [prevent user invitations to a group](../../user/group/manage.md#prevent-invitations-to-a-group).
+Administrators can also [prevent user invitations to a specific group](../../user/group/manage.md#prevent-invitations-to-a-group).
 
 Prerequisites:
 

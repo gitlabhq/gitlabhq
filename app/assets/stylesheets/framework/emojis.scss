@@ -47,17 +47,15 @@ gl-emoji {
 
 .emoji-picker .gl-dropdown .dropdown-menu,
 .emoji-picker .gl-new-dropdown .gl-new-dropdown-panel {
-  width: 350px !important;
+  width: 354px !important;
 }
 
 .emoji-picker-category-tab {
   border-bottom-color: transparent;
 
   &:hover {
-    color: $gray-900 !important;
-
     &:not(.emoji-picker-category-active) {
-      border-bottom-color: $gray-300;
+      @apply gl-border-b;
     }
   }
 
@@ -67,11 +65,7 @@ gl-emoji {
 }
 
 .emoji-picker-category-active {
-  border-bottom-color: $blue-500 !important;
-
-  svg {
-    color: $gray-900 !important;
-  }
+  border-bottom-color: $gl-control-border-color-selected-default !important;
 }
 
 .emoji-picker .gl-dropdown-contents > :last-child {

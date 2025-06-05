@@ -437,6 +437,132 @@ Packages uploaded before this feature was enabled (GitLab 17.10) do not have the
 
 {{< /alert >}}
 
+## Conan revisions
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519741) in GitLab 18.1 [with a flag](../../../administration/feature_flags.md) named `conan_package_revisions_support`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+{{< /alert >}}
+
+{{< alert type="note" >}}
+
+Conan revisions are supported only when the remote is setup on a [project](#add-a-remote-for-your-project), 
+not for the entire [instance](#add-a-remote-for-your-instance).
+
+{{< /alert >}}
+
+Conan revisions provide package immutability in the package registry. When you make changes to a recipe or a package without changing its version, Conan calculates a unique identifier (revision) to track these changes.
+
+### Types of revisions
+
+Conan uses two types of revisions:
+
+- **Recipe revisions (RREV)**: Generated when a recipe is exported. By default, Conan calculates recipe revisions using the checksum hash of the recipe manifest.
+- **Package revisions (PREV)**: Generated when a package is built. Conan calculates package revisions using the hash of the package contents.
+
+### Enable revisions
+
+Revisions are not enabled by default in Conan 1.x. To enable revisions, you must either:
+
+- Add `revisions_enabled=1` in the `[general]` section of your `_conan.conf_` file (preferred).
+- Set the `CONAN_REVISIONS_ENABLED=1` environment variable.
+
+### Reference revisions
+
+You can reference packages in the following formats:
+
+| Reference | Description |
+| --- | --- |
+| `lib/1.0@conan/stable` | The latest RREV for `lib/1.0@conan/stable`. |
+| `lib/1.0@conan/stable#RREV` | The specific RREV for `lib/1.0@conan/stable`. |
+| `lib/1.0@conan/stable#RREV:PACKAGE_REFERENCE` | A binary package that belongs to the specific RREV. |
+| `lib/1.0@conan/stable#RREV:PACKAGE_REFERENCE#PREV` | A binary package revision PREV that belongs to the specific RREV. |
+
+### Upload revisions
+
+To upload all revisions and their binaries to the GitLab package registry:
+
+```shell
+conan upload package_name/version@user/channel#* --all --remote=gitlab
+```
+
+When you upload multiple revisions, they are uploaded from oldest to newest. The relative order is preserved in the registry.
+
+### Search for revisions
+
+To search for all revisions of a specific recipe in Conan v1:
+
+```shell
+conan search package_name/version@user/channel --revisions --remote=gitlab
+```
+
+This command displays all available revisions for the specified recipe along with their revision hashes and creation dates.
+
+To get detailed information about a specific revision:
+
+```shell
+conan search package_name/version@user/channel#revision_hash --remote=gitlab
+```
+
+This command shows you the specific binary packages available for that revision.
+
+### Delete packages with revisions
+
+You can delete packages at different levels of granularity:
+
+#### Delete a specific recipe revision
+
+To delete a specific recipe revision and all its associated binary packages:
+
+```shell
+conan remove package_name/version@user/channel#revision_hash --remote=gitlab
+```
+
+#### Delete packages for a specific recipe revision
+
+To delete all packages associated with a specific recipe revision:
+
+```shell
+conan remove package_name/version@user/channel#revision_hash --packages --remote=gitlab
+```
+
+#### Delete a specific package in a revision
+
+To delete a specific package in a recipe revision, you can use either of these commands:
+
+```shell
+conan remove package_name/version@user/channel#revision_hash -p package_id --remote=gitlab
+```
+
+Or:
+
+```shell
+conan remove package_name/version@user/channel#revision_hash:package_id --remote=gitlab
+```
+
+{{< alert type="note" >}}
+
+When you delete packages with revisions, you must include the `--remote=gitlab` flag. Otherwise, the package is removed only from your local system cache.
+
+{{< /alert >}}
+
+### Immutable revisions workflow
+
+Revisions are designed to be immutable. When you modify a recipe or its source code:
+
+- A new recipe revision is created when you export a recipe.
+- Any existing binaries that belong to the previous recipe revision are not included. You must build new binaries for the new recipe revision.
+- When you install a package, Conan automatically retrieves the latest revision unless you specify a revision.
+
+For package binaries, you should include only one package revision per recipe revision and package reference (known as the `package_id` in Conan documentation). Multiple package revisions for the same recipe revision and package ID indicate that a package was rebuilt unnecessarily.
+
 ## Troubleshooting
 
 ### Make output verbose

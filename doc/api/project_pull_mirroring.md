@@ -12,7 +12,7 @@ title: Pull mirroring API
 
 {{< /details >}}
 
-You can manage project [pull mirroring](../user/project/repository/mirror/pull.md) by using the REST API.
+Use the pull mirroring API to manage a project's [pull mirroring](../user/project/repository/mirror/pull.md).
 
 ## Get a project's pull mirror details
 

@@ -39998,16 +39998,10 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-msgid "Name can contain only lowercase or uppercase letters, digits, emoji, spaces, dots, underscores, dashes, or pluses."
-msgstr ""
-
 msgid "Name can't be blank"
 msgstr ""
 
 msgid "Name is already taken."
-msgstr ""
-
-msgid "Name must start with a letter, digit, emoji, or underscore."
 msgstr ""
 
 msgid "Name of the Jenkins project."
@@ -47849,6 +47843,12 @@ msgid "Project must have default branch"
 msgstr ""
 
 msgid "Project name"
+msgstr ""
+
+msgid "Project name can contain only lowercase or uppercase letters, digits, emoji, spaces, dots, underscores, dashes, or pluses."
+msgstr ""
+
+msgid "Project name must start with a letter, digit, emoji, or underscore."
 msgstr ""
 
 msgid "Project navigation"

@@ -934,11 +934,7 @@ module Ci
 
     def protected_ref?
       strong_memoize(:protected_ref) do
-        if Feature.enabled?(:protect_merge_request_pipelines, project)
-          merge_request? ? protected_for_merge_request? : project.protected_for?(git_ref)
-        else
-          project.protected_for?(git_ref)
-        end
+        merge_request? ? protected_for_merge_request? : project.protected_for?(git_ref)
       end
     end
 

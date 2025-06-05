@@ -77,15 +77,9 @@ scope_avatar_classes:
   file: app/helpers/sidebars_helper.rb
 sort_value_stars_asc:
   file: app/helpers/sorting_titles_values_helper.rb
-display_subscription_banner!;:
-  file: app/helpers/subscribable_banner_helper.rb
 group_or_project_milestone_path:
   file: app/helpers/timeboxes_helper.rb
 can_admin_project_milestones?:
   file: app/helpers/timeboxes_helper.rb
-render_two_factor_auth_recovery_settings_check;:
-  file: app/helpers/users/callouts_helper.rb
-dismiss_two_factor_auth_recovery_settings_check;:
-  file: app/helpers/users/callouts_helper.rb
 all_visibility_levels_restricted?:
   file: app/helpers/visibility_level_helper.rb

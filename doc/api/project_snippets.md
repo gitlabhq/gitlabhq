@@ -12,6 +12,8 @@ title: Project snippets
 
 {{< /details >}}
 
+Use the project snippet API to create, manage, and delete snippets.
+
 ## Snippet visibility level
 
 [Snippets](project_snippets.md) in GitLab can be either private, internal or public.

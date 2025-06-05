@@ -73,7 +73,7 @@ module CacheMarkdownField
       # save_markdown updates DB columns directly, so compute and save mentions
       # by calling store_mentions! or we end-up with missing mentions although those
       # would appear in the notes, descriptions, etc in the UI
-      store_mentions! if mentionable_attributes_changed?(updates)
+      store_mentions! if store_mentions? && mentionable_attributes_changed?(updates)
     end
   end
 
@@ -185,6 +185,10 @@ module CacheMarkdownField
       changes.key?(cached_markdown_fields.html_field(attr.first)) &&
         changes.fetch(cached_markdown_fields.html_field(attr.first)).last.present?
     end
+  end
+
+  def store_mentions?
+    true
   end
 
   def store_mentions_after_commit?

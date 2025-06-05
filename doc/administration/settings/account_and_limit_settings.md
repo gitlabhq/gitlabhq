@@ -14,6 +14,15 @@ title: Account and limit settings
 
 {{< /details >}}
 
+GitLab administrators can configure project and account limits on their instance, like:
+
+- The number of projects a user can create.
+- Size limits on attachments, pushes, and repositories.
+- Session duration and expiration.
+- Access token settings, such as expiration and prefixes.
+- User privacy and deletion settings.
+- Creation rules for organizations and top-level groups.
+
 ## Default projects limit
 
 You can configure the default maximum number of projects new users can create in their

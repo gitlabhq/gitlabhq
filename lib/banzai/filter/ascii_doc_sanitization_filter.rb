@@ -7,7 +7,7 @@ module Banzai
     # Extends Banzai::Filter::BaseSanitizationFilter with specific rules.
     class AsciiDocSanitizationFilter < Banzai::Filter::BaseSanitizationFilter
       # Anchor link prefixed by "user-content-" pattern
-      PREFIXED_ID_PATTERN = /\A#{Gitlab::Asciidoc::DEFAULT_ADOC_ATTRS['idprefix']}(:?[[:alnum:]]|-|_)+\z/
+      PREFIXED_ID_PATTERN = /\A#{Banzai::Filter::AsciidocFilter::DEFAULT_ADOC_ATTRS['idprefix']}(:?[[:alnum:]]|-|_)+\z/
       SECTION_HEADINGS = %w[h2 h3 h4 h5 h6].freeze
 
       # Footnote link patterns

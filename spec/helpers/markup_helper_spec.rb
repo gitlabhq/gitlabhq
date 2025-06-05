@@ -381,8 +381,8 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
     context 'when file is Asciidoc' do
       let(:extension) { 'adoc' }
 
-      it 'renders using Gitlab::Asciidoc' do
-        expect(Gitlab::Asciidoc).to receive(:render)
+      it 'renders using Banzai' do
+        expect(Banzai).to receive(:render)
 
         helper.render_wiki_content(wiki_page)
       end
@@ -454,7 +454,7 @@ RSpec.describe MarkupHelper, feature_category: :markdown do
       assign(:ref, 'ref')
       assign(:path, 'path')
 
-      expect(Gitlab::Asciidoc).to receive(:render)
+      expect(Banzai).to receive(:render)
 
       helper.markup('foo.adoc', content, context)
 

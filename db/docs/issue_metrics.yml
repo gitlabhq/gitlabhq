@@ -8,14 +8,6 @@ description: Store various metrics for issues.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/516c838a1846d049814765afa85c28a3c14a5b9f
 milestone: '8.12'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  namespace_id:
-    references: namespaces
-    backfill_via:
-      parent:
-        foreign_key: issue_id
-        table: issues
-        sharding_key: namespace_id
-        belongs_to: issue
+sharding_key:
+  namespace_id: namespaces
 table_size: medium
-desired_sharding_key_migration_job_name: BackfillIssueMetricsNamespaceId

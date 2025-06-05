@@ -11,7 +11,7 @@ RSpec.describe Markup::RenderingService, feature_category: :groups_and_projects 
       user
     end
 
-    let_it_be(:context) { { project: project } }
+    let(:context) { { project: project } }
     let_it_be(:postprocess_context) { { current_user: user } }
 
     let(:file_name) { nil }
@@ -80,12 +80,13 @@ RSpec.describe Markup::RenderingService, feature_category: :groups_and_projects 
     context 'when file is asciidoc file' do
       let(:file_name) { 'foo.adoc' }
 
-      it 'returns html (rendered by Gitlab::Asciidoc)' do
+      it 'returns html (rendered by Banzai)' do
         expected_html = "<div>\n<p>Noël</p>\n</div>"
 
-        expect(Gitlab::Asciidoc).to receive(:render).with(text, context) { expected_html }
+        expect(Banzai).to receive(:render).with(text, context.merge(pipeline: :ascii_doc)) { expected_html }
 
         is_expected.to eq(expected_html)
+        expect(true).to be_truthy
       end
     end
 

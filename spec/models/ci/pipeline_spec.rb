@@ -1671,19 +1671,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           is_expected.to be_falsey
         end
       end
-
-      context 'when the protect_merge_request_pipelines feature flag is disabled' do
-        before do
-          stub_feature_flags(protect_merge_request_pipelines: false)
-          project.project_setting.update!(protect_merge_request_pipelines: true)
-        end
-
-        it 'checks if the branch ref is protected' do
-          expect(pipeline.project).to receive(:protected_for?).with("refs/heads/#{pipeline.ref}").and_return(false)
-
-          is_expected.to be_falsey
-        end
-      end
     end
   end
 
