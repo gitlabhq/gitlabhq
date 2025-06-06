@@ -402,7 +402,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'PipelineHooksWorker' => 3,
         'PipelineMetricsWorker' => 3,
         'PipelineNotificationWorker' => 3,
-        'PipelineProcessWorker' => 3,
         'PostReceive' => 3,
         'ProcessCommitWorker' => 3,
         'ProductAnalytics::InitializeSnowplowProductAnalyticsWorker' => 1,

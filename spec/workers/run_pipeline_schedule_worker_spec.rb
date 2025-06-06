@@ -11,9 +11,12 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :pipeline_compositio
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, :repository, namespace: group) }
     let_it_be(:user) { create(:user) }
-    let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project) }
-
+    let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project, owner: user) }
     let(:worker) { described_class.new }
+
+    before_all do
+      project.add_developer(user)
+    end
 
     around do |example|
       travel_to(pipeline_schedule.next_run_at + 1.hour) do
@@ -213,6 +216,63 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :pipeline_compositio
           .to receive(:error)
           .with(a_string_matching('ActiveRecord::StatementInvalid'))
           .and_call_original
+
+        worker.perform(pipeline_schedule.id, user.id)
+      end
+    end
+
+    context 'when the schedule owner is no longer available' do
+      let_it_be(:maintainer) { create(:user) }
+      let_it_be(:project_owner) { create(:user) }
+      let_it_be(:maintainer_2) { create(:user) }
+
+      before_all do
+        project.add_maintainer(maintainer)
+        project.add_maintainer(maintainer_2)
+        project.add_owner(project_owner)
+        user.destroy!
+      end
+
+      it 'sends an email notification to the project owner and maintainers' do
+        expect(NotificationService).to receive_message_chain(:new, :pipeline_schedule_owner_unavailable)
+           .with(pipeline_schedule)
+
+        worker.perform(pipeline_schedule.id, maintainer.id)
+      end
+
+      it 'sends an email to correct recipients' do
+        expected_recipients = [maintainer.email, project_owner.email, maintainer_2.email]
+        expect do
+          perform_enqueued_jobs do
+            worker.perform(pipeline_schedule.id, maintainer.id)
+          end
+        end.to change { ActionMailer::Base.deliveries.count }.by(3)
+
+        expect(ActionMailer::Base.deliveries.flat_map(&:to)).to match_array(expected_recipients)
+      end
+
+      it 'does not create a pipeline' do
+        expect(Ci::CreatePipelineService).not_to receive(:new)
+
+        worker.perform(pipeline_schedule.id, maintainer.id)
+      end
+
+      context 'when notify_pipeline_schedule_owner_unavailable is not enabled' do
+        before do
+          stub_feature_flags(notify_pipeline_schedule_owner_unavailable: false)
+        end
+
+        it 'does not sent an email notification to the project owner and maintainers' do
+          expect(NotificationService).not_to receive(:pipeline_schedule_owner_unavailable)
+
+          worker.perform(pipeline_schedule.id, maintainer.id)
+        end
+      end
+    end
+
+    context 'when the schedule owner is still available' do
+      it 'does not send any email notifications' do
+        expect(NotificationService).not_to receive(:pipeline_schedule_owner_unavailable)
 
         worker.perform(pipeline_schedule.id, user.id)
       end

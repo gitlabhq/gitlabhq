@@ -631,6 +631,7 @@ Gitlab/BoundedContexts:
     - 'app/mailers/emails/notes.rb'
     - 'app/mailers/emails/pages_domains.rb'
     - 'app/mailers/emails/pipelines.rb'
+    - 'app/mailers/emails/pipeline_schedules.rb'
     - 'app/mailers/emails/profile.rb'
     - 'app/mailers/emails/projects.rb'
     - 'app/mailers/emails/releases.rb'

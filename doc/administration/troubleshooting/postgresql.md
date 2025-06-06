@@ -246,7 +246,7 @@ To temporarily change the statement timeout:
    that this value is used:
 
    ```shell
-   sudo gitlab-rails runner "ActiveRecord::Base.connection_config[:variables]"
+   sudo gitlab-rails runner "ActiveRecord::Base.connection_db_config[:variables]"
    ```
 
 1. Perform the action for which you need a different timeout

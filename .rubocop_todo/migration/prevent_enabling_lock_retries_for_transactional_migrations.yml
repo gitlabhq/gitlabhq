@@ -1,6 +1,5 @@
 ---
 Migration/PreventEnablingLockRetriesForTransactionalMigrations:
-  Details: grace period
   Exclude:
     - 'db/migrate/20231220225325_add_asciidoc_max_includes_setting.rb'
     - 'db/migrate/20240110064826_add_color_mode_id_to_users.rb'

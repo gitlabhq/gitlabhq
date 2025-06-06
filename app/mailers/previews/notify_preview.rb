@@ -249,6 +249,10 @@ class NotifyPreview < ActionMailer::Preview
     Notify.pipeline_fixed_email(pipeline, pipeline.user.try(:email))
   end
 
+  def pipeline_schedule_owner_unavailable
+    Notify.pipeline_schedule_owner_unavailable_email(pipeline_schedule, user)
+  end
+
   def autodevops_disabled_email
     Notify.autodevops_disabled_email(pipeline, user.email).message
   end
@@ -558,6 +562,10 @@ class NotifyPreview < ActionMailer::Preview
 
   def pipeline
     @pipeline = Ci::Pipeline.last
+  end
+
+  def pipeline_schedule
+    @pipeline_schedule ||= Ci::PipelineSchedule.last
   end
 
   def remote_mirror

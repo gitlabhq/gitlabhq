@@ -8,6 +8,7 @@ RSpec.describe 'Mailer previews', feature_category: :shared do
   let_it_be(:project) { create(:project, :repository, :import_failed, group: group, import_last_error: 'some error') }
   let_it_be(:user) { create(:user) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project, owner: user) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:issue) { create(:issue, project: project, milestone: milestone) }

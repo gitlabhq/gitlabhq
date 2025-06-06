@@ -576,6 +576,12 @@ class NotificationService
     end
   end
 
+  def pipeline_schedule_owner_unavailable(schedule)
+    schedule.project.owners_and_maintainers.each do |recipient|
+      mailer.pipeline_schedule_owner_unavailable_email(schedule, recipient).deliver_later
+    end
+  end
+
   def autodevops_disabled(pipeline, recipients)
     return if pipeline.project.emails_disabled?
 

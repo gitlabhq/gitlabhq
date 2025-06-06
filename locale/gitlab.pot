@@ -45093,6 +45093,12 @@ msgstr ""
 msgid "PipelineSchedules|Last Pipeline"
 msgstr ""
 
+msgid "PipelineSchedules|Learn how to take ownership"
+msgstr ""
+
+msgid "PipelineSchedules|Learn how to take ownership."
+msgstr ""
+
 msgid "PipelineSchedules|Learn more in the %{linkStart}scheduled pipelines documentation.%{linkEnd}"
 msgstr ""
 
@@ -45153,6 +45159,12 @@ msgstr ""
 msgid "PipelineSchedules|Target"
 msgstr ""
 
+msgid "PipelineSchedules|The owner of the pipeline schedule \"%{schedule_description}\" no longer has permission. Without an owner, the pipeline will not run. Take ownership so the pipeline runs on schedule."
+msgstr ""
+
+msgid "PipelineSchedules|The owner of the pipeline schedule %{schedule_link} no longer has permission."
+msgstr ""
+
 msgid "PipelineSchedules|There was a problem deleting the pipeline schedule."
 msgstr ""
 
@@ -45163,6 +45175,12 @@ msgid "PipelineSchedules|There was a problem playing the pipeline schedule."
 msgstr ""
 
 msgid "PipelineSchedules|There was a problem taking ownership of the pipeline schedule."
+msgstr ""
+
+msgid "PipelineSchedules|View pipeline schedule"
+msgstr ""
+
+msgid "PipelineSchedules|Without an owner, the pipeline will not run. Take ownership so the pipeline runs on schedule."
 msgstr ""
 
 msgid "PipelineSchedules|You have exceeded the maximum number of pipeline schedules for your plan. To create a new schedule, either increase your plan limit or delete an existing schedule."

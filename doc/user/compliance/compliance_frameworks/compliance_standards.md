@@ -21,6 +21,9 @@ title: Compliance standards
 You can use [GitLab compliance controls](_index.md#gitlab-compliance-controls) to help meet the requirements of many
 compliance standards.
 
+The [Compliance Adherence Templates](https://gitlab.com/gitlab-org/software-supply-chain-security/compliance/engineering/compliance-adherence-templates) project
+contains a library of JSON templates. Use these templates to quickly adopt predefined compliance frameworks.
+
 ## ISMAP compliance requirements
 
 The Information system Security Management and Assessment Program (ISMAP) aims to secure the security level of the government's cloud service procurement
