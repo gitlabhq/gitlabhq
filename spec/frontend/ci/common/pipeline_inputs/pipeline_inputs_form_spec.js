@@ -326,6 +326,22 @@ describe('PipelineInputsForm', () => {
     });
   });
 
+  describe('when preselectAllInputs is true', () => {
+    beforeEach(async () => {
+      pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
+      await createComponent({ props: { preselectAllInputs: true } });
+    });
+
+    it('preselects all inputs', () => {
+      const updatedSelection = [
+        { ...expectedInputs[0], isSelected: true },
+        { ...expectedInputs[1], isSelected: true },
+        { ...expectedInputs[2], isSelected: true },
+      ];
+      expect(findInputsTable().props('inputs')).toEqual(updatedSelection);
+    });
+  });
+
   describe('savedInputs prop', () => {
     beforeEach(async () => {
       pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);

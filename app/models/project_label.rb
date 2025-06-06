@@ -15,7 +15,7 @@ class ProjectLabel < Label
 
   delegate :group, to: :project, allow_nil: true
 
-  alias_attribute :subject, :project
+  alias_method :subject, :project
 
   def subject_foreign_key
     'project_id'

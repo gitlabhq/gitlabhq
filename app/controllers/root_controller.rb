@@ -16,7 +16,9 @@ class RootController < Dashboard::ProjectsController
 
   CACHE_CONTROL_HEADER = 'no-store'
 
-  def index # rubocop:disable Lint/UselessMethodDefinition -- we need to explicitly define this action for the `skip_before_action`
+  def index
+    render('root/index') && return if Feature.enabled?(:personal_homepage, current_user)
+
     super
   end
 
@@ -36,6 +38,8 @@ class RootController < Dashboard::ProjectsController
 
   def redirect_logged_user
     case current_user.dashboard
+    when 'projects'
+      redirect_to(dashboard_projects_path) if Feature.enabled?(:personal_homepage, current_user)
     when 'stars'
       flash.keep
       redirect_to(starred_dashboard_projects_path)

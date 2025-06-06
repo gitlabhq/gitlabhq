@@ -8,7 +8,8 @@ class OauthAccessToken < Doorkeeper::AccessToken
 
   validates :expires_in, presence: true
 
-  alias_attribute :user, :resource_owner
+  alias_method :user, :resource_owner
+  alias_method :user=, :resource_owner=
 
   scope :latest_per_application, -> { select('distinct on(application_id) *').order(application_id: :desc, created_at: :desc) }
   scope :preload_application, -> { preload(:application) }

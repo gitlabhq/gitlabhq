@@ -127,6 +127,7 @@ describe('Pipeline New Form', () => {
       expect(findPipelineInputsForm().props()).toMatchObject({
         queryRef: `refs/heads/${defaultProps.refParam}`,
         emitModifiedOnly: true,
+        preselectAllInputs: true,
         emptySelectionText: 'Select inputs to create a new pipeline.',
       });
     });

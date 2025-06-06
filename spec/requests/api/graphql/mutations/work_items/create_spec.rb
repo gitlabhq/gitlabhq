@@ -540,14 +540,6 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
         let(:mutation) { graphql_mutation(:workItemCreate, input.merge('namespacePath' => project.full_path), fields) }
 
         it_behaves_like 'creates work item'
-
-        context 'when the namespace_level_work_items feature flag is disabled' do
-          before do
-            stub_feature_flags(namespace_level_work_items: false)
-          end
-
-          it_behaves_like 'creates work item'
-        end
       end
     end
 

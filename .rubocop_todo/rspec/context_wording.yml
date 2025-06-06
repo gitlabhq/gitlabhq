@@ -241,7 +241,6 @@ RSpec/ContextWording:
     - 'ee/spec/helpers/ee/groups/group_members_helper_spec.rb'
     - 'ee/spec/helpers/ee/issuables_helper_spec.rb'
     - 'ee/spec/helpers/ee/issues_helper_spec.rb'
-    - 'ee/spec/helpers/ee/lock_helper_spec.rb'
     - 'ee/spec/helpers/ee/operations_helper_spec.rb'
     - 'ee/spec/helpers/ee/personal_access_tokens_helper_spec.rb'
     - 'ee/spec/helpers/ee/projects/security/api_fuzzing_configuration_helper_spec.rb'

@@ -28,6 +28,11 @@ export default {
       required: false,
       default: false,
     },
+    preselectAllInputs: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     queryRef: {
       type: String,
       required: true,
@@ -78,7 +83,7 @@ export default {
             ...input,
             savedValue,
             value: hasSavedValue ? savedValue : input.default,
-            isSelected: hasSavedValue,
+            isSelected: hasSavedValue || this.preselectAllInputs,
           };
         });
 

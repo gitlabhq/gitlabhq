@@ -399,10 +399,20 @@ export const makeDrawerUrlParam = (activeItem, fullPath, issuableType = TYPE_ISS
   );
 };
 
-export const getNewWorkItemAutoSaveKey = (fullPath, workItemType) => {
+export const getNewWorkItemAutoSaveKey = ({ fullPath, workItemType }) => {
   if (!workItemType || !fullPath) return '';
 
-  const queryParamString = new URLSearchParams(window.location.search).toString();
+  const allowedKeysInQueryParamString = ['vulnerability_id', 'discussion_to_resolve'];
+  const queryParams = new URLSearchParams(window.location.search);
+  // Remove extra params from queryParams
+  const allKeys = Array.from(queryParams.keys());
+  for (const key of allKeys) {
+    if (!allowedKeysInQueryParamString.includes(key)) {
+      queryParams.delete(key);
+    }
+  }
+  const queryParamString = queryParams.toString();
+
   if (queryParamString) {
     return `new-${fullPath}-${workItemType.toLowerCase()}-${queryParamString}-draft`;
   }

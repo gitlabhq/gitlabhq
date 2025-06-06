@@ -840,10 +840,10 @@ export default {
           numberOfDiscussionsResolved: this.numberOfDiscussionsResolved,
         });
 
-        const autosaveKey = getNewWorkItemAutoSaveKey(
-          this.selectedProjectFullPath,
-          this.selectedWorkItemTypeName,
-        );
+        const autosaveKey = getNewWorkItemAutoSaveKey({
+          fullPath: this.selectedProjectFullPath,
+          workItemType: this.selectedWorkItemTypeName,
+        });
         clearDraft(autosaveKey);
       } catch {
         this.error = this.createErrorText;
@@ -863,10 +863,10 @@ export default {
       }
     },
     handleDiscardDraft() {
-      const autosaveKey = getNewWorkItemAutoSaveKey(
-        this.selectedProjectFullPath,
-        this.selectedWorkItemTypeName,
-      );
+      const autosaveKey = getNewWorkItemAutoSaveKey({
+        fullPath: this.selectedProjectFullPath,
+        workItemType: this.selectedWorkItemTypeName,
+      });
       clearDraft(autosaveKey);
 
       const selectedWorkItemWidgets = this.selectedWorkItemType?.widgetDefinitions || [];

@@ -8,24 +8,19 @@
 
 - if (readme = @repository.readme) && readme.rich_viewer
   .tree-holder.gl-mt-5
-    - if Feature.enabled?(:blob_repository_vue_header_app, project)
-      #js-repository-blob-header-app{ data: {
-        project_id: @project.id,
-        ref: ref,
-        ref_type: @ref_type.to_s,
-        breadcrumbs: breadcrumb_data_attributes,
-        project_root_path: project_path(@project),
-        project_path: project.full_path,
-        compare_path: compare_path,
-        web_ide_button_options: web_ide_button_data.merge(fork_options).to_json,
-        web_ide_button_default_branch: @project.default_branch_or_main,
-        escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref),
+    #js-repository-blob-header-app{ data: {
+      project_id: @project.id,
+      ref: ref,
+      ref_type: @ref_type.to_s,
+      breadcrumbs: breadcrumb_data_attributes,
+      project_root_path: project_path(@project),
+      project_path: project.full_path,
+      compare_path: compare_path,
+      web_ide_button_options: web_ide_button_data.merge(fork_options).to_json,
+      web_ide_button_default_branch: @project.default_branch_or_main,
+      escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref),
         download_links: []
-      }.merge(vue_readme_header_additional_data) }
-
-    - else
-      .nav-block.mt-0
-        = render 'projects/tree/tree_header', tree: @tree
+    }.merge(vue_readme_header_additional_data) }
 
   %article.file-holder.readme-holder{ id: 'readme', class: ("limited-width-container" unless fluid_layout) }
     .js-file-title.file-title-flex-parent

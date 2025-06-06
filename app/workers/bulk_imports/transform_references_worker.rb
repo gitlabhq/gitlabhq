@@ -17,7 +17,7 @@ module BulkImports
 
       project = tracker.entity.project
 
-      klass.constantize.where(id: object_ids, project: project).find_each do |object|
+      klass.constantize.where(id: object_ids, project_id: project.id).find_each do |object|
         transform_and_save(object)
       end
     end

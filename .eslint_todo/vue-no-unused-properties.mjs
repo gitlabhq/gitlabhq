@@ -286,7 +286,6 @@ export default {
     'ee/app/assets/javascripts/iterations/components/iteration_form.vue',
     'ee/app/assets/javascripts/iterations/components/iteration_report.vue',
     'ee/app/assets/javascripts/merge_requests/components/reviewers/approval_summary.vue',
-    'ee/app/assets/javascripts/notes/components/ai_summary.vue',
     'ee/app/assets/javascripts/oncall_schedules/components/add_edit_schedule_form.vue',
     'ee/app/assets/javascripts/oncall_schedules/components/oncall_schedule.vue',
     'ee/app/assets/javascripts/oncall_schedules/components/rotations/components/rotation_assignee.vue',

@@ -478,7 +478,7 @@ To disconnect a sign-in service used for signing in to GitLab:
 
 ## Session duration
 
-### Stay signed in for two weeks
+### Stay signed in for one week
 
 By default, you are signed out of GitLab after seven days (10080 minutes) of inactivity or until you close your browser
 window, whichever comes first.

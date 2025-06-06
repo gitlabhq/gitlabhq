@@ -196,7 +196,7 @@ export const updateNewWorkItemCache = (input, cache) => {
 
     const newData = cache.readQuery({ query, variables });
 
-    const autosaveKey = getNewWorkItemAutoSaveKey(fullPath, workItemType);
+    const autosaveKey = getNewWorkItemAutoSaveKey({ fullPath, workItemType });
 
     const isQueryDataValid = !isEmpty(newData) && newData?.workspace?.workItem;
 

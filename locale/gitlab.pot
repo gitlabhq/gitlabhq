@@ -4487,6 +4487,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|To remove %{boldStart}%{modelName}%{boldEnd}, you must first remove it from the following AI Feature(s):"
 msgstr ""
 
+msgid "AdminSelfHostedModels|View AI-native features"
+msgstr ""
+
 msgid "AdminSelfHostedModels|You are about to delete the %{boldStart}%{modelName}%{boldEnd} self-hosted model. This action cannot be undone."
 msgstr ""
 
@@ -31216,6 +31219,9 @@ msgstr ""
 msgid "History of authentications"
 msgstr ""
 
+msgid "Home"
+msgstr ""
+
 msgid "Home page URL"
 msgstr ""
 
@@ -44700,6 +44706,9 @@ msgstr ""
 msgid "Personal access token is required."
 msgstr ""
 
+msgid "Personal homepage"
+msgstr ""
+
 msgid "Personal namespaces"
 msgstr ""
 
@@ -44944,6 +44953,9 @@ msgid "PipelineEditor|Configuration content has changed. Re-run validation for u
 msgstr ""
 
 msgid "PipelineEditor|Current content in the Edit tab will be used for the simulation."
+msgstr ""
+
+msgid "PipelineEditor|Editor accessibility guide"
 msgstr ""
 
 msgid "PipelineEditor|Git push event to the default branch"
@@ -55561,6 +55573,9 @@ msgstr ""
 msgid "SecurityOrchestration|Choose exception branches"
 msgstr ""
 
+msgid "SecurityOrchestration|Choose optimization preset %{linkStart}Help me choose%{linkEnd}"
+msgstr ""
+
 msgid "SecurityOrchestration|Choose specific role"
 msgstr ""
 
@@ -56098,6 +56113,9 @@ msgid "SecurityOrchestration|Scan execution policies using `custom` scan action 
 msgstr ""
 
 msgid "SecurityOrchestration|Scan execution policy"
+msgstr ""
+
+msgid "SecurityOrchestration|Scan execution strategy"
 msgstr ""
 
 msgid "SecurityOrchestration|Scan will automatically choose a runner to run on because there are no tags exist on runners. You can %{linkStart}create a new tag in settings%{linkEnd}."
@@ -67737,6 +67755,9 @@ msgid "Violates security policy"
 msgstr ""
 
 msgid "Violation"
+msgstr ""
+
+msgid "Violation Details"
 msgstr ""
 
 msgid "VirtualRegistries|API endpoints rate limit"

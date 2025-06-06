@@ -20,6 +20,8 @@ module PreferencesHelper
     validate_dashboard_choices!(dashboards)
     dashboards -= excluded_dashboard_choices
 
+    dashboards -= ['homepage'] unless Feature.enabled?(:personal_homepage, current_user)
+
     dashboards.map do |key|
       {
         # Use `fetch` so `KeyError` gets raised when a key is missing
@@ -43,7 +45,8 @@ module PreferencesHelper
       todos: _("Your To-Do List"),
       issues: _("Assigned issues"),
       merge_requests: _("Assigned merge requests"),
-      operations: _("Operations Dashboard")
+      operations: _("Operations Dashboard"),
+      homepage: _("Personal homepage")
     }.compact.with_indifferent_access.freeze
   end
 

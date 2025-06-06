@@ -357,7 +357,7 @@ export const setNewWorkItemCache = async ({
 
   const widgets = [];
 
-  const autosaveKey = getNewWorkItemAutoSaveKey(fullPath, workItemType);
+  const autosaveKey = getNewWorkItemAutoSaveKey({ fullPath, workItemType });
   const getStorageDraftString = getDraft(autosaveKey);
   const draftData = JSON.parse(getDraft(autosaveKey));
 

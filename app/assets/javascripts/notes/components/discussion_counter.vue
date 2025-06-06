@@ -5,7 +5,6 @@ import { mapGetters as mapVuexGetters } from 'vuex';
 import { mapActions, mapState } from 'pinia';
 import { throttle } from 'lodash';
 import { __ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   keysFor,
   MR_NEXT_UNRESOLVED_DISCUSSION,
@@ -25,7 +24,7 @@ export default {
     GlButton,
     GlButtonGroup,
   },
-  mixins: [glFeatureFlagsMixin(), discussionNavigation],
+  mixins: [discussionNavigation],
   props: {
     blocksMerge: {
       type: Boolean,
@@ -106,9 +105,6 @@ export default {
 
       return options;
     },
-    isNotificationsTodosButtons() {
-      return this.glFeatures.notificationsTodosButtons;
-    },
   },
   methods: {
     ...mapActions(useMrNotes, ['toggleAllVisibleDiscussions']),
@@ -128,8 +124,6 @@ export default {
       :class="{
         'gl-bg-feedback-warning': blocksMerge && !allResolved,
         'gl-bg-strong': !blocksMerge || allResolved,
-        'gl-mr-3': !isNotificationsTodosButtons,
-        'gl-mr-5': isNotificationsTodosButtons,
       }"
       data-testid="discussions-counter-text"
     >

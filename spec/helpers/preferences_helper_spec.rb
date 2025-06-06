@@ -49,6 +49,16 @@ RSpec.describe PreferencesHelper, feature_category: :shared do
         { text: "Assigned merge requests", value: 'merge_requests' }
       ]
     end
+
+    context 'with `personal_homepage` feature flag enabled' do
+      before do
+        stub_feature_flags(personal_homepage: true)
+      end
+
+      it 'has an additional option' do
+        expect(helper.dashboard_choices).to include({ text: "Personal homepage", value: 'homepage' })
+      end
+    end
   end
 
   describe '#first_day_of_week_choices' do

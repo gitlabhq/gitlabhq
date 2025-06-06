@@ -20,14 +20,15 @@ RSpec.describe 'Group Level Work Items', feature_category: :team_planning do
         get work_items_path
 
         expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to have_pushed_frontend_feature_flags(workItemPlanningView: true)
       end
 
-      context 'when the namespace_level_work_items feature flag is disabled' do
+      context 'when work_item_planning_view is disabled' do
         before do
-          stub_feature_flags(namespace_level_work_items: false)
+          stub_feature_flags(work_item_planning_view: false)
         end
 
-        it 'returns not found' do
+        it 'renders not found' do
           get work_items_path
 
           expect(response).to have_gitlab_http_status(:not_found)

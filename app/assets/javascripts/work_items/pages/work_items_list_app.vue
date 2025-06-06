@@ -297,6 +297,11 @@ export default {
       }
       return this.workItemsFull;
     },
+    shouldShowList() {
+      return (
+        this.hasAnyIssues || this.error || this.initialLoadWasFiltered || this.workItems.length > 0
+      );
+    },
     detailLoading() {
       return this.$apollo.queries.workItemsFull.loading;
     },
@@ -945,7 +950,7 @@ export default {
 <template>
   <gl-loading-icon v-if="!isInitialLoadComplete && !error" class="gl-mt-5" size="lg" />
 
-  <div v-else-if="hasAnyIssues || error || initialLoadWasFiltered">
+  <div v-else-if="shouldShowList">
     <div v-if="showLocalBoard">
       <local-board :work-item-list-data="workItems" @back="showLocalBoard = false" />
     </div>

@@ -12,26 +12,39 @@
       - c.with_body do
         = _('The source project of this merge request has been removed.')
 
-  .detail-page-header.border-bottom-0.gl-block.gl-pt-5.gl-gap-4{ class: "sm:!gl-flex #{'is-merge-request' if !fluid_layout}" }
-    .detail-page-header-body
-      %h1.title.gl-heading-1.gl-block.gl-grow.gl-break-anywhere{ class: '!gl-m-0', data: { testid: 'title-content' } }
-        = markdown_field(@merge_request, :title)
+  .detail-page-header.gl-flex.gl-pt-5.gl-gap-3.gl-flex-wrap.sm:gl-flex-nowrap.gl-mb-3.sm:gl-mb-0
+    %h1.title.gl-heading-1.gl-self-center.gl-mb-0.gl-flex-1{ data: { testid: 'title-content' } }
+      = markdown_field(@merge_request, :title)
 
-      - unless hide_gutter_toggle
-        %div
-          = render Pajamas::ButtonComponent.new(icon: "chevron-double-lg-left", button_options: { class: "btn-icon gl-float-right gl-block gutter-toggle issuable-gutter-toggle js-sidebar-toggle sm:!gl-hidden" })
-
-    .detail-page-header-actions.gl-self-start.is-merge-request.js-issuable-actions.gl-flex.gl-mt-1
+    .gl-flex.gl-flex-row.gl-gap-3.gl-w-full.sm:gl-w-auto.js-issuable-actions
       - if can_update_merge_request
         - edit_action_description = _('Edit merge request')
         - edit_action_shortcut = 'e'
         - edit_button_title = "#{edit_action_description} <kbd class='flat ml-1' aria-hidden=true>#{edit_action_shortcut}</kbd>"
         = render Pajamas::ButtonComponent.new(href: edit_project_merge_request_path(@project, @merge_request), button_options: { aria: {label: edit_action_description, keyshortcuts: edit_action_shortcut}, class: "gl-hidden sm:gl-inline-flex gl-self-start has-tooltip js-issuable-edit", data: { html: "true", testid: "edit-title-button" }, title: edit_button_title }) do
           = _('Edit')
+      - if @merge_request.source_project
+        = render 'projects/merge_requests/code_dropdown'
 
-      .gl-flex.gl-flex-col.sm:gl-flex-row.gl-gap-3.gl-w-full.sm:gl-w-auto.gl-mt-2.sm:gl-mt-0
-        - if @merge_request.source_project
-          = render 'projects/merge_requests/code_dropdown'
+      - if current_user
+        - merge_request_data = { iid: @merge_request.iid, draft: @merge_request.draft, target_project_id: @merge_request.target_project_id }
 
-        - if current_user
-          = render 'projects/merge_requests/close_reopen_draft_report_toggle'
+        .js-mr-more-dropdown{ data: {
+          merge_request: merge_request_data.to_json,
+          project_path: @project.full_path,
+          url: merge_request_url(@merge_request),
+          edit_url: edit_project_merge_request_path(@project, @merge_request),
+          is_current_user: issuable_author_is_current_user(@merge_request),
+          is_logged_in: current_user,
+          can_update_merge_request: can?(current_user, :update_merge_request, @merge_request),
+          open: @merge_request.open?,
+          merged: @merge_request.merged?,
+          source_project_missing: @merge_request.source_project_missing?,
+          clipboard_text: @merge_request.to_reference(full: true),
+          report_abuse_path: add_category_abuse_reports_path,
+          reported_user_id: @merge_request.author.id,
+        } }
+
+      - unless hide_gutter_toggle
+        = render Pajamas::ButtonComponent.new(icon: "chevron-double-lg-left", button_options: { class: "btn-icon gl-h-fit gutter-toggle js-sidebar-toggle lg:!gl-hidden" }) do
+          %span.sr-only= _('Expand sidebar')

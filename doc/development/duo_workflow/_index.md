@@ -73,3 +73,13 @@ Experimental settings that allow Duo Workflow graph to be swapped. Includes:
 Allow users to get access to tools that require approval such as running terminal commands.
 
 `"gitlab.duo.workflow.toolApproval": true`
+
+## Evaluate Workflow
+
+### Running evals
+
+To evaluate your local setup, please refer to [Duo Workflow Tests](https://gitlab.com/gitlab-org/duo-workflow/testing/duo-workflow-tests) repo.
+
+### Comparing results
+
+Once you finish a evaluation and have a experiment ID from LangSmith, compare results using [this notebook](https://gitlab.com/gitlab-org/duo-workflow/testing/notebooks/-/blob/main/notebooks/compare-swe-bench-evals.ipynb?ref_type=heads) from the [Duo Workflow Notebooks](https://gitlab.com/gitlab-org/duo-workflow/testing/notebooks) repo.

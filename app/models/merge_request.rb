@@ -618,7 +618,8 @@ class MergeRequest < ApplicationRecord
       .pick(MergeRequest::Metrics.time_to_merge_expression)
   end
 
-  alias_attribute :project, :target_project
+  alias_method :project, :target_project
+  alias_method :project=, :target_project=
   alias_attribute :project_id, :target_project_id
 
   # Currently, `merge_when_pipeline_succeeds` column is used as a flag

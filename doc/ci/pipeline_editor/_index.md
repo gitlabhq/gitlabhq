@@ -199,6 +199,17 @@ checkbox appears. Select it to start a new merge request after you commit the ch
 
 ![The commit form with a new branch](img/pipeline_editor_commit_v13_8.png)
 
+## Editor accessibility options
+
+The pipeline editor is based on the [Monaco Editor](https://github.com/microsoft/monaco-editor)
+which has several [accessibility features](https://github.com/microsoft/monaco-editor/wiki/Monaco-Editor-Accessibility-Guide),
+including:
+
+| Feature                          | Shortcut on Windows or Linux      | Shortcut on macOS                                    | Details |
+|----------------------------------|-----------------------------------|------------------------------------------------------|---------|
+| Keyboard navigation command list | <kbd>f1</kbd>                     | <kbd>f1</kbd>                                        | A [list of commands](https://github.com/microsoft/monaco-editor/wiki/Monaco-Editor-Accessibility-Guide#keyboard-navigation) that make the editor easier to use without a mouse. |
+| Tab trapping                     | <kbd>Control</kbd> + <kbd>m</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>m</kbd> | Enable [tab trapping](https://github.com/microsoft/monaco-editor/wiki/Monaco-Editor-Accessibility-Guide#tab-trapping) to go to the next focusable element on the page instead of inserting a tab character. |
+
 ## Troubleshooting
 
 ### `Configuration validation currently not available` message

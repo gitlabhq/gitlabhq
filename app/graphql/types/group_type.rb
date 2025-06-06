@@ -319,15 +319,13 @@ module Types
     field :work_item, Types::WorkItemType,
       resolver: Resolvers::Namespaces::WorkItemResolver,
       experiment: { milestone: '16.4' },
-      description: 'Find a work item by IID directly associated with the group. Returns `null` if the ' \
-        '`namespace_level_work_items` feature flag is disabled.'
+      description: 'Find a work item by IID directly associated with the group.'
 
     field :work_item_state_counts,
       Types::WorkItemStateCountsType,
       null: true,
       experiment: { milestone: '16.7' },
-      description: 'Counts of work items by state for the namespace. Returns `null` if the ' \
-        '`namespace_level_work_items` feature flag is disabled.',
+      description: 'Counts of work items by state for the namespace.',
       resolver: Resolvers::Namespaces::WorkItemStateCountsResolver
 
     field :autocomplete_users,

@@ -299,7 +299,7 @@ export default {
           :upload-path="uploadPath"
           :new-dir-path="newDirPath"
         />
-        <!-- EE: = render_if_exists 'projects/tree/lock_link' -->
+        <!-- EE lock directory -->
         <lock-directory-button
           v-if="!isRoot"
           :project-path="projectPath"

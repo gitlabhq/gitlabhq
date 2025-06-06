@@ -35738,7 +35738,7 @@ CREATE INDEX index_labels_on_template ON labels USING btree (template) WHERE tem
 
 CREATE INDEX index_labels_on_title_varchar ON labels USING btree (title varchar_pattern_ops);
 
-CREATE INDEX index_labels_on_type_and_project_id ON labels USING btree (type, project_id);
+CREATE INDEX index_labels_on_type_project_id_and_id ON labels USING btree (type, project_id, id);
 
 CREATE INDEX index_last_usages_on_last_used_date ON catalog_resource_component_last_usages USING btree (last_used_date);
 

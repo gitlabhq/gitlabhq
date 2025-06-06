@@ -214,7 +214,7 @@ Usage: rake "gitlab:cleanup:list_orphan_job_artifact_final_objects[provider]")
       # rubocop: disable Layout/LineLength
       MergeRequest
         .merged
-        .where(project: project)
+        .where(project_id: project.id)
         .each_batch(of: batch_size) do |mrs|
           matching_mrs = mrs.where(
             "merge_params LIKE '%force_remove_source_branch: ''1''%' OR merge_params LIKE '%should_remove_source_branch: ''1''%'"
@@ -227,7 +227,8 @@ Usage: rake "gitlab:cleanup:list_orphan_job_artifact_final_objects[provider]")
             next unless mr.source_branch_exists? && mr.can_remove_source_branch?(user)
 
             # Ensuring that only this MR exists for the source branch
-            if MergeRequest.where(project: project).where.not(id: mr.id).where(source_branch: mr.source_branch).exists?
+            if MergeRequest.where(project_id: project.id).where.not(id: mr.id)
+              .where(source_branch: mr.source_branch).exists?
               next
             end
 

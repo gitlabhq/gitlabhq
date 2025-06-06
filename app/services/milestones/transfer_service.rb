@@ -76,7 +76,7 @@ module Milestones
 
     # rubocop: disable CodeReuse/ActiveRecord
     def update_merge_requests_milestone(old_milestone_id, new_milestone_id)
-      MergeRequest.where(project: project, milestone_id: old_milestone_id)
+      MergeRequest.where(project_id: project.id, milestone_id: old_milestone_id)
         .update_all(milestone_id: new_milestone_id)
     end
     # rubocop: enable CodeReuse/ActiveRecord

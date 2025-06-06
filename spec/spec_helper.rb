@@ -351,6 +351,9 @@ RSpec.configure do |config|
       # New approval rules cause tests to fail
       # Default false while we make them compatible
       stub_feature_flags(v2_approval_rules: false)
+
+      # New personal homepage is still a WIP and not functional.
+      stub_feature_flags(personal_homepage: false)
     else
       unstub_all_feature_flags
     end

@@ -38,8 +38,7 @@ RSpec.describe 'Projects > Files > Open MRs dropdown', :js, feature_category: :s
   context 'when feature flags are enabled' do
     before do
       stub_feature_flags(
-        filter_blob_path: true,
-        blob_repository_vue_header_app: true
+        filter_blob_path: true
       )
     end
 
@@ -66,8 +65,7 @@ RSpec.describe 'Projects > Files > Open MRs dropdown', :js, feature_category: :s
   context 'when feature flags are disabled' do
     before do
       stub_feature_flags(
-        filter_blob_path: false,
-        blob_repository_vue_header_app: false
+        filter_blob_path: false
       )
     end
 

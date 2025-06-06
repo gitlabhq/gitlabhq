@@ -256,6 +256,7 @@ export default {
       </gl-form-group>
       <pipeline-inputs-form
         emit-modified-only
+        preselect-all-inputs
         :project-path="projectPath"
         :query-ref="refQueryParam"
         :empty-selection-text="s__('Pipeline|Select inputs to create a new pipeline.')"

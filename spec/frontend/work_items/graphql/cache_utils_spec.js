@@ -268,24 +268,32 @@ describe('work items graphql cache utils', () => {
       );
     });
 
-    it('does not restore cache when localStorage key represents a different route', async () => {
-      window.location.search = '?foo=bar';
-      await setNewWorkItemCache(mockNewWorkItemCache);
-      await waitForPromises();
+    it.each`
+      description                         | locationSearchString          | expectedTitle                                           | expectedWidgets
+      ${'restores cache with empty form'} | ${'?vulnerability_id=1'}      | ${''}                                                   | ${restoredDraftDataWidgetsEmpty}
+      ${'restores cache with empty form'} | ${'?discussion_to_resolve=1'} | ${''}                                                   | ${restoredDraftDataWidgetsEmpty}
+      ${'restores cache with draft'}      | ${'?type=ISSUE'}              | ${mockCreateWorkItemDraftData.workspace.workItem.title} | ${restoredDraftDataWidgets}
+    `(
+      '$description when URL params include $locationSearchString',
+      async ({ locationSearchString, expectedTitle, expectedWidgets }) => {
+        window.location.search = locationSearchString;
+        await setNewWorkItemCache(mockNewWorkItemCache);
+        await waitForPromises();
 
-      expect(mockWriteQuery).toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: expect.objectContaining({
-            workspace: expect.objectContaining({
-              workItem: expect.objectContaining({
-                title: '',
-                widgets: expect.arrayContaining(restoredDraftDataWidgetsEmpty),
+        expect(mockWriteQuery).toHaveBeenCalledWith(
+          expect.objectContaining({
+            data: expect.objectContaining({
+              workspace: expect.objectContaining({
+                workItem: expect.objectContaining({
+                  title: expectedTitle,
+                  widgets: expect.arrayContaining(expectedWidgets),
+                }),
               }),
             }),
           }),
-        }),
-      );
-    });
+        );
+      },
+    );
   });
 
   describe('updateCacheAfterCreatingNote', () => {

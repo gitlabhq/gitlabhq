@@ -411,7 +411,8 @@ class User < ApplicationRecord
     issues: 6,
     merge_requests: 7,
     operations: 8,
-    followed_user_activity: 9
+    followed_user_activity: 9,
+    homepage: 12
   }
 
   # User's Project preference
