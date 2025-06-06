@@ -38,12 +38,10 @@ RSpec.describe 'new tables with gitlab_main schema', feature_category: :cell do
     <<~HEREDOC
       The table `#{table_name}` has been added with `gitlab_main` schema.
       Starting from GitLab #{starting_from_milestone}, we expect new tables to use either the `gitlab_main_cell` or the
-      `gitlab_main_clusterwide` schema.
+      `gitlab_main_cell_local`, or `gitlab_main_user` schema.
 
-      To choose an appropriate schema for this table from among `gitlab_main_cell` and `gitlab_main_clusterwide`, please refer
-      to our guidelines at https://docs.gitlab.com/ee/development/cells/#choose-either-the-gitlab_main_cell-or-gitlab_main_clusterwide-schema, or consult with the Tenant Scale group.
-
-      Please see issue https://gitlab.com/gitlab-org/gitlab/-/issues/424990 to understand why this change is being enforced.
+      To choose an appropriate schema for this table, please refer
+      to our guidelines at https://docs.gitlab.com/ee/development/cells/#available-cells--organization-schemas or consult with the Tenant Scale group.
     HEREDOC
   end
 

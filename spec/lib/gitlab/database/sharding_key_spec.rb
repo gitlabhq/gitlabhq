@@ -160,7 +160,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       expect(allowed_to_be_missing_sharding_key).to include(table_name),
         "This table #{table_name} is missing `sharding_key` in the `db/docs` YML file. " \
           "Alternatively, set either a `sharding_key_issue_url`, or desired_sharding_key` attribute. " \
-          "Please refer to https://docs.gitlab.com/development/cells/#defining-a-sharding-key-for-all-organizational-tables."
+          "Please refer to https://docs.gitlab.com/development/organization/#defining-a-sharding-key-for-all-organizational-tables."
     end
   end
 
@@ -453,7 +453,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       Starting from GitLab #{starting_from_milestone}, we expect all new tables to define a `sharding_key`.
 
       To choose an appropriate sharding_key for this table please refer
-      to our guidelines at https://docs.gitlab.com/ee/development/cells/#defining-a-sharding-key-for-all-cell-local-tables, or consult with the Tenant Scale group.
+      to our guidelines at https://docs.gitlab.com/ee/development/organization/#defining-a-sharding-key-for-all-cell-local-tables, or consult with the Tenant Scale group.
     HEREDOC
   end
 
