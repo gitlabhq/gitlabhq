@@ -398,7 +398,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/requests/api/graphql/mutations/security_policy/unassign_security_policy_project_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/users/abuse/namespace_bans/destroy_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/vulnerabilities/create_issue_link_spec.rb'
-    - 'ee/spec/requests/api/graphql/namespace/compliance_frameworks_spec.rb'
     - 'ee/spec/requests/api/graphql/namespace/projects_spec.rb'
     - 'ee/spec/requests/api/graphql/pipeline_security_report_finding_spec.rb'
     - 'ee/spec/requests/api/graphql/product_analytics/dashboards_spec.rb'

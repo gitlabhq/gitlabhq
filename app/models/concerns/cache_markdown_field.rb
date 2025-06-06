@@ -217,7 +217,7 @@ module CacheMarkdownField
       cached_markdown_fields[markdown_field] = context
 
       html_field = cached_markdown_fields.html_field(markdown_field)
-      invalidation_method = "#{html_field}_invalidated?".to_sym
+      invalidation_method = :"#{html_field}_invalidated?"
 
       # The HTML becomes invalid if any dependent fields change. For now, assume
       # author and project invalidate the cache in all circumstances.

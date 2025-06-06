@@ -1,7 +1,6 @@
 ---
 table_name: ci_trigger_requests
-classes:
-- Ci::TriggerRequest
+classes: []
 feature_categories:
 - continuous_integration
 description: TODO
@@ -11,3 +10,5 @@ gitlab_schema: gitlab_ci
 table_size: small
 sharding_key:
   project_id: projects
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191769
+removed_in_milestone: '18.1'

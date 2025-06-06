@@ -4882,7 +4882,8 @@ CREATE TABLE incident_management_pending_issue_escalations (
     process_at timestamp with time zone NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_dff22b638a CHECK ((namespace_id IS NOT NULL))
 )
 PARTITION BY RANGE (process_at);
 
@@ -12056,26 +12057,6 @@ CREATE SEQUENCE ci_subscriptions_projects_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ci_subscriptions_projects_id_seq OWNED BY ci_subscriptions_projects.id;
-
-CREATE TABLE ci_trigger_requests (
-    id bigint NOT NULL,
-    trigger_id bigint NOT NULL,
-    variables text,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    commit_id bigint,
-    project_id bigint,
-    CONSTRAINT check_66cc8518b2 CHECK ((project_id IS NOT NULL))
-);
-
-CREATE SEQUENCE ci_trigger_requests_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE ci_trigger_requests_id_seq OWNED BY ci_trigger_requests.id;
 
 CREATE TABLE ci_triggers (
     id bigint NOT NULL,
@@ -27275,8 +27256,6 @@ ALTER TABLE ONLY ci_sources_projects ALTER COLUMN id SET DEFAULT nextval('ci_sou
 
 ALTER TABLE ONLY ci_subscriptions_projects ALTER COLUMN id SET DEFAULT nextval('ci_subscriptions_projects_id_seq'::regclass);
 
-ALTER TABLE ONLY ci_trigger_requests ALTER COLUMN id SET DEFAULT nextval('ci_trigger_requests_id_seq'::regclass);
-
 ALTER TABLE ONLY ci_triggers ALTER COLUMN id SET DEFAULT nextval('ci_triggers_id_seq'::regclass);
 
 ALTER TABLE ONLY ci_unit_test_failures ALTER COLUMN id SET DEFAULT nextval('ci_unit_test_failures_id_seq'::regclass);
@@ -29555,9 +29534,6 @@ ALTER TABLE ONLY ci_sources_projects
 
 ALTER TABLE ONLY ci_subscriptions_projects
     ADD CONSTRAINT ci_subscriptions_projects_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY ci_trigger_requests
-    ADD CONSTRAINT ci_trigger_requests_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ci_triggers
     ADD CONSTRAINT ci_triggers_pkey PRIMARY KEY (id);
@@ -34643,12 +34619,6 @@ CREATE INDEX index_ci_subscriptions_projects_author_id ON ci_subscriptions_proje
 CREATE INDEX index_ci_subscriptions_projects_on_upstream_project_id ON ci_subscriptions_projects USING btree (upstream_project_id);
 
 CREATE UNIQUE INDEX index_ci_subscriptions_projects_unique_subscription ON ci_subscriptions_projects USING btree (downstream_project_id, upstream_project_id);
-
-CREATE INDEX index_ci_trigger_requests_on_commit_id ON ci_trigger_requests USING btree (commit_id);
-
-CREATE INDEX index_ci_trigger_requests_on_project_id ON ci_trigger_requests USING btree (project_id);
-
-CREATE INDEX index_ci_trigger_requests_on_trigger_id_and_id ON ci_trigger_requests USING btree (trigger_id, id DESC);
 
 CREATE INDEX index_ci_triggers_on_owner_id ON ci_triggers USING btree (owner_id);
 
@@ -43563,9 +43533,6 @@ ALTER TABLE ONLY namespace_import_users
 
 ALTER TABLE ONLY namespace_commit_emails
     ADD CONSTRAINT fk_b8d89d555e FOREIGN KEY (email_id) REFERENCES emails(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY ci_trigger_requests
-    ADD CONSTRAINT fk_b8ec8b7245 FOREIGN KEY (trigger_id) REFERENCES ci_triggers(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY customer_relations_contacts
     ADD CONSTRAINT fk_b91ddd9345 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

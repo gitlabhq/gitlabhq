@@ -328,7 +328,6 @@ ci_pipelines: &pipeline_definition
 - processables
 - generic_commit_statuses
 - trigger
-- trigger_requests
 - variables
 - auto_canceled_by
 - auto_canceled_pipelines
@@ -422,7 +421,6 @@ builds:
 - metadata
 - runner
 - trigger
-- trigger_request
 - erased_by
 - deployment
 - pending_state
@@ -498,7 +496,6 @@ bridges:
 - resource_group
 - metadata
 - trigger
-- trigger_request
 - downstream_pipeline
 - upstream_pipeline
 generic_commit_statuses:
@@ -511,7 +508,6 @@ variables:
 - project
 triggers:
 - project
-- trigger_requests
 - owner
 pipeline_schedules:
 - project

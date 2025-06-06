@@ -3,8 +3,24 @@
 class Oauth::TokensController < Doorkeeper::TokensController
   include EnforcesTwoFactorAuthentication
   include RequestPayloadLogger
+  include Gitlab::InternalEventsTracking
 
   alias_method :auth_user, :current_user
+
+  def create
+    if authorize_response.status == :ok
+      track_internal_event(
+        'oauth_authorize_with_gitlab',
+        user: authorize_response.token.resource_owner,
+        additional_properties: {
+          label: server.client.present?.to_s,
+          property: params[:grant_type] # rubocop:disable Rails/StrongParams -- This pattern is followed in the gem
+        }
+      )
+    end
+
+    super
+  end
 
   private
 

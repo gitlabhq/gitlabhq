@@ -26,7 +26,7 @@ In GitLab 17.2, we introduced [epics as work items](../../user/group/epics/epic_
 
 To ensure that your integrations continue working:
 
-- If you use the [Epic GraphQL API](reference/_index.md#epic), migrate to the Work Item API before GitLab 18.0, when the Epic GraphQL API is removed.
+- If you use the [Epic GraphQL API](reference/_index.md#epic), migrate to the Work Item API before the Epic GraphQL API is removed.
 - If you use the [REST API](../epics.md), you can continue using it, but you should migrate to future-proof your integrations.
 - For new features (such as assignees, health status, linked items with other types), you must
   use the `WorkItem` GraphQL API.
@@ -48,10 +48,10 @@ The `WorkItem` GraphQL API:
 
 - Is marked as experimental.
 - Is used in production environments.
-- Will be [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/500620) before GitLab 18.0
-- Is planned to exit [experimental status](https://gitlab.com/gitlab-org/gitlab/-/issues/500620) before GitLab 18.0.
+- Will be [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/500620) before GitLab 19.0
+- Is planned to exit [experimental status](https://gitlab.com/gitlab-org/gitlab/-/issues/500620) before GitLab 19.0
 
-The [Epic GraphQL API](reference/_index.md#epic) is planned for removal in GitLab 18.0.
+The [Epic GraphQL API](reference/_index.md#epic) is planned for removal in GitLab 19.0.
 
 ## Migrate to the Work Item API
 

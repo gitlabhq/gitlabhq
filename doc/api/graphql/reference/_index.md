@@ -575,6 +575,18 @@ Returns [`CustomField`](#customfield).
 | ---- | ---- | ----------- |
 | <a id="querycustomfieldid"></a>`id` | [`IssuablesCustomFieldID!`](#issuablescustomfieldid) | Global ID of the custom field. |
 
+### `Query.dependency`
+
+Find a dependency.
+
+Returns [`Dependency`](#dependency).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querydependencyid"></a>`id` | [`SbomOccurrenceID!`](#sbomoccurrenceid) | Global ID of the Dependency. |
+
 ### `Query.designManagement`
 
 Fields related to design management.
@@ -4344,7 +4356,7 @@ Input type: `CreateDiscussionInput`
 
 {{< details >}}
 **Deprecated** in GitLab 17.5.
-Replaced by WorkItem type.
+Replaced by `WorkItem` type. For more information, see [migration guide](https://docs.gitlab.com/api/graphql/epic_work_items_api_migration_guide/).
 {{< /details >}}
 
 Input type: `CreateEpicInput`
@@ -5932,7 +5944,7 @@ Input type: `EnvironmentsCanaryIngressUpdateInput`
 
 {{< details >}}
 **Deprecated** in GitLab 17.5.
-Replaced by WorkItem type.
+Replaced by `WorkItem` type. For more information, see [migration guide](https://docs.gitlab.com/api/graphql/epic_work_items_api_migration_guide/).
 {{< /details >}}
 
 Input type: `EpicAddIssueInput`
@@ -6102,7 +6114,7 @@ Input type: `EpicMoveListInput`
 
 {{< details >}}
 **Deprecated** in GitLab 17.5.
-Replaced by WorkItem type.
+Replaced by `WorkItem` type. For more information, see [migration guide](https://docs.gitlab.com/api/graphql/epic_work_items_api_migration_guide/).
 {{< /details >}}
 
 Input type: `EpicSetSubscriptionInput`
@@ -9916,7 +9928,7 @@ Input type: `PrometheusIntegrationUpdateInput`
 
 {{< details >}}
 **Deprecated** in GitLab 17.5.
-Replaced by WorkItem type.
+Replaced by `WorkItem` type. For more information, see [migration guide](https://docs.gitlab.com/api/graphql/epic_work_items_api_migration_guide/).
 {{< /details >}}
 
 Input type: `PromoteToEpicInput`
@@ -11754,7 +11766,7 @@ Input type: `UpdateDependencyProxySettingsInput`
 
 {{< details >}}
 **Deprecated** in GitLab 17.5.
-Replaced by WorkItem type.
+Replaced by `WorkItem` type. For more information, see [migration guide](https://docs.gitlab.com/api/graphql/epic_work_items_api_migration_guide/).
 {{< /details >}}
 
 Input type: `UpdateEpicInput`
@@ -25845,6 +25857,7 @@ A software dependency used by a project.
 | <a id="dependencypackager"></a>`packager` | [`PackageManager`](#packagemanager) | Description of the tool used to manage the dependency. |
 | <a id="dependencyreachability"></a>`reachability` | [`ReachabilityType`](#reachabilitytype) | Information about reachability of a dependency. |
 | <a id="dependencyversion"></a>`version` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 18.1. Replaced by component_version. |
+| <a id="dependencyvulnerabilities"></a>`vulnerabilities` | [`VulnerabilityConnection`](#vulnerabilityconnection) | Vulnerabilities associated with the dependency. (see [Connections](#connections)) |
 | <a id="dependencyvulnerabilitycount"></a>`vulnerabilityCount` | [`Int!`](#int) | Number of vulnerabilities within the dependency. |
 
 ### `DependencyAggregation`
@@ -25864,6 +25877,7 @@ A software dependency aggregation used by a group.
 | <a id="dependencyaggregationpackager"></a>`packager` | [`PackageManager`](#packagemanager) | Description of the tool used to manage the dependency. |
 | <a id="dependencyaggregationreachability"></a>`reachability` | [`ReachabilityType`](#reachabilitytype) | Information about reachability of a dependency. |
 | <a id="dependencyaggregationversion"></a>`version` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 18.1. Replaced by component_version. |
+| <a id="dependencyaggregationvulnerabilities"></a>`vulnerabilities` | [`VulnerabilityConnection`](#vulnerabilityconnection) | Vulnerabilities associated with the dependency. (see [Connections](#connections)) |
 | <a id="dependencyaggregationvulnerabilitycount"></a>`vulnerabilityCount` | [`Int!`](#int) | Number of vulnerabilities within the dependency. |
 
 ### `DependencyPath`
@@ -28047,7 +28061,7 @@ GPG signature for a signed commit.
 | <a id="groupemailsenabled"></a>`emailsEnabled` | [`Boolean`](#boolean) | Indicates if a group has email notifications enabled. |
 | <a id="groupenforcefreeusercap"></a>`enforceFreeUserCap` | [`Boolean`](#boolean) | Indicates whether the group has limited users for a free plan. |
 | <a id="groupepicboards"></a>`epicBoards` {{< icon name="warning-solid" >}} | [`EpicBoardConnection`](#epicboardconnection) | **Deprecated** in GitLab 17.5. Replaced by WorkItem type. |
-| <a id="groupepicsenabled"></a>`epicsEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.5. Replaced by WorkItem type. |
+| <a id="groupepicsenabled"></a>`epicsEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated** in GitLab 17.5. Replaced by `WorkItem` type. For more information, see [migration guide](https://docs.gitlab.com/api/graphql/epic_work_items_api_migration_guide/). |
 | <a id="groupexternalauditeventdestinations"></a>`externalAuditEventDestinations` | [`ExternalAuditEventDestinationConnection`](#externalauditeventdestinationconnection) | External locations that receive audit events belonging to the group. (see [Connections](#connections)) |
 | <a id="groupexternalauditeventstreamingdestinations"></a>`externalAuditEventStreamingDestinations` {{< icon name="warning-solid" >}} | [`GroupAuditEventStreamingDestinationConnection`](#groupauditeventstreamingdestinationconnection) | **Introduced** in GitLab 16.11. **Status**: Experiment. External destinations that receive audit events belonging to the group. |
 | <a id="groupflowmetrics"></a>`flowMetrics` {{< icon name="warning-solid" >}} | [`GroupValueStreamAnalyticsFlowMetrics`](#groupvaluestreamanalyticsflowmetrics) | **Introduced** in GitLab 15.10. **Status**: Experiment. Flow metrics for value stream analytics. |
@@ -28351,6 +28365,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupcomplianceframeworksid"></a>`id` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | Global ID of a specific compliance framework to return. |
 | <a id="groupcomplianceframeworksids"></a>`ids` | [`[ComplianceManagementFrameworkID!]`](#compliancemanagementframeworkid) | List of Global IDs of compliance frameworks to return. |
 | <a id="groupcomplianceframeworkssearch"></a>`search` | [`String`](#string) | Search framework with most similar names. |
+| <a id="groupcomplianceframeworkssort"></a>`sort` | [`ComplianceFrameworkSort`](#complianceframeworksort) | Sort compliance frameworks by the criteria. |
 
 ##### `Group.componentVersions`
 
@@ -28669,7 +28684,7 @@ Find a single epic.
 
 {{< details >}}
 **Deprecated** in GitLab 17.5.
-Replaced by WorkItem type.
+Replaced by `WorkItem` type. For more information, see [migration guide](https://docs.gitlab.com/api/graphql/epic_work_items_api_migration_guide/).
 {{< /details >}}
 
 Returns [`Epic`](#epic).
@@ -28726,7 +28741,7 @@ Find epics.
 
 {{< details >}}
 **Deprecated** in GitLab 17.5.
-Replaced by WorkItem type.
+Replaced by `WorkItem` type. For more information, see [migration guide](https://docs.gitlab.com/api/graphql/epic_work_items_api_migration_guide/).
 {{< /details >}}
 
 Returns [`EpicConnection`](#epicconnection).
@@ -33784,6 +33799,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespacecomplianceframeworksid"></a>`id` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | Global ID of a specific compliance framework to return. |
 | <a id="namespacecomplianceframeworksids"></a>`ids` | [`[ComplianceManagementFrameworkID!]`](#compliancemanagementframeworkid) | List of Global IDs of compliance frameworks to return. |
 | <a id="namespacecomplianceframeworkssearch"></a>`search` | [`String`](#string) | Search framework with most similar names. |
+| <a id="namespacecomplianceframeworkssort"></a>`sort` | [`ComplianceFrameworkSort`](#complianceframeworksort) | Sort compliance frameworks by the criteria. |
 
 ##### `Namespace.customFields`
 
@@ -35675,7 +35691,6 @@ Project-level settings for product analytics provider.
 | <a id="projectcisubscriptionsprojects"></a>`ciSubscriptionsProjects` {{< icon name="warning-solid" >}} | [`CiSubscriptionsProjectConnection`](#cisubscriptionsprojectconnection) | **Deprecated** in GitLab 17.6. Use `ciUpstreamProjectSubscriptions`. |
 | <a id="projectciupstreamprojectsubscriptions"></a>`ciUpstreamProjectSubscriptions` {{< icon name="warning-solid" >}} | [`CiProjectSubscriptionConnection`](#ciprojectsubscriptionconnection) | **Introduced** in GitLab 17.6. **Status**: Experiment. Pipeline subscriptions where this project is the downstream project.When an upstream project's pipeline completes, a pipeline is triggered in the downstream project (this project). |
 | <a id="projectcodecoveragesummary"></a>`codeCoverageSummary` | [`CodeCoverageSummary`](#codecoveragesummary) | Code coverage summary associated with the project. |
-| <a id="projectcomplianceframeworks"></a>`complianceFrameworks` | [`ComplianceFrameworkConnection`](#complianceframeworkconnection) | Compliance frameworks associated with the project. (see [Connections](#connections)) |
 | <a id="projectcomponentusages"></a>`componentUsages` | [`CiCatalogResourceComponentUsageConnection`](#cicatalogresourcecomponentusageconnection) | Component(s) used by the project. (see [Connections](#connections)) |
 | <a id="projectcontainerexpirationpolicy"></a>`containerExpirationPolicy` {{< icon name="warning-solid" >}} | [`ContainerExpirationPolicy`](#containerexpirationpolicy) | **Deprecated** in GitLab 17.5. Use `container_tags_expiration_policy`. |
 | <a id="projectcontainerprotectionrepositoryrules"></a>`containerProtectionRepositoryRules` {{< icon name="warning-solid" >}} | [`ContainerProtectionRepositoryRuleConnection`](#containerprotectionrepositoryruleconnection) | **Introduced** in GitLab 16.10. **Status**: Experiment. Container protection rules for the project. |
@@ -36195,6 +36210,22 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectcompliancecontrolstatusfilters"></a>`filters` | [`ProjectComplianceControlStatusInput`](#projectcompliancecontrolstatusinput) | Filters applied when retrieving compliance control statuses for the project. |
+
+##### `Project.complianceFrameworks`
+
+Compliance frameworks associated with the project.
+
+Returns [`ComplianceFrameworkConnection`](#complianceframeworkconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectcomplianceframeworkssort"></a>`sort` | [`ComplianceFrameworkSort`](#complianceframeworksort) | Sort compliance frameworks by the criteria. |
 
 ##### `Project.complianceRequirementStatuses`
 
@@ -44070,6 +44101,17 @@ ComplianceFramework of a project for filtering.
 | <a id="complianceframeworkpresencefilterany"></a>`ANY` | Any compliance framework is assigned. |
 | <a id="complianceframeworkpresencefilternone"></a>`NONE` | No compliance framework is assigned. |
 
+### `ComplianceFrameworkSort`
+
+Values for sorting compliance frameworks.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="complianceframeworksortname_asc"></a>`NAME_ASC` | Sort by compliance framework name, ascending order. |
+| <a id="complianceframeworksortname_desc"></a>`NAME_DESC` | Sort by compliance framework name, descending order. |
+| <a id="complianceframeworksortupdated_at_asc"></a>`UPDATED_AT_ASC` | Sort by compliance framework updated date, ascending order. |
+| <a id="complianceframeworksortupdated_at_desc"></a>`UPDATED_AT_DESC` | Sort by compliance framework updated date, descending order. |
+
 ### `ComplianceStandardsAdherenceCheckName`
 
 Name of the check for the compliance standard.
@@ -49020,6 +49062,7 @@ Implementations:
 | <a id="dependencyinterfacepackager"></a>`packager` | [`PackageManager`](#packagemanager) | Description of the tool used to manage the dependency. |
 | <a id="dependencyinterfacereachability"></a>`reachability` | [`ReachabilityType`](#reachabilitytype) | Information about reachability of a dependency. |
 | <a id="dependencyinterfaceversion"></a>`version` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 18.1. Replaced by component_version. |
+| <a id="dependencyinterfacevulnerabilities"></a>`vulnerabilities` | [`VulnerabilityConnection`](#vulnerabilityconnection) | Vulnerabilities associated with the dependency. (see [Connections](#connections)) |
 | <a id="dependencyinterfacevulnerabilitycount"></a>`vulnerabilityCount` | [`Int!`](#int) | Number of vulnerabilities within the dependency. |
 
 #### `DesignFields`

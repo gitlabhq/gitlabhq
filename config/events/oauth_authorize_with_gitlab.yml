@@ -1,0 +1,20 @@
+---
+description: User authorising to GitLab using Oauth token
+internal_events: true
+action: oauth_authorize_with_gitlab
+identifiers:
+  - user
+additional_properties:
+  property:
+    description: OAuth grant type
+  label:
+    description: Whether or not client credentials is included in the request
+product_group: authentication
+product_categories:
+  - system_access
+milestone: '18.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191301
+tiers:
+  - free
+  - premium
+  - ultimate

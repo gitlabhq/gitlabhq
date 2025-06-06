@@ -75,7 +75,7 @@ module ContainerExpirationPolicies
       }
 
       SERVICE_RESULT_FIELDS.each do |field|
-        payload["cleanup_tags_service_#{field}".to_sym] = service_result[field]
+        payload[:"cleanup_tags_service_#{field}"] = service_result[field]
       end
 
       ServiceResponse.success(message: "cleanup #{cleanup_status}", payload: payload)

@@ -2,21 +2,6 @@
 # Cop supports --autocorrect.
 Lint/SymbolConversion:
   Exclude:
-    - 'app/helpers/projects_helper.rb'
-    - 'app/models/application_record.rb'
-    - 'app/models/concerns/cache_markdown_field.rb'
-    - 'app/models/concerns/featurable.rb'
-    - 'app/models/concerns/file_store_mounter.rb'
-    - 'app/models/concerns/packages/debian/component_file.rb'
-    - 'app/models/concerns/packages/debian/distribution.rb'
-    - 'app/models/concerns/participable.rb'
-    - 'app/models/packages/debian/file_entry.rb'
-    - 'app/models/work_items/widgets/assignees.rb'
-    - 'app/models/work_items/widgets/base.rb'
-    - 'app/presenters/snippet_presenter.rb'
-    - 'app/services/concerns/deploy_token_methods.rb'
-    - 'app/services/concerns/rate_limited_service.rb'
-    - 'app/services/container_expiration_policies/cleanup_service.rb'
     - 'app/services/labels/find_or_create_service.rb'
     - 'app/services/merge_requests/update_service.rb'
     - 'app/services/notification_recipients/builder/default.rb'

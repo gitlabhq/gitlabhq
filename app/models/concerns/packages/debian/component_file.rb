@@ -10,7 +10,7 @@ module Packages
         include FileStoreMounter
 
         def self.container_foreign_key
-          "#{container_type}_id".to_sym
+          :"#{container_type}_id"
         end
 
         def self.distribution_class

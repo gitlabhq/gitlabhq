@@ -300,13 +300,13 @@ module ProjectsHelper
   def show_auto_devops_implicitly_enabled_banner?(project, user)
     return false unless user_can_see_auto_devops_implicitly_enabled_banner?(project, user)
 
-    cookies["hide_auto_devops_implicitly_enabled_banner_#{project.id}".to_sym].blank?
+    cookies[:"hide_auto_devops_implicitly_enabled_banner_#{project.id}"].blank?
   end
 
   def show_mobile_devops_project_promo?(project)
     return false unless (project.project_setting.target_platforms & ::ProjectSetting::ALLOWED_TARGET_PLATFORMS).any?
 
-    cookies["hide_mobile_devops_promo_#{project.id}".to_sym].blank?
+    cookies[:"hide_mobile_devops_promo_#{project.id}"].blank?
   end
 
   def no_password_message

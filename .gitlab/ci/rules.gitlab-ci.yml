@@ -1424,6 +1424,7 @@
     - <<: *if-dot-com-gitlab-org-schedule
       variables:
         BABEL_ENV: "istanbul"
+        CACHE_ASSETS_AS_PACKAGE: "false"
 
 .frontend:rules:eslint-changed-files:
   rules:

@@ -43,6 +43,26 @@ RSpec.describe 'Gitlab OAuth2 Resource Owner Password Credentials Flow', feature
         expect(response).to have_gitlab_http_status(:ok)
         expect(token_response).to include('access_token', 'token_type', 'expires_in', 'refresh_token')
       end
+
+      it 'track event' do
+        expect do
+          fetch_access_token(token_params)
+        end.to trigger_internal_events('oauth_authorize_with_gitlab').with(
+          user: user,
+          additional_properties: {
+            property: 'password',
+            label: 'true'
+          },
+          category: 'Oauth::TokensController'
+        ).and increment_usage_metrics(
+          'counts.count_total_count_total_oauth_authorizations_using_ropc_with_client_credentials_monthly',
+          'counts.count_total_count_total_oauth_authorizations_using_ropc_with_client_credentials_weekly',
+          'counts.count_total_count_total_oauth_authorizations_using_ropc_with_client_credentials',
+          'counts.count_total_oauth_authorizations_using_ropc_monthly',
+          'counts.count_total_oauth_authorizations_using_ropc_weekly',
+          'counts.count_total_oauth_authorizations_using_ropc'
+        )
+      end
     end
 
     context 'without client credentials' do
@@ -52,6 +72,23 @@ RSpec.describe 'Gitlab OAuth2 Resource Owner Password Credentials Flow', feature
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(token_response).to include('access_token', 'token_type', 'expires_in', 'refresh_token')
+        end
+
+        it 'track event' do
+          expect do
+            fetch_access_token(token_params.except(:client_id, :client_secret))
+          end.to trigger_internal_events('oauth_authorize_with_gitlab').with(
+            user: user,
+            additional_properties: {
+              property: 'password',
+              label: 'false'
+            },
+            category: 'Oauth::TokensController'
+          ).and increment_usage_metrics(
+            'counts.count_total_oauth_authorizations_using_ropc_monthly',
+            'counts.count_total_oauth_authorizations_using_ropc_weekly',
+            'counts.count_total_oauth_authorizations_using_ropc'
+          )
         end
       end
 
@@ -65,6 +102,19 @@ RSpec.describe 'Gitlab OAuth2 Resource Owner Password Credentials Flow', feature
 
           expect(response).to have_gitlab_http_status(:unauthorized)
           expect(token_response['error']).to eq('invalid_client')
+        end
+
+        it 'track event' do
+          expect do
+            fetch_access_token(token_params.except(:client_id, :client_secret))
+          end.not_to trigger_internal_events('oauth_authorize_with_gitlab').with(
+            user: user,
+            additional_properties: {
+              property: 'password',
+              label: 'false'
+            },
+            category: 'Oauth::TokensController'
+          )
         end
       end
     end

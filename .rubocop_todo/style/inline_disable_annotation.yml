@@ -331,7 +331,6 @@ Style/InlineDisableAnnotation:
     - 'app/models/ci/pipeline_schedule.rb'
     - 'app/models/ci/processable.rb'
     - 'app/models/ci/runner.rb'
-    - 'app/models/ci/trigger_request.rb'
     - 'app/models/clusters/cluster.rb'
     - 'app/models/commit.rb'
     - 'app/models/commit_collection.rb'

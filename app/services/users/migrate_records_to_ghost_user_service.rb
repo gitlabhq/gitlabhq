@@ -55,6 +55,7 @@ module Users
       # Rails attempts to load all related records into memory before
       # destroying: https://github.com/rails/rails/issues/22510
       # This ensures we delete records in batches.
+      user.delete_dependent_associations_in_batches(exclude: [:project_authorizations])
       user.destroy_dependent_associations_in_batches(exclude: [:snippets])
       user.nullify_dependent_associations_in_batches
 

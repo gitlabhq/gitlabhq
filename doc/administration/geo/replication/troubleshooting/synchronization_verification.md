@@ -28,10 +28,7 @@ secondary Geo site, you can:
 
 ### Resync and reverify individual components
 
-[You can force a resync and reverify individual items](https://gitlab.com/gitlab-org/gitlab/-/issues/364727)
-for all component types managed by the
-self-service framework using the UI. On the secondary
-site, visit **Admin > Geo > Replication**.
+On the secondary site, visit **Admin > Geo > Replication** to force a resync or reverify of individual items. 
 
 However, if this doesn't work, you can perform the same action using the Rails console. The
 following sections describe how to use internal application commands in the

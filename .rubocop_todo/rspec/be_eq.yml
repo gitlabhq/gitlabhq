@@ -38,7 +38,6 @@ RSpec/BeEq:
     - 'ee/spec/graphql/api/validate_code_owner_file_spec.rb'
     - 'ee/spec/graphql/ee/resolvers/namespace_projects_resolver_spec.rb'
     - 'ee/spec/graphql/ee/types/group_type_spec.rb'
-    - 'ee/spec/graphql/ee/types/namespace_type_spec.rb'
     - 'ee/spec/graphql/mutations/incident_management/oncall_rotation/update_spec.rb'
     - 'ee/spec/graphql/mutations/issues/set_epic_spec.rb'
     - 'ee/spec/graphql/mutations/issues/set_escalation_policy_spec.rb'

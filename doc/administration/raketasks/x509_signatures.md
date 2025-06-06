@@ -45,3 +45,38 @@ sudo -u git -H bundle exec rake gitlab:x509:update_signatures RAILS_ENV=producti
 {{< /tab >}}
 
 {{< /tabs >}}
+
+## Troubleshooting
+
+When working with X.509 certificates, you might encounter the following issues.
+
+### Error: `GRPC::DeadlineExceeded` during signature updates
+
+You might get an error that states `GRPC::DeadlineExceeded` when updating X.509 signatures.
+
+This issue occurs when network timeouts or connectivity problems prevent the task from
+completing.
+
+To resolve this issue, the task automatically retries up to 5 times for each signature by default.
+You can customize the retry limit by setting the `GRPC_DEADLINE_EXCEEDED_RETRY_LIMIT`
+environment variable:
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+```shell
+GRPC_DEADLINE_EXCEEDED_RETRY_LIMIT=2 sudo gitlab-rake gitlab:x509:update_signatures
+```
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+```shell
+GRPC_DEADLINE_EXCEEDED_RETRY_LIMIT=2 sudo -u git -H bundle exec rake gitlab:x509:update_signatures RAILS_ENV=production
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}

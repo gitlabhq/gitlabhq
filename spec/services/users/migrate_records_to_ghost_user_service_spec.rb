@@ -210,6 +210,12 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
       end
       # rubocop:enable Layout/LineLength
 
+      # rubocop:disable Layout/LineLength -- long regex
+      def delete_all_in_batches_regexp(table, column, user, batch_size: 1000)
+        %r{^DELETE FROM "#{table}" WHERE \("#{table}"."id"\) IN \(SELECT "#{table}"."id" FROM "#{table}" WHERE "#{table}"."#{column}" = #{user.id} LIMIT #{batch_size}\)}
+      end
+      # rubocop:enable Layout/LineLength
+
       it 'nullifies related associations in batches' do
         expect(user).to receive(:nullify_dependent_associations_in_batches).and_call_original
 
@@ -217,7 +223,8 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
       end
 
       it 'nullifies associations marked as `dependent: :nullify` and'\
-         'destroys the associations marked as `dependent: :destroy`, in batches', :aggregate_failures do
+         'destroys the associations marked as `dependent: :destroy`, in batches and'\
+         'deletes associations marked as delete_all', :aggregate_failures do
         # associations to be nullified
         issue = create(:issue, closed_by: user, updated_by: user)
         resource_label_event = create(:resource_label_event, user: user)
@@ -225,8 +232,13 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
         created_project = create(:project, creator: user)
 
         # associations to be destroyed
-        todos = create_list(:todo, 2, project: issue.project, user: user, author: create(:user), target: issue)
-        event = create(:event, project: issue.project, author: user)
+        pats = create_list(:personal_access_token, 2, user: user)
+
+        # associations to be delete_all'd
+        create_list(:todo, 2, project: issue.project, user: user, author: create(:user), target: issue)
+        create(:event, project: issue.project, author: user)
+
+        expect(user).to receive(:delete_dependent_associations_in_batches).and_call_original
 
         query_recorder = ActiveRecord::QueryRecorder.new do
           service.execute
@@ -250,11 +262,12 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
           nullify_in_batches_regexp(:issues, :closed_by_id, user),
           nullify_in_batches_regexp(:resource_label_events, :user_id, user),
           nullify_in_batches_regexp(:resource_state_events, :user_id, user),
-          nullify_in_batches_regexp(:projects, :creator_id, user)
+          nullify_in_batches_regexp(:projects, :creator_id, user),
+          delete_all_in_batches_regexp(:todos, :user_id, user),
+          delete_all_in_batches_regexp(:events, :author_id, user)
         ]
 
-        expected_queries += delete_in_batches_regexps(:todos, :user_id, user, todos)
-        expected_queries += delete_in_batches_regexps(:events, :author_id, user, [event])
+        expected_queries += delete_in_batches_regexps(:personal_access_tokens, :user_id, user, pats)
 
         expect(query_recorder.log).to include(*expected_queries)
       end

@@ -78,8 +78,17 @@ remote_development:
   enabled: true
 ```
 
-If remote development is disabled, an administrator must manually delete any
-running workspaces to remove those workspaces from the Kubernetes cluster.
+{{< alert type="note" >}}
+
+If `enabled` is set to `false` for an agent that has active or stopped workspaces,
+those workspaces become orphaned and unusable.
+
+Before you disable remote development on an agent:
+
+- Ensure all associated workspaces are no longer needed.
+- Manually delete any running workspaces to remove them from the Kubernetes cluster.
+
+{{< /alert >}}
 
 ### `dns_zone`
 
