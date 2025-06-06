@@ -1,9 +1,9 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import { s__ } from '~/locale';
-import TrackEventDirective from '~/vue_shared/directives/track_event';
+import { useNotes } from '~/notes/store/legacy_notes';
+import Tracking from '~/tracking';
 import { COMMENTS_ONLY_FILTER_VALUE, DESC } from '../constants';
 import notesEventHub from '../event_hub';
 import { trackToggleTimelineView } from '../utils';
@@ -17,19 +17,23 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    TrackEvent: TrackEventDirective,
   },
   computed: {
-    ...mapGetters(['timelineEnabled', 'sortDirection']),
+    ...mapState(useNotes, ['isTimelineEnabled', 'discussionSortOrder']),
     tooltip() {
-      return this.timelineEnabled ? timelineEnabledTooltip : timelineDisabledTooltip;
+      return this.isTimelineEnabled ? timelineEnabledTooltip : timelineDisabledTooltip;
+    },
+    trackingOptions() {
+      const { category, action, label, property, value } = trackToggleTimelineView(
+        this.isTimelineEnabled,
+      );
+      return [category, action, { label, property, value }];
     },
   },
   methods: {
-    ...mapActions(['setTimelineView', 'setDiscussionSortDirection']),
-    trackToggleTimelineView,
+    ...mapActions(useNotes, ['setTimelineView', 'setDiscussionSortDirection']),
     setSort() {
-      if (this.timelineEnabled && this.sortDirection !== DESC) {
+      if (this.isTimelineEnabled && this.discussionSortOrder !== DESC) {
         this.setDiscussionSortDirection({ direction: DESC, persist: false });
       }
     },
@@ -38,9 +42,10 @@ export default {
     },
     toggleTimeline(event) {
       event.currentTarget.blur();
-      this.setTimelineView(!this.timelineEnabled);
+      this.setTimelineView(!this.isTimelineEnabled);
       this.setSort();
       this.setFilter();
+      Tracking.event(...this.trackingOptions);
     },
   },
 };
@@ -49,9 +54,8 @@ export default {
 <template>
   <gl-button
     v-gl-tooltip
-    v-track-event="trackToggleTimelineView(timelineEnabled)"
     icon="history"
-    :selected="timelineEnabled"
+    :selected="isTimelineEnabled"
     :title="tooltip"
     :aria-label="tooltip"
     data-testid="timeline-toggle-button"

@@ -178,7 +178,7 @@ export const note = {
   path: '/gitlab-org/gitlab-foss/notes/546',
 };
 
-export const discussionMock = {
+export const createDiscussionMock = () => ({
   id: '9e3bd2f71a01de45fd166e6719eb380ad9f270b1',
   reply_id: '9e3bd2f71a01de45fd166e6719eb380ad9f270b1',
   expanded: true,
@@ -323,7 +323,9 @@ export const discussionMock = {
   resolvable: true,
   active: true,
   confidential: false,
-};
+});
+
+export const discussionMock = createDiscussionMock();
 
 export const loggedOutnoteableData = {
   id: '98',

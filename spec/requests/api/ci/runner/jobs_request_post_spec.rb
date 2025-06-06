@@ -442,7 +442,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                     },
                     {
                       "name" => "release",
-                      "script" => [a_string_including("glab -R $CI_PROJECT_PATH release create")],
+                      "script" => [a_string_including("glab release create -R $CI_PROJECT_PATH")],
                       "timeout" => 3600,
                       "when" => "on_success",
                       "allow_failure" => false

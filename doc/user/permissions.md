@@ -123,11 +123,17 @@ Group permissions for [GitLab Duo](gitlab_duo/_index.md):
 
 | Action                                                                                                    | Non-member | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
 | --------------------------------------------------------------------------------------------------------- | :--------: | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| Use Duo features                                                                                          |            |       |         |    ✓     |     ✓     |     ✓      |   ✓   | Requires [user being assigned a seat to gain access to a Duo add-on](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats). |
+| Use Duo features                                                                                          |            |       |         |    ✓     |     ✓     |     ✓      |   ✓   | Requirements differ depending on if the user has GitLab Duo Core, Pro, or Enterprise. <sup>1</sup> |
 | Configure [Duo feature availability](gitlab_duo/turn_on_off.md#for-a-group-or-subgroup)                      |            |       |         |          |           |     ✓      |   ✓   |       |
 | Configure [GitLab Duo Self Hosted](../administration/gitlab_duo_self_hosted/configure_duo_features.md)            |            |       |         |          |           |            |   ✓   |       |
 | Enable [beta and experimental features](gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) |            |       |         |          |           |            |   ✓   |       |
 | Purchase [Duo seats](../subscriptions/subscription-add-ons.md#purchase-additional-gitlab-duo-seats)       |            |       |         |          |           |            |   ✓   |       |
+
+**Footnotes**
+
+1. If the user has GitLab Duo Pro or Enterprise, the
+   [user must be assigned a seat to gain access to that Duo add-on](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats). If the user has GitLab Duo Core, there are
+   no other requirements.
 
 ### Groups group permissions
 

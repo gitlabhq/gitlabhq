@@ -282,39 +282,4 @@ RSpec.describe ApplicationController, type: :request, feature_category: :shared 
       end
     end
   end
-
-  context 'when configuring vite' do
-    let(:vite_hmr_ws_origin) { 'ws://gitlab.example.com:3808' }
-    let(:vite_origin) { 'http://gitlab.example.com:3808' }
-
-    before do
-      # rubocop:disable RSpec/AnyInstanceOf -- Doesn't work with allow_next_instance_of
-      allow_any_instance_of(ViteHelper)
-        .to receive_messages(
-          vite_enabled?: vite_enabled,
-          vite_hmr_ws_origin: vite_hmr_ws_origin,
-          vite_origin: vite_origin,
-          universal_path_to_stylesheet: '')
-      # rubocop:enable RSpec/AnyInstanceOf
-    end
-
-    context 'when vite enabled during development' do
-      let(:vite_enabled) { true }
-
-      it 'adds vite csp' do
-        get root_path
-        expect(response.headers['Content-Security-Policy']).to include("#{vite_hmr_ws_origin}/vite-dev/")
-        expect(response.headers['Content-Security-Policy']).to include("#{vite_origin}/vite-dev/")
-      end
-    end
-
-    context 'when vite is disabled' do
-      let(:vite_enabled) { false }
-
-      it "doesn't add vite csp" do
-        get root_path
-        expect(response.headers['Content-Security-Policy']).not_to include('/vite-dev/')
-      end
-    end
-  end
 end

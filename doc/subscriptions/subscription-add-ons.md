@@ -39,7 +39,12 @@ If you are a new customer in GitLab 18.0 or later, IDE features are automaticall
 
 If you are a pre-existing customer from GitLab 17.11 or earlier, you must [turn on IDE features](../user/gitlab_duo/turn_on_off.md#change-gitlab-duo-core-availability) to start using GitLab Duo in your IDEs. No further action is needed.
 
-Users assigned the [Guest role](../administration/guest_users.md) do not have access to GitLab Duo Core.
+Users assigned the following roles have access to GitLab Duo Core:
+
+- Reporter
+- Developer
+- Maintainer
+- Owner
 
 ### GitLab Duo Core limits
 

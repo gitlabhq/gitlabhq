@@ -39,8 +39,8 @@ RSpec.describe Gitlab::Ci::Build::Releaser, feature_category: :continuous_integr
       release_cli_command = 'release-cli create --name "Release $CI_COMMIT_SHA" --description "Created using the release-cli $EXTRA_DESCRIPTION" --tag-name "release-$CI_COMMIT_SHA" --tag-message "Annotated tag message" --ref "$CI_COMMIT_SHA" --released-at "2020-07-15T08:00:00Z" --milestone "m1" --milestone "m2" --milestone "m3"'
       result_for_release_cli_without_catalog_publish = "#{release_cli_command} #{release_cli_assets_links}"
 
-      glab_create_unix = 'glab -R $CI_PROJECT_PATH release create'
-      glab_create_windows = 'glab -R $env:CI_PROJECT_PATH release create'
+      glab_create_unix = 'glab release create -R $CI_PROJECT_PATH'
+      glab_create_windows = 'glab release create -R $env:CI_PROJECT_PATH'
       glab_command = "\"release-$CI_COMMIT_SHA\" #{glab_assets_links} --milestone \"m1,m2,m3\" --name \"Release $CI_COMMIT_SHA\" --experimental-notes-text-or-file \"Created using the release-cli $EXTRA_DESCRIPTION\" --ref \"$CI_COMMIT_SHA\" --tag-message \"Annotated tag message\" --released-at \"2020-07-15T08:00:00Z\" --no-update --no-close-milestone"
 
       warning_message = "Warning: release-cli will not be supported after 18.0. Please use glab version >= 1.53.0. Troubleshooting: http://localhost/help/user/project/releases/_index.md#gitlab-cli-version-requirement"
@@ -206,14 +206,14 @@ RSpec.describe Gitlab::Ci::Build::Releaser, feature_category: :continuous_integr
       links = { links: [{ name: 'asset1', url: 'https://example.com/assets/1', link_type: 'other', filepath: '/pretty/asset/1' }] }
 
       where(:node_name, :node_value, :result) do
-        :name        | 'Release $CI_COMMIT_SHA'         | 'glab -R $CI_PROJECT_PATH release create "$CI_COMMIT_TAG" --name "Release $CI_COMMIT_SHA" --ref "$CI_COMMIT_SHA"'
-        :description | 'Release-cli $EXTRA_DESCRIPTION' | 'glab -R $CI_PROJECT_PATH release create "$CI_COMMIT_TAG" --experimental-notes-text-or-file "Release-cli $EXTRA_DESCRIPTION" --ref "$CI_COMMIT_SHA"'
-        :tag_name    | 'release-$CI_COMMIT_SHA'         | 'glab -R $CI_PROJECT_PATH release create "release-$CI_COMMIT_SHA" --ref "$CI_COMMIT_SHA"'
-        :tag_message | 'Annotated tag message'          | 'glab -R $CI_PROJECT_PATH release create "$CI_COMMIT_TAG" --ref "$CI_COMMIT_SHA" --tag-message "Annotated tag message"'
-        :ref         | '$CI_COMMIT_SHA'                 | 'glab -R $CI_PROJECT_PATH release create "$CI_COMMIT_TAG" --ref "$CI_COMMIT_SHA"'
-        :milestones  | %w[m1 m2 m3]                     | 'glab -R $CI_PROJECT_PATH release create "$CI_COMMIT_TAG" --milestone "m1,m2,m3" --ref "$CI_COMMIT_SHA"'
-        :released_at | '2020-07-15T08:00:00Z'           | 'glab -R $CI_PROJECT_PATH release create "$CI_COMMIT_TAG" --ref "$CI_COMMIT_SHA" --released-at "2020-07-15T08:00:00Z"'
-        :assets      | links                            | "glab -R $CI_PROJECT_PATH release create \"$CI_COMMIT_TAG\" --assets-links #{links[:links].to_json.to_json} --ref \"$CI_COMMIT_SHA\""
+        :name        | 'Release $CI_COMMIT_SHA'         | 'glab release create -R $CI_PROJECT_PATH "$CI_COMMIT_TAG" --name "Release $CI_COMMIT_SHA" --ref "$CI_COMMIT_SHA"'
+        :description | 'Release-cli $EXTRA_DESCRIPTION' | 'glab release create -R $CI_PROJECT_PATH "$CI_COMMIT_TAG" --experimental-notes-text-or-file "Release-cli $EXTRA_DESCRIPTION" --ref "$CI_COMMIT_SHA"'
+        :tag_name    | 'release-$CI_COMMIT_SHA'         | 'glab release create -R $CI_PROJECT_PATH "release-$CI_COMMIT_SHA" --ref "$CI_COMMIT_SHA"'
+        :tag_message | 'Annotated tag message'          | 'glab release create -R $CI_PROJECT_PATH "$CI_COMMIT_TAG" --ref "$CI_COMMIT_SHA" --tag-message "Annotated tag message"'
+        :ref         | '$CI_COMMIT_SHA'                 | 'glab release create -R $CI_PROJECT_PATH "$CI_COMMIT_TAG" --ref "$CI_COMMIT_SHA"'
+        :milestones  | %w[m1 m2 m3]                     | 'glab release create -R $CI_PROJECT_PATH "$CI_COMMIT_TAG" --milestone "m1,m2,m3" --ref "$CI_COMMIT_SHA"'
+        :released_at | '2020-07-15T08:00:00Z'           | 'glab release create -R $CI_PROJECT_PATH "$CI_COMMIT_TAG" --ref "$CI_COMMIT_SHA" --released-at "2020-07-15T08:00:00Z"'
+        :assets      | links                            | "glab release create -R $CI_PROJECT_PATH \"$CI_COMMIT_TAG\" --assets-links #{links[:links].to_json.to_json} --ref \"$CI_COMMIT_SHA\""
       end
 
       with_them do

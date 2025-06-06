@@ -49018,6 +49018,9 @@ msgstr ""
 msgid "ProjectTemplates|iOS (Swift)"
 msgstr ""
 
+msgid "ProjectToolCoverageDetails|Manage configuration"
+msgstr ""
+
 msgid "ProjectTransfer|An error occurred fetching the transfer locations, please refresh the page and try again."
 msgstr ""
 
@@ -55317,7 +55320,7 @@ msgstr ""
 msgid "SecurityInventory|This group doesn't have any subgroups."
 msgstr ""
 
-msgid "SecurityInventory|Tool coverage: %{coverage}%%"
+msgid "SecurityInventory|Tool coverage: %{coverage}"
 msgstr ""
 
 msgid "SecurityInventory|View security coverage and vulnerabilities for all the projects in this group."
@@ -64501,7 +64504,7 @@ msgstr ""
 msgid "Tool Coverage"
 msgstr ""
 
-msgid "ToolCoverageDetails|Manage configuration"
+msgid "ToolCoverage|Project coverage"
 msgstr ""
 
 msgid "Topic %{source_topic} was successfully merged into topic %{target_topic}."
@@ -67760,6 +67763,9 @@ msgstr ""
 msgid "Violation Details"
 msgstr ""
 
+msgid "Virtual registry"
+msgstr ""
+
 msgid "VirtualRegistries|API endpoints rate limit"
 msgstr ""
 
@@ -68031,7 +68037,19 @@ msgstr ""
 msgid "Vulnerabilities|%{link_start}Download the export%{link_end}."
 msgstr ""
 
+msgid "Vulnerabilities|All records must be instances of Vulnerability"
+msgstr ""
+
 msgid "Vulnerabilities|Follow the link below to download the export."
+msgstr ""
+
+msgid "Vulnerabilities|Internal tracking failed: %{message}"
+msgstr ""
+
+msgid "Vulnerabilities|Missing required attributes: %{attributes}"
+msgstr ""
+
+msgid "Vulnerabilities|No valid vulnerabilities to track"
 msgstr ""
 
 msgid "Vulnerabilities|The vulnerabilities list was successfully exported for %{exportable}."
@@ -74191,6 +74209,9 @@ msgid "nounSeries|%{item}, and %{lastItem}"
 msgstr ""
 
 msgid "objective"
+msgstr ""
+
+msgid "of"
 msgstr ""
 
 msgid "on or after"

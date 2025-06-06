@@ -1,10 +1,10 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapActions } from 'vuex';
+import { mapActions } from 'pinia';
 import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import { fetchPolicies } from '~/lib/graphql';
 import { confidentialityQueries } from '~/sidebar/queries/constants';
 import { defaultClient as gqlClient } from '~/graphql_shared/issuable_client';
+import { useNotes } from '~/notes/store/legacy_notes';
 
 export default {
   props: {
@@ -50,7 +50,7 @@ export default {
       });
   },
   methods: {
-    ...mapActions(['setConfidentiality']),
+    ...mapActions(useNotes, ['setConfidentiality']),
   },
   render() {
     return null;

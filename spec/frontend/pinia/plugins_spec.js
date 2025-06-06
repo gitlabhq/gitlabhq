@@ -60,13 +60,15 @@ describe('Pinia plugins', () => {
       });
     };
 
-    const createPiniaStore = () => {
+    const createSyncWithConfig = () => ({
+      store: vuexStore,
+      name,
+      namespaced,
+    });
+
+    const createPiniaStore = (syncWith = createSyncWithConfig()) => {
       usePiniaStore = defineStore('exampleStore', {
-        syncWith: {
-          store: vuexStore,
-          name,
-          namespaced,
-        },
+        syncWith,
         state() {
           return createState();
         },
@@ -111,6 +113,17 @@ describe('Pinia plugins', () => {
           createVuexStoreWithModule();
           createPiniaStore();
           setActivePinia(createPinia().use(syncWithVuex));
+        },
+      ],
+      [
+        'with a non namespaced config override',
+        () => {
+          name = 'myStore';
+          namespaced = false;
+          createVuexStoreWithModule();
+          createPiniaStore(undefined);
+          setActivePinia(createPinia().use(syncWithVuex));
+          usePiniaStore().syncWith(createSyncWithConfig());
         },
       ],
     ])('%s', (caseName, setupFn) => {

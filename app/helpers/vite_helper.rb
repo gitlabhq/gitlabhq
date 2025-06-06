@@ -8,15 +8,6 @@ module ViteHelper
     Gitlab::Utils.to_boolean(ViteRuby.env['VITE_ENABLED'], default: false)
   end
 
-  def vite_origin
-    ViteRuby.config.origin
-  end
-
-  def vite_hmr_ws_origin
-    protocol = ViteRuby.config.https ? 'wss' : 'ws'
-    "#{protocol}://#{ViteRuby.config.host_with_port}"
-  end
-
   def vite_page_entrypoint_paths(custom_action_name = nil)
     action_name = custom_action_name || controller.action_name
     action = case action_name

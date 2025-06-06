@@ -5,7 +5,6 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   include InitializesCurrentUserMode
   include Gitlab::Utils::StrongMemoize
   include RequestPayloadLogger
-  include ViteCSP
 
   alias_method :auth_user, :current_user
 

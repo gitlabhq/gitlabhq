@@ -21,8 +21,8 @@ module Gitlab
         GLAB_ENV_SET_WINDOWS = '$env:GITLAB_HOST = $env:CI_SERVER_URL'
         GLAB_LOGIN_UNIX = 'glab auth login --job-token $CI_JOB_TOKEN --hostname $CI_SERVER_FQDN --api-protocol $CI_SERVER_PROTOCOL'
         GLAB_LOGIN_WINDOWS = 'glab auth login --job-token $env:CI_JOB_TOKEN --hostname $env:CI_SERVER_FQDN --api-protocol $env:CI_SERVER_PROTOCOL'
-        GLAB_CREATE_UNIX = 'glab -R $CI_PROJECT_PATH release create'
-        GLAB_CREATE_WINDOWS = 'glab -R $env:CI_PROJECT_PATH release create'
+        GLAB_CREATE_UNIX = 'glab release create -R $CI_PROJECT_PATH'
+        GLAB_CREATE_WINDOWS = 'glab release create -R $env:CI_PROJECT_PATH'
         GLAB_PUBLISH_TO_CATALOG_FLAG = '--publish-to-catalog' # enables publishing to the catalog after creating the release
         GLAB_NO_UPDATE_FLAG = '--no-update' # disables updating the release if it already exists
         GLAB_NO_CLOSE_MILESTONE_FLAG = '--no-close-milestone' # disables closing the milestone after creating the release

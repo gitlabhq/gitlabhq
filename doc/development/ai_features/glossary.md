@@ -210,6 +210,16 @@ In the context of multi-agent workflows, a tool is a utility or application that
 
 ## AI Context Terminology
 
+### Knowledge Graph
+
+The [Knowledge Graph](https://gitlab.com/gitlab-org/rust/knowledge-graph) project aims to create a structured, queryable graph database from code repositories to power AI features and enhance developer productivity within GitLab. 
+
+Think of it like creating a detailed blueprint that shows which functions call other functions, how classes relate to each other, and where variables are used throughout the codebase. Instead of GitLab Duo having to read through thousands of files every time you ask it something, it can quickly navigate this pre-built map to give you better code suggestions, find related code snippets, or help debug issues. It gives Duo a much smarter way to understand your codebase so it can assist you more effectively with things like code reviews, refactoring, or finding where to make changes when you're working on a feature.
+
+### One Parser (GitLab Code Parser)
+
+The [GitLab Code Parser](https://gitlab.com/gitlab-org/code-creation/gitlab-code-parser#) establishes a single, efficient, and reliable static code analysis library. This library will serve as the foundation for diverse code intelligence features across GitLab, from server-side indexing (Knowledge Graph, Embeddings) to client-side analysis (Language Server, Web IDE). Initially scoped to AI and Editor Features.
+
 ### Advanced Context Resolver
 
 Advanced context is a comprehensive set of code-related information extending

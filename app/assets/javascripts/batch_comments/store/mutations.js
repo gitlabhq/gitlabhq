@@ -1,3 +1,4 @@
+import createState from '~/batch_comments/stores/modules/batch_comments/state';
 import * as types from '../stores/modules/batch_comments/mutation_types';
 
 const processDraft = (draft) => ({
@@ -74,5 +75,8 @@ export default {
     const draftIndex = this.drafts.findIndex((draft) => draft.id === draftId);
     const draft = this.drafts[draftIndex];
     this.drafts.splice(draftIndex, 1, { ...draft, isEditing });
+  },
+  reset() {
+    Object.assign(this, createState());
   },
 };

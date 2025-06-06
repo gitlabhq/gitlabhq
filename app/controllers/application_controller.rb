@@ -30,7 +30,6 @@ class ApplicationController < BaseActionController
   include StrongPaginationParams
   include Gitlab::HttpRouter::RuleContext
   include Gitlab::HttpRouter::RuleMetrics
-  include ViteCSP
 
   around_action :set_current_ip_address
 

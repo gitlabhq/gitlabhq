@@ -5,7 +5,6 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   include PageLayoutHelper
   include OauthApplications
   include InitializesCurrentUserMode
-  include ViteCSP
 
   # Defined by the `Doorkeeper::ApplicationsController` and is redundant as we call `authenticate_user!` below. Not
   # defining or skipping this will result in a `403` response to all requests.

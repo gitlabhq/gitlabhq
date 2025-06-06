@@ -71,6 +71,14 @@ module NavbarStructureHelper
     )
   end
 
+  def insert_virtual_registry_nav
+    insert_after_sub_nav_item(
+      _('Package registry'),
+      within: _('Deploy'),
+      new_sub_nav_item_name: _('Virtual registry')
+    )
+  end
+
   def insert_google_artifact_registry_nav
     insert_after_sub_nav_item(
       _('Container registry'),

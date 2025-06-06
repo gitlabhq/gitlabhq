@@ -13,7 +13,6 @@ class RegistrationsController < Devise::RegistrationsController
   include Gitlab::RackLoadBalancingHelpers
   include ::Gitlab::Utils::StrongMemoize
   include Onboarding::Redirectable
-  include ViteCSP
 
   layout 'devise'
 

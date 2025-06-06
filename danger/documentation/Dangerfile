@@ -5,7 +5,7 @@ def feature_mr?
 end
 
 def doc_path_to_url(path)
-  path.sub("doc/", "https://docs.gitlab.com/ee/").sub("index.md", "").sub(".md", "/")
+  path.sub("doc/", "https://docs.gitlab.com/").sub("index.md", "").sub(".md", "/")
 end
 
 docs_paths_to_review = helper.changes_by_category[:docs]
@@ -15,7 +15,8 @@ docs_paths_to_review = helper.changes_by_category[:docs]
 sections_with_no_tw_review = {
   'doc/architecture' => [],
   'doc/development' => [],
-  'doc/solutions' => []
+  'doc/solutions' => [],
+  'doc-locale' => []
 }.freeze
 
 # One exception to the exceptions above: Technical Writing docs should get a TW review.
@@ -31,7 +32,7 @@ docs_paths_to_review.reject! do |doc|
 end
 
 SOLUTIONS_LABELS = %w[Solutions].freeze
-DEVELOPMENT_LABELS = ['docs::improvement', 'development guidelines'].freeze
+DEVELOPMENT_LABELS = ['development guidelines'].freeze
 
 def add_labels(labels)
   helper.labels_to_add.concat(%w[documentation type::maintenance maintenance::refactor] + labels)
@@ -43,6 +44,10 @@ MSG
 
 SOLUTIONS_MESSAGE = <<~MSG
 This MR contains docs in the /doc/solutions directory and should be reviewed by a Solutions Architect approver. You do not need tech writer review.
+MSG
+
+LOCALIZATION_MESSAGE = <<~MSG
+This MR contains files in the /doc-locale directory. These files are translations maintained through a separate process and should not be edited directly. If you are not part of the Localization team, please remove the changes to these files from your MR.
 MSG
 
 # For regular pages, prompt for a TW review
@@ -90,6 +95,8 @@ if sections_with_no_tw_review["doc/solutions"].any?
   add_labels(SOLUTIONS_LABELS)
   message(SOLUTIONS_MESSAGE)
 end
+
+message(LOCALIZATION_MESSAGE) if sections_with_no_tw_review["doc-locale"].any?
 
 unless docs_paths_to_review.empty?
   message(DOCS_UPDATE_SHORT_MESSAGE)
