@@ -441,7 +441,7 @@ This clears all your 2FA registrations, including mobile applications and WebAut
 - To ensure 2FA authorizes correctly with an OTP server, synchronize your GitLab
   server's time using a service like NTP. Otherwise, authorization can always fail because of time differences.
 - The GitLab WebAuthn implementation does not work when the GitLab instance is accessed from multiple hostnames
-  or FQDNs. Each WebAuthn registration is linked to the _current hostname_ at the time of registration, and
+  or FQDNs. Each WebAuthn registration is linked to the current hostname at the time of registration, and
   cannot be used for other hostnames or FQDNs.
 
   For example, if a user is trying to access a GitLab instance from `first.host.xyz` and `second.host.xyz`:

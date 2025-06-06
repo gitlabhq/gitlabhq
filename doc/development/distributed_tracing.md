@@ -54,7 +54,7 @@ all subsystems at GitLab:
     from an upstream system.
 - Correlation IDs are always free text.
   - Correlation IDs should never be used to pass context (for example, a username or an IP address).
-  - Correlation IDs should never be _parsed_, or manipulated in other ways (for example, split).
+  - Correlation IDs should never be parsed, or manipulated in other ways (for example, split).
 
 The [LabKit library](https://gitlab.com/gitlab-org/labkit) provides a standardized interface for working with GitLab
 correlation IDs in the Go programming language. LabKit can be used as a
@@ -213,7 +213,7 @@ This configuration string uses the Jaeger driver `opentracing://jaeger` with the
 |------|-------|-------------|
 | `http_endpoint` | `http://localhost:14268/api/traces` | Configures Jaeger to send trace information to the HTTP endpoint running on `http://localhost:14268/`. Alternatively, the `upd_endpoint` can be used. |
 | `sampler` | `const` | Configures Jaeger to use the constant sampler (either on or off). |
-| `sampler_param` | `1` | Configures the `const` sampler to sample _all_ traces. Using `0` would sample _no_ traces. |
+| `sampler_param` | `1` | Configures the `const` sampler to sample all traces. Using `0` would sample no traces. |
 
 **Other parameter values are also possible:**
 

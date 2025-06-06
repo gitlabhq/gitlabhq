@@ -86,7 +86,7 @@ The users over subscription value is always zero for trial license.
 If users over subscription value is above zero, then you have more users in your
 GitLab instance than you are licensed for. You must pay for the additional users
 [before or at the time of renewal](../quarterly_reconciliation.md). This is
-called the _true up_ process. If you do not do this, your license key does not work.
+called the "true up" process. If you do not do this, your license key does not work.
 
 To view the number of users over subscription, go to the **Admin** area.
 

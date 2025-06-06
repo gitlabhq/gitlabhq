@@ -48,7 +48,7 @@ verification methods:
 | Blob                 | LFS objects _(object storage)_                  | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
 | Blob                 | CI job artifacts _(file system)_                | Geo with API                                 | SHA256 checksum               |
 | Blob                 | CI job artifacts _(object storage)_             | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blob                 | Archived CI build traces _(file system)_        | Geo with API                                 | _Not implemented_             |
+| Blob                 | Archived CI build traces _(file system)_        | Geo with API                                 | Not implemented             |
 | Blob                 | Archived CI build traces _(object storage)_     | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
 | Blob                 | Container registry _(file system)_              | Geo with API/Docker API                      | SHA256 checksum               |
 | Blob                 | Container registry _(object storage)_           | Geo with API/Managed/Docker API <sup>2</sup> | SHA256 checksum <sup>3</sup>  |

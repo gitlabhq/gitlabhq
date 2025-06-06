@@ -32,7 +32,7 @@ module Projects
         @variable_limit = ::Plan.default.actual_limits.project_ci_variables
 
         triggers = ::Ci::TriggerSerializer.new.represent(
-          @project.triggers, current_user: current_user, project: @project
+          @project.triggers.with_last_used, current_user: current_user, project: @project
         )
 
         @triggers_json = Gitlab::Json.dump(triggers)
@@ -206,7 +206,7 @@ module Projects
       end
 
       def define_triggers_variables
-        @triggers = @project.triggers
+        @triggers = @project.triggers.with_last_used
           .present(current_user: current_user)
 
         @trigger = ::Ci::Trigger.new

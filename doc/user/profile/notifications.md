@@ -75,7 +75,7 @@ project and group.
 
 Notification scope is applied from the broadest to most specific levels:
 
-- Your **global**, or _default_, notification level applies if you
+- Your **global**, or default, notification level applies if you
   have not selected a notification level for the project or group in which the activity occurred.
 - Your **group** setting overrides your default setting.
 - Your **project** setting overrides the group setting.

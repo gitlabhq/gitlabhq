@@ -99,7 +99,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 Status can be one of:
 
-- `none`: No exports _queued_, _started_, _finished_, or _being regenerated_.
+- `none`: No exports queued, started, finished, or being regenerated.
 - `queued`: The request for export is received, and is in the queue to be processed.
 - `started`: The export process has started and is in progress. It includes:
   - The process of exporting.

@@ -49,7 +49,7 @@ To increase these settings:
 1. Select **Geo > Sites**.
 1. Decide which data types are progressing too slowly.
 1. Watch load metrics of the primary and secondary sites.
-1. Increase *concurrency limits* by 10 to be conservative.
+1. Increase concurrency limits by 10 to be conservative.
 1. Watch changes in progress and load metrics for at least 3 minutes.
 1. Repeat increasing the limits until either load metrics reach your desired maximum, or syncing and verification is progressing as quickly as desired.
 

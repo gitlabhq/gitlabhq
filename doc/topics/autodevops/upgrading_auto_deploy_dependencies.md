@@ -112,7 +112,7 @@ If your Auto DevOps project has an active environment that was deployed with the
 
      {{< alert type="warning" >}}
 
-     *Do not use this if you have public pipelines*.
+     Do not use this if you have public pipelines.
      This artifact can contain secrets and is visible to any
      user who can see your job.
 

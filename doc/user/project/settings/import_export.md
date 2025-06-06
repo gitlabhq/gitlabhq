@@ -421,7 +421,7 @@ for your version of GitLab to check which items can be imported to the destinati
 Group items that are exported include:
 
 - Milestones
-- Group Labels (_without_ associated label priorities)
+- Group Labels (without associated label priorities)
 - Boards and Board Lists
 - Badges
 - Subgroups (including all the aforementioned data)

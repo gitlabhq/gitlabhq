@@ -106,7 +106,7 @@ the eventual risk to stability. We always address high and critical security iss
 ### Backporting to older releases
 
 Backporting to more than one stable release is usually reserved for [security fixes](#patch-releases).
-In some cases, however, we may need to backport *a bug fix* to more than one stable
+In some cases, however, we may need to backport a bug fix to more than one stable
 release, depending on the severity of the bug.
 
 The decision on whether backporting a change is performed is done at the discretion of the

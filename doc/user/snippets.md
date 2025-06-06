@@ -191,7 +191,7 @@ is reflected in the embedded snippets. When embedded, users can download it, or 
 To embed a snippet:
 
 1. Confirm your snippet is publicly visible:
-   - *If it's a project snippet*, the project must be public.
+   - If it's a project snippet, the project must be public.
    - The snippet is publicly visible.
    - In your project, go to **Settings > General**. Expand the **Visibility, project features, permissions**
      section, and scroll to **Snippets**. Set the snippet permission to **Everyone with access**.

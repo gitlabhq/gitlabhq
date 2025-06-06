@@ -128,7 +128,7 @@ To add a GPG key to your user settings:
 1. Select **Edit profile**.
 1. Select **GPG keys** ({{< icon name="key" >}}).
 1. Select **Add new key**.
-1. In **Key**, paste your _public_ key.
+1. In **Key**, paste your public key.
 1. To add the key to your account, select **Add key**.
 
 GitLab shows the key's fingerprint, email address, and creation date.

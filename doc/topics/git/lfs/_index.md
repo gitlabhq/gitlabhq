@@ -58,7 +58,7 @@ increases only for your fork.
 
 When you create a merge request from your fork back to the upstream project, and
 your merge request contains a new Git LFS object, GitLab associates the new LFS object
-with the _upstream_ project after merge.
+with the upstream project after merge.
 
 ## Configure Git LFS for a project
 

@@ -98,7 +98,7 @@ Each database node runs four services:
 
 ### Consul server node
 
-The Consul server node runs the Consul server service. These nodes must have reached the quorum and elected a leader _before_ Patroni cluster bootstrap; otherwise, database nodes wait until such Consul leader is elected.
+The Consul server node runs the Consul server service. These nodes must have reached the quorum and elected a leader before Patroni cluster bootstrap; otherwise, database nodes wait until such Consul leader is elected.
 
 ### PgBouncer node
 

@@ -129,7 +129,7 @@ If you receive this error, you can do one of the following actions:
 
 - If you are not using the in-cluster database, you can set
   `POSTGRES_ENABLED` to `false` and re-deploy. This option is especially relevant to
-  users of *custom charts without the in-chart PostgreSQL dependency*.
+  users of custom charts without the in-chart PostgreSQL dependency.
   Database auto-detection is based on the `postgresql.enabled` Helm value for
   your release. This value is set based on the `POSTGRES_ENABLED` CI/CD variable
   and persisted by Helm, regardless of whether or not your chart uses the

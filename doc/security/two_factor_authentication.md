@@ -158,9 +158,9 @@ If a project belonging to a group that enables or enforces 2FA is [shared](../us
 with a group that does not enable or enforce 2FA, members of the non-2FA group can access that project
 without using 2FA. For example:
 
-- Group *A* has 2FA enabled and enforced. Group *B* does not have 2FA enabled.
-- If a project, *P*, that belongs to group *A* is shared with group *B*, members
-  of group *B* can access project *P* without 2FA.
+- Group A has 2FA enabled and enforced. Group B does not have 2FA enabled.
+- If a project, P, that belongs to group A is shared with group B, members
+  of group B can access project P without 2FA.
 
 To ensure this does not occur, [prevent sharing of projects](../user/project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups)
 for the 2FA group.
@@ -304,7 +304,7 @@ SSH key.
 
 ### Security limitation
 
-2FA does not protect users with compromised *private* SSH keys.
+2FA does not protect users with compromised private SSH keys.
 
 Once an OTP is verified, anyone can run Git over SSH with that private SSH key for
 the configured [session duration](../administration/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).

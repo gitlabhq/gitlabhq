@@ -722,7 +722,7 @@ database to the Patroni cluster on the secondary node.
 {{< tab title="Primary with Patroni cluster" >}}
 
 To set up database replication with Patroni on a secondary site, you must
-configure a _permanent replication slot_ on the primary site's Patroni cluster,
+configure a permanent replication slot on the primary site's Patroni cluster,
 and ensure password authentication is used.
 
 On each node running a Patroni instance on the primary site **starting on the Patroni

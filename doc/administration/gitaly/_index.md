@@ -515,10 +515,10 @@ the [virtual storage](#virtual-storage).
 All RPCs marked with the `ACCESSOR` option are redirected to an up to date and healthy Gitaly node.
 For example, [`GetBlob`](https://gitlab.com/gitlab-org/gitaly/-/blob/v12.10.6/proto/blob.proto#L16).
 
-_Up to date_ in this context means that:
+"Up to date" in this context means that:
 
 - There is no replication operations scheduled for this Gitaly node.
-- The last replication operation is in _completed_ state.
+- The last replication operation is in a completed state.
 
 The primary node is chosen to serve the request if:
 

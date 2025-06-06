@@ -184,7 +184,7 @@ To see if a member has inherited the permissions from a parent group:
 1. Select **Manage > Members**.
    The member's inheritance is displayed in the **Source** column.
 
-Members list for an example subgroup _Four_:
+Members list for an example subgroup **Four**:
 
 ![Group members page](img/group_members_v14_4.png)
 
@@ -215,11 +215,11 @@ You can't give a user a role in a subgroup that is lower than the roles the user
 To override a user's role in a parent group, add the user to the subgroup again with a higher role.
 For example:
 
-- If User 1 is added to group _Two_ with the Developer role, User 1 inherits that role in every subgroup of group _Two_.
-- To give User 1 the Maintainer role in group _Four_ (under _One / Two / Three_), add User 1 again to group _Four_ with
+- If User 1 is added to group **Two** with the Developer role, User 1 inherits that role in every subgroup of group **Two**.
+- To give User 1 the Maintainer role in group **Four** (under **One / Two / Three**), add User 1 again to group **Four** with
   the Maintainer role.
-- If User 1 is removed from group _Four_, the user's role falls back to their role in group _Two_. User 1 has the Developer
-  role in group _Four_ again.
+- If User 1 is removed from group **Four**, the user's role falls back to their role in group **Two**. User 1 has the Developer
+  role in group **Four** again.
 
 ## Mention subgroups
 

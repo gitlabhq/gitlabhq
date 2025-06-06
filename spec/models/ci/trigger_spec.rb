@@ -30,6 +30,49 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
     end
   end
 
+  describe 'scopes' do
+    describe '.with_last_used' do
+      let_it_be(:ci_trigger) { create(:ci_trigger) }
+
+      context 'when no pipelines' do
+        it 'returns the trigger with last_used as nil' do
+          expect(described_class.with_last_used).to contain_exactly(ci_trigger)
+
+          first = described_class.with_last_used.first
+          expect(first.attributes).to have_key('last_used')
+          expect(first.attributes['last_used']).to be_nil
+          expect(first.last_used).to be_nil
+        end
+
+        it 'only queries once' do
+          expect do
+            expect(described_class.with_last_used.first.last_used).to be_nil
+          end.to match_query_count(1)
+        end
+      end
+
+      context 'when there are pipelines', :freeze_time do
+        let!(:ci_pipeline_1) { create(:ci_pipeline, trigger: ci_trigger, created_at: 2.days.ago) }
+        let!(:ci_pipeline_2) { create(:ci_pipeline, trigger: ci_trigger, created_at: 1.day.ago) }
+
+        it 'returns the trigger with non-empty last_used' do
+          expect(described_class.with_last_used).to contain_exactly(ci_trigger)
+
+          first = described_class.with_last_used.first
+          expect(first.attributes).to have_key('last_used')
+          expect(first.attributes['last_used']).to eq(ci_pipeline_2.created_at)
+          expect(first.last_used).to eq(ci_pipeline_2.created_at)
+        end
+
+        it 'only queries once' do
+          expect do
+            expect(described_class.with_last_used.first.last_used).to eq(ci_pipeline_2.created_at)
+          end.to match_query_count(1)
+        end
+      end
+    end
+  end
+
   it_behaves_like 'encrypted attribute', :encrypted_token_tmp, :db_key_base_32 do
     let(:record) { create(:ci_trigger_without_token) }
   end
@@ -42,11 +85,11 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
 
     it { is_expected.to be_nil }
 
-    context 'when there is one pipeline' do
+    context 'when there is one pipeline', :freeze_time do
       let_it_be(:pipeline1) { create(:ci_empty_pipeline, trigger: trigger, project: project, created_at: '2025-02-13') }
       let_it_be(:build1) { create(:ci_build, pipeline: pipeline1) }
 
-      it { is_expected.to eq(pipeline1.reload.created_at) }
+      it { is_expected.to eq(pipeline1.created_at) }
 
       context 'when there are two pipelines' do
         let_it_be(:pipeline2) do
@@ -55,7 +98,7 @@ RSpec.describe Ci::Trigger, feature_category: :continuous_integration do
 
         let_it_be(:build2) { create(:ci_build, pipeline: pipeline2) }
 
-        it { is_expected.to eq(pipeline2.reload.created_at) }
+        it { is_expected.to eq(pipeline2.created_at) }
       end
     end
   end

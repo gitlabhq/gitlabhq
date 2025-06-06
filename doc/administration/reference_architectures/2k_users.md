@@ -462,7 +462,7 @@ Be sure to note the following items:
   [repository storage paths](../repository_storage_paths.md).
 - A Gitaly server can host one or more storage paths.
 - A GitLab server can use one or more Gitaly server nodes.
-- Gitaly addresses must be specified to be correctly resolvable for *all*
+- Gitaly addresses must be specified to be correctly resolvable for all
   Gitaly clients.
 - Gitaly servers must not be exposed to the public internet because network traffic
   on Gitaly is unencrypted by default. The use of a firewall is highly recommended

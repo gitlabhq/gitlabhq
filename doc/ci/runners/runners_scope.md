@@ -242,7 +242,7 @@ When only one job runs at a time, the fair usage algorithm assigns jobs in this 
 
 ## Group runners
 
-Use _group runners_ when you want all projects in a group
+Use group runners when you want all projects in a group
 to have access to a set of runners.
 
 Group runners process jobs by using a first in, first out queue.
@@ -471,7 +471,7 @@ Filter entries where stale runners were removed:
 
 ## Project runners
 
-Use _project runners_ when you want to use runners for specific projects. For example,
+Use project runners when you want to use runners for specific projects. For example,
 when you have:
 
 - Jobs with specific requirements, like a deploy job that requires credentials.

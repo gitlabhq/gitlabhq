@@ -28,7 +28,7 @@ The IDE communicates directly with the AI gateway by default, bypassing the GitL
 
 ### Automatic routing
 
-GitLab leverages Cloudflare and *Google Cloud Platform* (GCP) load balancers to route AI
+GitLab leverages Cloudflare and Google Cloud Platform (GCP) load balancers to route AI
 gateway requests to the nearest available deployment automatically. This routing
 mechanism prioritizes low latency and efficient processing of user requests.
 
@@ -64,14 +64,14 @@ As of the last update (2023-11-21), GitLab deploys the AI gateway in the followi
 - Europe (`europe-west2`, `europe-west3`, `europe-west9`)
 - Asia Pacific (`asia-northeast1`, `asia-northeast3`)
 
-Deployment regions may change frequently. For the most current information, always check the 
+Deployment regions may change frequently. For the most current information, always check the
 previously linked configuration file.
 
 The exact location of the LLM models used by the AI gateway is determined by the third-party model providers. Currently, there is no guarantee that the models reside in the same geographical regions as the AI gateway deployments. This implies that data may flow back to the US or other regions where the model provider operates, even if the AI gateway processes the initial request in a different region.
 
 ### Data Flow and LLM model locations
 
-GitLab is working closely with LLM providers to understand their regional data handling practices fully. 
+GitLab is working closely with LLM providers to understand their regional data handling practices fully.
 Currently, there might be instances where data is transmitted to regions outside the one closest to the user due to the factors mentioned in the previous section.
 
 ### Future enhancements

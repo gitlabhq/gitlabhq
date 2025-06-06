@@ -22,7 +22,7 @@ sections describe each of the available options and the schema that applies to t
 
 ### The top-level section
 
-The top-level section contains one or more _configuration sections_, defined as [TOML tables](https://toml.io/en/v1.0.0#table).
+The top-level section contains one or more configuration sections, defined as [TOML tables](https://toml.io/en/v1.0.0#table).
 
 | Setting     | Description                                        |
 |-------------|----------------------------------------------------|

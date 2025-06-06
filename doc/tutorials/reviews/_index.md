@@ -116,7 +116,7 @@ more information, scan through the issue descriptions.
   might indicate this merge request lacks full information.
   - If the labels match your area of expertise, you're likely a good candidate
     to review this merge request.
-  - If the labels match areas of expertise you _don't_ have, you might need to
+  - If the labels match areas of expertise you don't have, you might need to
     reassign the merge request to a different reviewer.
   - Add any labels your workflow expects.
 
@@ -223,7 +223,7 @@ Different types of changes have different effects on your codebase. Consider, in
 ### Test the code
 
 Unfortunately, we can't give you much guidance here. Every project is different!
-Without knowing your application firsthand, we can't tell you _how_ to test the
+Without knowing your application firsthand, we can't tell you how to test the
 changes, but we can offer some questions to consider:
 
 - Does it work? It's a deceptively simple question, but it's important to keep
@@ -305,7 +305,7 @@ to recheck (and change) your words before you publish.
 
 Remember to be constructive and kind. The structure of
 [Conventional comments](https://conventionalcomments.org/) can help you write
-comments that are both thoughtful _and_ constructive.
+comments that are both thoughtful and constructive.
 
 First, write your comments you want to attach to specific lines or files:
 
@@ -339,7 +339,7 @@ You've added your file- and line-specific feedback, and now you're ready to summ
 your review. It's time to think broadly, one last time.
 
 1. Go back to the **Overview** page of the merge request.
-1. Scan your pending comments. They should be helpful, thoughtful, kind, and - most importantly - _actionable_.
+1. Scan your pending comments. They should be helpful, thoughtful, kind, and - most importantly - actionable.
    Have you given the author an obvious next step to fix any problems you found?
 1. Consider your tone. Are you teaching, debating, or discussing? Do your comments
    achieve your goal? If you were the author, would you know what to do next? Reinforce

@@ -1521,7 +1521,7 @@ Proceed as follows to properly delete potential leftovers:
    | Pages content            | `PagesDeployment`                                       |
 
 1. Start a [Rails console](operations/rails_console.md). When using Geo, run it on the primary site.
-1. Query for all "files" which are still stored locally (instead of in object storage) based on the *model name* of the previous step. In this case, as uploads are affected, the model name `Upload` is used. Observe how `openbao.png` is still stored locally:
+1. Query for all "files" which are still stored locally (instead of in object storage) based on the model name of the previous step. In this case, as uploads are affected, the model name `Upload` is used. Observe how `openbao.png` is still stored locally:
 
    ```ruby
    Upload.with_files_stored_locally

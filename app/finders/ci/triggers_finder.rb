@@ -10,7 +10,7 @@ module Ci
     def execute
       return Ci::Trigger.none unless Ability.allowed?(@current_user, :admin_build, @project)
 
-      @project.triggers
+      @project.triggers.with_last_used
     end
   end
 end

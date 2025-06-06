@@ -15,7 +15,7 @@ title: Contributing to the Internal Events CLI
 
 ### When the generator should be used
 
-The internal events generator _should_:
+The internal events generator should:
 
 - be a one-stop-shop for any engineering tasks related to instrumenting metrics
 
@@ -25,7 +25,7 @@ The internal events generator _should not_:
 
 ### What we expect of users
 
-The internal events generator _should_:
+The internal events generator should:
 
 - protect users from making mistakes
 - communicate which tasks still need to be completed to achieve their goal at any given time
@@ -39,7 +39,7 @@ The internal events generator _should not_:
 
 ### What we expect of the development environment
 
-The internal events generator _should_:
+The internal events generator should:
 
 - be faster than manually performing the same tasks
 - leave the user's environment in a clean & valid state if force-exited
@@ -52,7 +52,7 @@ The internal events generator _should not_:
 
 ### Setting expectations with the user
 
-The internal events generator _should_:
+The internal events generator should:
 
 - show a progress bar and detail the required steps at the top of each screen
 - have outcome-based entrypoints defining each flow
@@ -60,7 +60,7 @@ The internal events generator _should_:
 
 ### Communicating information to the user
 
-The internal events generator _should_:
+The internal events generator should:
 
 - provide textual labels and explanations for everything
 - always print the `InternalEventsCli::Text::FEEDBACK_NOTICE` when a user exits the CLI
@@ -72,7 +72,7 @@ The internal events generator _should not_:
 
 ### Collecting information from the user
 
-The internal events generator _should_:
+The internal events generator should:
 
 - prefer using select menus to plain text inputs
 - auto-fill with defaults where possible or use previous selections to infer information

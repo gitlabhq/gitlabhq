@@ -88,7 +88,7 @@ ones. Additionally for some features, results are shown only if the pipeline run
 
 #### Job status
 
-Jobs pass if they are able to complete a scan. A _pass_ result does not indicate if they did, or did not, identify findings. The only exception is coverage fuzzing, which fails if it identifies findings.
+Jobs pass if they are able to complete a scan. A pass result does not indicate if they did, or did not, identify findings. The only exception is coverage fuzzing, which fails if it identifies findings.
 
 Jobs fail if they are unable to complete a scan. You can view the pipeline logs for more information.
 

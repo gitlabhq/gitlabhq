@@ -175,10 +175,10 @@ use the username (not token name) and the token as the password.
 SSH authentication is mutual:
 
 - You must prove to the server that you're allowed to access the repository.
-- The server must also *prove to you* that it's who it claims to be.
+- The server must also prove to you that it's who it claims to be.
 
-For SSH authentication, you provide your credentials as a password or _public key_.
-The server that the other repository resides on provides its credentials as a _host key_.
+For SSH authentication, you provide your credentials as a password or public key.
+The server that the other repository resides on provides its credentials as a host key.
 You must [verify the fingerprint](#verify-a-host-key) of this host key manually.
 
 If you're mirroring over SSH (using an `ssh://` URL), you can authenticate using:

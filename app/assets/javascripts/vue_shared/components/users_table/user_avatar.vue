@@ -75,7 +75,7 @@ export default {
 
       <div class="gl-flex gl-flex-wrap gl-pt-2">
         <div v-for="badge in user.badges" :key="badge.text" class="gl-pr-2">
-          <gl-badge :variant="badge.variant">{{ badge.text }}</gl-badge>
+          <gl-badge :variant="badge.variant" :icon="badge.icon">{{ badge.text }}</gl-badge>
         </div>
       </div>
     </gl-avatar-labeled>

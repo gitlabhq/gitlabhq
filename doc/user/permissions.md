@@ -305,9 +305,9 @@ Project permissions for [application security](application_security/secure_your_
 [GitLab CI/CD](../ci/_index.md) permissions for some roles can be modified by these settings:
 
 - [Public pipelines](../ci/pipelines/settings.md#change-which-users-can-view-your-pipelines):
-  When set to public, gives access to certain CI/CD features to *Guest* project members.
+  When set to public, gives access to certain CI/CD features to Guest project members.
 - [Pipeline visibility](../ci/pipelines/settings.md#change-pipeline-visibility-for-non-project-members-in-public-projects):
-  When set to **Everyone with Access**, gives access to certain CI/CD "view" features to *non-project* members.
+  When set to **Everyone with Access**, gives access to certain CI/CD "view" features to non-project members.
 
 Project Owners can perform any listed action, and can delete pipelines:
 

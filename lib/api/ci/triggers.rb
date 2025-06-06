@@ -73,7 +73,7 @@ module API
           authenticate!
           authorize! :admin_build, user_project
 
-          triggers = user_project.triggers
+          triggers = user_project.triggers.with_last_used
 
           present paginate(triggers), with: Entities::Trigger, current_user: current_user
         end

@@ -103,5 +103,5 @@ when the underlying init system is not upstart.
 
 when the underlying init system is systemd.
 
-These warnings _can be safely ignored_. They are not suppressed because this
+These warnings can be safely ignored. They are not suppressed because this
 allows everyone to debug possible detection issues faster.

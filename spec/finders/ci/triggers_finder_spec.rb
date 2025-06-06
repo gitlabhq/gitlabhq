@@ -17,6 +17,7 @@ RSpec.describe Ci::TriggersFinder, feature_category: :continuous_integration do
 
       it 'returns list of trigger tokens' do
         expect(subject).to contain_exactly(trigger)
+        expect(subject.first.attributes).to have_key('last_used')
       end
     end
 

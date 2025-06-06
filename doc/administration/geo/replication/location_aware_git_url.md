@@ -50,7 +50,7 @@ In any case, you require:
 - A working GitLab **secondary** site.
 - A Route53 Hosted Zone managing your domain.
 
-If you haven't yet set up a Geo _primary_ site and _secondary_ site, see the
+If you haven't yet set up a Geo primary site and secondary site, see the
 [Geo setup instructions](../setup/_index.md).
 
 ## Create a traffic policy

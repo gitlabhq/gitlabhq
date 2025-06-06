@@ -631,7 +631,7 @@ Protected environments are ignored and not stopped.
 
 You can define a stop job for the environment with an [`on_stop` action](../yaml/_index.md#environmenton_stop) in the environment's deploy job.
 
-The stop jobs of finished deployments in the latest finished pipeline are run when an environment is stopped. A deployment or pipeline is _finished_ if it has the successful, canceled, or failed status.
+The stop jobs of finished deployments in the latest finished pipeline are run when an environment is stopped. A deployment or pipeline is finished if it has the successful, canceled, or failed status.
 
 Prerequisites:
 

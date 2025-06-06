@@ -219,8 +219,8 @@ Stopped deployments are subsequently deleted by another cron job that also
 runs every 10 minutes. To recover it, follow the steps described in
 [Recover a stopped deployment](#recover-a-stopped-deployment).
 
-A stopped or deleted deployment is no longer available on the web.
-Users see a `404 Not found` error page at its URL, until another deployment is created
+A stopped or deleted deployment is no longer available on the web. You
+see a 404 Not found error page at its URL, until another deployment is created
 with the same URL configuration.
 
 The previous YAML example uses [user-defined job names](#user-defined-job-names).

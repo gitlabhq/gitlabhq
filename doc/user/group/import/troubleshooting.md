@@ -131,7 +131,7 @@ You can receive other `404` errors when importing a group, for example:
 "exception_class": "BulkImports::NetworkError",
 ```
 
-This error indicates a problem transferring from the _source_ instance. To solve this, check that you have met the
+This error indicates a problem transferring from the source instance. To solve this, check that you have met the
 [prerequisites](direct_transfer_migrations.md#prerequisites) on the source instance.
 
 ## Mismatched group or project path names

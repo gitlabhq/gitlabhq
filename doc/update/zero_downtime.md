@@ -24,7 +24,7 @@ or management of third party services, such as AWS RDS, refer to the respective 
 
 ## Before you start
 
-Achieving _true_ zero downtime as part of an upgrade is notably difficult for any distributed application. The process detailed in
+Achieving true zero downtime as part of an upgrade is notably difficult for any distributed application. The process detailed in
 this guide has been tested as given against our HA [Reference Architectures](../administration/reference_architectures/_index.md)
 and was found to result in effectively no observable downtime, but be aware your mileage may vary dependent on the specific system makeup.
 
@@ -175,7 +175,7 @@ This section focuses exclusively on the Praefect component, not its [required Po
 
 Praefect must also perform database migrations to upgrade any existing data. To avoid clashes,
 migrations should run on only one Praefect node. To do this, designate a specific node as a
-deploy node that runs the migrations. This is referred to as 
+deploy node that runs the migrations. This is referred to as
 the **Praefect deploy node** in the following steps:
 
 1. On the **Praefect deploy node**:
@@ -378,7 +378,7 @@ deployment with Geo.
 Overall, the approach is largely the same as the
 [normal process](#multi-node--ha-deployment) with some additional steps required
 for each secondary site. The required order is upgrading the primary first, then
-the secondaries. You must also run any post-deployment migrations on the primary _after_
+the secondaries. You must also run any post-deployment migrations on the primary after
 all secondaries have been updated.
 
 {{< alert type="note" >}}
@@ -411,10 +411,10 @@ The upgrade process is the same for both primary and secondary sites. However, y
       # Send QUIT to NGINX master process to drain and exit
       NGINX_PID=$(cat /var/opt/gitlab/nginx/nginx.pid)
       kill -QUIT $NGINX_PID
- 
+
       # Wait for drain to complete
       while kill -0 $NGINX_PID 2>/dev/null; do sleep 1; done
- 
+
       # Stop NGINX service to prevent automatic restarts
       gitlab-ctl stop nginx
       ```
@@ -461,10 +461,10 @@ The upgrade process is the same for both primary and secondary sites. However, y
       # Send QUIT to NGINX master process to drain and exit
       NGINX_PID=$(cat /var/opt/gitlab/nginx/nginx.pid)
       kill -QUIT $NGINX_PID
- 
+
       # Wait for drain to complete
       while kill -0 $NGINX_PID 2>/dev/null; do sleep 1; done
- 
+
       # Stop NGINX service to prevent automatic restarts
       gitlab-ctl stop nginx
       ```

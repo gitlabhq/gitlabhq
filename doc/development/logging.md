@@ -215,7 +215,7 @@ end
 #### Logging durations
 
 Similar to timezones, choosing the right time unit to log can impose avoidable overhead. So, whenever
-challenged to choose between seconds, milliseconds or any other unit, lean towards _seconds_ as float
+challenged to choose between seconds, milliseconds or any other unit, lean towards seconds as float
 (with microseconds precision, that is, `Gitlab::InstrumentationHelper::DURATION_PRECISION`).
 
 In order to make it easier to track timings in the logs, make sure the log key has `_s` as

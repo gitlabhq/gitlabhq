@@ -539,7 +539,7 @@ use the branch name `11-8-stable`.
 
 {{< alert type="warning" >}}
 
-You can change `<X-Y-stable>` to `master` if you want the *bleeding edge* version, but never install `master` on a production server!
+You can change `<X-Y-stable>` to `master` if you want the "bleeding edge" version, but never install `master` on a production server!
 
 {{< /alert >}}
 

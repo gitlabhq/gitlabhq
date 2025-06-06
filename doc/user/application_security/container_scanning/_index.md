@@ -430,7 +430,7 @@ To allowlist specific vulnerabilities, follow these steps:
 
 #### `vulnerability-allowlist.yml` data format
 
-The `vulnerability-allowlist.yml` file is a YAML file that specifies a list of CVE IDs of vulnerabilities that are **allowed** to exist, because they're _false positives_, or they're _not applicable_.
+The `vulnerability-allowlist.yml` file is a YAML file that specifies a list of CVE IDs of vulnerabilities that are **allowed** to exist, because they're false positives, or they're not applicable.
 
 If a matching entry is found in the `vulnerability-allowlist.yml` file, the following happens:
 
@@ -454,9 +454,9 @@ images:
 
 This example excludes from `gl-container-scanning-report.json`:
 
-1. All vulnerabilities with CVE IDs: _CVE-2019-8696_, _CVE-2014-8166_, _CVE-2017-18248_.
-1. All vulnerabilities found in the `registry.gitlab.com/gitlab-org/security-products/dast/webgoat-8.0@sha256` container image with CVE ID _CVE-2018-4180_.
-1. All vulnerabilities found in `your.private.registry:5000/centos` container with CVE IDs _CVE-2015-1419_, _CVE-2015-1447_.
+1. All vulnerabilities with CVE IDs: `CVE-2019-8696`, `CVE-2014-8166`, `CVE-2017-18248`.
+1. All vulnerabilities found in the `registry.gitlab.com/gitlab-org/security-products/dast/webgoat-8.0@sha256` container image with CVE ID `CVE-2018-4180`.
+1. All vulnerabilities found in `your.private.registry:5000/centos` container with CVE IDs `CVE-2015-1419`, `CVE-2015-1447`.
 
 ##### File format
 
@@ -889,7 +889,7 @@ Database update information for other analyzers is available in the
 Some vulnerabilities can be fixed by applying the solution that GitLab
 automatically generates.
 
-To enable remediation support, the scanning tool _must_ have access to the `Dockerfile` specified by
+To enable remediation support, the scanning tool must have access to the `Dockerfile` specified by
 the [`CS_DOCKERFILE_PATH`](#available-cicd-variables) CI/CD variable. To ensure that the scanning tool
 has access to this
 file, it's necessary to set [`GIT_STRATEGY: fetch`](../../../ci/runners/configure_runners.md#git-strategy) in

@@ -13,7 +13,7 @@ title: Upgrade paths
 
 {{< /details >}}
 
-Upgrading across multiple GitLab versions in one go is *only possible by accepting downtime*.
+Upgrading across multiple GitLab versions in one go is only possible by accepting downtime.
 If you don't want any downtime, read how to [upgrade with zero downtime](zero_downtime.md).
 
 Upgrade paths include required upgrade stops, which are versions of GitLab that you must upgrade to before upgrading to

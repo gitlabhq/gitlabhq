@@ -287,8 +287,8 @@ in a process known as **backfill**.
 Meanwhile, the **primary** site starts to notify each **secondary** site of any changes, so
 that the **secondary** site can act on those notifications immediately.
 
-Be sure the _secondary_ site is running and accessible. You can sign in to the
-_secondary_ site with the same credentials as were used with the _primary_ site.
+Be sure the secondary site is running and accessible. You can sign in to the
+secondary site with the same credentials as were used with the primary site.
 
 ## Step 4. (Optional) Using custom certificates
 

@@ -4458,7 +4458,7 @@ using variables.
 
 Use `rules` to include or exclude jobs in pipelines.
 
-Rules are evaluated when the pipeline is created, and evaluated *in order*. When a match is found,
+Rules are evaluated when the pipeline is created, and evaluated in order. When a match is found,
 no more rules are checked and the job is either included or excluded from the pipeline
 depending on the configuration. If no rules match, the job is not added to the pipeline.
 
