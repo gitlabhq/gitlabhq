@@ -5,8 +5,6 @@ require 'spec_helper'
 RSpec.describe 'getting organizations information', feature_category: :organization do
   include GraphqlHelpers
 
-  let_it_be(:user) { create(:user) }
-
   let(:query) { graphql_query_for(:organizations, organizations_fields) }
   let(:organizations) { graphql_data_at(:organizations, :nodes) }
   let(:organizations_fields) do
@@ -20,8 +18,9 @@ RSpec.describe 'getting organizations information', feature_category: :organizat
   end
 
   let_it_be(:private_organization) { create(:organization, :private) }
-
   let_it_be(:public_organizations) { create_list(:organization, 3, :public) }
+  let_it_be(:organization) { public_organizations.first }
+  let_it_be(:user) { create(:user, organizations: [organization]) }
 
   subject(:request_organization) { post_graphql(query, current_user: current_user) }
 

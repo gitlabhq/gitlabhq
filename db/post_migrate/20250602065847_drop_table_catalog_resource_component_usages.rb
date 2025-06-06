@@ -4,7 +4,7 @@ class DropTableCatalogResourceComponentUsages < Gitlab::Database::Migration[2.3]
   milestone '18.1'
 
   def up
-    drop_table :p_catalog_resource_component_usages, if_exists: true
+    drop_table :p_catalog_resource_component_usages, if_exists: true, cascade: true
   end
 
   def down

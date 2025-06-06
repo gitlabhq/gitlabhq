@@ -69,6 +69,10 @@ export function initMergeRequestDashboard(el) {
                   keyArgs,
                   merge: true,
                 },
+                authoredMergeRequests: {
+                  keyArgs,
+                  merge: true,
+                },
               },
             },
             MergeRequestConnection: {

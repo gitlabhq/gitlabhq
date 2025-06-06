@@ -173,7 +173,7 @@ export function toggleLoader(state) {
 }
 
 export function getActionFromHref(pathName) {
-  let action = pathName.match(/\/(\d+)\/(commits|diffs|pipelines|reports).*$/);
+  let action = pathName.match(/\/(\d+|new)\/(commits|diffs|pipelines|reports).*$/);
 
   if (action) {
     action = action.at(-1).replace(/(^\/|\.html)/g, '');

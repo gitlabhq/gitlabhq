@@ -144,48 +144,12 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
       expect(notes.last.note).to eq('second note')
     end
 
-    context 'when pub-sub event feature flag is disabled' do
-      before do
-        stub_feature_flags(notification_event_store_migration_draft_published: false)
-      end
+    it 'creates the correct pub-sub event' do
+      expect(::Gitlab::EventStore).to receive(:publish).with(
+        an_instance_of(MergeRequests::DraftNotePublishedEvent)
+      ).and_call_original
 
-      it 'resolves todos for the MR' do
-        expect(todo_service).to receive(:new_review).with(merge_request, user)
-
-        publish
-      end
-
-      it 'sends batch notification' do
-        expect(notification_service).to receive_message_chain(:async, :new_review).with(kind_of(Review))
-
-        publish
-      end
-    end
-
-    context 'when pub-sub event feature flag is enabled' do
-      before do
-        stub_feature_flags(notification_event_store_migration_draft_published: true)
-      end
-
-      it 'creates the correct pub-sub event' do
-        expect(::Gitlab::EventStore).to receive(:publish).with(
-          an_instance_of(MergeRequests::DraftNotePublishedEvent)
-        ).and_call_original
-
-        publish
-      end
-
-      it 'does not send batch notification' do
-        expect(notification_service).not_to receive(:async)
-
-        publish
-      end
-
-      it 'does not handle todos' do
-        expect(todo_service).not_to receive(:new_review)
-
-        publish
-      end
+      publish
     end
 
     it 'tracks the publish event' do
@@ -296,29 +260,11 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
   context 'with no draft notes' do
     let(:merge_request) { create(:merge_request) }
 
-    context 'when pub-sub event feature flag is disabled' do
-      before do
-        stub_feature_flags(notification_event_store_migration_draft_published: false)
-      end
+    it 'creates the correct pub-sub event' do
+      expect(::Gitlab::EventStore).to receive(:publish)
+      expect(MergeRequests::DraftNotePublishedEvent).to receive(:new)
 
-      it 'resolves todos for the MR' do
-        expect(todo_service).to receive(:new_review).with(merge_request, user)
-
-        publish
-      end
-    end
-
-    context 'when pub-sub event feature flag is enabled' do
-      before do
-        stub_feature_flags(notification_event_store_migration_draft_published: true)
-      end
-
-      it 'creates the correct pub-sub event' do
-        expect(::Gitlab::EventStore).to receive(:publish)
-        expect(MergeRequests::DraftNotePublishedEvent).to receive(:new)
-
-        publish
-      end
+      publish
     end
   end
 
@@ -447,32 +393,12 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
       expect(Note.find(note.id).discussion.resolved?).to be true
     end
 
-    context 'when pub-sub event feature flag is enabled' do
-      before do
-        stub_feature_flags(notification_event_store_migration_draft_published: true)
+    it 'handles resolved discussions without sending notifications' do
+      expect_next_instance_of(MergeRequests::ResolvedDiscussionNotificationService) do |instance|
+        expect(instance).to receive(:execute).with(merge_request, send_notifications: false)
       end
 
-      it 'handles resolved discussions without sending notifications' do
-        expect_next_instance_of(MergeRequests::ResolvedDiscussionNotificationService) do |instance|
-          expect(instance).to receive(:execute).with(merge_request, send_notifications: false)
-        end
-
-        publish
-      end
-    end
-
-    context 'when pub-sub event feature flag is disabled' do
-      before do
-        stub_feature_flags(notification_event_store_migration_draft_published: false)
-      end
-
-      it 'handles resolved discussions sending notifications' do
-        expect_next_instance_of(MergeRequests::ResolvedDiscussionNotificationService) do |instance|
-          expect(instance).to receive(:execute).with(merge_request, send_notifications: true)
-        end
-
-        publish
-      end
+      publish
     end
   end
 

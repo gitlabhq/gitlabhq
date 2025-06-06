@@ -127,7 +127,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
         first_wiki_list.hover
         wiki_new_page_link = first(".wiki-list-create-child-button")['href']
 
-        expect(wiki_new_page_link).to eq "#{wiki_link}/%7Bnew_page_title%7D"
+        expect(wiki_new_page_link).to eq "#{wiki_link}/%7Bnew_page_title%7D?view=create"
       end
     end
   end

@@ -8,7 +8,7 @@ describe('Work Item title', () => {
   const mockTitleHtml =
     'Work Item <em>title</em> <gl-emoji title="grinning face with smiling eyes" data-name="smile" data-unicode-version="6.0">😄</gl-emoji>';
   const mockTitleHtmlResult =
-    '<h1 data-testid="work-item-title" class="gl-heading-1 !gl-m-0 gl-w-full gl-wrap-anywhere"><span>Work Item <em>title</em> <gl-emoji data-unicode-version="6.0" data-name="smile" title="grinning face with smiling eyes">😄</gl-emoji></span></h1>';
+    '<h1 data-testid="work-item-title" class="gl-heading-1 !gl-m-0 gl-w-full gl-wrap-anywhere"><span>Work Item <em>title</em> <gl-emoji title="grinning face with smiling eyes" data-name="smile" data-unicode-version="6.0">😄</gl-emoji></span></h1>';
   const mockTitleText = 'Work Item title 😄';
 
   const createComponent = ({ isEditing = false, isModal = false } = {}) => {

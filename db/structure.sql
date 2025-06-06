@@ -37264,6 +37264,8 @@ CREATE INDEX index_sbom_graph_paths_on_descendant_id ON sbom_graph_paths USING b
 
 CREATE INDEX index_sbom_graph_paths_on_project_id_and_descendant_id ON sbom_graph_paths USING btree (project_id, descendant_id);
 
+CREATE INDEX index_sbom_graph_paths_on_project_id_and_id ON sbom_graph_paths USING btree (project_id, id);
+
 CREATE INDEX index_sbom_occurr_on_project_id_and_component_version_id_and_id ON sbom_occurrences USING btree (project_id, component_version_id, id);
 
 CREATE INDEX index_sbom_occurrences_on_component_id_and_id ON sbom_occurrences USING btree (component_id, id);

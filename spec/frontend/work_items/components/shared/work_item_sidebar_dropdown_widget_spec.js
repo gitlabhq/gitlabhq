@@ -228,7 +228,7 @@ describe('WorkItemSidebarDropdownWidget component', () => {
 
     it('shows tooltip with key when shortcut is provided', () => {
       createComponent({ canUpdate: true, shortcut });
-      const expectedTooltip = 'Edit dropdown <kbd aria-hidden="true" class="flat gl-ml-1">e</kbd>';
+      const expectedTooltip = 'Edit dropdown <kbd class="flat gl-ml-1" aria-hidden="true">e</kbd>';
 
       expect(findEditButton().attributes('title')).toContain(expectedTooltip);
     });

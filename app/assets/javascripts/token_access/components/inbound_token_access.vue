@@ -212,8 +212,14 @@ export default {
       return actions;
     },
     allowlist() {
+      // Show the current project at the top of the allowlist for better UX
       const { groups, projects } = this.groupsAndProjectsWithAccess;
-      return [...groups, ...projects].sort((a, b) => a.fullPath.localeCompare(b.fullPath));
+      const allItems = [...groups, ...projects];
+      const currentProject = allItems.find((item) => item.fullPath === this.fullPath);
+      const otherItems = allItems
+        .filter((item) => item !== currentProject)
+        .sort((a, b) => a.fullPath.localeCompare(b.fullPath));
+      return currentProject ? [currentProject, ...otherItems] : otherItems;
     },
     disclosureDropdownOptions() {
       return [

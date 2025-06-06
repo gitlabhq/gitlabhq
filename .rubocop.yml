@@ -1314,6 +1314,12 @@ Database/AvoidUsingPluckWithoutLimit:
     - 'ee/spec/**/*.rb'
     - 'qa/qa/specs/**/*.rb'
 
+Database/AvoidUsingConnectionExecute:
+  Enabled: true
+  Include:
+    - '{,ee/}app/models/**/*'
+    - '{,ee/}lib/**/*'
+
 Style/SymbolProc:
   AllowedMethods:
     - define_method

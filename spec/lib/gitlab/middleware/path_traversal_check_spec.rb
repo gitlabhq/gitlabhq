@@ -62,6 +62,7 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
                   message: described_class::PATH_TRAVERSAL_MESSAGE,
                   fullpath: fullpath,
                   method: method.upcase,
+                  remote_ip: instance_of(String),
                   request_rejected: true
                 )).and_call_original
         expect(::Gitlab::Instrumentation::Middleware::PathTraversalCheck)

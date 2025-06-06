@@ -91,7 +91,7 @@ export default {
         size="small"
         category="tertiary"
         data-testid="wiki-list-create-child-button"
-        :href="`${page.path}/{new_page_title}`"
+        :href="`${page.path}/{new_page_title}?view=create`"
         class="wiki-list-create-child-button has-tooltip gl-ml-3"
         :title="plusButtonTooltip"
         :aria-label="plusButtonTooltip"

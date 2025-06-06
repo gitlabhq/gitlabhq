@@ -270,14 +270,14 @@ describe('TokenAccess component', () => {
       });
     });
 
-    it('adds the current project in alphabetical order', async () => {
+    it('adds the current project at the top of the list', async () => {
       await createComponent(
         [[getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler]],
         { isJobTokenPoliciesEnabled: true },
       );
 
-      expect(findTokenAccessTable().props('items')[0].fullPath).toBe('abc/123');
-      expect(findTokenAccessTable().props('items')[1].fullPath).toBe('root/my-repo');
+      expect(findTokenAccessTable().props('items')[0].fullPath).toBe('root/my-repo');
+      expect(findTokenAccessTable().props('items')[1].fullPath).toBe('abc/123');
       expect(findTokenAccessTable().props('items')[2].fullPath).toBe('root/your-repo');
       expect(findTokenAccessTable().props('items')[3].fullPath).toBe('zed');
     });

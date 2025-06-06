@@ -386,7 +386,6 @@ Ci::Build:
 - options
 - allow_failure
 - stage
-- trigger_request_id
 - stage_idx
 - stage_id
 - tag
@@ -438,7 +437,6 @@ Ci::Bridge:
 - options
 - allow_failure
 - stage
-- trigger_request_id
 - stage_idx
 - stage_id
 - tag
@@ -490,7 +488,6 @@ GenericCommitStatus:
 - options
 - allow_failure
 - stage
-- trigger_request_id
 - stage_idx
 - stage_id
 - tag

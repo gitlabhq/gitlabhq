@@ -180,7 +180,7 @@ describe('Blob controls component', () => {
 
       expect(findFindButton().attributes('aria-keyshortcuts')).toBe('t');
       expect(findFindButton().attributes('title')).toBe(
-        'Go to find file <kbd aria-hidden="true" class="flat gl-ml-1">t</kbd>',
+        'Go to find file <kbd class="flat gl-ml-1" aria-hidden="true">t</kbd>',
       );
       expect(tooltip).toBeDefined();
     });

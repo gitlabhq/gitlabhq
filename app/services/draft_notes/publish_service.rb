@@ -119,18 +119,11 @@ module DraftNotes
     end
 
     def handle_notifications(current_user, merge_request, review)
-      pub_sub_flag = Feature.enabled?(:notification_event_store_migration_draft_published, current_user)
-
-      if pub_sub_flag
-        create_draft_published_event(merge_request, current_user, review)
-      else
-        todo_service.new_review(merge_request, current_user)
-        notification_service.async.new_review(review) if review
-      end
+      create_draft_published_event(merge_request, current_user, review)
 
       MergeRequests::ResolvedDiscussionNotificationService
         .new(project: project, current_user: current_user)
-        .execute(merge_request, send_notifications: !pub_sub_flag)
+        .execute(merge_request, send_notifications: false)
     end
 
     def create_draft_published_event(merge_request, current_user, review)
