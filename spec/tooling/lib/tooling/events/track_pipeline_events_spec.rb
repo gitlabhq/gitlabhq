@@ -8,10 +8,10 @@ require_relative '../../../../../tooling/lib/tooling/events/track_pipeline_event
 RSpec.describe Tooling::Events::TrackPipelineEvents, feature_category: :tooling do
   include StubENV
 
-  subject(:send_event) { described_class.new(logger: logger).send_event(event_name, **additional_properties) }
+  subject(:send_event) { described_class.new(logger: logger).send_event(event_name, **base_properties) }
 
   let(:event_name) { "e2e_tests_selected_for_execution_gitlab_pipeline" }
-  let(:additional_properties) { { label: 'label', value: 10, property: 'property' } }
+  let(:base_properties) { { label: 'label', value: 10, property: 'property' } }
   let(:access_token) { 'test-admin-token' }
   let(:logger) { instance_double(Logger, info: nil, error: nil) }
   let(:http_client) { instance_double(Net::HTTP, :use_ssl= => true, :request_post => response) }
@@ -33,6 +33,18 @@ RSpec.describe Tooling::Events::TrackPipelineEvents, feature_category: :tooling 
 
   describe '#send_event' do
     context 'with API request' do
+      let(:event_properties) { base_properties }
+
+      let(:expected_request_body) do
+        {
+          event: event_name,
+          send_to_snowplow: true,
+          namespace_id: 1,
+          project_id: 2,
+          additional_properties: event_properties
+        }.to_json
+      end
+
       before do
         allow(Net::HTTP).to receive(:new).and_return(http_client)
       end
@@ -45,22 +57,34 @@ RSpec.describe Tooling::Events::TrackPipelineEvents, feature_category: :tooling 
       end
 
       context 'when successful' do
-        let(:expected_request_body) do
-          {
-            event: event_name,
-            send_to_snowplow: true,
-            namespace_id: 1,
-            project_id: 2,
-            additional_properties: additional_properties
-          }.to_json
-        end
-
         it 'sends correct event parameters and success message' do
           send_event
 
           expect(http_client).to have_received(:request_post).with(api_path, expected_request_body, headers)
           expect(logger).to have_received(:info).with(
-            "Successfully sent data with properties: #{additional_properties}"
+            "Successfully sent data with properties: #{event_properties}"
+          )
+        end
+      end
+
+      context 'with extra properties' do
+        subject(:send_event) do
+          described_class.new(logger: logger).send_event(
+            event_name,
+            **base_properties,
+            extra_properties: extra_properties
+          )
+        end
+
+        let(:extra_properties) { { custom_key: 'value' } }
+        let(:event_properties) { base_properties.merge(extra_properties) }
+
+        it 'sends event with extra properties' do
+          send_event
+
+          expect(http_client).to have_received(:request_post).with(api_path, expected_request_body, headers)
+          expect(logger).to have_received(:info).with(
+            "Successfully sent data with properties: #{event_properties}"
           )
         end
       end

@@ -38823,7 +38823,7 @@ msgstr ""
 msgid "Microsoft|Client secret"
 msgstr ""
 
-msgid "Microsoft|Enable Microsoft Azure integration for this group"
+msgid "Microsoft|Enable Microsoft Azure integration"
 msgstr ""
 
 msgid "Microsoft|Graph API endpoint"

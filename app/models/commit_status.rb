@@ -367,6 +367,10 @@ class CommitStatus < Ci::ApplicationRecord
     'build'
   end
 
+  def test_suite_name
+    nil
+  end
+
   # For AiAction
   def resource_parent
     project

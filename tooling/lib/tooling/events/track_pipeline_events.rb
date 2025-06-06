@@ -18,11 +18,12 @@ module Tooling
       # @param label [String] Event attribute
       # @param value [Number] Numeric event attribute
       # @param property [String] Optional event attribute
+      # @param extra_properties [Hash] Additional custom properties
       # @return [Net::HTTPResponse]
-      def send_event(event_name, label:, value: nil, property: nil)
+      def send_event(event_name, label:, value: nil, property: nil, extra_properties: {})
         return log(:error, "Error: Cannot send event '#{event_name}'. Missing project access token.") unless api_token
 
-        properties = { label:, value:, property: }.compact
+        properties = { label:, value:, property:, **extra_properties }.compact
         body = {
           event: event_name,
           send_to_snowplow: true,

@@ -162,6 +162,9 @@ describe('Job Sidebar Details Container', () => {
       expect(findTestSummary().exists()).toBe(true);
       expect(findTestSummary().text()).toContain('Test summary');
       expect(findTestSummary().text()).toContain('1');
+      expect(findTestSummary().props('path')).toBe(
+        '/root/test-unit-test-reports/-/pipelines/512/test_report?job_name=test',
+      );
     });
 
     it('does not display the test summary section', async () => {

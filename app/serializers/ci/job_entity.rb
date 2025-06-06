@@ -6,6 +6,7 @@ module Ci
 
     expose :id
     expose :name
+    expose :test_suite_name
 
     expose :started?, as: :started
     expose :started_at, if: ->(job) { job.started? }

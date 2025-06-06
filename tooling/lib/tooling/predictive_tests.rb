@@ -74,7 +74,8 @@ module Tooling
         "glci_predictive_tests_count",
         label: "test-count",
         value: test_count,
-        property: predictive_tests_strategy
+        property: predictive_tests_strategy,
+        extra_properties: { ci_job_id: ENV["CI_JOB_ID"] }
       )
     end
   end

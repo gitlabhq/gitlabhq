@@ -86,7 +86,7 @@ export default {
       return this.job?.runner?.admin_path || '';
     },
     hasTestSummaryDetails() {
-      return Object.keys(this.testSummary).length > 0;
+      return Object.keys(this.testSummary).length > 0 && this.job?.test_suite_name;
     },
     testSummaryDescription() {
       let message;
@@ -106,7 +106,7 @@ export default {
     },
     testReportUrlWithJobName() {
       const urlParams = {
-        job_name: this.job.name,
+        job_name: this.job.test_suite_name,
       };
 
       return mergeUrlParams(urlParams, this.pipelineTestReportUrl);

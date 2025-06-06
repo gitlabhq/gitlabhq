@@ -55,7 +55,8 @@ RSpec.describe Tooling::PredictiveTests, feature_category: :tooling do
       'FRONTEND_FIXTURES_MAPPING_PATH' => fixtures_mapping.path,
       'RSPEC_MATCHING_JS_FILES_PATH' => matching_js_files.path,
       'RSPEC_TESTS_MAPPING_ENABLED' => "false",
-      'RSPEC_TESTS_MAPPING_PATH' => '/tmp/does-not-exist.out'
+      'RSPEC_TESTS_MAPPING_PATH' => '/tmp/does-not-exist.out',
+      'CI_JOB_ID' => '123'
     )
 
     # We write some data to later on verify that we only append to this file.
@@ -146,7 +147,8 @@ RSpec.describe Tooling::PredictiveTests, feature_category: :tooling do
             "glci_predictive_tests_count",
             label: "test-count",
             value: File.read(matching_tests.path).split(" ").length,
-            property: "described_class"
+            property: "described_class",
+            extra_properties: { ci_job_id: '123' }
           )
         end
       end

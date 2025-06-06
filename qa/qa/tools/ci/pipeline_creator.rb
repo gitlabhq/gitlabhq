@@ -25,7 +25,7 @@ module QA
         # @return [Hash]
         RUNTIME_COEFFICIENT = {
           test_on_cng: 0.7, # cng supports parallel_tests, so less jobs are needed to retain target runtime
-          test_on_gdk: 1.0,
+          test_on_gdk: 0.8, # gdk supports parallel_tests but is in general slower than other environments
           test_on_omnibus: 1.0,
           test_on_omnibus_nightly: 1.0
         }.freeze

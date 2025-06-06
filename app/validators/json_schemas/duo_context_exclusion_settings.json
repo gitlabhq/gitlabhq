@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Duo Context Exclusion Settings",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "exclusion_rules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
