@@ -81,9 +81,12 @@
   display: none;
 }
 
-.rd-hunk-header-parallel,
 .rd-hunk-lines-parallel {
   grid-template-columns: 50px 1fr 50px 1fr;
+}
+
+.rd-hunk-header-parallel {
+  grid-template-columns: 50px 1fr;
 }
 
 .rd-hunk-header-inline {
@@ -96,7 +99,7 @@
 
 .rd-hunk-header-buttons {
   display: grid;
-  grid-auto-flow: row;
+  grid-auto-flow: column;
   padding: 0;
 }
 
@@ -108,6 +111,7 @@
   // this causes jumps when the icons change from idle to loading
   font-size: 0;
   border: 0;
+  padding: 0;
 
   background-color: var(--code-diff-expand-button-background-color, $gray-100);
   color: var(--code-diff-expand-button-color, var(--gl-text-color-subtle));
@@ -268,6 +272,9 @@
 
 .rd-hunk-header-content {
   align-self: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .rd-line-content {

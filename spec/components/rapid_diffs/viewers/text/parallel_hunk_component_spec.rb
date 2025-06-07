@@ -16,7 +16,7 @@ RSpec.describe RapidDiffs::Viewers::Text::ParallelHunkComponent, type: :componen
 
   it "renders header" do
     render_component
-    expect(page).to have_text(hunk.header.text, count: 2)
+    expect(page).to have_text(hunk.header.text)
   end
 
   it "renders lines" do

@@ -52,7 +52,7 @@ module RapidDiffs
 
       count = 0
       @diff_file.viewer_hunks.each do |hunk|
-        count += hunk.header.expand_directions.count if hunk.header
+        count += 1 if hunk.header
         count += @parallel_view ? hunk.parallel_lines.count : hunk.lines.count
       end
       count
