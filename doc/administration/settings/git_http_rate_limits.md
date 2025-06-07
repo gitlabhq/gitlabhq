@@ -19,20 +19,21 @@ title: Rate limits on Git HTTP
 
 {{< /history >}}
 
-If you use Git HTTP in your repository,
-common Git operations can generate many Git HTTP requests.
-Some of these Git HTTP requests do not contain authentication parameter and
-are considered unauthenticated. You can enforce rate limits on Git HTTP requests.
-This can improve the security and durability of your web application.
-[General user and IP rate limits](user_and_ip_rate_limits.md) aren't applied
-to Git HTTP requests.
+If you use Git HTTP in your repository, common Git operations can generate many Git HTTP requests.
+Some of these Git HTTP requests do not contain authentication parameters, and are considered
+unauthenticated requests. Enforcing rate limits on Git HTTP requests can improve the security and
+durability of your web application.
+
+{{< alert type="note" >}}
+
+[General user and IP rate limits](user_and_ip_rate_limits.md) aren't applied to Git HTTP requests.
+
+{{< /alert >}}
 
 ## Configure Git HTTP rate limits
 
-Git HTTP rate limits are disabled by default. If enabled and configured, these limits
-are applied to Git HTTP requests.
-
-To configure Git HTTP rate limits:
+GitLab disables rate limits on Git HTTP requests by default. If you enable and configure these limits,
+GitLab applies them to Git HTTP requests:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Network**.

@@ -14,8 +14,8 @@ title: PlantUML
 
 {{< /details >}}
 
-With the [PlantUML](https://plantuml.com) integration, you can create diagrams in snippets, wikis, and repositories.
-This integration is enabled on GitLab.com for all users and does not require any additional configuration.
+Use the [PlantUML](https://plantuml.com) integration, to create diagrams in snippets, wikis, and repositories.
+GitLab.com integrates with PlantUML for all users, and requires no additional configuration.
 
 To set up the integration on your GitLab Self-Managed instance, you must [configure your PlantUML server](#configure-your-plantuml-server).
 
@@ -60,7 +60,7 @@ by the `plantuml` block:
    [`sphinxcontrib-plantuml`](https://pypi.org/project/sphinxcontrib-plantuml/),
    GitLab supports only the `caption` option.
 
-If the PlantUML server is correctly configured, these examples should render a
+If the PlantUML server is configured correctly, these examples should render a
 diagram instead of the code block:
 
 ```plantuml
@@ -68,7 +68,7 @@ Bob -> Alice : hello
 Alice -> Bob : hi
 ```
 
-Inside the block you can add any of the diagrams PlantUML supports, such as:
+Inside blocks, add any of the diagrams PlantUML supports, such as:
 
 - [Activity](https://plantuml.com/activity-diagram-legacy)
 - [Class](https://plantuml.com/class-diagram)
@@ -78,7 +78,7 @@ Inside the block you can add any of the diagrams PlantUML supports, such as:
 - [State](https://plantuml.com/state-diagram)
 - [Use Case](https://plantuml.com/use-case-diagram)
 
-You can add parameters to block definitions:
+Add parameters to block definitions:
 
 - `id`: A CSS ID added to the diagram HTML tag.
 - `width`: Width attribute added to the image tag.
@@ -88,7 +88,7 @@ Markdown does not support any parameters, and always uses PNG format.
 
 ## Include diagram files
 
-You can include or embed a PlantUML diagram from separate files in the repository using
+To include or embed a PlantUML diagram from separate files in the repository, use
 the `include` directive. Use this to maintain complex diagrams in dedicated files, or to
 reuse diagrams. For example:
 
