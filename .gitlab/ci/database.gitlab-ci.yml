@@ -270,3 +270,15 @@ db:docs-up-to-date:
       }
 
       run_with_custom_exit_code db_docs_up_to_date
+
+db:invalidate-old-pipeline-results:
+  extends:
+    - .db-job-base
+    - .db:rules:invalidate-old-pipeline-results
+  stage: post-test
+  needs: []
+  script:
+    - |
+      git fetch origin $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME
+      export MOST_RECENT_COMMIT_TIMESTAMP="$(git log origin/$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME --pretty=format:"%at" | head -n 1)"
+      bundle exec ruby scripts/database/mark_pipeline_comments.rb $CI_MERGE_REQUEST_IID $MOST_RECENT_COMMIT_TIMESTAMP

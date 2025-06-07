@@ -1025,6 +1025,12 @@
     - <<: *if-merge-request
       changes: *db-docs-patterns
 
+.db:rules:invalidate-old-pipeline-results:
+  rules:
+    - <<: *if-merge-request
+      changes: *db-patterns
+      when: always
+
 ################
 # Shared rules #
 ################
