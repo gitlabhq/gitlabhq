@@ -23367,7 +23367,8 @@ CREATE TABLE spam_logs (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     submitted_as_ham boolean DEFAULT false NOT NULL,
-    recaptcha_verified boolean DEFAULT false NOT NULL
+    recaptcha_verified boolean DEFAULT false NOT NULL,
+    target_id bigint
 );
 
 CREATE SEQUENCE spam_logs_id_seq

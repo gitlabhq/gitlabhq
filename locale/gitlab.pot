@@ -15778,9 +15778,6 @@ msgstr ""
 msgid "ComplianceFrameworks|Selected projects"
 msgstr ""
 
-msgid "ComplianceFrameworks|Send via:"
-msgstr ""
-
 msgid "ComplianceFrameworks|Set as default"
 msgstr ""
 
@@ -16438,9 +16435,6 @@ msgid "ComplianceStandardsAdherence|Establish a process to periodically review a
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Establish a process to periodically review and remove inactive users."
-msgstr ""
-
-msgid "ComplianceStandardsAdherence|External control"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Failed"

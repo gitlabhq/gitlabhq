@@ -190,8 +190,8 @@ For features introduced behind feature flags, add details about the feature flag
 Remove history items and inline text that refer to unsupported versions.
 
 GitLab supports the current major version and two previous major versions.
-For example, if 17.0 is the current major version, all major and minor releases of
-GitLab 17.0, 16.0, and 15.0 are supported.
+For example, if 18.0 is the current major version, all major and minor releases of
+GitLab 18.0, 17.0, and 16.0 are supported.
 
 For the list of current supported versions, see [Version support](https://about.gitlab.com/support/statement-of-support/#version-support).
 
@@ -205,13 +205,13 @@ When a new major version is about to be released, create merge
 requests to remove mentions of the last unsupported version. Only merge
 them during the milestone of the new major release.
 
-For example, if GitLab 17.0 is the next major upcoming release:
+For example, if GitLab 19.0 is the next major upcoming release:
 
-- The supported versions are 16, 15, and 14.
-- When GitLab 17.0 is released, GitLab 14 is no longer supported.
+- The supported versions are 18, 17, and 16.
+- When GitLab 19.0 is released, GitLab 16 is no longer supported.
 
-Create merge requests to remove mentions of GitLab 14, but only
-merge them during the 17.0 milestone, after 16.11 is released.
+Create merge requests to remove mentions of GitLab 16, but only
+merge them during the 19.0 milestone, after 18.11 is released.
 
 ## When to add availability details
 

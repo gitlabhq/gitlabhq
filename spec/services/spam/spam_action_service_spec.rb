@@ -80,6 +80,7 @@ RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency d
       expect(new_spam_log.description).to eq(target.spam_description)
       expect(new_spam_log.source_ip).to eq(fake_ip)
       expect(new_spam_log.user_agent).to eq(fake_user_agent)
+      expect(new_spam_log.target_id).to eq(target.id)
       expect(new_spam_log.noteable_type).to eq(target_type)
       expect(new_spam_log.via_api).to eq(true)
     end
