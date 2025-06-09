@@ -35744,6 +35744,8 @@ CREATE INDEX index_last_usages_on_last_used_date ON catalog_resource_component_l
 
 CREATE INDEX index_ldap_admin_role_links_on_member_role_id ON ldap_admin_role_links USING btree (member_role_id);
 
+CREATE INDEX index_ldap_admin_role_links_on_provider_and_sync_status ON ldap_admin_role_links USING btree (provider, sync_status);
+
 CREATE INDEX index_ldap_group_links_on_member_role_id ON ldap_group_links USING btree (member_role_id);
 
 CREATE UNIQUE INDEX index_lfs_file_locks_on_project_id_and_path ON lfs_file_locks USING btree (project_id, path);

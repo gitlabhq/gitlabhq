@@ -37,6 +37,7 @@ describe('Board Column Component', () => {
         highlightedLists,
         canAdminList,
         last,
+        columnIndex: 0,
       },
       stubs: {
         BoardAddNewColumnBetween,

@@ -55341,6 +55341,9 @@ msgstr ""
 msgid "SecurityOrchestration| that is %{licenseState} and is"
 msgstr ""
 
+msgid "SecurityOrchestration| triggered by %{sources}"
+msgstr ""
+
 msgid "SecurityOrchestration|%d project which has compliance framework:"
 msgid_plural "SecurityOrchestration|%d projects which have compliance framework:"
 msgstr[0] ""
@@ -55386,6 +55389,9 @@ msgid "SecurityOrchestration|%{scanners} of %{severities} severity level"
 msgid_plural "SecurityOrchestration|%{scanners} of %{severities} severity levels"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "SecurityOrchestration|%{sources} or %{lastSource}"
+msgstr ""
 
 msgid "SecurityOrchestration|%{state} and %{statuses}"
 msgstr ""
@@ -55720,7 +55726,7 @@ msgstr ""
 msgid "SecurityOrchestration|Enforce the following pipeline execution policy:"
 msgstr ""
 
-msgid "SecurityOrchestration|Every time a pipeline runs for %{branches}%{branchExceptionsString}"
+msgid "SecurityOrchestration|Every time a pipeline runs for %{branches}%{pipelineSource}%{branchExceptionsString}"
 msgstr ""
 
 msgid "SecurityOrchestration|Except"
@@ -56559,6 +56565,12 @@ msgstr ""
 msgid "SecurityOrchestration|any branch"
 msgstr ""
 
+msgid "SecurityOrchestration|any branch that targets a protected branch"
+msgstr ""
+
+msgid "SecurityOrchestration|any branch that targets the default branch"
+msgstr ""
+
 msgid "SecurityOrchestration|any default branch"
 msgstr ""
 
@@ -57381,6 +57393,9 @@ msgid "Select groups"
 msgstr ""
 
 msgid "Select health status"
+msgstr ""
+
+msgid "Select item"
 msgstr ""
 
 msgid "Select iteration"

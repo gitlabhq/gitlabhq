@@ -312,7 +312,7 @@ separate each job name with a number and one of the following:
 
 You can use these symbols interchangeably.
 
-In the example below, these three jobs are in a group named `build ruby`:
+In the following example, these three jobs are in a group named `build ruby`:
 
 ```yaml
 build ruby 1/3:

@@ -53,7 +53,7 @@ The `script` section of your `.gitlab-ci.yml` file therefore requires PowerShell
 
 ## Example `.gitlab-ci.yml` file
 
-Below is a sample `.gitlab-ci.yml` file that shows how to start using the runners for Windows:
+Use this example `.gitlab-ci.yml` file to get started with hosted runners on Windows:
 
 ```yaml
 .windows_job:

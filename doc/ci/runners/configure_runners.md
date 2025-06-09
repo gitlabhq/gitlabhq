@@ -732,7 +732,7 @@ subcommand. However, `GIT_SUBMODULE_UPDATE_FLAGS` flags are appended after a few
 
 - `--init`, if [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy) was set to `normal` or `recursive`.
 - `--recursive`, if [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy) was set to `recursive`.
-- [`GIT_DEPTH`](#shallow-cloning). See the default value below.
+- `GIT_DEPTH`. See the default value in the [shallow cloning](#shallow-cloning) section.
 
 Git honors the last occurrence of a flag in the list of arguments, so manually
 providing them in `GIT_SUBMODULE_UPDATE_FLAGS` overrides these default flags.
@@ -740,7 +740,7 @@ providing them in `GIT_SUBMODULE_UPDATE_FLAGS` overrides these default flags.
 For example, you can use this variable to:
 
 - Fetch the latest remote `HEAD` instead of the tracked commit in the
-  repository (default) to automatically updated all submodules with the
+  repository (default) to automatically update all submodules with the
   `--remote` flag.
 - Speed up the checkout by fetching submodules in multiple parallel jobs with
   the `--jobs 4` flag.
@@ -767,14 +767,14 @@ it is better to explicitly track submodule commits as designed, and update them
 using an auto-remediation/dependency bot.
 
 The `--remote` flag is not required to check out submodules at their committed
-revisions. Use this flag only when you want to automatically updated submodules
+revisions. Use this flag only when you want to automatically update submodules
 to their latest remote versions.
 
 {{< /alert >}}
 
-The behavior of `--remote` depends on your Git version. Some Git versions might
-fail, with the error below, when the branch in the superproject's `.gitmodules`
-differs from the default branch of the submodule repository:
+The behavior of `--remote` depends on your Git version.
+If the branch specified in your superproject's `.gitmodules` file is different from the 
+default branch of the submodule repository, some Git versions will fail with this error:
 
 `fatal: Unable to find refs/remotes/origin/<branch> revision in submodule path '<submodule-path>'`
 
@@ -934,7 +934,7 @@ test:
 The value of `GIT_CLONE_PATH` expands once. You cannot nest variables
 in this value.
 
-For example, you define both the variables below in your
+For example, you define the following variables in your
 `.gitlab-ci.yml` file:
 
 ```yaml

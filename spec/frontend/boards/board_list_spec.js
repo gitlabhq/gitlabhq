@@ -27,7 +27,7 @@ describe('Board list component', () => {
   const findMoveToPositionComponent = () => wrapper.findComponent(BoardCardMoveToPosition);
   const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
   const findBoardListCount = () => wrapper.find('.board-list-count');
-  const findBoardCardButtons = () => wrapper.findAll('button.board-card-button');
+  const findBoardCardButtons = () => wrapper.findAll('a.board-card-button');
 
   const maxIssueWeightOrCountWarningClass = '.gl-bg-red-50';
 

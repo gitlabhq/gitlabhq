@@ -82,6 +82,7 @@ The following features are not found in standard Markdown:
 - [Front matter](#front-matter)
 - [GitLab-specific references](#gitlab-specific-references)
 - [Includes](#includes)
+- [Placeholders](#placeholders)
 - [Inline diffs](#inline-diff)
 - [Math equations and symbols written in LaTeX](#math-equations)
 - [Strikethrough](#emphasis)
@@ -1968,6 +1969,48 @@ When rendered, the example looks similar to:
 > var s = "JavaScript syntax highlighting";
 > alert(s);
 > ```
+
+## Placeholders
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14389) in GitLab 18.1 [with a flag](../administration/feature_flags.md) named `markdown_placeholders`. Disabled by default. Enabled on GitLab.com for a subset of groups.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+Use placeholders to display certain types of changing data in descriptions and comments,
+such as a project's title or latest tag.
+Placeholders are reloaded each time the Markdown is rendered, so for example, when you refresh a page.
+
+The syntax is `%{PLACEHOLDER}`.
+
+For example, you could add an image that would reference the current pipeline status for the default branch:
+
+```markdown
+![pipeline status](https://%{gitlab_server}/%{project_path}/badges/%{default_branch}/pipeline.svg)
+```
+
+| Placeholder               | Example value       | Description |
+|---------------------------|---------------------|-------------|
+| `%{gitlab_server}`        | `gitlab.com`        | Hostnamme of the GitLab instance. |
+| `%{gitlab_pages_domain}`  | `pages.gitlab.com`  | Domain hosting GitLab Pages. |
+| `%{project_path}`         | `gitlab-org/gitlab` | Path of a project including the parent groups. |
+| `%{project_name}`         | `gitlab`            | Name of the project. |
+| `%{project_id}`           | `278964`            | Database ID associated with the project. |
+| `%{project_namespace}`    | `gitlab-org`        | Project namespace of the project. |
+| `%{project_title}`        | `GitLab`            | Title of the project. |
+| `%{group_name}`           | `gitlab-org`        | Group of the project. |
+| `%{default_branch}`       | `main`              | Default branch name configured for a project's repository. |
+| `%{commit_sha}`           | `ad10e011ce65492322037633ebc054efde37b143` | ID of the most recent commit on the default branch of a project's repository. |
+| `%{latest_tag}`            | `v17.10.7-ee`       | Latest tag created in the project's repository. |
 
 ## Escape characters
 

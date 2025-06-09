@@ -255,10 +255,10 @@ export default {
 };
 </script>
 <template>
-  <div>
+  <div class="gl-p-4">
     <div class="gl-flex" dir="auto">
       <h4
-        class="board-card-title gl-mb-0 gl-mt-0 gl-min-w-0 gl-hyphens-auto gl-break-words gl-text-base"
+        class="board-card-title gl-isolate gl-mb-0 gl-mt-0 gl-min-w-0 gl-hyphens-auto gl-break-words gl-text-base"
         :class="{ 'gl-mr-6': hasActions }"
       >
         <gl-icon
@@ -291,6 +291,7 @@ export default {
           class="gl-text-default hover:gl-text-default"
           data-testid="board-card-title-link"
           @mousemove.stop
+          @click.prevent
           >{{ item.title }}</a
         >
       </h4>
@@ -320,7 +321,7 @@ export default {
           <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-5" />
           <span
             v-if="showBoardCardNumber"
-            class="board-card-number gl-mr-3 gl-gap-2 gl-overflow-hidden gl-text-sm gl-text-subtle"
+            class="board-card-number gl-isolate gl-mr-3 gl-gap-2 gl-overflow-hidden gl-text-sm gl-text-subtle"
             :class="{ 'gl-text-base': isEpicBoard }"
           >
             <work-item-type-icon
@@ -341,6 +342,7 @@ export default {
           </span>
           <epic-countables
             v-if="shouldRenderEpicCountables"
+            class="gl-isolate"
             :allow-sub-epics="allowSubEpics"
             :opened-epics-count="descendantCounts.openedEpics"
             :closed-epics-count="descendantCounts.closedEpics"
@@ -350,26 +352,35 @@ export default {
             :closed-issues-weight="descendantWeightSum.closedIssues"
           />
           <span v-if="!isEpicBoard">
-            <issue-weight v-if="validIssueWeight(item)" :weight="item.weight" />
+            <issue-weight v-if="validIssueWeight(item)" class="gl-isolate" :weight="item.weight" />
             <issue-milestone
               v-if="item.milestone"
               data-testid="issue-milestone"
               :milestone="item.milestone"
-              class="gl-mr-3 gl-inline-flex gl-max-w-15 gl-cursor-help gl-items-center gl-align-bottom gl-text-sm gl-text-subtle"
+              class="gl-isolate gl-mr-3 gl-inline-flex gl-max-w-15 gl-cursor-help gl-items-center gl-align-bottom gl-text-sm gl-text-subtle"
             />
             <issue-iteration
               v-if="item.iteration"
               data-testid="issue-iteration"
               :iteration="item.iteration"
-              class="gl-align-bottom"
+              class="gl-isolate gl-align-bottom"
             />
             <issue-due-date
               v-if="item.dueDate"
+              class="gl-isolate"
               :date="item.dueDate"
               :closed="Boolean(item.closedAt)"
             />
-            <issue-time-estimate v-if="item.timeEstimate" :estimate="item.timeEstimate" />
-            <issue-health-status v-if="item.healthStatus" :health-status="item.healthStatus" />
+            <issue-time-estimate
+              v-if="item.timeEstimate"
+              class="gl-isolate"
+              :estimate="item.timeEstimate"
+            />
+            <issue-health-status
+              v-if="item.healthStatus"
+              class="gl-isolate"
+              :health-status="item.healthStatus"
+            />
           </span>
         </span>
       </div>
@@ -402,7 +413,7 @@ export default {
         </div>
         <work-item-relationship-icons
           v-if="hasBlockingRelationships"
-          class="gl-whitespace-nowrap"
+          class="gl-isolate gl-whitespace-nowrap"
           :work-item-type="workItemType"
           :blocking-count="blockingCount"
           :blocked-by-count="blockedByCount"
@@ -414,6 +425,7 @@ export default {
         <div class="gl-max-w-20">
           <work-item-status-badge
             v-if="showStatus"
+            class="gl-isolate"
             :name="item.status.name"
             :icon-name="item.status.iconName"
             :color="item.status.color"

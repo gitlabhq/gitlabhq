@@ -247,7 +247,7 @@ as a list of filenames, a filename pattern, or both:
 - A combination of both (`cyclonedx: [gl-sbom-*.json, my-cyclonedx.json]`).
 - Directories are not supported(`cyclonedx: test-results`, `cyclonedx: test-results/**`).
 
-Below is an example of a job exposing CycloneDX artifacts:
+The following example shows a job that exposes CycloneDX artifacts:
 
 ```yaml
 artifacts:
@@ -332,7 +332,7 @@ The collected Unit test reports upload to GitLab as an artifact. Although JUnit 
 are many third-party ports for other languages such as JavaScript, Python, and Ruby.
 
 See [Unit test reports](../testing/unit_test_reports.md) for more details and examples.
-Below is an example of collecting a JUnit report format XML file from Ruby's RSpec test tool:
+The following example shows how to collect a JUnit XML report from Ruby RSpec tests:
 
 ```yaml
 rspec:

@@ -18,7 +18,7 @@ jest.mock('~/lib/utils/url_utility');
 describe('Board card', () => {
   let wrapper;
 
-  const findBoardCardButton = () => wrapper.find('button.board-card-button');
+  const findBoardCardButton = () => wrapper.find('a.board-card-button');
 
   Vue.use(VueApollo);
 

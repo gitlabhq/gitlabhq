@@ -4358,7 +4358,7 @@ Use `retry:when` with `retry:max` to retry jobs for only specific failure cases.
 - A single failure type, or an array of one or more failure types:
 
 <!--
-  If you change any of the values below, make sure to update the `RETRY_WHEN_IN_DOCUMENTATION`
+  If you change any of the following values, make sure to update the `RETRY_WHEN_IN_DOCUMENTATION`
   array in `spec/lib/gitlab/ci/config/entry/retry_spec.rb`.
   The test there makes sure that all documented
   values are valid as a configuration option and therefore should always

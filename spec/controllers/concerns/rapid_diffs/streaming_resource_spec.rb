@@ -78,6 +78,8 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
     it 'renders diffs' do
       controller_instance.send(:diffs)
       expect(response.stream).to have_received(:write).with(diffs_html)
+      # ensure we're not doing double work when checking for empty state
+      expect(mock_resource).to have_received(:diffs_for_streaming).once
     end
 
     context 'when no diffs and no offset' do
@@ -85,7 +87,8 @@ RSpec.describe RapidDiffs::StreamingResource, type: :controller, feature_categor
 
       before do
         allow(controller_instance).to receive(:params).and_return(ActionController::Parameters.new)
-        allow(RapidDiffs::EmptyStateComponent).to receive_message_chain(:new, :render_in).and_return(empty_state_html)
+        allow(controller_instance).to receive(:render), &:call
+        allow(RapidDiffs::EmptyStateComponent).to receive_message_chain(:new, :call).and_return(empty_state_html)
       end
 
       it 'renders empty state' do

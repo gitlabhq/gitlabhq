@@ -20,7 +20,7 @@ Examples are available in several forms. As a collection of:
 - `.gitlab-ci.yml` [template files](#cicd-templates) maintained in GitLab, for many
   common frameworks and programming languages.
 - Repositories with [example projects](https://gitlab.com/gitlab-examples) for various languages. You can fork and adjust them to your own needs. Projects include an example of using [review apps with a static site served by NGINX](https://gitlab.com/gitlab-examples/review-apps-nginx/).
-- Examples and [other resources](#other-resources) listed below.
+- Examples and [other resources](#other-resources) listed in the following sections.
 
 ## CI/CD examples
 

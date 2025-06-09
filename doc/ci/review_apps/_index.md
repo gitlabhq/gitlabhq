@@ -203,7 +203,7 @@ deploy_review:
   environment:
     name: review/${CI_COMMIT_REF_NAME}
     url: https://${CI_ENVIRONMENT_SLUG}.example.com
-    on_stop: stop_review_app  # References the stop job below
+    on_stop: stop_review_app  # References the stop_review_app job
 
 stop_review_app:
   stage: deploy
