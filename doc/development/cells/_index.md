@@ -19,7 +19,7 @@ Below are available schemas related to Cells and Organizations:
 | `gitlab_main_cell_local` | For tables in the `main:` database that are related to features that is distinct for each cell. For example, `zoekt_nodes`, or `shards`. These cell-local tables should not have any foreign key references from/to organization tables. |
 | `gitlab_ci` | Use for all tables in the `ci:` database that are for an Organization. For example, `ci_pipelines` and `ci_builds` |
 | `gitlab_ci_cell_local` | For tables in the `ci:` database that are related to features that is distinct for each cell. For example, `instance_type_ci_runners`, or `ci_cost_settings`. These cell-local tables should not have any foreign key references from/to organization tables. |
-| `gitlab_main_user` | Schema for all User-related tables, ex. `users`, `emails`, etc. Most user functionality is organizational level so should use `gitlab_main_cell` instead (e.g. commenting on an issue).For user functionality that is not organizational level, use this schema. Tables on this schema must strictly belong to a user. |
+| `gitlab_main_user` | Schema for all User-related tables, ex. `users`, `emails`, etc. Most user functionality is organizational level so should use `gitlab_main_cell` instead (e.g. commenting on an issue). For user functionality that is not organizational level, use this schema. Tables on this schema must strictly belong to a user. |
 
 Most tables will require a [sharding key](../organization/_index.md#defining-a-sharding-key-for-all-organizational-tables) to be defined.
 
@@ -34,6 +34,9 @@ After a schema has been assigned, the merge request pipeline might fail due to o
 ## What schema to choose if the feature can be cluster-wide?
 
 The `gitlab_main_clusterwide` schema is now deprecated.
+We will ask teams to update tables from `gitlab_main_clusterwide` to `gitlab_main_cell` as required.
+This requires adding sharding keys to these tables, and may require
+additional changes to related features to scope them to the Organizational level.
 
 Clusterwide features are
 [heavily discouraged](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/#how-do-i-decide-whether-to-move-my-feature-to-the-cluster-cell-or-organization-level),
@@ -42,12 +45,14 @@ and there are [no plans to perform any cluster-wide synchronization](https://han
 Choose a different schema from the list of available GitLab [schemas](#available-cells--organization-schemas) instead.
 We expect most tables to use the `gitlab_main_cell` schema, especially if the
 table in the table is related to `projects`, or `namespaces`.
+Another alternative is the `gitlab_main_cell_local` schema.
 
 Consult with the [Tenant Scale group](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/tenant-scale/):
 If you believe that the `gitlab_main_clusterwide` schema is more suitable for a
 table, seek approval from the Tenant Scale group. Here are some considerations
 to think about:
 
+- Can the feature be changed to be scoped to an Organization ?
 - The related feature must work on multiple cells, not just the legacy cell.
 - How would the related feature scale across many Organizations and Cells ?
 - The underlying data must be consistent on different cells.
@@ -56,8 +61,6 @@ to think about:
 - Do not use cluster-wide database tables to store [static data](#static-data).
 - Should only have a tiny amount of rows. Larger tables with many rows are not suitable to be cluster-wide tables.
 - Must not have references to / from other tables that will cause data issues when synchronized to other cells.
-
-We may ask teams to update tables from `gitlab_main_clusterwide` to `gitlab_main_cell` as required, which also might require adding sharding keys to these tables.
 
 ## Static data
 
