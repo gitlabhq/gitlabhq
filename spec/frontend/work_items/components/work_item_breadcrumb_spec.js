@@ -14,7 +14,6 @@ describe('WorkItemBreadcrumb', () => {
     $route = {},
     listPath = '/epics',
     isGroup = true,
-    workItemsViewPreference = false,
     workItemsAlpha = false,
     props = {},
   } = {}) => {
@@ -23,7 +22,6 @@ describe('WorkItemBreadcrumb', () => {
         workItemType,
         glFeatures: {
           workItemEpicsList,
-          workItemsViewPreference,
           workItemsAlpha,
         },
         listPath,
@@ -78,27 +76,9 @@ describe('WorkItemBreadcrumb', () => {
   });
 
   describe('when the workspace is a project', () => {
-    describe('when work item view preference FF is disabled', () => {
+    describe('when in issues mode', () => {
       it('renders root `Issues` breadcrumb with href on work items list page', () => {
         createComponent({ isGroup: false, listPath: '/issues', workItemEpicsList: false });
-
-        expect(findBreadcrumb().props('items')).toEqual([
-          {
-            text: 'Issues',
-            href: '/issues',
-          },
-        ]);
-      });
-    });
-
-    describe('when work item view preference FF is enabled', () => {
-      it('renders root breadcrumb with href if user turned work item view off', () => {
-        createComponent({
-          isGroup: false,
-          listPath: '/issues',
-          workItemEpicsList: false,
-          workItemsViewPreference: true,
-        });
 
         expect(findBreadcrumb().props('items')).toEqual([
           {
@@ -115,7 +95,6 @@ describe('WorkItemBreadcrumb', () => {
           isGroup: false,
           listPath: '/issues',
           workItemEpicsList: false,
-          workItemsViewPreference: true,
           workItemsAlpha: true,
         });
 
@@ -137,7 +116,6 @@ describe('WorkItemBreadcrumb', () => {
           isGroup: false,
           listPath: '/issues',
           workItemEpicsList: false,
-          workItemsViewPreference: true,
           workItemsAlpha: false,
         });
 

@@ -111,7 +111,6 @@ describeSkipVue3(skipReason, () => {
     queryHandler = defaultQueryHandler,
     countsQueryHandler = defaultCountsQueryHandler,
     sortPreferenceMutationResponse = mutationHandler,
-    workItemsViewPreference = false,
     workItemsToggleEnabled = true,
     workItemPlanningView = false,
     props = {},
@@ -120,7 +119,6 @@ describeSkipVue3(skipReason, () => {
     window.gon = {
       ...window.gon,
       features: {
-        workItemsViewPreference,
         workItemsClientSideBoards: false,
       },
       current_user_use_work_items_view: workItemsToggleEnabled,

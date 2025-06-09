@@ -19,18 +19,11 @@ title: Test a new look for issues
 - Feature flag named `work_items_view_preference` enabled on GitLab.com in GitLab 17.9 for a subset of users.
 - Feature flag named `work_items_view_preference` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184496) on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in 17.10.
 - **New look** toggle [hidden](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182330) with feature flag named `work_item_view_for_issues`. Flag enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in 17.11.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/482931) in GitLab 18.2. Feature flag `work_items_view_preference` removed.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
-<!-- When issues as work items are generally available and `work_items_view_preference` flag is removed,
-incorporate this content into issues/index.md or managing_issues.md and redirect this page there -->
+<!-- Incorporate this content into issues/index.md or managing_issues.md and redirect this page there -->
 
 We have changed how issues look by migrating them to a unified framework for work items to better
 meet the product needs of our Agile Planning offering.
@@ -71,11 +64,6 @@ The new issues experience includes these improvements:
 ## Toggle the new experience
 
 When you view the Issues page or issue detail page, you can toggle the new experience.
-
-Prerequisites:
-
-- The feature flag `work_items_view_preference` must be enabled.
-- The feature flag `work_item_view_for_issues` must be disabled.
 
 To toggle the new issue look:
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CommitSignatures::X509CommitSignature do
+RSpec.describe CommitSignatures::X509CommitSignature, feature_category: :source_code_management do
   # This commit is seeded from https://gitlab.com/gitlab-org/gitlab-test
   # For instructions on how to add more seed data, see the project README
   # The email for this commit is 'r.meier@siemens.com'

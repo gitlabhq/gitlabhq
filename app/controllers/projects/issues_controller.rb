@@ -72,7 +72,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action only: :show do
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
-    push_frontend_feature_flag(:work_items_view_preference, current_user)
   end
 
   after_action :log_issue_show, only: :show
@@ -424,8 +423,7 @@ class Projects::IssuesController < Projects::ApplicationController
     !issue.from_service_desk? &&
       !issue.work_item_type&.incident? &&
       (Feature.enabled?(:work_item_view_for_issues, project&.group) ||
-      (Feature.enabled?(:work_items_view_preference, current_user) &&
-      current_user&.user_preference&.use_work_items_view))
+      current_user&.user_preference&.use_work_items_view)
   end
 
   def work_item_redirect_except_actions

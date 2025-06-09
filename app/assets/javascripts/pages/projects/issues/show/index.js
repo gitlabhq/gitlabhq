@@ -15,8 +15,7 @@ const issuableData = issuableInitialDataById('js-issuable-app');
 
 if (
   !isLegacyIssueType(issuableData) &&
-  (gon.features.workItemViewForIssues ||
-    (gon.features.workItemsViewPreference && gon.current_user_use_work_items_view))
+  (gon.features.workItemViewForIssues || gon.current_user_use_work_items_view)
 ) {
   initWorkItemPage();
 } else {

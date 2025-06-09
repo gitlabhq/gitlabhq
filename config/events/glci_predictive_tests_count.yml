@@ -12,6 +12,8 @@ additional_properties:
     description: predictive test selection strategy
   value:
     description: amount of tests selected
+  ci_job_id:
+    description: id of the job pushing the event
 product_group: development_analytics
 milestone: '18.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191286
