@@ -1286,7 +1286,8 @@ format `field operator value`.
 
 **Allowed value types**:
 
-- `Number` (only positive integers)
+- `Number` (only positive integers or 0)
+- `Nullable` (either of `null`, `none`, or `any`)
 
 **Supported for object types**:
 

@@ -12333,7 +12333,7 @@ Input type: `ValueStreamCreateInput`
 | <a id="mutationvaluestreamcreatename"></a>`name` | [`String!`](#string) | Value stream name. |
 | <a id="mutationvaluestreamcreatenamespacepath"></a>`namespacePath` | [`ID!`](#id) | Full path of the namespace(project or group) the value stream is created in. |
 | <a id="mutationvaluestreamcreatesetting"></a>`setting` | [`ValueStreamSettingInput`](#valuestreamsettinginput) | Value stream configuration. |
-| <a id="mutationvaluestreamcreatestages"></a>`stages` | [`[ValueStreamStageInput!]`](#valuestreamstageinput) | Value stream custom stages. |
+| <a id="mutationvaluestreamcreatestages"></a>`stages` | [`[CreateValueStreamStageInput!]`](#createvaluestreamstageinput) | Value stream stages. |
 
 #### Fields
 
@@ -12388,7 +12388,7 @@ Input type: `ValueStreamUpdateInput`
 | <a id="mutationvaluestreamupdateid"></a>`id` | [`AnalyticsCycleAnalyticsValueStreamID!`](#analyticscycleanalyticsvaluestreamid) | Global ID of the value stream to update. |
 | <a id="mutationvaluestreamupdatename"></a>`name` | [`String`](#string) | Value stream name. |
 | <a id="mutationvaluestreamupdatesetting"></a>`setting` | [`ValueStreamSettingInput`](#valuestreamsettinginput) | Value stream configuration. |
-| <a id="mutationvaluestreamupdatestages"></a>`stages` | [`[ValueStreamStageInput!]`](#valuestreamstageinput) | Value stream custom stages. |
+| <a id="mutationvaluestreamupdatestages"></a>`stages` | [`[UpdateValueStreamStageInput!]`](#updatevaluestreamstageinput) | Value stream stages. |
 
 #### Fields
 
@@ -50492,6 +50492,22 @@ Attributes for defining a CI/CD variable.
 | <a id="complianceviolationprojectinputmergedbefore"></a>`mergedBefore` | [`Date`](#date) | Merge requests merged before the date (inclusive). |
 | <a id="complianceviolationprojectinputtargetbranch"></a>`targetBranch` | [`String`](#string) | Filter compliance violations by target branch. |
 
+### `CreateValueStreamStageInput`
+
+Attributes to create value stream stage.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="createvaluestreamstageinputcustom"></a>`custom` | [`Boolean`](#boolean) | Whether the stage is customized. If false, it assigns a built-in default stage by name. |
+| <a id="createvaluestreamstageinputendeventidentifier"></a>`endEventIdentifier` | [`ValueStreamStageEvent`](#valuestreamstageevent) | End event identifier. |
+| <a id="createvaluestreamstageinputendeventlabelid"></a>`endEventLabelId` | [`LabelID`](#labelid) | Label ID associated with the end event identifier. |
+| <a id="createvaluestreamstageinputhidden"></a>`hidden` | [`Boolean`](#boolean) | Whether the stage is hidden. |
+| <a id="createvaluestreamstageinputname"></a>`name` | [`String!`](#string) | Name of the stage. |
+| <a id="createvaluestreamstageinputstarteventidentifier"></a>`startEventIdentifier` | [`ValueStreamStageEvent`](#valuestreamstageevent) | Start event identifier. |
+| <a id="createvaluestreamstageinputstarteventlabelid"></a>`startEventLabelId` | [`LabelID`](#labelid) | Label ID associated with the start event identifier. |
+
 ### `CustomFieldSelectOptionInput`
 
 Attributes for the custom field select option.
@@ -51101,6 +51117,23 @@ Attributes for defining a tracking event.
 | <a id="updatediffimagepositioninputx"></a>`x` | [`Int`](#int) | X position of the note. |
 | <a id="updatediffimagepositioninputy"></a>`y` | [`Int`](#int) | Y position of the note. |
 
+### `UpdateValueStreamStageInput`
+
+Attributes to update value stream stage.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="updatevaluestreamstageinputcustom"></a>`custom` | [`Boolean`](#boolean) | Whether the stage is customized. If false, it assigns a built-in default stage by name. |
+| <a id="updatevaluestreamstageinputendeventidentifier"></a>`endEventIdentifier` | [`ValueStreamStageEvent`](#valuestreamstageevent) | End event identifier. |
+| <a id="updatevaluestreamstageinputendeventlabelid"></a>`endEventLabelId` | [`LabelID`](#labelid) | Label ID associated with the end event identifier. |
+| <a id="updatevaluestreamstageinputhidden"></a>`hidden` | [`Boolean`](#boolean) | Whether the stage is hidden. |
+| <a id="updatevaluestreamstageinputid"></a>`id` | [`AnalyticsCycleAnalyticsStageID`](#analyticscycleanalyticsstageid) | ID of the stage to be updated. |
+| <a id="updatevaluestreamstageinputname"></a>`name` | [`String`](#string) | Name of the stage. |
+| <a id="updatevaluestreamstageinputstarteventidentifier"></a>`startEventIdentifier` | [`ValueStreamStageEvent`](#valuestreamstageevent) | Start event identifier. |
+| <a id="updatevaluestreamstageinputstarteventlabelid"></a>`startEventLabelId` | [`LabelID`](#labelid) | Label ID associated with the start event identifier. |
+
 ### `ValueStreamSettingInput`
 
 Attributes for value stream setting.
@@ -51110,22 +51143,6 @@ Attributes for value stream setting.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="valuestreamsettinginputprojectidsfilter"></a>`projectIdsFilter` | [`[ProjectID!]`](#projectid) | Projects' global IDs used to filter value stream data. |
-
-### `ValueStreamStageInput`
-
-Attributes for value stream stage.
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="valuestreamstageinputcustom"></a>`custom` | [`Boolean`](#boolean) | Whether the stage is customized. If false, it assigns a built-in default stage by name. |
-| <a id="valuestreamstageinputendeventidentifier"></a>`endEventIdentifier` | [`ValueStreamStageEvent`](#valuestreamstageevent) | End event identifier. |
-| <a id="valuestreamstageinputendeventlabelid"></a>`endEventLabelId` | [`LabelID`](#labelid) | Label ID associated with the end event identifier. |
-| <a id="valuestreamstageinputhidden"></a>`hidden` | [`Boolean`](#boolean) | Whether the stage is hidden. |
-| <a id="valuestreamstageinputname"></a>`name` | [`String!`](#string) | Name of the stage. |
-| <a id="valuestreamstageinputstarteventidentifier"></a>`startEventIdentifier` | [`ValueStreamStageEvent`](#valuestreamstageevent) | Start event identifier. |
-| <a id="valuestreamstageinputstarteventlabelid"></a>`startEventLabelId` | [`LabelID`](#labelid) | Label ID associated with the start event identifier. |
 
 ### `VerificationStatusFilterInput`
 

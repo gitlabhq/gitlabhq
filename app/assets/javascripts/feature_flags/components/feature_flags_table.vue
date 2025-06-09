@@ -3,6 +3,7 @@ import {
   GlBadge,
   GlButton,
   GlButtonGroup,
+  GlIcon,
   GlTooltipDirective,
   GlModal,
   GlToggle,
@@ -24,6 +25,7 @@ export default {
     GlBadge,
     GlButton,
     GlButtonGroup,
+    GlIcon,
     GlModal,
     GlToggle,
     GlTableLite,
@@ -166,20 +168,19 @@ export default {
 
       <template #cell(name)="{ item = {} }">
         <div class="gl-flex" data-testid="feature-flag-title">
-          <div class="gl-flex gl-items-center">
+          <div class="gl-mt-2 gl-flex gl-items-center">
             <div class="feature-flag-name text-monospace text-wrap gl-break-anywhere">
               {{ item.name }}
             </div>
             <div :data-testid="`feature-flag-description-${item.id}`">
-              <gl-button
+              <button
                 v-if="item.description"
-                v-gl-tooltip.hover="item.description"
+                v-gl-tooltip="item.description"
                 :aria-label="item.description"
-                class="gl-mx-3 !gl-p-0"
-                category="tertiary"
-                size="small"
-                icon="information-o"
-              />
+                class="gl-mx-3 gl-border-0 gl-bg-transparent gl-p-0 gl-leading-0"
+              >
+                <gl-icon name="information-o" variant="info" />
+              </button>
             </div>
           </div>
         </div>

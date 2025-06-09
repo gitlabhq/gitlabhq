@@ -129,22 +129,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
     ]
   end
 
-  let(:allowed_lfk_to_tables_exempted_from_sharding) do
-    {
-      # instance runners are exempted from sharding, but Ci::Build is prepared to handle missing runners
-      "p_ci_builds" => %w[ci_runners],
-      # instance runners are exempted from sharding, but Ci::RunnerManagerBuild is prepared to handle missing
-      # runner managers
-      "p_ci_runner_machine_builds" => %w[ci_runner_machines],
-      # instance runners are exempted from sharding, but Ci::Minutes::InstanceRunnerMonthlyUsage is prepared to handle
-      # missing runners
-      "ci_instance_runner_monthly_usages" => %w[ci_runners],
-      # we only care about the LFK for group and project-type runners. Instance type runners might be missing in a cell
-      # but Ci::RunningBuild is a short-lived model that will eventually be deleted
-      "ci_running_builds" => %w[ci_runners]
-    }
-  end
-
   let(:starting_from_milestone) { 16.6 }
 
   it 'requires a sharding_key for all cell-local tables, after milestone 16.6', :aggregate_failures do
@@ -407,7 +391,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
 
       lfks = referenced_loose_foreign_keys(entry.table_name)
       lfks.reject! { |lfk| lfk.from_table.in?(tables_exempted_from_sharding_table_names) }
-      lfks.reject! { |lfk| allowed_lfk_to_tables_exempted_from_sharding[lfk.from_table]&.include?(lfk.to_table) }
 
       expect(lfks).to be_empty,
         "#{entry.table_name} is exempted from sharding, but has loose foreign key references to it.\n" \

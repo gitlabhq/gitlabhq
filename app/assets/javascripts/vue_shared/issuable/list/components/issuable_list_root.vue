@@ -456,7 +456,10 @@ export default {
       <slot v-else-if="!error" name="empty-state"></slot>
     </template>
 
-    <div class="gl-relative gl-mt-6 gl-flex gl-justify-between md:!gl-justify-center">
+    <div
+      data-testid="list-footer"
+      class="gl-relative gl-mt-6 gl-flex gl-justify-between md:!gl-justify-center"
+    >
       <gl-keyset-pagination
         v-if="showPaginationControls && useKeysetPagination"
         :has-next-page="hasNextPage"

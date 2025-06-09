@@ -8,6 +8,8 @@ RSpec.describe 'Work Items List', :js, feature_category: :team_planning do
   let_it_be(:project) { create(:project, :public, group: group) }
 
   context 'when user is signed in as owner' do
+    let(:issuable_container) { '[data-testid="issuable-container"]' }
+
     before_all do
       group.add_owner(user)
     end
@@ -91,7 +93,7 @@ RSpec.describe 'Work Items List', :js, feature_category: :team_planning do
         let_it_be(:award_emoji_downvote) { create(:award_emoji, :downvote, user: user, awardable: task) }
 
         it 'display available metadata' do
-          within(all('[data-testid="issuable-container"]')[0]) do
+          within(all(issuable_container)[0]) do
             expect(page).to have_link(milestone.title)
               .and have_link(label.name)
 
@@ -103,6 +105,64 @@ RSpec.describe 'Work Items List', :js, feature_category: :team_planning do
             expect(page).to have_selector('.issuable-meta [data-testid="issuable-upvotes"]')
           end
         end
+      end
+    end
+
+    context 'with pagination' do
+      let_it_be(:work_items) do
+        create_list(:work_item, 10, :issue, project: project)
+        create_list(:work_item, 10, :task, project: project)
+        create_list(:work_item, 5, :incident, project: project)
+      end
+
+      before do
+        visit project_work_items_path(project)
+      end
+
+      it 'displays default page size of 20 items with correct dropdown text' do
+        expect(page).to have_selector(issuable_container, count: 20)
+
+        expect(page).to have_button _('Show 20 items')
+
+        expect(page).to have_button _('Next')
+        expect(page).to have_button _('Previous'), disabled: true
+      end
+
+      it 'navigates through pages using Next and Previous buttons' do
+        expect(page).to have_button _('Previous'), disabled: true
+        expect(page).to have_button _('Next'), disabled: false
+
+        click_button _('Next')
+
+        expect(page).to have_button _('Previous'), disabled: false
+        expect(page).to have_button _('Next'), disabled: true
+
+        expect(page).to have_selector(issuable_container, count: 5)
+
+        click_button _('Previous')
+
+        expect(page).to have_button _('Previous'), disabled: true
+        expect(page).to have_button _('Next'), disabled: false
+        expect(page).to have_selector(issuable_container, count: 20)
+      end
+
+      it 'changes page size and updates display accordingly' do
+        click_button _('Show 20 items')
+
+        within_testid('list-footer') do
+          find('[role="option"]', text: _('Show 50 items')).click
+        end
+
+        expect(page).to have_selector(issuable_container, count: 25)
+
+        expect(page).not_to have_button _('Next'), disabled: true
+        expect(page).not_to have_button _('Previous'), disabled: true
+      end
+
+      it 'respects per_page parameter in URL' do
+        visit project_work_items_path(project, first_page_size: 50)
+
+        expect(page).to have_selector(issuable_container, count: 25)
       end
     end
   end
