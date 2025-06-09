@@ -1399,7 +1399,6 @@ RSpec/ContextWording:
     - 'spec/lib/gitlab/analytics/cycle_analytics/base_query_builder_spec.rb'
     - 'spec/lib/gitlab/analytics/cycle_analytics/sorting_spec.rb'
     - 'spec/lib/gitlab/application_rate_limiter_spec.rb'
-    - 'spec/lib/gitlab/asciidoc_spec.rb'
     - 'spec/lib/gitlab/asset_proxy_spec.rb'
     - 'spec/lib/gitlab/auth/atlassian/identity_linker_spec.rb'
     - 'spec/lib/gitlab/auth/auth_finders_spec.rb'

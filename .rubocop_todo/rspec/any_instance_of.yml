@@ -118,7 +118,6 @@ RSpec/AnyInstanceOf:
     - 'spec/lib/banzai/pipeline/gfm_pipeline_spec.rb'
     - 'spec/lib/feature_spec.rb'
     - 'spec/lib/gitlab/app_logger_spec.rb'
-    - 'spec/lib/gitlab/asciidoc_spec.rb'
     - 'spec/lib/gitlab/auth/auth_finders_spec.rb'
     - 'spec/lib/gitlab/auth/blocked_user_tracker_spec.rb'
     - 'spec/lib/gitlab/auth/request_authenticator_spec.rb'

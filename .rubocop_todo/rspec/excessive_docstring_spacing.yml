@@ -18,7 +18,6 @@ RSpec/ExcessiveDocstringSpacing:
     - 'ee/spec/models/ee/member_spec.rb'
     - 'ee/spec/models/ee/project_spec.rb'
     - 'ee/spec/models/saml_provider_spec.rb'
-    - 'ee/spec/models/software_license_spec.rb'
     - 'ee/spec/models/vulnerabilities/finding_spec.rb'
     - 'ee/spec/policies/group_policy_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/audit_events/instance/audit_event_streaming_destinations/create_spec.rb'

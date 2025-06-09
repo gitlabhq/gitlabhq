@@ -63,7 +63,6 @@ Rails/OutputSafety:
     - 'lib/banzai/filter/spaced_link_filter.rb'
     - 'lib/banzai/object_renderer.rb'
     - 'lib/banzai/renderer.rb'
-    - 'lib/gitlab/asciidoc.rb'
     - 'lib/gitlab/blame.rb'
     - 'lib/gitlab/ci/trace/stream.rb'
     - 'lib/gitlab/dependency_linker/base_linker.rb'

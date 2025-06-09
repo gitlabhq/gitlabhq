@@ -44,7 +44,6 @@ RSpec/VerifiedDoubleReference:
     - 'ee/spec/requests/api/graphql/mutations/dast/profiles/run_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/dast_on_demand_scans/create_spec.rb'
     - 'ee/spec/requests/api/graphql/project/google_cloud/artifact_registry/docker_images_spec.rb'
-    - 'ee/spec/requests/api/graphql/user_code_suggestions_available_spec.rb'
     - 'ee/spec/requests/api/security_scans_spec.rb'
     - 'ee/spec/serializers/dashboard_environments_project_entity_spec.rb'
     - 'ee/spec/serializers/vulnerabilities/finding_entity_spec.rb'

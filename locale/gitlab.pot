@@ -18852,6 +18852,9 @@ msgstr ""
 msgid "CreateValueStreamForm|An error occurred while creating the custom value stream. Try again."
 msgstr ""
 
+msgid "CreateValueStreamForm|An error occurred while updating the custom value stream. Try again."
+msgstr ""
+
 msgid "CreateValueStreamForm|Code stage start"
 msgstr ""
 
@@ -63577,6 +63580,9 @@ msgid "TimeTracking|Add an %{estimateStart}estimate%{estimateEnd} or %{timeSpent
 msgstr ""
 
 msgid "TimeTracking|Add estimate"
+msgstr ""
+
+msgid "TimeTracking|Add time entry"
 msgstr ""
 
 msgid "TimeTracking|An error occurred while removing the timelog."

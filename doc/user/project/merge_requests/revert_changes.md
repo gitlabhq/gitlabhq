@@ -179,6 +179,13 @@ To redact text from your repository:
 1. Expand **Advanced**.
 1. Select **Run housekeeping**.
 
+{{< alert type="note" >}}
+
+If the project containing the sensitive information has been forked, the housekeeping task may not be able to complete this redaction process [to maintain the integrity of the special object pool repository which contains the forked data](../../../administration/housekeeping.md#object-pool-repositories).
+For help, contact GitLab Support.
+
+{{< /alert >}}
+
 ## Related topics
 
 - [Official `git revert` documentation](https://git-scm.com/docs/git-revert)

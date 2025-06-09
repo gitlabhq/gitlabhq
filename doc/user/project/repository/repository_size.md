@@ -180,6 +180,16 @@ To remove blobs from your repository:
 1. In the same **Settings > General > Advanced** section, select **Prune unreachable objects**.
    This operation takes approximately 5-10 minutes to complete.
 
+{{< alert type="note" >}}
+
+If the project containing the sensitive information has been forked, the housekeeping task might
+succeed without completing this process. Housekeeping must maintain the integrity of the
+[special object pool repository](../../../administration/housekeeping.md#object-pool-repositories),
+which contains the forked data.
+For help, contact GitLab Support.
+
+{{< /alert >}}
+
 #### Get a list of object IDs
 
 To remove blobs, you need a list of objects to remove.
