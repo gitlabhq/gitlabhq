@@ -30,8 +30,9 @@ RSpec.describe Integrations::SlackInteractions::IncidentManagement::IncidentModa
       it 'makes the POST call and closes the modal' do
         expect(Gitlab::HTTP).to receive(:post).with(
           'https://api.slack.com/id/1234',
-          body: Gitlab::Json.dump(request_body),
-          headers: { 'Content-Type' => 'application/json' }
+          { body: Gitlab::Json.dump(request_body),
+            headers: { 'Content-Type' => 'application/json' },
+            max_bytes: an_instance_of(Integer) }
         )
 
         service.execute

@@ -20,6 +20,8 @@ RSpec.shared_examples 'a webhook' do |factory:|
     it { is_expected.to validate_length_of(:custom_webhook_template).is_at_most(4096) }
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
     it { is_expected.to validate_length_of(:description).is_at_most(2048) }
+    it { is_expected.to validate_length_of(:url).is_at_most(described_class::MAX_PARAM_LENGTH) }
+    it { is_expected.to validate_length_of(:token).is_at_most(described_class::MAX_PARAM_LENGTH) }
 
     describe 'url_variables' do
       it { is_expected.to allow_value({}).for(:url_variables) }
@@ -107,6 +109,33 @@ RSpec.shared_examples 'a webhook' do |factory:|
           allow(ApplicationSetting).to receive(:current).and_return(settings)
 
           is_expected.to allow_value(url).for(:url)
+        end
+      end
+
+      context 'when testing PublicUrlValidator execution around MAX_PARAM_LENGTH threshold' do
+        # Ensures invalid URLs are rejected at all lengths around MAX_PARAM_LENGTH boundary.
+        # PublicUrlValidator runs only when length <= MAX_PARAM_LENGTH, so we verify
+        # the webhook stays invalid whether rejected by URL format or by length.
+
+        let(:invalid_url_base) { 'ftp://example.com/' }
+        let(:padding_to_max_length) { described_class::MAX_PARAM_LENGTH - invalid_url_base.length }
+
+        context 'with URL length 1 less than MAX_PARAM_LENGTH' do
+          let(:url) { invalid_url_base + ('x' * (padding_to_max_length - 1)) }
+
+          it { is_expected.not_to allow_value(url).for(:url).with_message(including('allowed schemes are http')) }
+        end
+
+        context 'with URL length exactly MAX_PARAM_LENGTH' do
+          let(:url) { invalid_url_base + ('x' * padding_to_max_length) }
+
+          it { is_expected.not_to allow_value(url).for(:url).with_message(including('allowed schemes are http')) }
+        end
+
+        context 'with URL length 1 more than MAX_PARAM_LENGTH' do
+          let(:url) { invalid_url_base + ('x' * (padding_to_max_length + 1)) }
+
+          it { is_expected.not_to allow_value(url).for(:url).with_message(including('is too long')) }
         end
       end
 

@@ -151,7 +151,7 @@ module Gitlab
     end
 
     def get(path, args)
-      Gitlab::HTTP.get(path, { query: args }.merge(http_options))
+      Integrations::Clients::HTTP.get(path, { query: args }.merge(http_options))
     rescue *Gitlab::HTTP::HTTP_ERRORS => e
       raise PrometheusClient::ConnectionError, e.message
     end

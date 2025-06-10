@@ -101,7 +101,7 @@ module Integrations
     end
 
     def calculate_reactive_cache(sha, ref)
-      response = Gitlab::HTTP.try_get(commit_status_path(sha), request_options)
+      response = Clients::HTTP.try_get(commit_status_path(sha), request_options)
 
       status =
         if response&.code == 200 && response['status']

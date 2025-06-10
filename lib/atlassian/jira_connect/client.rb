@@ -2,7 +2,7 @@
 
 module Atlassian
   module JiraConnect
-    class Client < Gitlab::HTTP
+    class Client
       def self.generate_update_sequence_id
         (Time.now.utc.to_f * 1000).round
       end
@@ -46,7 +46,7 @@ module Atlassian
         uri = URI.join(@base_uri, path)
         uri.query = URI.encode_www_form(query_params)
 
-        self.class.get(uri, headers: headers(uri, 'GET'))
+        Integrations::Clients::HTTP.get(uri, headers: headers(uri, 'GET'))
       end
 
       def store_ff_info(project:, feature_flags:, **opts)
@@ -124,13 +124,13 @@ module Atlassian
       def post(path, payload)
         uri = URI.join(@base_uri, path)
 
-        self.class.post(uri, headers: headers(uri), body: metadata.merge(payload).to_json)
+        Integrations::Clients::HTTP.post(uri, headers: headers(uri), body: metadata.merge(payload).to_json)
       end
 
       def delete(path)
         uri = URI.join(@base_uri, path)
 
-        self.class.delete(uri, headers: headers(uri, 'DELETE'))
+        Integrations::Clients::HTTP.delete(uri, headers: headers(uri, 'DELETE'))
       end
 
       def headers(uri, http_method = 'POST')

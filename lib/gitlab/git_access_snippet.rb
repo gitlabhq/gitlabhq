@@ -46,8 +46,8 @@ module Gitlab
     private
 
     # TODO: Implement EE/Geo https://gitlab.com/gitlab-org/gitlab/issues/205629
-    override :check_custom_action
-    def check_custom_action
+    override :check_custom_ssh_action!
+    def check_custom_ssh_action!
       # snippets never return custom actions, such as geo replication.
     end
 

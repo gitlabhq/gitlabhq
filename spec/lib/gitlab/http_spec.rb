@@ -115,4 +115,46 @@ RSpec.describe Gitlab::HTTP, feature_category: :shared do
       end
     end
   end
+
+  describe '.without_decompression_limit', :request_store do
+    it 'ensures SafeRequestStore[:disable_net_http_decompression] is true within the block' do
+      expect(Gitlab::SafeRequestStore[:disable_net_http_decompression]).to be_nil
+
+      result = described_class.without_decompression_limit do
+        Gitlab::SafeRequestStore[:disable_net_http_decompression]
+      end
+
+      expect(result).to be(true)
+      expect(Gitlab::SafeRequestStore[:disable_net_http_decompression]).to be(false)
+    end
+
+    it 'ensures SafeRequestStore[:disable_net_http_decompression] is false if an exception occurs' do
+      expect(Gitlab::SafeRequestStore[:disable_net_http_decompression]).to be_nil
+
+      expect do
+        described_class.without_decompression_limit do
+          raise 'test error'
+        end
+      end.to raise_error('test error')
+
+      expect(Gitlab::SafeRequestStore[:disable_net_http_decompression]).to be(false)
+    end
+
+    context 'when request store is disabled' do
+      before do
+        allow(Gitlab::SafeRequestStore).to receive(:active?).and_return(false)
+      end
+
+      it 'does not set SafeRequestStore[:disable_net_http_decompression] to true' do
+        expect(Gitlab::SafeRequestStore[:disable_net_http_decompression]).to be_nil
+
+        result = described_class.without_decompression_limit do
+          Gitlab::SafeRequestStore[:disable_net_http_decompression]
+        end
+
+        expect(result).to be_nil
+        expect(Gitlab::SafeRequestStore[:disable_net_http_decompression]).to be_nil
+      end
+    end
+  end
 end

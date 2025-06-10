@@ -149,6 +149,7 @@ class WebHookService
       headers: build_custom_headers.merge(build_headers),
       verify: hook.enable_ssl_verification,
       basic_auth: basic_auth,
+      max_bytes: Gitlab::CurrentSettings.max_http_response_size_limit.megabytes,
       **request_options)
   end
 

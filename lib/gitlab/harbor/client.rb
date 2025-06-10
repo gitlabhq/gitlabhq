@@ -19,7 +19,7 @@ module Gitlab
 
       def check_project_availability
         options = { headers: headers.merge!(Accept: 'application/json') }
-        response = Gitlab::HTTP.head(url("projects?project_name=#{integration.project_name}"), options)
+        response = Integrations::Clients::HTTP.head(url("projects?project_name=#{integration.project_name}"), options)
 
         { success: response.success? }
       end
@@ -46,7 +46,7 @@ module Gitlab
 
       def get(path, params = {})
         options = { headers: headers, query: params }
-        response = Gitlab::HTTP.get(path, options)
+        response = Integrations::Clients::HTTP.get(path, options)
 
         raise Gitlab::Harbor::Client::Error, 'request error' unless response.success?
 

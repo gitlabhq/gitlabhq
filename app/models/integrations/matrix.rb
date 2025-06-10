@@ -105,7 +105,7 @@ module Integrations
       }
       url = URI.parse(webhook)
       url.path << (Time.current.to_f * 1000).round.to_s
-      response = Gitlab::HTTP.put(url, headers: header, body: Gitlab::Json.dump(body))
+      response = Clients::HTTP.put(url, headers: header, body: Gitlab::Json.dump(body))
 
       response if response.success?
     end

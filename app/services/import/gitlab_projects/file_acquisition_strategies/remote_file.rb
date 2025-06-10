@@ -53,9 +53,9 @@ module Import
         def headers
           return {} if file_url.blank?
 
-          @headers ||= Gitlab::HTTP.head(file_url, timeout: 1.second).headers
+          @headers ||= Clients::HTTP.head(file_url, timeout: 1.second).headers
         rescue StandardError => e
-          errors.add(:base, "Failed to retrive headers: #{e.message}")
+          errors.add(:base, "Failed to retrieve headers: #{e.message}")
 
           {}
         end

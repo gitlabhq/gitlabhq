@@ -458,6 +458,39 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       end
     end
 
+    context 'redirection from http://someproject?format=git' do
+      let_it_be_with_reload(:public_project) { create(:project, :public) }
+
+      context 'with git in project path' do
+        before do
+          public_project.update!(path: 'my.gitlab')
+
+          request.env['PATH_INFO'] = "/#{public_project.namespace.path}/#{public_project.path}"
+          request.env['QUERY_STRING'] = 'format=git'
+        end
+
+        it 'does not trigger a redirect' do
+          get :show,
+            params: { namespace_id: public_project.namespace.path, id: public_project.path },
+            format: :git
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response).not_to redirect_to(project_path(public_project))
+        end
+      end
+
+      context 'with git not in project path' do
+        it 'does trigger a redirect' do
+          get :show,
+            params: { namespace_id: public_project.namespace.path, id: public_project.path },
+            format: :git
+
+          expect(response).to have_gitlab_http_status(:found)
+          expect(response).to redirect_to(project_path(public_project))
+        end
+      end
+    end
+
     context 'when project is moved and git format is requested' do
       let(:old_path) { project.path + 'old' }
 
