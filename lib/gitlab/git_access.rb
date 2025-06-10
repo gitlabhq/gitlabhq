@@ -83,8 +83,7 @@ module Gitlab
       check_command_disabled!
       check_command_existence!
 
-      custom_action = check_custom_action
-      return custom_action if custom_action
+      check_custom_ssh_action!
 
       check_db_accessibility!
       check_container!
@@ -185,7 +184,7 @@ module Gitlab
       check_project_accessibility!
     end
 
-    def check_custom_action
+    def check_custom_ssh_action!
       # no-op: Overridden in EE
     end
 

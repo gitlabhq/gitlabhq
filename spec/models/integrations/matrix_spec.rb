@@ -84,7 +84,8 @@ RSpec.describe Integrations::Matrix, feature_category: :integrations do
       let(:context) { { project: subject.project, no_sourcepos: true } }
 
       it 'sends PUT request with `project` context' do
-        expect(Gitlab::HTTP).to receive(:put).with(anything, headers: header, body: Gitlab::Json.dump(body))
+        expect(Gitlab::HTTP).to receive(:put).with(anything,
+          { headers: header, body: Gitlab::Json.dump(body), max_bytes: an_instance_of(Integer) })
 
         subject.send(:notify, message, {})
       end
@@ -95,7 +96,8 @@ RSpec.describe Integrations::Matrix, feature_category: :integrations do
       let(:context) { { skip_project_check: true, no_sourcepos: true } }
 
       it 'sends PUT request with `skip_project_check` context' do
-        expect(Gitlab::HTTP).to receive(:put).with(anything, headers: header, body: Gitlab::Json.dump(body))
+        expect(Gitlab::HTTP).to receive(:put).with(anything,
+          { headers: header, body: Gitlab::Json.dump(body), max_bytes: an_instance_of(Integer) })
 
         subject.send(:notify, message, {})
       end

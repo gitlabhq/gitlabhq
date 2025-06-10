@@ -9,6 +9,9 @@ Naming/ClassAndModuleCamelCase:
   AllowedNames:
     - HTTP_V2
 
+Style/NumericPredicate:
+  EnforcedStyle: comparison
+
 Style/SpecialGlobalVars:
   Enabled: false
 

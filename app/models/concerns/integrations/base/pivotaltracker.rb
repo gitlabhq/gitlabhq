@@ -66,7 +66,7 @@ module Integrations
                 'message' => commit[:message]
               }
             }
-            Gitlab::HTTP.post(
+            Clients::HTTP.post(
               API_ENDPOINT,
               body: Gitlab::Json.dump(message),
               headers: {

@@ -41,7 +41,7 @@ module JiraConnectInstallations
     attr_reader :installation, :event
 
     def send_hook
-      Gitlab::HTTP.post(hook_uri, body: body)
+      Integrations::Clients::HTTP.post(hook_uri, body: body)
     end
 
     def hook_uri
