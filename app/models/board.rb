@@ -11,7 +11,7 @@ class Board < ApplicationRecord
   has_many :lists, -> { ordered }, dependent: :delete_all, inverse_of: :board # rubocop:disable Cop/ActiveRecordDependent
   has_many :destroyable_lists, -> { destroyable.ordered }, class_name: "List", inverse_of: :board
 
-  validates :name, presence: true
+  validates :name, presence: true, length: { maximum: 255, if: :name_changed? }
   validates :project, presence: true, if: :project_needed?
   validates :group, presence: true, unless: :project
   validates :group, absence: {
