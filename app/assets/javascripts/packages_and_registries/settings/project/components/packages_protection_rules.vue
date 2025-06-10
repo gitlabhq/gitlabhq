@@ -23,6 +23,8 @@ import {
 } from '~/packages_and_registries/settings/project/constants';
 import { s__, __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
+import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 
 const PAGINATION_DEFAULT_PER_PAGE = 10;
 
@@ -111,6 +113,9 @@ export default {
       return this.glFeatures.packagesProtectedPackagesDelete
         ? this.$options.fields
         : this.$options.fields.filter((field) => field.key !== 'minimumAccessLevelForDelete');
+    },
+    getDrawerHeaderHeight() {
+      return getContentWrapperHeight();
     },
     tableItems() {
       return this.protectionRulesQueryResult.map((protectionRule) => {
@@ -258,6 +263,7 @@ export default {
   modalActionCancel: {
     text: __('Cancel'),
   },
+  DRAWER_Z_INDEX,
 };
 </script>
 
@@ -342,7 +348,12 @@ export default {
         <p v-else class="gl-text-subtle">
           {{ s__('PackageRegistry|No packages are protected.') }}
         </p>
-        <gl-drawer :z-index="1039" :open="showDrawer" @close="closeDrawer">
+        <gl-drawer
+          :z-index="$options.DRAWER_Z_INDEX"
+          :header-height="getDrawerHeaderHeight"
+          :open="showDrawer"
+          @close="closeDrawer"
+        >
           <template #title>
             <h2 class="gl-my-0 gl-text-size-h2 gl-leading-24">
               {{ drawerTitle }}

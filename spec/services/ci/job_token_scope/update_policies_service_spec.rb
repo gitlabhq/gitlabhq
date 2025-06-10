@@ -7,6 +7,7 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
 
   let_it_be(:target_project) { create(:project, :private) }
   let_it_be(:target_group) { create(:group, :private) }
+  let_it_be(:event) { 'action_on_job_token_allowlist_entry' }
 
   subject(:execute) do
     described_class.new(project, current_user).execute(target, default_permissions, policies)
@@ -24,6 +25,8 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
         expect(execute).to be_error
         expect(execute.message).to eq('You have insufficient permission to update this job token scope')
       end
+
+      it_behaves_like 'internal event not tracked'
     end
 
     shared_examples 'when user does not have permissions to admin project' do
@@ -33,6 +36,8 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
         expect(execute).to be_error
         expect(execute.message).to eq('You have insufficient permission to update this job token scope')
       end
+
+      it_behaves_like 'internal event not tracked'
     end
 
     shared_examples 'when user does not have permissions to read target' do
@@ -42,6 +47,8 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
         expect(execute).to be_error
         expect(execute.message).to eq('You have insufficient permission to update this job token scope')
       end
+
+      it_behaves_like 'internal event not tracked'
     end
 
     shared_examples 'when target does not exist' do
@@ -51,6 +58,8 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
         expect(execute).to be_error
         expect(execute.message).to eq('The target does not exist')
       end
+
+      it_behaves_like 'internal event not tracked'
     end
 
     shared_examples 'when the job token scope does not exist' do
@@ -63,6 +72,8 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
         expect(execute).to be_error
         expect(execute.message).to eq('Unable to find a job token scope for the given project & target')
       end
+
+      it_behaves_like 'internal event not tracked'
     end
 
     shared_examples 'when the policies provided are invalid' do
@@ -72,12 +83,83 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
         expect(execute).to be_error
         expect(execute.message).to eq('Job token policies must be a valid json schema')
       end
+
+      it_behaves_like 'internal event not tracked'
+    end
+
+    shared_examples 'when job token policies are disabled' do
+      before do
+        allow(project).to receive(:job_token_policies_enabled?).and_return(false)
+      end
+
+      it 'returns an error and does not update the policies' do
+        expect(execute).to be_error
+        expect(execute.message).to eq('Failed to update job token scope')
+        expect(scope.reload.job_token_policies).to eq(%w[read_deployments])
+      end
+
+      it_behaves_like 'internal event not tracked'
+    end
+
+    shared_examples 'event tracking for project scope' do
+      it 'logs to Snowplow, Redis, and product analytics tooling', :clean_gitlab_redis_shared_state do
+        self_referential = target == project
+
+        expected_attributes = {
+          project: project,
+          category: 'InternalEventTracking',
+          additional_properties: {
+            label: anything,
+            property: 'project_scope_link',
+            action_name: 'updated',
+            default_permissions: default_permissions.to_s,
+            self_referential: self_referential.to_s
+          }
+        }
+
+        all_metrics = [
+          'count_distinct_job_token_allowlist_entries_for_projects',
+          'count_distinct_projects_with_job_token_allowlist_entries',
+          ('count_distinct_projects_with_job_token_allowlist_entries_for_itself' if self_referential)
+        ].compact.flat_map { |metric| ["redis_hll_counters.#{metric}_weekly", "redis_hll_counters.#{metric}_monthly"] }
+
+        expect { subject }
+          .to trigger_internal_events(event)
+          .with(expected_attributes)
+          .and increment_usage_metrics(all_metrics)
+      end
+    end
+
+    shared_examples 'event tracking for group scope' do
+      it 'logs to Snowplow, Redis, and product analytics tooling', :clean_gitlab_redis_shared_state do
+        expected_attributes = {
+          project: project,
+          category: 'InternalEventTracking',
+          additional_properties: {
+            label: anything,
+            property: 'group_scope_link',
+            action_name: 'updated',
+            default_permissions: default_permissions.to_s,
+            self_referential: 'false'
+          }
+        }
+
+        all_metrics = %w[
+          count_distinct_job_token_allowlist_entries_for_groups
+          count_distinct_projects_with_job_token_allowlist_entries
+        ].flat_map { |metric| ["redis_hll_counters.#{metric}_weekly", "redis_hll_counters.#{metric}_monthly"] }
+
+        expect { subject }
+          .to trigger_internal_events(event)
+          .with(expected_attributes)
+          .and increment_usage_metrics(all_metrics)
+      end
     end
 
     context 'when policies need to be updated for a target project' do
       let(:target) { target_project }
 
-      let_it_be(:project_scope_link) do
+      let_it_be(:scope) do
         create(
           :ci_job_token_project_scope_link,
           source_project: project,
@@ -116,16 +198,13 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
             expect(project_link.job_token_policies).to eq(%w[read_deployments read_packages])
           end
 
-          context 'when job token policies are disabled' do
-            before do
-              allow(project).to receive(:job_token_policies_enabled?).and_return(false)
-            end
+          it_behaves_like 'event tracking for project scope'
+          it_behaves_like 'when job token policies are disabled'
 
-            it 'does not update the policies' do
-              project_link = Ci::JobToken::ProjectScopeLink.last
+          context 'when default permissions are not updated' do
+            let(:default_permissions) { true }
 
-              expect(project_link.job_token_policies).to eq(%w[read_deployments])
-            end
+            it_behaves_like 'internal event not tracked'
           end
 
           context 'when the target project is the current project' do
@@ -142,17 +221,19 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
                 expect(project_link.default_permissions).to be(false)
                 expect(project_link.job_token_policies).to eq(%w[read_deployments read_packages])
               end
+
+              it_behaves_like 'event tracking for project scope'
             end
 
             context 'when the job token scope already exists' do
               before do
-                project_scope_link.update!(target_project: project)
+                scope.update!(target_project: project)
               end
 
               it 'updates the existing job token scope', :aggregate_failures do
                 expect(execute).to be_success
 
-                project_link = project_scope_link.reload
+                project_link = scope.reload
 
                 expect(project_link.default_permissions).to be(false)
                 expect(project_link.job_token_policies).to eq(%w[read_deployments read_packages])
@@ -166,7 +247,7 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
     context 'when policies need to be updated for a target group' do
       let(:target) { target_group }
 
-      let_it_be(:group_scope_link) do
+      let_it_be(:scope) do
         create(
           :ci_job_token_group_scope_link,
           source_project: project,
@@ -204,16 +285,13 @@ RSpec.describe Ci::JobTokenScope::UpdatePoliciesService, feature_category: :cont
             expect(group_link.job_token_policies).to eq(%w[read_deployments read_packages])
           end
 
-          context 'when job token policies are disabled' do
-            before do
-              allow(project).to receive(:job_token_policies_enabled?).and_return(false)
-            end
+          it_behaves_like 'event tracking for group scope'
+          it_behaves_like 'when job token policies are disabled'
 
-            it 'does not update the policies' do
-              group_link = Ci::JobToken::GroupScopeLink.last
+          context 'when default permissions are not updated' do
+            let(:default_permissions) { true }
 
-              expect(group_link.job_token_policies).to eq(%w[read_deployments])
-            end
+            it_behaves_like 'internal event not tracked'
           end
         end
       end

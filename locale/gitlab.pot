@@ -22406,6 +22406,9 @@ msgstr ""
 msgid "Details block"
 msgstr ""
 
+msgid "Details of vio-%{violationId}"
+msgstr ""
+
 msgid "Detect host keys"
 msgstr ""
 
@@ -32275,6 +32278,9 @@ msgid "In progress"
 msgstr ""
 
 msgid "In progress, queued for %{queuedDuration} seconds"
+msgstr ""
+
+msgid "In review"
 msgstr ""
 
 msgid "In the background, we're attempting to connect you again."
@@ -67776,6 +67782,9 @@ msgid "Violation"
 msgstr ""
 
 msgid "Violation Details"
+msgstr ""
+
+msgid "Violations"
 msgstr ""
 
 msgid "Virtual registry"

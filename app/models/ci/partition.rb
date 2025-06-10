@@ -23,7 +23,9 @@ module Ci
         transition [:ready, :active] => :current
       end
 
-      before_transition any => :current do
+      before_transition any => :current do |partition|
+        next false unless partition.all_partitions_exist?
+
         Ci::Partition.with_status(:current).update_all(status: Ci::Partition.statuses[:active])
       end
     end
@@ -53,7 +55,6 @@ module Ci
 
       def provisioning(partition_id)
         Ci::Partition
-          .with_status(:preparing)
           .id_after(partition_id)
           .order(id: :asc)
           .first

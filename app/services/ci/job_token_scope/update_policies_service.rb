@@ -4,9 +4,10 @@ module Ci
   module JobTokenScope
     class UpdatePoliciesService < ::BaseService
       include EditScopeValidations
+      include ScopeEventTracking
 
       def execute(target, default_permissions, policies)
-        return unless project.job_token_policies_enabled?
+        return error_updating(nil) unless project.job_token_policies_enabled?
 
         validate_target_exists!(target)
         validate_permissions!(target)
@@ -16,6 +17,8 @@ module Ci
         return error_link_not_found unless link
 
         if link.update(default_permissions: default_permissions, job_token_policies: policies)
+          track_event(link, 'updated') if link.saved_change_to_default_permissions?
+
           ServiceResponse.success(payload: link)
         else
           error_updating(link)

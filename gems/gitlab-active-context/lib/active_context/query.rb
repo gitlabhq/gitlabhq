@@ -23,10 +23,10 @@
 #     )
 #
 # @example KNN vector search by content
-#   ActiveContext::Query.knn(content: "Your content here", limit: 5)
+#   ActiveContext::Query.knn(content: "Your content here", k: 5)
 #
 # @example KNN vector search passing target and vector directly
-#   ActiveContext::Query.knn(target: "similarity", vector: [0.1, 0.2, 0.3], limit: 5)
+#   ActiveContext::Query.knn(target: "similarity", vector: [0.1, 0.2, 0.3], k: 5)
 #
 # Supported Query Types:
 # - :all      - Return all documents
@@ -81,27 +81,25 @@ module ActiveContext
         new(type: :and, children: queries)
       end
 
-      def knn(limit:, target: nil, vector: nil, content: nil)
-        value = validate_and_build_knn_params(target: target, vector: vector, content: content, limit: limit)
+      def knn(k:, target: nil, vector: nil, content: nil)
+        value = validate_and_build_knn_params(target: target, vector: vector, content: content, k: k)
         new(type: :knn, value: value)
       end
 
-      def validate_and_build_knn_params(target:, vector:, content:, limit:)
+      def validate_and_build_knn_params(target:, vector:, content:, k:)
         if content.nil? && (target.nil? || vector.nil?)
           raise ArgumentError, "Either :content must be provided OR both :target AND :vector must be provided"
         end
 
         raise ArgumentError, "Vector must be an array" if !vector.nil? && !vector.is_a?(Array)
 
-        if !limit.is_a?(Integer) || limit <= 0
-          raise ArgumentError, "Limit must be a positive number, you used #{limit.class}: #{limit}"
-        end
+        raise ArgumentError, "K must be a positive number, you used #{k.class}: #{k}" if !k.is_a?(Integer) || k <= 0
 
         {
           target: target,
           vector: vector,
           content: content,
-          limit: limit
+          k: k
         }.compact
       end
     end
@@ -140,10 +138,10 @@ module ActiveContext
       self.class.new(type: :limit, value: count, children: [self])
     end
 
-    def knn(limit:, target: nil, vector: nil, content: nil)
+    def knn(k:, target: nil, vector: nil, content: nil)
       self.class.new(
         type: :knn,
-        value: self.class.validate_and_build_knn_params(target: target, vector: vector, content: content, limit: limit),
+        value: self.class.validate_and_build_knn_params(target: target, vector: vector, content: content, k: k),
         children: [self]
       )
     end
@@ -158,7 +156,7 @@ module ActiveContext
                   knn_details << "target: #{value[:target]}" if value[:target]
                   knn_details << "vector: [#{value[:vector].join(', ')}]" if value[:vector]
                   knn_details << "content: #{value[:content]}" if value[:content]
-                  knn_details << "limit: #{value[:limit]}" if value[:limit]
+                  knn_details << "k: #{value[:k]}" if value[:k]
                   "knn(#{knn_details.join(', ')})"
                 when :limit
                   "#{type}(#{value})"

@@ -21,7 +21,7 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Processor do
       ActiveContext::Query.knn(
         target: 'embedding',
         vector: [0.1, 0.2],
-        limit: 5
+        k: 5
       )
     end
 
@@ -252,7 +252,7 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Processor do
       it 'handles content-based KNN queries' do
         content_knn = ActiveContext::Query.knn(
           content: 'Sample text for embedding',
-          limit: 5
+          k: 5
         )
 
         result = processor.process(content_knn)
@@ -271,7 +271,7 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Processor do
         query = simple_filter.knn(
           target: 'embedding',
           vector: [0.1, 0.2],
-          limit: 5
+          k: 5
         )
 
         result = processor.process(query)
@@ -296,7 +296,7 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Processor do
         query = filter.knn(
           target: 'embedding',
           vector: [0.1, 0.2],
-          limit: 5
+          k: 5
         )
 
         result = processor.process(query)
@@ -324,7 +324,7 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Processor do
         query = base_query.knn(
           target: 'embedding',
           vector: [0.1, 0.2],
-          limit: 5
+          k: 5
         )
 
         result = processor.process(query)
@@ -355,7 +355,7 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Processor do
         query = base_query.knn(
           target: 'embedding',
           vector: [0.1, 0.2],
-          limit: 5
+          k: 5
         )
 
         result = processor.process(query)

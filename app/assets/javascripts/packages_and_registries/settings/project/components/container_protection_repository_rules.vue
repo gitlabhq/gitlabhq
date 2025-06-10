@@ -19,6 +19,7 @@ import { ContainerRepositoryMinimumAccessLevelText } from '~/packages_and_regist
 import { s__, __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
+import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 
 const PAGINATION_DEFAULT_PER_PAGE = 10;
 
@@ -143,6 +144,9 @@ export default {
       return this.mutationItem
         ? s__('ContainerRegistry|Protection rule updated.')
         : s__('ContainerRegistry|Protection rule created.');
+    },
+    getDrawerHeaderHeight() {
+      return getContentWrapperHeight();
     },
   },
   methods: {
@@ -344,7 +348,12 @@ export default {
           {{ s__('ContainerRegistry|No container repositories are protected.') }}
         </p>
 
-        <gl-drawer :z-index="$options.DRAWER_Z_INDEX" :open="showDrawer" @close="closeDrawer">
+        <gl-drawer
+          :z-index="$options.DRAWER_Z_INDEX"
+          :header-height="getDrawerHeaderHeight"
+          :open="showDrawer"
+          @close="closeDrawer"
+        >
           <template #title>
             <h2 class="gl-my-0 gl-text-size-h2 gl-leading-24">
               {{ drawerTitle }}

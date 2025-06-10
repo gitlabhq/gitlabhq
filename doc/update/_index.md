@@ -133,6 +133,8 @@ to ensure the major components of GitLab are working:
    sudo gitlab-rake gitlab:check
    ```
 
+1. [Check the status of all background database migrations](background_migrations.md#check-for-pending-migrations).
+
 1. Confirm that encrypted database values [can be decrypted](../administration/raketasks/check.md#verify-database-values-can-be-decrypted-using-the-current-secrets):
 
    ```shell

@@ -7,14 +7,11 @@ RSpec.describe Ci::JobTokenScope::AddGroupService, feature_category: :continuous
   let_it_be(:target_group) { create(:group, :private) }
   let_it_be(:current_user) { create(:user) }
   let_it_be(:policies) { %w[read_deployments read_packages] }
+  let_it_be(:event) { 'action_on_job_token_allowlist_entry' }
 
   let(:service) { described_class.new(project, current_user) }
 
   shared_examples 'adds group' do |_context|
-    before do
-      allow(project).to receive(:job_token_policies_enabled?).and_return(true)
-    end
-
     it 'adds the group to the scope', :aggregate_failures do
       expect { result }.to change { Ci::JobToken::GroupScopeLink.count }.by(1)
 
@@ -50,10 +47,40 @@ RSpec.describe Ci::JobTokenScope::AddGroupService, feature_category: :continuous
     end
   end
 
+  shared_examples 'event tracking' do
+    it 'logs to Snowplow, Redis, and product analytics tooling', :clean_gitlab_redis_shared_state do
+      expected_attributes = {
+        project: project,
+        category: 'InternalEventTracking',
+        additional_properties: {
+          label: anything,
+          property: 'group_scope_link',
+          action_name: 'created',
+          default_permissions: default_permissions.to_s,
+          self_referential: 'false'
+        }
+      }
+
+      all_metrics = %w[
+        count_distinct_job_token_allowlist_entries_for_groups
+        count_distinct_projects_with_job_token_allowlist_entries
+      ].flat_map { |metric| ["redis_hll_counters.#{metric}_weekly", "redis_hll_counters.#{metric}_monthly"] }
+
+      expect { subject }
+        .to trigger_internal_events(event)
+        .with(expected_attributes)
+        .and increment_usage_metrics(all_metrics)
+    end
+  end
+
   describe '#execute' do
     subject(:result) { service.execute(target_group, default_permissions: default_permissions, policies: policies) }
 
     let(:default_permissions) { false }
+
+    before do
+      allow(project).to receive(:job_token_policies_enabled?).and_return(true)
+    end
 
     it_behaves_like 'editable group job token scope' do
       context 'when user has permissions on source and target groups' do
@@ -63,11 +90,13 @@ RSpec.describe Ci::JobTokenScope::AddGroupService, feature_category: :continuous
         end
 
         it_behaves_like 'adds group'
+        it_behaves_like 'event tracking'
 
         context 'when default_permissions is set to true' do
           let(:default_permissions) { true }
 
           it_behaves_like 'adds group'
+          it_behaves_like 'event tracking'
         end
 
         context 'when token scope is disabled' do
@@ -76,6 +105,7 @@ RSpec.describe Ci::JobTokenScope::AddGroupService, feature_category: :continuous
           end
 
           it_behaves_like 'adds group'
+          it_behaves_like 'event tracking'
         end
       end
 
@@ -90,6 +120,7 @@ RSpec.describe Ci::JobTokenScope::AddGroupService, feature_category: :continuous
         end
 
         it_behaves_like 'returns error', 'This group is already in the job token allowlist.'
+        it_behaves_like 'internal event not tracked'
       end
 
       context 'when create method raises an invalid record exception' do
@@ -107,6 +138,7 @@ RSpec.describe Ci::JobTokenScope::AddGroupService, feature_category: :continuous
         end
 
         it_behaves_like 'returns error', 'Record invalid'
+        it_behaves_like 'internal event not tracked'
       end
 
       context 'when has no permissions on a target_group' do
@@ -115,6 +147,7 @@ RSpec.describe Ci::JobTokenScope::AddGroupService, feature_category: :continuous
         end
 
         it_behaves_like 'returns error', Ci::JobTokenScope::EditScopeValidations::TARGET_GROUP_UNAUTHORIZED_OR_UNFOUND
+        it_behaves_like 'internal event not tracked'
       end
 
       context 'when has no permissions on a project' do
@@ -123,6 +156,7 @@ RSpec.describe Ci::JobTokenScope::AddGroupService, feature_category: :continuous
         end
 
         it_behaves_like 'returns error', 'Insufficient permissions to modify the job token scope'
+        it_behaves_like 'internal event not tracked'
       end
     end
   end

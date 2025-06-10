@@ -18,6 +18,8 @@ import getContainerProtectionTagRulesQuery from '~/packages_and_registries/setti
 import deleteContainerProtectionTagRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_tag_rule.mutation.graphql';
 import { __, s__ } from '~/locale';
 import { getAccessLevelLabel } from '~/packages_and_registries/settings/project/utils';
+import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
+import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
@@ -92,6 +94,9 @@ export default {
       return this.protectionRuleMutationItem
         ? s__('ContainerRegistry|Edit protection rule')
         : s__('ContainerRegistry|Add protection rule');
+    },
+    getDrawerHeaderHeight() {
+      return getContentWrapperHeight();
     },
     isLoadingProtectionRules() {
       return this.$apollo.queries.protectionRulesQueryPayload.loading;
@@ -240,6 +245,7 @@ export default {
   modalActionCancel: {
     text: __('Cancel'),
   },
+  DRAWER_Z_INDEX,
 };
 </script>
 
@@ -356,7 +362,12 @@ export default {
         {{ s__('ContainerRegistry|No container image tags are protected.') }}
       </p>
 
-      <gl-drawer :z-index="1039" :open="showDrawer" @close="closeDrawer">
+      <gl-drawer
+        :z-index="$options.DRAWER_Z_INDEX"
+        :header-height="getDrawerHeaderHeight"
+        :open="showDrawer"
+        @close="closeDrawer"
+      >
         <template #title>
           <h2 class="gl-my-0 gl-text-size-h2 gl-leading-24">
             {{ drawerTitle }}

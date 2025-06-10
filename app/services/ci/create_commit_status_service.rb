@@ -50,7 +50,6 @@ module Ci
 
       return not_found("Pipeline for pipeline_id, sha and ref") unless first_matching_pipeline
 
-      return unless enforce_jobs_limit?
       return if can_append_jobs_to_existing_pipeline?
 
       error("The number of jobs has exceeded the limit", :unprocessable_entity)
@@ -72,8 +71,7 @@ module Ci
       return first_matching_pipeline if can_append_jobs_to_existing_pipeline?
 
       create_log_entry
-
-      enforce_jobs_limit? ? create_pipeline : first_matching_pipeline
+      create_pipeline
     end
 
     def can_append_jobs_to_existing_pipeline?
@@ -200,13 +198,8 @@ module Ci
         pipeline_id: params[:pipeline_id],
         current_user_id: current_user.id,
         subscription_plan: project.actual_plan_name,
-        message: 'Project tried to create more jobs than the quota allowed',
-        limit_enforced: enforce_jobs_limit?
+        message: 'Project tried to create more jobs than the quota allowed'
       )
-    end
-
-    def enforce_jobs_limit?
-      Feature.enabled?(:ci_limit_commit_statuses, project)
     end
 
     def not_found(message)

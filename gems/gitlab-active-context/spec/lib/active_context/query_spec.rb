@@ -134,13 +134,13 @@ RSpec.describe ActiveContext::Query do
       it 'creates a KNN query with limit' do
         base_query = described_class.filter(project_id: 1)
         vector = [0.1, 0.2, 0.3]
-        knn_query = base_query.knn(target: 'similarity', vector: vector, limit: 5)
+        knn_query = base_query.knn(target: 'similarity', vector: vector, k: 5)
 
         expect(knn_query.type).to eq(:knn)
         expect(knn_query.value).to eq(
           target: 'similarity',
           vector: vector,
-          limit: 5
+          k: 5
         )
         expect(knn_query.children).to contain_exactly(base_query)
       end
@@ -148,12 +148,12 @@ RSpec.describe ActiveContext::Query do
       it 'passes content when specified' do
         content = 'something'
         base_query = described_class.filter(project_id: 1)
-        knn_query = base_query.knn(content: content, limit: 5)
+        knn_query = base_query.knn(content: content, k: 5)
 
         expect(knn_query.type).to eq(:knn)
         expect(knn_query.value).to eq(
           content: content,
-          limit: 5
+          k: 5
         )
         expect(knn_query.children).to contain_exactly(base_query)
       end
@@ -161,21 +161,21 @@ RSpec.describe ActiveContext::Query do
       it 'raises an error for nil target and content' do
         base_query = described_class.filter(project_id: 1)
         vector = [0.1, 0.2, 0.3]
-        expect { base_query.knn(target: nil, vector: vector, limit: 5) }
+        expect { base_query.knn(target: nil, vector: vector, k: 5) }
           .to raise_error(ArgumentError, /:content must be provided OR both :target AND :vector must be provided/)
       end
 
       it 'raises an error for nil limit' do
         base_query = described_class.filter(project_id: 1)
         vector = [0.1, 0.2, 0.3]
-        expect { base_query.knn(target: 'similarity', vector: vector, limit: nil) }
-          .to raise_error(ArgumentError, /Limit must be a positive number/)
+        expect { base_query.knn(target: 'similarity', vector: vector, k: nil) }
+          .to raise_error(ArgumentError, /K must be a positive number/)
       end
 
       it 'raises an error for non-array vector' do
         base_query = described_class.filter(project_id: 1)
         expect do
-          base_query.knn(target: 'similarity', vector: 'not an array', limit: 5)
+          base_query.knn(target: 'similarity', vector: 'not an array', k: 5)
         end.to raise_error(ArgumentError, "Vector must be an array")
       end
 
@@ -184,12 +184,12 @@ RSpec.describe ActiveContext::Query do
         vector = [0.1, 0.2, 0.3]
 
         expect do
-          base_query.knn(target: 'similarity', vector: vector, limit: 0)
-        end.to raise_error(ArgumentError, /Limit must be a positive number/)
+          base_query.knn(target: 'similarity', vector: vector, k: 0)
+        end.to raise_error(ArgumentError, /K must be a positive number/)
 
         expect do
-          base_query.knn(target: 'similarity', vector: vector, limit: -1)
-        end.to raise_error(ArgumentError, /Limit must be a positive number/)
+          base_query.knn(target: 'similarity', vector: vector, k: -1)
+        end.to raise_error(ArgumentError, /K must be a positive number/)
       end
     end
 
@@ -230,26 +230,26 @@ RSpec.describe ActiveContext::Query do
       it 'generates a readable AST representation for a KNN query with limit' do
         base_query = described_class.filter(project_id: 1)
         vector = [0.1, 0.2, 0.3]
-        knn_query = base_query.knn(target: 'similarity', vector: vector, limit: 5)
+        knn_query = base_query.knn(target: 'similarity', vector: vector, k: 5)
 
         ast = knn_query.inspect_ast
-        expect(ast).to eq("knn(target: similarity, vector: [0.1, 0.2, 0.3], limit: 5)\n  filter(project_id: 1)")
+        expect(ast).to eq("knn(target: similarity, vector: [0.1, 0.2, 0.3], k: 5)\n  filter(project_id: 1)")
       end
 
       it 'generates a readable AST representation for a KNN query with content' do
         base_query = described_class.filter(project_id: 1)
-        knn_query = base_query.knn(content: 'something', limit: 5)
+        knn_query = base_query.knn(content: 'something', k: 5)
 
         ast = knn_query.inspect_ast
-        expect(ast).to eq("knn(content: something, limit: 5)\n  filter(project_id: 1)")
+        expect(ast).to eq("knn(content: something, k: 5)\n  filter(project_id: 1)")
       end
 
       it 'generates a readable AST representation for a KNN query without a base query' do
         vector = [0.1, 0.2, 0.3]
-        knn_query = described_class.knn(target: 'similarity', vector: vector, limit: 5)
+        knn_query = described_class.knn(target: 'similarity', vector: vector, k: 5)
 
         ast = knn_query.inspect_ast
-        expect(ast).to eq('knn(target: similarity, vector: [0.1, 0.2, 0.3], limit: 5)')
+        expect(ast).to eq('knn(target: similarity, vector: [0.1, 0.2, 0.3], k: 5)')
       end
     end
 

@@ -10,6 +10,9 @@ Search/NamespacedClass:
 RSpec/AnyInstanceOf:
   Enabled: false
 
+Naming/MethodParameterName:
+  Enabled: false
+
 RSpec/MultipleMemoizedHelpers:
   Max: 25
 

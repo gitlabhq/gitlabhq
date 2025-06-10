@@ -87,7 +87,7 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
           ActiveContext::Query.knn(
             target: 'embedding',
             vector: [0.1, 0.2],
-            limit: 5
+            k: 5
           ),
           ActiveContext::Query.filter(status: 'active')
         ),
@@ -118,7 +118,7 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
           ActiveContext::Query.knn(
             target: 'embedding',
             vector: [0.1, 0.2],
-            limit: 5
+            k: 5
           )
         ),
         "SELECT \"items\".* FROM \"items\" ORDER BY \"embedding\" <=> '[0.1,0.2]' LIMIT 5"
@@ -128,7 +128,7 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
           ActiveContext::Query.knn(
             target: 'embedding',
             vector: [0.1, 0.2],
-            limit: 5
+            k: 5
           ),
           ActiveContext::Query.filter(status: 'active')
         ),
@@ -142,14 +142,14 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
       ActiveContext::Query.knn(
         target: 'embedding',
         vector: [0.1, 0.2],
-        limit: 5
+        k: 5
       ),
       "SELECT \"items\".* FROM \"items\" ORDER BY \"embedding\" <=> '[0.1,0.2]' LIMIT 5"
 
     it_behaves_like 'a SQL transformer',
       ActiveContext::Query.knn(
         content: 'something',
-        limit: 5
+        k: 5
       ),
       "SELECT \"items\".* FROM \"items\" ORDER BY \"preset_field\" <=> '[0.5,0.6]' LIMIT 5"
 
@@ -157,7 +157,7 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
       ActiveContext::Query.filter(status: 'active').knn(
         target: 'embedding',
         vector: [0.1, 0.2],
-        limit: 5
+        k: 5
       ),
       "SELECT \"items\".* FROM \"items\" WHERE \"items\".\"status\" = 'active' " \
         "ORDER BY \"embedding\" <=> '[0.1,0.2]' LIMIT 5"
@@ -166,7 +166,7 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
       ActiveContext::Query.filter(project_id: [1, 2, 3]).knn(
         target: 'embedding',
         vector: [0.1, 0.2],
-        limit: 5
+        k: 5
       ),
       "SELECT \"items\".* FROM \"items\" WHERE \"items\".\"project_id\" IN (1, 2, 3) " \
         "ORDER BY \"embedding\" <=> '[0.1,0.2]' LIMIT 5"
@@ -178,7 +178,7 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
       ).knn(
         target: 'embedding',
         vector: [0.1, 0.2],
-        limit: 5
+        k: 5
       ),
       "SELECT \"items\".* FROM \"items\" WHERE \"items\".\"status\" = 'active' " \
         "AND \"items\".\"category\" = 'product' ORDER BY \"embedding\" <=> '[0.1,0.2]' LIMIT 5"
@@ -190,7 +190,7 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
       ).knn(
         target: 'embedding',
         vector: [0.1, 0.2],
-        limit: 5
+        k: 5
       ),
       "SELECT \"items\".* FROM \"items\" WHERE \"items\".\"status\" = 'active' AND (\"name\" LIKE 'test%') " \
         "ORDER BY \"embedding\" <=> '[0.1,0.2]' LIMIT 5"
@@ -205,7 +205,7 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
       ActiveContext::Query.knn(
         target: 'embedding',
         vector: [0.1, 0.2],
-        limit: 5
+        k: 5
       ).limit(10),
       "SELECT subq.* FROM (SELECT \"items\".* FROM \"items\" " \
         "ORDER BY \"embedding\" <=> '[0.1,0.2]' LIMIT 5) subq LIMIT 10"
