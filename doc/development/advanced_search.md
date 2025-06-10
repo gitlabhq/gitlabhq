@@ -242,7 +242,7 @@ system provides significant benefits:
 
 The migration system consists of:
 
-- **Migration Runner**: A [cron worker](https://gitlab.com/gitlab-org/gitlab/-/blob/409b55d072b0008baca42dc53bda3e3dc56f588a/ee/app/workers/elastic/migration_worker.rb) that executes every 5 minutes to check for and process pending migrations. 
+- **Migration Runner**: A [cron worker](https://gitlab.com/gitlab-org/gitlab/-/blob/409b55d072b0008baca42dc53bda3e3dc56f588a/ee/app/workers/elastic/migration_worker.rb) that executes every 5 minutes to check for and process pending migrations.
 - **Migration Files**: Similar to database migrations, these Ruby files define the migration steps with accompanying
   YAML documentation
 - **Migration Status Tracking**: All migration states are stored in a dedicated Elasticsearch index
@@ -649,12 +649,11 @@ Always aim to create new search filters in the `QueryBuilder` framework, even if
 
 ##### Add the field to the index
 
-1. Add the field to the index mapping to add it newly created indices
-1. Create a migration to add the field to existing indices. Use the [`MigrationUpdateMappingsHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationupdatemappingshelper)
+1. Add the field to the index mapping to add it newly created indices and create a migration to add the field to existing indices in the same MR to avoid mapping schema drift. Use the [`MigrationUpdateMappingsHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationupdatemappingshelper)
 1. Populate the new field in the document JSON. The code must check the migration is complete using
    `::Elastic::DataMigrationService.migration_has_finished?`
 1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYYYWW`
-1. Create a migration to backfill the field in the index. Use the [`MigrationBackfillHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationbackfillhelper)
+1. Create a migration to backfill the field in the index. If it's a not-nullable field, use [`MigrationBackfillHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationbackfillhelper), or [`MigrationReindexBasedOnSchemaVersion`](search/advanced_search_migration_styleguide.md#searchelasticmigrationreindexbasedonschemaversion) if it's a nullable field.
 
 ##### If the new field is an associated record
 
@@ -776,14 +775,14 @@ without affecting the relevance scoring.
 - `query_hash` is expected to contain a hash with this format.
 
   ```json
-   { "query": 
-     { "bool": 
+   { "query":
+     { "bool":
        {
          "must": [],
          "must_not": [],
-         "should": [],  
+         "should": [],
          "filters": [],
-         "minimum_should_match": null    
+         "minimum_should_match": null
        }
      }
    }
@@ -909,7 +908,7 @@ Uses `multi_match` Elasticsearch API. Can be customized with the following optio
 
 - `count_only` - uses the Boolean query clause `filter`. Scoring and highlighting are not performed.
 - `query` - if no query is passed, uses `match_all` Elasticsearch API
-- `keyword_match_clause` - if `:should` is passed, uses the Boolean query clause `should`. Default: `must` clause 
+- `keyword_match_clause` - if `:should` is passed, uses the Boolean query clause `should`. Default: `must` clause
 
 ```json
 {
@@ -1375,11 +1374,11 @@ Requires `source_branch` field. Query with `source_branch` or `not_source_branch
 #### `by_search_level_and_group_membership`
 
 Requires `current_user`, `group_ids`, `traversal_id`, `search_level` fields. Query with `search_level` and
-filter on `namespace_visibility_level` based on permissions user has for each group. 
+filter on `namespace_visibility_level` based on permissions user has for each group.
 
 {{< alert type="note" >}}
 
-This filter can be used in place of `by_search_level_and_membership` if the data being searched does not contain the `project_id` field. 
+This filter can be used in place of `by_search_level_and_membership` if the data being searched does not contain the `project_id` field.
 
 {{< /alert >}}
 

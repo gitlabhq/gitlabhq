@@ -3,8 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
-  let!(:group) { create(:group, :private) }
-  let!(:subgroup) { create(:group, :private, parent: group) }
+  let!(:organization_id) { create(:organization, id: 1).id }
+  let!(:group) { create(:group, :private, organization_id: organization_id) }
+  let!(:subgroup) { create(:group, :private, parent: group, organization_id: organization_id) }
   let!(:project) do
     create(
       :project,
@@ -13,7 +14,8 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
       :issues_disabled,
       name: 'project',
       path: 'project',
-      group: subgroup
+      group: subgroup,
+      organization_id: organization_id
     )
   end
 

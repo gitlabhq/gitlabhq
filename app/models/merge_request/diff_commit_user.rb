@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class MergeRequest::DiffCommitUser < ApplicationRecord
+  include SafelyChangeColumnDefault
+
+  columns_changing_default :organization_id
+
   validates :name, length: { maximum: 512 }
   validates :email, length: { maximum: 512 }
   validates :name, presence: true, unless: :email

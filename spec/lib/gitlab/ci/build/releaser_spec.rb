@@ -43,14 +43,16 @@ RSpec.describe Gitlab::Ci::Build::Releaser, feature_category: :continuous_integr
       glab_create_windows = 'glab release create -R $env:CI_PROJECT_PATH'
       glab_command = "\"release-$CI_COMMIT_SHA\" #{glab_assets_links} --milestone \"m1,m2,m3\" --name \"Release $CI_COMMIT_SHA\" --experimental-notes-text-or-file \"Created using the release-cli $EXTRA_DESCRIPTION\" --ref \"$CI_COMMIT_SHA\" --tag-message \"Annotated tag message\" --released-at \"2020-07-15T08:00:00Z\" --no-update --no-close-milestone"
 
-      warning_message = "Warning: release-cli will not be supported after 18.0. Please use glab version >= 1.53.0. Troubleshooting: http://localhost/help/user/project/releases/_index.md#gitlab-cli-version-requirement"
+      warning_message = "Warning: release-cli will not be supported after 19.0. Please use glab version >= #{described_class::GLAB_REQUIRED_VERSION}. Troubleshooting: http://localhost/help/user/project/releases/_index.md#gitlab-cli-version-requirement"
 
       unix_result_for_glab_or_release_cli_without_catalog_publish = <<~BASH
       if command -v glab &> /dev/null; then
-        if [ "$(printf "%s\n%s" "1.53.0" "$(glab --version | grep -oE '[0-9]+.[0-9]+.[0-9]+')" | sort -V | head -n1)" = "1.53.0" ]; then
+        if [ "$(printf "%s\\n%s" "#{described_class::GLAB_REQUIRED_VERSION}" "$(glab --version | grep -oE '[0-9]+\\.[0-9]+\\.[0-9]+')" | sort -V | head -n1)" = "#{described_class::GLAB_REQUIRED_VERSION}" ]; then
           #{described_class::GLAB_ENV_SET_UNIX}
+          #{described_class::GLAB_CA_CERT_CONFIG_UNIX}
           #{described_class::GLAB_LOGIN_UNIX}
           #{glab_create_unix} #{glab_command}
+          #{described_class::GLAB_CA_CERT_CLEANUP_UNIX}
         else
           echo "#{warning_message}"
 
@@ -64,12 +66,20 @@ RSpec.describe Gitlab::Ci::Build::Releaser, feature_category: :continuous_integr
       BASH
       windows_result_for_glab_or_release_cli_without_catalog_publish = <<~POWERSHELL
       if (Get-Command glab -ErrorAction SilentlyContinue) {
-        $glabVersion = (glab --version | Select-String -Pattern '\d+\.\d+\.\d+').Matches[0].Value
+        $glabVersionOutput = (glab --version | Select-Object -First 1) -as [string]
 
-        if ([version]"1.53.0" -le [version]$glabVersion) {
-          #{described_class::GLAB_ENV_SET_WINDOWS}
-          #{described_class::GLAB_LOGIN_WINDOWS}
-          #{glab_create_windows} #{glab_command}
+        if ($glabVersionOutput -match 'glab (\\\d+\\\.\\\d+\\\.\\\d+)') {
+          if ([version]$matches[1] -ge [version]"#{described_class::GLAB_REQUIRED_VERSION}") {
+            #{described_class::GLAB_ENV_SET_WINDOWS}
+            #{described_class::GLAB_CA_CERT_CONFIG_WINDOWS}
+            #{described_class::GLAB_LOGIN_WINDOWS}
+            #{glab_create_windows} #{glab_command}
+            #{described_class::GLAB_CA_CERT_CLEANUP_WINDOWS}
+          }
+          else {
+            Write-Output "#{warning_message}"
+            #{release_cli_command} #{release_cli_assets_links}
+          }
         }
         else {
           Write-Output "#{warning_message}"
@@ -116,10 +126,12 @@ RSpec.describe Gitlab::Ci::Build::Releaser, feature_category: :continuous_integr
         result_for_release_cli_with_catalog_publish = "#{result_for_release_cli_without_catalog_publish} --catalog-publish"
         unix_result_for_glab_or_release_cli_with_catalog_publish = <<~BASH
         if command -v glab &> /dev/null; then
-          if [ "$(printf "%s\n%s" "1.53.0" "$(glab --version | grep -oE '[0-9]+.[0-9]+.[0-9]+')" | sort -V | head -n1)" = "1.53.0" ]; then
+          if [ "$(printf "%s\\n%s" "#{described_class::GLAB_REQUIRED_VERSION}" "$(glab --version | grep -oE '[0-9]+\\.[0-9]+\\.[0-9]+')" | sort -V | head -n1)" = "#{described_class::GLAB_REQUIRED_VERSION}" ]; then
             #{described_class::GLAB_ENV_SET_UNIX}
+            #{described_class::GLAB_CA_CERT_CONFIG_UNIX}
             #{described_class::GLAB_LOGIN_UNIX}
             #{glab_create_unix} #{glab_command} --publish-to-catalog
+            #{described_class::GLAB_CA_CERT_CLEANUP_UNIX}
           else
             echo "#{warning_message}"
 
@@ -133,12 +145,20 @@ RSpec.describe Gitlab::Ci::Build::Releaser, feature_category: :continuous_integr
         BASH
         windows_result_for_glab_or_release_cli_with_catalog_publish = <<~POWERSHELL
         if (Get-Command glab -ErrorAction SilentlyContinue) {
-          $glabVersion = (glab --version | Select-String -Pattern '\d+\.\d+\.\d+').Matches[0].Value
+          $glabVersionOutput = (glab --version | Select-Object -First 1) -as [string]
 
-          if ([version]"1.53.0" -le [version]$glabVersion) {
-            #{described_class::GLAB_ENV_SET_WINDOWS}
-            #{described_class::GLAB_LOGIN_WINDOWS}
-            #{glab_create_windows} #{glab_command} --publish-to-catalog
+          if ($glabVersionOutput -match 'glab (\\\d+\\\.\\\d+\\\.\\\d+)') {
+            if ([version]$matches[1] -ge [version]"#{described_class::GLAB_REQUIRED_VERSION}") {
+              #{described_class::GLAB_ENV_SET_WINDOWS}
+              #{described_class::GLAB_CA_CERT_CONFIG_WINDOWS}
+              #{described_class::GLAB_LOGIN_WINDOWS}
+              #{glab_create_windows} #{glab_command} --publish-to-catalog
+              #{described_class::GLAB_CA_CERT_CLEANUP_WINDOWS}
+            }
+            else {
+              Write-Output "#{warning_message}"
+              #{release_cli_command} #{release_cli_assets_links} --catalog-publish
+            }
           }
           else {
             Write-Output "#{warning_message}"

@@ -89,11 +89,7 @@ module Gitlab
       end
 
       def issuer_url
-        if Feature.enabled?(:allow_issuer_claim_customization_for_ci_id_tokens, project)
-          Gitlab.config.ci_id_tokens.issuer_url
-        else
-          Gitlab.config.gitlab.url
-        end
+        Gitlab.config.ci_id_tokens.issuer_url
       end
     end
   end

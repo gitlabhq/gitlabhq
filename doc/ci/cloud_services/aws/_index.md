@@ -115,16 +115,9 @@ assume role:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391928) in GitLab 18.1 [with a flag](../../../administration/feature_flags.md) named `allow_issuer_claim_customization_for_ci_id_tokens`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391928) in GitLab 18.1
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 {{< alert type="warning" >}}
 

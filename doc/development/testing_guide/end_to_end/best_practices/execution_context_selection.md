@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Execution context selection
 ---
 
-Some tests are designed to be run against specific environments, or in specific [pipelines](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/debugging-qa-test-failures/#qa-test-pipelines) or jobs. We can specify the test execution context using the `only` and `except` metadata.
+Some tests are designed to be run against specific environments, or in specific [pipelines](https://handbook.gitlab.com/handbook/engineering/testing/end-to-end-pipeline-monitoring) or jobs. We can specify the test execution context using the `only` and `except` metadata.
 
 ## Available switches
 
@@ -129,7 +129,7 @@ To run a test tagged with `except` locally, you can either:
 
 Similarly to specifying that a test should only run against a specific environment, it's also possible to quarantine a
 test only when it runs against a specific environment. The syntax is exactly the same, except that the `only: { ... }`
-hash is nested in the [`quarantine: { ... }`](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/debugging-qa-test-failures/#quarantining-tests) hash.
+hash is nested in the [`quarantine: { ... }`](https://handbook.gitlab.com/handbook/engineering/testing/pipeline-triage/#quarantining-tests) hash.
 For example, `quarantine: { only: { subdomain: :staging } }` only quarantines the test when run against `staging`.
 
 The quarantine feature can be explicitly disabled with the `DISABLE_QUARANTINE` environment variable. This can be useful when running tests locally.

@@ -233,12 +233,6 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
       it 'uses the custom issuer url for the iss: claim' do
         expect(payload[:iss]).to eq(custom_issuer_url)
       end
-
-      it 'uses the default issuer url for the iss: claim if the feature flag is disabled' do
-        stub_feature_flags(allow_issuer_claim_customization_for_ci_id_tokens: false)
-
-        expect(payload[:iss]).to eq(Gitlab.config.gitlab.url)
-      end
     end
   end
 end

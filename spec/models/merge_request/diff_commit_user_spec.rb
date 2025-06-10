@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe MergeRequest::DiffCommitUser, feature_category: :code_review_workflow do
-  let_it_be(:organization_id) { create(:organization).id }
+  let_it_be(:organization_id) { create(:organization, id: 1).id }
 
   describe 'validations' do
     it 'requires that names are less than 512 characters long' do
@@ -62,24 +62,6 @@ RSpec.describe MergeRequest::DiffCommitUser, feature_category: :code_review_work
         expect(user1).to eq(user2)
       end
 
-      it 'updates organization_id if an existing record has nil organization_id' do
-        user_without_org = create(
-          :merge_request_diff_commit_user,
-          name: 'Alice',
-          email: 'alice@example.com',
-          organization_id: nil
-        )
-
-        updated_user = described_class.find_or_create('Alice', 'alice@example.com', organization_id,
-          with_organization: true)
-
-        expect(updated_user.id).to eq(user_without_org.id)
-        expect(updated_user.organization_id).to eq(organization_id)
-
-        user_without_org.reload
-        expect(user_without_org.organization_id).to eq(organization_id)
-      end
-
       it 'handles concurrent inserts' do
         user = create(:merge_request_diff_commit_user, organization_id: organization_id)
 
@@ -114,22 +96,26 @@ RSpec.describe MergeRequest::DiffCommitUser, feature_category: :code_review_work
     end
 
     context 'when with_organization is false (default)' do
-      it 'creates a new row without organization_id' do
+      it 'creates a new row with default organization_id' do
         alice = described_class.find_or_create('Alice', 'alice@example.com', organization_id)
         expect(alice.name).to eq('Alice')
         expect(alice.email).to eq('alice@example.com')
-        expect(alice.organization_id).to be_nil
+        expect(alice.organization_id).to eq(organization_id)
       end
 
       it 'returns an existing row without considering organization_id' do
-        user1 = create(:merge_request_diff_commit_user, name: 'Bob', email: 'bob@example.com', organization_id: nil)
+        user1 = create(:merge_request_diff_commit_user,
+          name: 'Bob',
+          email: 'bob@example.com',
+          organization_id: organization_id)
+
         user2 = described_class.find_or_create('Bob', 'bob@example.com', organization_id)
         expect(user1).to eq(user2)
       end
 
-      it 'ignores organization_id parameter when with_organization is false' do
+      it 'sets organization_id parameter for new records' do
         alice = described_class.find_or_create('Alice', 'alice@example.com', organization_id)
-        expect(alice.organization_id).to be_nil
+        expect(alice.organization_id).to eq(organization_id)
       end
 
       it 'returns an existing row even if it has organization_id set' do
@@ -164,7 +150,8 @@ RSpec.describe MergeRequest::DiffCommitUser, feature_category: :code_review_work
 
     context 'when with_organization is false' do
       it 'finds records without using organization_id' do
-        user = create(:merge_request_diff_commit_user, name: 'Alice', email: 'alice@example.com', organization_id: nil)
+        user = create(:merge_request_diff_commit_user, name: 'Alice', email: 'alice@example.com',
+          organization_id: organization_id)
         non_matching_user = create(:merge_request_diff_commit_user, name: 'Bob', email: 'bob@example.com')
 
         pairs = [['Alice', 'alice@example.com', organization_id]] # organization_id is ignored
@@ -257,55 +244,15 @@ RSpec.describe MergeRequest::DiffCommitUser, feature_category: :code_review_work
         users = described_class.bulk_find_or_create(triples, with_organization: true)
         expect(users.values.map(&:organization_id).uniq).to eq([organization_id])
       end
-
-      it 'updates organization_id for existing records with nil organization_id' do
-        # Existing users without organization_id
-        alice_without_org = create(
-          :merge_request_diff_commit_user,
-          name: 'Alice',
-          email: 'alice@example.com',
-          organization_id: nil
-        )
-        bob_without_org = create(
-          :merge_request_diff_commit_user,
-          name: 'Bob',
-          email: 'bob@example.com',
-          organization_id: nil
-        )
-
-        triples = [
-          ['Alice', 'alice@example.com', organization_id],
-          ['Bob', 'bob@example.com', organization_id],
-          ['Charlie', 'charlie@example.com', organization_id] # New user
-        ]
-
-        users = described_class.bulk_find_or_create(triples, with_organization: true)
-
-        # Reload to get updated values
-        alice_without_org.reload
-        bob_without_org.reload
-
-        # Check that existing users were found and updated
-        expect(users[['Alice', 'alice@example.com', organization_id]]).to eq(alice_without_org)
-        expect(users[['Bob', 'bob@example.com', organization_id]]).to eq(bob_without_org)
-
-        # Check that organization_id was updated
-        expect(alice_without_org.organization_id).to eq(organization_id)
-        expect(bob_without_org.organization_id).to eq(organization_id)
-
-        # Check that new user was created with organization_id
-        charlie = users[['Charlie', 'charlie@example.com', organization_id]]
-        expect(charlie.organization_id).to eq(organization_id)
-      end
     end
 
     context 'when with_organization is false (default)' do
-      it 'bulk creates missing rows without organization_id' do
+      it 'bulk creates missing rows with default organization_id' do
         bob = create(
           :merge_request_diff_commit_user,
           name: 'Bob',
           email: 'bob@example.com',
-          organization_id: nil
+          organization_id: organization_id
         )
 
         # Joe was created when feature flag was enabled
@@ -324,15 +271,14 @@ RSpec.describe MergeRequest::DiffCommitUser, feature_category: :code_review_work
 
         users = described_class.bulk_find_or_create(pairs)
 
-        alice = described_class.find_by(name: 'Alice', email: 'alice@example.com', organization_id: nil)
+        alice = described_class.find_by(name: 'Alice', email: 'alice@example.com')
         expect(users[['Alice', 'alice@example.com']]).to eq(alice)
         expect(users[['Bob', 'bob@example.com']]).to eq(bob)
         expect(users[['Joe', 'joe@example.com']]).to eq(joe)
-        expect(alice.organization_id).to be_nil
+        expect(alice.organization_id).to eq(organization_id)
       end
 
-      it 'handles input with organization_id but ignores it' do
-        # Even if triples are passed, organization_id is ignored when with_organization is false
+      it 'handles input with organization_id but uses provided id for new records' do
         triples = [
           ['Alice', 'alice@example.com', organization_id],
           ['Bob', 'bob@example.com', organization_id]
@@ -340,13 +286,14 @@ RSpec.describe MergeRequest::DiffCommitUser, feature_category: :code_review_work
 
         users = described_class.bulk_find_or_create(triples)
 
-        alice = described_class.find_by(name: 'Alice', email: 'alice@example.com', organization_id: nil)
-        bob = described_class.find_by(name: 'Bob', email: 'bob@example.com', organization_id: nil)
+        alice = described_class.find_by(name: 'Alice', email: 'alice@example.com')
+        bob = described_class.find_by(name: 'Bob', email: 'bob@example.com')
 
         expect(users[['Alice', 'alice@example.com']]).to eq(alice)
         expect(users[['Bob', 'bob@example.com']]).to eq(bob)
-        expect(alice.organization_id).to be_nil
-        expect(bob.organization_id).to be_nil
+
+        expect(alice.organization_id).to eq(organization_id)
+        expect(bob.organization_id).to eq(organization_id)
       end
 
       it 'uses the legacy method internally' do

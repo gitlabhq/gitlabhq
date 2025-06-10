@@ -10,5 +10,3 @@ milestone: '12.8'
 table_size: small
 gitlab_schema: gitlab_main_cell_local
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/493768
-allow_cross_foreign_keys:
-- gitlab_main_clusterwide

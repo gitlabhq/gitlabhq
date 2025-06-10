@@ -514,16 +514,16 @@ This feature is built on top of Git tags, so virtually no extra data is needed b
 The way of using the [`release` keyword](../../../ci/yaml/_index.md#release) is planned to change.
 The `release-cli` tool is [being replaced](https://gitlab.com/groups/gitlab-org/-/epics/15437) by the [GitLab CLI tool](https://gitlab.com/gitlab-org/cli/).
 
-You must use GitLab CLI tool `v1.53.0` or higher, or you could receive one of these error messages or warnings:
+You must use GitLab CLI tool `v1.58.0` or higher, or you could receive one of these error messages or warnings:
 
-- `Error: glab command not found. Please install glab v1.53.0 or higher.`
-- `Error: Please use glab v1.53.0 or higher.`
-- `Warning: release-cli will not be supported after 18.0. Please use glab version >= 1.53.0.`
+- `Error: glab command not found. Please install glab v1.58.0 or higher.`
+- `Error: Please use glab v1.58.0 or higher.`
+- `Warning: release-cli will not be supported after 19.0. Please use glab version >= 1.58.0.`
 
 There are two ways to have the GitLab CLI tool:
 
 - If you use the `registry.gitlab.com/gitlab-org/release-cli:<version>` container image,
-  you can start using either `registry.gitlab.com/gitlab-org/cli:v1.53.0` or
-  `registry.gitlab.com/gitlab-org/release-cli:v0.22.0`, which contains `glab` `v1.53.0`.
+  you can start using either `registry.gitlab.com/gitlab-org/cli:v1.58.0` or
+  `registry.gitlab.com/gitlab-org/release-cli:v0.24.0`, which contains `glab` `v1.58.0`.
 - If you manually installed the release-cli or GitLab CLI tool on your runners,
-  make sure the GitLab CLI version is at least `v1.53.0`.
+  make sure the GitLab CLI version is at least `v1.58.0`.
