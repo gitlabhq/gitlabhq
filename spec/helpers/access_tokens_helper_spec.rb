@@ -66,6 +66,17 @@ RSpec.describe AccessTokensHelper, feature_category: :system_access do
     end
   end
 
+  describe '#filter_sort_scopes' do
+    it 'excludes unknown scopes' do
+      expect(helper.filter_sort_scopes([:dummy], [:doorkeeper])).to match([])
+    end
+
+    it 'sort scopes' do
+      expect(helper.filter_sort_scopes([:sudo, :admin_mode],
+        [:doorkeeper])).to match([{ text: String, value: :admin_mode }, { text: String, value: :sudo }])
+    end
+  end
+
   describe '#personal_access_token_data' do
     before do
       allow(helper).to receive_messages(
@@ -77,10 +88,11 @@ RSpec.describe AccessTokensHelper, feature_category: :system_access do
     it 'returns data for the PATs UI in the user settings' do
       expect(helper.personal_access_token_data({ name: 'My token',
         description: 'My description',
-        scopes: [:api, :sudo] })).to match(a_hash_including({
+        scopes: [:api, :sudo] }, 'dummy_user')).to match(a_hash_including({
           access_token: {
             max_date: '2022-03-02',
             min_date: '2022-03-02',
+            available_scopes: '[]',
             name: 'My token',
             description: 'My description',
             scopes: '["api","sudo"]',

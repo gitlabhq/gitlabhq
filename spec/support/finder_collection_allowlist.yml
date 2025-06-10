@@ -13,6 +13,7 @@
 - Security::VulnerabilityElasticSearchFinder # Reason: The finder deals with Elasticsearch records and not DB records
 - Security::VulnerabilityElasticIdentifierNamesFinder # Reason: The finder deals with Elasticsearch records and not DB records
 - Security::VulnerabilityElasticCountBySeverityFinder # Reason: The finder deals with Elasticsearch records and not DB records
+- Security::VulnerabilityElasticCountOverTimeFinder # Reason: The finder deals with Elasticsearch records and not DB records
 
 # Temporary excludes (aka TODOs)
 # For example:

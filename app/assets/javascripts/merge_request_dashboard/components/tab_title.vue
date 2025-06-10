@@ -1,5 +1,6 @@
 <script>
 import { GlBadge } from '@gitlab/ui';
+import { camelCase } from 'lodash';
 import { QUERIES } from '../constants';
 
 export default {
@@ -30,7 +31,7 @@ export default {
           query: QUERIES[query].countQuery,
           variables,
           manual: true,
-          context: { batchKey: `MergeRequestTabsCounts` },
+          context: { batchKey: `MergeRequestTabsCounts_${camelCase(this.title)}` },
           result({ data }) {
             if (data?.currentUser) {
               this.count += data?.currentUser?.mergeRequests?.count ?? 0;

@@ -3139,45 +3139,6 @@ msgstr ""
 msgid "AccessTokens|Forces new personal, group, project and impersonation tokens to require an expiration date. Does not affect existing token expiration dates or personal access tokens for service accounts. This setting overrides the group-level %{link_start}service account token expiration%{link_end} setting."
 msgstr ""
 
-msgid "AccessTokens|Grant access to download Service Ping payload via API when authenticated as an admin user."
-msgstr ""
-
-msgid "AccessTokens|Grants access to GitLab Duo related API endpoints."
-msgstr ""
-
-msgid "AccessTokens|Grants access to manage the runners."
-msgstr ""
-
-msgid "AccessTokens|Grants complete read/write access to the API, including all groups and projects, the container registry, the dependency proxy, and the package registry."
-msgstr ""
-
-msgid "AccessTokens|Grants create access to the runners."
-msgstr ""
-
-msgid "AccessTokens|Grants permission for token to rotate itself."
-msgstr ""
-
-msgid "AccessTokens|Grants permission to perform API actions as an administrator, when Admin Mode is enabled."
-msgstr ""
-
-msgid "AccessTokens|Grants permission to perform API actions as any user in the system, when authenticated as an admin user."
-msgstr ""
-
-msgid "AccessTokens|Grants permission to perform Kubernetes API calls using the agent for Kubernetes."
-msgstr ""
-
-msgid "AccessTokens|Grants read access to the API, including all groups and projects, the container registry, and the package registry."
-msgstr ""
-
-msgid "AccessTokens|Grants read-only access to repositories on private projects using Git-over-HTTP or the Repository Files API."
-msgstr ""
-
-msgid "AccessTokens|Grants read-only access to your profile through the /user API endpoint, which includes username, public email, and full name. Also grants access to read-only API endpoints under /users."
-msgstr ""
-
-msgid "AccessTokens|Grants read-write access to repositories on private projects using Git-over-HTTP (not using the API)."
-msgstr ""
-
 msgid "AccessTokens|How do I use DPoP?"
 msgstr ""
 
@@ -27849,6 +27810,9 @@ msgid "Geo|Replication status"
 msgstr ""
 
 msgid "Geo|Replication summary"
+msgstr ""
+
+msgid "Geo|Replication: %{status}"
 msgstr ""
 
 msgid "Geo|Repository synchronization concurrency limit"

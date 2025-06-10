@@ -809,7 +809,7 @@ You can use the OR operator (**is one of: `||`**) when you [filter the list of i
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464063) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `issues_list_drawer`. Disabled by default.
-- In GitLab 17.11, if [the new look for issues](issue_work_items.md) is enabled, this feature is also enabled.
+- In GitLab 17.11 and later, if [the new look for issues](issue_work_items.md) is enabled, this feature is also enabled.
 
 {{< /history >}}
 

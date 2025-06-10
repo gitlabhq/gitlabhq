@@ -26121,6 +26121,26 @@ CREATE SEQUENCE workspace_agentk_states_id_seq
 
 ALTER SEQUENCE workspace_agentk_states_id_seq OWNED BY workspace_agentk_states.id;
 
+CREATE TABLE workspace_tokens (
+    id bigint NOT NULL,
+    workspace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    token_encrypted text NOT NULL,
+    CONSTRAINT check_35b32b26d3 CHECK ((char_length(token_encrypted) <= 512)),
+    CONSTRAINT chk_rails_78f4622c4e CHECK ((char_length(token_encrypted) <= 512))
+);
+
+CREATE SEQUENCE workspace_tokens_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE workspace_tokens_id_seq OWNED BY workspace_tokens.id;
+
 CREATE TABLE workspace_variables (
     id bigint NOT NULL,
     workspace_id bigint NOT NULL,
@@ -28353,6 +28373,8 @@ ALTER TABLE ONLY work_item_type_user_preferences ALTER COLUMN id SET DEFAULT nex
 ALTER TABLE ONLY work_item_widget_definitions ALTER COLUMN id SET DEFAULT nextval('work_item_widget_definitions_id_seq'::regclass);
 
 ALTER TABLE ONLY workspace_agentk_states ALTER COLUMN id SET DEFAULT nextval('workspace_agentk_states_id_seq'::regclass);
+
+ALTER TABLE ONLY workspace_tokens ALTER COLUMN id SET DEFAULT nextval('workspace_tokens_id_seq'::regclass);
 
 ALTER TABLE ONLY workspace_variables ALTER COLUMN id SET DEFAULT nextval('workspace_variables_id_seq'::regclass);
 
@@ -31593,6 +31615,9 @@ ALTER TABLE ONLY work_item_widget_definitions
 
 ALTER TABLE ONLY workspace_agentk_states
     ADD CONSTRAINT workspace_agentk_states_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY workspace_tokens
+    ADD CONSTRAINT workspace_tokens_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY workspace_variables
     ADD CONSTRAINT workspace_variables_pkey PRIMARY KEY (id);
@@ -38226,6 +38251,10 @@ CREATE INDEX index_workspace_agentk_states_on_project_id ON workspace_agentk_sta
 
 CREATE UNIQUE INDEX index_workspace_agentk_states_on_workspace_id ON workspace_agentk_states USING btree (workspace_id);
 
+CREATE INDEX index_workspace_tokens_on_project_id ON workspace_tokens USING btree (project_id);
+
+CREATE UNIQUE INDEX index_workspace_tokens_on_workspace_id ON workspace_tokens USING btree (workspace_id);
+
 CREATE INDEX index_workspace_variables_on_project_id ON workspace_variables USING btree (project_id);
 
 CREATE INDEX index_workspace_variables_on_workspace_id ON workspace_variables USING btree (workspace_id);
@@ -42673,6 +42702,9 @@ ALTER TABLE ONLY merge_request_diffs
 ALTER TABLE ONLY ml_candidates
     ADD CONSTRAINT fk_56d6ed4d3d FOREIGN KEY (experiment_id) REFERENCES ml_experiments(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY workspace_tokens
+    ADD CONSTRAINT fk_5724f2499d FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY projects_branch_rules_squash_options
     ADD CONSTRAINT fk_574b8d531f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -44946,6 +44978,9 @@ ALTER TABLE ONLY work_item_parent_links
 
 ALTER TABLE ONLY system_access_microsoft_graph_access_tokens
     ADD CONSTRAINT fk_rails_604908851f FOREIGN KEY (system_access_microsoft_application_id) REFERENCES system_access_microsoft_applications(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY workspace_tokens
+    ADD CONSTRAINT fk_rails_60666321a4 FOREIGN KEY (workspace_id) REFERENCES workspaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerability_state_transitions
     ADD CONSTRAINT fk_rails_60e4899648 FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;

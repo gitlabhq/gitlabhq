@@ -22,6 +22,11 @@ describe('AccessTokenForm', () => {
 
   const accessTokenMaxDate = '2021-07-06';
   const accessTokenMinDate = '2020-07-06';
+  const accessTokenAvailableScopes = [
+    { value: 'read_service_ping', text: 'scope 1' },
+    { value: 'read_user', text: 'scope 2' },
+    { value: 'other', text: 'scope 3' },
+  ];
 
   const createComponent = (props = {}) => {
     wrapper = mountExtended(AccessTokenForm, {
@@ -29,6 +34,7 @@ describe('AccessTokenForm', () => {
       provide: {
         accessTokenMaxDate,
         accessTokenMinDate,
+        accessTokenAvailableScopes,
       },
       propsData: {
         ...props,
@@ -82,12 +88,10 @@ describe('AccessTokenForm', () => {
     createComponent();
 
     const checkboxes = findCheckboxes();
-    expect(checkboxes).toHaveLength(13);
+    expect(checkboxes).toHaveLength(3);
     const checkbox = checkboxes.at(0);
     expect(checkbox.find('input').element.value).toBe('read_service_ping');
-    expect(checkbox.find('label').text()).toContain(
-      'Grant access to download Service Ping payload via API when authenticated as an admin user.',
-    );
+    expect(checkbox.find('label').text()).toContain('scope 1');
   });
 
   describe('reset button', () => {

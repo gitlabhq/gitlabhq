@@ -115,10 +115,17 @@ consume system resources. You can use the following settings and configuration d
 mattermost_external_url 'http://mattermost.example.com'
 
 # Shut down GitLab services on the Mattermost server
+alertmanager['enable'] = false
+gitlab_exporter['enable'] = false
+gitlab_kas['enable'] = false
 gitlab_rails['enable'] = false
-redis['enable'] = false
-postgres_exporter['enable'] = false
 grafana['enable'] = false
+letsencrypt['enable'] = false
+node_exporter['enable'] = false
+postgres_exporter['enable'] = false
+prometheus['enable'] = false
+redis_exporter['enable'] = false
+redis['enable'] = false
 ```
 
 Then follow the appropriate steps in the [Authorize GitLab Mattermost section](#authorize-gitlab-mattermost). Last, to enable

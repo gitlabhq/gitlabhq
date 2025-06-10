@@ -18,8 +18,8 @@ title: Test a new look for issues
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9584) in GitLab 17.5 [with a flag](../../../administration/feature_flags.md) named `work_items_view_preference`. Disabled by default. This feature is in [beta](../../../policy/development_stages_support.md#beta).
 - Feature flag named `work_items_view_preference` enabled on GitLab.com in GitLab 17.9 for a subset of users.
 - Feature flag named `work_items_view_preference` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184496) on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in 17.10.
-- **New look** toggle [hidden](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182330) with feature flag named `work_item_view_for_issues`. Flag enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in 17.11.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/482931) in GitLab 18.2. Feature flag `work_items_view_preference` removed.
+- [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/482931) in GitLab 17.11.
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/482931) to feature flag named `work_item_view_for_issues` in GitLab 18.1. Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated. Feature flag `work_items_view_preference` removed.
 
 {{< /history >}}
 
@@ -60,15 +60,6 @@ The new issues experience includes these improvements:
      When you change an issue to an epic, the epic is created in the parent group because epics can
      only exist in groups.
 - **Development**: Merge requests, branches, and feature flags related to this item are shown in a single list.
-
-## Toggle the new experience
-
-When you view the Issues page or issue detail page, you can toggle the new experience.
-
-To toggle the new issue look:
-
-1. In the upper-right corner look for the **New look** badge.
-1. Select the badge to toggle the experience on or off.
 
 ## Related topics
 

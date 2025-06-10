@@ -35,10 +35,24 @@ module AccessTokensHelper
     }.to_json
   end
 
-  def personal_access_token_data(token)
+  def filter_sort_scopes(scopes, sources)
+    scopes.select { |scope| ::Gitlab::Auth::UI_SCOPES_ORDERED_BY_PERMISSION.include?(scope) }
+    .sort_by { |scope| ::Gitlab::Auth::UI_SCOPES_ORDERED_BY_PERMISSION.index(scope) }
+    .map do |value|
+      {
+        value: value,
+        text: t(value, scope: sources)
+      }
+    end
+  end
+
+  def personal_access_token_data(token, user = current_user)
+    sources = scope_description(:personal_access_token)
+    scopes = ::Gitlab::Auth.available_scopes_for(user)
     {
       access_token: {
         **expires_at_field_data,
+        available_scopes: filter_sort_scopes(scopes, sources).to_json,
         name: token[:name],
         description: token[:description],
         scopes: token[:scopes].to_json,

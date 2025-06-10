@@ -138,6 +138,7 @@ export const initSharedAccessTokenApp = () => {
   const {
     accessTokenMaxDate,
     accessTokenMinDate,
+    accessTokenAvailableScopes,
     accessTokenName,
     accessTokenDescription,
     accessTokenScopes,
@@ -152,6 +153,7 @@ export const initSharedAccessTokenApp = () => {
     name: 'AccessTokensRoot',
     pinia,
     provide: {
+      accessTokenAvailableScopes: JSON.parse(accessTokenAvailableScopes),
       accessTokenMaxDate,
       accessTokenMinDate,
       accessTokenCreate,

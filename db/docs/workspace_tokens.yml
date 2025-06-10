@@ -1,0 +1,13 @@
+---
+table_name: workspace_tokens
+classes:
+- RemoteDevelopment::WorkspaceToken
+feature_categories:
+- workspaces
+description: Stores the token associated with a workspace
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193071
+milestone: '18.1'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects
+table_size: small

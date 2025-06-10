@@ -37,21 +37,22 @@ Group items that are migrated to the destination GitLab instance include:
 
 <!-- vale gitlab_base.OutdatedVersions = NO -->
 
-| Group item           | Introduced in                                                               |
-|:---------------------|:----------------------------------------------------------------------------|
-| Badges               | [GitLab 13.11](https://gitlab.com/gitlab-org/gitlab/-/issues/292431)        |
-| Boards               | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938)  |
-| Board lists          | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24863)  |
-| Epics <sup>1</sup>   | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/250281)         |
-| Group labels <sup>2</sup> | [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/292429)    |
-| Iterations           | [GitLab 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/292428)        |
-| Iteration cadences   | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96570)  |
-| Members <sup>3</sup> | [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/299415) |
-| Group milestones     | [GitLab 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/292427)        |
-| Namespace settings   | [GitLab 14.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85128) |
-| Release milestones   | [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/339422)         |
-| Subgroups            | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938)  |
-| Uploads              | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938)  |
+| Group item                | Introduced in |
+| ------------------------- | ------------- |
+| Badges                    | [GitLab 13.11](https://gitlab.com/gitlab-org/gitlab/-/issues/292431) |
+| Board lists               | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24863) |
+| Boards                    | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938) |
+| Epics <sup>1</sup>        | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/issues/250281) |
+| Group labels <sup>2</sup> | [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/292429) |
+| Group milestones          | [GitLab 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/292427) |
+| Iteration cadences        | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96570) |
+| Iterations                | [GitLab 13.10](https://gitlab.com/gitlab-org/gitlab/-/issues/292428) |
+| Members <sup>3</sup>      | [GitLab 13.9](https://gitlab.com/gitlab-org/gitlab/-/issues/299415) |
+| Namespace settings        | [GitLab 14.10](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85128) |
+| Release milestones        | [GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/339422) |
+| Subgroups                 | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938) |
+| Uploads                   | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938) |
+| Wikis                     | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/345923) |
 
 **Footnotes**:
 
@@ -242,6 +243,7 @@ Some project items are excluded from migration because they:
     from GitLab Self-Managed to GitLab.com or GitLab Dedicated
   - Linked issues
   - Merge request approval rules
+  - Wiki comments
 
     {{< alert type="note" >}}
 

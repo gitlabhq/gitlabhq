@@ -1485,14 +1485,13 @@ background migration.
 
    ```ruby
    class FinalizeBackfillRouteNamespaceId < Gitlab::Database::Migration[2.1]
-     MIGRATION = 'BackfillRouteNamespaceId'
      disable_ddl_transaction!
 
      restrict_gitlab_migration gitlab_schema: :gitlab_main
 
      def up
        ensure_batched_background_migration_is_finished(
-         job_class_name: MIGRATION,
+         job_class_name: 'BackfillRouteNamespaceId',
          table_name: :routes,
          column_name: :id,
          job_arguments: [],

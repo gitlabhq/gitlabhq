@@ -76,6 +76,31 @@ module Gitlab
     # Default scopes for OAuth applications that don't define their own
     DEFAULT_SCOPES = [API_SCOPE].freeze
 
+    # Scopes ordered by permission level, from lowest to highest.
+    # This is used to determine the order of scopes in the UI.
+    # If the scope is not present in this list, it won't appear in the UI.
+    UI_SCOPES_ORDERED_BY_PERMISSION = [
+      READ_SERVICE_PING_SCOPE,
+      READ_USER_SCOPE,
+      READ_REPOSITORY_SCOPE,
+      READ_OBSERVABILITY_SCOPE,
+      READ_VIRTUAL_REGISTRY_SCOPE,
+      READ_REGISTRY_SCOPE,
+      READ_API_SCOPE,
+      SELF_ROTATE_SCOPE,
+      WRITE_REPOSITORY_SCOPE,
+      WRITE_OBSERVABILITY_SCOPE,
+      WRITE_VIRTUAL_REGISTRY_SCOPE,
+      WRITE_REGISTRY_SCOPE,
+      API_SCOPE,
+      AI_FEATURES,
+      CREATE_RUNNER_SCOPE,
+      MANAGE_RUNNER_SCOPE,
+      K8S_PROXY_SCOPE,
+      ADMIN_MODE_SCOPE,
+      SUDO_SCOPE
+    ].freeze
+
     CI_JOB_USER = 'gitlab-ci-token'
 
     class << self

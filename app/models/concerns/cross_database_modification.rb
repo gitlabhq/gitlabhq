@@ -96,17 +96,18 @@ module CrossDatabaseModification
     end
 
     def gitlab_schema
-      case self.name
-      when 'ActiveRecord::Base', 'ApplicationRecord'
+      dbname, conn = Gitlab::Database.all_database_connections.find { |(_, conn)| conn.klass.name == self.name }
+
+      if conn
+        :"gitlab_#{dbname}"
+      # DB connections do not reference ApplicationRecord directly as they are used to apply load balancing,
+      # so instead we use the module to determine if we are in the main database
+      elsif self.name == 'ApplicationRecord'
         :gitlab_main
-      when 'SecApplicationRecord'
-        :gitlab_sec
-      when 'Ci::ApplicationRecord'
-        :gitlab_ci
-      when 'PackageMetadata::ApplicationRecord'
+      elsif self.name == 'PackageMetadata::ApplicationRecord'
         :gitlab_pm
-      else
-        Gitlab::Database::GitlabSchema.table_schema(table_name) if table_name
+      elsif table_name
+        Gitlab::Database::GitlabSchema.table_schema(table_name)
       end
     end
   end
