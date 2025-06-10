@@ -128,3 +128,5 @@ Some secondary regions have [limited support](#secondary-regions-with-limited-su
 {{< /alert >}}
 
 You can also opt to store backup copies in a separate cloud region for increased redundancy.
+
+For more information, see [disaster recovery for GitLab Dedicated](../../administration/dedicated/disaster_recovery.md).

@@ -64,14 +64,14 @@
       = f.gitlab_ui_checkbox_component :ropc_without_client_credentials, _('Allow users to use resource owner password credentials flow without oauth client credentials')
 
     .form-group
-      = f.label :user_default_external, _('New users set to external'), class: 'label-bold'
-      = f.gitlab_ui_checkbox_component :user_default_external, _('Newly-registered users are external by default')
+      = f.label :user_default_external, _('External users'), class: 'label-bold'
+      = f.gitlab_ui_checkbox_component :user_default_external, _('Make new users external by default')
       .gl-mt-3
-        = _('Internal users')
-      = f.text_field :user_default_internal_regex, placeholder: _('Regex pattern'), class: 'form-control gl-form-input gl-mt-2'
+        = _('Email exclusion pattern')
+      = f.text_field :user_default_internal_regex, class: 'form-control gl-form-input gl-mt-2'
       .form-text.gl-text-subtle
-        = _('Specify an email address regex pattern to identify default internal users.')
-        #{link_to _('Learn more'), help_page_path('administration/external_users.md', anchor: 'set-a-new-user-to-external'), target: '_blank', rel: 'noopener noreferrer'}.
+        = _('Specify a regular expression for emails. New users with matching emails are not made external users.')
+        #{link_to _('Learn more'), help_page_path('administration/external_users.md', anchor: 'make-new-users-external-by-default'), target: '_blank', rel: 'noopener noreferrer'}.
     - unless Gitlab.com?
       .form-group
         = f.label :deactivate_dormant_users, _('Dormant users'), class: 'label-bold'

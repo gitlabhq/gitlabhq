@@ -416,6 +416,11 @@ four standard [pagination arguments](#pagination-arguments):
 Linted and processed contents of a CI config.
 Should not be requested more than once per request.
 
+{{< details >}}
+**Deprecated** in GitLab 18.1.
+Use CiLint mutation: <https://docs.gitlab.com/api/graphql/reference/#mutationcilint>.
+{{< /details >}}
+
 Returns [`CiConfig`](#ciconfig).
 
 #### Arguments
@@ -3747,7 +3752,7 @@ Input type: `CiLintInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcilintclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcilintconfig"></a>`config` | [`CiConfig`](#ciconfig) | Linted CI config and metadata. |
+| <a id="mutationcilintconfig"></a>`config` | [`CiConfigV2`](#ciconfigv2) | Linted CI config and metadata. |
 | <a id="mutationcilinterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
 ### `Mutation.clusterAgentDelete`
@@ -23003,6 +23008,16 @@ Represents a component usage in a project.
 | <a id="ciconfiggroupname"></a>`name` | [`String`](#string) | Name of the job group. |
 | <a id="ciconfiggroupsize"></a>`size` | [`Int`](#int) | Size of the job group. |
 
+### `CiConfigGroupV2`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciconfiggroupv2jobs"></a>`jobs` | [`[CiConfigJobV2!]`](#ciconfigjobv2) | Jobs in group. |
+| <a id="ciconfiggroupv2name"></a>`name` | [`String`](#string) | Name of the job group. |
+| <a id="ciconfiggroupv2size"></a>`size` | [`Int`](#int) | Size of the job group. |
+
 ### `CiConfigInclude`
 
 #### Fields
@@ -23045,6 +23060,26 @@ Represents a component usage in a project.
 | ---- | ---- | ----------- |
 | <a id="ciconfigjobrestrictionrefs"></a>`refs` | [`[String!]`](#string) | Git refs the job restriction applies to. |
 
+### `CiConfigJobV2`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciconfigjobv2afterscript"></a>`afterScript` | [`[String!]`](#string) | Override a set of commands that are executed after the job. |
+| <a id="ciconfigjobv2allowfailure"></a>`allowFailure` | [`Boolean`](#boolean) | Allow job to fail. |
+| <a id="ciconfigjobv2beforescript"></a>`beforeScript` | [`[String!]`](#string) | Override a set of commands that are executed before the job. |
+| <a id="ciconfigjobv2environment"></a>`environment` | [`String`](#string) | Name of an environment to which the job deploys. |
+| <a id="ciconfigjobv2except"></a>`except` | [`CiConfigJobRestriction`](#ciconfigjobrestriction) | Limit when jobs are not created. |
+| <a id="ciconfigjobv2groupname"></a>`groupName` | [`String`](#string) | Name of the job group. |
+| <a id="ciconfigjobv2name"></a>`name` | [`String`](#string) | Name of the job. |
+| <a id="ciconfigjobv2needs"></a>`needs` | [`[CiConfigNeed!]`](#ciconfigneed) | Builds that must complete before the jobs run. |
+| <a id="ciconfigjobv2only"></a>`only` | [`CiConfigJobRestriction`](#ciconfigjobrestriction) | Jobs are created when these conditions do not apply. |
+| <a id="ciconfigjobv2script"></a>`script` | [`[String!]`](#string) | Shell script that is executed by a runner. |
+| <a id="ciconfigjobv2stage"></a>`stage` | [`String`](#string) | Name of the job stage. |
+| <a id="ciconfigjobv2tags"></a>`tags` | [`[String!]`](#string) | List of tags that are used to select a runner. |
+| <a id="ciconfigjobv2when"></a>`when` | [`String`](#string) | When to run the job. |
+
 ### `CiConfigNeed`
 
 #### Fields
@@ -23061,6 +23096,28 @@ Represents a component usage in a project.
 | ---- | ---- | ----------- |
 | <a id="ciconfigstagegroups"></a>`groups` | [`CiConfigGroupConnection`](#ciconfiggroupconnection) | Groups of jobs for the stage. (see [Connections](#connections)) |
 | <a id="ciconfigstagename"></a>`name` | [`String`](#string) | Name of the stage. |
+
+### `CiConfigStageV2`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciconfigstagev2groups"></a>`groups` | [`[CiConfigGroupV2!]`](#ciconfiggroupv2) | Groups of jobs for the stage. |
+| <a id="ciconfigstagev2name"></a>`name` | [`String`](#string) | Name of the stage. |
+
+### `CiConfigV2`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="ciconfigv2errors"></a>`errors` | [`[String!]`](#string) | Linting errors. |
+| <a id="ciconfigv2includes"></a>`includes` | [`[CiConfigInclude!]`](#ciconfiginclude) | List of included files. |
+| <a id="ciconfigv2mergedyaml"></a>`mergedYaml` | [`String`](#string) | Merged CI configuration YAML. |
+| <a id="ciconfigv2stages"></a>`stages` | [`[CiConfigStageV2!]`](#ciconfigstagev2) | Stages of the pipeline. |
+| <a id="ciconfigv2status"></a>`status` | [`CiConfigStatus`](#ciconfigstatus) | Status of linting, can be either valid or invalid. |
+| <a id="ciconfigv2warnings"></a>`warnings` | [`[String!]`](#string) | Linting warnings. |
 
 ### `CiConfigVariable`
 
@@ -42470,6 +42527,20 @@ Represents status.
 | <a id="workitemtypename"></a>`name` | [`String!`](#string) | Name of the work item type. |
 | <a id="workitemtypesupportedconversiontypes"></a>`supportedConversionTypes` {{< icon name="warning-solid" >}} | [`[WorkItemType!]`](#workitemtype) | **Introduced** in GitLab 17.8. **Status**: Experiment. Supported conversion types for the work item type. |
 | <a id="workitemtypewidgetdefinitions"></a>`widgetDefinitions` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetDefinition!]`](#workitemwidgetdefinition) | **Introduced** in GitLab 16.7. **Status**: Experiment. Available widgets for the work item type. |
+
+#### Fields with arguments
+
+##### `WorkItemType.unavailableWidgetsOnConversion`
+
+Widgets that will be lost when converting from source work item type to target work item type.
+
+Returns [`[WorkItemWidgetDefinition!]`](#workitemwidgetdefinition).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemtypeunavailablewidgetsonconversiontarget"></a>`target` | [`WorkItemsTypeID!`](#workitemstypeid) | Target work item type to convert to. |
 
 ### `WorkItemTypeCountsByState`
 

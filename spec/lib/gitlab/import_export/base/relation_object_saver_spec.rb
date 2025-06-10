@@ -93,6 +93,59 @@ RSpec.describe Gitlab::ImportExport::Base::RelationObjectSaver, feature_category
         end
       end
 
+      describe 'ImportRecordPreparer' do
+        let_it_be(:position) do
+          Gitlab::Diff::Position.new(
+            base_sha: "ae73cb07c9eeaf35924a10f713b364d32b2dd34f",
+            head_sha: "b83d6e391c22777fca1ed3012fce84f633d7fed0",
+            ignore_whitespace_change: false,
+            line_range: nil,
+            new_line: 9,
+            new_path: 'lib/ruby/popen.rb',
+            old_line: 8,
+            old_path: "files/ruby/popen.rb",
+            position_type: "text",
+            start_sha: "0b4bc9a49b562e85de7cc9e834518ea6828729b9"
+          )
+        end
+
+        let(:relation_key) { 'merge_requests' }
+        let(:relation_definition) { { 'notes' => {} } }
+        let(:relation_object) { build(:merge_request, source_project: project, target_project: project, notes: [note]) }
+
+        let(:diff_note) { create(:diff_note_on_commit) }
+        let(:note_diff_file) { diff_note.note_diff_file }
+
+        let(:note) do
+          build(
+            :diff_note_on_merge_request, project: project, importing: true,
+            line_code: "8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_4_7",
+            position: position, original_position: position,
+            note_diff_file: note_diff_file
+          )
+        end
+
+        context 'when records need preparing by ImportRecordPreparer' do
+          let(:note_diff_file) { nil }
+
+          it 'prepares the records' do
+            saver.execute
+            notes = project.reload.merge_requests.first.notes
+            expect(notes.count).to eq(1)
+            expect(notes.first).to be_a(DiscussionNote)
+          end
+        end
+
+        context 'when record does not need preparing by ImportRecordPreparer' do
+          it 'does not change the record' do
+            saver.execute
+            notes = project.reload.merge_requests.first.notes
+            expect(notes.count).to eq(1)
+            expect(notes.first).to be_a(DiffNote)
+          end
+        end
+      end
+
       context 'when importable is group' do
         let(:relation_key) { 'labels' }
         let(:relation_definition) { { 'priorities' => {} } }

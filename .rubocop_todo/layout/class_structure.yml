@@ -193,8 +193,6 @@ Layout/ClassStructure:
     - 'ee/app/models/namespaces/free_user_cap/enforcement.rb'
     - 'ee/app/models/package_metadata/advisory.rb'
     - 'ee/app/models/package_metadata/package.rb'
-    - 'ee/app/models/product_analytics/dashboard.rb'
-    - 'ee/app/models/product_analytics/visualization.rb'
     - 'ee/app/models/projects/saved_reply.rb'
     - 'ee/app/models/protected_branch/unprotect_access_level.rb'
     - 'ee/app/models/sbom/occurrence.rb'

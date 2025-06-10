@@ -569,8 +569,6 @@ RSpec/NamedSubject:
     - 'ee/spec/models/namespaces/free_user_cap/root_size_spec.rb'
     - 'ee/spec/models/namespaces/storage/root_size_spec.rb'
     - 'ee/spec/models/packages/package_file_spec.rb'
-    - 'ee/spec/models/product_analytics/dashboard_spec.rb'
-    - 'ee/spec/models/product_analytics/visualization_spec.rb'
     - 'ee/spec/models/projects/all_protected_branches_rule_spec.rb'
     - 'ee/spec/models/projects/target_branch_rule_spec.rb'
     - 'ee/spec/models/protected_environment_spec.rb'

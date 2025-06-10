@@ -214,7 +214,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/spec/mailers/emails/block_seat_overages_spec.rb'
     - 'ee/spec/models/dependency_proxy/packages/setting_spec.rb'
     - 'ee/spec/models/members/member_role_spec.rb'
-    - 'ee/spec/models/product_analytics/visualization_spec.rb'
     - 'ee/spec/models/sbom/occurrence_spec.rb'
     - 'ee/spec/presenters/ci/build_presenter_spec.rb'
     - 'ee/spec/requests/api/gitlab_subscriptions/add_on_purchases_spec.rb'

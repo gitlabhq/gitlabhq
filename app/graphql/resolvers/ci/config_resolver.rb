@@ -6,7 +6,7 @@ module Resolvers
       include Gitlab::Graphql::Authorize::AuthorizeResource
       include ResolvesProject
 
-      type Types::Ci::Config::ConfigType, null: true
+      type Types::Ci::LegacyConfig::ConfigType, null: true
       description <<~MD
         Linted and processed contents of a CI config.
         Should not be requested more than once per request.

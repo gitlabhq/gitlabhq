@@ -92,6 +92,8 @@ module Gitlab
         def save_batch_with_retry(relation_name, batch, retry_count = 0)
           valid_records, invalid_records = batch.partition { |record| record.valid? }
 
+          invalid_records.map! { |record| ::Import::ImportRecordPreparer.recover_invalid_record(record) }
+
           save_valid_records(relation_name, valid_records)
 
           save_potentially_invalid_records(relation_name, invalid_records)

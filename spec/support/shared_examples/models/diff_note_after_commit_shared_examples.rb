@@ -7,15 +7,38 @@ RSpec.shared_examples 'a valid diff note with after commit callback' do
     end
 
     context 'when diff_line is not found' do
-      it 'raises an error' do
-        allow(diff_file_from_repository).to receive(:line_for_position).with(position).and_return(nil)
+      context 'when importing' do
+        before do
+          subject.importing = true
+          subject.line_code = line_code
+        end
 
-        expect { subject.save! }.to raise_error(
-          ::DiffNote::NoteDiffFileCreationError,
-          "Failed to find diff line for: #{diff_file_from_repository.file_path}, "\
-          "old_line: #{position.old_line}"\
-          ", new_line: #{position.new_line}"
-        )
+        it 'raises validation error' do
+          allow(diff_file_from_repository).to receive(:line_for_position).with(position).and_return(nil)
+          expect { subject.save! }.to raise_error(
+            ActiveRecord::RecordInvalid,
+            "Validation failed: Failed to find diff line for: #{diff_file_from_repository.file_path}, "\
+            "old_line: #{position.old_line}"\
+            ", new_line: #{position.new_line}"
+          )
+        end
+      end
+
+      context 'when not importing' do
+        before do
+          subject.importing = false
+        end
+
+        it 'raises an error' do
+          allow(diff_file_from_repository).to receive(:line_for_position).with(position).and_return(nil)
+
+          expect { subject.save! }.to raise_error(
+            ::DiffNote::NoteDiffFileCreationError,
+            "Failed to find diff line for: #{diff_file_from_repository.file_path}, "\
+            "old_line: #{position.old_line}"\
+            ", new_line: #{position.new_line}"
+          )
+        end
       end
     end
 
@@ -39,10 +62,28 @@ RSpec.shared_examples 'a valid diff note with after commit callback' do
   end
 
   context 'when diff file is not found in repository' do
-    it 'raises an error' do
-      allow_any_instance_of(::Gitlab::Diff::Position).to receive(:diff_file).with(project.repository).and_return(nil)
+    context 'when importing' do
+      before do
+        subject.importing = true
+        subject.line_code = line_code
+      end
 
-      expect { subject.save! }.to raise_error(::DiffNote::NoteDiffFileCreationError, 'Failed to find diff file')
+      it 'raises validation error' do
+        allow(subject).to receive(:diff_file).and_return(nil)
+        expect { subject.save! }.to raise_error(ActiveRecord::RecordInvalid, /Validation failed: Failed to find diff file/)
+      end
+    end
+
+    context 'when not importing' do
+      before do
+        subject.importing = false
+      end
+
+      it 'raises an error' do
+        allow(subject).to receive(:diff_file).and_return(nil)
+
+        expect { subject.save! }.to raise_error(::DiffNote::NoteDiffFileCreationError, 'Failed to find diff file')
+      end
     end
   end
 end

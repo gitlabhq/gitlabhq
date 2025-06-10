@@ -418,7 +418,9 @@ Dangerfile
 /ee/app/helpers/analytics/analytics_dashboards_helper.rb
 /ee/app/helpers/analytics/analytics_settings_helper.rb
 /ee/app/helpers/projects/analytics_dashboard_helper.rb
-/ee/app/models/product_analytics/
+/ee/app/models/analytics/dashboard.rb
+/ee/app/models/analytics/panel.rb
+/ee/app/models/analytics/visualization.rb
 
 ^[Analytics Dashboards frontend] @gitlab-org/analytics-section/platform-insights/engineers/frontend @gitlab-org/plan-stage/optimize-group/engineers/frontend
 /app/assets/javascripts/vue_shared/components/customizable_dashboard/

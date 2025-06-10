@@ -8,14 +8,6 @@ description: Used to store relation export files location
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90624
 milestone: '15.2'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: project_relation_export_id
-        table: project_relation_exports
-        sharding_key: project_id
-        belongs_to: relation_export
+sharding_key:
+  project_id: projects
 table_size: small
-desired_sharding_key_migration_job_name: BackfillProjectRelationExportUploadsProjectId

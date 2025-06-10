@@ -516,6 +516,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:counters_flush_stale_counter_increments_cron
+  :worker_name: Gitlab::Counters::FlushStaleCounterIncrementsCronWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:database_batched_background_migration
   :worker_name: Database::BatchedBackgroundMigrationWorker
   :feature_category: :database
@@ -3518,6 +3528,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: counters_flush_stale_counter_increments
+  :worker_name: Gitlab::Counters::FlushStaleCounterIncrementsWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :throttled
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: create_commit_signature
   :worker_name: CreateCommitSignatureWorker
   :feature_category: :source_code_management
@@ -3780,7 +3800,7 @@
   :queue_namespace:
 - :name: flush_counter_increments
   :worker_name: FlushCounterIncrementsWorker
-  :feature_category: :not_owned
+  :feature_category: :continuous_integration
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

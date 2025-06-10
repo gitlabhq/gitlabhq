@@ -315,6 +315,8 @@
   - 1
 - - counters_cleanup_refresh
   - 1
+- - counters_flush_stale_counter_increments
+  - 1
 - - create_commit_signature
   - 2
 - - create_github_webhook

@@ -65,7 +65,7 @@ module Ci
       valid = true
       depth = 0
 
-      each_build(params) do |build|
+      each_build(params) do |build, queue_size|
         depth += 1
         @metrics.increment_queue_operation(:queue_iteration)
 
@@ -93,7 +93,7 @@ module Ci
         end
 
         result = @logger.instrument(:process_build) do
-          process_build(build, params)
+          process_build(build, params, queue_size: queue_size, queue_depth: depth)
         end
         next unless result
 
@@ -123,11 +123,12 @@ module Ci
       builds = queue.build_candidates
 
       build_and_partition_ids = retrieve_queue(-> { queue.execute(builds) })
+      queue_size = build_and_partition_ids.size
 
-      @metrics.observe_queue_size(-> { build_and_partition_ids.size }, @runner.runner_type)
+      @metrics.observe_queue_size(-> { queue_size }, @runner.runner_type)
 
       build_and_partition_ids.each do |build_id, partition_id|
-        yield Ci::Build.find_by!(partition_id: partition_id, id: build_id)
+        yield Ci::Build.find_by!(partition_id: partition_id, id: build_id), queue_size
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
@@ -146,7 +147,7 @@ module Ci
       end
     end
 
-    def process_build(build, params)
+    def process_build(build, params, queue_size:, queue_depth:)
       return remove_from_queue!(build) unless build.pending?
 
       if runner_matched?(build)
@@ -164,7 +165,7 @@ module Ci
       # In case when 2 runners try to assign the same build, second runner will be declined
       # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
       if assign_runner_with_instrumentation!(build, params)
-        present_build_with_instrumentation!(build)
+        present_build_with_instrumentation!(build, queue_size: queue_size, queue_depth: queue_depth)
       end
     rescue ActiveRecord::StaleObjectError
       # We are looping to find another build that is not conflicting
@@ -216,17 +217,18 @@ module Ci
       end
     end
 
-    def present_build_with_instrumentation!(build)
+    def present_build_with_instrumentation!(build, queue_size:, queue_depth:)
       @logger.instrument(:process_build_present_build) do
-        present_build!(build)
+        present_build!(build, queue_size: queue_size, queue_depth: queue_depth)
       end
     end
 
     # Force variables evaluation to occur now
-    def present_build!(build)
+    def present_build!(build, queue_size:, queue_depth:)
       # We need to use the presenter here because Gitaly calls in the presenter
       # may fail, and we need to ensure the response has been generated.
       presented_build = ::Ci::BuildRunnerPresenter.new(build) # rubocop:disable CodeReuse/Presenter -- old code
+      presented_build.set_queue_metrics(size: queue_size, depth: queue_depth)
 
       @logger.instrument(:present_build_logs) do
         log_artifacts_context(build)

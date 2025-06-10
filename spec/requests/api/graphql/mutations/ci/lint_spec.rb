@@ -36,37 +36,29 @@ RSpec.describe 'ciLint', feature_category: :pipeline_composition do
         status
         warnings
         stages {
-          nodes {
+          name
+          groups {
             name
-            groups {
-              nodes {
+            size
+            jobs {
+              name
+              groupName
+              stage
+              script
+              beforeScript
+              afterScript
+              allowFailure
+              only {
+                refs
+              }
+              when
+              except {
+                refs
+              }
+              environment
+              tags
+              needs {
                 name
-                size
-                jobs {
-                  nodes {
-                    name
-                    groupName
-                    stage
-                    script
-                    beforeScript
-                    afterScript
-                    allowFailure
-                    only {
-                      refs
-                    }
-                    when
-                    except {
-                      refs
-                    }
-                    environment
-                    tags
-                    needs {
-                      nodes {
-                        name
-                      }
-                    }
-                  }
-                }
               }
             }
           }
@@ -78,23 +70,6 @@ RSpec.describe 'ciLint', feature_category: :pipeline_composition do
 
   subject(:post_mutation) do
     post_graphql_mutation(mutation, current_user: user)
-  end
-
-  context 'when ci_lint_mutation is disabled' do
-    before do
-      stub_feature_flags(ci_lint_mutation: false)
-    end
-
-    it 'does not lint the config' do
-      expect(::Gitlab::Ci::Lint).not_to receive(:new)
-
-      post_mutation
-
-      expect(graphql_mutation_response(:ci_lint)['config']).to be_nil
-      expect(graphql_mutation_response(:ci_lint)['errors'].first).to include(
-        'This mutation is unfinished and not yet available for use'
-      )
-    end
   end
 
   it_behaves_like 'a working graphql query' do
@@ -112,150 +87,120 @@ RSpec.describe 'ciLint', feature_category: :pipeline_composition do
       "warnings" => [],
       "includes" => [],
       "mergedYaml" => a_kind_of(String),
-      "stages" =>
-      {
-        "nodes" =>
-        [
-          {
-            "name" => "build",
-            "groups" =>
+      "stages" => [
+        {
+          "name" => "build",
+          "groups" => [
             {
-              "nodes" =>
-              [
+              "name" => "rspec",
+              "size" => 2,
+              "jobs" => [
                 {
-                  "name" => "rspec",
-                  "size" => 2,
-                  "jobs" =>
-                  {
-                    "nodes" =>
-                    [
-                      {
-                        "name" => "rspec 0 1",
-                        "groupName" => "rspec",
-                        "stage" => "build",
-                        "script" => ["rake spec"],
-                        "beforeScript" => ["bundle install", "bundle exec rake db:create"],
-                        "afterScript" => ["echo 'run this after'"],
-                        "allowFailure" => false,
-                        "only" => { "refs" => %w[branches master] },
-                        "when" => "on_success",
-                        "except" => nil,
-                        "environment" => nil,
-                        "tags" => %w[ruby postgres],
-                        "needs" => { "nodes" => [] }
-                      },
-                      {
-                        "name" => "rspec 0 2",
-                        "groupName" => "rspec",
-                        "stage" => "build",
-                        "script" => ["rake spec"],
-                        "beforeScript" => ["bundle install", "bundle exec rake db:create"],
-                        "afterScript" => ["echo 'run this after'"],
-                        "allowFailure" => true,
-                        "only" => { "refs" => %w[branches tags] },
-                        "when" => "on_failure",
-                        "except" => nil,
-                        "environment" => nil,
-                        "tags" => [],
-                        "needs" => { "nodes" => [] }
-                      }
-                    ]
-                  }
+                  "name" => "rspec 0 1",
+                  "groupName" => "rspec",
+                  "stage" => "build",
+                  "script" => ["rake spec"],
+                  "beforeScript" => ["bundle install", "bundle exec rake db:create"],
+                  "afterScript" => ["echo 'run this after'"],
+                  "allowFailure" => false,
+                  "only" => { "refs" => %w[branches master] },
+                  "when" => "on_success",
+                  "except" => nil,
+                  "environment" => nil,
+                  "tags" => %w[ruby postgres],
+                  "needs" => []
                 },
                 {
-                  "name" => "spinach", "size" => 1, "jobs" =>
-                  {
-                    "nodes" =>
-                    [
-                      {
-                        "name" => "spinach",
-                        "groupName" => "spinach",
-                        "stage" => "build",
-                        "script" => ["rake spinach"],
-                        "beforeScript" => ["bundle install", "bundle exec rake db:create"],
-                        "afterScript" => ["echo 'run this after'"],
-                        "allowFailure" => false,
-                        "only" => { "refs" => %w[branches tags] },
-                        "when" => "on_success",
-                        "except" => { "refs" => ["tags"] },
-                        "environment" => nil,
-                        "tags" => [],
-                        "needs" => { "nodes" => [] }
-                      }
-                    ]
-                  }
+                  "name" => "rspec 0 2",
+                  "groupName" => "rspec",
+                  "stage" => "build",
+                  "script" => ["rake spec"],
+                  "beforeScript" => ["bundle install", "bundle exec rake db:create"],
+                  "afterScript" => ["echo 'run this after'"],
+                  "allowFailure" => true,
+                  "only" => { "refs" => %w[branches tags] },
+                  "when" => "on_failure",
+                  "except" => nil,
+                  "environment" => nil,
+                  "tags" => [],
+                  "needs" => []
+                }
+              ]
+            },
+            {
+              "name" => "spinach", "size" => 1, "jobs" => [
+                {
+                  "name" => "spinach",
+                  "groupName" => "spinach",
+                  "stage" => "build",
+                  "script" => ["rake spinach"],
+                  "beforeScript" => ["bundle install", "bundle exec rake db:create"],
+                  "afterScript" => ["echo 'run this after'"],
+                  "allowFailure" => false,
+                  "only" => { "refs" => %w[branches tags] },
+                  "when" => "on_success",
+                  "except" => { "refs" => ["tags"] },
+                  "environment" => nil,
+                  "tags" => [],
+                  "needs" => []
                 }
               ]
             }
-          },
-          {
-            "name" => "test",
-            "groups" =>
+          ]
+        },
+        {
+          "name" => "test",
+          "groups" => [
             {
-              "nodes" =>
-              [
+              "name" => "docker",
+              "size" => 1,
+              "jobs" => [
                 {
                   "name" => "docker",
-                  "size" => 1,
-                  "jobs" =>
-                  {
-                    "nodes" => [
-                      {
-                        "name" => "docker",
-                        "groupName" => "docker",
-                        "stage" => "test",
-                        "script" => ["curl http://dockerhub/URL"],
-                        "beforeScript" => ["bundle install", "bundle exec rake db:create"],
-                        "afterScript" => ["echo 'run this after'"],
-                        "allowFailure" => true,
-                        "only" => { "refs" => %w[branches tags] },
-                        "when" => "manual",
-                        "except" => { "refs" => ["branches"] },
-                        "environment" => nil,
-                        "tags" => [],
-                        "needs" => { "nodes" => [{ "name" => "spinach" }, { "name" => "rspec 0 1" }] }
-                      }
-                    ]
-                  }
+                  "groupName" => "docker",
+                  "stage" => "test",
+                  "script" => ["curl http://dockerhub/URL"],
+                  "beforeScript" => ["bundle install", "bundle exec rake db:create"],
+                  "afterScript" => ["echo 'run this after'"],
+                  "allowFailure" => true,
+                  "only" => { "refs" => %w[branches tags] },
+                  "when" => "manual",
+                  "except" => { "refs" => ["branches"] },
+                  "environment" => nil,
+                  "tags" => [],
+                  "needs" => [{ "name" => "spinach" }, { "name" => "rspec 0 1" }]
                 }
               ]
             }
-          },
-          {
-            "name" => "deploy",
-            "groups" =>
+          ]
+        },
+        {
+          "name" => "deploy",
+          "groups" => [
             {
-              "nodes" =>
-              [
+              "name" => "deploy_job",
+              "size" => 1,
+              "jobs" => [
                 {
                   "name" => "deploy_job",
-                  "size" => 1,
-                  "jobs" =>
-                  {
-                    "nodes" => [
-                      {
-                        "name" => "deploy_job",
-                        "groupName" => "deploy_job",
-                        "stage" => "deploy",
-                        "script" => ["echo 'done'"],
-                        "beforeScript" => ["bundle install", "bundle exec rake db:create"],
-                        "afterScript" => ["echo 'run this after'"],
-                        "allowFailure" => false,
-                        "only" => { "refs" => %w[branches tags] },
-                        "when" => "on_success",
-                        "except" => nil,
-                        "environment" => "production",
-                        "tags" => [],
-                        "needs" => { "nodes" => [] }
-                      }
-                    ]
-                  }
+                  "groupName" => "deploy_job",
+                  "stage" => "deploy",
+                  "script" => ["echo 'done'"],
+                  "beforeScript" => ["bundle install", "bundle exec rake db:create"],
+                  "afterScript" => ["echo 'run this after'"],
+                  "allowFailure" => false,
+                  "only" => { "refs" => %w[branches tags] },
+                  "when" => "on_success",
+                  "except" => nil,
+                  "environment" => "production",
+                  "tags" => [],
+                  "needs" => []
                 }
               ]
             }
-          }
-        ]
-      }
+          ]
+        }
+      ]
     )
   end
 
@@ -307,69 +252,55 @@ RSpec.describe 'ciLint', feature_category: :pipeline_composition do
           }
         ],
         "mergedYaml" => "---\nbuild:\n  script: build\nrspec:\n  script: rspec\n",
-        "stages" =>
-        {
-          "nodes" =>
-          [
-            {
-              "name" => "test",
-              "groups" =>
+        "stages" => [
+          {
+            "name" => "test",
+            "groups" => [
               {
-                "nodes" =>
-                [
+                "name" => "build",
+                "size" => 1,
+                "jobs" => [
                   {
                     "name" => "build",
-                    "size" => 1,
-                    "jobs" =>
-                    {
-                      "nodes" =>
-                      [
-                        {
-                          "name" => "build",
-                          "stage" => "test",
-                          "groupName" => "build",
-                          "script" => ["build"],
-                          "afterScript" => [],
-                          "beforeScript" => [],
-                          "allowFailure" => false,
-                          "environment" => nil,
-                          "except" => nil,
-                          "only" => { "refs" => %w[branches tags] },
-                          "when" => "on_success",
-                          "tags" => [],
-                          "needs" => { "nodes" => [] }
-                        }
-                      ]
-                    }
-                  },
+                    "stage" => "test",
+                    "groupName" => "build",
+                    "script" => ["build"],
+                    "afterScript" => [],
+                    "beforeScript" => [],
+                    "allowFailure" => false,
+                    "environment" => nil,
+                    "except" => nil,
+                    "only" => { "refs" => %w[branches tags] },
+                    "when" => "on_success",
+                    "tags" => [],
+                    "needs" => []
+                  }
+                ]
+              },
+              {
+                "name" => "rspec",
+                "size" => 1,
+                "jobs" => [
                   {
                     "name" => "rspec",
-                    "size" => 1,
-                    "jobs" =>
-                    {
-                      "nodes" =>
-                      [
-                        { "name" => "rspec",
-                          "stage" => "test",
-                          "groupName" => "rspec",
-                          "script" => ["rspec"],
-                          "afterScript" => [],
-                          "beforeScript" => [],
-                          "allowFailure" => false,
-                          "environment" => nil,
-                          "except" => nil,
-                          "only" => { "refs" => %w[branches tags] },
-                          "when" => "on_success",
-                          "tags" => [],
-                          "needs" => { "nodes" => [] } }
-                      ]
-                    }
+                    "stage" => "test",
+                    "groupName" => "rspec",
+                    "script" => ["rspec"],
+                    "afterScript" => [],
+                    "beforeScript" => [],
+                    "allowFailure" => false,
+                    "environment" => nil,
+                    "except" => nil,
+                    "only" => { "refs" => %w[branches tags] },
+                    "when" => "on_success",
+                    "tags" => [],
+                    "needs" => []
                   }
                 ]
               }
-            }
-          ]
-        }
+            ]
+          }
+        ]
       )
     end
   end
@@ -499,9 +430,9 @@ RSpec.describe 'ciLint', feature_category: :pipeline_composition do
       post_mutation
 
       response_config = graphql_mutation_response(:ci_lint)['config']
-      response_job_names = response_config.dig('stages', 'nodes')
-        .flat_map { |stage| stage.dig('groups', 'nodes') }
-        .flat_map { |group| group.dig('jobs', 'nodes') }
+      response_job_names = response_config['stages']
+        .flat_map { |stage| stage['groups'] }
+        .flat_map { |group| group['jobs'] }
         .pluck('name')
 
       # The spinach job does not run for tags, so it makes a good test that the ref is being properly applied.

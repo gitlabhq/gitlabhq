@@ -145,7 +145,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         user_internal_regex = find('#application_setting_user_default_internal_regex', visible: :all)
 
         expect(user_internal_regex).to be_readonly
-        expect(user_internal_regex['placeholder']).to eq 'To define internal users, first enable new users set to external'
+        expect(user_internal_regex['placeholder']).to eq 'Regex pattern. To use, select external by default setting'
 
         check 'application_setting_user_default_external'
 

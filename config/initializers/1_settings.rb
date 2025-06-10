@@ -501,6 +501,9 @@ if Gitlab.ee? && Settings['ee_cron_jobs']
 end
 
 Settings.cron_jobs['poll_interval'] ||= ENV["GITLAB_CRON_JOBS_POLL_INTERVAL"] ? ENV["GITLAB_CRON_JOBS_POLL_INTERVAL"].to_i : nil
+Settings.cron_jobs['flush_stale_counter_increments_cron_worker'] ||= {}
+Settings.cron_jobs['flush_stale_counter_increments_cron_worker']['cron'] ||= '0 */1 * * *'
+Settings.cron_jobs['flush_stale_counter_increments_cron_worker']['job_class'] = 'Gitlab::Counters::FlushStaleCounterIncrementsCronWorker'
 Settings.cron_jobs['stuck_ci_jobs_worker'] ||= {}
 Settings.cron_jobs['stuck_ci_jobs_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['stuck_ci_jobs_worker']['job_class'] = 'StuckCiJobsWorker'

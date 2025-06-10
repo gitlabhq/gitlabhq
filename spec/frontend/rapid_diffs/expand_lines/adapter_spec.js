@@ -10,14 +10,19 @@ jest.mock('~/rapid_diffs/expand_lines/get_lines');
 describe('ExpandLinesAdapter', () => {
   const getExpandButton = (direction = 'up') =>
     document.querySelector(`[data-expand-direction="${direction}"]`);
-  const getResultingHtml = () => document.querySelector('[data-hunk-lines="3"]');
+  const getFirstInsertedRow = () => document.querySelector('[data-hunk-lines="3"]');
+  const getLastInsertedRow = () => document.querySelector('[data-hunk-lines="4"]');
+  const getDiffElement = () => document.querySelector('#diffElement');
   const getSurroundingLines = (direction) => {
     const prev = getExpandButton(direction).closest('tr').previousElementSibling;
     const next = getExpandButton(direction).closest('tr').nextElementSibling;
     return [prev ? new DiffLineRow(prev) : null, next ? new DiffLineRow(next) : null];
   };
   const getDiffFileContext = () => {
-    return { data: { diffLinesPath: '/lines', viewer: 'text_parallel' } };
+    return {
+      data: { diffLinesPath: '/lines', viewer: 'text_parallel' },
+      diffElement: getDiffElement(),
+    };
   };
   const click = (direction) => {
     return ExpandLinesAdapter.clicks.expandLines.call(
@@ -28,37 +33,44 @@ describe('ExpandLinesAdapter', () => {
   };
   // tabindex="0" makes document.activeElement actually work in JSDOM
   const createLinesResponse = () =>
-    '<tr data-hunk-lines="3"><td><a data-line-number="5" tabindex="0"></a></td></tr>';
+    `
+      <tr data-hunk-lines="3"><td><a data-line-number="5" tabindex="0"></a></td></tr>
+      <tr data-hunk-lines="4"><td><a data-line-number="6" tabindex="0"></a></td></tr>
+    `.trim();
 
   beforeEach(() => {
     setHTMLFixture(`
-      <table>
-        <tbody>
-          <tr>
-            <td>
-              <button data-click="expandLines" data-expand-direction="up"></button>
-            </td>
-          </tr>
-          <tr data-hunk-lines="1">
-            <td>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <button data-click="expandLines" data-expand-direction="both"></button>
-            </td>
-          </tr>
-          <tr data-hunk-lines="2">
-            <td>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <button data-click="expandLines" data-expand-direction="down"></button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div id="diffElement">
+        <div data-file-body>
+          <table>
+            <tbody>
+              <tr>
+                <td>
+                  <button data-click="expandLines" data-expand-direction="up"></button>
+                </td>
+              </tr>
+              <tr data-hunk-lines="1">
+                <td>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <button data-click="expandLines" data-expand-direction="both"></button>
+                </td>
+              </tr>
+              <tr data-hunk-lines="2">
+                <td>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <button data-click="expandLines" data-expand-direction="down"></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     `);
   });
 
@@ -72,20 +84,26 @@ describe('ExpandLinesAdapter', () => {
       diffLinesPath: '/lines',
       view: 'parallel',
     });
-    expect(getResultingHtml()).not.toBe(null);
+    expect(getFirstInsertedRow()).not.toBe(null);
+    expect(getLastInsertedRow()).not.toBe(null);
     expect(getExpandButton(direction)).toBe(null);
+    expect(getDiffElement().style.getPropertyValue('--total-rows')).toBe('6');
   });
 
   it('focuses first inserted line number', async () => {
     getLines.mockResolvedValueOnce(createLinesResponse());
     await click('down');
-    expect(document.activeElement).toEqual(getResultingHtml().querySelector('[data-line-number]'));
+    expect(document.activeElement).toEqual(
+      getFirstInsertedRow().querySelector('[data-line-number]'),
+    );
   });
 
   it('focuses last inserted line number', async () => {
     getLines.mockResolvedValueOnce(createLinesResponse());
     await click();
-    expect(document.activeElement).toEqual(getResultingHtml().querySelector('[data-line-number]'));
+    expect(document.activeElement).toEqual(
+      getLastInsertedRow().querySelector('[data-line-number]'),
+    );
   });
 
   it('prevents expansion while processing another expansion', () => {

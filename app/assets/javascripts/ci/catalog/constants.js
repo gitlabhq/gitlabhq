@@ -42,7 +42,7 @@ export const VERIFICATION_LEVEL_VERIFIED_CREATOR_SELF_MANAGED = 'VERIFIED_CREATO
 export const VERIFICATION_LEVEL_VERIFIED_CREATOR_SELF_MANAGED_BADGE_TEXT = s__(
   'CiCatalog|Verified creator',
 );
-export const VERIFICATION_LEVEL_VERIFIED_CREATOR_SELF_MANAGED_ICON = 'check';
+export const VERIFICATION_LEVEL_VERIFIED_CREATOR_SELF_MANAGED_ICON = 'partner-verified';
 export const VERIFICATION_LEVEL_VERIFIED_CREATOR_SELF_MANAGED_POPOVER_TEXT = s__(
   'CiCatalog|Created and maintained by a %{boldStart}verified creator%{boldEnd}',
 );

@@ -32,7 +32,8 @@ namespace :gitlab do
         if projects_to_runners
           Gitlab::Seeders::Ci::Runner::RunnerFleetPipelineSeeder.new(
             projects_to_runners: projects_to_runners,
-            job_count: args.job_count&.to_i
+            job_count: args.job_count&.to_i,
+            username: args.username
           ).seed
         end
       end

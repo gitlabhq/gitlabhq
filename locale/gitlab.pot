@@ -23994,6 +23994,9 @@ msgstr ""
 msgid "Email display name"
 msgstr ""
 
+msgid "Email exclusion pattern"
+msgstr ""
+
 msgid "Email must be provided."
 msgstr ""
 
@@ -25882,6 +25885,9 @@ msgid "External storage authentication token"
 msgstr ""
 
 msgid "External storage for repository static objects"
+msgstr ""
+
+msgid "External users"
 msgstr ""
 
 msgid "ExternalAuthorizationService|Classification label"
@@ -33282,9 +33288,6 @@ msgstr ""
 msgid "Internal note"
 msgstr ""
 
-msgid "Internal users"
-msgstr ""
-
 msgid "Internal users cannot be deactivated"
 msgstr ""
 
@@ -36952,6 +36955,9 @@ msgid "Make changes to the diagram"
 msgstr ""
 
 msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
+msgstr ""
+
+msgid "Make new users external by default"
 msgstr ""
 
 msgid "Make protected CI/CD variables and runners available in merge request pipelines. Protected resources will only be available in merge request pipelines if both the source and target branches of the merge request are protected."
@@ -40670,9 +40676,6 @@ msgstr ""
 msgid "New topic"
 msgstr ""
 
-msgid "New users set to external"
-msgstr ""
-
 msgid "New work item"
 msgstr ""
 
@@ -40737,9 +40740,6 @@ msgid "NewFramework|Why scope policies?"
 msgstr ""
 
 msgid "Newest first"
-msgstr ""
-
-msgid "Newly-registered users are external by default"
 msgstr ""
 
 msgid "Next"
@@ -50704,6 +50704,9 @@ msgstr ""
 msgid "Regex pattern"
 msgstr ""
 
+msgid "Regex pattern. To use, select external by default setting"
+msgstr ""
+
 msgid "Region"
 msgstr ""
 
@@ -59643,7 +59646,7 @@ msgstr ""
 msgid "Specify IP ranges that are always allowed for inbound traffic, for use with group-level IP restrictions. Runner and Pages daemon internal IPs should be listed here so that they can access project artifacts."
 msgstr ""
 
-msgid "Specify an email address regex pattern to identify default internal users."
+msgid "Specify a regular expression for emails. New users with matching emails are not made external users."
 msgstr ""
 
 msgid "Specify the input values to use in this pipeline. Any inputs left unselected will use their default values."
@@ -59871,6 +59874,9 @@ msgid "Status list requires either a system defined status or custom status"
 msgstr ""
 
 msgid "Status lists not available with your current license"
+msgstr ""
+
+msgid "Status not found for given params"
 msgstr ""
 
 msgid "Status not supported"
@@ -63920,9 +63926,6 @@ msgid "To continue, please update your password. After you update, you'll be dir
 msgstr ""
 
 msgid "To continue, you need to select the link in the confirmation email we sent to verify your email address. If you didn't get our email, select %{strongStart}Resend confirmation email.%{strongEnd}"
-msgstr ""
-
-msgid "To define internal users, first enable new users set to external"
 msgstr ""
 
 msgid "To disable the setting, set this value to 0."
@@ -74130,7 +74133,7 @@ msgstr ""
 msgid "must contain only a mastodon handle."
 msgstr ""
 
-msgid "must contain only a orcid ID."
+msgid "must contain only a valid ORCID."
 msgstr ""
 
 msgid "must have a repository"

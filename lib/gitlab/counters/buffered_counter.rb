@@ -173,7 +173,7 @@ module Gitlab
       end
 
       def key
-        project_id = counter_record.project.id
+        project_id = counter_record.project_id
         record_name = counter_record.class
         record_id = counter_record.id
 

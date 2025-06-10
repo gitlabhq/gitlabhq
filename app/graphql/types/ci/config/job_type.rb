@@ -2,10 +2,10 @@
 
 module Types
   module Ci
-    # rubocop: disable Graphql/AuthorizeTypes
     module Config
+      # rubocop:disable Graphql/AuthorizeTypes -- Authorization handled in the CiLint mutation
       class JobType < BaseObject
-        graphql_name 'CiConfigJob'
+        graphql_name 'CiConfigJobV2'
 
         field :after_script,
           [GraphQL::Types::String],
@@ -26,7 +26,7 @@ module Types
         field :name, GraphQL::Types::String, null: true,
           description: 'Name of the job.'
         field :needs,
-          Types::Ci::Config::NeedType.connection_type,
+          [Types::Ci::Config::NeedType],
           null: true,
           description: 'Builds that must complete before the jobs run.'
         field :only,
@@ -47,6 +47,7 @@ module Types
           object[:when]
         end
       end
+      # rubocop:enable Graphql/AuthorizeTypes
     end
   end
 end

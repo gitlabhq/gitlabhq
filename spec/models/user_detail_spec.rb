@@ -395,29 +395,47 @@ RSpec.describe UserDetail, feature_category: :system_access do
           expect(user_detail).to be_valid
         end
 
-        context 'when orcid id is wrong' do
-          it 'throws an error when orcid username format is too long' do
-            user_detail.orcid = '1234-1234-1234-1234-1234'
+        it 'accepts a valid orcid username' do
+          user_detail.orcid = '1234-1234-1234-123X'
 
-            expect(user_detail).not_to be_valid
-            expect(user_detail.errors.full_messages)
-              .to match_array([_('Orcid must contain only a orcid ID.')])
+          expect(user_detail).to be_valid
+        end
+
+        context 'when orcid is wrong' do
+          shared_examples 'throws an error' do
+            before do
+              user_detail.orcid = orcid
+            end
+
+            it 'throws an error' do
+              expect(user_detail).not_to be_valid
+              expect(user_detail.errors.full_messages)
+                .to match_array([_('Orcid must contain only a valid ORCID.')])
+            end
           end
 
-          it 'throws an error when orcid username format is too short' do
-            user_detail.orcid = '1234-1234'
+          context 'when the format is too long' do
+            let(:orcid) { '1234-1234-1234-1234-1234' }
 
-            expect(user_detail).not_to be_valid
-            expect(user_detail.errors.full_messages)
-              .to match_array([_('Orcid must contain only a orcid ID.')])
+            it_behaves_like 'throws an error'
           end
 
-          it 'throws an error when orcid username format is letters' do
-            user_detail.orcid = 'abcd-abcd-abcd-abcd'
+          context 'when the format is too short' do
+            let(:orcid) { '1234-1234' }
 
-            expect(user_detail).not_to be_valid
-            expect(user_detail.errors.full_messages)
-              .to match_array([_('Orcid must contain only a orcid ID.')])
+            it_behaves_like 'throws an error'
+          end
+
+          context 'when the format is letters' do
+            let(:orcid) { 'abcd-abcd-abcd-abcd' }
+
+            it_behaves_like 'throws an error'
+          end
+
+          context 'when the format end with another letter than X' do
+            let(:orcid) { '1234-1234-1234-123Y' }
+
+            it_behaves_like 'throws an error'
           end
         end
       end

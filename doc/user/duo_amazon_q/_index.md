@@ -23,7 +23,7 @@ title: GitLab Duo with Amazon Q
 
 {{< alert type="note" >}}
 
-If you have a GitLab Duo Pro or Duo Enterprise add-on, this feature is not available.
+GitLab Duo with Amazon Q cannot be combined with other GitLab Duo add-ons.
 
 {{< /alert >}}
 

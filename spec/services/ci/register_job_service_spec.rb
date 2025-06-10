@@ -946,6 +946,10 @@ module Ci
       let!(:attempt_counter) { double('Gitlab::Metrics::NullMetric') }
       let!(:job_queue_duration_seconds) { double('Gitlab::Metrics::NullMetric') }
 
+      let!(:pending_job_2) { create(:ci_build, :pending, :queued, :protected, pipeline: pipeline, tag_list: %w[tag2]) }
+
+      let(:expected_time_in_queue_seconds) { 1800 }
+
       before do
         allow(Time).to receive(:now).and_return(current_time)
         # Stub tested metrics
@@ -958,7 +962,7 @@ module Ci
                 .and_return(job_queue_duration_seconds)
 
         project.update!(shared_runners_enabled: true)
-        pending_job.update!(created_at: current_time - 3600, queued_at: current_time - 1800)
+        pending_job_2.update!(created_at: current_time - 3600, queued_at: current_time - 1800)
       end
 
       shared_examples 'attempt counter collector' do
@@ -1008,32 +1012,55 @@ module Ci
         it_behaves_like 'jobs queueing time histogram collector'
       end
 
-      context 'when shared runner is used' do
+      shared_examples 'queue metrics presenter' do
+        let!(:pending_job_3) { create(:ci_build, :pending, :queued, :protected, pipeline: pipeline, tag_list: %w[tag3]) }
+        let!(:pending_job_4) { create(:ci_build, :pending, :queued, :protected, pipeline: pipeline, tag_list: %w[tag2]) }
+
+        subject(:execute) { described_class.new(runner, nil).execute }
+
         before do
-          pending_job.reload
-          pending_job.create_queuing_entry!
+          allow(job_queue_duration_seconds).to receive(:observe)
+          allow(attempt_counter).to receive(:increment)
         end
 
-        let(:runner) { create(:ci_runner, :instance, tag_list: %w[tag1 tag2]) }
+        it 'presents queue metrics' do
+          expect(execute.build_presented.queue_size).to eq(2)
+          expect(execute.build_presented.queue_depth).to eq(1)
+          expect(execute.build_presented.time_in_queue_seconds).to eq(expected_time_in_queue_seconds)
+          expect(execute.build_presented.project_jobs_running_on_instance_runners_count).to eq(expected_project_jobs_running_on_instance_runners_count)
+        end
+      end
+
+      context 'when shared runner is used' do
+        before do
+          pending_job_2.reload
+          pending_job_2.create_queuing_entry!
+        end
+
+        let(:runner) { create(:ci_runner, :instance, :ref_protected, tag_list: %w[tag1 tag2]) }
         let(:expected_shared_runner) { true }
         let(:expected_shard) { ::Gitlab::Ci::Queue::Metrics::DEFAULT_METRICS_SHARD }
         let(:expected_jobs_running_for_project_first_job) { '0' }
         let(:expected_jobs_running_for_project_third_job) { '2' }
+        let(:expected_project_jobs_running_on_instance_runners_count) { '0' }
 
         it_behaves_like 'metrics collector'
+        it_behaves_like 'queue metrics presenter'
 
         context 'when metrics_shard tag is defined' do
-          let(:runner) { create(:ci_runner, :instance, tag_list: %w[tag1 metrics_shard::shard_tag tag2]) }
+          let(:runner) { create(:ci_runner, :instance, :ref_protected, tag_list: %w[tag1 metrics_shard::shard_tag tag2]) }
           let(:expected_shard) { 'shard_tag' }
 
           it_behaves_like 'metrics collector'
+          it_behaves_like 'queue metrics presenter'
         end
 
         context 'when multiple metrics_shard tag is defined' do
-          let(:runner) { create(:ci_runner, :instance, tag_list: %w[tag1 metrics_shard::shard_tag metrics_shard::shard_tag_2 tag2]) }
+          let(:runner) { create(:ci_runner, :instance, :ref_protected, tag_list: %w[tag1 metrics_shard::shard_tag metrics_shard::shard_tag_2 tag2]) }
           let(:expected_shard) { 'shard_tag' }
 
           it_behaves_like 'metrics collector'
+          it_behaves_like 'queue metrics presenter'
         end
 
         context 'when max running jobs bucket size is exceeded' do
@@ -1044,14 +1071,18 @@ module Ci
           let(:expected_jobs_running_for_project_third_job) { '1+' }
 
           it_behaves_like 'metrics collector'
+          it_behaves_like 'queue metrics presenter'
         end
 
         context 'when pending job with queued_at=nil is used' do
+          let(:expected_time_in_queue_seconds) { nil }
+
           before do
-            pending_job.update!(queued_at: nil)
+            pending_job_2.update!(queued_at: nil)
           end
 
           it_behaves_like 'attempt counter collector'
+          it_behaves_like 'queue metrics presenter'
 
           it "doesn't count job queuing time histogram" do
             allow(attempt_counter).to receive(:increment)
@@ -1063,13 +1094,15 @@ module Ci
       end
 
       context 'when project runner is used' do
-        let(:runner) { create(:ci_runner, :project, projects: [project], tag_list: %w[tag1 metrics_shard::shard_tag tag2]) }
+        let(:runner) { create(:ci_runner, :project, :ref_protected, projects: [project], tag_list: %w[tag1 metrics_shard::shard_tag tag2]) }
         let(:expected_shared_runner) { false }
         let(:expected_shard) { ::Gitlab::Ci::Queue::Metrics::DEFAULT_METRICS_SHARD }
         let(:expected_jobs_running_for_project_first_job) { '+Inf' }
         let(:expected_jobs_running_for_project_third_job) { '+Inf' }
+        let(:expected_project_jobs_running_on_instance_runners_count) { '+Inf' }
 
         it_behaves_like 'metrics collector'
+        it_behaves_like 'queue metrics presenter'
       end
     end
 

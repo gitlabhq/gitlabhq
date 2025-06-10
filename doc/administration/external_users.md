@@ -55,32 +55,39 @@ Additionally, users can be set as external users using:
 - [LDAP groups](auth/ldap/ldap_synchronization.md#external-groups).
 - the [External providers list](../integration/omniauth.md#create-an-external-providers-list).
 
-## Set a new user to external
+## Make new users external by default
 
-By default, new users are not set as external users. This behavior can be changed
-by an administrator:
+You can configure your instance to make all new users external by default. You can modify these user
+accounts later to remove the external designation.
+
+When you configure this feature, you can also define a regular expression used to identify email
+addresses. New users with a matching email are excluded and not marked as an external user. This
+regular expression must:
+
+- Use the Ruby format.
+- Be convertible to JavaScript.
+- Have the ignore case flag set (`/regex pattern/i`).
+
+For example:
+
+- `\.int@example\.com$`: Matches email addresses that end with `.int@domain.com`.
+- `^(?:(?!\.ext@example\.com).)*$\r?`: Matches email address that don't include `.ext@example.com`.
+
+{{< alert type="warning" >}}
+
+Adding an regular expression can increase the risk of a regular expression denial of service (ReDoS) attack.
+
+{{< /alert >}}
+
+Prerequisites:
+
+- You must be an administrator for the GitLab Self-Managed instance.
+
+To make new users external by default:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand the **Account and limit** section.
-
-If you change the default behavior of creating new users as external, you
-have the option to narrow it down by defining a set of internal users.
-The **Internal users** field allows specifying an email address regex pattern to
-identify default internal users. New users whose email address matches the regex
-pattern are set to internal by default rather than an external collaborator.
-
-The regex pattern format is in Ruby, but it needs to be convertible to JavaScript,
-and the ignore case flag is set (`/regex pattern/i`). Here are some examples:
-
-- Use `\.internal@domain\.com$` to mark email addresses ending with
-  `.internal@domain.com` as internal.
-- Use `^(?:(?!\.ext@domain\.com).)*$\r?` to mark users with email addresses
-  not including `.ext@domain.com` as internal.
-
-{{< alert type="warning" >}}
-
-Be aware that this regex could lead to a
-[regular expression denial of service (ReDoS) attack](https://en.wikipedia.org/wiki/ReDoS).
-
-{{< /alert >}}
+1. Select the **Make new users external by default** checkbox.
+1. Optional. In the **Email exclusion pattern** field, enter a regular expression.
+1. Select **Save changes**.

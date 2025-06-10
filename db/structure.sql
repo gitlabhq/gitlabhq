@@ -21240,7 +21240,8 @@ CREATE TABLE project_relation_export_uploads (
     updated_at timestamp with time zone NOT NULL,
     export_file text NOT NULL,
     project_id bigint,
-    CONSTRAINT check_d8ee243e9e CHECK ((char_length(export_file) <= 255))
+    CONSTRAINT check_d8ee243e9e CHECK ((char_length(export_file) <= 255)),
+    CONSTRAINT check_f8d6cd1562 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE project_relation_export_uploads_id_seq

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::Ci::Config::JobType do
+RSpec.describe Types::Ci::LegacyConfig::JobType, feature_category: :pipeline_composition do
   specify { expect(described_class.graphql_name).to eq('CiConfigJob') }
 
   it 'exposes the expected fields' do

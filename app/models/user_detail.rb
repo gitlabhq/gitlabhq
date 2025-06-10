@@ -42,7 +42,10 @@ class UserDetail < ApplicationRecord
     (             #
       [0-9]{4}-   # 4 digits spaced by dash
     ){3}          # 3 times
-    [0-9]{4}      # end with 4 digits
+    (             #
+    [0-9]{3}      # end with 3 digits
+    )             #
+    [0-9X]        # followed by a fourth digit or an X
     \z            # end of string
   /x
 
@@ -119,7 +122,7 @@ end
 def orcid_format
   return if orcid.blank? || orcid =~ UserDetail::ORCID_VALIDATION_REGEX
 
-  errors.add(:orcid, _('must contain only a orcid ID.'))
+  errors.add(:orcid, _('must contain only a valid ORCID.'))
 end
 
 UserDetail.prepend_mod_with('UserDetail')

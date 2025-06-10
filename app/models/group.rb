@@ -232,6 +232,10 @@ class Group < Namespace
   scope :with_non_invite_group_members, -> { includes(:non_invite_group_members) }
   scope :with_request_group_members, -> { includes(:request_group_members) }
 
+  scope :in_accessible_sub_namespaces, -> do
+    where('id IN (SELECT id FROM accessible_sub_namespace_ids)')
+  end
+
   scope :by_id, ->(groups) { where(id: groups) }
 
   scope :by_ids_or_paths, ->(ids, paths) do

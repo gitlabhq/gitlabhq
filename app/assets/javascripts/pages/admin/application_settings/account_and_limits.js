@@ -2,7 +2,7 @@ import { __ } from '~/locale';
 
 export const PLACEHOLDER_USER_EXTERNAL_DEFAULT_TRUE = __('Regex pattern');
 export const PLACEHOLDER_USER_EXTERNAL_DEFAULT_FALSE = __(
-  'To define internal users, first enable new users set to external',
+  'Regex pattern. To use, select external by default setting',
 );
 
 function setUserInternalRegexPlaceholder(checkbox) {

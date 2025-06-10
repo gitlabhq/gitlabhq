@@ -31,13 +31,11 @@ module Mutations
         required: false,
         description: 'Run pipeline creation simulation, or only do static check.'
 
-      field :config, Types::Ci::Config::ConfigType, null: true, description: 'Linted CI config and metadata.'
+      field :config, Types::Ci::ConfigType, null: true, description: 'Linted CI config and metadata.'
 
       def resolve(project_path:, content:, ref: nil, dry_run: false)
         project = authorized_find!(project_path: project_path)
         ref ||= project.default_branch
-
-        return feature_unfinished_error unless Feature.enabled?(:ci_lint_mutation, project)
 
         result = ::Gitlab::Ci::Lint
           .new(project: project, current_user: context[:current_user])
@@ -52,16 +50,6 @@ module Mutations
       end
 
       private
-
-      def feature_unfinished_error
-        unfinished_error = "This mutation is unfinished and not yet available for use. " \
-          "Track its progress in https://gitlab.com/gitlab-org/gitlab/-/issues/540764."
-
-        {
-          config: nil,
-          errors: [unfinished_error]
-        }
-      end
 
       def response(result)
         {
