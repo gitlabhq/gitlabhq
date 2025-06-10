@@ -34,7 +34,7 @@ After your merge request has been approved according to our [approval guidelines
   - You can use the script `bin/secpick` instead of the following steps, to help you cherry-picking. See the [secpick documentation]
 - [ ] Create each MR targeting the stable branch `X-Y-stable`, using the [Security merge request template].
   - Every merge request will have its own set of to-dos, so make sure to complete those.
-- [ ]  On the `Related merge requests` section, ensure that **ONLY** `4` merge requests matching these conditions:
+- [ ]  On the `Development` section, ensure that **ONLY** `4` merge requests matching these conditions:
   - From the security namespace (`gitlab-org/security`)
   - Status is not `Closed`
   - (Other MRs not matching these above conditions are acceptable)

@@ -10,12 +10,20 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
   let_it_be(:personal_access_token) { create(:personal_access_token) }
   let_it_be(:project, reload: true) { create(:project) }
-  let_it_be(:deploy_token_rw) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
-  let_it_be(:project_deploy_token_rw) { create(:project_deploy_token, deploy_token: deploy_token_rw, project: project) }
-  let_it_be(:deploy_token_ro) { create(:deploy_token, read_package_registry: true, write_package_registry: false) }
-  let_it_be(:project_deploy_token_ro) { create(:project_deploy_token, deploy_token: deploy_token_ro, project: project) }
-  let_it_be(:deploy_token_wo) { create(:deploy_token, read_package_registry: false, write_package_registry: true) }
-  let_it_be(:project_deploy_token_wo) { create(:project_deploy_token, deploy_token: deploy_token_wo, project: project) }
+  let_it_be(:deploy_token_rw) do
+    create(:deploy_token, read_package_registry: true, write_package_registry: true)
+      .tap { |token| create(:project_deploy_token, deploy_token: token, project: project) }
+  end
+
+  let_it_be(:deploy_token_ro) do
+    create(:deploy_token, read_package_registry: true, write_package_registry: false)
+      .tap { |token| create(:project_deploy_token, deploy_token: token, project: project) }
+  end
+
+  let_it_be(:deploy_token_wo) do
+    create(:deploy_token, read_package_registry: false, write_package_registry: true)
+      .tap { |token| create(:project_deploy_token, deploy_token: token, project: project) }
+  end
 
   let(:user) { personal_access_token.user }
   let(:ci_build) { create(:ci_build, :running, user: user, project: project) }
@@ -256,15 +264,15 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       end
 
       where(:package_name_pattern, :minimum_access_level_for_push, :auth_header, :shared_examples_name) do
-        ref(:protected_package_name)   | :admin      | ref(:deploy_token_rw_auth_header) | 'protected package'
-        ref(:protected_package_name)   | :admin      | ref(:pat_admin_mode_auth_header)  | 'authorized package'
-        ref(:protected_package_name)   | :admin      | ref(:pat_owner_auth_header)       | 'protected package'
         ref(:protected_package_name)   | :maintainer | ref(:deploy_token_rw_auth_header) | 'protected package'
         ref(:protected_package_name)   | :maintainer | ref(:pat_developer_auth_header)   | 'protected package'
         ref(:protected_package_name)   | :maintainer | ref(:pat_maintainer_auth_header)  | 'authorized package'
         ref(:protected_package_name)   | :owner      | ref(:deploy_token_rw_auth_header) | 'protected package'
         ref(:protected_package_name)   | :owner      | ref(:pat_developer_auth_header)   | 'protected package'
         ref(:protected_package_name)   | :owner      | ref(:pat_owner_auth_header)       | 'authorized package'
+        ref(:protected_package_name)   | :admin      | ref(:deploy_token_rw_auth_header) | 'protected package'
+        ref(:protected_package_name)   | :admin      | ref(:pat_admin_mode_auth_header)  | 'authorized package'
+        ref(:protected_package_name)   | :admin      | ref(:pat_owner_auth_header)       | 'protected package'
 
         ref(:unprotected_package_name) | :admin      | ref(:deploy_token_rw_auth_header) | 'authorized package'
         ref(:unprotected_package_name) | :admin      | ref(:pat_owner_auth_header)       | 'authorized package'
@@ -744,6 +752,91 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
         end
 
         it_behaves_like 'secure endpoint'
+      end
+    end
+
+    context 'with package protection rule for different roles and package_name_patterns' do
+      let_it_be(:pat_developer) { create(:personal_access_token, user: create(:user, developer_of: project)) }
+      let_it_be(:pat_developer_auth_header) { personal_access_token_header(pat_developer.token) }
+      let_it_be(:pat_maintainer) { create(:personal_access_token, user: create(:user, maintainer_of: project)) }
+      let_it_be(:pat_maintainer_auth_header) { personal_access_token_header(pat_maintainer.token) }
+      let_it_be(:pat_owner) { create(:personal_access_token, user: create(:user, owner_of: project)) }
+      let_it_be(:pat_owner_auth_header) { personal_access_token_header(pat_owner.token) }
+      let_it_be(:pat_admin_mode) { create(:personal_access_token, :admin_mode, user: create(:admin)) }
+      let_it_be(:pat_admin_mode_auth_header) { personal_access_token_header(pat_admin_mode.token) }
+      let_it_be(:deploy_token_rw_auth_header) { deploy_token_header(deploy_token_rw.token) }
+
+      let_it_be_with_reload(:package_protection_rule) do
+        create(:package_protection_rule, package_type: :generic, project: project)
+      end
+
+      let(:package_name) { 'mypackage' }
+      let(:package_name_no_match) { "other-#{package_name}" }
+
+      let(:request_headers) { workhorse_headers.merge(auth_header) }
+
+      subject(:send_upload_file) do
+        upload_file(params, request_headers, package_name: package_name)
+        response
+      end
+
+      before do
+        package_protection_rule.update!(
+          package_name_pattern: package_name_pattern,
+          minimum_access_level_for_push: minimum_access_level_for_push
+        )
+      end
+
+      shared_examples 'uploaded package' do
+        it { is_expected.to have_gitlab_http_status(:created) }
+
+        it 'creates a package and package file' do
+          expect { send_upload_file }
+            .to change { project.packages.generic.count }.by(1)
+            .and change { Packages::PackageFile.count }.by(1)
+        end
+      end
+
+      shared_examples 'protected package' do
+        it 'responds with forbidden' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response).to include 'message' => '403 Forbidden - Package protected.'
+        end
+
+        context 'when feature flag :packages_protected_packages_generic is disabled' do
+          before do
+            stub_feature_flags(packages_protected_packages_generic: false)
+          end
+
+          it_behaves_like 'uploaded package'
+        end
+      end
+
+      where(:package_name_pattern, :minimum_access_level_for_push, :auth_header, :shared_examples_name) do
+        ref(:package_name)          | :maintainer | ref(:deploy_token_rw_auth_header) | 'protected package'
+        ref(:package_name)          | :maintainer | ref(:pat_developer_auth_header)   | 'protected package'
+        ref(:package_name)          | :maintainer | ref(:pat_maintainer_auth_header)  | 'uploaded package'
+        ref(:package_name)          | :maintainer | ref(:pat_admin_mode_auth_header)  | 'uploaded package'
+        ref(:package_name)          | :owner      | ref(:deploy_token_rw_auth_header) | 'protected package'
+        ref(:package_name)          | :owner      | ref(:pat_developer_auth_header)   | 'protected package'
+        ref(:package_name)          | :owner      | ref(:pat_owner_auth_header)       | 'uploaded package'
+        ref(:package_name)          | :owner      | ref(:pat_admin_mode_auth_header)  | 'uploaded package'
+        ref(:package_name)          | :admin      | ref(:deploy_token_rw_auth_header) | 'protected package'
+        ref(:package_name)          | :admin      | ref(:pat_owner_auth_header)       | 'protected package'
+        ref(:package_name)          | :admin      | ref(:pat_admin_mode_auth_header)  | 'uploaded package'
+
+        ref(:package_name_no_match) | :maintainer | ref(:deploy_token_rw_auth_header) | 'uploaded package'
+        ref(:package_name_no_match) | :maintainer | ref(:pat_developer_auth_header)   | 'uploaded package'
+        ref(:package_name_no_match) | :maintainer | ref(:pat_maintainer_auth_header)  | 'uploaded package'
+        ref(:package_name_no_match) | :admin      | ref(:deploy_token_rw_auth_header) | 'uploaded package'
+        ref(:package_name_no_match) | :admin      | ref(:pat_owner_auth_header)       | 'uploaded package'
+        ref(:package_name_no_match) | :admin      | ref(:pat_admin_mode_auth_header)  | 'uploaded package'
+      end
+
+      with_them do
+        it_behaves_like params[:shared_examples_name]
       end
     end
 

@@ -109,9 +109,18 @@ module Gitlab
 
         # Get resource consumption from top pods command
         #
-        # @return [Array]
+        # @return [Hash<Array>]
         def top_pods
-          run_in_namespace("top", "pods", args: ["--no-headers"]).split("\n")
+          args = ["--no-headers", "--containers"]
+
+          output = run_in_namespace("top", "pods", args: args).split("\n").map { |line| line.strip.split(/\s+/) }
+          unless output.all? { |row| row.length == 4 }
+            raise Error, "Unexpected top pods output: #{output}\nExpected row format: POD_NAME CONTAINER CPU MEMORY"
+          end
+
+          output.each_with_object(Hash.new { |hsh, key| hsh[key] = [] }) do |item, result|
+            result[item[0]] << { container: item[1], cpu: item[2], memory: item[3] }
+          end
         end
 
         # Get events

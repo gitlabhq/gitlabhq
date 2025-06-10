@@ -43,19 +43,19 @@ module Gitlab
           log("=" * 60, :info, bright: true)
           log("Generated at: #{Time.now.strftime('%Y-%m-%d %H:%M:%S')}", :info, bright: true)
 
-          data.each do |pod_name, pod_data|
-            metrics = pod_data["metrics"] || []
+          data.each do |container_name, container_data|
+            metrics = container_data["metrics"] || []
 
             if metrics.empty?
-              log("\n❌ No metrics available for pod: #{pod_name}", :error)
+              log("\n❌ No metrics available for pod: #{container_name}", :error)
               next
             end
 
             selected_metrics = data_points != 0 ? metrics.last(data_points) : metrics
             values = selected_metrics.map { |m| { val: m[metric_type], ts: m["timestamp"] } }
-            request = pod_data["requests"][metric_type].then { |val| val.positive? ? val : nil }
-            limit = pod_data["limits"][metric_type].then { |val| val.positive? ? val : nil }
-            title = "#{metric_name} Usage - Pod: #{pod_name}"
+            request = container_data["requests"][metric_type].then { |val| val.positive? ? val : nil }
+            limit = container_data["limits"][metric_type].then { |val| val.positive? ? val : nil }
+            title = "#{metric_name} Usage - Container: #{container_name}"
 
             generate_ascii_graph(values, title, unit, request, limit)
           end

@@ -33,7 +33,7 @@ RSpec.describe Gitlab::Orchestrator::Kubectl::Metrics::Collector do
 
   describe "background process" do
     let(:pid) { nil }
-    let(:metrics) { [] }
+    let(:metrics) { {} }
 
     let(:logfile) { File.join(output_dir, "metrics-collector.log") }
     let(:pidfile) { File.join(output_dir, "collector.pid") }
@@ -79,14 +79,21 @@ RSpec.describe Gitlab::Orchestrator::Kubectl::Metrics::Collector do
 
     context "with metrics collection" do
       let(:timestamp) { Time.now }
-      let(:metrics) { ["pod1 100m 128Mi", "pod2 200m 256Mi"] }
       let(:resource) { { cpu: "50m", memory: "64Mi" } }
+      let(:container_name) { "cont" }
+
+      let(:metrics) do
+        {
+          "pod1" => [{ container: container_name, cpu: "100m", memory: "128Mi" }],
+          "pod2" => [{ container: container_name, cpu: "200m", memory: "256Mi" }]
+        }
+      end
 
       def container_spec(type)
         {
           spec: {
             containers: [
-              { resources: { type => resource } }
+              { name: container_name, resources: { type => resource } }
             ]
           }
         }
@@ -103,14 +110,14 @@ RSpec.describe Gitlab::Orchestrator::Kubectl::Metrics::Collector do
         collector.start
 
         expect(JSON.load_file(metrics_file)).to eq(
-          "pod1" => {
+          "pod1/#{container_name}" => {
             "requests" => { "cpu" => 50, "memory" => 64 },
             "limits" => { "cpu" => 0, "memory" => 0 },
             "metrics" => [
               { "timestamp" => timestamp.to_i, "cpu" => 100, "memory" => 128 }
             ]
           },
-          "pod2" => {
+          "pod2/#{container_name}" => {
             "requests" => { "cpu" => 0, "memory" => 0 },
             "limits" => { "cpu" => 50, "memory" => 64 },
             "metrics" => [

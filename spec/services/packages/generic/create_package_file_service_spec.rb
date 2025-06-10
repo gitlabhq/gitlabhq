@@ -46,7 +46,7 @@ RSpec.describe Packages::Generic::CreatePackageFileService, feature_category: :p
     before do
       FileUtils.touch(temp_file)
       expect(::Packages::Generic::FindOrCreatePackageService).to receive(:new).with(project, user, package_params).and_return(package_service)
-      expect(package_service).to receive(:execute).and_return(package)
+      expect(package_service).to receive(:execute).and_return(ServiceResponse.success(payload: { package: package }))
     end
 
     after do
@@ -163,7 +163,7 @@ RSpec.describe Packages::Generic::CreatePackageFileService, feature_category: :p
             FileUtils.touch(temp_file2)
             FileUtils.touch(temp_file3)
             expect(::Packages::Generic::FindOrCreatePackageService).to receive(:new).with(project, user, package_params).and_return(package_service).twice
-            expect(package_service).to receive(:execute).and_return(package).twice
+            expect(package_service).to receive(:execute).and_return(ServiceResponse.success(payload: { package: package })).twice
           end
 
           after do

@@ -68,11 +68,11 @@ workflow:
       bundle exec orchestrator log pods --save --containers all --no-fail-on-missing-pods || true
       section_end "logs_section"
     - |
-      section_start "cpu_metrics" "Pod CPU Metrics"
+      section_start "cpu_metrics" "CNG Env CPU Utilization Graphs"
       bundle exec orchestrator metrics serve --type cpu || true
       section_end "cpu_metrics"
     - |
-      section_start "memory_metrics" "Pod Memory Metrics"
+      section_start "memory_metrics" "CNG Env Memory Utilization Graphs"
       bundle exec orchestrator metrics serve --type memory || true
       section_end "memory_metrics"
     # This command prints all the necessary arguments to be able to recreate the same deployment as on CI

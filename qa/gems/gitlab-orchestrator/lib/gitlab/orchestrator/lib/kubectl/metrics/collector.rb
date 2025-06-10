@@ -139,28 +139,26 @@ module Gitlab
             end
           end
 
-          # Get resource definitions for specific pod
+          # Get resource definitions for all containers in given pod
           #
           # @param pod_name [String]
           # @return [Hash]
           def get_pod_resources(pod_name)
-            resources = { requests: { cpu: 0, memory: 0 }, limits: { cpu: 0, memory: 0 } }
             containers = kubectl.pod(pod_name).dig(:spec, :containers) || []
 
-            containers.each do |container|
+            containers.each_with_object({}) do |container, hsh|
+              name = container[:name]
               requests = container.dig(:resources, :requests) || {}
               limits = container.dig(:resources, :limits) || {}
 
-              resources[:requests][:cpu] += parse_cpu_limits(requests[:cpu])
-              resources[:requests][:memory] += parse_memory_limits(requests[:memory])
-              resources[:limits][:cpu] += parse_cpu_limits(limits[:cpu])
-              resources[:limits][:memory] += parse_memory_limits(limits[:memory])
+              hsh[name] = {
+                requests: { cpu: parse_cpu_limits(requests[:cpu]), memory: parse_memory_limits(requests[:memory]) },
+                limits: { cpu: parse_cpu_limits(limits[:cpu]), memory: parse_memory_limits(limits[:memory]) }
+              }
             end
-
-            resources
           rescue Kubectl::Client::Error => e
             logger.warn("Could not fetch pod spec for #{pod_name}: #{e.message}")
-            resources
+            {}
           end
 
           # Collect pod resource metrics
@@ -171,47 +169,47 @@ module Gitlab
             timestamp = Time.now.to_i
 
             logger.info("Collecting metrics...")
-            output = kubectl.top_pods
+            pod_metrics = kubectl.top_pods
 
-            if output.empty?
+            if pod_metrics.empty?
               logger.warn("No pods found in namespace or no metrics available")
               return
             end
 
-            pod_count = 0
+            container_count = 0
 
-            output.each do |line|
-              parts = line.strip.split(/\s+/)
-              next if parts.length < 3
+            pod_metrics.each do |pod_name, containers|
+              next if containers.empty?
 
-              pod_name = parts[0]
-              cpu_limit_str = parts[1]
-              memory_limit_str = parts[2]
+              containers.each do |container|
+                container_name = container[:container]
+                full_name = "#{pod_name}/#{container_name}"
+                cpu_value = parse_cpu_limits(container[:cpu])
+                memory_value = parse_memory_limits(container[:memory])
 
-              cpu_value = parse_cpu_limits(cpu_limit_str)
-              memory_value = parse_memory_limits(memory_limit_str)
+                # If container is not in the data yet, initialize its structure
+                unless metrics_data[full_name]
+                  resources = get_pod_resources(pod_name)
+                  default_resources = { cpu: 0, memory: 0 }
+                  metrics_data[full_name] = {
+                    "requests" => resources.dig(container_name, :requests) || default_resources,
+                    "limits" => resources.dig(container_name, :limits) || default_resources,
+                    "metrics" => []
+                  }
+                end
 
-              # If pod is not in the data yet, initialize its structure
-              unless metrics_data[pod_name]
-                resources = get_pod_resources(pod_name)
-                metrics_data[pod_name] = {
-                  "requests" => resources[:requests],
-                  "limits" => resources[:limits],
-                  "metrics" => []
+                # Add new metric entry
+                metric_entry = {
+                  "timestamp" => timestamp,
+                  "cpu" => cpu_value,
+                  "memory" => memory_value
                 }
+                metrics_data[full_name]["metrics"] << metric_entry
+                container_count += 1
               end
-
-              # Add new metric entry
-              metric_entry = {
-                "timestamp" => timestamp,
-                "cpu" => cpu_value,
-                "memory" => memory_value
-              }
-              metrics_data[pod_name]["metrics"] << metric_entry
-              pod_count += 1
             end
 
-            logger.info "Collected metrics for #{pod_count} pods"
+            logger.info "Collected metrics for #{container_count} containers"
 
             save_metrics
           ensure

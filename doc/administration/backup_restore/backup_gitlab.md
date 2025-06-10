@@ -74,6 +74,8 @@ As a rough guideline, if you are using a [1k reference architecture](../referenc
 
 As the volume of GitLab data grows, the [backup command](#backup-command) takes longer to execute. [Backup options](#backup-options) such as [back up Git repositories concurrently](#back-up-git-repositories-concurrently) and [incremental repository backups](#incremental-repository-backups) can help to reduce execution time. At some point, the backup command becomes impractical by itself. For example, it can take 24 hours or more.
 
+Starting with GitLab 18.0, repository backup performance has been significantly improved for repositories with large numbers of references (branches, tags). This improvement can reduce backup times from hours to minutes for affected repositories. No configuration changes are required to benefit from this enhancement. For technical details, see our [blog post about decreasing GitLab repository backup times](https://about.gitlab.com/blog/2025/06/05/how-we-decreased-gitlab-repo-backup-times-from-48-hours-to-41-minutes/).
+
 In some cases, architecture changes may be warranted to allow backups to scale. If you are using a GitLab reference architecture, see [Back up and restore large reference architectures](backup_large_reference_architectures.md).
 
 For more information, see [alternative backup strategies](#alternative-backup-strategies).

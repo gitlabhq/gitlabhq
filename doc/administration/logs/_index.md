@@ -1233,7 +1233,14 @@ For example:
 
 ## Product Usage Data log
 
-Note: We recommend against using the raw logs for analysing feature usage, as the data quality has not yet been certified for accuracy. Certified in-product adoption reports will be available once the data is ready for analysis.
+{{< alert type="note" >}}
+
+We recommend against using the raw logs for analysing feature usage, as the data quality has not yet been certified for accuracy. 
+
+The list of events can change in each version based on new features or changes to existing features. Certified in-product adoption reports will be available after the data is ready for analysis.
+
+{{< /alert >}}
+
 This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/product_usage_data.log` on Linux package installations.

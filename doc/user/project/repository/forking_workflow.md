@@ -31,7 +31,10 @@ use a personal fork of a public repository.
 {{< alert type="note" >}}
 
 If the upstream project is archived, the fork relationship is automatically removed.
-For more information, see [Archive a project](../working_with_projects.md#archive-a-project)
+Merge requests that were closed due to a broken fork relationship are not reopened
+if the fork relationship is later restored.
+
+For more information, see [Archive a project](../working_with_projects.md#archive-a-project).
 
 {{< /alert >}}
 

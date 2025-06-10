@@ -2519,6 +2519,7 @@ Gitlab/BoundedContexts:
     - 'ee/app/graphql/types/security_orchestration/policy_license_scanning_violation_type.rb'
     - 'ee/app/graphql/types/security_orchestration/policy_scan_finding_violation_type.rb'
     - 'ee/app/graphql/types/security_orchestration/policy_scope_type.rb'
+    - 'ee/app/graphql/types/security_orchestration/policy_type_enum.rb'
     - 'ee/app/graphql/types/security_orchestration/policy_violation_details_type.rb'
     - 'ee/app/graphql/types/security_orchestration/policy_violation_error_type_enum.rb'
     - 'ee/app/graphql/types/security_orchestration/policy_violation_info_type.rb'

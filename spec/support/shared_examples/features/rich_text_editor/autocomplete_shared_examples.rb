@@ -297,6 +297,13 @@ RSpec.shared_examples 'rich text editor - autocomplete' do |params = {
       expect(page).not_to have_css(suggestions_dropdown)
     end
 
+    it 'does not show suggestions in code blocks' do
+      type_in_content_editor '```'
+      type_in_content_editor :enter
+      type_in_content_editor '@'
+      expect(page).not_to have_css(suggestions_dropdown)
+    end
+
     def dropdown_scroll_top
       evaluate_script("document.querySelector('#{suggestions_dropdown}').scrollTop")
     end

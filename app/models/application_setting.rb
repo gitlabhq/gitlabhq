@@ -248,6 +248,9 @@ class ApplicationSetting < ApplicationRecord
   validates :container_expiration_policies_enable_historic_entries,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
+  validates :pipeline_variables_default_allowed,
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
+
   validate :check_repository_storages_weighted
 
   validates :auto_devops_domain,
@@ -515,6 +518,7 @@ class ApplicationSetting < ApplicationRecord
     if: ->(setting) { setting.external_auth_client_cert.present? }
 
   jsonb_accessor :ci_cd_settings,
+    pipeline_variables_default_allowed: [:boolean, { default: true }],
     ci_job_live_trace_enabled: [:boolean, { default: false }],
     ci_partitions_size_limit: [::Gitlab::Database::Type::JsonbInteger.new, { default: 100.gigabytes }],
     ci_delete_pipelines_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 year') }],

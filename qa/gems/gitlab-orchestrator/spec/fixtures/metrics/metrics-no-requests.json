@@ -1,5 +1,5 @@
 {
-  "gitlab-sidekiq-all-in-1-v2-555d6f4b9d-k6cwm": {
+  "gitlab-sidekiq-all-in-1-v2-555d6f4b9d-k6cwm/sidekiq": {
     "requests": {
       "cpu": 0,
       "memory": 0

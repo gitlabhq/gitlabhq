@@ -97,12 +97,14 @@ module API
               file_name: encoded_file_name,
               build: current_authenticated_job
             )
+
             response = ::Packages::Generic::CreatePackageFileService
               .new(project, current_user, create_package_file_params)
               .execute
 
-            if response.error? && response.cause.package_file_already_exists?
-              bad_request!('Duplicate package is not allowed')
+            if response.error?
+              bad_request!('Duplicate package is not allowed') if response.cause.package_file_already_exists?
+              forbidden!('Package protected.') if response.cause.package_protected?
             end
 
             if params[:select] == 'package_file'

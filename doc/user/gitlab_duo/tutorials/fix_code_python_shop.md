@@ -1394,8 +1394,11 @@ GitLab Duo Chat and Code Suggestions to build working online shop application.
 If it is not working, then you need to find out why. Chat and Code Suggestions
 can help you create tests to ensure your application works as expected and
 identify any issues that need to be fixed.
-[Issue 1284](https://gitlab.com/gitlab-org/technical-writing/team-tasks/-/issues/1284)
-exists to create this tutorial.
+
+<!-- markdownlint-disable -->
+<i class="fa-youtube-play" aria-hidden="true"></i>
+For more information, see [Using Duo /fix](https://youtu.be/agTqx__j6Ko?si=vpLfVvmFVcBivB1g).
+<!-- Video published on 2025-02-13 -->
 
 ## Related topics
 

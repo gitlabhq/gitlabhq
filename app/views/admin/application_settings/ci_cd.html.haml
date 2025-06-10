@@ -11,6 +11,10 @@
     = link_to _('Learn more.'), help_page_path('ci/variables/_index.md', anchor: 'for-an-instance'), target: '_blank', rel: 'noopener noreferrer'
   - c.with_body do
     = render 'ci/variables/attributes'
+    %h4.gl-text-base.gl-mb-2= s_('CICD|Allow pipeline variables by default')
+    %p.gl-text-subtle.gl-mb-3= s_('CICD|Control whether pipeline variables are allowed by default in new projects in new groups.')
+    = render 'pipeline_variables_settings'
+    %hr.gl-my-5
     - if ci_variable_protected_by_default?
       = render Pajamas::AlertComponent.new(variant: :warning,
         dismissible: false,

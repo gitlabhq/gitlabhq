@@ -246,7 +246,7 @@
   margin-left: $highlight-x-margin;
   margin-right: $highlight-x-margin;
 
-  background-color: var(--gl-color-alpha-light-4);
+  @apply gl-bg-alpha-light-8 dark:gl-bg-alpha-light-4;
 
   .arrow {
     left: $highlight-extra-x-padding;
