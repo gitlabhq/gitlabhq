@@ -176,6 +176,7 @@ export default {
 <template>
   <div>
     <gl-table
+      data-testid="access-token-table"
       :items="tokens"
       :fields="$options.fields"
       :empty-text="s__('AccessTokens|No access tokens')"
@@ -279,6 +280,7 @@ export default {
       <template #cell(options)="{ item }">
         <gl-disclosure-dropdown
           v-if="item.active"
+          data-testid="access-token-options"
           icon="ellipsis_v"
           :no-caret="true"
           :disabled="busy"

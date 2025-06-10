@@ -46301,6 +46301,9 @@ msgstr ""
 msgid "Please select a Jira project"
 msgstr ""
 
+msgid "Please select a group for your trial."
+msgstr ""
+
 msgid "Please select a valid target branch"
 msgstr ""
 
@@ -52043,6 +52046,9 @@ msgid "Restricted access and user cap cannot be turned on. The group or one of i
 msgstr ""
 
 msgid "Restricted shift times are not available for hourly shifts"
+msgstr ""
+
+msgid "Resubmit request"
 msgstr ""
 
 msgid "Results limit reached"
@@ -64905,6 +64911,9 @@ msgstr ""
 msgid "Trending"
 msgstr ""
 
+msgid "Trial registration unsuccessful"
+msgstr ""
+
 msgid "TrialWidget|%{daysLeft} days left in trial"
 msgstr ""
 
@@ -68793,6 +68802,9 @@ msgstr ""
 msgid "We're sorry, your trial could not be created because our system did not respond successfully."
 msgstr ""
 
+msgid "We're sorry, your trial could not be created. Please resubmit below to complete your registration."
+msgstr ""
+
 msgid "We've detected some unusual activity"
 msgstr ""
 
@@ -72218,6 +72230,9 @@ msgid "Your top-level group %{namespace_name} is over the %{free_limit} user lim
 msgstr ""
 
 msgid "Your top-level group is over the user limit and has been placed in a read-only state."
+msgstr ""
+
+msgid "Your trial will be applied to this group."
 msgstr ""
 
 msgid "Your update failed. You can only upload one design when dropping onto an existing design."

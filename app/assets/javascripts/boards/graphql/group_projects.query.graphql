@@ -3,7 +3,13 @@
 query boardsGetGroupProjects($fullPath: ID!, $search: String, $after: String) {
   group(fullPath: $fullPath) {
     id
-    projects(search: $search, after: $after, first: 100, includeSubgroups: true) {
+    projects(
+      search: $search
+      after: $after
+      first: 100
+      includeSubgroups: true
+      withIssuesEnabled: true
+    ) {
       nodes {
         id
         name

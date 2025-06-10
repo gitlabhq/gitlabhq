@@ -748,6 +748,36 @@ RSpec.describe Notes::QuickActionsService, feature_category: :text_editors do
           end
         end
       end
+
+      describe '/subscribe or /unsubscribe' do
+        shared_examples 'when applying to work_item' do
+          it 'leaves the note empty' do
+            expect(execute(note)).to be_empty
+          end
+
+          it 'triggers work item updated subscription' do
+            expect(GraphqlTriggers).to receive(:work_item_updated).with(work_item)
+
+            execute(note)
+          end
+        end
+
+        describe '/subscribe' do
+          let_it_be(:note_text) { '/subscribe' }
+
+          it_behaves_like 'when applying to work_item'
+        end
+
+        describe '/unsubscribe' do
+          let_it_be(:note_text) { '/unsubscribe' }
+
+          before do
+            work_item.subscribe(maintainer, project)
+          end
+
+          it_behaves_like 'when applying to work_item'
+        end
+      end
     end
   end
 

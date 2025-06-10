@@ -12,6 +12,8 @@ title: Protected tags API
 
 {{< /details >}}
 
+Use this API to manage [protected tags](../user/project/protected_tags.md) for your repositories.
+
 ## Valid access levels
 
 These access levels are recognized:

@@ -13,6 +13,8 @@ title: Repositories API
 
 {{< /details >}}
 
+Use this API to manage your [GitLab repository](../user/project/repository/_index.md).
+
 ## List repository tree
 
 Get a list of repository files and directories in a project. This endpoint can
@@ -25,7 +27,7 @@ in the Git internals documentation.
 
 {{< alert type="warning" >}}
 
-In version 17.7, the error handling behavior when a requested path is not found is updated.
+GitLab version 17.7 changes the error handling behavior when a requested path is not found.
 The endpoint now returns a status code `404 Not Found`. Previously, the status code was `200 OK`.
 
 If your implementation relies on receiving a `200` status code with an empty array for
@@ -122,7 +124,7 @@ Supported attributes:
 | `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `sha`     | string         | yes      | The blob SHA. |
 
-## Raw blob content
+## Get raw blob content
 
 Get the raw file contents for a blob, by blob SHA. This endpoint can be accessed
 without authentication if the repository is publicly accessible.
@@ -240,7 +242,7 @@ Example response:
 }
 ```
 
-## Contributors
+## Get contributor list
 
 {{< history >}}
 
@@ -291,7 +293,7 @@ Example response:
 }]
 ```
 
-## Merge Base
+## Get merge base
 
 Get the common ancestor for 2 or more refs, such as commit SHAs, branch names, or tags.
 

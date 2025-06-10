@@ -28,7 +28,7 @@ You can also use the [users API endpoint](../../../api/users.md#create-a-user) t
 
 Choose the right method based on your organization's size, security requirements, and workflows.
 
-## Create users on sign-in page
+## Create a user on the sign-in page
 
 By default, any user visiting your GitLab instance can register for an account.
 If you have previously [disabled this setting](../../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups), you must turn it back on.
@@ -38,46 +38,37 @@ Users can create their own accounts by either:
 - Selecting the **Register now** link on the sign-in page.
 - Navigating to your GitLab instance's sign-up link (for example: `https://gitlab.example.com/users/sign_up`).
 
-## Create users in Admin area
+## Create a user in the Admin area
 
 Prerequisites:
 
-- You must have administrator access to the instance.
+- You must be an administrator for the instance.
 
-To create a user manually:
+To create a user:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
 1. Select **New user**.
-1. Complete the required fields, such as name, username, and email.
+1. In the **Account** section, enter the required account information.
+1. Optional. In the **Access** section, configure any project limits or user type settings.
 1. Select **Create user**.
 
-A reset link is sent to the user's email, and they are required to set their password when they first sign in.
+GitLab sends an email to the user with a sign-in link, and the user must create a password when
+they first sign in. You can also directly [set a password](../../../security/reset_user_password.md#use-the-ui)
+for the user.
 
-### Set user password
-
-To set a user's password without relying on the email confirmation, after you create a user:
-
-1. Select the user.
-1. Select **Edit**.
-1. Complete the password and password confirmation fields.
-1. Select **Save changes**.
-
-The user can now sign in with the new username and password,
-and they are required to change the password you set up for them.
-
-## Create users through authentication integrations
+## Create a user with an authentication integration
 
 GitLab can automatically create user accounts through authentication integrations.
 Users are created when they:
 
+- Are provisioned through [SCIM](../../group/saml_sso/scim_setup.md) in the identity provider.
 - Sign in for the first time with:
   - [LDAP](../../../administration/auth/ldap/_index.md)
   - [Group SAML](../../group/saml_sso/_index.md)
   - An [OmniAuth provider](../../../integration/omniauth.md) that has the setting `allow_single_sign_on` turned on
-- Are provisioned through [SCIM](../../group/saml_sso/scim_setup.md) in the identity provider.
 
-## Create users through the Rails console
+## Create a user through the Rails console
 
 {{< alert type="warning" >}}
 
@@ -88,7 +79,7 @@ Always run commands in a test environment first and have a backup instance ready
 
 To create a user through the Rails console:
 
-1. [Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Start a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
 1. Run the command according to your GitLab version:
 
   {{< tabs >}}

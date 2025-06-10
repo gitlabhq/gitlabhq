@@ -732,6 +732,109 @@ Example response:
 ]
 ```
 
+### List all SAML users
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193748) in GitLab 18.1.
+
+{{< /history >}}
+
+Lists all SAML users for a given top-level group.
+
+Use the `page` and `per_page` [pagination parameters](rest/_index.md#offset-based-pagination) to filter the results.
+
+```plaintext
+GET /groups/:id/saml_users
+```
+
+Supported attributes:
+
+| Attribute        | Type           | Required | Description |
+|:-----------------|:---------------|:---------|:------------|
+| `id`             | integer/string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
+| `username`       | string         | no       | Return a user with a given username. |
+| `search`         | string         | no       | Return users with a matching name, email, or username. Use partial values to increase results. |
+| `active`         | boolean        | no       | Return only active users. |
+| `blocked`        | boolean        | no       | Return only blocked users. |
+| `created_after`  | datetime       | no       | Return users created after the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). |
+| `created_before` | datetime       | no       | Return users created before the specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`). |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/saml_users"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 66,
+    "username": "user22",
+    "name": "Sidney Jones22",
+    "state": "active",
+    "avatar_url": "https://www.gravatar.com/avatar/xxx?s=80&d=identicon",
+    "web_url": "http://my.gitlab.com/user22",
+    "created_at": "2021-09-10T12:48:22.381Z",
+    "bio": "",
+    "location": null,
+    "public_email": "",
+    "skype": "",
+    "linkedin": "",
+    "twitter": "",
+    "website_url": "",
+    "organization": null,
+    "job_title": "",
+    "pronouns": null,
+    "bot": false,
+    "work_information": null,
+    "followers": 0,
+    "following": 0,
+    "local_time": null,
+    "last_sign_in_at": null,
+    "confirmed_at": "2021-09-10T12:48:22.330Z",
+    "last_activity_on": null,
+    "email": "user22@example.org",
+    "theme_id": 1,
+    "color_scheme_id": 1,
+    "projects_limit": 100000,
+    "current_sign_in_at": null,
+    "identities": [
+      {
+        "provider": "group_saml",
+        "extern_uid": "2435223452345",
+        "saml_provider_id": 1
+      }
+    ],
+    "can_create_group": true,
+    "can_create_project": true,
+    "two_factor_enabled": false,
+    "external": false,
+    "private_profile": false,
+    "commit_email": "user22@example.org",
+    "shared_runners_minutes_limit": null,
+    "extra_shared_runners_minutes_limit": null,
+    "scim_identities": [
+      {
+        "extern_uid": "2435223452345",
+        "group_id": 1,
+        "active": true
+      }
+    ]
+  },
+  ...
+]
+```
+
 ### List provisioned users
 
 {{< details >}}

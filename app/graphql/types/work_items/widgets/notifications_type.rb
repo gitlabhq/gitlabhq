@@ -17,7 +17,7 @@ module Types
           description: 'Whether the current user is subscribed to notifications on the work item.'
 
         def subscribed
-          object.work_item.subscribed?(current_user, object.work_item.project)
+          object.work_item.subscribed?(current_user, object.work_item.project, cache_enforced: false)
         end
       end
       # rubocop:enable Graphql/AuthorizeTypes

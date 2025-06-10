@@ -10,8 +10,8 @@ module Banzai
       const_get("#{name.to_s.camelize}Filter", false)
     end
 
-    def self.filter_item_limit_exceeded?(count, limit: FILTER_ITEM_LIMIT)
-      count >= limit
+    def self.filter_item_limit_exceeded?(count)
+      count >= FILTER_ITEM_LIMIT
     end
   end
 end

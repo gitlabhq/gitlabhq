@@ -274,4 +274,17 @@ RSpec.shared_examples 'Generate Debian Distribution and component files' do
       end
     end
   end
+
+  context 'when the distribution key cannot be generated' do
+    it 'raises the error' do
+      allow(::Packages::Debian::GenerateDistributionKeyService).to receive(:new).and_wrap_original do |m, _|
+        m.call(params: { passphrase: "k\n%pubring /tmp/file" })
+      end
+
+      expect { subject }.to raise_error(
+        ::Packages::Debian::GenerateDistributionService::GenerateDistributionError,
+        'Passphrase contains invalid characters'
+      )
+    end
+  end
 end

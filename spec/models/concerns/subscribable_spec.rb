@@ -49,6 +49,17 @@ RSpec.describe Subscribable, 'Subscribable' do
         expect(resource.public_send(method, user_1, project)).to be_falsey
       end
     end
+
+    context 'with cache_enforced: false' do
+      let(:batch_loader) { instance_double(BatchLoader) }
+
+      it 'calls batch loader with correct params' do
+        expect(batch_loader).to receive(:batch).with(hash_including(cache: false))
+        expect(BatchLoader).to receive(:for).and_return(batch_loader)
+
+        resource.lazy_subscription(user_1, project, cache_enforced: false)
+      end
+    end
   end
 
   describe '#subscribed?' do

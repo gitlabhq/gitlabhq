@@ -57,14 +57,25 @@ module Notes
         update_params[:spend_time][:note_id] = note.id
       end
 
+      service_response = execute_update_service(note, update_params)
       execute_triggers(note, update_params)
-      execute_update_service(note, update_params)
+
+      service_response
     end
 
     private
 
     def execute_triggers(note, params)
-      # This is overridden in EE
+      trigger_work_item_updated(note, params)
+    end
+
+    def trigger_work_item_updated(note, params)
+      GraphqlTriggers.work_item_updated(note.noteable) if quick_action_requires_subscription_update?(params) &&
+        note.for_work_item?
+    end
+
+    def quick_action_requires_subscription_update?(update_params)
+      update_params.has_key?(:subscription_event)
     end
 
     def execute_update_service(note, params)

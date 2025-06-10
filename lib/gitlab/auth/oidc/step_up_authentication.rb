@@ -72,7 +72,7 @@ module Gitlab
                 provider: provider, scope: scope)
             end
 
-            conditions.inject(:&).present?
+            conditions.present? && conditions.all?
           end
 
           def build_flow(provider:, session:, scope: STEP_UP_AUTH_SCOPE_ADMIN_MODE)

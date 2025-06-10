@@ -363,7 +363,7 @@ GET /users?with_custom_attributes=true
 
 You can use the `created_by` parameter to see if a user account was created:
 
-- [Manually by an administrator](../user/profile/account/create_accounts.md#create-users-in-admin-area).
+- [Manually by an administrator](../user/profile/account/create_accounts.md#create-a-user-in-the-admin-area).
 - As a [project bot user](../user/project/settings/project_access_tokens.md#bot-users-for-projects).
 
 If the returned value is `null`, the account was created by a user who registered an account themselves.
@@ -568,7 +568,7 @@ see the `scim_identities` parameter:
 
 Administrators can use the `created_by` parameter to see if a user account was created:
 
-- [Manually by an administrator](../user/profile/account/create_accounts.md#create-users-in-admin-area).
+- [Manually by an administrator](../user/profile/account/create_accounts.md#create-a-user-in-the-admin-area).
 - As a [project bot user](../user/project/settings/project_access_tokens.md#bot-users-for-projects).
 
 If the returned value is `null`, the account was created by a user who registered an account themselves.

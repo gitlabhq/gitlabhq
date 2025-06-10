@@ -15701,7 +15701,8 @@ CREATE TABLE incident_management_oncall_shifts (
     participant_id bigint NOT NULL,
     starts_at timestamp with time zone NOT NULL,
     ends_at timestamp with time zone NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_a37955f387 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE incident_management_oncall_shifts_id_seq

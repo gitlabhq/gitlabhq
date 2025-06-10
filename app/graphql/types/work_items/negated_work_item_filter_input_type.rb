@@ -34,3 +34,5 @@ module Types
     end
   end
 end
+
+Types::WorkItems::NegatedWorkItemFilterInputType.prepend_mod_with('Types::WorkItems::NegatedWorkItemFilterInputType')

@@ -541,7 +541,7 @@ GEM
       railties (~> 7.0)
       rotp (~> 6.0)
     diff-lcs (1.5.0)
-    diffy (3.4.3)
+    diffy (3.4.4)
     digest-crc (0.6.5)
       rake (>= 12.0.0, < 14.0.0)
     docile (1.4.0)
@@ -738,7 +738,7 @@ GEM
       terminal-table (>= 1.5.1)
     gitlab-chronic (0.10.6)
       numerizer (~> 0.2)
-    gitlab-cloud-connector (1.14.0)
+    gitlab-cloud-connector (1.15.0)
       activesupport (~> 7.0)
       jwt (~> 2.9.3)
     gitlab-crystalball (1.0.0)
@@ -2424,4 +2424,4 @@ DEPENDENCIES
   yard (~> 0.9)
 
 BUNDLED WITH
-   2.6.5
+   2.6.9

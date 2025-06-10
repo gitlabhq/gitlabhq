@@ -2,6 +2,7 @@
 
 module Features
   module AccessTokenHelpers
+    # Remove after migrate_user_access_tokens_ui feature flag removal
     def active_access_tokens
       find_by_testid('active-tokens')
     end
@@ -13,8 +14,32 @@ module Features
       end
     end
 
+    # Keep after migrate_user_access_tokens_ui feature flag removal
+    def new_access_token
+      within_testid('new-access-token') do
+        find_by_testid('toggle-visibility-button').click
+        find_field('access-token-field').value
+      end
+    end
+
     def active_access_tokens_counter
       find_by_testid('active-token-count')
+    end
+
+    def access_token_table
+      find_by_testid('access-token-table')
+    end
+
+    def active_access_tokens_count
+      find_by_testid('active-tokens-count')
+    end
+
+    def last_used_ip
+      find_by_testid('field-last-used')
+    end
+
+    def access_token_options
+      find_by_testid('access-token-options')
     end
   end
 end
