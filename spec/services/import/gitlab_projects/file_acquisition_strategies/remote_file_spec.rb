@@ -44,13 +44,13 @@ RSpec.describe ::Import::GitlabProjects::FileAcquisitionStrategies::RemoteFile, 
 
     context 'when the HTTP request fails to recover the headers' do
       it 'adds the error message' do
-        expect(Gitlab::HTTP)
+        expect(Import::Clients::HTTP)
           .to receive(:head)
           .and_raise(StandardError, 'request invalid')
 
         expect(subject).not_to be_valid
         expect(subject.errors.full_messages)
-          .to include('Failed to retrive headers: request invalid')
+          .to include('Failed to retrieve headers: request invalid')
       end
     end
 
@@ -101,7 +101,7 @@ RSpec.describe ::Import::GitlabProjects::FileAcquisitionStrategies::RemoteFile, 
   end
 
   def stub_headers_for(url, headers = {})
-    allow(Gitlab::HTTP)
+    allow(Import::Clients::HTTP)
       .to receive(:head)
       .with(remote_url, timeout: 1.second)
       .and_return(double(headers: headers)) # rubocop: disable RSpec/VerifiedDoubles

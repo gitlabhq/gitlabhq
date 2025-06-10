@@ -76,7 +76,7 @@ module BulkImports
         return true unless instance_version >= ::Gitlab::VersionInfo.parse(PAT_ENDPOINT_MIN_VERSION)
 
         response = with_error_handling do
-          Gitlab::HTTP.get(resource_url("personal_access_tokens/self"), options)
+          Import::Clients::HTTP.get(resource_url("personal_access_tokens/self"), options)
         end
 
         return true if response['scopes']&.include?('api')
@@ -97,12 +97,12 @@ module BulkImports
       def metadata
         response = begin
           with_error_handling do
-            Gitlab::HTTP.get(resource_url(:version), options)
+            Import::Clients::HTTP.get(resource_url(:version), options)
           end
         rescue BulkImports::NetworkError
           # `version` endpoint is not available, try `metadata` endpoint instead
           with_error_handling do
-            Gitlab::HTTP.get(resource_url(:metadata), options)
+            Import::Clients::HTTP.get(resource_url(:metadata), options)
           end
         end
 
@@ -122,7 +122,7 @@ module BulkImports
       # rubocop:disable GitlabSecurity/PublicSend
       def request(method, resource, options = {}, &block)
         with_error_handling do
-          Gitlab::HTTP.public_send(
+          Import::Clients::HTTP.public_send(
             method,
             resource_url(resource),
             request_options(options),

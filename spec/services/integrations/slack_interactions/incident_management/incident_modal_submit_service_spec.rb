@@ -110,13 +110,16 @@ RSpec.describe Integrations::SlackInteractions::IncidentManagement::IncidentModa
         expect(Gitlab::HTTP).to receive(:post)
           .with(
             api_url,
-            body: Gitlab::Json.dump(
-              {
-                replace_original: 'true',
-                text: 'There was a problem creating the incident. Please try again.'
-              }
-            ),
-            headers: { 'Content-Type' => 'application/json' }
+            {
+              body: Gitlab::Json.dump(
+                {
+                  replace_original: 'true',
+                  text: 'There was a problem creating the incident. Please try again.'
+                }
+              ),
+              headers: { 'Content-Type' => 'application/json' },
+              max_bytes: an_instance_of(Integer)
+            }
           )
 
         response = execute_service
@@ -151,14 +154,17 @@ RSpec.describe Integrations::SlackInteractions::IncidentManagement::IncidentModa
           expect(Gitlab::HTTP).to receive(:post)
             .with(
               api_url,
-              body: Gitlab::Json.dump(
-                {
-                  replace_original: 'true',
-                  text: "New incident has been created: " \
-                        "<#{issue_url(incident)}|#{incident.to_reference} - a href=\"url\"incident title/a>. "
-                }
-              ),
-              headers: { 'Content-Type' => 'application/json' }
+              {
+                body: Gitlab::Json.dump(
+                  {
+                    replace_original: 'true',
+                    text: "New incident has been created: " \
+                          "<#{issue_url(incident)}|#{incident.to_reference} - a href=\"url\"incident title/a>. "
+                  }
+                ),
+                headers: { 'Content-Type' => 'application/json' },
+                max_bytes: an_instance_of(Integer)
+              }
             ).and_return(api_response)
 
           execute_service

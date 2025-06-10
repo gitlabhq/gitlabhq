@@ -121,6 +121,33 @@ describe('behaviors/markdown/render_json_table', () => {
         expect(findInputs()).toHaveLength(1);
       });
     });
+
+    describe('with isHtmlSafe set in userData', () => {
+      beforeEach(async () => {
+        const maliciousData = {
+          fields: [{ key: 'content', label: 'Content' }],
+          items: [{ content: '<div class="malicious" style="position:fixed;">XSS attempt</div>' }],
+          isHtmlSafe: true, // This should be ignored
+          caption: '<div class="malicious-caption" style="position:fixed;">XSS caption</div>',
+        };
+
+        await createTestSubject(JSON.stringify(maliciousData));
+      });
+
+      it('ignores isHtmlSafe from userData and sanitizes HTML', () => {
+        const tables = findTables();
+        expect(tables).toHaveLength(1);
+
+        const cellHtml = tables[0].querySelector('tbody td').innerHTML;
+        expect(cellHtml).toEqual(
+          '&lt;div class="malicious" style="position:fixed;"&gt;XSS attempt&lt;/div&gt;',
+        );
+
+        expect(findCaption().outerHTML).toEqual(
+          '<caption><small>&lt;div class="malicious-caption" style="position:fixed;"&gt;XSS caption&lt;/div&gt;</small></caption>',
+        );
+      });
+    });
   });
 
   describe('markdown JSON table', () => {

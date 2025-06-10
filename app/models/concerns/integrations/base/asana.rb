@@ -112,7 +112,7 @@ module Integrations
 
           begin
             story_on_task_url = format(STORY_URL_TEMPLATE, task_gid: task_id)
-            Gitlab::HTTP.post(
+            Clients::HTTP.post(
               story_on_task_url,
               headers: { "Authorization" => "Bearer #{api_key}" },
               body: { text: "#{push_msg} #{message}" }
@@ -120,7 +120,8 @@ module Integrations
 
             if prepended_text.match?(proceded_keyword_finder)
               task_url = format(TASK_URL_TEMPLATE, task_gid: task_id)
-              Gitlab::HTTP.put(task_url, headers: { "Authorization" => "Bearer #{api_key}" }, body: { completed: true })
+              Clients::HTTP.put(task_url, headers: { "Authorization" => "Bearer #{api_key}" },
+                body: { completed: true })
             end
           rescue StandardError => e
             log_error(e.message)
@@ -130,7 +131,7 @@ module Integrations
       end
 
       def test(_)
-        result = Gitlab::HTTP.get(PERSONAL_ACCESS_TOKEN_TEST_URL, headers: { "Authorization" => "Bearer #{api_key}" })
+        result = Clients::HTTP.get(PERSONAL_ACCESS_TOKEN_TEST_URL, headers: { "Authorization" => "Bearer #{api_key}" })
 
         if result.success?
           { success: true }

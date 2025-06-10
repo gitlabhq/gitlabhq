@@ -45,7 +45,8 @@ RSpec.shared_examples Integrations::Base::Asana do
         body: {
           completed: true
         },
-        headers: { "Authorization" => "Bearer verySecret" }
+        headers: { "Authorization" => "Bearer verySecret" },
+        max_bytes: an_instance_of(Integer)
       }
     end
 
@@ -98,7 +99,8 @@ RSpec.shared_examples Integrations::Base::Asana do
           body: {
             text: "#{user.name} pushed to branch main of #{project.full_name} ( https://gitlab.com/ ): #{message}"
           },
-          headers: { "Authorization" => "Bearer verySecret" }
+          headers: { "Authorization" => "Bearer verySecret" },
+          max_bytes: an_instance_of(Integer)
         }
       end
 

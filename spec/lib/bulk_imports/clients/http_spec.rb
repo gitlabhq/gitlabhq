@@ -122,6 +122,7 @@ RSpec.describe BulkImports::Clients::HTTP, feature_category: :importers do
           limit: 2
         }
         params[:query] = params[:query].merge(query)
+        params[:max_bytes] = an_instance_of(Integer)
 
         allow(Gitlab::HTTP).to receive(:get).with(uri, params).and_return(response)
       end
