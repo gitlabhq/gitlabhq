@@ -26168,7 +26168,7 @@ CREATE TABLE workspaces (
     workspaces_agent_config_version integer NOT NULL,
     desired_config_generator_version integer,
     project_ref text,
-    actual_state_updated_at timestamp with time zone DEFAULT '1970-01-01 00:00:00+00'::timestamp with time zone NOT NULL,
+    actual_state_updated_at timestamp with time zone NOT NULL,
     CONSTRAINT check_15543fb0fa CHECK ((char_length(name) <= 64)),
     CONSTRAINT check_157d5f955c CHECK ((char_length(namespace) <= 64)),
     CONSTRAINT check_2b401b0034 CHECK ((char_length(deployment_resource_version) <= 64)),
@@ -33328,7 +33328,7 @@ CREATE UNIQUE INDEX i_sbom_occurrences_vulnerabilities_on_occ_id_and_vuln_id ON 
 
 CREATE INDEX i_software_license_policies_on_custom_software_license_id ON software_license_policies USING btree (custom_software_license_id);
 
-CREATE UNIQUE INDEX i_unique_external_control_name_per_requirement ON compliance_requirements_controls USING btree (compliance_requirement_id, external_control_name) WHERE (external_control_name IS NOT NULL);
+CREATE UNIQUE INDEX i_uniq_external_control_name_per_requirement ON compliance_requirements_controls USING btree (compliance_requirement_id, external_control_name) WHERE ((external_control_name IS NOT NULL) AND (external_control_name <> ''::text));
 
 CREATE INDEX i_vuln_occurrences_on_proj_report_loc_dep_pkg_ver_file_img ON vulnerability_occurrences USING btree (project_id, report_type, ((((location -> 'dependency'::text) -> 'package'::text) ->> 'name'::text)), (((location -> 'dependency'::text) ->> 'version'::text)), COALESCE((location ->> 'file'::text), (location ->> 'image'::text))) WHERE (report_type = ANY (ARRAY[2, 1]));
 

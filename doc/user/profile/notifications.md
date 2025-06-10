@@ -51,22 +51,42 @@ You might receive notifications for one of the following reasons:
 > - [A comment is edited to include a user mention](../discussions/_index.md#edit-a-comment-to-add-a-mention).
 > - An administrator has blocked notifications.
 
-## Edit notification settings
+## Global notification settings
 
-Getting many notifications can be overwhelming. You can tune the notifications you receive.
+Your global notification settings are the default settings, unless you specify
+different settings for a project or a group.
 For example, you might want to be notified about all activity in a specific project.
 For other projects, you only want to be notified when you are mentioned by name.
 
 These notification settings apply only to you. They do not affect the notifications received by
 anyone else.
 
+### Edit notification settings
+
 To edit your notification settings:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. On the left sidebar, select **Notifications**.
-1. Edit the desired global, group, or project notification settings.
-   Edited settings are automatically saved.
+1. In **Global notification email**, enter the email address your notifications are sent to.
+   Defaults to your primary email address.
+1. For **Global notification level**, select the default [notification level](#notification-levels)
+   to apply to your notifications.
+1. Select the **Receive notifications about your own activity** checkbox to receive
+   notifications about your own activity. Not selected by default.
+
+### Notification levels
+
+For each project and group you can select one of the following levels:
+
+| Level       | Description |
+| ----------- | ----------- |
+| Global      | Your default global settings apply. |
+| Watch       | Receive notifications for [most activity](#events-not-included-in-the-watch-level). |
+| Participate | Receive notifications for threads you have participated in. |
+| On mention  | Receive notifications when you are [mentioned](../discussions/_index.md#mentions) in a comment. |
+| Disabled    | Receive no notifications. |
+| Custom      | Receive notifications for selected events and threads you have participated in. |
 
 ### Notification scope
 
@@ -75,10 +95,10 @@ project and group.
 
 Notification scope is applied from the broadest to most specific levels:
 
-- Your **global**, or default, notification level applies if you
+- Your global, or _default_, notification level applies if you
   have not selected a notification level for the project or group in which the activity occurred.
-- Your **group** setting overrides your default setting.
-- Your **project** setting overrides the group setting.
+- Your group setting overrides your default setting.
+- Your project setting overrides the group setting.
 
 When you set the notification level to **Global** for a project or subgroup, it does not directly inherit your global notification settings.
 Instead, it goes up the hierarchy and inherits the next non-global notification level that is configured, in the following order:
@@ -88,43 +108,25 @@ Instead, it goes up the hierarchy and inherits the next non-global notification 
 1. The ancestor groups' settings (going up the hierarchy).
 1. The global notification setting as the final fallback setting.
 
-#### Example
+For example, you set your default global notification setting to **Watch**, and your group and project notification levels as follows:
 
-You set your global notification setting to **Watch**, and your group and project notification levels as follows:
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans", 'theme':'neutral' }}%%
+flowchart TD
+  accTitle: Notification hierarchy
+  accDescr: Example of a group, subgroup, and project
 
-```plaintext
-Group A: Global
-├── Subgroup B: Participate
-    └── Project C: Global
+    N[Default/global notification level set to Watch]
+    N --> A
+    A[Group A: Notification level set to Global]
+    A-. Inherits Watch level .-> N
+    A --> B[Subgroup B: Notification level set to Participate]
+    B --> C[Project C: Notification level set to Global]
+    C-. Inherits Participate level .-> B
 ```
 
-In this example, project C inherits the **Participate** notification level from subgroup B.
+Project C inherits the **Participate** notification level from subgroup B.
 It does not inherit the **Watch** notification level from your global notification settings.
-
-### Notification levels
-
-For each project and group you can select one of the following levels:
-
-| Level       | Description |
-| ----------- | ----------- |
-| Global      | Your global settings apply. |
-| Watch       | Receive notifications for [most activity](#events-not-included-in-the-watch-level). |
-| Participate | Receive notifications for threads you have participated in. |
-| On mention  | Receive notifications when you are [mentioned](../discussions/_index.md#mentions) in a comment. |
-| Disabled    | Receive no notifications. |
-| Custom      | Receive notifications for selected events and threads you have participated in. |
-
-### Global notification settings
-
-Your **Global notification settings** are the default settings unless you select
-different values for a project or a group.
-
-- **Notification email**: the email address your notifications are sent to.
-  Defaults to your primary email address.
-- **Global notification level**: the default [notification level](#notification-levels)
-  which applies to all your notifications.
-- **Receive notifications about your own activity**: select this checkbox to receive
-  notifications about your own activity. Not selected by default.
 
 ### Group notifications
 

@@ -228,3 +228,27 @@ include:
 
 In this example, the `.gitlab/ci/development.gitlab-ci.yml` file is included by default.
 But if a different `pipeline-type` input option is used, a different configuration file is included.
+
+### Use CI/CD inputs in variable expressions
+
+You can use [CI/CD inputs](_index.md) to customize variable expressions.
+For example:
+
+```yaml
+example-job:
+  script: echo "Testing"
+  rules:
+    - if: '"$[[ inputs.some_example ]]" == "test-branch"'
+```
+
+The expression is evaluated in two steps:
+
+1. Input interpolation: Before the pipeline is created, inputs are replaced with the input value.
+   In this example, the `$[[ inputs.some_example ]]` input is replaced with the [set value](_index.md#set-input-values).
+   For example, if the value is:
+
+    - `test-branch`, the expression becomes `if: '"test-branch" == "test-branch"'`.
+    - `$CI_COMMIT_BRANCH`, the expression becomes `if: '"$CI_COMMIT_BRANCH" == "test-branch"'`.
+
+1. Expression evaluation: After the inputs are interpolated, GitLab attempts to create the pipeline.
+   During pipeline creation, the expressions are evaluated to determine which jobs to add to the pipeline.

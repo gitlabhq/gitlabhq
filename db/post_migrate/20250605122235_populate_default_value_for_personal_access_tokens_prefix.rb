@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class PopulateDefaultValueForPersonalAccessTokensPrefix < Gitlab::Database::Migration[2.3]
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_clusterwide_setting
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_cell_setting
   milestone '18.1'
 
   def up

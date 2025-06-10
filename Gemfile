@@ -514,7 +514,7 @@ group :development, :test do
   gem 'awesome_print', require: false, feature_category: :shared
 
   gem 'database_cleaner-active_record', '~> 2.2.0', feature_category: :database
-  gem 'rspec-rails', '~> 7.0.0', feature_category: :shared
+  gem 'rspec-rails', '~> 7.1.0', feature_category: :shared
   gem 'factory_bot_rails', '~> 6.4.3', feature_category: :tooling
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)

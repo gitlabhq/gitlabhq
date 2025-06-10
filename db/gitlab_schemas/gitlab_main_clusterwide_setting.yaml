@@ -1,5 +1,5 @@
-name: gitlab_main_clusterwide_setting
-description: Schema for all Cluster setting tables, ex. application_settings, etc.
+name: gitlab_main_cell_setting
+description: Schema for all cell setting tables, ex. application_settings, etc.
 allow_cross_joins:
   - gitlab_shared
   - gitlab_main

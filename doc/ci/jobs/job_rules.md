@@ -411,6 +411,8 @@ the expression. For example:
 
 - `if: $VARIABLE`
 
+You can also [use CI/CD inputs in variable expressions](../inputs/examples.md#use-cicd-inputs-in-variable-expressions).
+
 ### Compare a variable to a regular expression
 
 You can do regular expression matching on variable values with the `=~` and `!~` operators.

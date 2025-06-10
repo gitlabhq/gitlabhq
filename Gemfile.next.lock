@@ -1682,7 +1682,7 @@ GEM
     rspec-parameterized-table_syntax (1.0.0)
       binding_of_caller
       rspec-parameterized-core (< 2)
-    rspec-rails (7.0.1)
+    rspec-rails (7.1.1)
       actionpack (>= 7.0)
       activesupport (>= 7.0)
       railties (>= 7.0)
@@ -2348,7 +2348,7 @@ DEPENDENCIES
   rqrcode (~> 2.2)
   rspec-benchmark (~> 0.6.0)
   rspec-parameterized (~> 1.0, >= 1.0.2)
-  rspec-rails (~> 7.0.0)
+  rspec-rails (~> 7.1.0)
   rspec-retry (~> 0.6.2)
   rspec_junit_formatter
   rspec_profiling (~> 0.0.9)

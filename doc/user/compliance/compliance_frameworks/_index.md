@@ -179,6 +179,7 @@ If the import is successful, the new compliance framework appears in the list. A
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186525) in GitLab 17.11 [with a flag](../../../administration/feature_flags.md) named `enable_standards_adherence_dashboard_v2`. Enabled by default.
+- External control name [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192177) in GitLab 18.1.
 
 {{< /history >}}
 
@@ -289,7 +290,7 @@ To add an external control when creating or editing a framework:
 1. Select **New framework** or edit an existing one.
 1. In the **Requirements** section, select **New requirement**.
 1. Select **Add an external control**.
-1. In the fields edit **External URL** and **`HMAC` shared secret**.
+1. In the fields edit **External Control Name**, **External URL** and **`HMAC` shared secret**.
 1. Select **Save changes to the framework** to save the requirement.
 
 #### External control lifecycle

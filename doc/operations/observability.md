@@ -35,7 +35,9 @@ Use GitLab Observability (O11y) to:
 - View distributed traces, logs, and metrics in a single platform.
 - Identify and troubleshoot performance bottlenecks in your applications.
 
-Support for improvements is proposed in [issue 8](https://gitlab.com/experimental-observability/gitlab_o11y/-/issues/8).
+{{< alert type="disclaimer" />}}
+
+By adding observability to GitLab itself users can gain [these (planned) features](https://gitlab.com/gitlab-org/embody-team/experimental-observability/gitlab_o11y/-/issues/8).
 
 ## Set up a GitLab Observability instance
 
@@ -120,7 +122,7 @@ docker info | grep "Docker Root Dir"
 
 ```shell
 cd /mnt/data
-git clone -b main https://gitlab.com/experimental-observability/gitlab_o11y.git
+git clone -b main https://gitlab.com/gitlab-org/embody-team/experimental-observability/gitlab_o11y.git
 cd gitlab_o11y/deploy/docker
 docker-compose up -d
 ```
@@ -189,9 +191,31 @@ docker run --detach \
   --publish 443:443 --publish 80:80 --publish 22:22 \
   --name gitlab \
   --restart always \
-  --env O11Y_URL="http://[your-o11y-instance-ip]:8080" \
   gitlab/gitlab-ce:latest
 ```
+
+The `O11Y_URL` environment variable must be configured in the GitLab configuration file:
+
+1. Access the container:
+
+   ```shell
+   docker exec -it gitlab /bin/bash
+   ```
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['env'] = {
+     'O11Y_URL' => 'http://[your-o11y-instance-ip]:8080'
+   }
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   gitlab-ctl reconfigure
+   gitlab-ctl restart
+   ```
 
 {{< /tab >}}
 
@@ -204,23 +228,23 @@ The Observability feature is behind a feature flag. To enable it:
 1. Access the Rails console:
 
    {{< tabs >}}
- 
+
    {{< tab title="Linux package (Omnibus)" >}}
- 
+
    ```shell
    sudo gitlab-rails console
    ```
- 
+
    {{< /tab >}}
- 
+
    {{< tab title="Docker" >}}
- 
+
    ```shell
    docker exec -it gitlab gitlab-rails console
    ```
- 
+
    {{< /tab >}}
- 
+
    {{< /tabs >}}
 
 1. Enable the feature flag for your group:
