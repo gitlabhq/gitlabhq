@@ -69975,6 +69975,9 @@ msgstr ""
 msgid "WorkItem|Edit custom field %{fieldName}"
 msgstr ""
 
+msgid "WorkItem|Edit statuses"
+msgstr ""
+
 msgid "WorkItem|Edit work item"
 msgstr ""
 
@@ -70006,6 +70009,9 @@ msgid "WorkItem|Failed to create a branch for this %{workItemType}. Please try a
 msgstr ""
 
 msgid "WorkItem|Failed to load custom fields."
+msgstr ""
+
+msgid "WorkItem|Failed to load statuses."
 msgstr ""
 
 msgid "WorkItem|Failed to unarchive custom field %{fieldName}."
@@ -70416,6 +70422,12 @@ msgid "WorkItem|Something went wrong while updating the work item. Please try ag
 msgstr ""
 
 msgid "WorkItem|Start"
+msgstr ""
+
+msgid "WorkItem|Statuses"
+msgstr ""
+
+msgid "WorkItem|Statuses are used to manage workflow of planning items, helping you and your team understand how far an item has progressed."
 msgstr ""
 
 msgid "WorkItem|Task"

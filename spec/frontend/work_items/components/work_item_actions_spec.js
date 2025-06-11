@@ -275,7 +275,7 @@ describe('WorkItemActions component', () => {
         text: 'Copy issue email address',
       },
       {
-        divider: true,
+        group: true,
       },
       {
         testId: 'report-abuse-action',

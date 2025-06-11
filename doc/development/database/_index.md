@@ -136,3 +136,4 @@ including the major methods:
 - [Update multiple database objects](setting_multiple_values.md)
 - [Batch iteration in a tree hierarchy proof of concept](poc_tree_iterator.md)
 - [Scalability Patterns](scalability/patterns/_index.md)
+- [Group hierarchy query optimization](group_hierarchy_optimization.md)

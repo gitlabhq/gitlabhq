@@ -38,6 +38,12 @@
 /scripts/lint-doc.sh @gitlab-org/technical-writing/tw-docops @gitlab-org/tw-leadership
 /scripts/lint-docs-redirects.rb @gitlab-org/technical-writing/tw-docops @gitlab-org/tw-leadership
 
+## Localization files that do not need `*` rule approval,
+## but still require an approval from a Localization team DRI for each file.
+/doc-locale/ @gitlab-com/localization/maintainers
+/doc/development/i18n/proofreader.md @gitlab-com/localization/maintainers
+/argo_translation.yml @gitlab-com/localization/maintainers
+
 config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tkuah
 
 ^[Source code editing]

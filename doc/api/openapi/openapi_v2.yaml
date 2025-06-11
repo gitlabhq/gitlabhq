@@ -44661,6 +44661,13 @@ definitions:
       model_prompt_cache_enabled:
         type: boolean
         description: Enable model prompt cache for this group
+      ai_settings_attributes:
+        type: object
+        description: AI-related settings
+        properties:
+          duo_workflow_mcp_enabled:
+            type: boolean
+            description: Enable MCP support for Duo Workflow
     required:
     - name
     - path
@@ -44851,6 +44858,13 @@ definitions:
       model_prompt_cache_enabled:
         type: boolean
         description: Enable model prompt cache for this group
+      ai_settings_attributes:
+        type: object
+        description: AI-related settings
+        properties:
+          duo_workflow_mcp_enabled:
+            type: boolean
+            description: Enable MCP support for Duo Workflow
       prevent_sharing_groups_outside_hierarchy:
         type: boolean
         description: Prevent sharing groups within this namespace with any groups

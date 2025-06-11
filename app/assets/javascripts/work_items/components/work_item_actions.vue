@@ -707,39 +707,39 @@ export default {
         </template>
       </gl-disclosure-dropdown-item>
 
-      <gl-dropdown-divider />
-
-      <gl-disclosure-dropdown-item
-        v-if="!isAuthor"
-        data-testid="report-abuse-action"
-        @action="handleToggleReportAbuseModal"
-      >
-        <template #list-item>
-          <gl-icon name="abuse" class="gl-mr-2" variant="subtle" />
-          {{ $options.i18n.reportAbuse }}
-        </template>
-      </gl-disclosure-dropdown-item>
-
-      <gl-disclosure-dropdown-item
-        v-if="glFeatures.workItemsBeta && canReportSpam"
-        :item="submitAsSpamItem"
-        data-testid="submit-as-spam-item"
-      />
-
-      <template v-if="canDelete">
+      <gl-disclosure-dropdown-group bordered>
         <gl-disclosure-dropdown-item
-          data-testid="delete-action"
-          variant="danger"
-          @action="handleDelete"
+          v-if="!isAuthor"
+          data-testid="report-abuse-action"
+          @action="handleToggleReportAbuseModal"
         >
           <template #list-item>
-            <span>
-              <gl-icon name="remove" class="gl-mr-2" variant="current" />
-              {{ i18n.deleteWorkItem }}
-            </span>
+            <gl-icon name="abuse" class="gl-mr-2" variant="subtle" />
+            {{ $options.i18n.reportAbuse }}
           </template>
         </gl-disclosure-dropdown-item>
-      </template>
+
+        <gl-disclosure-dropdown-item
+          v-if="glFeatures.workItemsBeta && canReportSpam"
+          :item="submitAsSpamItem"
+          data-testid="submit-as-spam-item"
+        />
+
+        <template v-if="canDelete">
+          <gl-disclosure-dropdown-item
+            data-testid="delete-action"
+            variant="danger"
+            @action="handleDelete"
+          >
+            <template #list-item>
+              <span>
+                <gl-icon name="remove" class="gl-mr-2" variant="current" />
+                {{ i18n.deleteWorkItem }}
+              </span>
+            </template>
+          </gl-disclosure-dropdown-item>
+        </template>
+      </gl-disclosure-dropdown-group>
 
       <gl-disclosure-dropdown-group bordered>
         <template #group-label>
