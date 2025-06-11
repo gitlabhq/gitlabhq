@@ -15,7 +15,7 @@ module Gitlab
         #
         # body - The message payload to send back to Mattermost, as a Hash.
         def send_response(body)
-          Gitlab::HTTP.post(
+          Integrations::Clients::HTTP.post(
             pipeline.chat_data.response_url,
             {
               headers: { 'Content-Type': 'application/json' },

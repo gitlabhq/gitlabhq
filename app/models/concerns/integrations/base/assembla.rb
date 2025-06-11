@@ -46,7 +46,7 @@ module Integrations
         url = "https://atlas.assembla.com/spaces/#{URI.encode_www_form_component(subdomain)}/github_tool?secret_key=#{URI.encode_www_form_component(token)}"
         body = { payload: data }
 
-        Gitlab::HTTP.post(
+        Clients::HTTP.post(
           url,
           body: Gitlab::Json.dump(body),
           headers: { 'Content-Type' => 'application/json' }

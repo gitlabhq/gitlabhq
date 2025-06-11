@@ -644,6 +644,8 @@ class ApplicationSetting < ApplicationRecord
       :max_export_size,
       :max_github_response_size_limit,
       :max_github_response_json_value_count,
+      :max_http_decompressed_size,
+      :max_http_response_size_limit,
       :max_import_remote_file_size,
       :max_import_size,
       :max_pages_custom_domains_per_project,
@@ -711,6 +713,8 @@ class ApplicationSetting < ApplicationRecord
     users_api_limit_gpg_key: [:integer, { default: 120 }]
 
   jsonb_accessor :response_limits,
+    max_http_response_size_limit: [:integer, { default: 100 }],
+    max_http_decompressed_size: [:integer, { default: 100 }],
     max_github_response_size_limit: [:integer, { default: 8 }],
     max_github_response_json_value_count: [:integer, { default: 250_000 }]
 

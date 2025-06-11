@@ -154,7 +154,7 @@ module Integrations
           # Sound parameter MUST NOT be sent to API if not selected
           pushover_data[:sound] = sound if sound
 
-          Gitlab::HTTP.post('/messages.json', base_uri: BASE_URI, body: pushover_data)
+          Clients::HTTP.post('/messages.json', base_uri: BASE_URI, body: pushover_data)
         end
       end
     end

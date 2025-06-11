@@ -187,13 +187,14 @@ this requires a data migration to back-fill the attribute value for old records.
 
 ### Security requirements
 
-#### All HTTP calls must use `Gitlab::HTTP`
+#### All HTTP calls must use `Integrations::Clients::HTTP`
 
-Integrations must always make HTTP calls using `Gitlab::HTTP`, which:
+Integrations must always make HTTP calls using `Integrations::Clients::HTTP`, which:
 
 - Ensures that [network settings](../../security/webhooks.md) are enforced for HTTP calls.
 - Has additional [security hardening](../../security/webhooks.md#enforce-dns-rebinding-attack-protection) features.
 - Is our single source of truth for making secure HTTP calls.
+- Ensure all response sizes are validated.
 
 #### Masking channel values
 
@@ -223,7 +224,7 @@ but they offer minimal benefit compared to the costs involved:
 - They increase the potential surface area of security problems and the effort required to fix them.
 - Often these gems make HTTP calls on your behalf. As integrations can make HTTP calls to remote
   servers configured by users, it is critical that we
-  [fully control the network calls](#all-http-calls-must-use-gitlabhttp).
+  [fully control the network calls](#all-http-calls-must-use-integrationsclientshttp).
 - There is a maintenance cost of managing gem upgrades.
 - They can block us from using newer features.
 

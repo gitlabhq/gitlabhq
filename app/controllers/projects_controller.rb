@@ -572,13 +572,16 @@ class ProjectsController < Projects::ApplicationController
   def redirect_git_extension
     return unless params[:format] == 'git'
 
+    git_extension_regex = %r{\.git/?\Z}
+    return unless request.path.match?(git_extension_regex)
+
     # `project` calls `find_routable!`, so this will trigger the usual not-found
     # behaviour when the user isn't authorized to see the project
     return if project.nil? || performed?
 
     uri = URI(request.original_url)
     # Strip the '.git' part from the path
-    uri.path = uri.path.sub(%r{\.git/?\Z}, '')
+    uri.path = uri.path.sub(git_extension_regex, '')
 
     redirect_to(uri.to_s)
   end

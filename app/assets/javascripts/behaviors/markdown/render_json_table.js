@@ -29,8 +29,8 @@ const mountParseError = (element) => {
   });
 };
 
-const mountJSONTableVueComponent = (userData, element) => {
-  const { fields = [], items = [], filter, caption, isHtmlSafe } = userData;
+const mountJSONTableVueComponent = (userData, element, isHtmlSafe = false) => {
+  const { fields = [], items = [], filter, caption } = userData;
   const container = document.createElement('div');
 
   element.classList.add('js-json-table');
@@ -97,7 +97,7 @@ const renderTableHTML = (element) => {
       ),
     );
 
-    mountJSONTableVueComponent({ fields, filter, caption, items, isHtmlSafe: markdown }, parent);
+    mountJSONTableVueComponent({ fields, filter, caption, items }, parent, Boolean(markdown));
   } catch (e) {
     mountParseError(parent);
   }

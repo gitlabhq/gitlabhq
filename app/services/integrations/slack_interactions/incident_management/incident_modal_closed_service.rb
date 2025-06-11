@@ -39,7 +39,7 @@ module Integrations
           request_body = Gitlab::Json.dump(close_request_body)
           response_url = params.dig(:view, :private_metadata)
 
-          Gitlab::HTTP.post(response_url, body: request_body, headers: headers)
+          Clients::HTTP.post(response_url, body: request_body, headers: headers)
         end
 
         def close_request_body

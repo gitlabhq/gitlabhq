@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.10.8 (2025-06-11)
+
+### Fixed (2 changes)
+
+- [Fix gitpod button is missing in the edit dropdown](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c3ad6f66e6f17a5bf8fa2489a7335dfa58fc55a6)
+- [Attempt to migrate ci_runner_taggings table (try 2)](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c2520ea439dcb4fee531fcc39efc85ab4b607a6c)
+
+### Security (7 changes)
+
+- [Protect webhook from excessive payload lengths](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1fb7390786ae5c22ec7f1bc172423a76835aa14c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5061))
+- [Endless Redirect Loop in any project when query param "format" is "git"](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fddb00a30506eb534dc9e1f5c1923eee3e33c0b3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5040))
+- [Backport for "Add validation for board name length" to 17-10-stable](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a69cf8ef367ef1897158af0619cd537fe5d2a5df) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5046))
+- [Fix # #1329 - IDOR in compliance framework export endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7b4f9e9fb7411a18185ada44dc88dd264e6a228b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5042))
+- [security: Git redirection inconsistency](https://gitlab.com/gitlab-org/security/gitlab/-/commit/12003cbfb9b4081a352724922e6ed9aa97656ace) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4900))
+- [Fix XSS with CSP bypass in JSON tables](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1b02f9ed79b3a999baae5c02fa4f26c487927cba) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4988))
+- [Limit HTTP response size](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1411cb581f68400b5370d694cce3c67e5f0e2294) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5016))
+
 ## 17.10.7 (2025-05-21)
 
 ### Security (9 changes)

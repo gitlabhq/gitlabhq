@@ -1,8 +1,5 @@
 import { GlTable, GlFormInput } from '@gitlab/ui';
-import { nextTick } from 'vue';
-import { merge } from 'lodash';
-import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
-import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 import JSONTable from '~/behaviors/components/json_table.vue';
 
 const TEST_FIELDS = [
@@ -30,38 +27,24 @@ describe('behaviors/components/json_table', () => {
   let wrapper;
 
   const buildWrapper = ({
-    fields = [],
-    items = [],
+    fields = ['A'],
+    items = [{ A: 'Foo bar' }],
     filter = undefined,
     caption = undefined,
+    isHtmlSafe = false,
   } = {}) => {
-    wrapper = shallowMountExtended(JSONTable, {
+    wrapper = mountExtended(JSONTable, {
       propsData: {
         fields,
         items,
         hasFilter: filter,
         caption,
-      },
-      stubs: {
-        GlTable: merge(stubComponent(GlTable), {
-          props: {
-            fields: {
-              type: Array,
-              required: true,
-            },
-            items: {
-              type: Array,
-              required: true,
-            },
-          },
-          template: RENDER_ALL_SLOTS_TEMPLATE,
-        }),
+        isHtmlSafe,
       },
     });
   };
 
   const findTable = () => wrapper.findComponent(GlTable);
-  const findTableCaption = () => wrapper.findByTestId('slot-table-caption');
   const findFilterInput = () => wrapper.findComponent(GlFormInput);
 
   describe('default', () => {
@@ -69,15 +52,9 @@ describe('behaviors/components/json_table', () => {
       buildWrapper();
     });
 
-    it('renders gltable', () => {
-      expect(findTable().props()).toMatchObject({
-        fields: [],
-        items: [],
-      });
-      expect(findTable().attributes()).toMatchObject({
-        filter: '',
-        'show-empty': '',
-      });
+    it('renders a GLTable', () => {
+      expect(findTable().props()).toMatchObject({ fields: ['A'] });
+      expect(findTable().html()).toContain('Foo bar');
     });
 
     it('does not render filter input', () => {
@@ -85,7 +62,7 @@ describe('behaviors/components/json_table', () => {
     });
 
     it('renders caption', () => {
-      expect(findTableCaption().text()).toBe('Generated with JSON data');
+      expect(findTable().text()).toContain('Generated with JSON data');
     });
   });
 
@@ -97,22 +74,23 @@ describe('behaviors/components/json_table', () => {
     });
 
     it('renders filter input', () => {
-      expect(findFilterInput().attributes()).toMatchObject({
+      expect(findFilterInput().props()).toMatchObject({
         value: '',
         placeholder: 'Type to search',
       });
     });
 
     it('when input is changed, updates table filter', async () => {
-      findFilterInput().vm.$emit('input', 'New value!');
+      await findFilterInput().vm.$emit('input', 'New value!');
 
-      await nextTick();
-
-      expect(findTable().attributes('filter')).toBe('New value!');
+      expect(findFilterInput().props()).toMatchObject({
+        placeholder: 'Type to search',
+        value: 'New value!',
+      });
     });
   });
 
-  describe('with fields', () => {
+  describe('with multiple fields', () => {
     beforeEach(() => {
       buildWrapper({
         fields: TEST_FIELDS,
@@ -138,24 +116,39 @@ describe('behaviors/components/json_table', () => {
           },
           'D',
         ],
-        items: TEST_ITEMS,
       });
+
+      const html = findTable().html();
+
+      expect(html).toContain('lorem');
+      expect(html).toContain('ipsum');
+      expect(html).toContain('dolar');
     });
   });
 
-  describe('with full mount', () => {
+  describe('with HTML content', () => {
     beforeEach(() => {
-      wrapper = mountExtended(JSONTable, {
-        propsData: {
-          fields: [],
-          items: [],
-        },
+      buildWrapper({
+        fields: ['AB'],
+        items: [
+          { AB: '<div class="malicious-class" style="position:fixed;">Cell</div>' },
+          { AB: '<div class="malicious-class" style="position:fixed;">Cell</div>' },
+        ],
+        isHtmlSafe: true,
+        caption: `loading ... <i class="js-toggle-container"><i class='js-toggle-lazy-diff file-holder diff-content' style='position:fixed;top:0px;left:0px;right:0px;bottom:0px' data-lines-path='https://gitlab.com/-/snippets/4789748/raw/main/alert.json'> <table><tbody></tbody></table></i>`,
       });
     });
 
-    // We want to make sure all the props are passed down nicely in integration
-    it('renders table without errors', () => {
-      expect(findTable().exists()).toBe(true);
+    it('sanitizes caption and cell HTML by removing class and style attributes', () => {
+      const tableHtml = findTable().html();
+
+      expect(tableHtml).toContain('loading');
+      expect(tableHtml).toContain('Cell');
+
+      expect(tableHtml).not.toContain('i class=');
+      expect(tableHtml).not.toContain('style=');
+      expect(tableHtml).not.toContain('class="malicious-class"');
+      expect(tableHtml).not.toContain('style="position:fixed;"');
     });
   });
 });

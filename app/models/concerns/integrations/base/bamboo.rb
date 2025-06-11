@@ -154,11 +154,11 @@ module Integrations
         params = build_get_params(query_params)
         params[:extra_log_info] = { project_id: project_id }
 
-        Gitlab::HTTP.try_get(build_url(path), params)
+        Clients::HTTP.try_get(build_url(path), params)
       end
 
       def get_path(path, query_params = {})
-        Gitlab::HTTP.get(build_url(path), build_get_params(query_params))
+        Clients::HTTP.get(build_url(path), build_get_params(query_params))
       end
 
       def build_url(path)

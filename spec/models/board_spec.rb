@@ -18,8 +18,21 @@ RSpec.describe Board do
   end
 
   describe 'validations' do
+    let_it_be(:board) { build(:board, project: project) }
+
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:project) }
+
+    it 'validates name length is at most 255 characters when name is changed' do
+      board.name = 'a' * 256
+      expect(board).not_to be_valid
+      expect(board.errors[:name]).to include('is too long (maximum is 255 characters)')
+    end
+
+    it 'allows names up to 255 characters' do
+      board.name = 'a' * 255
+      expect(board).to be_valid
+    end
 
     describe 'group and project mutually exclusive' do
       context 'when project is present' do

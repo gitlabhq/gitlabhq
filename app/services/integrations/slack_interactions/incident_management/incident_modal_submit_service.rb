@@ -83,7 +83,7 @@ module Integrations
             text: text
           }
 
-          Gitlab::HTTP.post(
+          Integrations::Clients::HTTP.post(
             response_url,
             body: Gitlab::Json.dump(body),
             headers: { 'Content-Type' => 'application/json' }
