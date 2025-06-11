@@ -11,6 +11,7 @@ module Ci
 
         def normalize_params
           params[:runner_type] = 'instance_type'
+          params[:organization_id] = nil
         end
 
         def validate_params

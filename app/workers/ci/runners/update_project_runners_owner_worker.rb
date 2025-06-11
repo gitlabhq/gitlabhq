@@ -12,7 +12,7 @@ module Ci
       feature_category :runner
 
       def handle_event(event)
-        ::Ci::Runners::UpdateProjectRunnersOwnerService.new(event.data[:project_id]).execute
+        ::Ci::Runners::UpdateProjectRunnersOwnerService.new(event.data[:project_id], event.data[:namespace_id]).execute
       end
     end
   end

@@ -32,7 +32,11 @@ module Gitlab
               runner_id: runner.id,
               runner_type: runner.runner_type,
               sharding_key_id: runner.sharding_key_id
-            }
+            }.tap do |attrs|
+              next if Feature.disabled?(:populate_organization_id_in_runner_tables, runner.owner)
+
+              attrs.merge!(organization_id: runner.organization_id)
+            end
           end
 
           def polymorphic_taggings?

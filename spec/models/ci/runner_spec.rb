@@ -2164,6 +2164,70 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
   end
 
+  describe '#ensure_organization_id' do
+    context 'with group runner' do
+      let(:runner) { build(:ci_runner, :group, groups: [group]) }
+
+      specify { expect(runner).to be_valid }
+
+      context 'when organization_id is not present' do
+        before do
+          runner.save!
+
+          # Simulate a pre-existing record with a NULL organization_id value
+          runner.update_columns(organization_id: nil)
+        end
+
+        it 'populates organization_id from owner on save', :aggregate_failures do
+          expect { runner.save! }
+            .to change { runner.organization_id }.from(nil).to(runner.owner.organization_id)
+        end
+
+        context 'when populate_organization_id_in_runner_tables FF is disabled' do
+          before do
+            stub_feature_flags(populate_organization_id_in_runner_tables: false)
+          end
+
+          it 'does not populate organization_id from owner on save', :aggregate_failures do
+            expect { runner.save! }
+              .not_to change { runner.organization_id }.from(nil)
+          end
+        end
+      end
+    end
+
+    context 'with project runner' do
+      let(:runner) { build(:ci_runner, :project, projects: [project]) }
+
+      specify { expect(runner).to be_valid }
+
+      context 'when organization_id is not present' do
+        before do
+          runner.save!
+
+          # Simulate a pre-existing record with a NULL organization_id value
+          runner.update_columns(organization_id: nil)
+        end
+
+        it 'populates organization_id from owner on save', :aggregate_failures do
+          expect { runner.save! }
+            .to change { runner.organization_id }.from(nil).to(runner.owner.organization_id)
+        end
+
+        context 'when populate_organization_id_in_runner_tables FF is disabled' do
+          before do
+            stub_feature_flags(populate_organization_id_in_runner_tables: false)
+          end
+
+          it 'does not populate organization_id from owner on save', :aggregate_failures do
+            expect { runner.save! }
+              .not_to change { runner.organization_id }.from(nil)
+          end
+        end
+      end
+    end
+  end
+
   describe '.with_upgrade_status' do
     subject(:scope) { described_class.with_upgrade_status(upgrade_status) }
 

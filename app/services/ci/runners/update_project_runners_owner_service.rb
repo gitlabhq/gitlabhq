@@ -7,8 +7,13 @@ module Ci
       BATCH_SIZE = 1000
 
       # @param [Int] project_id: the ID of the deleted project
-      def initialize(project_id)
+      # @param [Int] namespace_id: the ID of the parent namespace of the deleted project
+      def initialize(project_id, namespace_id)
         @project_id = project_id
+        @organization_id =
+          if Feature.enabled?(:populate_organization_id_in_runner_tables, Project.actor_from_id(project_id))
+            Namespace.find(namespace_id).organization_id
+          end
       end
 
       def execute
@@ -57,9 +62,16 @@ module Ci
         # rubocop: disable CodeReuse/ActiveRecord -- this query is too specific to generalize on the models
         runner_projects = Ci::RunnerProject.where(Ci::RunnerProject.arel_table[:runner_id].eq(runner_id_column))
 
-        <<~SQL
-          sharding_key_id = (#{runner_projects.order(id: :asc).limit(1).select(:project_id).to_sql})
-        SQL
+        if @organization_id.nil?
+          <<~SQL
+            sharding_key_id = (#{runner_projects.order(id: :asc).limit(1).select(:project_id).to_sql})
+          SQL
+        else
+          <<~SQL
+            sharding_key_id = (#{runner_projects.order(id: :asc).limit(1).select(:project_id).to_sql}),
+            organization_id = #{@organization_id}
+          SQL
+        end
         # rubocop: enable CodeReuse/ActiveRecord
       end
     end

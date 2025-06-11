@@ -36,6 +36,8 @@ gitlab:
     application_settings_cache_seconds: 0
     puma:
       threads_max: 6
+postgresql:
+  max_connections: 200
 gitlab_k8s_agent:
   enabled: false
 gitlab_pages:

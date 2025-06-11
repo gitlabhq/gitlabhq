@@ -179,7 +179,6 @@ If the import is successful, the new compliance framework appears in the list. A
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186525) in GitLab 17.11 [with a flag](../../../administration/feature_flags.md) named `enable_standards_adherence_dashboard_v2`. Enabled by default.
-- External control name [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192177) in GitLab 18.1.
 
 {{< /history >}}
 
@@ -203,7 +202,7 @@ Combine GitLab compliance controls to help you meet
 
 | Control name                                             | Control ID                                                 | Description |
 |:---------------------------------------------------------|:-----------------------------------------------------------|:------------|
-| API security running                                     | `scanner_api_security_running`                             | Ensures that [API security scanning](../../application_security/api_security/_index.md) is configured and running in the project pipelines. |
+| API security running                                     | `scanner_api_security_running`                             | Ensures that [API security scanning](../../application_security/api_security/_index.md) is configured and running in the project's default branch pipeline. |
 | At least one approval                                    | `minimum_approvals_required_1`                             | Ensures that merge requests [require at least one approvals](../../project/merge_requests/approvals/_index.md) before merging. |
 | At least two approvals                                   | `minimum_approvals_required_2`                             | Ensures that merge requests [require at least two approvals](../../project/merge_requests/approvals/_index.md) before merging. |
 | Auth SSO enabled                                         | `auth_sso_enabled`                                         | Ensures that [Single Sign-On (SSO) authentication](../../group/saml_sso/_index.md) is enabled for the project. |
@@ -212,26 +211,26 @@ Combine GitLab compliance controls to help you meet
 | CI/CD job token scope enabled                            | `cicd_job_token_scope_enabled`                             | Ensures that [CI/CD job token](../../../ci/jobs/ci_job_token.md) scope restrictions are enabled. |
 | Code changes requires code owners                        | `code_changes_requires_code_owners`                        | Ensures that code changes require approval from [code owners](../../project/codeowners/_index.md). |
 | Code owner approval required                             | `code_owner_approval_required`                             | Ensures that [code owners file](../../project/codeowners/_index.md) is configured. |
-| Code quality running                                     | `scanner_code_quality_running`                             | Ensures that [code quality scanning](../../../ci/testing/code_quality.md) is configured and running in the project pipelines. |
+| Code quality running                                     | `scanner_code_quality_running`                             | Ensures that [code quality scanning](../../../ci/testing/code_quality.md) is configured and running in the project's default branch pipeline. |
 | Committers approved merge request is forbidden           | `merge_request_prevent_committers_approval`                | Ensures that users who have [committed to a merge request cannot approve it](../../project/merge_requests/approvals/_index.md). |
-| Container scanning running                               | `scanner_container_scanning_running`                       | Ensures that [container scanning](../../application_security/container_scanning/_index.md) is configured and running in the project pipelines. |
-| DAST running                                             | `scanner_dast_running`                                     | Ensures that [Dynamic Application Security Testing](../../application_security/dast/_index.md) (DAST) is configured and running in the project pipelines. |
+| Container scanning running                               | `scanner_container_scanning_running`                       | Ensures that [container scanning](../../application_security/container_scanning/_index.md) is configured and running in the project's default branch pipeline. |
+| DAST running                                             | `scanner_dast_running`                                     | Ensures that [Dynamic Application Security Testing](../../application_security/dast/_index.md) (DAST) is configured and running in the project's default branch pipeline. |
 | Default branch protected                                 | `default_branch_protected`                                 | Ensures that the default branch has [protection rules](../../project/repository/branches/protected.md) enabled. |
 | Default branch protected from direct push                | `default_branch_protected_from_direct_push`                | [Prevents direct pushes to the default branch](../../project/repository/branches/protected.md). |
 | Default branch users can merge                           | `default_branch_users_can_merge`                           | Controls [whether users can merge changes to the default branch](../../project/repository/branches/protected.md). |
 | Default branch users can push                            | `default_branch_users_can_push`                            | Controls [whether users can push directly to the default branch](../../project/repository/branches/protected.md). |
-| Dependency scanning running                              | `scanner_dep_scanning_running`                             | Ensures that [dependency scanning](../../application_security/dependency_scanning/_index.md) is configured and running in the project pipelines. |
+| Dependency scanning running                              | `scanner_dep_scanning_running`                             | Ensures that [dependency scanning](../../application_security/dependency_scanning/_index.md) is configured and running in the project's default branch pipeline. |
 | Ensure two administrators per repository                 | `ensure_2_admins_per_repo`                                 | Ensures that [at least two administrators](../../project/members/_index.md) are assigned to each repository. |
 | Error tracking enabled                                   | `error_tracking_enabled`                                   | Ensures that [error tracking](../../../operations/error_tracking.md) is enabled for the project. |
 | Force push disabled                                      | `force_push_disabled`                                      | Prevents [force pushing](../../project/repository/branches/protected.md) to repositories. |
 | Forks exist for the project                              | `has_forks`                                                | Ensures that the project has been [forked](../../project/repository/forking_workflow.md) |
-| Fuzz testing running                                     | `scanner_fuzz_testing_running`                             | Ensures that [fuzz testing](../../application_security/coverage_fuzzing/_index.md) is configured and running in the project pipelines. |
+| Fuzz testing running                                     | `scanner_fuzz_testing_running`                             | Ensures that [fuzz testing](../../application_security/coverage_fuzzing/_index.md) is configured and running in the project's default branch pipeline. |
 | GitLab license level Ultimate                            | `gitlab_license_level_ultimate`                            | Ensures that the GitLab instance is using an [Ultimate license](https://about.gitlab.com/pricing/feature-comparison/). |
 | Has valid CI/CD configuration                            | `has_valid_ci_config`                                      | Ensures that the project has a [valid CI/CD configuration](../../../ci/yaml/_index.md). |
-| IaC scanning running                                     | `scanner_iac_running`                                      | Ensures [Infrastructure as Code (IaC) scanning](../../application_security/iac_scanning/_index.md) is configured and running in the project pipelines. |
+| IaC scanning running                                     | `scanner_iac_running`                                      | Ensures [Infrastructure as Code (IaC) scanning](../../application_security/iac_scanning/_index.md) is configured and running in the project's default branch pipeline. |
 | Internal visibility is forbidden                         | `project_visibility_not_internal`                          | Ensures that projects are not set to [internal visibility](../../public_access.md). |
 | Issue tracking enabled                                   | `issue_tracking_enabled`                                   | Ensures that [issue tracking](../../project/issues/_index.md) is enabled for the project. |
-| License compliance running                               | `scanner_license_compliance_running`                       | Ensures that [license compliance scanning](../license_approval_policies.md) is configured and running in the project pipelines. |
+| License compliance running                               | `scanner_license_compliance_running`                       | Ensures that [license compliance scanning](../license_approval_policies.md) is configured and running in the project's default branch pipeline. |
 | Merge request commit reset approvals                     | `merge_request_commit_reset_approvals`                     | Ensures that [new commits to merge requests reset approvals](../../project/merge_requests/approvals/settings.md). |
 | Merge requests approval rules prevent editing            | `merge_requests_approval_rules_prevent_editing`            | Ensures that [merge request approval rules](../../project/merge_requests/approvals/settings.md) can't be edited. |
 | Merge requests require code owner approval               | `merge_requests_require_code_owner_approval`               | Ensures that merge requests require approval from [code owners](../../project/codeowners/_index.md). |
@@ -255,8 +254,8 @@ Combine GitLab compliance controls to help you meet
 | Restricted build access                                  | `restricted_build_access`                                  | Ensures [restricted access to build artifacts and pipeline outputs](../../../ci/pipelines/settings.md). |
 | Review and archive stale repositories                    | `review_and_archive_stale_repos`                           | Ensures that stale repositories are reviewed and [archived](../../project/settings/_index.md). |
 | Review and remove inactive users                         | `review_and_remove_inactive_users`                         | Ensures that [inactive users](../../../administration/admin_area.md) are reviewed and removed. |
-| SAST running                                             | `scanner_sast_running`                                     | Ensures that [Static Application Security Testing](../../application_security/sast/_index.md) (SAST) is configured and running in the project pipelines. |
-| Secret detection running                                 | `scanner_secret_detection_running`                         | Ensures that [secret detection scanning](../../application_security/secret_detection/_index.md) is configured and running in the project pipelines. |
+| SAST running                                             | `scanner_sast_running`                                     | Ensures that [Static Application Security Testing](../../application_security/sast/_index.md) (SAST) is configured and running in the project's default branch pipeline. |
+| Secret detection running                                 | `scanner_secret_detection_running`                         | Ensures that [secret detection scanning](../../application_security/secret_detection/_index.md) is configured and running in the project's default branch pipeline. |
 | Secure webhooks                                          | `secure_webhooks`                                          | Ensures that [webhooks](../../project/integrations/webhooks.md) are securely configured. |
 | Stale branch cleanup enabled                             | `stale_branch_cleanup_enabled`                             | Ensures that [automatic cleanup of stale branches](../../project/repository/branches/_index.md) is enabled. |
 | Status checks required                                   | `status_checks_required`                                   | Ensures that [status checks](../../project/merge_requests/status_checks.md) must pass before merging is allowed. |
@@ -267,6 +266,12 @@ Combine GitLab compliance controls to help you meet
 | Vulnerabilities SLO days over threshold                  | `vulnerabilities_slo_days_over_threshold`                  | Ensures that [vulnerabilities are addressed](../../application_security/vulnerabilities/_index.md) inside SLO thresholds (180 days). |
 
 ### External controls
+
+{{< history >}}
+
+- External control name [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192177) in GitLab 18.1.
+
+{{< /history >}}
 
 External controls are API calls to external systems that request the status of an external control or requirement.
 

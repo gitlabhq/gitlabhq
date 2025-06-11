@@ -19,13 +19,19 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedCiRunnerMachineRecords
       SQL
 
       create_runner_and_runner_manager(id: 1, runner_type: 1, system_xid: 'system1')
-      create_runner_and_runner_manager(id: 2, runner_type: 2, sharding_key_id: 89, system_xid: 'system2')
-      runner_managers.create!(
-        id: 3, runner_id: non_existing_record_id, runner_type: 2, sharding_key_id: 100, system_xid: 'system2'
+      create_runner_and_runner_manager(
+        id: 2, runner_type: 2, sharding_key_id: 89, organization_id: 1, system_xid: 'system2'
       )
-      create_runner_and_runner_manager(id: 4, runner_type: 3, sharding_key_id: 10, system_xid: 'system2')
       runner_managers.create!(
-        id: 5, runner_id: non_existing_record_id, runner_type: 3, sharding_key_id: 100, system_xid: 'system3'
+        id: 3, runner_id: non_existing_record_id, runner_type: 2, sharding_key_id: 100, organization_id: 1,
+        system_xid: 'system2'
+      )
+      create_runner_and_runner_manager(
+        id: 4, runner_type: 3, organization_id: 1, sharding_key_id: 10, system_xid: 'system2'
+      )
+      runner_managers.create!(
+        id: 5, runner_id: non_existing_record_id, runner_type: 3, sharding_key_id: 100, organization_id: 1,
+        system_xid: 'system3'
       )
 
       connection.execute(<<~SQL)

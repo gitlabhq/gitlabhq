@@ -10,6 +10,7 @@ FactoryBot.define do
     after(:build) do |runner_manager, evaluator|
       runner_manager.runner_type ||= evaluator.runner.runner_type
       runner_manager.sharding_key_id ||= evaluator.runner.sharding_key_id
+      runner_manager.organization_id ||= evaluator.runner.organization_id
     end
 
     trait :unregistered do

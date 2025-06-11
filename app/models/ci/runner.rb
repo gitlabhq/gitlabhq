@@ -110,6 +110,7 @@ module Ci
 
     belongs_to :creator, class_name: 'User', optional: true
 
+    before_validation :ensure_organization_id, on: :update
     before_save :ensure_token
     after_destroy :cleanup_runner_queue
 
@@ -549,6 +550,7 @@ module Ci
       RunnerManager.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s) do |m|
         m.runner_type = runner_type
         m.sharding_key_id = sharding_key_id
+        m.organization_id = organization_id
       end
       # rubocop: enable Performance/ActiveRecordSubtransactionMethods
     end
@@ -619,6 +621,13 @@ module Ci
       Project.id_in(runner_projects.map(&:project_id))
         .filter_map(&:effective_runner_token_expiration_interval)
         .min&.from_now
+    end
+
+    def ensure_organization_id
+      return if Feature.disabled?(:populate_organization_id_in_runner_tables, owner)
+      return unless instance_type? || owner.present?
+
+      self.organization_id = instance_type? ? nil : owner.organization_id
     end
 
     def cleanup_runner_queue

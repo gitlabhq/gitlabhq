@@ -32,6 +32,7 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
       data-testid="crud-actions"
     >
       <gl-button-stub
+        aria-label="Approved list help popover"
         buttontextclasses=""
         category="primary"
         class="gl-mr-2 gl-self-center"

@@ -70,7 +70,7 @@
               .js-verification-alert{ data: identity_verification_alert_data(@merge_request) }
               = render "projects/merge_requests/widget"
               - if mr_action === "show"
-                - add_page_startup_api_call discussions_path(@merge_request, per_page: 20)
+                - add_page_startup_api_call discussions_path(@merge_request, per_page: 20, notes_filter: 0, persist_filter: false)
                 - add_page_startup_api_call widget_project_json_merge_request_path(@project, @merge_request, format: :json)
                 - add_page_startup_api_call cached_widget_project_json_merge_request_path(@project, @merge_request, format: :json)
               #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request).to_json,

@@ -43,14 +43,14 @@ module Ci
 
       def attrs_from_token
         if runner_registration_token_valid?(registration_token)
-          # Create shared runner. Requires admin access
-          { runner_type: :instance_type }
+          # Create instance runner. Requires admin access
+          { runner_type: :instance_type, organization_id: nil }
         elsif runner_registrar_valid?('project') && project = ::Project.find_by_runners_token(registration_token)
           # Create a project runner
-          { runner_type: :project_type, projects: [project], sharding_key_id: project.id }
+          { runner_type: :project_type, projects: [project], sharding_key_id: project.id, organization_id: project.organization_id }
         elsif runner_registrar_valid?('group') && group = ::Group.find_by_runners_token(registration_token)
           # Create a group runner
-          { runner_type: :group_type, groups: [group], sharding_key_id: group.id }
+          { runner_type: :group_type, groups: [group], sharding_key_id: group.id, organization_id: group.organization_id }
         elsif registration_token.present? && !Gitlab::CurrentSettings.allow_runner_registration_token
           {} # Will result in a :runner_registration_disallowed response
         end
