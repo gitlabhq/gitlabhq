@@ -13,7 +13,15 @@ title: GitLab Dedicated maintenance and release schedule
 
 {{< /details >}}
 
-GitLab performs regular maintenance to your GitLab Dedicated instance. This page outlines the maintenance windows and release upgrade schedule.
+Regular maintenance is performed on GitLab Dedicated instances according to scheduled maintenance windows and release upgrade timelines.
+
+During scheduled maintenance windows, the following tasks might be performed:
+
+- Application and operating system software patches and upgrades.
+- Operating system restarts.
+- Infrastructure upgrades.
+- Activities needed to operate and enhance the availability or security of your tenant.
+- Feature enhancements.
 
 ## Maintenance windows
 
@@ -26,7 +34,8 @@ Maintenance is performed outside standard working hours:
 | Americas (Option 1) | Tuesday | 07:00 - 11:00 |
 | Americas (Option 2) | Sunday-Monday | 21:00 - 01:00 |
 
-View your maintenance window in [Switchboard](tenant_overview.md#maintenance-windows), including upcoming and recent maintenance. You can postpone scheduled maintenance to another window in the same week by contacting your Customer Success Manager at least one week in advance.
+View your maintenance window in [Switchboard](tenant_overview.md#maintenance-windows), including upcoming and recent maintenance.
+You can postpone scheduled maintenance to another window in the same week by contacting your Customer Success Manager at least one week in advance.
 
 {{< alert type="note" >}}
 
@@ -64,7 +73,7 @@ For example, GitLab 16.9 released on 2024-02-15. Instances in the EMEA and Ameri
 
 {{< alert type="note" >}}
 
-If a production change lock (PCL) is active during a scheduled upgrade, GitLab defers the upgrade to the first maintenance window after the PCL ends. 
+If a production change lock (PCL) is active during a scheduled upgrade, GitLab defers the upgrade to the first maintenance window after the PCL ends.
 
 A PCL for GitLab Dedicated is a complete pause on all production changes during periods of reduced team availability such as major holidays. During a PCL, the following is paused:
 

@@ -37980,7 +37980,13 @@ msgstr ""
 msgid "MemberRole|This role is available by default and cannot be changed."
 msgstr ""
 
-msgid "MemberRole|To delete custom role, remove role from all users."
+msgid "MemberRole|To delete custom admin role, remove role from all users."
+msgstr ""
+
+msgid "MemberRole|To delete custom member role, remove role from all group and project members."
+msgstr ""
+
+msgid "MemberRole|To delete custom member role, remove role from the following security policies:"
 msgstr ""
 
 msgid "MemberRole|Unable to export role report. Contact support if this error persists."
@@ -38002,12 +38008,6 @@ msgid "MemberRole|View LDAP synced users"
 msgstr ""
 
 msgid "MemberRole|View permissions"
-msgstr ""
-
-msgid "MemberRole|You can't delete this custom role until you remove it from all group members."
-msgstr ""
-
-msgid "MemberRole|You can't delete this custom role until you remove it from all security policies:"
 msgstr ""
 
 msgid "MemberRole|You must fill out all required fields."

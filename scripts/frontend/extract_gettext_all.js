@@ -6,7 +6,6 @@ const {
   decorateExtractorWithHelpers,
 } = require('gettext-extractor-vue');
 const vue2TemplateCompiler = require('vue-template-compiler');
-const ensureSingleLine = require('../../app/assets/javascripts/locale/ensure_single_line.cjs');
 
 program
   .option('-f, --file <file>', 'Extract message from one single file')
@@ -16,6 +15,17 @@ program
 const args = program.opts();
 
 const extractor = decorateExtractorWithHelpers(new GettextExtractor());
+
+function ensureSingleLine(str) {
+  // This guard makes the function significantly faster
+  if (str.includes('\n') || str.includes('\r')) {
+    return str
+      .split(/\s*[\r\n]+\s*/)
+      .filter((s) => s !== '')
+      .join(' ');
+  }
+  return str;
+}
 
 extractor.addMessageTransformFunction(ensureSingleLine);
 

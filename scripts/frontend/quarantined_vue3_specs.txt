@@ -78,7 +78,6 @@ spec/frontend/ci/runner/components/runner_filtered_search_bar_spec.js
 spec/frontend/ci_settings_pipeline_triggers/components/edit_trigger_modal_spec.js
 spec/frontend/clusters/agents/components/activity_history_item_spec.js
 spec/frontend/clusters/agents/components/revoke_token_button_spec.js
-spec/frontend/clusters/agents/components/show_spec.js
 spec/frontend/clusters/components/new_cluster_spec.js
 spec/frontend/clusters/components/remove_cluster_confirmation_spec.js
 spec/frontend/clusters_list/components/delete_agent_button_spec.js

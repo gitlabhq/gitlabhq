@@ -1,6 +1,6 @@
 import { GlAlert, GlKeysetPagination, GlLoadingIcon, GlSprintf, GlTab, GlButton } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
@@ -17,8 +17,7 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { MAX_LIST_COUNT } from '~/clusters/agents/constants';
 import { CONNECT_MODAL_ID } from '~/clusters_list/constants';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 describe('ClusterAgentShow', () => {
   let wrapper;
@@ -58,7 +57,6 @@ describe('ClusterAgentShow', () => {
 
     wrapper = extendedWrapper(
       shallowMount(ClusterAgentShow, {
-        localVue,
         apolloProvider,
         provide,
         stubs: { GlSprintf, TimeAgoTooltip, GlTab },
@@ -69,13 +67,22 @@ describe('ClusterAgentShow', () => {
     );
   };
 
-  const createWrapperWithoutApollo = ({ clusterAgent, loading = false, slots = {} }) => {
-    const $apollo = { queries: { clusterAgent: { loading } } };
+  const createWrapperForLoading = ({ clusterAgent, loading = false, slots = {} }) => {
+    let queryResponse;
+    if (loading) {
+      queryResponse = jest.fn().mockReturnValue(new Promise(() => {}));
+    } else {
+      queryResponse = jest
+        .fn()
+        .mockResolvedValue({ data: { project: { id: 'project-1', clusterAgent } } });
+    }
+
+    const apolloProvider = createMockApollo([[getAgentQuery, queryResponse]]);
 
     wrapper = extendedWrapper(
       shallowMount(ClusterAgentShow, {
+        apolloProvider,
         provide,
-        mocks: { $apollo, clusterAgent },
         slots,
         stubs: { GlTab },
       }),
@@ -245,12 +252,12 @@ describe('ClusterAgentShow', () => {
 
     describe('when the clusterAgent is present', () => {
       beforeEach(() => {
-        createWrapperWithoutApollo({ clusterAgent: defaultClusterAgent, loading: true });
+        createWrapperForLoading({ clusterAgent: defaultClusterAgent, loading: true });
       });
 
-      it('displays a loading icon and token tab', () => {
+      it('displays a loading icon and no token tab', () => {
         expect(findLoadingIcon().exists()).toBe(true);
-        expect(wrapper.text()).toContain(ClusterAgentShow.i18n.tokens);
+        expect(wrapper.text()).not.toContain(ClusterAgentShow.i18n.tokens);
       });
     });
   });
@@ -269,38 +276,38 @@ describe('ClusterAgentShow', () => {
 
   describe('ee-security-tab slot', () => {
     it('does not display when a slot is not passed in', async () => {
-      createWrapperWithoutApollo({ clusterAgent: defaultClusterAgent });
-      await nextTick();
+      createWrapperForLoading({ clusterAgent: defaultClusterAgent });
+      await waitForPromises();
       expect(findEESecurityTabSlot().exists()).toBe(false);
     });
 
     it('does display when a slot is passed in', async () => {
-      createWrapperWithoutApollo({
+      createWrapperForLoading({
         clusterAgent: defaultClusterAgent,
         slots: {
           'ee-security-tab': `<gl-tab data-testid="ee-security-tab">Security Tab!</gl-tab>`,
         },
       });
-      await nextTick();
+      await waitForPromises();
       expect(findEESecurityTabSlot().exists()).toBe(true);
     });
   });
 
   describe('ee-workspaces-tab slot', () => {
     it('does not display when a slot is not passed in', async () => {
-      createWrapperWithoutApollo({ clusterAgent: defaultClusterAgent });
-      await nextTick();
+      createWrapperForLoading({ clusterAgent: defaultClusterAgent });
+      await waitForPromises();
       expect(findEEWorkspacesTabSlot().exists()).toBe(false);
     });
 
     it('does display when a slot is passed in', async () => {
-      createWrapperWithoutApollo({
+      createWrapperForLoading({
         clusterAgent: defaultClusterAgent,
         slots: {
           'ee-workspaces-tab': `<gl-tab data-testid="ee-workspaces-tab">Workspaces Tab!</gl-tab>`,
         },
       });
-      await nextTick();
+      await waitForPromises();
       expect(findEEWorkspacesTabSlot().exists()).toBe(true);
     });
   });

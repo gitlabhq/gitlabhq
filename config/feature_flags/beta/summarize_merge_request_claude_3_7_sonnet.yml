@@ -1,9 +1,0 @@
----
-name: summarize_merge_request_claude_3_7_sonnet
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/521400
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182958
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/521699
-milestone: '17.10'
-group: group::code review
-type: beta
-default_enabled: true

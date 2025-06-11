@@ -4,7 +4,6 @@ import path from 'node:path';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue2';
 import graphql from '@rollup/plugin-graphql';
-import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import webpackConfig from './config/webpack.config';
 import {
   IS_EE,
@@ -108,9 +107,6 @@ export default defineConfig({
       },
     }),
     graphql(),
-    viteCommonjs({
-      include: [path.resolve(javascriptsPath, 'locale/ensure_single_line.cjs')],
-    }),
     CrossOriginWorkerPlugin(),
   ],
   define: {
@@ -167,5 +163,13 @@ export default defineConfig({
   },
   worker: {
     format: 'es',
+  },
+  build: {
+    // speed up build in CI by disabling sourcemaps and compression
+    // TODO: allow sourcemaps and compression when we are ready for Vite in production
+    sourcemap: false,
+    minify: false,
+    cssMinify: false,
+    reportCompressedSize: false,
   },
 });

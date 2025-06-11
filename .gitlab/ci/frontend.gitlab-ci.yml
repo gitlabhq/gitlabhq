@@ -83,6 +83,24 @@ compile-test-assets:
       - "${WEBPACK_COMPILE_LOG_PATH}"
     when: always
 
+build-vite-prod:
+  extends:
+    - .production
+    - .default-retry
+    - .with-ci-node-image
+    - .frontend:rules:compile-production-assets
+  artifacts:
+    expire_in: 1h
+    paths:
+      - public/vite-dev/
+  stage: prepare
+  needs: []
+  script:
+    - source scripts/utils.sh
+    - yarn_install_script
+    - yarn vite-prod
+  allow_failure: true
+
 gdk:compile-test-assets:
   extends:
     - compile-test-assets

@@ -7,7 +7,7 @@ const SPLIT_REGEX = /\s*[\r\n]+\s*/;
  * @param {string} - str
  * @returns {string}
  */
-module.exports = function ensureSingleLine(str) {
+export function ensureSingleLine(str) {
   // This guard makes the function significantly faster
   if (str.includes('\n') || str.includes('\r')) {
     return str
@@ -16,4 +16,4 @@ module.exports = function ensureSingleLine(str) {
       .join(' ');
   }
   return str;
-};
+}

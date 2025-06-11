@@ -65,7 +65,6 @@ Gitlab/RSpec/MisplacedEeSpecFile:
     - 'ee/spec/graphql/types/gitlab_subscriptions/member_management/users_queued_for_role_promotion_type_spec.rb'
     - 'ee/spec/graphql/types/issue_connection_type_spec.rb'
     - 'ee/spec/graphql/types/issue_type_spec.rb'
-    - 'ee/spec/graphql/types/namespaces/user_level_permissions/group_namespace_user_level_permissions_type_spec.rb'
     - 'ee/spec/graphql/types/permission_types/group_spec.rb'
     - 'ee/spec/graphql/types/permission_types/namespaces/base_spec.rb'
     - 'ee/spec/graphql/types/permission_types/project_spec.rb'

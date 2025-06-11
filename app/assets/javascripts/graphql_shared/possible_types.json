@@ -301,11 +301,6 @@
     "MergeRequestReviewer",
     "UserCore"
   ],
-  "UserLevelPermissions": [
-    "GroupNamespaceUserLevelPermissions",
-    "ProjectNamespaceUserLevelPermissions",
-    "UserNamespaceUserLevelPermissions"
-  ],
   "VulnerabilityDetail": [
     "VulnerabilityDetailBase",
     "VulnerabilityDetailBoolean",

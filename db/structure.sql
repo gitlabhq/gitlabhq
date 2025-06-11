@@ -18102,6 +18102,7 @@ CREATE TABLE namespace_settings (
     disable_invite_members boolean DEFAULT false NOT NULL,
     web_based_commit_signing_enabled boolean,
     lock_web_based_commit_signing_enabled boolean DEFAULT false NOT NULL,
+    allow_enterprise_bypass_placeholder_confirmation boolean DEFAULT false NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT check_namespace_settings_security_policies_is_hash CHECK ((jsonb_typeof(security_policies) = 'object'::text)),
     CONSTRAINT namespace_settings_unique_project_download_limit_alertlist_size CHECK ((cardinality(unique_project_download_limit_alertlist) <= 100)),
@@ -29418,7 +29419,7 @@ ALTER TABLE ONLY ci_build_pending_states
     ADD CONSTRAINT ci_build_pending_states_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ci_build_report_results
-    ADD CONSTRAINT ci_build_report_results_pkey PRIMARY KEY (build_id);
+    ADD CONSTRAINT ci_build_report_results_pkey PRIMARY KEY (build_id, partition_id);
 
 ALTER TABLE ONLY ci_build_trace_chunks
     ADD CONSTRAINT ci_build_trace_chunks_pkey PRIMARY KEY (id);
@@ -34461,8 +34462,6 @@ CREATE INDEX index_ci_build_needs_on_project_id ON ci_build_needs USING btree (p
 CREATE UNIQUE INDEX index_ci_build_pending_states_on_build_id ON ci_build_pending_states USING btree (build_id);
 
 CREATE INDEX index_ci_build_pending_states_on_project_id ON ci_build_pending_states USING btree (project_id);
-
-CREATE UNIQUE INDEX index_ci_build_report_results_on_partition_id_build_id ON ci_build_report_results USING btree (partition_id, build_id);
 
 CREATE INDEX index_ci_build_report_results_on_project_id ON ci_build_report_results USING btree (project_id);
 
