@@ -2,6 +2,24 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.11.4 (2025-06-11)
+
+### Fixed (2 changes)
+
+- [Fix gitpod button is missing in the edit dropdown](https://gitlab.com/gitlab-org/security/gitlab/-/commit/813a005dc240c1bfafc313ded694317a96f1a877)
+- [Attempt to migrate ci_runner_taggings table (try 2)](https://gitlab.com/gitlab-org/security/gitlab/-/commit/706a075f79838d5d8421c5eae2e96a7601164201)
+
+### Security (8 changes)
+
+- [Protect webhook from excessive payload lengths](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a0d74cdeed26661b221446efc90fb5bd19b54d95) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5060))
+- [Endless Redirect Loop in any project when query param "format" is "git"](https://gitlab.com/gitlab-org/security/gitlab/-/commit/24d25f0b270337679bcfe282370ad169d137471f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5039))
+- [Backport for "Add validation for board name length" to 17-11-stable](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5ed051286369ec256431faeb44a16c848b6d0edc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5045))
+- [Fix # #1329 - IDOR in compliance framework export endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/071c88429e0974fdf1c0d67e7ba9d1f419843244) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5043))
+- [security: Git redirection inconsistency](https://gitlab.com/gitlab-org/security/gitlab/-/commit/373f9840af59eae05b14ea200fa10c1e4ecd7367) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5019))
+- [Fix XSS with CSP bypass in JSON tables](https://gitlab.com/gitlab-org/security/gitlab/-/commit/862a14acb446e9f7ce962404d8d472b19d832ff8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4987))
+- [Limit HTTP response size](https://gitlab.com/gitlab-org/security/gitlab/-/commit/94d20db29203681d75da5642fe4d1da51238863e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5015))
+- [Fix authorization for compliance frameworks projects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0eecdfe1df4254e2674efe9c0e309d9325db5c4b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5035))
+
 ## 17.11.3 (2025-05-21)
 
 ### Fixed (1 change)

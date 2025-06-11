@@ -33,7 +33,7 @@ module BitbucketServer
 
     def get(path, extra_query = {})
       response = retry_with_delay do
-        Gitlab::HTTP.get(build_url(path), basic_auth: auth, headers: accept_headers, query: extra_query)
+        Import::Clients::HTTP.get(build_url(path), basic_auth: auth, headers: accept_headers, query: extra_query)
       end
 
       check_errors!(response)
@@ -45,7 +45,7 @@ module BitbucketServer
 
     def post(path, body)
       response = retry_with_delay do
-        Gitlab::HTTP.post(build_url(path), basic_auth: auth, headers: post_headers, body: body)
+        Import::Clients::HTTP.post(build_url(path), basic_auth: auth, headers: post_headers, body: body)
       end
 
       check_errors!(response)
@@ -63,7 +63,7 @@ module BitbucketServer
       url = delete_url(resource, path)
 
       response = retry_with_delay do
-        Gitlab::HTTP.delete(url, basic_auth: auth, headers: post_headers, body: body)
+        Import::Clients::HTTP.delete(url, basic_auth: auth, headers: post_headers, body: body)
       end
 
       check_errors!(response)

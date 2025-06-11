@@ -246,67 +246,72 @@ RSpec.describe Gitlab::HTTP_V2, feature_category: :shared do
     end
   end
 
-  describe 'logging response size' do
-    context 'when GITLAB_LOG_DECOMPRESSED_RESPONSE_BYTESIZE is not set' do
-      before do
-        stub_full_request('http://example.org', method: :any).to_return(status: 200, body: 'hello world')
-      end
-
-      it 'does not log response size' do
-        expect(described_class.configuration)
-          .not_to receive(:log_with_level)
-
-        described_class.get('http://example.org')
-      end
-
-      context 'when the request is async' do
-        it 'does not log response size' do
-          expect(described_class.configuration)
-            .not_to receive(:log_with_level)
-
-          described_class.get('http://example.org', async: true).execute.value
-        end
-      end
+  describe 'response size limits' do
+    before do
+      stub_full_request('http://example.org', method: :any).to_return(status: 200, body: 'hello world')
     end
 
-    context 'when GITLAB_LOG_DECOMPRESSED_RESPONSE_BYTESIZE is set' do
-      before do
-        described_class::Client.remove_instance_variable(:@should_log_response_size)
-        stub_env('GITLAB_LOG_DECOMPRESSED_RESPONSE_BYTESIZE', 5)
-        stub_full_request('http://example.org', method: :any).to_return(status: 200, body: 'hello world')
+    it 'logs and raises an error if response size is greater than max_bytes' do
+      expect(described_class.configuration).to receive(:log_with_level)
+        .with(:error, { message: "Gitlab::HTTP - Response size too large", size: 11 })
+
+      expect do
+        described_class.get('http://example.org', max_bytes: 1.byte)
+      end.to raise_error(Gitlab::HTTP_V2::ResponseSizeTooLarge)
+    end
+
+    it 'returns the response if size is less than max_bytes' do
+      expect(described_class.configuration).not_to receive(:log_with_level)
+
+      result = described_class.put('http://example.org', max_bytes: 16.bytes)
+
+      expect(result.body).to eq('hello world')
+    end
+
+    it 'returns the response if max_bytes is not provided' do
+      result = described_class.put('http://example.org')
+
+      expect(result.body).to eq('hello world')
+    end
+
+    it 'returns the response if max_bytes is 0' do
+      result = described_class.put('http://example.org', max_bytes: 0)
+
+      expect(result.body).to eq('hello world')
+    end
+
+    context 'when the request is async' do
+      it 'logs and raises an error if response size is greater than max_bytes' do
+        expect(described_class.configuration).to receive(:log_with_level)
+          .with(:error, { message: "Gitlab::HTTP - Response size too large", size: 11 })
+
+        expect do
+          described_class.get('http://example.org', max_bytes: 1.byte, async: true).execute.value
+        end.to raise_error(Gitlab::HTTP_V2::ResponseSizeTooLarge)
       end
 
-      it 'logs the response size' do
-        expect(described_class.configuration)
-          .to receive(:log_with_level)
-          .with(:debug, { message: "gitlab/http: response size", size: 11 })
-          .once
+      it 'returns the response if size is less than max_bytes' do
+        expect(described_class.configuration).not_to receive(:log_with_level)
 
-        described_class.get('http://example.org')
+        result = described_class.put('http://example.org', max_bytes: 16.bytes, async: true)
+
+        expect(result.execute.value.body).to eq('hello world')
       end
 
-      context 'when the request is async' do
-        it 'logs response size' do
-          expect(described_class.configuration)
-            .to receive(:log_with_level)
-            .with(:debug, { message: "gitlab/http: response size", size: 11 })
-            .once
+      it 'returns the response if max_bytes is not provided' do
+        expect(described_class.configuration).not_to receive(:log_with_level)
 
-          described_class.get('http://example.org', async: true).execute.value
-        end
+        result = described_class.put('http://example.org', async: true)
+
+        expect(result.execute.value.body).to eq('hello world')
       end
 
-      context 'and the response size is smaller than the limit' do
-        before do
-          stub_env('GITLAB_LOG_DECOMPRESSED_RESPONSE_BYTESIZE', 50)
-        end
+      it 'returns the response if max_bytes is 0' do
+        expect(described_class.configuration).not_to receive(:log_with_level)
 
-        it 'does not log the response size' do
-          expect(described_class.configuration)
-            .not_to receive(:log_with_level)
+        result = described_class.put('http://example.org', max_bytes: 0, async: true)
 
-          described_class.get('http://example.org')
-        end
+        expect(result.execute.value.body).to eq('hello world')
       end
     end
   end

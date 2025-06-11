@@ -17,7 +17,7 @@ module Bitbucket
 
     def get(path, extra_query = {})
       response = retry_with_exponential_backoff do
-        Gitlab::HTTP.get(build_url(path), basic_auth: basic_auth, headers: headers, query: extra_query)
+        Import::Clients::HTTP.get(build_url(path), basic_auth: basic_auth, headers: headers, query: extra_query)
       end
 
       response.parsed_response

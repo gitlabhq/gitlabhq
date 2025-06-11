@@ -24,7 +24,7 @@ RSpec.describe Gitlab::Chat::Responder::Mattermost, feature_category: :integrati
     it 'sends a response back to Slack' do
       expect(Gitlab::HTTP).to receive(:post).with(
         'http://example.com',
-        { headers: { 'Content-Type': 'application/json' }, body: 'hello'.to_json }
+        { headers: { 'Content-Type': 'application/json' }, body: 'hello'.to_json, max_bytes: an_instance_of(Integer) }
       )
 
       responder.send_response('hello')

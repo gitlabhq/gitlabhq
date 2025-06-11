@@ -17,7 +17,7 @@ module Slack
       url = "#{BASE_URL}/#{api_method}"
       headers = BASE_HEADERS.merge('Authorization' => "Bearer #{token}")
 
-      Gitlab::HTTP.post(url, body: payload.to_json, headers: headers)
+      Integrations::Clients::HTTP.post(url, body: payload.to_json, headers: headers)
     end
 
     private
