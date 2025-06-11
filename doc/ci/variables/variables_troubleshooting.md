@@ -164,7 +164,7 @@ so you should only use the variable in GitLab itself.
 
 {{< /alert >}}
 
-## "argument list too long"
+## `argument list too long` error
 
 This issue occurs when the combined length of all CI/CD variables defined for a job exceeds the limit imposed by the
 shell where the job executes. This includes the names and values of pre-defined and user defined variables. This limit

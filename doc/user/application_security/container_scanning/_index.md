@@ -948,3 +948,11 @@ This error means a timeout occurred. To resolve it, add the `TRIVY_TIMEOUT` envi
 
 Changes to the container scanning analyzer can be found in the project's
 [changelog](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning/-/blob/master/CHANGELOG.md).
+
+### Container Scanning v6.x: outdated vulnerability database error
+
+Using Container Scanning with `registry.gitlab.com/security-products/container-scanning/grype:6` and `registry.gitlab.com/security-products/container-scanning/grype:6-fips` analyzer images may fail with an outdated vulnerability database error, for example:
+
+`1 error occurred: * the vulnerability database was built 6 days ago (max allowed age is 5 days)`
+
+This happens when one of the Container Scanning images above is copied to a user's own repository and not updated to the image (images are rebuilt daily).

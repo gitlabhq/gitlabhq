@@ -4,7 +4,7 @@
 #
 # Users can subscribe to these models.
 #
-# Used by Issue, MergeRequest, Label
+# Used by Issue, MergeRequest, Label, WikiPage::Meta
 #
 
 module Subscribable

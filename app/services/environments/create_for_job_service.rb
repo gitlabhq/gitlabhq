@@ -3,6 +3,8 @@
 module Environments
   # This class creates an environment record for a pipeline job.
   class CreateForJobService
+    include Gitlab::InternalEventsTracking
+
     def execute(job)
       return unless job.is_a?(::Ci::Processable) && job.has_environment_keyword?
 
@@ -11,6 +13,8 @@ module Environments
       if environment.persisted?
         job.persisted_environment = environment
         job.assign_attributes(metadata_attributes: { expanded_environment_name: environment.name })
+
+        track_environment_usage(job, environment)
       else
         job.assign_attributes(status: :failed, failure_reason: :environment_creation_failure)
       end
@@ -75,6 +79,19 @@ module Environments
       return unless cluster_agent_path(job)
 
       ExpandVariables.expand(cluster_agent_path(job), -> { job.simple_variables.sort_and_expand_all })
+    end
+
+    def track_environment_usage(job, environment)
+      track_internal_event(
+        'create_job_with_environment',
+        user: job.user,
+        project: job.project,
+        additional_properties: {
+          label: job.environment_action,
+          value: environment.id,
+          property: environment.tier
+        }
+      )
     end
   end
 end

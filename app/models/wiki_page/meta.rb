@@ -5,6 +5,7 @@ class WikiPage
     include Gitlab::Utils::StrongMemoize
     include Mentionable
     include Noteable
+    include Subscribable
     include Todoable
 
     self.table_name = 'wiki_page_meta'

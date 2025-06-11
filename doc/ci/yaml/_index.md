@@ -4213,7 +4213,7 @@ job:
 
 - The `description` is evaluated by the shell that runs `release-cli`.
   You can use CI/CD variables to define the description, but some shells
-  [use different syntax](../variables/_index.md#use-cicd-variables-in-job-scripts)
+  [use different syntax](../variables/job_scripts.md)
   to reference variables. Similarly, some shells might require special characters
   to be escaped. For example, backticks (`` ` ``) might need to be escaped with a backslash (` \ `).
 
@@ -4534,7 +4534,7 @@ job:
   defined for the job, which defaults to `on_success` if not defined.
 - You can [mix `when` at the job-level with `when` in rules](https://gitlab.com/gitlab-org/gitlab/-/issues/219437).
   `when` configuration in `rules` takes precedence over `when` at the job-level.
-- Unlike variables in [`script`](../variables/_index.md#use-cicd-variables-in-job-scripts)
+- Unlike variables in [`script`](../variables/job_scripts.md)
   sections, variables in rules expressions are always formatted as `$VARIABLE`.
   - You can use `rules:if` with `include` to [conditionally include other configuration files](includes.md#use-rules-with-include).
 - CI/CD variables on the right side of `=~` and `!~` expressions are [evaluated as regular expressions](../jobs/job_rules.md#store-a-regular-expression-in-a-variable).

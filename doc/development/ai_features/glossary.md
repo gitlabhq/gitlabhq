@@ -244,3 +244,21 @@ Information, such as open tabs in their IDE, files, and folders,
 that the user provides from their local environment to extend the default AI
 Context. This is sometimes called "pinned context" internally. GitLab Duo Chat users
 can provide supplementary user context with the `/include` command (IDE only).
+
+### AI Context Abstraction Layer
+
+A [Ruby gem](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-active-context) that provides a unified interface for Retrieval Augmented Generation (RAG) across multiple vector databases within GitLab. The system abstracts away the differences between Elasticsearch, OpenSearch, and PostgreSQL with pgvector, enabling AI features to work regardless of the underlying storage solution.
+
+Key components include collections that define data schemas and reference classes that handle serialization, migrations for schema management, and preprocessors for chunking and embedding generation. The layer supports automatic model migration between different LLMs without downtime, asynchronous processing through Redis-backed queues, and permission-aware search with automatic redaction.
+
+This [architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_context_abstraction_layer/) prevents vendor lock-in and enables GitLab customers without Elasticsearch to access RAG-powered features through pgvector.
+
+### GitLab Zoekt
+
+A scalable exact code search service and file-based database system, with flexible architecture supporting various AI context use cases beyond traditional search. It's built on top of open-source code search engine Zoekt.
+
+The system consists of a unified `gitlab-zoekt` binary that can operate in both indexer and webserver modes, managing index files on persistent storage for fast searches. Key features include bi-directional communication with GitLab and self-registering node [architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/code_search_with_zoekt/) for easy scaling.
+
+The system is designed to handle enterprise-scale deployments, with GitLab.com successfully operating over 48 TiB of indexed data.
+
+Most likely, this distributed database system will be used to power [Knowledge Graph](#knowledge-graph). Also, we might leverage Exact Code Search to provide additional context and/or tools for GitLab Duo.

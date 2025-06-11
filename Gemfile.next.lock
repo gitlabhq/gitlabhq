@@ -741,7 +741,7 @@ GEM
     gitlab-cloud-connector (1.15.0)
       activesupport (~> 7.0)
       jwt (~> 2.9.3)
-    gitlab-crystalball (1.0.0)
+    gitlab-crystalball (1.1.0)
       git (< 4)
       ostruct (< 1)
     gitlab-dangerfiles (4.9.2)
@@ -2154,7 +2154,7 @@ DEPENDENCIES
   gitlab-backup-cli!
   gitlab-chronic (~> 0.10.5)
   gitlab-cloud-connector (~> 1.14)
-  gitlab-crystalball (~> 1.0.0)
+  gitlab-crystalball (~> 1.1.0)
   gitlab-dangerfiles (~> 4.9.0)
   gitlab-duo-workflow-service-client (~> 0.2)!
   gitlab-experiment (~> 0.9.1)

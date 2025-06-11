@@ -1422,6 +1422,10 @@
 
 .frontend:rules:compile-test-assets:
   rules:
+    - <<: *if-dot-com-gitlab-org-schedule
+      variables:
+        BABEL_ENV: "istanbul"
+        CACHE_ASSETS_AS_PACKAGE: "false"
     - if: '$ENABLE_COMPILE_TEST_ASSETS == "true"'
     - if: '$ENABLE_RSPEC == "true"'
     - <<: *if-merge-request-labels-run-all-rspec
@@ -1432,10 +1436,6 @@
       changes: *code-backstage-qa-patterns
     - <<: *if-default-refs
       changes: *workhorse-patterns
-    - <<: *if-dot-com-gitlab-org-schedule
-      variables:
-        BABEL_ENV: "istanbul"
-        CACHE_ASSETS_AS_PACKAGE: "false"
 
 .frontend:rules:eslint-changed-files:
   rules:

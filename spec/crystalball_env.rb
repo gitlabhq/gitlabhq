@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 module CrystalballEnv
-  EXCLUDED_PREFIXES = %w[vendor/ruby].freeze
+  EXCLUDED_PREFIXES = [
+    %r{vendor/ruby},
+    %r{(ee/)?db/migrate/\d{14}_init_schema\.rb},
+    %r{(ee/)?db/fixtures/development}
+  ].freeze
 
   extend self
 

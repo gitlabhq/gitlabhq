@@ -12708,6 +12708,31 @@ Input type: `VulnerabilityRevertToDetectedInput`
 | <a id="mutationvulnerabilityreverttodetectederrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationvulnerabilityreverttodetectedvulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | Vulnerability after state change. |
 
+### `Mutation.wikiPageSubscribe`
+
+{{< details >}}
+**Introduced** in GitLab 18.1.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `WikiPageSubscribeInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationwikipagesubscribeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationwikipagesubscribeid"></a>`id` | [`WikiPageMetaID!`](#wikipagemetaid) | Global ID of the wiki page meta record. |
+| <a id="mutationwikipagesubscribesubscribed"></a>`subscribed` | [`Boolean!`](#boolean) | Desired state of the subscription. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationwikipagesubscribeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationwikipagesubscribeerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationwikipagesubscribewikipage"></a>`wikiPage` | [`WikiPage`](#wikipage) | Wiki page after mutation. |
+
 ### `Mutation.workItemAddClosingMergeRequest`
 
 Adds a closing merge request to a work item.
@@ -42275,6 +42300,7 @@ A wiki page.
 | <a id="wikipagediscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on the noteable. (see [Connections](#connections)) |
 | <a id="wikipageid"></a>`id` | [`WikiPageMetaID!`](#wikipagemetaid) | Global ID of the wiki page metadata record. |
 | <a id="wikipagename"></a>`name` | [`String`](#string) | Name or title of the object. |
+| <a id="wikipagesubscribed"></a>`subscribed` | [`Boolean!`](#boolean) | Whether the current user is subscribed to notifications on the wiki page. |
 | <a id="wikipagetitle"></a>`title` | [`String!`](#string) | Wiki page title. |
 | <a id="wikipageuserpermissions"></a>`userPermissions` | [`WikiPagePermissions!`](#wikipagepermissions) | Permissions for the current user on the resource. |
 | <a id="wikipageweburl"></a>`webUrl` | [`String`](#string) | URL of the object. |

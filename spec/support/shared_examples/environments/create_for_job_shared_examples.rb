@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'create environment for job' do
-  let!(:job) { build(factory_type, project: project, pipeline: pipeline, **attributes) }
+  let!(:job) { build(factory_type, project: project, pipeline: pipeline, user: user, **attributes) }
   let(:merge_request) {} # rubocop:disable Lint/EmptyBlock
 
   describe '#execute' do
@@ -40,6 +40,14 @@ RSpec.shared_examples 'create environment for job' do
 
           expect(subject).to be_persisted
           expect(subject).to eq(environment)
+        end
+
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'create_job_with_environment' }
+          let(:category) { described_class.name }
+          let(:additional_properties) do
+            { label: job.environment_action, value: environment.id, property: environment.tier }
+          end
         end
       end
     end
