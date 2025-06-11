@@ -49,7 +49,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       allows_multiple_merge_request_assignees allows_multiple_merge_request_reviewers is_forked
       protectable_branches available_deploy_keys explore_catalog_path
       container_protection_tag_rules pages_force_https pages_use_unique_domain ci_pipeline_creation_request
-      ci_pipeline_creation_inputs marked_for_deletion_on is_adjourned_deletion_enabled permanent_deletion_date
+      ci_pipeline_creation_inputs marked_for_deletion_on permanent_deletion_date
       merge_request_title_regex
     ]
 
@@ -1487,7 +1487,6 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
         query {
           project(fullPath: "#{project_full_path}") {
             markedForDeletionOn
-            isAdjournedDeletionEnabled
             permanentDeletionDate
           }
         }
@@ -1503,77 +1502,31 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       result = GitlabSchema.execute(query, context: { current_user: user }).as_json
       {
         marked_for_deletion_on: result.dig('data', 'project', 'markedForDeletionOn'),
-        is_adjourned_deletion_enabled: result.dig('data', 'project', 'isAdjournedDeletionEnabled'),
         permanent_deletion_date: result.dig('data', 'project', 'permanentDeletionDate')
       }
     end
 
-    context 'with adjourned deletion disabled' do
-      before do
-        allow_next_found_instance_of(Project) do |project|
-          allow(project).to receive_messages(adjourned_deletion?: false, adjourned_deletion_configured?: false)
-        end
-      end
+    it 'marked_for_deletion_on returns correct date' do
+      marked_for_deletion_on_time = Time.zone.parse(project_data[:marked_for_deletion_on])
 
-      it 'marked_for_deletion_on returns nil' do
-        expect(project_data[:marked_for_deletion_on]).to be_nil
-      end
-
-      it 'is_adjourned_deletion_enabled returns false' do
-        expect(project_data[:is_adjourned_deletion_enabled]).to be false
-      end
-
-      it 'permanent_deletion_date returns nil' do
-        expect(project_data[:permanent_deletion_date]).to be_nil
-      end
+      expect(marked_for_deletion_on_time).to eq(pending_delete_project.marked_for_deletion_at.iso8601)
     end
 
-    context 'with adjourned deletion enabled' do
-      before do
-        allow_next_found_instance_of(Project) do |project|
-          allow(project).to receive_messages(adjourned_deletion?: true, adjourned_deletion_configured?: true)
-        end
-      end
-
-      it 'marked_for_deletion_on returns correct date' do
-        marked_for_deletion_on_time = Time.zone.parse(project_data[:marked_for_deletion_on])
-
-        expect(marked_for_deletion_on_time).to eq(pending_delete_project.marked_for_deletion_at.iso8601)
-      end
-
-      it 'is_adjourned_deletion_enabled returns true' do
-        expect(project_data[:is_adjourned_deletion_enabled]).to be true
-      end
-
-      context 'when project is scheduled for deletion' do
-        it 'returns date project will be permanently deleted for permanent_deletion_date' do
-          expect(project_data[:permanent_deletion_date])
-            .to eq(
-              ::Gitlab::CurrentSettings.deletion_adjourned_period.days.since(marked_for_deletion_at).strftime('%F')
-            )
-        end
-      end
-
-      context 'when project is not scheduled for deletion' do
-        let(:project_full_path) { project.full_path }
-
-        it 'returns theoretical date project will be permanently deleted for permanent_deletion_date' do
-          expect(project_data[:permanent_deletion_date])
-            .to eq(::Gitlab::CurrentSettings.deletion_adjourned_period.days.since(Date.current).strftime('%F'))
-        end
-      end
-    end
-
-    context 'with adjourned deletion enabled globally' do
-      before do
-        allow_next_found_instance_of(Project) do |project|
-          allow(project).to receive_messages(adjourned_deletion?: false, adjourned_deletion_configured?: true)
-        end
-      end
-
-      it 'permanent_deletion_date returns correct date' do
+    context 'when project is scheduled for deletion' do
+      it 'returns date project will be permanently deleted for permanent_deletion_date' do
         expect(project_data[:permanent_deletion_date])
-          .to eq(::Gitlab::CurrentSettings.deletion_adjourned_period.days.since(marked_for_deletion_at).strftime('%F'))
+          .to eq(
+            ::Gitlab::CurrentSettings.deletion_adjourned_period.days.since(marked_for_deletion_at).strftime('%F')
+          )
+      end
+    end
+
+    context 'when project is not scheduled for deletion' do
+      let(:project_full_path) { project.full_path }
+
+      it 'returns theoretical date project will be permanently deleted for permanent_deletion_date' do
+        expect(project_data[:permanent_deletion_date])
+          .to eq(::Gitlab::CurrentSettings.deletion_adjourned_period.days.since(Date.current).strftime('%F'))
       end
     end
   end

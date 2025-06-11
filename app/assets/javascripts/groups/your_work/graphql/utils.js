@@ -22,7 +22,6 @@ export const formatGroupForGraphQLResolver = (group) => ({
   webUrl: group.web_url,
   groupMembersCount: group.group_members_count,
   isLinkedToSubscription: group.is_linked_to_subscription,
-  isAdjournedDeletionEnabled: group.is_adjourned_deletion_enabled,
   permanentDeletionDate: group.permanent_deletion_date,
   maxAccessLevel: {
     integerValue: group.permission

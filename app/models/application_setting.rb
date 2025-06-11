@@ -44,6 +44,9 @@ class ApplicationSetting < ApplicationRecord
 
   DEFAULT_HELM_MAX_PACKAGES_COUNT = 1000
 
+  DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT = 3600
+  DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD = 3600
+
   enum :whats_new_variant, { all_tiers: 0, current_tier: 1, disabled: 2 }, prefix: true
   enum :email_confirmation_setting, { off: 0, soft: 1, hard: 2 }, prefix: true
 
@@ -603,6 +606,8 @@ class ApplicationSetting < ApplicationRecord
       :throttle_authenticated_deprecated_api_requests_per_period,
       :throttle_authenticated_files_api_period_in_seconds,
       :throttle_authenticated_files_api_requests_per_period,
+      :throttle_authenticated_git_http_period_in_seconds,
+      :throttle_authenticated_git_http_requests_per_period,
       :throttle_authenticated_git_lfs_period_in_seconds,
       :throttle_authenticated_git_lfs_requests_per_period,
       :throttle_authenticated_packages_api_period_in_seconds,
@@ -1126,6 +1131,11 @@ class ApplicationSetting < ApplicationRecord
       group_archive_unarchive_api_limit: [:integer, { default: 60 }],
       project_invited_groups_api_limit: [:integer, { default: 60 }],
       projects_api_limit: [:integer, { default: 2000 }],
+      throttle_authenticated_git_http_enabled: [:boolean, { default: false }],
+      throttle_authenticated_git_http_requests_per_period:
+        [:integer, { default: DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT }],
+      throttle_authenticated_git_http_period_in_seconds:
+        [:integer, { default: DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD }],
       user_contributed_projects_api_limit: [:integer, { default: 100 }],
       user_projects_api_limit: [:integer, { default: 300 }],
       user_starred_projects_api_limit: [:integer, { default: 100 }],

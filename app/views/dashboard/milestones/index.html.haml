@@ -1,6 +1,8 @@
 - page_title _('Milestones')
 - add_page_specific_style 'page_bundles/milestone'
 
+%h1.gl-sr-only= page_title
+
 = render ::Layouts::PageHeadingComponent.new(_('Milestones')) do |c|
   - c.with_actions do
     - if current_user

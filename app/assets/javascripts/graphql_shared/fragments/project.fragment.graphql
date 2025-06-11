@@ -45,6 +45,5 @@ fragment Project on Project {
     }
   }
   markedForDeletionOn
-  isAdjournedDeletionEnabled
   permanentDeletionDate
 }

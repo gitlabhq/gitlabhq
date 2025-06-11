@@ -130,19 +130,15 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
     let_it_be(:group) { build_stubbed(:group, path: "foo") }
 
     fake_form_id = "fake_form_id"
-    where(:prevent_delete_response, :adjourned_deletion, :is_button_disabled, :form_value_id,
+    where(:prevent_delete_response, :is_button_disabled, :form_value_id,
       :permanently_remove, :button_text, :has_security_policy_project) do
-      true  | false | "true"  | nil           | false | "Delete"       | true
-      true  | true  | "true"  | fake_form_id  | true  | nil            | false
-      false | false | "true"  | nil           | false | "Delete group" | true
-      false | true  | "false" | fake_form_id  | true  | nil            | false
+      true  | "true"  | fake_form_id | true | nil | false
+      false | "false" | fake_form_id | true | nil | false
     end
 
     with_them do
       it "returns expected parameters" do
-        allow(group).to receive_messages(
-          linked_to_subscription?: prevent_delete_response,
-          adjourned_deletion?: adjourned_deletion)
+        allow(group).to receive_messages(linked_to_subscription?: prevent_delete_response)
 
         expected = helper.group_confirm_modal_data(group: group, remove_form_id: form_value_id,
           button_text: button_text, has_security_policy_project: has_security_policy_project,
@@ -192,25 +188,11 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
       end
     end
 
-    context 'when group delay deletion is enabled' do
-      before do
-        allow(group).to receive(:adjourned_deletion?).and_return(true)
-      end
-
-      it_behaves_like 'delayed deletion message'
-    end
-
-    context 'when group delay deletion is disabled' do
-      before do
-        allow(group).to receive(:adjourned_deletion?).and_return(false)
-      end
-
-      it_behaves_like 'permanent deletion message'
-    end
+    it_behaves_like 'delayed deletion message'
 
     context 'when group is marked for deletion' do
       before do
-        allow(group).to receive_messages(adjourned_deletion?: true, marked_for_deletion?: true)
+        allow(group).to receive_messages(marked_for_deletion?: true)
       end
 
       it_behaves_like 'permanent deletion message'

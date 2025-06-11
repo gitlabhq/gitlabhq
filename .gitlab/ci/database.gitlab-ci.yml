@@ -7,7 +7,6 @@ db:setup pg16:
   extends:
     - .use-pg16
     - .default-before_script
-    - .failure_category_after_script
     - .ruby-cache
     - .rails:rules:setup-test-env
   script:

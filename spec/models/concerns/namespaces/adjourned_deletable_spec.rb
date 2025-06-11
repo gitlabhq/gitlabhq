@@ -29,34 +29,6 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
     end
   end
 
-  describe '#delayed_deletion_ready?' do
-    context 'when deletion_adjourned_period is zero' do
-      before do
-        stub_application_setting(deletion_adjourned_period: 0)
-      end
-
-      it 'returns false' do
-        expect(record.delayed_deletion_ready?).to be(false)
-        expect(record.adjourned_deletion?).to be(false)
-        expect(record.delayed_deletion_configured?).to be(false)
-        expect(record.adjourned_deletion_configured?).to be(false)
-      end
-    end
-
-    context 'when deletion_adjourned_period is positive' do
-      before do
-        stub_application_setting(deletion_adjourned_period: 7)
-      end
-
-      it 'returns true' do
-        expect(record.delayed_deletion_ready?).to be(true)
-        expect(record.adjourned_deletion?).to be(true)
-        expect(record.delayed_deletion_configured?).to be(true)
-        expect(record.adjourned_deletion_configured?).to be(true)
-      end
-    end
-  end
-
   describe '#self_deletion_scheduled_deletion_created_on', :freeze_time do
     context 'when record responds to :marked_for_deletion_on' do
       it 'returns marked_for_deletion_on' do

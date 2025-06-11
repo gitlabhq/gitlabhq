@@ -84,6 +84,20 @@
       "minimum": 0,
       "description": "Number of requests allowed to the GET /api/v4/projects endpoint."
     },
+    "throttle_authenticated_git_http_enabled": {
+      "type": "boolean",
+      "description": "Enable authenticated Git HTTP request rate limit"
+    },
+    "throttle_authenticated_git_http_requests_per_period": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Authenticated Git HTTP request rate limit"
+    },
+    "throttle_authenticated_git_http_period_in_seconds": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Authenticated Git HTTP rate limit period in seconds"
+    },
     "user_contributed_projects_api_limit": {
       "type": "integer",
       "minimum": 0,

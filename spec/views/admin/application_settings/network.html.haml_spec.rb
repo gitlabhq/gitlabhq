@@ -11,13 +11,41 @@ RSpec.describe 'admin/application_settings/network.html.haml', feature_category:
     allow(view).to receive(:current_user) { admin }
   end
 
-  context 'for Git HTTP rate limit' do
+  context 'for Git HTTP rate limits' do
     it 'renders the `git_http_rate_limit_unauthenticated` field' do
       render
 
       expect(rendered).to have_field('application_setting_throttle_unauthenticated_git_http_enabled')
       expect(rendered).to have_field('application_setting_throttle_unauthenticated_git_http_requests_per_period')
       expect(rendered).to have_field('application_setting_throttle_unauthenticated_git_http_period_in_seconds')
+    end
+
+    context 'with git_authenticated_http_limit feature flag enabled' do
+      before do
+        stub_feature_flags(git_authenticated_http_limit: true)
+      end
+
+      it 'renders the `git_http_rate_limit_authenticated` field' do
+        render
+
+        expect(rendered).to have_field('application_setting_throttle_authenticated_git_http_enabled')
+        expect(rendered).to have_field('application_setting_throttle_authenticated_git_http_requests_per_period')
+        expect(rendered).to have_field('application_setting_throttle_authenticated_git_http_period_in_seconds')
+      end
+    end
+
+    context 'with git_authenticated_http_limit feature flag disabled' do
+      before do
+        stub_feature_flags(git_authenticated_http_limit: false)
+      end
+
+      it 'does not render the `git_http_rate_limit_authenticated` field' do
+        render
+
+        expect(rendered).not_to have_field('application_setting_throttle_authenticated_git_http_enabled')
+        expect(rendered).not_to have_field('application_setting_throttle_authenticated_git_http_requests_per_period')
+        expect(rendered).not_to have_field('application_setting_throttle_authenticated_git_http_period_in_seconds')
+      end
     end
   end
 

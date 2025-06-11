@@ -54,7 +54,6 @@ include:
     - bundle install --jobs=$(nproc) --retry=3
   after_script:
     - source $CI_PROJECT_DIR/scripts/utils.sh
-    - execute_failure_analyzer
 
 default:
   <<: *default

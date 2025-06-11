@@ -25,6 +25,5 @@ fragment Group on Group {
   }
   isLinkedToSubscription
   markedForDeletionOn
-  isAdjournedDeletionEnabled
   permanentDeletionDate
 }

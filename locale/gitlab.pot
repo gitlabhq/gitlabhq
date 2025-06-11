@@ -9176,6 +9176,12 @@ msgstr ""
 msgid "Authenticated API requests"
 msgstr ""
 
+msgid "Authenticated Git HTTP rate limit period in seconds"
+msgstr ""
+
+msgid "Authenticated Git HTTP request rate limit"
+msgstr ""
+
 msgid "Authenticated Git LFS rate limit period in seconds"
 msgstr ""
 
@@ -21203,9 +21209,6 @@ msgstr ""
 msgid "Deleting branches"
 msgstr ""
 
-msgid "Deleting project '%{project_name}'. All data will be removed on %{date}."
-msgstr ""
-
 msgid "Deleting protected branches is blocked by security policies"
 msgstr ""
 
@@ -24154,6 +24157,9 @@ msgid "Enable and disable Service Desk. Some additional configuration might be r
 msgstr ""
 
 msgid "Enable authenticated API request rate limit"
+msgstr ""
+
+msgid "Enable authenticated Git HTTP request rate limit"
 msgstr ""
 
 msgid "Enable authenticated Git LFS request rate limit"
@@ -30174,9 +30180,6 @@ msgstr ""
 msgid "GroupSAML|SCIM Token"
 msgstr ""
 
-msgid "GroupSAML|SHA1 fingerprint of the SAML token signing certificate. Get this from your identity provider, where it can also be called \"Thumbprint\"."
-msgstr ""
-
 msgid "GroupSAML|SHA1 or SHA256 fingerprint of the SAML token signing certificate. Get this from your identity provider, where it can also be called \"Thumbprint\"."
 msgstr ""
 
@@ -31088,6 +31091,9 @@ msgid "Helps prevent bots from creating issues."
 msgstr ""
 
 msgid "Helps prevent malicious users hide their activity."
+msgstr ""
+
+msgid "Helps reduce authenticated Git HTTP request volume for git paths."
 msgstr ""
 
 msgid "Helps reduce request volume (for example, from crawlers or abusive bots)"
@@ -37360,6 +37366,9 @@ msgid "Maximum attachment size (MiB)"
 msgstr ""
 
 msgid "Maximum authenticated API requests per rate limit period per user"
+msgstr ""
+
+msgid "Maximum authenticated Git HTTP requests per period per user"
 msgstr ""
 
 msgid "Maximum authenticated requests to %{open}project/:id/jobs%{close} per minute"
@@ -55338,6 +55347,9 @@ msgstr ""
 msgid "SecurityInventory|View vulnerability report"
 msgstr ""
 
+msgid "SecurityInventory|You're already viewing this subgroup"
+msgstr ""
+
 msgid "SecurityOrchestration| and "
 msgstr ""
 
@@ -62738,9 +62750,6 @@ msgid "This action cannot be undone, and will permanently delete the %{key} SSH 
 msgstr ""
 
 msgid "This action will permanently delete this group, including its subgroups and projects."
-msgstr ""
-
-msgid "This action will permanently delete this project, including all its resources."
 msgstr ""
 
 msgid "This action will place this group, including its subgroups and projects, in a pending deletion state for %{deletion_adjourned_period} days, and delete it permanently on %{date}."
@@ -71081,9 +71090,6 @@ msgid "You are being redirected away from GitLab"
 msgstr ""
 
 msgid "You are currently offline, or the GitLab instance is not reachable."
-msgstr ""
-
-msgid "You are going to delete %{project_full_name}. Deleted projects CANNOT be restored! Are you ABSOLUTELY sure?"
 msgstr ""
 
 msgid "You are going to remove the fork relationship from %{project_full_name}. Are you ABSOLUTELY sure?"

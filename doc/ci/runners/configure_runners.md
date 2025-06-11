@@ -76,24 +76,24 @@ To set the maximum job timeout:
 
 **Example 1 - Runner timeout bigger than project timeout**
 
-1. You set the **Maximum job timeout** for a runner to 24 hours.
-1. You set the **CI/CD Timeout** for a project to 2 hours.
+1. You set the `maximum_timeout` parameter for a runner to 24 hours.
+1. You set the **Maximum job timeout** for a project to **2 hours**.
 1. You start a job.
-1. The job, if running longer, times out after 2 hours.
+1. The job, if running longer, times out after **2 hours**.
 
 **Example 2 - Runner timeout not configured**
 
-1. You remove the **Maximum job timeout** configuration from a runner.
-1. You set the **CI/CD Timeout** for a project to 2 hours.
+1. You remove the `maximum_timeout` parameter configuration from a runner.
+1. You set the **Maximum job timeout** for a project to **2 hours**.
 1. You start a job.
-1. The job, if running longer, times out after 2 hours.
+1. The job, if running longer, times out after **2 hours**.
 
 **Example 3 - Runner timeout smaller than project timeout**
 
-1. You set the **Maximum job timeout** for a runner to 30 minutes.
-1. You set the **CI/CD Timeout** for a project to 2 hours.
+1. You set the `maximum_timeout` parameter for a runner to **30 minutes**.
+1. You set the **Maximum job timeout** for a project to 2 hours.
 1. You start a job.
-1. The job, if running longer, times out after 30 minutes.
+1. The job, if running longer, times out after **30 minutes**.
 
 ## Set `script` and `after_script` timeouts
 
@@ -773,7 +773,7 @@ to their latest remote versions.
 {{< /alert >}}
 
 The behavior of `--remote` depends on your Git version.
-If the branch specified in your superproject's `.gitmodules` file is different from the 
+If the branch specified in your superproject's `.gitmodules` file is different from the
 default branch of the submodule repository, some Git versions will fail with this error:
 
 `fatal: Unable to find refs/remotes/origin/<branch> revision in submodule path '<submodule-path>'`

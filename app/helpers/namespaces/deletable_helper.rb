@@ -50,9 +50,7 @@ module Namespaces
     end
 
     def confirm_remove_group_message(group, permanently_remove)
-      if permanently_remove || !group.adjourned_deletion? || group.marked_for_deletion?
-        return _permanently_delete_group_message(group)
-      end
+      return _permanently_delete_group_message(group) if permanently_remove || group.marked_for_deletion?
 
       safe_format(
         _("The contents of this group, its subgroups and projects will be permanently deleted after " \

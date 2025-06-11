@@ -17,6 +17,10 @@ class UserPreference < ApplicationRecord
   scope :with_user, -> { joins(:user) }
   scope :gitpod_enabled, -> { where(gitpod_enabled: true) }
 
+  validates :dark_color_scheme_id, allow_nil: true, inclusion: {
+    in: Gitlab::ColorSchemes.valid_ids,
+    message: ->(*) { format(_("%{placeholder} is not a valid color scheme"), { placeholder: '%{value}' }) }
+  }
   validates :issue_notes_filter, :merge_request_notes_filter, inclusion: { in: NOTES_FILTERS.values }, presence: true
   validates :tab_width, numericality: {
     only_integer: true,
@@ -38,6 +42,7 @@ class UserPreference < ApplicationRecord
 
   validate :user_belongs_to_home_organization, if: :home_organization_changed?
 
+  attribute :dark_color_scheme_id, default: -> { Gitlab::CurrentSettings.default_syntax_highlighting_theme }
   attribute :tab_width, default: -> { Gitlab::TabWidth::DEFAULT }
   attribute :time_display_relative, default: true
   attribute :time_display_format, default: 0

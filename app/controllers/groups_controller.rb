@@ -176,7 +176,6 @@ class GroupsController < Groups::ApplicationController
   end
 
   def destroy
-    return destroy_immediately unless group.adjourned_deletion?
     return destroy_immediately if group.marked_for_deletion? && ::Gitlab::Utils.to_boolean(params[:permanently_remove])
 
     result = ::Groups::MarkForDeletionService.new(group, current_user).execute

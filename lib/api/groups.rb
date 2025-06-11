@@ -184,13 +184,13 @@ module API
       def delete_group(group)
         permanently_remove = ::Gitlab::Utils.to_boolean(params[:permanently_remove])
 
-        if permanently_remove && group.adjourned_deletion?
+        if permanently_remove
           error = immediately_delete_subgroup_error(group)
 
           render_api_error!(error, 400) if error
         end
 
-        if permanently_remove || !group.adjourned_deletion?
+        if permanently_remove
           destroy_conditionally!(group) do
             ::Groups::DestroyService.new(group, current_user).async_execute
           end
@@ -428,7 +428,6 @@ module API
       desc 'Restore a group.'
       post ':id/restore', feature_category: :groups_and_projects do
         authorize! :remove_group, user_group
-        break not_found! unless user_group.adjourned_deletion?
 
         result = ::Groups::RestoreService.new(user_group, current_user).execute
         user_group.preload_shared_group_links

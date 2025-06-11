@@ -192,23 +192,12 @@ class ProjectsController < Projects::ApplicationController
   def destroy
     return access_denied! unless can?(current_user, :remove_project, @project)
 
-    return destroy_immediately unless @project.adjourned_deletion_configured?
     return destroy_immediately if @project.marked_for_deletion_at? && params[:permanently_delete].present?
 
     result = ::Projects::MarkForDeletionService.new(@project, current_user, {}).execute
 
     if result[:status] == :success
-      if @project.adjourned_deletion?
-        redirect_to project_path(@project), status: :found
-      else
-        # This is a free project, it will use delayed deletion but can only be restored by an admin.
-        flash[:toast] = format(
-          _("Deleting project '%{project_name}'. All data will be removed on %{date}."),
-          project_name: @project.full_name,
-          date: helpers.permanent_deletion_date_formatted(@project)
-        )
-        redirect_to dashboard_projects_path, status: :found
-      end
+      redirect_to project_path(@project), status: :found
     else
       flash.now[:alert] = result[:message]
 

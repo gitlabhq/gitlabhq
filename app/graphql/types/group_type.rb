@@ -363,12 +363,6 @@ module Types
       description: 'Date when group was scheduled to be deleted.',
       experiment: { milestone: '16.11' }
 
-    field :is_adjourned_deletion_enabled, GraphQL::Types::Boolean,
-      null: false,
-      description: 'Indicates if delayed group deletion is enabled.',
-      method: :adjourned_deletion?,
-      experiment: { milestone: '16.11' }
-
     field :permanent_deletion_date, GraphQL::Types::String,
       null: true,
       description: "For groups pending deletion, returns the group's scheduled deletion date. " \
@@ -472,14 +466,10 @@ module Types
     end
 
     def marked_for_deletion_on
-      return unless group.adjourned_deletion?
-
       group.marked_for_deletion_on
     end
 
     def permanent_deletion_date
-      return unless group.adjourned_deletion?
-
       permanent_deletion_date_formatted(group) || permanent_deletion_date_formatted
     end
 

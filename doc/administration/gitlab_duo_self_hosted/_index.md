@@ -50,7 +50,12 @@ This setup ensures enterprise-level privacy and flexibility, allowing seamless i
 
 ### Supported GitLab Duo features
 
-The following tables list the GitLab Duo features, and whether they are available on GitLab Duo Self-Hosted or not.
+The following tables state:
+
+- The GitLab Duo features and whether those features are available on GitLab Duo Self-Hosted.
+- Which version of GitLab is needed to use those features on GitLab Duo Self-Hosted.
+- The status of those features. A feature's status on GitLab Duo Self-Hosted can be
+  different to [that same feature's status when it is hosted on GitLab](../../user/gitlab_duo/feature_summary.md).
 
 {{< alert type="note" >}}
 
@@ -62,49 +67,49 @@ of whether you can use these features with Duo Core or Duo Pro when
 
 #### Code Suggestions
 
-| Feature                                                                      | Available on GitLab Duo Self-Hosted         | GitLab version        |
-| ---------------------------------------------------------------------------- | ------------------------------------------- | --------------------- |
-| [Code Suggestions](../../user/project/repository/code_suggestions/_index.md) | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later |
+| Feature                                                                      | Available on GitLab Duo Self-Hosted         | GitLab version        | Status  |
+| ---------------------------------------------------------------------------- | ------------------------------------------- | --------------------- | --- |
+| [Code Suggestions](../../user/project/repository/code_suggestions/_index.md) | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later | Generally available |
 
 #### Chat
 
-| Feature                                                                                                           | Available on GitLab Duo Self-Hosted         | GitLab version         |
-| ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------- |
-| [General](../../user/gitlab_duo_chat/_index.md)                                                                   | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  |
-| [Explain Code](../../user/gitlab_duo_chat/examples.md#explain-selected-code)                                      | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  |
-| [Write Test](../../user/gitlab_duo_chat/examples.md#write-tests-in-the-ide)                                       | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  |
-| [Refactor Code](../../user/gitlab_duo_chat/examples.md#refactor-code-in-the-ide)                                  | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  |
-| [Fix Code](../../user/gitlab_duo_chat/examples.md#fix-code-in-the-ide)                                            | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  |
-| [Troubleshoot Job](../../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.10 and later |
-| [Explain Vulnerability](../../user/application_security/vulnerabilities/_index.md#explaining-a-vulnerability)     | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later |
+| Feature                                                                                                           | Available on GitLab Duo Self-Hosted         | GitLab version         | Status  |
+| ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------- | --- |
+| [General](../../user/gitlab_duo_chat/_index.md)                                                                   | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  | Generally available |
+| [Explain Code](../../user/gitlab_duo_chat/examples.md#explain-selected-code)                                      | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  | Generally available |
+| [Write Test](../../user/gitlab_duo_chat/examples.md#write-tests-in-the-ide)                                       | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  | Generally available |
+| [Refactor Code](../../user/gitlab_duo_chat/examples.md#refactor-code-in-the-ide)                                  | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  | Generally available |
+| [Fix Code](../../user/gitlab_duo_chat/examples.md#fix-code-in-the-ide)                                            | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  | Generally available |
+| [Troubleshoot Job](../../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.10 and later | Beta |
+| [Explain Vulnerability](../../user/application_security/vulnerabilities/_index.md#explaining-a-vulnerability)     | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later | Beta |
 
 For more examples of a question you can ask, see
 [Ask about GitLab](../../user/gitlab_duo_chat/examples.md).
 
 #### GitLab Duo in merge requests
 
-| Feature                                                                                                                                      | Available on GitLab Duo Self-Hosted         | GitLab version         |
-| -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------- |
-| [Generate Commit Message](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message)                        | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later |
-| [Summarize New Merge Request](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes) | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later |
-| [Code Review](../../user/project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code)                                   | {{< icon name="dash-circle" >}} No | Not applicable         |
-| [Code Review Summary](../../user/project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review)                                    | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later |
+| Feature                                                                                                                                      | Available on GitLab Duo Self-Hosted         | GitLab version         | Status |
+| -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------- | --- |
+| [Generate Commit Message](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message)                        | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later | Beta |
+| [Summarize New Merge Request](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes) | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later | Beta |
+| [Code Review](../../user/project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code)                                   | {{< icon name="dash-circle" >}} No | Not applicable         | Not applicable |
+| [Code Review Summary](../../user/project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review)                                    | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later | Experiment |
 
 #### GitLab Duo in issues
 
-| Feature                                                                                                                          | Available on GitLab Duo Self-Hosted         | GitLab version         |
-| -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------- |
-| [Issue Description Generation](../../user/project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation) | {{< icon name="dash-circle" >}} No  | Not applicable         |
-| [Issue Discussion Summary](../../user/discussions/_index.md#summarize-issue-discussions-with-duo-chat)                           | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later |
+| Feature                                                                                                                          | Available on GitLab Duo Self-Hosted         | GitLab version         | Status |
+| -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------- | --- |
+| [Issue Description Generation](../../user/project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation) | {{< icon name="dash-circle" >}} No  | Not applicable   | Not applicable |
+| [Issue Discussion Summary](../../user/discussions/_index.md#summarize-issue-discussions-with-duo-chat)                           | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later | Beta |
 
 #### Other features
 
-| Feature                                                                                                        | Available on GitLab Duo Self-Hosted         | GitLab version         |
-| -------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------- |
-| [GitLab Duo for the CLI](../../editor_extensions/gitlab_cli/_index.md#gitlab-duo-for-the-cli)                  | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later |
-| [GitLab Duo Workflow](../../user/duo_workflow/_index.md)                                                       | {{< icon name="check-circle-filled" >}} No  | GitLab 17.4 and later  |
-| [Vulnerability Resolution](../../user/application_security/vulnerabilities/_index.md#vulnerability-resolution) | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later |
-| [AI Impact Dashboard](../../user/analytics/ai_impact_analytics.md)                                             | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  |
+| Feature                                                                                                        | Available on GitLab Duo Self-Hosted         | GitLab version         | Status |
+| -------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------- | --- |
+| [GitLab Duo for the CLI](../../editor_extensions/gitlab_cli/_index.md#gitlab-duo-for-the-cli)                  | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later | Beta |
+| [GitLab Duo Workflow](../../user/duo_workflow/_index.md)                                                       | {{< icon name="dash-circle" >}} No  | GitLab 17.4 and later  | Beta |
+| [Vulnerability Resolution](../../user/application_security/vulnerabilities/_index.md#vulnerability-resolution) | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later | Beta |
+| [AI Impact Dashboard](../../user/analytics/ai_impact_analytics.md)                                             | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  | Beta |
 
 ### Prerequisites
 

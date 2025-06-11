@@ -93,10 +93,12 @@ The repository must contain:
 
 - A `README.md` Markdown file documenting the details of all the components in the repository.
 - A top level `templates/` directory that contains all the component configurations.
-  You can define components in this directory:
-  - In single files ending in `.yml` for each component, like `templates/secret-detection.yml`.
-  - In subdirectories containing `template.yml` files as entry points, for components
-    that bundle together multiple related files. For example, `templates/secret-detection/template.yml`.
+  In this directory:
+  - For simple components, use single files ending in `.yml` for each component, like `templates/secret-detection.yml`.
+  - For complex components, create subdirectories with a `template.yml` for each component,
+    like `templates/secret-detection/template.yml`. Only the `template.yml` file is used by other projects
+    using the component. Other files in these directories are not released with the component,
+    but can be used for things like tests or building container images.
 
 {{< alert type="note" >}}
 

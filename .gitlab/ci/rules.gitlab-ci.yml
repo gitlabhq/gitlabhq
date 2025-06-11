@@ -632,7 +632,7 @@
   - "{,jh/}qa/**/*"
 
 .code-rest-api-patterns: &code-rest-api-patterns
-  - "{,ee/,jh/}lib/api/**/*"
+  - "{,ee/,jh/}lib/{,ee/,jh/}api/**/*"
   # Auto-generated files
   - "doc/api/openapi/openapi_v2.yaml"
 

@@ -46,7 +46,7 @@ export default {
       return Boolean(this.group.markedForDeletionOn);
     },
     groupWillBeImmediatelyDeleted() {
-      return !this.group.isAdjournedDeletionEnabled || this.isMarkedForDeletion;
+      return this.isMarkedForDeletion;
     },
     deleteModalOverride() {
       return this.groupWillBeImmediatelyDeleted

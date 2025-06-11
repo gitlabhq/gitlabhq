@@ -11,7 +11,9 @@ class AddSyncIndexOnExecutionConfigIdInCiBuilds < Gitlab::Database::Migration[2.
   COLUMNS = [:execution_config_id]
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
     add_concurrent_partitioned_index(:p_ci_builds, COLUMNS, name: INDEX_NAME, where: "execution_config_id IS NOT NULL")
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

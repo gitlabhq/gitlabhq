@@ -5607,14 +5607,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           it_behaves_like 'immediately delete project error'
         end
       end
-
-      context 'when deletion adjourned period is 0' do
-        before do
-          stub_application_setting(deletion_adjourned_period: 0)
-        end
-
-        it_behaves_like 'deletes project immediately'
-      end
     end
   end
 

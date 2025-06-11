@@ -32,17 +32,6 @@
     - !reference [.default-utils-before_script, before_script]
     - source scripts/prepare_build.sh
 
-# Requirements for this after_script:
-#
-#   - Ruby
-#   - From the gitlab-org/gitlab project:
-#     - scripts/utils.sh
-#     - tooling/lib/tooling/glci/failure_analyzer.rb
-.failure_category_after_script:
-  after_script:
-    - source scripts/utils.sh
-    - execute_failure_analyzer
-
 .repo-from-artifacts:
   variables:
     GIT_STRATEGY: "${CI_FETCH_REPO_GIT_STRATEGY}"

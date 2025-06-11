@@ -430,6 +430,7 @@ class User < ApplicationRecord
     :show_whitespace_in_diffs, :show_whitespace_in_diffs=,
     :view_diffs_file_by_file, :view_diffs_file_by_file=,
     :pass_user_identities_to_ci_jwt, :pass_user_identities_to_ci_jwt=,
+    :dark_color_scheme_id, :dark_color_scheme_id=,
     :tab_width, :tab_width=,
     :sourcegraph_enabled, :sourcegraph_enabled=,
     :gitpod_enabled, :gitpod_enabled=,

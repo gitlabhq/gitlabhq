@@ -115,20 +115,12 @@ module ProjectsHelper
     push_to_schema_breadcrumb(simple_sanitize(project.name), project_path(project), project.try(:avatar_url))
   end
 
-  def remove_project_message(project)
-    if project.delayed_deletion_ready?
-      format(
-        _("Deleting a project places it into a read-only state until %{date}, " \
-          "at which point the project will be permanently deleted. Are you ABSOLUTELY sure?"),
-        date: permanent_deletion_date_formatted(Date.current)
-      )
-    else
-      format(
-        _("You are going to delete %{project_full_name}. Deleted projects " \
-          "CANNOT be restored! Are you ABSOLUTELY sure?"),
-        project_full_name: project.full_name
-      )
-    end
+  def remove_project_message
+    format(
+      _("Deleting a project places it into a read-only state until %{date}, " \
+        "at which point the project will be permanently deleted. Are you ABSOLUTELY sure?"),
+      date: permanent_deletion_date_formatted(Date.current)
+    )
   end
 
   def link_to_namespace_change_doc

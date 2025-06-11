@@ -16,7 +16,6 @@ include:
   extends:
     - .default-retry
     - .default-before_script
-    - .failure_category_after_script
     - .ruby-cache
 
 .base-script:
@@ -118,7 +117,6 @@ include:
   after_script:
     # We need this at the very top, because the section_start/section_end logic is defined there.
     - source scripts/utils.sh
-    - !reference [.failure_category_after_script, after_script]
     - log_disk_usage  # https://gitlab.com/gitlab-org/gitlab/-/issues/478880
     - bundle exec gem list gitlab_quality-test_tooling
     - |

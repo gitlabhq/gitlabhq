@@ -3251,27 +3251,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
     it_behaves_like 'marks group for delayed deletion'
 
-    context 'when deletion adjourned period is 0' do
-      before do
-        stub_application_setting(deletion_adjourned_period: 0)
-      end
-
-      it_behaves_like 'immediately enqueues the job to delete the group'
-    end
-
-    context 'when delayed group deletion is disabled' do
-      before do
-        stub_application_setting(delayed_group_deletion: false)
-      end
-
-      it_behaves_like 'marks group for delayed deletion'
-    end
-
     context 'when permanently_remove param is sent' do
-      before do
-        stub_application_setting(delayed_group_deletion: true)
-      end
-
       context 'if permanently_remove is true' do
         let(:params) { { permanently_remove: true } }
 

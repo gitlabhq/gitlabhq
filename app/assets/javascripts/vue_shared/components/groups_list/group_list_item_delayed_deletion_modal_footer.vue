@@ -25,7 +25,7 @@ export default {
       return Boolean(this.group.markedForDeletionOn);
     },
     canBeMarkedForDeletion() {
-      return this.group.isAdjournedDeletionEnabled && !this.isMarkedForDeletion;
+      return !this.isMarkedForDeletion;
     },
   },
   HELP_PAGE_PATH: helpPagePath('user/group/_index', { anchor: 'restore-a-group' }),

@@ -18,6 +18,8 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     allow(redis).to receive(:set)
     allow(redis).to receive(:eval)
     allow(redis).to receive(:ttl).and_return(123456)
+    allow(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).to receive(:has_jobs_in_queue?)
+                                                                                     .and_return(false)
     allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis)
     allow(Gitlab::Tracking).to receive(:tracker).and_return(fake_snowplow)
     allow(Gitlab::Tracking::EventDefinition).to receive_messages(find: event_definition, internal_event_exists?: true)

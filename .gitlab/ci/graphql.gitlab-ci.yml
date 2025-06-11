@@ -5,7 +5,6 @@ graphql-verify:
     - .default-retry
     - .ruby-cache
     - .default-before_script
-    - .failure_category_after_script
     - .graphql:rules:graphql-verify
   stage: test
   needs: []

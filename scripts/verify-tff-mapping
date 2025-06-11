@@ -91,17 +91,6 @@ tests = [
   },
 
   {
-    explanation: 'Trigger GLCI tooling specs when anything changes in the folder',
-    changed_file: 'tooling/lib/tooling/glci/failure_categories/patterns/single_line_patterns.yml',
-    expected: %w[
-      spec/tooling/lib/tooling/glci/failure_analyzer_spec.rb
-      spec/tooling/lib/tooling/glci/failure_categories/download_job_trace_spec.rb
-      spec/tooling/lib/tooling/glci/failure_categories/job_trace_to_failure_category_spec.rb
-      spec/tooling/lib/tooling/glci/failure_categories/report_job_failure_spec.rb
-    ]
-  },
-
-  {
     explanation: 'Map RuboCop related files to respective specs',
     changed_file: 'rubocop/cop/gettext/static_identifier.rb',
     expected: ['spec/rubocop/cop/gettext/static_identifier_spec.rb']

@@ -14,7 +14,8 @@ RSpec.describe Sidebars::Projects::Menus::IssuesMenu, feature_category: :navigat
     let(:extra_attrs) do
       {
         item_id: :project_issue_list,
-        active_routes: { path: %w[projects/issues#index projects/issues#show projects/issues#new] },
+        active_routes: { path: %w[projects/issues#index projects/issues#show projects/issues#new
+          projects/work_items#index projects/work_items#show] },
         pill_count: menu.pill_count,
         pill_count_field: menu.pill_count_field,
         has_pill: menu.has_pill?,

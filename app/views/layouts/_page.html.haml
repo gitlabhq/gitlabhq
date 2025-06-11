@@ -8,7 +8,7 @@
   - sidebar_data = super_sidebar_context(current_user, group: group, project: @project, panel: sidebar_panel, panel_type: nav).to_json
   %aside.js-super-sidebar.super-sidebar.super-sidebar-loading{ data: { root_path: root_path, sidebar: sidebar_data, force_desktop_expanded_sidebar: @force_desktop_expanded_sidebar.to_s, command_palette: command_palette_data(project: @project, current_ref: current_ref).to_json, is_saas: Gitlab.com?.to_s } }
 
-  = render_if_exists "layouts/tanuki_bot_chat"
+  = render_if_exists "layouts/tanuki_bot_chat" if context
   = render_if_exists "layouts/session_expire_modal"
 
   .content-wrapper{ class: "#{@content_wrapper_class}" }

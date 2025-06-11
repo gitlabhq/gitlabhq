@@ -22,7 +22,7 @@ export default {
   },
   computed: {
     showRestoreMessage() {
-      return this.project.isAdjournedDeletionEnabled && !this.project.markedForDeletionOn;
+      return !this.project.markedForDeletionOn;
     },
   },
   RESTORE_HELP_PATH: helpPagePath('user/project/working_with_projects', {

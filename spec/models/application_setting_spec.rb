@@ -254,6 +254,11 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         spam_check_endpoint_enabled: false,
         suggest_pipeline_enabled: true,
         terminal_max_session_time: 0,
+        throttle_authenticated_git_http_enabled: false,
+        throttle_authenticated_git_http_requests_per_period:
+          ApplicationSetting::DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT,
+        throttle_authenticated_git_http_period_in_seconds:
+          ApplicationSetting::DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD,
         throttle_unauthenticated_git_http_enabled: false,
         throttle_unauthenticated_git_http_period_in_seconds: 3600,
         throttle_unauthenticated_git_http_requests_per_period: 3600,
@@ -600,6 +605,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           throttle_authenticated_deprecated_api_requests_per_period
           throttle_authenticated_files_api_period_in_seconds
           throttle_authenticated_files_api_requests_per_period
+          throttle_authenticated_git_http_requests_per_period
+          throttle_authenticated_git_http_period_in_seconds
           throttle_authenticated_git_lfs_period_in_seconds
           throttle_authenticated_git_lfs_requests_per_period
           throttle_authenticated_packages_api_period_in_seconds

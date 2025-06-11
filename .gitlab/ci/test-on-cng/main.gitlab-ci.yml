@@ -60,7 +60,6 @@ workflow:
     - !reference [.cng-deploy-cmd, script]
     - bundle exec orchestrator metrics start --interval 1
   after_script:
-    - !reference [.failure_category_after_script, after_script]
     - !reference [.gitlab-qa-report, after_script]
     - |
       section_start "logs_section" "Saving environment logs"

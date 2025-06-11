@@ -24563,6 +24563,7 @@ CREATE TABLE user_preferences (
     text_editor_type smallint DEFAULT 0 NOT NULL,
     merge_request_dashboard_list_type smallint DEFAULT 0 NOT NULL,
     extensions_marketplace_opt_in_url text,
+    dark_color_scheme_id smallint,
     CONSTRAINT check_1d670edc68 CHECK ((time_display_relative IS NOT NULL)),
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
     CONSTRAINT check_9b50d9f942 CHECK ((char_length(extensions_marketplace_opt_in_url) <= 512)),

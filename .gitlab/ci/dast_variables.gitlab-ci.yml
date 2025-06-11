@@ -5,7 +5,6 @@ dast-variables-check-docs:
     - .default-retry
     - .ruby-cache
     - .default-before_script
-    - .failure_category_after_script
     - .dast_variables:rules:dast-variables-check-docs
   stage: test
   needs: []

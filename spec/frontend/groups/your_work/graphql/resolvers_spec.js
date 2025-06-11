@@ -75,7 +75,6 @@ describe('your work groups resolver', () => {
       updatedAt: mockGroup.updated_at,
       markedForDeletionOn: mockGroup.marked_for_deletion_on,
       isLinkedToSubscription: mockGroup.is_linked_to_subscription,
-      isAdjournedDeletionEnabled: mockGroup.is_adjourned_deletion_enabled,
       permanentDeletionDate: mockGroup.permanent_deletion_date,
       userPermissions: {
         canLeave: false,

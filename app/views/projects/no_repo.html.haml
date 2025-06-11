@@ -23,4 +23,4 @@
 
 - if can? current_user, :remove_project, @project
   .prepend-top-20
-    = link_button_to _('Delete project'), project_path(@project), data: { confirm: remove_project_message(@project), confirm_btn_variant: 'danger' }, aria: { label: _('Delete project') }, method: :delete, class: 'gl-float-right', variant: :danger
+    = link_button_to _('Delete project'), project_path(@project), data: { confirm: remove_project_message, confirm_btn_variant: 'danger' }, aria: { label: _('Delete project') }, method: :delete, class: 'gl-float-right', variant: :danger

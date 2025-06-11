@@ -30,8 +30,8 @@ export const availableGraphQLGroupActions = ({ userPermissions, markedForDeletio
 };
 
 export const renderDeleteSuccessToast = (item) => {
-  // If delayed deletion is disabled or the project/group is already marked for deletion
-  if (!item.isAdjournedDeletionEnabled || item.markedForDeletionOn) {
+  // If the project/group is already marked for deletion
+  if (item.markedForDeletionOn) {
     toast(
       sprintf(__("Group '%{group_name}' is being deleted."), {
         group_name: item.fullName,
@@ -66,8 +66,8 @@ export const renderRestoreSuccessToast = (group) => {
 };
 
 export const deleteParams = (item) => {
-  // If delayed deletion is disabled or the project/group is not yet marked for deletion
-  if (!item.isAdjournedDeletionEnabled || !item.markedForDeletionOn) {
+  // If the project/group is not yet marked for deletion
+  if (!item.markedForDeletionOn) {
     return {};
   }
 

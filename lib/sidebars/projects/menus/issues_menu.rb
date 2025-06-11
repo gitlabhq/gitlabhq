@@ -37,7 +37,13 @@ module Sidebars
 
         override :active_routes
         def active_routes
-          { path: %w[projects/issues#index projects/issues#show projects/issues#new] }
+          { path: %w[
+            projects/issues#index
+            projects/issues#show
+            projects/issues#new
+            projects/work_items#index
+            projects/work_items#show
+          ] }
         end
 
         override :has_pill?

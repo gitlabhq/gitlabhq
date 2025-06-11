@@ -41,8 +41,8 @@ module API
         end
       end
 
-      expose :marked_for_deletion_at, if: ->(project, _) { project.adjourned_deletion? }
-      expose :marked_for_deletion_at, as: :marked_for_deletion_on, if: ->(project, _) { project.adjourned_deletion? }
+      expose :marked_for_deletion_at
+      expose :marked_for_deletion_at, as: :marked_for_deletion_on
 
       expose :packages_enabled, documentation: { type: 'boolean' }
       expose :empty_repo?, as: :empty_repo, documentation: { type: 'boolean' }

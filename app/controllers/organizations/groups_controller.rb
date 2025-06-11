@@ -28,8 +28,6 @@ module Organizations
     end
 
     def destroy
-      return destroy_immediately unless group.adjourned_deletion?
-
       if group.marked_for_deletion? &&
           ::Gitlab::Utils.to_boolean(params.permit(:permanently_remove)[:permanently_remove])
         return destroy_immediately

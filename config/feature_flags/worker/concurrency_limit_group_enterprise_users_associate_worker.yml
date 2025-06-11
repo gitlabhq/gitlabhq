@@ -1,0 +1,10 @@
+---
+name: concurrency_limit_group_enterprise_users_associate_worker
+description: Enable concurrency limit for `Groups::EnterpriseUsers::AssociateWorker`
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194115
+rollout_issue_url:
+milestone: '18.1'
+group: group::authentication
+type: worker
+default_enabled: false

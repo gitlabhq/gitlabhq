@@ -63,6 +63,7 @@
 
 = render ::Layouts::SettingsBlockComponent.new(_('Git HTTP rate limits'),
   id: 'js-git-http-limits-settings',
+  testid: 'git-http-limits-settings',
   expanded: expanded_by_default?) do |c|
   - c.with_description do
     = _('Configure specific limits for Git HTTP requests.')

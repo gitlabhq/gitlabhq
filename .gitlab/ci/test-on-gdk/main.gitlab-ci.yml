@@ -70,7 +70,6 @@ workflow:
     RSPEC_LAST_RUN_RESULTS_FILE: "$CI_PROJECT_DIR/qa/tmp/examples.txt"
     GIT_STRATEGY: "none"
   after_script:
-    - !reference [.failure_category_after_script, after_script]
     - !reference [.with-gdk-log, after_script]
     - !reference [.gitlab-qa-report, after_script]
   artifacts:

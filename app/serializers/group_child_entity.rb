@@ -36,7 +36,12 @@ class GroupChildEntity < Grape::Entity
   end
 
   expose :marked_for_deletion_on
-  expose :adjourned_deletion?, as: :is_adjourned_deletion_enabled
+
+  # It is always enabled since 18.0
+  expose :is_adjourned_deletion_enabled do |_instance|
+    true
+  end
+
   expose :permanent_deletion_date
 
   # Project only attributes
@@ -127,14 +132,10 @@ class GroupChildEntity < Grape::Entity
   end
 
   def marked_for_deletion_on
-    return unless object.adjourned_deletion?
-
     object.marked_for_deletion_on
   end
 
   def permanent_deletion_date
-    return unless object.adjourned_deletion?
-
     permanent_deletion_date_formatted(object) || permanent_deletion_date_formatted
   end
 end

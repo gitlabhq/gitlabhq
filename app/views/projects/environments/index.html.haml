@@ -1,6 +1,8 @@
 - page_title _("Environments")
 - add_page_specific_style 'page_bundles/environments'
 
+%h1.gl-sr-only= page_title
+
 #environments-table{ data: { endpoint: project_environments_path(@project, format: :json),
   "can-read-environment" => can?(current_user, :read_environment, @project).to_s,
   "can-create-environment" => can?(current_user, :create_environment, @project).to_s,

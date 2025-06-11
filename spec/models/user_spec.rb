@@ -53,6 +53,9 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:view_diffs_file_by_file).to(:user_preference) }
     it { is_expected.to delegate_method(:view_diffs_file_by_file=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:dark_color_scheme_id).to(:user_preference) }
+    it { is_expected.to delegate_method(:dark_color_scheme_id=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:tab_width).to(:user_preference) }
     it { is_expected.to delegate_method(:tab_width=).to(:user_preference).with_arguments(:args) }
 

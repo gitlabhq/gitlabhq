@@ -34,7 +34,7 @@ export const renderRestoreSuccessToast = (project) => {
 };
 
 export const renderDeleteSuccessToast = (project) => {
-  if (!project.isAdjournedDeletionEnabled || project.markedForDeletionOn) {
+  if (project.markedForDeletionOn) {
     toast(
       sprintf(__("Project '%{project_name}' is being deleted."), {
         project_name: project.nameWithNamespace,

@@ -141,12 +141,6 @@ module Types
       description: 'Date when project was scheduled to be deleted.',
       experiment: { milestone: '16.10' }
 
-    field :is_adjourned_deletion_enabled, GraphQL::Types::Boolean,
-      null: false,
-      description: 'Indicates if delayed project deletion is enabled.',
-      method: :adjourned_deletion?,
-      experiment: { milestone: '16.11' }
-
     field :permanent_deletion_date, GraphQL::Types::String,
       null: true,
       description: "For projects pending deletion, returns the project's scheduled deletion date. " \
@@ -1046,17 +1040,13 @@ module Types
       )
     end
 
+    # marked_for_deletion_at is deprecated in our v5 REST API in favor of marked_for_deletion_on
+    # https://docs.gitlab.com/ee/api/projects.html#removals-in-api-v5
     def marked_for_deletion_on
-      ## marked_for_deletion_at is deprecated in our v5 REST API in favor of marked_for_deletion_on
-      ## https://docs.gitlab.com/ee/api/projects.html#removals-in-api-v5
-      return unless project.adjourned_deletion?
-
       project.marked_for_deletion_at
     end
 
     def permanent_deletion_date
-      return unless project.adjourned_deletion_configured?
-
       permanent_deletion_date_formatted(project) || permanent_deletion_date_formatted
     end
 

@@ -16,6 +16,11 @@ RSpec.describe UserPreference, feature_category: :user_profile do
                        .is_less_than_or_equal_to(Gitlab::TabWidth::MAX)
     end
 
+    describe 'dark_color_scheme_id' do
+      it { is_expected.to allow_value(*Gitlab::ColorSchemes.valid_ids).for(:dark_color_scheme_id) }
+      it { is_expected.not_to allow_value(Gitlab::ColorSchemes.available_schemes.size + 1).for(:dark_color_scheme_id) }
+    end
+
     describe 'diffs_deletion_color and diffs_addition_color' do
       using RSpec::Parameterized::TableSyntax
 

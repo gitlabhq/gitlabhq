@@ -1226,18 +1226,6 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       expect(flash[:alert]).to include(message)
     end
 
-    context 'when instance setting is set to 0 days' do
-      it 'deletes project right away' do
-        stub_application_setting(deletion_adjourned_period: 0)
-
-        delete :destroy, params: { namespace_id: project.namespace, id: project }
-
-        expect(project.marked_for_deletion?).to be_falsey
-        expect(response).to have_gitlab_http_status(:found)
-        expect(response).to redirect_to(dashboard_projects_path)
-      end
-    end
-
     context 'when project is already marked for deletion' do
       let_it_be(:project) { create(:project, group: group, marked_for_deletion_at: Date.current) }
 
@@ -1307,18 +1295,6 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template(:edit)
         expect(flash[:alert]).to include(message)
-      end
-
-      context 'when instance setting is set to 0 days' do
-        it 'deletes project right away' do
-          stub_application_setting(deletion_adjourned_period: 0)
-
-          delete :destroy, params: { namespace_id: project.namespace, id: project }
-
-          expect(project.marked_for_deletion?).to be_falsey
-          expect(response).to have_gitlab_http_status(:found)
-          expect(response).to redirect_to(dashboard_projects_path)
-        end
       end
 
       context 'when project is already marked for deletion' do
