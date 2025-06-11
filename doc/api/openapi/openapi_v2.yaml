@@ -2278,6 +2278,77 @@ paths:
       tags:
       - groups
       operationId: getApiV4GroupsIdAuditEventsAuditEventId
+  "/api/v4/groups/{id}/saml_users":
+    get:
+      description: Get a list of SAML users of the group
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: username
+        description: Return single user with a specific username.
+        type: string
+        required: false
+      - in: query
+        name: search
+        description: Search users by name, email, username.
+        type: string
+        required: false
+      - in: query
+        name: active
+        description: Return only active users.
+        type: boolean
+        default: false
+        required: false
+      - in: query
+        name: blocked
+        description: Return only blocked users.
+        type: boolean
+        default: false
+        required: false
+      - in: query
+        name: created_after
+        description: Return users created after the specified time.
+        type: string
+        format: date-time
+        required: false
+      - in: query
+        name: created_before
+        description: Return users created before the specified time.
+        type: string
+        format: date-time
+        required: false
+      - in: query
+        name: page
+        description: Current page number
+        type: integer
+        format: int32
+        default: 1
+        required: false
+        example: 1
+      - in: query
+        name: per_page
+        description: Number of items per page
+        type: integer
+        format: int32
+        default: 20
+        required: false
+        example: 20
+      - in: path
+        name: id
+        type: integer
+        format: int32
+        required: true
+      responses:
+        '200':
+          description: Get a list of SAML users of the group
+          schema:
+            type: array
+            items:
+              "$ref": "#/definitions/API_Entities_UserPublic"
+      tags:
+      - groups
+      operationId: getApiV4GroupsIdSamlUsers
   "/api/v4/groups/{id}/provisioned_users":
     get:
       description: Get a list of users provisioned by the group
