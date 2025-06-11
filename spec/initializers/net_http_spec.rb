@@ -1,8 +1,36 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'webrick'
 
-RSpec.describe 'Net::Http patch', feature_category: :integrations do
+RSpec.describe 'Net::Http patch', :request_store, feature_category: :integrations do
+  let(:two_mega_bytes_body) { "A" * 2 * 1024 * 1024 }
+
+  let_it_be(:server_thread) do
+    Thread.new do
+      server = WEBrick::HTTPServer.new(Port: 4567, Logger: WEBrick::Log.new("/dev/null"), AccessLog: [])
+
+      server.mount_proc '/no-encoding' do |_req, res|
+        res.status = 200
+        res['Content-Type'] = 'text/plain'
+
+        res.body = two_mega_bytes_body
+      end
+
+      server.mount_proc '/gzip' do |_req, res|
+        res.status = 200
+        res['Content-Encoding'] = 'gzip'
+        res['Content-Type'] = 'text/plain'
+
+        res.body = gzip_compress(two_mega_bytes_body)
+      end
+
+      trap("INT") { server.shutdown }
+
+      server.start
+    end
+  end
+
   def gzip_compress(content)
     buffer = StringIO.new
     gzip = Zlib::GzipWriter.new(buffer)
@@ -11,116 +39,80 @@ RSpec.describe 'Net::Http patch', feature_category: :integrations do
     buffer.string
   end
 
-  def read_body(res, io)
-    body = nil
-    res.reading_body io, true do
-      body = res.read_body
-    end
-    body
+  before_all do
+    WebMock.disable!
   end
 
-  shared_examples 'logging behavior for decompressed content' do |size|
-    it 'logs the decompressed content size' do
-      expect(Gitlab::AppJsonLogger).to receive(:debug).with(message: 'net/http: response decompressed', size: size,
-        caller: anything)
+  after(:all) do
+    Thread.kill(server_thread)
 
-      res = Net::HTTPResponse.read_new(io)
-      res.decode_content = true
-
-      read_body(res, io)
-    end
+    WebMock.enable!
   end
 
-  shared_examples 'no logging for decompressed content' do
-    it 'does not log the decompressed content size' do
-      expect(Gitlab::AppJsonLogger).not_to receive(:debug)
+  shared_examples 'raises error' do
+    it 'logs and raises Gitlab::HTTP::MaxDecompressionSizeError' do
+      expect(Gitlab::AppJsonLogger).to receive(:error)
+        .with(message: 'Net::HTTP - Response size too large', size: an_instance_of(Integer), caller: anything)
 
-      res = Net::HTTPResponse.read_new(io)
-      res.decode_content = true
-
-      read_body(res, io)
+      expect do
+        Net::HTTP.get_response(URI("http://localhost:4567/#{path}"))
+      end.to raise_error Gitlab::HTTP::MaxDecompressionSizeError
     end
   end
 
-  describe 'decompressing data' do
-    let(:body) { 'Hello world!' }
-    let(:io) do
-      gzip_body = gzip_compress(body)
-      response = <<~RESPONSE
-        HTTP/1.1 200 OK
-        Content-Encoding: gzip
-        Content-Type: text/plain
+  shared_examples 'does not raise error' do
+    it 'does not raise error' do
+      expect(Gitlab::AppJsonLogger).not_to receive(:error)
 
-        #{gzip_body}
-      RESPONSE
+      body = Net::HTTP.get_response(URI("http://localhost:4567/#{path}")).body
 
-      Net::BufferedIO.new(StringIO.new(response.force_encoding('ASCII-8BIT')))
+      expect(body).to eq(two_mega_bytes_body)
+    end
+  end
+
+  context 'when decompressed content size exceeds the threshold' do
+    before do
+      stub_application_setting(max_http_decompressed_size: 1)
     end
 
-    context 'when decompressed content size exceeds the log threshold' do
+    include_examples 'raises error' do
+      let(:path) { 'gzip' }
+    end
+
+    context 'when validation is disabled via Request Store' do
       before do
-        allow(Gitlab.config.gitlab).to receive(:log_decompressed_response_bytesize).and_return(11)
+        Gitlab::SafeRequestStore[:disable_net_http_decompression] = true
       end
 
-      it_behaves_like 'logging behavior for decompressed content', 12.bytes
+      include_examples 'does not raise error' do
+        let(:path) { 'gzip' }
+      end
     end
 
-    context 'when decompressed content size is below the log threshold' do
-      before do
-        allow(Gitlab.config.gitlab).to receive(:log_decompressed_response_bytesize).and_return(13)
+    context 'when response is not encoded' do
+      include_examples 'does not raise error' do
+        let(:path) { 'no-encoding' }
       end
+    end
+  end
 
-      it_behaves_like 'no logging for decompressed content'
+  context 'when decompressed content size is below the threshold' do
+    before do
+      stub_application_setting(max_http_decompressed_size: 3)
     end
 
-    context 'when log_decompressed_response_bytesize is set to zero' do
-      before do
-        allow(Gitlab.config.gitlab).to receive(:log_decompressed_response_bytesize).and_return(0)
-      end
+    include_examples 'does not raise error' do
+      let(:path) { 'gzip' }
+    end
+  end
 
-      it_behaves_like 'no logging for decompressed content'
+  context 'when threshold is set to zero' do
+    before do
+      stub_application_setting(max_http_decompressed_size: 0)
     end
 
-    context 'with chunked response' do
-      let(:io) do
-        chunked_response = ""
-        chunked_response += "HTTP/1.1 200 OK\r\n"
-        chunked_response += "Content-Encoding: gzip\r\n"
-        chunked_response += "Content-Type: application/octet-stream\r\n"
-        chunked_response += "Transfer-Encoding: chunked\r\n"
-        chunked_response += "\r\n"
-        gzipped_content = gzip_compress(body)
-        gzipped_content.each_char.each_slice(1024) do |chunk|
-          chunk_data = chunk.join
-          chunk_size_hex = format("%X", chunk_data.bytesize)
-
-          chunked_response += chunk_size_hex
-          chunked_response += "\r\n"
-          chunked_response += chunk_data
-          chunked_response += "\r\n"
-        end
-        chunked_response << "0\r\n\r\n"
-
-        Net::BufferedIO.new(StringIO.new(chunked_response.force_encoding('ASCII-8BIT')))
-      end
-
-      let(:body) { "A" * 2 * 1024 * 1024 }
-
-      context 'when decompressed content size exceeds the log threshold' do
-        before do
-          allow(Gitlab.config.gitlab).to receive(:log_decompressed_response_bytesize).and_return(1.megabyte)
-        end
-
-        it_behaves_like 'logging behavior for decompressed content', 2.megabytes
-      end
-
-      context 'when decompressed content size is below the log threshold' do
-        before do
-          allow(Gitlab.config.gitlab).to receive(:log_decompressed_response_bytesize).and_return(3.megabytes)
-        end
-
-        it_behaves_like 'no logging for decompressed content'
-      end
+    include_examples 'does not raise error' do
+      let(:path) { 'gzip' }
     end
   end
 end

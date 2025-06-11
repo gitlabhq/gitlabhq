@@ -81,7 +81,7 @@ module Integrations
           redirect_uri: redirect_uri
         }
 
-        Gitlab::HTTP.get(SLACK_EXCHANGE_TOKEN_URL, query: query).to_hash
+        Clients::HTTP.get(SLACK_EXCHANGE_TOKEN_URL, query: query).to_hash
       end
 
       # Due to our modelling (mentioned in epic 9418) we create a SlackIntegration record

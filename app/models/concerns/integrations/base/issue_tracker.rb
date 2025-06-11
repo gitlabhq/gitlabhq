@@ -106,7 +106,7 @@ module Integrations
         result = false
 
         begin
-          response = Gitlab::HTTP.head(project_url, verify: true)
+          response = Clients::HTTP.head(project_url, verify: true)
 
           if response
             message = "#{type} received response #{response.code} when attempting to connect to #{project_url}"

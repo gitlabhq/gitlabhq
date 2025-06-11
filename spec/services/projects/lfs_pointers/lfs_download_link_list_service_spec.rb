@@ -84,7 +84,7 @@ RSpec.describe Projects::LfsPointers::LfsDownloadLinkListService, feature_catego
       end
 
       def stub_request(batch, response)
-        expect(Gitlab::HTTP).to receive(:post).with(
+        expect(Import::Clients::HTTP).to receive(:post).with(
           remote_uri,
           {
             body: { operation: 'download', objects: batch.map { |k, v| { oid: k, size: v } } }.to_json,
@@ -133,7 +133,7 @@ RSpec.describe Projects::LfsPointers::LfsDownloadLinkListService, feature_catego
             stub_successful_request([data[4]])
           end
 
-          it 'retreives them eventually and logs exceptions' do
+          it 'retrieves them eventually and logs exceptions' do
             expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
               an_instance_of(error_class), project_id: project.id, batch_size: 5, oids_count: 5
             )

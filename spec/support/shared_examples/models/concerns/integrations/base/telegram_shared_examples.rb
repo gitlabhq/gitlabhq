@@ -87,8 +87,10 @@ RSpec.shared_examples Integrations::Base::Telegram do
     end
 
     it 'removes the parse mode if the first request fails with a bad request' do
-      expect(Gitlab::HTTP).to receive(:post).with(integration.webhook, headers: header, body: Gitlab::Json.dump(body_1))
-      expect(Gitlab::HTTP).to receive(:post).with(integration.webhook, headers: header, body: Gitlab::Json.dump(body_2))
+      expect(Gitlab::HTTP).to receive(:post).with(integration.webhook,
+        { headers: header, body: Gitlab::Json.dump(body_1), max_bytes: an_instance_of(Integer) })
+      expect(Gitlab::HTTP).to receive(:post).with(integration.webhook,
+        { headers: header, body: Gitlab::Json.dump(body_2), max_bytes: an_instance_of(Integer) })
 
       integration.send(:notify, message, {})
     end

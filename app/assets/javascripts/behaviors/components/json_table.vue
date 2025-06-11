@@ -2,7 +2,7 @@
 import { GlTable, GlFormInput } from '@gitlab/ui';
 import { memoize } from 'lodash';
 import { __ } from '~/locale';
-import { sanitize } from '~/lib/dompurify';
+import { sanitize, defaultConfig } from '~/lib/dompurify';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 
 const domParser = new DOMParser();
@@ -74,6 +74,11 @@ export default {
       return `cell(${field.key})`;
     },
   },
+  safeHtmlConfig: {
+    ...defaultConfig,
+    FORBID_ATTR: [...defaultConfig.FORBID_ATTR, 'class', 'style'],
+    ALLOW_DATA_ATTR: false,
+  },
 };
 </script>
 <template>
@@ -92,11 +97,11 @@ export default {
       class="!gl-mt-0"
     >
       <template v-if="isHtmlSafe" #cell()="data">
-        <div v-safe-html="data.value"></div>
+        <div v-safe-html:[$options.safeHtmlConfig]="data.value"></div>
       </template>
       <template v-else #cell()="data">{{ data.value }}</template>
       <template v-if="caption" #table-caption>
-        <small v-if="isHtmlSafe" v-safe-html="caption"></small>
+        <small v-if="isHtmlSafe" v-safe-html:[$options.safeHtmlConfig]="caption"></small>
         <small v-else>{{ caption }}</small>
       </template>
     </gl-table>

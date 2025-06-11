@@ -46,7 +46,7 @@ module Gitlab
           request_params[:write_timeout]
         ].max
 
-        result = Gitlab::HTTP.public_send(http_method, path, **request_params) # rubocop:disable GitlabSecurity/PublicSend
+        result = Integrations::Clients::HTTP.public_send(http_method, path, **request_params) # rubocop:disable GitlabSecurity/PublicSend
         @authenticated = result.response.is_a?(Net::HTTPOK)
         store_cookies(result) if options[:use_cookies]
 

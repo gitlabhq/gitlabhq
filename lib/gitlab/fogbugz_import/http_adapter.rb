@@ -12,7 +12,7 @@ module Gitlab
 
         params = { 'cmd' => action }.merge(options.fetch(:params, {}))
 
-        response = Gitlab::HTTP.post(uri, body: params)
+        response = ::Import::Clients::HTTP.post(uri, body: params)
 
         response.body
       end

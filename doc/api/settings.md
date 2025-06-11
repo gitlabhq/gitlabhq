@@ -614,6 +614,8 @@ to configure other related settings. These requirements are
 | `max_export_size`                        | integer          | no                                   | Maximum export size in MB. 0 for unlimited. Default = 0 (unlimited). |
 | `max_github_response_size_limit`         | integer          | no                                   | Maximum allowed GitHub API response size in MB. 0 for unlimited. |
 | `max_github_response_json_value_count`   | integer          | no                                   | Maximum allowed value count for GitHub API responses. 0 for unlimited. Count is an estimate based on the number of `:` `,` `{` and `[` occurrences in the response. |
+| `max_http_decompressed_size`             | integer          | no                                   | Maximum allowed size in MiB for Gzip-compressed HTTP responses after decompression. 0 for unlimited. |
+| `max_http_response_size_limit`           | integer          | no                                   | Maximum allowed size in MiB for HTTP responses. 0 for unlimited. |
 | `max_import_size`                        | integer          | no                                   | Maximum import size in MB. 0 for unlimited. Default = 0 (unlimited). |
 | `max_import_remote_file_size`            | integer          | no                                   | Maximum remote file size for imports from external object storages. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384976) in GitLab 16.3. |
 | `max_login_attempts`                     | integer          | no                                   | Maximum number of sign-in attempts before locking out the user. |

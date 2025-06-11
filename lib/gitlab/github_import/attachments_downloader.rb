@@ -53,7 +53,7 @@ module Gitlab
         return file_url unless file_url.starts_with?(github_assets_url_regex)
 
         options[:follow_redirects] = false
-        response = Gitlab::HTTP.perform_request(Net::HTTP::Get, file_url, options)
+        response = ::Import::Clients::HTTP.get(file_url, options)
 
         download_url = if response.redirection?
                          response.headers[:location]

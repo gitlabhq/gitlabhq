@@ -30,7 +30,7 @@ RSpec.describe Gitlab::Chat::Responder::Slack, feature_category: :integrations d
     it 'sends a response back to Slack' do
       expect(Gitlab::HTTP).to receive(:post).with(
         'http://example.com',
-        { headers: { Accept: 'application/json' }, body: 'hello'.to_json }
+        { headers: { Accept: 'application/json' }, body: 'hello'.to_json, max_bytes: an_instance_of(Integer) }
       )
 
       responder.send_response('hello')
@@ -41,7 +41,7 @@ RSpec.describe Gitlab::Chat::Responder::Slack, feature_category: :integrations d
 
       expect(Gitlab::HTTP).to receive(:post).with(
         'http://example.com',
-        { headers: { Accept: 'application/json' }, body: 'hello'.to_json }
+        { headers: { Accept: 'application/json' }, body: 'hello'.to_json, max_bytes: an_instance_of(Integer) }
       )
 
       expect(Gitlab::AppLogger)

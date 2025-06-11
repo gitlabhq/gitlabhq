@@ -7,6 +7,7 @@ module WebHooks
     InterpolationError = Class.new(StandardError)
 
     SECRET_MASK = '************'
+    MAX_PARAM_LENGTH = 8192
 
     # See app/validators/json_schemas/web_hooks_url_variables.json
     VARIABLE_REFERENCE_RE = /\{([A-Za-z]+[0-9]*(?:[._-][A-Za-z0-9]+)*)\}/
@@ -45,9 +46,14 @@ module WebHooks
         encode_iv: false
 
       validates :url, presence: true
-      validates :url, public_url: true, if: ->(hook) { hook.validate_public_url? && !hook.url_variables? }
+      validates :url, length: { maximum: MAX_PARAM_LENGTH }
+      validates :url, public_url: true, if: ->(hook) {
+        # Apply the validation up to the point where the length validation above would make the record invalid.
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/524020#note_2529307579
+        (hook.url&.length&.<= MAX_PARAM_LENGTH) && hook.validate_public_url? && !hook.url_variables?
+      }
 
-      validates :token, format: { without: /\n/ }
+      validates :token, length: { maximum: MAX_PARAM_LENGTH }, format: { without: /\n/ }
 
       after_initialize :initialize_url_variables
       after_initialize :initialize_custom_headers

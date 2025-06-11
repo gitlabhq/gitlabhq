@@ -7,6 +7,8 @@ module Gitlab
     ReadTotalTimeout = Gitlab::HTTP_V2::ReadTotalTimeout
     HeaderReadTimeout = Gitlab::HTTP_V2::HeaderReadTimeout
     SilentModeBlockedError = Gitlab::HTTP_V2::SilentModeBlockedError
+    ResponseSizeTooLarge = Gitlab::HTTP_V2::ResponseSizeTooLarge
+    MaxDecompressionSizeError = Gitlab::HTTP_V2::MaxDecompressionSizeError
 
     HTTP_TIMEOUT_ERRORS = Gitlab::HTTP_V2::HTTP_TIMEOUT_ERRORS
     HTTP_ERRORS = Gitlab::HTTP_V2::HTTP_ERRORS
@@ -48,6 +50,22 @@ module Gitlab
 
         # Use `::Gitlab::HTTP_V2.get/post/...` methods
         ::Gitlab::HTTP_V2.public_send(method_name, path, http_v2_options(options), &block) # rubocop:disable GitlabSecurity/PublicSend -- method is validated to make sure it is one of the methods in Gitlab::HTTP_V2::SUPPORTED_HTTP_METHODS
+      end
+
+      # Disables the decompression limit validation for the duration of the given block.
+      #
+      # SECURITY WARNING: Only use this method for requests to trusted web servers that are not
+      # user-controlled. For requests to user-controlled servers, set `accept-encoding: identity`
+      # in the request headers to request the source server not return a compressed response.
+      def without_decompression_limit
+        return yield unless Gitlab::SafeRequestStore.active?
+
+        begin
+          Gitlab::SafeRequestStore[:disable_net_http_decompression] = true
+          yield
+        ensure
+          Gitlab::SafeRequestStore[:disable_net_http_decompression] = false
+        end
       end
 
       private

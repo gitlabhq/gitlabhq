@@ -64,7 +64,7 @@ module Gitlab
 
       def get(path, params = {})
         options = { headers: headers, query: params }
-        response = Gitlab::HTTP.get(url(path), options)
+        response = Integrations::Clients::HTTP.get(url(path), options)
 
         raise RequestError unless response.success?
 

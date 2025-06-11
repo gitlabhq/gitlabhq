@@ -167,7 +167,7 @@ module Integrations
       end
 
       def get_path(path)
-        Gitlab::HTTP.try_get(
+        Clients::HTTP.try_get(
           build_url(path),
           verify: enable_ssl_verification,
           basic_auth: basic_auth,
@@ -176,7 +176,7 @@ module Integrations
       end
 
       def post_to_build_queue(_data, branch)
-        Gitlab::HTTP.post(
+        Clients::HTTP.post(
           build_url('httpAuth/app/rest/buildQueue'),
           body: "<build branchName=#{branch.encode(xml: :attr)}>" \
             "<buildType id=#{build_type.encode(xml: :attr)}/>" \

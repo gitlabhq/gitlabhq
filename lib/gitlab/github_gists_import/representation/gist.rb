@@ -58,7 +58,7 @@ module Gitlab
 
           {
             file_name: value[:filename],
-            file_content: Gitlab::HTTP.try_get(value[:raw_url])&.body
+            file_content: ::Import::Clients::HTTP.try_get(value[:raw_url])&.body
           }
         end
 
