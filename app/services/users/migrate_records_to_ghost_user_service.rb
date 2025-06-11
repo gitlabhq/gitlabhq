@@ -87,6 +87,9 @@ module Users
 
     def migrate_notes
       batched_migrate(Note, :author_id)
+
+      # Migrate label change event system notes as they are stored in a different table
+      batched_migrate(ResourceLabelEvent, :user_id)
     end
 
     def migrate_abuse_reports

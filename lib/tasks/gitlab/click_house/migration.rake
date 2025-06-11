@@ -21,25 +21,9 @@ namespace :gitlab do
     namespace :rollback do
       click_house_database_names.each do |database|
         desc "GitLab | ClickHouse | Rolls the #{database} database back to the previous version " \
-             "(specify steps w/ STEP=n)"
+               "(specify steps w/ STEP=n)"
         task database => :environment do
           migrate(:down, database)
-        end
-      end
-    end
-
-    namespace :schema do
-      namespace :dump do
-        click_house_database_names.each do |database|
-          desc "GitLab | ClickHouse | Dump the #{database} ClickHouse database schema"
-          task database, [:skip_unless_configured] => :environment do |_t, args|
-            if args[:skip_unless_configured] && !::ClickHouse::Client.database_configured?(database)
-              puts "The '#{database}' ClickHouse database is not configured, skipping load"
-              next
-            end
-
-            dump(database)
-          end
         end
       end
     end
@@ -68,46 +52,11 @@ namespace :gitlab do
       ENV['VERSION'].to_i if ENV['VERSION'] && !ENV['VERSION'].empty?
     end
 
-    def dump(database)
-      connection = ClickHouse::Connection.new(database)
-      database_name = connection.database_name
-
-      tables_query = <<~SQL
-        SELECT
-        	groupConcat(';\n\n')(formatted_statement) AS all_statements
-        FROM
-          (
-            SELECT
-              replaceRegexpAll (formatQuery (create_table_query), {database_pattern:String}, '') AS formatted_statement            FROM
-              system.tables
-            WHERE
-              database = {database:String}
-            ORDER BY
-              CASE
-                WHEN engine LIKE '%View%' THEN 1
-                ELSE 0
-              END,
-              name
-          );
-      SQL
-
-      query = ClickHouse::Client::Query.new(
-        raw_query: tables_query,
-        placeholders: {
-          database: database_name,
-          database_pattern: "#{database_name}\\."
-        }
-      )
-
-      result = connection.select(query).dig(0, 'all_statements')
-
-      File.write(Rails.root.join('db', 'click_house', "#{database}.sql"), result)
-    end
-
     def migrate(direction, database)
       require_relative '../../../../lib/click_house/migration_support/schema_migration'
       require_relative '../../../../lib/click_house/migration_support/migration_context'
       require_relative '../../../../lib/click_house/migration_support/migrator'
+      require_relative '../../../../lib/click_house/schema_migrations'
 
       check_target_version
 
@@ -124,15 +73,20 @@ namespace :gitlab do
       schema_migration = ClickHouse::MigrationSupport::SchemaMigration.new(connection)
       schema_migration.ensure_table
 
-      migration_context = ClickHouse::MigrationSupport::MigrationContext.new(connection, migrations_paths,
-        schema_migration)
+      migration_context = ClickHouse::MigrationSupport::MigrationContext.new(
+        connection,
+        migrations_paths,
+        schema_migration
+      )
 
-      migrations_ran = migration_context.public_send(direction, target_version, step) do |migration|
+      migration_context.public_send(direction, target_version, step) do |migration|
         scope.blank? || scope == migration.scope
       end
 
-      Rake::Task["gitlab:clickhouse:schema:dump:#{database}"].invoke
-      puts('No migrations ran.') unless migrations_ran&.any?
+      # Save migration files reflecting current migration state
+      # This ensures files are added for new migrations and removed for rolled back ones
+      ClickHouse::SchemaMigrations.touch_all(connection, database)
+      Rake::Task["gitlab:clickhouse:schema:dump:#{database}"].invoke unless Rails.env.test?
     ensure
       ClickHouse::Migration.verbose = verbose_was
     end

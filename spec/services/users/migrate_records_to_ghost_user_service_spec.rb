@@ -90,6 +90,12 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
       end
     end
 
+    context 'for label change events' do
+      include_examples 'migrating records to the ghost user', ResourceLabelEvent, [:user] do
+        let(:created_record) { create(:resource_label_event, issue: create(:issue), user: user) }
+      end
+    end
+
     context 'for abuse reports' do
       include_examples 'migrating records to the ghost user', AbuseReport do
         let(:created_record) { create(:abuse_report, reporter: user, user: create(:user)) }
@@ -227,7 +233,6 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
          'deletes associations marked as delete_all', :aggregate_failures do
         # associations to be nullified
         issue = create(:issue, closed_by: user, updated_by: user)
-        resource_label_event = create(:resource_label_event, user: user)
         resource_state_event = create(:resource_state_event, user: user)
         created_project = create(:project, creator: user)
 
@@ -245,13 +250,11 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
         end
 
         issue.reload
-        resource_label_event.reload
         resource_state_event.reload
         created_project.reload
 
         expect(issue.closed_by).to be_nil
         expect(issue.updated_by_id).to be_nil
-        expect(resource_label_event.user_id).to be_nil
         expect(resource_state_event.user_id).to be_nil
         expect(created_project.creator_id).to be_nil
         expect(user.todos).to be_empty
@@ -260,7 +263,6 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
         expected_queries = [
           nullify_in_batches_regexp(:issues, :updated_by_id, user),
           nullify_in_batches_regexp(:issues, :closed_by_id, user),
-          nullify_in_batches_regexp(:resource_label_events, :user_id, user),
           nullify_in_batches_regexp(:resource_state_events, :user_id, user),
           nullify_in_batches_regexp(:projects, :creator_id, user),
           delete_all_in_batches_regexp(:todos, :user_id, user),

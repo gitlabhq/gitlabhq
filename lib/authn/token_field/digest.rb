@@ -10,11 +10,15 @@ module Authn
       def find_token_authenticatable(token, unscoped = false)
         return unless token
 
-        relation(unscoped).find_by(token_field_name => Gitlab::CryptoHelper.sha256(token)) # rubocop:disable CodeReuse/ActiveRecord: -- This is meant to be used in AR models.
+        relation(unscoped).find_by(token_field_name => encode(token)) # rubocop:disable CodeReuse/ActiveRecord: -- This is meant to be used in AR models.
       end
 
       def get_token(token_owner_record)
         token_owner_record.cleartext_tokens&.[](token_field)
+      end
+
+      def encode(token)
+        Gitlab::CryptoHelper.sha256(token)
       end
 
       def set_token(token_owner_record, token)
@@ -22,7 +26,7 @@ module Authn
 
         token_owner_record.cleartext_tokens ||= {}
         token_owner_record.cleartext_tokens[token_field] = token
-        token_owner_record[token_field_name] = Gitlab::CryptoHelper.sha256(token)
+        token_owner_record[token_field_name] = encode(token)
       end
 
       protected

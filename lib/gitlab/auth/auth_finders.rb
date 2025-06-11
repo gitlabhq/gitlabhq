@@ -16,6 +16,12 @@ module Gitlab
       end
     end
 
+    class RestrictedLanguageServerClientError < AuthenticationError
+      def initialize(msg)
+        super("Language server client error: #{msg}")
+      end
+    end
+
     class InsufficientScopeError < AuthenticationError
       attr_reader :scopes
 

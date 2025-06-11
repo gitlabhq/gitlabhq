@@ -143,7 +143,7 @@ module Projects
       return unless renaming_project_with_container_registry_tags?
 
       unless ContainerRegistry::GitlabApiClient.supports_gitlab_api?
-        raise ValidationError, s_('UpdateProject|Cannot rename project because it contains container registry tags!')
+        raise ValidationError, s_('UpdateProject|Cannot rename or delete project because it contains container registry tags. Delete all container registry tags first. https://docs.gitlab.com/user/packages/container_registry/#move-or-rename-container-registry-repositories')
       end
 
       dry_run = ContainerRegistry::GitlabApiClient.rename_base_repository_path(

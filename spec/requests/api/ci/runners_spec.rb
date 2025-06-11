@@ -295,6 +295,30 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, factory_default: :keep, fe
           ]
         end
 
+        context 'created_by' do
+          let_it_be(:runner_with_creator) { create(:ci_runner, :project, creator: admin, projects: [project]) }
+
+          it 'returns created_at and created_by in the response' do
+            perform_request
+
+            expect(json_response.find { |runner| runner['id'] == runner_with_creator.id }['created_by']['username'])
+              .to eq(admin.username)
+            expect(json_response).to all(include('created_at'))
+          end
+
+          it 'does not trigger N+1 query for creator', :use_sql_query_cache do
+            control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+              get api(path, current_user)
+            end
+
+            create_list(:ci_runner, 5, :project, projects: [project], creator: users.first)
+
+            expect do
+              perform_request
+            end.not_to exceed_query_limit(control)
+          end
+        end
+
         context 'with request authorized with access token' do
           include_context 'access token setup' do
             let(:pat_user) { admin }

@@ -84,6 +84,22 @@ $crud-header-min-height: px-to-rem(49px);
   }
 }
 
+// GLQL: This prevents double borders.
+// The body contains a scrollable table.
+// Remove left and right table borders,
+// as Crud already renders outer borders.
+.crud-body .gl-table-shadow > table {
+  td:first-of-type,
+  th:first-of-type {
+    @apply gl-border-l-0;
+  }
+
+  td:last-of-type,
+  th:last-of-type {
+    @apply gl-border-r-0;
+  }
+}
+
 .crud-body:has(.content-list) {
   margin: 0;
 

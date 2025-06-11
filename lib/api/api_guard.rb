@@ -64,6 +64,7 @@ module API
           forbidden!(api_access_denied_message(user))
         end
 
+        check_language_server_client!(user)
         check_dpop!(user)
 
         user
@@ -137,6 +138,17 @@ module API
             group_id: params[:id])
       end
 
+      def check_language_server_client!(user)
+        return unless api_request? && user.is_a?(User)
+
+        response = Gitlab::Auth::EditorExtensions::LanguageServerClientVerifier.new(
+          current_user: user,
+          request: current_request
+        ).execute
+
+        raise Gitlab::Auth::RestrictedLanguageServerClientError, response.message if response.error?
+      end
+
       def user_allowed_or_deploy_token?(user)
         Gitlab::UserAccess.new(user).allowed? || user.is_a?(DeployToken)
       end
@@ -171,6 +183,7 @@ module API
                          Gitlab::Auth::RevokedError,
                          Gitlab::Auth::ImpersonationDisabled,
                          Gitlab::Auth::InsufficientScopeError,
+                         Gitlab::Auth::RestrictedLanguageServerClientError,
                          Gitlab::Auth::DpopValidationError]
 
         base.__send__(:rescue_from, *error_classes, oauth2_bearer_token_error_handler) # rubocop:disable GitlabSecurity/PublicSend
@@ -214,6 +227,11 @@ module API
             when Gitlab::Auth::DpopValidationError
               Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new(
                 :dpop_error,
+                e)
+
+            when Gitlab::Auth::RestrictedLanguageServerClientError
+              Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new(
+                :restricted_language_server_client_error,
                 e)
             end
 

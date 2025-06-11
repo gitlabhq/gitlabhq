@@ -103,6 +103,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         ecdsa_sk_key_restriction: 0,
         ed25519_key_restriction: 0,
         ed25519_sk_key_restriction: 0,
+        enable_language_server_restrictions: false,
         eks_integration_enabled: false,
         email_confirmation_setting: 'off',
         email_restrictions_enabled: false,
@@ -175,6 +176,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         max_yaml_depth: 100,
         max_yaml_size_bytes: 2.megabytes,
         members_delete_limit: 60,
+        minimum_language_server_version: '0.1.0',
         minimum_password_length: ApplicationSettingImplementation::DEFAULT_MINIMUM_PASSWORD_LENGTH,
         mirror_available: true,
         notes_create_limit: 300,
@@ -2147,6 +2149,54 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
       # invalid json
       it { is_expected.not_to allow_value({ foo: 'bar' }).for(:default_branch_protection_defaults) }
+    end
+  end
+
+  describe '#editor_extensions' do
+    it 'sets the correct default values' do
+      expect(setting.enable_language_server_restrictions).to be(false)
+      expect(setting.minimum_language_server_version).to eq('0.1.0')
+    end
+
+    context 'when provided different invalid values' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:enable_language_server_restrictions, :minimum_language_server_version) do
+        false | nil
+        true | 'invalid semantic version'
+        true | ''
+      end
+
+      with_them do
+        let(:value) do
+          {
+            enable_language_server_restrictions: enable_language_server_restrictions,
+            minimum_language_server_version: minimum_language_server_version
+          }
+        end
+
+        it { is_expected.not_to allow_value(value).for(:editor_extensions) }
+      end
+    end
+
+    context 'when provided different valid values' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:enable_language_server_restrictions, :minimum_language_server_version) do
+        false | '0.1.0'
+        true | '8.0.0'
+      end
+
+      with_them do
+        let(:value) do
+          {
+            enable_language_server_restrictions: enable_language_server_restrictions,
+            minimum_language_server_version: minimum_language_server_version
+          }
+        end
+
+        it { is_expected.to allow_value(value).for(:editor_extensions) }
+      end
     end
   end
 

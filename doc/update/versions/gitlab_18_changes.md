@@ -44,3 +44,26 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   | Affected minor releases | Affected patch releases | Fixed in |
   | ----------------------- | ----------------------- | -------- |
   | 18.0                    |  18.0.0 - 18.0.1        | 18.0.2   |
+
+### PRNG is not seeded error on Docker installations
+
+If you run GitLab on a Docker installation with a FIPS-enabled host, you
+may see that SSH key generation or the OpenSSH server (`sshd`) fails to
+start with the error message:
+
+```plaintext
+PRNG is not seeded
+```
+
+GitLab 18.0 [updated the base image from Ubuntu 22.04 to 24.04](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8928).
+This error occurs because Ubuntu 24.04 no longer [allows a FIPS host to use a non-FIPS OpenSSL provider](https://github.com/dotnet/dotnet-docker/issues/5849#issuecomment-2324943811).
+
+To fix this issue, you have a few options:
+
+- Disable FIPS on the host system.
+- Disable the auto-detection of a FIPS-based kernel in the GitLab Docker container.
+  This can be done by setting the `OPENSSL_FORCE_FIPS_MODE=0` environment variable with GitLab 18.0.2 or higher.
+- Instead of using the GitLab Docker image, install a [native FIPS package](https://packages.gitlab.com/gitlab/gitlab-fips) on the host.
+
+The last option is the recommended one to meet FIPS requirements. For
+legacy installations, the first two options can be used as a stopgap.

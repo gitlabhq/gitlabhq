@@ -42284,7 +42284,7 @@ paths:
           schema:
             type: array
             items:
-              "$ref": "#/definitions/API_Entities_PersonalAccessToken"
+              "$ref": "#/definitions/API_Entities_PersonalAccessTokenWithLastUsedIps"
         '401':
           description: Unauthorized
       tags:
@@ -42338,7 +42338,7 @@ paths:
   "/api/v4/personal_access_tokens/{id}/rotate":
     post:
       summary: Rotate personal access token
-      description: Roates a personal access token.
+      description: Rotates a personal access token.
       produces:
       - application/json
       consumes:
@@ -45924,6 +45924,12 @@ definitions:
       online:
         type: boolean
         example: true
+      created_by:
+        "$ref": "#/definitions/API_Entities_UserBasic"
+      created_at:
+        type: string
+        format: date-time
+        example: '2025-05-03T00:00:00.000Z'
       status:
         type: string
         example: online
@@ -63636,6 +63642,12 @@ definitions:
       online:
         type: boolean
         example: true
+      created_by:
+        "$ref": "#/definitions/API_Entities_UserBasic"
+      created_at:
+        type: string
+        format: date-time
+        example: '2025-05-03T00:00:00.000Z'
       status:
         type: string
         example: online

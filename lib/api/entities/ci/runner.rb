@@ -18,6 +18,9 @@ module API
           documentation: { type: 'string', values: ::Ci::Runner.runner_types.keys, example: 'instance_type' }
         expose :name, documentation: { type: 'string', example: 'test' }
         expose :online?, as: :online, documentation: { type: 'boolean', example: true }
+        expose :creator, as: :created_by, using: Entities::UserBasic, documentation: { type: 'Entities::UserBasic' },
+          if: proc { |runner, _options| Ability.allowed?(options[:current_user], :read_user, runner.creator) }
+        expose :created_at, documentation: { type: 'dateTime', example: '2025-05-03T00:00:00.000Z' }
         # DEPRECATED
         # TODO Remove in v5 in favor of `status` for REST calls, see https://gitlab.com/gitlab-org/gitlab/-/issues/375709
         expose :deprecated_rest_status, as: :status, documentation: { type: 'string', example: 'online' }

@@ -24422,6 +24422,17 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="complianceframeworkpipelineexecutionschedulepoliciesincludeunscoped"></a>`includeUnscoped` | [`Boolean`](#boolean) | Filter policies that are scoped to the project. |
 | <a id="complianceframeworkpipelineexecutionschedulepoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. Default is DIRECT. |
 
+### `ComplianceFrameworkCoverageSummary`
+
+Compliance framework Coverage summary for a group.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="complianceframeworkcoveragesummarycoveredcount"></a>`coveredCount` | [`Int!`](#int) | Number of projects covered by at least one framework. |
+| <a id="complianceframeworkcoveragesummarytotalprojects"></a>`totalProjects` | [`Int!`](#int) | Total number of projects in the group. |
+
 ### `ComplianceRequirement`
 
 Represents a ComplianceRequirement associated with a ComplianceFramework.
@@ -28130,6 +28141,7 @@ GPG signature for a signed commit.
 | <a id="groupautodevopsenabled"></a>`autoDevopsEnabled` | [`Boolean`](#boolean) | Indicates whether Auto DevOps is enabled for all projects within the group. |
 | <a id="groupavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
 | <a id="groupcicdsettings"></a>`ciCdSettings` {{< icon name="warning-solid" >}} | [`CiCdSettings`](#cicdsettings) | **Introduced** in GitLab 17.9. **Status**: Experiment. Namespace CI/CD settings for the namespace. |
+| <a id="groupcomplianceframeworkcoveragesummary"></a>`complianceFrameworkCoverageSummary` {{< icon name="warning-solid" >}} | [`ComplianceFrameworkCoverageSummary`](#complianceframeworkcoveragesummary) | **Introduced** in GitLab 18.1. **Status**: Experiment. Summary of compliance framework coverage in a group and its subgroups. |
 | <a id="groupcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the group. |
 | <a id="groupcontainslockedprojects"></a>`containsLockedProjects` | [`Boolean`](#boolean) | Includes at least one project where the repository size exceeds the limit. This only applies to namespaces under Project limit enforcement. |
 | <a id="groupcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of the group creation. |
@@ -29862,13 +29874,13 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="groupworkitemstatecountscustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Introduced** in GitLab 17.10. **Status**: Experiment. Filter by custom fields. |
 | <a id="groupworkitemstatecountsdueafter"></a>`dueAfter` | [`Time`](#time) | Work items due after the timestamp. |
 | <a id="groupworkitemstatecountsduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
-| <a id="groupworkitemstatecountsexcludeprojects"></a>`excludeProjects` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Exclude work items from projects within the group. |
+| <a id="groupworkitemstatecountsexcludeprojects"></a>`excludeProjects` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Exclude work items from projects within the group. Ignored for project namespaces. |
 | <a id="groupworkitemstatecountshealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the work item, "none" and "any" values are supported. |
 | <a id="groupworkitemstatecountsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="groupworkitemstatecountsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="groupworkitemstatecountsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
-| <a id="groupworkitemstatecountsincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Include work items from ancestor groups. |
-| <a id="groupworkitemstatecountsincludedescendants"></a>`includeDescendants` | [`Boolean`](#boolean) | Include work items from descendant groups and projects. |
+| <a id="groupworkitemstatecountsincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Include work items from ancestor groups. Ignored for project namespaces. |
+| <a id="groupworkitemstatecountsincludedescendants"></a>`includeDescendants` | [`Boolean`](#boolean) | Include work items from descendant groups and projects. Ignored for project namespaces. |
 | <a id="groupworkitemstatecountslabelname"></a>`labelName` | [`[String!]`](#string) | Labels applied to the work item. |
 | <a id="groupworkitemstatecountsmilestonetitle"></a>`milestoneTitle` | [`[String!]`](#string) | Milestone applied to the work item. |
 | <a id="groupworkitemstatecountsmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter by milestone ID wildcard. Incompatible with `milestoneTitle`. |
@@ -29884,7 +29896,7 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="groupworkitemstatecountsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
 | <a id="groupworkitemstatecountsstatus"></a>`status` {{< icon name="warning-solid" >}} | [`WorkItemWidgetStatusFilterInput`](#workitemwidgetstatusfilterinput) | **Introduced** in GitLab 18.0. **Status**: Experiment. Filter by status. |
 | <a id="groupworkitemstatecountssubscribed"></a>`subscribed` | [`SubscriptionStatus`](#subscriptionstatus) | Work items the current user is subscribed to. |
-| <a id="groupworkitemstatecountstimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
+| <a id="groupworkitemstatecountstimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. Ignored for project namespaces. |
 | <a id="groupworkitemstatecountstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
 | <a id="groupworkitemstatecountsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Work items updated after the timestamp. |
 | <a id="groupworkitemstatecountsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Work items updated before the timestamp. |
@@ -29940,13 +29952,13 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupworkitemscustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Introduced** in GitLab 17.10. **Status**: Experiment. Filter by custom fields. |
 | <a id="groupworkitemsdueafter"></a>`dueAfter` | [`Time`](#time) | Work items due after the timestamp. |
 | <a id="groupworkitemsduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
-| <a id="groupworkitemsexcludeprojects"></a>`excludeProjects` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Exclude work items from projects within the group. |
+| <a id="groupworkitemsexcludeprojects"></a>`excludeProjects` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Exclude work items from projects within the group. Ignored for project namespaces. |
 | <a id="groupworkitemshealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the work item, "none" and "any" values are supported. |
 | <a id="groupworkitemsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="groupworkitemsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="groupworkitemsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
-| <a id="groupworkitemsincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Include work items from ancestor groups. |
-| <a id="groupworkitemsincludedescendants"></a>`includeDescendants` | [`Boolean`](#boolean) | Include work items from descendant groups and projects. |
+| <a id="groupworkitemsincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Include work items from ancestor groups. Ignored for project namespaces. |
+| <a id="groupworkitemsincludedescendants"></a>`includeDescendants` | [`Boolean`](#boolean) | Include work items from descendant groups and projects. Ignored for project namespaces. |
 | <a id="groupworkitemslabelname"></a>`labelName` | [`[String!]`](#string) | Labels applied to the work item. |
 | <a id="groupworkitemsmilestonetitle"></a>`milestoneTitle` | [`[String!]`](#string) | Milestone applied to the work item. |
 | <a id="groupworkitemsmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter by milestone ID wildcard. Incompatible with `milestoneTitle`. |
@@ -29962,7 +29974,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupworkitemsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
 | <a id="groupworkitemsstatus"></a>`status` {{< icon name="warning-solid" >}} | [`WorkItemWidgetStatusFilterInput`](#workitemwidgetstatusfilterinput) | **Introduced** in GitLab 18.0. **Status**: Experiment. Filter by status. |
 | <a id="groupworkitemssubscribed"></a>`subscribed` | [`SubscriptionStatus`](#subscriptionstatus) | Work items the current user is subscribed to. |
-| <a id="groupworkitemstimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
+| <a id="groupworkitemstimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. Ignored for project namespaces. |
 | <a id="groupworkitemstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
 | <a id="groupworkitemsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Work items updated after the timestamp. |
 | <a id="groupworkitemsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Work items updated before the timestamp. |
@@ -34134,7 +34146,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Namespace.workItem`
 
-Find a work item by IID directly associated with the namespace(project or group).
+Find a work item by IID directly associated with the namespace (project or group).
 
 {{< details >}}
 **Introduced** in GitLab 16.10.
@@ -34191,6 +34203,68 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="namespaceworkitemtypesname"></a>`name` | [`IssueType`](#issuetype) | Filter work item types by the given name. |
+
+##### `Namespace.workItems`
+
+Work items that belong to the namespace (project or group). Returns `null` for user namespaces.
+
+{{< details >}}
+**Introduced** in GitLab 18.1.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`WorkItemConnection`](#workitemconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespaceworkitemsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the work item. |
+| <a id="namespaceworkitemsassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee wildcard. Incompatible with `assigneeUsernames`. |
+| <a id="namespaceworkitemsauthorusername"></a>`authorUsername` | [`String`](#string) | Filter work items by author username. |
+| <a id="namespaceworkitemsclosedafter"></a>`closedAfter` | [`Time`](#time) | Work items closed after the date. |
+| <a id="namespaceworkitemsclosedbefore"></a>`closedBefore` | [`Time`](#time) | Work items closed before the date. |
+| <a id="namespaceworkitemsconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter for confidential work items. If `false`, excludes confidential work items. If `true`, returns only confidential work items. |
+| <a id="namespaceworkitemscreatedafter"></a>`createdAfter` | [`Time`](#time) | Work items created after the timestamp. |
+| <a id="namespaceworkitemscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Work items created before the timestamp. |
+| <a id="namespaceworkitemscrmcontactid"></a>`crmContactId` | [`String`](#string) | Filter by ID of CRM contact. |
+| <a id="namespaceworkitemscrmorganizationid"></a>`crmOrganizationId` | [`String`](#string) | Filter by ID of CRM contact organization. |
+| <a id="namespaceworkitemscustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Introduced** in GitLab 17.10. **Status**: Experiment. Filter by custom fields. |
+| <a id="namespaceworkitemsdueafter"></a>`dueAfter` | [`Time`](#time) | Work items due after the timestamp. |
+| <a id="namespaceworkitemsduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
+| <a id="namespaceworkitemsexcludeprojects"></a>`excludeProjects` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Exclude work items from projects within the group. Ignored for project namespaces. |
+| <a id="namespaceworkitemshealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the work item, "none" and "any" values are supported. |
+| <a id="namespaceworkitemsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
+| <a id="namespaceworkitemsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
+| <a id="namespaceworkitemsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
+| <a id="namespaceworkitemsincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Include work items from ancestor groups. Ignored for project namespaces. |
+| <a id="namespaceworkitemsincludedescendants"></a>`includeDescendants` | [`Boolean`](#boolean) | Include work items from descendant groups and projects. Ignored for project namespaces. |
+| <a id="namespaceworkitemslabelname"></a>`labelName` | [`[String!]`](#string) | Labels applied to the work item. |
+| <a id="namespaceworkitemsmilestonetitle"></a>`milestoneTitle` | [`[String!]`](#string) | Milestone applied to the work item. |
+| <a id="namespaceworkitemsmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter by milestone ID wildcard. Incompatible with `milestoneTitle`. |
+| <a id="namespaceworkitemsmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. Wildcard values `NONE` and `ANY` are supported. |
+| <a id="namespaceworkitemsnot"></a>`not` | [`NegatedWorkItemFilterInput`](#negatedworkitemfilterinput) | Negated work item arguments. |
+| <a id="namespaceworkitemsor"></a>`or` | [`UnionedWorkItemFilterInput`](#unionedworkitemfilterinput) | List of arguments with inclusive `OR`. |
+| <a id="namespaceworkitemsparentids"></a>`parentIds` | [`[WorkItemID!]`](#workitemid) | Filter work items by global IDs of their parent items (maximum is 100 items). |
+| <a id="namespaceworkitemsreleasetag"></a>`releaseTag` | [`[String!]`](#string) | Release tag associated with the work item's milestone. Ignored when parent is a group. |
+| <a id="namespaceworkitemsreleasetagwildcardid"></a>`releaseTagWildcardId` | [`ReleaseTagWildcardId`](#releasetagwildcardid) | Filter by release tag wildcard. |
+| <a id="namespaceworkitemsrequirementlegacywidget"></a>`requirementLegacyWidget` {{< icon name="warning-solid" >}} | [`RequirementLegacyFilterInput`](#requirementlegacyfilterinput) | **Deprecated** in GitLab 15.9. Use work item IID filter instead. |
+| <a id="namespaceworkitemssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
+| <a id="namespaceworkitemssort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort work items by criteria. |
+| <a id="namespaceworkitemsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
+| <a id="namespaceworkitemsstatus"></a>`status` {{< icon name="warning-solid" >}} | [`WorkItemWidgetStatusFilterInput`](#workitemwidgetstatusfilterinput) | **Introduced** in GitLab 18.0. **Status**: Experiment. Filter by status. |
+| <a id="namespaceworkitemssubscribed"></a>`subscribed` | [`SubscriptionStatus`](#subscriptionstatus) | Work items the current user is subscribed to. |
+| <a id="namespaceworkitemstimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. Ignored for project namespaces. |
+| <a id="namespaceworkitemstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
+| <a id="namespaceworkitemsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Work items updated after the timestamp. |
+| <a id="namespaceworkitemsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Work items updated before the timestamp. |
+| <a id="namespaceworkitemsverificationstatuswidget"></a>`verificationStatusWidget` | [`VerificationStatusFilterInput`](#verificationstatusfilterinput) | Input for verification status widget filter. Ignored if `work_items_alpha` is disabled. |
+| <a id="namespaceworkitemsweight"></a>`weight` | [`String`](#string) | Weight applied to the work item, "none" and "any" values are supported. |
+| <a id="namespaceworkitemsweightwildcardid"></a>`weightWildcardId` | [`WeightWildcardId`](#weightwildcardid) | Filter by weight ID wildcard. Incompatible with weight. |
 
 ##### `Namespace.workspacesClusterAgents`
 

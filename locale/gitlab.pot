@@ -16917,6 +16917,9 @@ msgstr ""
 msgid "Configure import sources and settings related to import and export features."
 msgstr ""
 
+msgid "Configure instance-wide Editor Extensions settings"
+msgstr ""
+
 msgid "Configure it later"
 msgstr ""
 
@@ -23887,6 +23890,9 @@ msgid "Editing"
 msgstr ""
 
 msgid "Editing this file is not supported"
+msgstr ""
+
+msgid "Editor Extensions"
 msgstr ""
 
 msgid "Editor toolbar"
@@ -35856,6 +35862,9 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
+msgid "Language Server restrictions enabled"
+msgstr ""
+
 msgid "Language type"
 msgstr ""
 
@@ -38367,6 +38376,9 @@ msgstr ""
 msgid "Merge request status"
 msgstr ""
 
+msgid "Merge request title must match expected format."
+msgstr ""
+
 msgid "Merge request was set to auto-merge"
 msgstr ""
 
@@ -39035,7 +39047,13 @@ msgstr ""
 msgid "Minimal Access"
 msgstr ""
 
+msgid "Minimum GitLab Language Server client version"
+msgstr ""
+
 msgid "Minimum capacity to be available before we schedule more mirrors preemptively."
+msgstr ""
+
+msgid "Minimum client version to enforce for editor extensions using the GitLab Language Server."
 msgstr ""
 
 msgid "Minimum required approvals"
@@ -62233,9 +62251,6 @@ msgstr ""
 msgid "The time period in seconds that the maximum requests per project limit applies to."
 msgstr ""
 
-msgid "The title must match the required regex."
-msgstr ""
-
 msgid "The update action will time out after %{number_of_minutes} minutes. For big repositories, use a clone/push combination."
 msgstr ""
 
@@ -65732,7 +65747,7 @@ msgstr ""
 msgid "UpdateProject|Cancel"
 msgstr ""
 
-msgid "UpdateProject|Cannot rename project because it contains container registry tags!"
+msgid "UpdateProject|Cannot rename or delete project because it contains container registry tags. Delete all container registry tags first. https://docs.gitlab.com/user/packages/container_registry/#move-or-rename-container-registry-repositories"
 msgstr ""
 
 msgid "UpdateProject|Cannot rename project, the container registry path rename validation failed: %{error}"
@@ -69284,6 +69299,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "When:"
+msgstr ""
+
+msgid "Whether to enforce minimum language server version."
 msgstr ""
 
 msgid "Which API requests are affected?"
@@ -73820,6 +73838,9 @@ msgid "mrWidget|Deployment statistics are not available currently"
 msgstr ""
 
 msgid "mrWidget|Did not close"
+msgstr ""
+
+msgid "mrWidget|Edit merge request"
 msgstr ""
 
 msgid "mrWidget|Failed to load deployment statistics"

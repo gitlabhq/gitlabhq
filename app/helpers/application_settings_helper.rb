@@ -616,6 +616,8 @@ module ApplicationSettingsHelper
       :global_search_issues_enabled,
       :global_search_merge_requests_enabled,
       :global_search_block_anonymous_searches_enabled,
+      :enable_language_server_restrictions,
+      :minimum_language_server_version,
       :vscode_extension_marketplace,
       :vscode_extension_marketplace_enabled,
       :reindexing_minimum_index_size,

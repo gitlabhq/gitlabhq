@@ -63,7 +63,7 @@ RSpec.describe 'Database schema',
       boards: %w[milestone_id iteration_id],
       broadcast_messages: %w[namespace_id],
       catalog_resource_component_last_usages: %w[used_by_project_id], # No FK constraint because we want to preserve usage data even if project is deleted.
-      chat_names: %w[chat_id team_id user_id],
+      chat_names: %w[chat_id team_id],
       chat_teams: %w[team_id],
       ci_build_needs: %w[project_id],
       ci_build_pending_states: %w[project_id],

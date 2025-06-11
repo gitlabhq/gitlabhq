@@ -1,0 +1,21 @@
+= render ::Layouts::SettingsBlockComponent.new(_('Editor Extensions'),
+  id: 'js-editor-extensions-settings',
+  testid: 'admin-editor-extensions-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Configure instance-wide Editor Extensions settings')
+  - c.with_body do
+    = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-editor-extensions-settings'), html: { class: 'fieldset-form', id: 'editor-extensions-settings' } do |f|
+      = form_errors(@application_setting)
+
+      %fieldset
+        .form-group
+          = f.label :minimum_language_server_version, _('Minimum GitLab Language Server client version'), class: 'label-bold'
+          = f.text_field :minimum_language_server_version, placeholder: '0.1.0', class: 'form-control gl-form-input'
+          .form-text.gl-text-subtle
+            = _('Minimum client version to enforce for editor extensions using the GitLab Language Server.')
+        .form-group
+          = f.gitlab_ui_checkbox_component :enable_language_server_restrictions, _('Language Server restrictions enabled')
+          .form-text.gl-text-subtle
+            = _('Whether to enforce minimum language server version.')
+      = f.submit _('Save changes'), pajamas_button: true

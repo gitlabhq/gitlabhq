@@ -71,7 +71,8 @@ module Resolvers
       # At this point we need the `id` of the project to query for work items, so
       # make sure it's loaded and not `nil` before continuing.
       strong_memoize(:resource_parent) do
-        object.respond_to?(:sync) ? object.sync : object
+        obj = object.is_a?(::Namespaces::ProjectNamespace) ? object.project : object
+        obj.respond_to?(:sync) ? obj.sync : obj
       end
     end
   end

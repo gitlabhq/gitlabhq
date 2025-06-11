@@ -242,6 +242,8 @@ module Ci
       where(token_encrypted: Array.wrap(token_values))
     end
 
+    scope :with_api_entity_associations, -> { preload(:creator) }
+
     validate :tag_constraints
     validates :sharding_key_id, presence: true, unless: :instance_type?
     validates :name, length: { maximum: 256 }, if: :name_changed?

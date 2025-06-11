@@ -984,6 +984,13 @@ class ApplicationSetting < ApplicationRecord
   jsonb_accessor :vscode_extension_marketplace,
     vscode_extension_marketplace_enabled: [:boolean, { default: false, store_key: :enabled }]
 
+  jsonb_accessor :editor_extensions,
+    enable_language_server_restrictions: [:boolean, { default: false }],
+    minimum_language_server_version: [:string, { default: '0.1.0' }]
+
+  validates :editor_extensions,
+    json_schema: { filename: 'application_setting_editor_extensions', detail_errors: true }
+
   before_validation :ensure_uuid!
   before_validation :coerce_repository_storages_weighted, if: :repository_storages_weighted_changed?
   before_validation :normalize_default_branch_name

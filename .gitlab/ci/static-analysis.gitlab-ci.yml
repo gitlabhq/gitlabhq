@@ -78,9 +78,6 @@ generate-apollo-graphql-schema:
   variables:
     USE_BUNDLE_INSTALL: "false"
     ESLINT_CODE_QUALITY_REPORT: "gl-code-quality-report.json"
-  artifacts:
-    reports:
-      codequality: gl-code-quality-report.json
 
 eslint-changed-files:
   extends:
@@ -107,6 +104,9 @@ eslint:
       }
 
       run_with_custom_exit_code eslint_script
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
 
 eslint-docs:
   extends:

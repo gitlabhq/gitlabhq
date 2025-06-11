@@ -7,7 +7,8 @@ title: GitLab Duo Agentic Chat in VS Code
 
 {{< details >}}
 
-- Tier: Premium with GitLab Duo Pro, Ultimate with GitLab Duo Pro or Enterprise
+- Tier: Premium, Ultimate
+- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com
 - Status: Experiment
 - LLMs: Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet)

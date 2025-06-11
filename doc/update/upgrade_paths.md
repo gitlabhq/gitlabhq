@@ -51,6 +51,7 @@ To determine your upgrade path:
      - [`17.11.z`](versions/gitlab_17_changes.md#17110). The latest GitLab 17.11 release.
 
 1. Consult the version-specific upgrade instructions:
+   - [GitLab 18 changes](versions/gitlab_18_changes.md)
    - [GitLab 17 changes](versions/gitlab_17_changes.md)
    - [GitLab 16 changes](versions/gitlab_16_changes.md)
    - [GitLab 15 changes](versions/gitlab_15_changes.md)

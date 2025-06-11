@@ -97,7 +97,13 @@ module Types
       null: true,
       resolver: Resolvers::Namespaces::WorkItemResolver,
       experiment: { milestone: '16.10' },
-      description: 'Find a work item by IID directly associated with the namespace(project or group)'
+      description: 'Find a work item by IID directly associated with the namespace (project or group)'
+
+    field :work_items,
+      null: true,
+      description: 'Work items that belong to the namespace (project or group). Returns `null` for user namespaces.',
+      experiment: { milestone: '18.1' },
+      resolver: ::Resolvers::Namespaces::WorkItemsResolver
 
     field :work_item_types, Types::WorkItems::TypeType.connection_type,
       resolver: Resolvers::WorkItems::TypesResolver,

@@ -38,7 +38,8 @@ RSpec.describe Gitlab::Database::LooseForeignKeys, feature_category: :database d
         parsed = YAML.parse_file(described_class.loose_foreign_keys_yaml_path)
         mapping = parsed.children.first
         table_names = mapping.children.select(&:scalar?).map(&:value)
-        expect(table_names).to eq(table_names.sort), "expected sorted table names in the YAML file"
+        expect(table_names).to eq(table_names.sort),
+          "expected sorted table names in the YAML file #{described_class.loose_foreign_keys_yaml_path}"
       end
     end
 

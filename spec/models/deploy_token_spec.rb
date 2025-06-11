@@ -516,4 +516,18 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
       expect(result).to be_empty
     end
   end
+
+  describe '.encode' do
+    let(:token_string) { 'test_token_123' }
+
+    it 'encodes the provided token' do
+      expect(Authn::TokenField::EncryptionHelper).to receive(:encrypt_token)
+        .with(token_string)
+        .and_return('fake_encrypted_token')
+
+      encoded_token = described_class.encode(token_string)
+
+      expect(encoded_token).to eq('fake_encrypted_token')
+    end
+  end
 end

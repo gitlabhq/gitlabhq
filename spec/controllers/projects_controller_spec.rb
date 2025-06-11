@@ -879,7 +879,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
           create(:container_repository, project: project, name: :image)
         end
 
-        let(:message) { 'UpdateProject|Cannot rename project because it contains container registry tags!' }
+        let(:message) { 'UpdateProject|Cannot rename or delete project because it contains container registry tags. Delete all container registry tags first. https://docs.gitlab.com/user/packages/container_registry/#move-or-rename-container-registry-repositories' }
 
         shared_examples 'not allowing the rename of the project' do
           it 'does not allow to rename the project' do

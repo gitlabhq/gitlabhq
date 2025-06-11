@@ -41,6 +41,10 @@ module TokenAuthenticatable
         end
       end
 
+      define_singleton_method("encode") do |token|
+        strategy.encode(token)
+      end
+
       mod = token_authenticatable_module
 
       mod.define_method(token_field) do

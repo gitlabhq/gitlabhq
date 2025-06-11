@@ -66,7 +66,8 @@ CREATE TABLE ci_finished_pipelines
     `date` Date32 MATERIALIZED toStartOfMonth(finished_at),
     `status` LowCardinality(String) DEFAULT '',
     `source` LowCardinality(String) DEFAULT '',
-    `ref` String DEFAULT ''
+    `ref` String DEFAULT '',
+    `name` String DEFAULT ''
 )
 ENGINE = ReplacingMergeTree
 PARTITION BY toYear(finished_at)
@@ -81,7 +82,8 @@ CREATE TABLE ci_finished_pipelines_daily
     `ref` String DEFAULT '',
     `started_at_bucket` DateTime64(6, 'UTC') DEFAULT now64(),
     `count_pipelines` AggregateFunction(count),
-    `duration_quantile` AggregateFunction(quantile, UInt64)
+    `duration_quantile` AggregateFunction(quantile, UInt64),
+    `name` String DEFAULT ''
 )
 ENGINE = AggregatingMergeTree
 ORDER BY (started_at_bucket, path, status, source, ref)
@@ -95,7 +97,8 @@ CREATE TABLE ci_finished_pipelines_hourly
     `ref` String DEFAULT '',
     `started_at_bucket` DateTime64(6, 'UTC') DEFAULT now64(),
     `count_pipelines` AggregateFunction(count),
-    `duration_quantile` AggregateFunction(quantile, UInt64)
+    `duration_quantile` AggregateFunction(quantile, UInt64),
+    `name` String DEFAULT ''
 )
 ENGINE = AggregatingMergeTree
 ORDER BY (started_at_bucket, path, status, source, ref)
@@ -182,9 +185,11 @@ CREATE TABLE contributions_new
     `target_type` LowCardinality(String) DEFAULT '',
     `action` UInt8 DEFAULT 0,
     `created_at` Date DEFAULT toDate(now64()),
-    `updated_at` DateTime64(6, 'UTC') DEFAULT now64()
+    `updated_at` DateTime64(6, 'UTC') DEFAULT now64(),
+    `version` DateTime64(6, 'UTC') DEFAULT now(),
+    `deleted` Bool DEFAULT false
 )
-ENGINE = ReplacingMergeTree
+ENGINE = ReplacingMergeTree(version, deleted)
 PARTITION BY toYear(created_at)
 ORDER BY (path, created_at, author_id, id)
 SETTINGS index_granularity = 8192;
@@ -211,18 +216,6 @@ CREATE TABLE duo_chat_events
 ENGINE = ReplacingMergeTree
 PARTITION BY toYear(timestamp)
 ORDER BY (namespace_path, user_id, event, timestamp)
-SETTINGS index_granularity = 8192;
-
-CREATE TABLE duo_chat_events_backup
-(
-    `user_id` UInt64 DEFAULT 0,
-    `event` UInt8 DEFAULT 0,
-    `namespace_path` String DEFAULT '0/',
-    `timestamp` DateTime64(6, 'UTC') DEFAULT now64()
-)
-ENGINE = ReplacingMergeTree
-PARTITION BY toYear(timestamp)
-ORDER BY (user_id, event, timestamp)
 SETTINGS index_granularity = 8192;
 
 CREATE TABLE duo_chat_events_daily
@@ -857,6 +850,7 @@ CREATE MATERIALIZED VIEW ci_finished_pipelines_daily_mv TO ci_finished_pipelines
     `status` LowCardinality(String),
     `source` LowCardinality(String),
     `ref` String,
+    `name` String,
     `started_at_bucket` DateTime('UTC'),
     `count_pipelines` AggregateFunction(count),
     `duration_quantile` AggregateFunction(quantile, UInt64)
@@ -866,6 +860,7 @@ AS SELECT
     status,
     source,
     ref,
+    name,
     toStartOfInterval(started_at, toIntervalDay(1)) AS started_at_bucket,
     countState() AS count_pipelines,
     quantileState(duration) AS duration_quantile
@@ -875,6 +870,7 @@ GROUP BY
     status,
     source,
     ref,
+    name,
     started_at_bucket;
 
 CREATE MATERIALIZED VIEW ci_finished_pipelines_hourly_mv TO ci_finished_pipelines_hourly
@@ -883,6 +879,7 @@ CREATE MATERIALIZED VIEW ci_finished_pipelines_hourly_mv TO ci_finished_pipeline
     `status` LowCardinality(String),
     `source` LowCardinality(String),
     `ref` String,
+    `name` String,
     `started_at_bucket` DateTime('UTC'),
     `count_pipelines` AggregateFunction(count),
     `duration_quantile` AggregateFunction(quantile, UInt64)
@@ -892,6 +889,7 @@ AS SELECT
     status,
     source,
     ref,
+    name,
     toStartOfInterval(started_at, toIntervalHour(1)) AS started_at_bucket,
     countState() AS count_pipelines,
     quantileState(duration) AS duration_quantile
@@ -901,6 +899,7 @@ GROUP BY
     status,
     source,
     ref,
+    name,
     started_at_bucket;
 
 CREATE MATERIALIZED VIEW ci_used_minutes_by_runner_daily_mv TO ci_used_minutes_by_runner_daily
@@ -1002,16 +1001,20 @@ CREATE MATERIALIZED VIEW contributions_new_mv TO contributions_new
     `target_type` String,
     `action` UInt8,
     `created_at` Date,
-    `updated_at` DateTime64(6, 'UTC')
+    `updated_at` Date,
+    `deleted` Bool,
+    `version` DateTime64(6, 'UTC')
 )
 AS SELECT
     id,
-    argMax(path, events_new.updated_at) AS path,
-    argMax(author_id, events_new.updated_at) AS author_id,
-    argMax(target_type, events_new.updated_at) AS target_type,
-    argMax(action, events_new.updated_at) AS action,
-    argMax(DATE(created_at), events_new.updated_at) AS created_at,
-    max(events_new.updated_at) AS updated_at
+    argMax(path, events_new.version) AS path,
+    argMax(author_id, events_new.version) AS author_id,
+    argMax(target_type, events_new.version) AS target_type,
+    argMax(action, events_new.version) AS action,
+    argMax(DATE(created_at), events_new.version) AS created_at,
+    argMax(DATE(updated_at), events_new.version) AS updated_at,
+    argMax(deleted, events_new.version) AS deleted,
+    max(events_new.version) AS version
 FROM events_new
 WHERE ((events_new.action IN (5, 6)) AND (events_new.target_type = '')) OR ((events_new.action IN (1, 3, 7, 12)) AND (events_new.target_type IN ('MergeRequest', 'Issue', 'WorkItem')))
 GROUP BY id;

@@ -47,14 +47,13 @@ A running workspace remains accessible to the user even if user permissions are 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125331) in GitLab 16.2.
-- Managing workspaces from the **Code** menu [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178492) in GitLab 17.11.
 
 {{< /history >}}
 
 To manage workspaces from a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. In the upper right, select **Code**.
+1. In the upper right, select **Edit**.
 1. From the dropdown list, under **Your workspaces**, you can:
    - Restart, stop, or terminate an existing workspace.
    - Create a new workspace.
