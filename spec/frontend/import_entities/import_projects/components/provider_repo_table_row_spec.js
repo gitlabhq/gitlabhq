@@ -1,4 +1,4 @@
-import { GlBadge, GlButton, GlModal } from '@gitlab/ui';
+import { GlBadge, GlButton } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
@@ -14,14 +14,14 @@ describe('ProviderRepoTableRow', () => {
   const fetchImport = jest.fn();
   const cancelImport = jest.fn();
   const setImportTarget = jest.fn();
-  const groupImportTarget = {
-    targetNamespace: 'target',
+  const defaultImportTarget = {
+    targetNamespace: null,
     newName: 'newName',
   };
 
   const userNamespace = 'root';
 
-  function initStore({ importTarget = groupImportTarget } = {}) {
+  function initStore({ importTarget = defaultImportTarget } = {}) {
     const store = new Vuex.Store({
       state: {},
       getters: {
@@ -45,7 +45,8 @@ describe('ProviderRepoTableRow', () => {
   const findImportStatus = () => wrapper.findComponent(ImportStatus);
   const findProviderLink = () => wrapper.findByTestId('provider-link');
   const findMembershipsWarning = () => wrapper.findByTestId('memberships-warning');
-  const findGlModal = () => wrapper.findComponent(GlModal);
+  const findMembershipsWarningModal = () => wrapper.findByTestId('memberships-warning-modal');
+  const findNamespaceRequiredWarning = () => wrapper.findByTestId('namespace-required-warning');
 
   const findCancelButton = () => {
     const buttons = wrapper
@@ -97,12 +98,37 @@ describe('ProviderRepoTableRow', () => {
       expect(findImportTargetDropdown().exists()).toBe(true);
     });
 
+    it('renders the dropdown without a default selected', () => {
+      expect(findImportTargetDropdown().props('selected')).toBe(null);
+      expect(findImportTargetDropdown().props().toggleText).toBe('Select namespace');
+    });
+
+    describe('when no namespace is selected', () => {
+      it('shows namespace required warning when import button is clicked', async () => {
+        findImportButton().vm.$emit('click');
+        await nextTick();
+
+        expect(findNamespaceRequiredWarning().text()).toBe('Select a destination namespace.');
+      });
+
+      it('does not trigger import when clicking import button', async () => {
+        findImportButton().vm.$emit('click');
+        await nextTick();
+
+        expect(fetchImport).not.toHaveBeenCalled();
+      });
+    });
+
     describe('when user namespace is selected as import target', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         mountComponent(
           { repo },
           { storeOptions: { importTarget: { targetNamespace: userNamespace } } },
         );
+
+        const dropdown = findImportTargetDropdown();
+        dropdown.vm.$emit('select', userNamespace);
+        await nextTick();
       });
 
       it('shows memberships warning', () => {
@@ -113,7 +139,7 @@ describe('ProviderRepoTableRow', () => {
         findImportButton().vm.$emit('click');
         await nextTick();
 
-        const modal = findGlModal();
+        const modal = findMembershipsWarningModal();
         expect(modal.props('title')).toBe(
           'Are you sure you want to import the project to a personal namespace?',
         );
@@ -122,11 +148,15 @@ describe('ProviderRepoTableRow', () => {
         );
       });
 
+      it('does not show `missing namespace` warning', () => {
+        expect(findNamespaceRequiredWarning().exists()).toBe(false);
+      });
+
       it('triggers import when clicking modal primary button', async () => {
         findImportButton().vm.$emit('click');
         await nextTick();
 
-        findGlModal().vm.$emit('primary');
+        findMembershipsWarningModal().vm.$emit('primary');
 
         expect(fetchImport).toHaveBeenCalledWith(expect.anything(), {
           repoId: repo.importSource.id,
@@ -136,53 +166,68 @@ describe('ProviderRepoTableRow', () => {
     });
 
     describe('when group namespace is selected as import target', () => {
+      beforeEach(async () => {
+        const dropdown = findImportTargetDropdown();
+        dropdown.vm.$emit('select', 'target');
+        await nextTick();
+      });
+
       it('does not show memberships warning', () => {
         expect(findMembershipsWarning().isVisible()).toBe(false);
       });
 
-      it('does not show modal when import button is clicked', async () => {
+      it('does not show memberships modal when import button is clicked', async () => {
         findImportButton().vm.$emit('click');
         await nextTick();
 
-        expect(findGlModal().exists()).toBe(false);
-      });
-    });
-
-    it('renders import button', () => {
-      expect(findImportButton().exists()).toBe(true);
-    });
-
-    it('imports repo when clicking import button', async () => {
-      findImportButton().vm.$emit('click');
-
-      await nextTick();
-
-      expect(fetchImport).toHaveBeenCalledWith(expect.anything(), {
-        repoId: repo.importSource.id,
-        optionalStages: {},
-      });
-    });
-
-    it('includes optionalStages to import', async () => {
-      const OPTIONAL_STAGES = { stage1: true, stage2: false };
-
-      mountComponent({
-        repo,
-        optionalStages: OPTIONAL_STAGES,
+        expect(findMembershipsWarningModal().exists()).toBe(false);
       });
 
-      findImportButton().vm.$emit('click');
-
-      await nextTick();
-
-      expect(fetchImport).toHaveBeenCalledWith(expect.anything(), {
-        repoId: repo.importSource.id,
-        optionalStages: OPTIONAL_STAGES,
+      it('does not show `missing namespace` warning when import button is clicked', async () => {
+        findImportButton().vm.$emit('click');
+        await nextTick();
+        expect(findNamespaceRequiredWarning().exists()).toBe(false);
       });
-    });
 
-    it('does not render re-import button', () => {
-      expect(findReimportButton().exists()).toBe(false);
+      it('renders import button', () => {
+        expect(findImportButton().exists()).toBe(true);
+      });
+
+      it('imports repo when clicking import button', async () => {
+        findImportButton().vm.$emit('click');
+
+        await nextTick();
+
+        expect(fetchImport).toHaveBeenCalledWith(expect.anything(), {
+          repoId: repo.importSource.id,
+          optionalStages: {},
+        });
+      });
+
+      it('includes optionalStages to import', async () => {
+        const OPTIONAL_STAGES = { stage1: true, stage2: false };
+
+        mountComponent({
+          repo,
+          optionalStages: OPTIONAL_STAGES,
+        });
+
+        const dropdown = findImportTargetDropdown();
+        dropdown.vm.$emit('select', 'target');
+        await nextTick();
+
+        findImportButton().vm.$emit('click');
+        await nextTick();
+
+        expect(fetchImport).toHaveBeenCalledWith(expect.anything(), {
+          repoId: repo.importSource.id,
+          optionalStages: OPTIONAL_STAGES,
+        });
+      });
+
+      it('does not render re-import button', () => {
+        expect(findReimportButton().exists()).toBe(false);
+      });
     });
   });
 
@@ -290,7 +335,12 @@ describe('ProviderRepoTableRow', () => {
 
       await nextTick();
 
+      findImportTargetDropdown().vm.$emit('select', 'some-namespace');
+      await nextTick();
+
       findReimportButton().vm.$emit('click');
+      await nextTick();
+      expect(findNamespaceRequiredWarning().exists()).toBe(false);
 
       expect(fetchImport).toHaveBeenCalledWith(expect.anything(), {
         repoId: repo.importSource.id,

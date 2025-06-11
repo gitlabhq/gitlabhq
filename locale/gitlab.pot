@@ -930,6 +930,9 @@ msgstr ""
 msgid "%{failures} of %{total} failed"
 msgstr ""
 
+msgid "%{feedbackStart}Leave feedback%{feedbackEnd} | %{docStart}Documentation%{docEnd}"
+msgstr ""
+
 msgid "%{filePath} deleted"
 msgstr ""
 
@@ -10688,6 +10691,9 @@ msgstr ""
 msgid "Branch name"
 msgstr ""
 
+msgid "Branch name copied to clipboard."
+msgstr ""
+
 msgid "Branch name is available"
 msgstr ""
 
@@ -18286,6 +18292,9 @@ msgid "Copy reference"
 msgstr ""
 
 msgid "Copy secret"
+msgstr ""
+
+msgid "Copy selected ref"
 msgstr ""
 
 msgid "Copy source"
@@ -32062,6 +32071,9 @@ msgstr ""
 msgid "ImportProjects|Importing the project failed: %{reason}"
 msgstr ""
 
+msgid "ImportProjects|Namespace required"
+msgstr ""
+
 msgid "ImportProjects|Organization"
 msgstr ""
 
@@ -32081,6 +32093,15 @@ msgid "ImportProjects|Requesting namespaces failed"
 msgstr ""
 
 msgid "ImportProjects|Requesting your %{provider} repositories failed"
+msgstr ""
+
+msgid "ImportProjects|Select a destination namespace for each repository before importing all."
+msgstr ""
+
+msgid "ImportProjects|Select a destination namespace."
+msgstr ""
+
+msgid "ImportProjects|Select namespace"
 msgstr ""
 
 msgid "ImportProjects|Select the repositories you want to import"
@@ -60935,6 +60956,9 @@ msgstr ""
 msgid "Tag name cannot be one of the following: %{names}"
 msgstr ""
 
+msgid "Tag name copied to clipboard."
+msgstr ""
+
 msgid "Tag name is required."
 msgstr ""
 
@@ -67338,6 +67362,9 @@ msgid "Value Stream Analytics can help you determine your team’s velocity"
 msgstr ""
 
 msgid "Value Streams Dashboard | DORA"
+msgstr ""
+
+msgid "Value field is required."
 msgstr ""
 
 msgid "Value stream"

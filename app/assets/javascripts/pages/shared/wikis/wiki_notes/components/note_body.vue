@@ -4,6 +4,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import NoteEditedText from '~/notes/components/note_edited_text.vue';
 import { __ } from '~/locale';
 import { getDraft } from '~/lib/utils/autosave';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { getAutosaveKey, getIdFromGid } from '../utils';
 import WikiCommentForm from './wiki_comment_form.vue';
 
@@ -62,6 +63,15 @@ export default {
     },
   },
   watch: {
+    updatedNote: {
+      async handler() {
+        await this.$nextTick();
+
+        this.renderGFM();
+      },
+      deep: true,
+      immediate: true,
+    },
     isEditing(newVal) {
       if (Boolean(newVal) && !this.hasDraft) {
         this.$nextTick(() => {
@@ -74,6 +84,9 @@ export default {
     updateNote(newNote) {
       this.updatedNote = newNote;
       this.$emit('creating-note:success');
+    },
+    renderGFM() {
+      renderGFM(this.$refs['note-body']);
     },
   },
   safeHtmlConfig: {

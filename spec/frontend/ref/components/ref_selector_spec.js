@@ -17,6 +17,7 @@ import {
 } from '~/lib/utils/http_status';
 import { sprintf } from '~/locale';
 import RefSelector from '~/ref/components/ref_selector.vue';
+import toast from '~/vue_shared/plugins/global_toast';
 import {
   X_TOTAL_HEADER,
   DEFAULT_I18N,
@@ -29,12 +30,13 @@ import {
 import createStore from '~/ref/stores/';
 
 Vue.use(Vuex);
+jest.mock('~/vue_shared/plugins/global_toast');
 
 describe('Ref selector component', () => {
   const branchRefTypeMock = { name: 'refs/heads/test_branch' };
   const tagRefTypeMock = { name: 'refs/tags/test_tag' };
   const protectedBranchMock = { name: 'protected_mock_branch', protected: true };
-  const protectedTagMock = { name: 'protected_tag_mock', protected: true };
+  const protectedTagMock = { name: 'refs/tags/protected_tag_mock', protected: true };
   const fixtures = {
     branches: [branchRefTypeMock, tagRefTypeMock, protectedBranchMock, ...branches],
     tags: [protectedTagMock, ...tags],
@@ -306,13 +308,14 @@ describe('Ref selector component', () => {
         commitApiCallSpy = jest.fn().mockReturnValue([HTTP_STATUS_NOT_FOUND]);
 
         createComponent();
+        updateQuery('*no results*');
 
         return waitForRequests();
       });
 
       describe('when the search query is empty', () => {
         it('renders a "no results" message', () => {
-          expect(findNoResults().text()).toBe(DEFAULT_I18N.noResults);
+          expect(findNoResults().text()).toContain(DEFAULT_I18N.noResults);
         });
       });
 
@@ -832,6 +835,55 @@ describe('Ref selector component', () => {
       expect(findCountBadges().length).toBe(2);
       expect(findCountBadges().at(0).text()).toBe('2');
       expect(findCountBadges().at(1).text()).toBe('3');
+    });
+  });
+
+  describe('copy button in selected group', () => {
+    const findCopyButton = () => wrapper.findByTestId('clipboard');
+
+    beforeEach(() => {
+      createComponent();
+      return waitForRequests();
+    });
+
+    it('does not show copy button when no ref is selected', () => {
+      // Don't select anything, just check that no copy button exists
+      expect(findCopyButton().exists()).toBe(false);
+    });
+
+    it('shows copy button in selected group when a ref is selected', async () => {
+      await selectFirstBranch();
+
+      expect(findCopyButton().exists()).toBe(true);
+      expect(findCopyButton().attributes('data-clipboard-text')).toBe(fixtures.branches[0].name);
+      expect(findCopyButton().attributes('title')).toBe('Copy selected ref');
+    });
+
+    it('shows a toast message when copy button is clicked', async () => {
+      await selectFirstBranch();
+      findCopyButton().trigger('click');
+      expect(toast).toHaveBeenCalledWith('Branch name copied to clipboard.');
+
+      await selectFirstTag();
+      findCopyButton().trigger('click');
+      expect(toast).toHaveBeenCalledWith('Tag name copied to clipboard.');
+    });
+  });
+
+  describe('selectedRefFallback', () => {
+    describe('when selectedRef is not found in branches or tags', () => {
+      const defaultRef = 'missing-ref';
+
+      beforeEach(() => {
+        createComponent({ propsData: { value: defaultRef } });
+        return waitForRequests();
+      });
+
+      it('shows the fallback (default) ref as selected in the dropdown', () => {
+        const selectedSection = findListBoxSection('Selected');
+        expect(selectedSection.exists()).toBe(true);
+        expect(selectedSection.text()).toContain(defaultRef);
+      });
     });
   });
 });

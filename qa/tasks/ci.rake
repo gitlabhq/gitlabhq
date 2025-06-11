@@ -37,14 +37,18 @@ namespace :ci do
     if diff.empty?
       logger.info("No changed file diff provided, full test suite will be executed")
     else
-      if qa_changes.quarantine_changes?
-        logger.info("Merge request contains only quarantine changes, e2e test execution will be skipped!")
-        next pipeline_creator.create_noop(reason: "no-op run, only quarantine changes detected in merge request")
-      end
+      noop_pipeline = qa_changes.quarantine_changes? || qa_changes.only_spec_removal?
 
-      if qa_changes.only_spec_removal?
-        logger.info("Merge request contains only e2e spec removal, e2e test execution will be skipped!")
-        next pipeline_creator.create_noop(reason: "no-op run, only spec removal detected in merge request")
+      if noop_pipeline && !run_all_label_present
+        if qa_changes.quarantine_changes?
+          logger.info("Merge request contains only quarantine changes, e2e test execution will be skipped!")
+          next pipeline_creator.create_noop(reason: "no-op run, only quarantine changes detected in merge request")
+        end
+
+        if qa_changes.only_spec_removal?
+          logger.info("Merge request contains only e2e spec removal, e2e test execution will be skipped!")
+          next pipeline_creator.create_noop(reason: "no-op run, only spec removal detected in merge request")
+        end
       end
 
       feature_flags_changes = QA::Tools::Ci::FfChanges.new(diff).fetch

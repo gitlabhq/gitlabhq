@@ -93,6 +93,8 @@ The deploy keys available are listed:
 - **Privately accessible deploy keys**: Project deploy keys that don't have access to the project.
 - **Public accessible deploy keys**: Public deploy keys that don't have access to the project.
 
+The [GitLab CLI](../../../editor_extensions/gitlab_cli/_index.md) provides a `glab deploy-key list` command.
+
 ## Create a project deploy key
 
 Prerequisites:
@@ -112,6 +114,8 @@ Prerequisites:
 
 A project deploy key is enabled when it is created. You can modify only a project deploy key's
 name and permissions. If the deploy key is enabled in more than one project, you can't modify the deploy key name.
+
+The [GitLab CLI](../../../editor_extensions/gitlab_cli/_index.md) provides a `glab deploy-key add` command.
 
 ## Create a public deploy key
 
@@ -194,6 +198,10 @@ What happens to the deploy key when it is disabled depends on the following:
 - If the key is privately accessible and also in use by other projects, it is removed from the
   project, but still available in the **Privately accessible deploy keys** tab.
 
+## Related topics
+
+- GitLab CLI [commands for deploy keys](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/deploy-key)
+
 ## Troubleshooting
 
 ### Deploy key cannot push to a protected branch
@@ -217,9 +225,10 @@ To resolve this issue, you can use the deploy keys API to create deploy keys for
 1. Use the deploy key API to [create a deploy key for the service account user](../../../api/deploy_keys.md#add-deploy-key):
 
    ```shell
-   curl --request POST --header "PRIVATE-TOKEN: <service_account_access_token>" --header "Content-Type: application/json" \
-   --data '{"title": "My deploy key", "key": "ssh-rsa AAAA...", "can_push": "true"}' \
-   "https://gitlab.example.com/api/v4/projects/5/deploy_keys/"
+   curl --request POST --header "PRIVATE-TOKEN: <service_account_access_token>" \
+     --header "Content-Type: application/json" \
+     --data '{"title": "My deploy key", "key": "ssh-rsa AAAA...", "can_push": "true"}' \
+     --url "https://gitlab.example.com/api/v4/projects/5/deploy_keys/"
    ```
 
 #### Identify deploy keys associated with non-member and blocked users

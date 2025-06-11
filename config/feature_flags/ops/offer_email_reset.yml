@@ -1,0 +1,8 @@
+---
+name: offer_email_reset
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194151
+rollout_issue_url:
+milestone: "18.1"
+type: ops
+group: group::authorization
+default_enabled: false

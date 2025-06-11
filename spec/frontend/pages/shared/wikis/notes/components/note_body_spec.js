@@ -3,7 +3,10 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import NoteEditedText from '~/notes/components/note_edited_text.vue';
 import WikiCommentForm from '~/pages/shared/wikis/wiki_notes/components/wiki_comment_form.vue';
 import NoteBody from '~/pages/shared/wikis/wiki_notes/components/note_body.vue';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { wikiCommentFormProvideData, note, noteableId } from '../mock_data';
+
+jest.mock('~/behaviors/markdown/render_gfm');
 
 describe('NoteBody', () => {
   let wrapper;
@@ -31,6 +34,12 @@ describe('NoteBody', () => {
         const content = await wrapper.findByTestId('wiki-note-content').text();
 
         expect(content).toBe('an example note');
+      });
+
+      it('calls renderGFM after nextTick', async () => {
+        await nextTick();
+
+        expect(renderGFM).toHaveBeenCalled();
       });
 
       it('should not render "Edited" text when lastEdited is the same as createdAt', () => {

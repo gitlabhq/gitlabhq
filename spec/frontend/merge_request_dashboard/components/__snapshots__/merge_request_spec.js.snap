@@ -1,19 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Merge request dashboard merge request component renders template 1`] = `
-<tr
-  class="gl-border-b"
+<div
+  role="row"
 >
-  <td
-    class="gl-align-top gl-pl-5 gl-pr-3 gl-py-4"
+  <div
+    role="cell"
   >
     <status-badge-stub
       listid="returned_to_you"
       mergerequest="[object Object]"
     />
-  </td>
-  <td
-    class="gl-align-top gl-px-3 gl-py-4"
+  </div>
+  <div
+    class="gl-flex gl-flex-col gl-gap-2 gl-items-start"
+    role="cell"
   >
     <gl-link-stub
       class="gl-font-bold gl-text-default hover:gl-text-default"
@@ -21,34 +22,35 @@ exports[`Merge request dashboard merge request component renders template 1`] = 
       Merge request title
     </gl-link-stub>
     <div
-      class="gl-mb-2 gl-mt-2 gl-text-sm gl-text-subtle"
+      class="gl-text-sm gl-text-subtle"
     >
       <gl-sprintf-stub
         message="%{reference} %{author} %{stats} %{milestone}"
       />
     </div>
-  </td>
-  <td
-    class="gl-align-top gl-px-3 gl-py-4"
+  </div>
+  <div
+    role="cell"
   >
     <assigned-users-stub
       type="ASSIGNEES"
       users="[object Object]"
     />
-  </td>
-  <td
-    class="gl-align-top gl-px-3 gl-py-4"
+  </div>
+  <div
+    role="cell"
   >
     <assigned-users-stub
       type="REVIEWERS"
       users="[object Object],[object Object]"
     />
-  </td>
-  <td
-    class="gl-align-top gl-pl-3 gl-pr-5 gl-py-4"
+  </div>
+  <div
+    class="gl-flex gl-flex-col gl-gap-2 gl-items-end"
+    role="cell"
   >
     <div
-      class="gl-flex gl-gap-3 gl-justify-end"
+      class="gl-flex gl-gap-3"
     >
       <gl-icon-stub
         class="gl-mt-1"
@@ -63,12 +65,12 @@ exports[`Merge request dashboard merge request component renders template 1`] = 
       />
     </div>
     <div
-      class="gl-mt-1 gl-text-right gl-text-sm gl-text-subtle"
+      class="gl-text-sm gl-text-subtle"
     >
       <gl-sprintf-stub
         message="Updated %{updatedAt}"
       />
     </div>
-  </td>
-</tr>
+  </div>
+</div>
 `;

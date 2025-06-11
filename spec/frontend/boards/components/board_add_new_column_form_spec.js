@@ -18,6 +18,7 @@ describe('BoardAddNewColumnForm', () => {
   const formTitle = () => wrapper.findByTestId('board-add-column-form-title').text();
   const cancelButton = () => wrapper.findByTestId('cancelAddNewColumn');
   const submitButton = () => wrapper.findByTestId('addNewColumnButton');
+  const formGroup = () => wrapper.findByTestId('boardValueDropdown');
 
   it('shows form title', () => {
     mountComponent();
@@ -48,6 +49,36 @@ describe('BoardAddNewColumnForm', () => {
       submitButton().vm.$emit('click');
 
       expect(wrapper.emitted('add-list')).toEqual([[]]);
+    });
+  });
+
+  describe('Accessibility features', () => {
+    it('shows form group in a valid state', () => {
+      mountComponent();
+
+      expect(formGroup().attributes('state')).toBe('true');
+    });
+
+    it('has the correct label-for attribute for the dropdown', () => {
+      mountComponent({ searchLabel: 'Test Label' });
+
+      expect(formGroup().attributes('label-for')).toBe('board-value-dropdown');
+    });
+
+    describe('when field is not valid', () => {
+      beforeEach(() => {
+        mountComponent({ selectedIdValid: false });
+      });
+
+      it('sets the correct form group state', () => {
+        expect(formGroup().attributes('state')).toBeUndefined();
+      });
+
+      it('shows the correct invalid feedback message', () => {
+        expect(formGroup().attributes('invalid-feedback')).toBe(
+          BoardAddNewColumnForm.i18n.valueRequiredFieldFeedback,
+        );
+      });
     });
   });
 });

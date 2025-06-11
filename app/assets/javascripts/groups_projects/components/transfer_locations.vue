@@ -141,6 +141,9 @@ export default {
 
       this.isLoading = false;
       this.initialTransferLocationsLoaded = true;
+
+      await this.$nextTick();
+      this.$refs.transferLocationsDropdown?.$refs.dropdown?.updatePopper?.();
     },
     async getGroupTransferLocations() {
       try {
@@ -234,9 +237,11 @@ export default {
     >
     <gl-form-group :label="label">
       <gl-dropdown
+        ref="transferLocationsDropdown"
         :text="selectedText"
         data-testid="transfer-locations-dropdown"
         block
+        dropup
         toggle-class="gl-mb-0"
         class="gl-form-input-xl"
         @show="handleShow"

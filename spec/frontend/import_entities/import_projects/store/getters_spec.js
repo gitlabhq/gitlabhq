@@ -94,12 +94,11 @@ describe('import_projects store getters', () => {
 
   describe('getImportTarget', () => {
     it('returns default value if no custom target available', () => {
-      localState.defaultTargetNamespace = 'default';
       localState.repositories = [IMPORTABLE_REPO];
 
       expect(getImportTarget(localState)(IMPORTABLE_REPO.importSource.id)).toStrictEqual({
         newName: IMPORTABLE_REPO.importSource.sanitizedName,
-        targetNamespace: localState.defaultTargetNamespace,
+        targetNamespace: null,
       });
     });
 

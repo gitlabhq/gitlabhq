@@ -25,6 +25,7 @@ module Gitlab
       TAB_CONTENT_PATTERN = %r{\{\{<\s*tab\s+title="([^"]+)"\s*>\}\}(.*?)\{\{<\s*/tab\s*>\}\}}m
       TABS_WRAPPER_PATTERN = %r{\{\{<\s*tabs\s*>\}\}(.*?)\{\{<\s*/tabs\s*>\}\}}m
       HISTORY_PATTERN = %r{\{\{<\s*history\s*>\}\}(.*?)\{\{<\s*/history\s*>\}\}}m
+      MAINTAINED_VERSIONS_PATTERN = %r{\{\{<\s*maintained-versions\s*/?\s*>\}\}}
 
       # Markdown heading constants
       HEADING_PATTERN = /^(\#{1,6})\s+[^\n]+$/m
@@ -47,6 +48,7 @@ module Gitlab
         handle_history_shortcodes(processed_content)
         handle_icon_shortcodes(processed_content)
         handle_tab_shortcodes(processed_content)
+        handle_maintained_versions_shortcodes(processed_content)
         remove_generic_shortcodes(processed_content)
         clean_up_blank_lines(processed_content)
 
@@ -122,6 +124,13 @@ module Gitlab
           end
         end
 
+        content
+      end
+
+      def handle_maintained_versions_shortcodes(content)
+        content.gsub!(MAINTAINED_VERSIONS_PATTERN) do
+          "https://docs.gitlab.com/policy/maintenance/#maintained-versions"
+        end
         content
       end
 

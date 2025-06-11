@@ -6,6 +6,7 @@
 module VerifiesWithEmail
   extend ActiveSupport::Concern
   include ActionView::Helpers::DateHelper
+  include SessionsHelper
 
   included do
     prepend_before_action :verify_with_email, only: :create, unless: -> { skip_verify_with_email? }
@@ -52,6 +53,7 @@ module VerifiesWithEmail
 
   def update_email
     return unless user = find_verification_user
+    return render json: { status: :error, message: 'Feature not available' } unless offer_email_reset_enabled?(user)
 
     log_verification(user, :email_update_requested)
     result = Users::EmailVerification::UpdateEmailService.new(user: user).execute(email: email_params[:email])
@@ -150,8 +152,7 @@ module VerifiesWithEmail
   end
 
   def handle_verification_success(user)
-    user.confirm if unconfirmed_verification_email?(user)
-    user.email_reset_offered_at = Time.current if user.email_reset_offered_at.nil?
+    handle_email_reset_on_verification(user)
     user.unlock_access!
     log_verification(user, :successful)
 
@@ -160,6 +161,13 @@ module VerifiesWithEmail
     log_audit_event(current_user, user, with: authentication_method)
     log_user_activity(user)
     verify_known_sign_in
+  end
+
+  def handle_email_reset_on_verification(user)
+    return unless offer_email_reset_enabled?(user)
+
+    user.confirm if unconfirmed_verification_email?(user)
+    user.email_reset_offered_at = Time.current
   end
 
   def trusted_ip_address?(user)

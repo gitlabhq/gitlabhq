@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlAlert, GlTabs, GlTab, GlLink, GlBanner } from '@gitlab/ui';
+import { GlButton, GlAlert, GlTabs, GlTab, GlLink, GlBanner, GlSprintf } from '@gitlab/ui';
 import mergeRequestIllustration from '@gitlab/svgs/dist/illustrations/merge-requests-sm.svg';
 import Visibility from 'visibilityjs';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
@@ -46,6 +46,7 @@ export default {
     GlTab,
     GlLink,
     GlBanner,
+    GlSprintf,
     UserCalloutDismisser,
     TabTitle,
     MergeRequestsQuery,
@@ -173,74 +174,67 @@ export default {
                 }"
                 @clear-new="resetNewMergeRequestIds"
               >
-                <div>
-                  <div class="gl-overflow-x-auto">
-                    <table class="gl-w-full">
-                      <colgroup>
-                        <col style="width: 210px" />
-                        <col :style="{ width: '40%', minWidth: '200px' }" />
-                        <col style="width: 120px" />
-                        <col style="width: 120px" />
-                        <col style="width: 220px" />
-                      </colgroup>
-                      <thead class="gl-border-b gl-bg-subtle">
-                        <tr>
-                          <th class="gl-pb-3 gl-pl-5 gl-pr-3 gl-text-sm gl-text-subtle">
-                            {{ __('Status') }}
-                          </th>
-                          <th class="gl-px-3 gl-pb-3 gl-text-sm gl-text-subtle">
-                            {{ __('Title') }}
-                          </th>
-                          <th class="gl-px-3 gl-pb-3 gl-text-center gl-text-sm gl-text-subtle">
-                            {{ __('Assignee') }}
-                          </th>
-                          <th class="gl-px-3 gl-pb-3 gl-text-center gl-text-sm gl-text-subtle">
-                            {{ __('Reviewers') }}
-                          </th>
-                          <th
-                            class="gl-pb-3 gl-pl-3 gl-pr-5 gl-text-right gl-text-sm gl-text-subtle"
-                          >
-                            {{ __('Checks') }}
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <template v-if="mergeRequests.length">
-                          <merge-request
-                            v-for="(mergeRequest, index) in mergeRequests"
-                            :key="mergeRequest.id"
-                            :merge-request="mergeRequest"
-                            :new-merge-request-ids="newMergeRequestIds"
-                            :is-last="index === mergeRequests.length - 1"
-                            :list-id="list.id"
-                            data-testid="merge-request"
-                          />
-                        </template>
-                        <tr v-else>
-                          <td colspan="5" :class="{ 'gl-py-6 gl-text-center': !error }">
-                            <template v-if="loading">
-                              {{ __('Loading…') }}
-                            </template>
-                            <template v-else-if="error">
-                              <gl-alert variant="danger" :dismissible="false">
-                                {{
-                                  __(
-                                    'There was an error fetching merge requests. Please try again.',
-                                  )
-                                }}
-                              </gl-alert>
-                            </template>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                <div
+                  class="gl-grid gl-grid-cols-[minmax(200px,1fr),minmax(250px,40%),repeat(2,minmax(110px,1fr)),minmax(200px,1fr)] gl-gap-x-4 gl-overflow-x-auto"
+                  role="table"
+                >
+                  <div
+                    class="gl-border-b gl-col-span-full gl-grid gl-grid-cols-subgrid gl-px-5 gl-pb-3"
+                    role="row"
+                  >
+                    <div class="gl-text-sm gl-font-[700] gl-text-subtle" role="columnheader">
+                      {{ __('Status') }}
+                    </div>
+                    <div class="gl-text-sm gl-font-[700] gl-text-subtle" role="columnheader">
+                      {{ __('Title') }}
+                    </div>
+                    <div
+                      class="gl-text-center gl-text-sm gl-font-[700] gl-text-subtle"
+                      role="columnheader"
+                    >
+                      {{ __('Assignee') }}
+                    </div>
+                    <div
+                      class="gl-text-center gl-text-sm gl-font-[700] gl-text-subtle"
+                      role="columnheader"
+                    >
+                      {{ __('Reviewers') }}
+                    </div>
+                    <div
+                      class="gl-text-right gl-text-sm gl-font-[700] gl-text-subtle"
+                      role="columnheader"
+                    >
+                      {{ __('Checks') }}
+                    </div>
+                  </div>
+                  <template v-if="mergeRequests.length">
+                    <merge-request
+                      v-for="(mergeRequest, index) in mergeRequests"
+                      :key="mergeRequest.id"
+                      :merge-request="mergeRequest"
+                      :new-merge-request-ids="newMergeRequestIds"
+                      :list-id="list.id"
+                      data-testid="merge-request"
+                      class="gl-col-span-full gl-grid gl-grid-cols-subgrid gl-px-5 gl-py-4"
+                      :class="{ 'gl-border-b': index < mergeRequests.length - 1 }"
+                    />
+                  </template>
+                  <div
+                    v-else
+                    class="gl-col-span-full"
+                    :class="{ 'gl-py-6 gl-text-center': !error }"
+                    role="row"
+                  >
+                    <template v-if="loading">
+                      {{ __('Loading…') }}
+                    </template>
+                    <gl-alert v-else-if="error" variant="danger" :dismissible="false">
+                      {{ __('There was an error fetching merge requests. Please try again.') }}
+                    </gl-alert>
                   </div>
                 </div>
                 <template #pagination>
-                  <div
-                    v-if="hasNextPage"
-                    class="crud-pagination-container gl-flex gl-justify-center"
-                  >
+                  <div v-if="hasNextPage" class="crud-pagination-container">
                     <gl-button :loading="loading" data-testid="load-more" @click="loadMore">{{
                       __('Show more')
                     }}</gl-button>
@@ -262,14 +256,23 @@ export default {
         </li>
       </template>
     </gl-tabs>
-    <div class="gl-mt-6 gl-text-center">
-      <gl-link href="https://gitlab.com/gitlab-org/gitlab/-/issues/542823">
-        {{ __('Leave feedback') }}
-      </gl-link>
-      <span class="gl-mx-2">|</span>
-      <gl-link :href="$options.docsPath">
-        {{ __('Documentation') }}
-      </gl-link>
+    <div class="gl-mt-6 gl-flex gl-justify-center gl-gap-3">
+      <gl-sprintf
+        :message="
+          __('%{feedbackStart}Leave feedback%{feedbackEnd} | %{docStart}Documentation%{docEnd}')
+        "
+      >
+        <template #feedback="{ content }">
+          <gl-link href="https://gitlab.com/gitlab-org/gitlab/-/issues/542823">
+            {{ content }}
+          </gl-link>
+        </template>
+        <template #doc="{ content }">
+          <gl-link :href="$options.docsPath">
+            {{ content }}
+          </gl-link>
+        </template>
+      </gl-sprintf>
     </div>
   </div>
 </template>

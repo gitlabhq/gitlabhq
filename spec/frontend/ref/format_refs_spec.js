@@ -39,9 +39,14 @@ describe('formatListBoxItems', () => {
   );
 
   it('filters selectedRef from other sections', () => {
-    const branchSelectedRef = MOCK_BRANCHES[0]; // Assume first branch is selected
+    const branches = [
+      { name: 'main', value: 'main' },
+      { name: 'feature', value: 'feature' },
+      { name: 'bugfix', value: 'bugfix' },
+    ];
+    const branchSelectedRef = branches[0]; // Assume first branch is selected
     const result = formatListBoxItems({
-      branches: MOCK_BRANCHES,
+      branches,
       tags: MOCK_TAGS,
       commits: MOCK_COMMITS,
       selectedRef: branchSelectedRef,

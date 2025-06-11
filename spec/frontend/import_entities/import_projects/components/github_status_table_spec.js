@@ -1,8 +1,8 @@
 import { GlTabs, GlSearchBoxByClick } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import { mountExtended } from 'helpers/vue_test_utils_helper';
 
 import { stubComponent } from 'helpers/stub_component';
 import GithubStatusTable from '~/import_entities/import_projects/components/github_status_table.vue';
@@ -14,10 +14,10 @@ import * as getters from '~/import_entities/import_projects/store/getters';
 const ImportProjectsTableStub = stubComponent(ImportProjectsTable, {
   importAllButtonText: 'IMPORT_ALL_TEXT',
   methods: {
-    showImportAllModal: jest.fn(),
+    showModalHandler: jest.fn(),
   },
   template:
-    '<div><slot name="filter" v-bind="{ importAllButtonText: $options.importAllButtonText, showImportAllModal }"></slot></div>',
+    '<div><slot name="filter" v-bind="{ importAllButtonText: $options.importAllButtonText, showModalHandler }"></slot></div>',
 });
 
 Vue.use(Vuex);
@@ -44,7 +44,7 @@ describe('GithubStatusTable', () => {
       },
     });
 
-    wrapper = mount(GithubStatusTable, {
+    wrapper = mountExtended(GithubStatusTable, {
       store,
       propsData: {
         providerTitle: 'Github',

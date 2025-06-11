@@ -14,13 +14,7 @@ module Resolvers
       type ::Types::WorkItems::LinkedItemType.connection_type, null: true
 
       def resolve_with_lookahead(**args)
-        if Feature.enabled?(:batch_load_linked_items, work_item.resource_parent, type: :wip)
-          bulk_load_linked_items(args[:filter])
-        else
-          offset_pagination(
-            work_item.linked_work_items(authorize: false, link_type: args[:filter])
-          )
-        end
+        bulk_load_linked_items(args[:filter])
       end
 
       private

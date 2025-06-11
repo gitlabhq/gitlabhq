@@ -136,9 +136,7 @@ export default {
     </template>
 
     <template #default>
-      <div class="gl-contents" data-testid="section-content">
-        <slot></slot>
-      </div>
+      <slot></slot>
     </template>
 
     <template v-if="open" #pagination>

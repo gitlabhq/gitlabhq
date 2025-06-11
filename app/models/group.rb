@@ -1116,7 +1116,7 @@ class Group < Namespace
   end
 
   def work_item_epics_list_enabled?
-    ::Feature.enabled?(:work_item_epics_list, root_ancestor, type: :wip)
+    ::Feature.enabled?(:work_item_epics_list, root_ancestor, type: :beta)
   end
 
   # overriden in EE

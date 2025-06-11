@@ -64,7 +64,7 @@ export default {
 </script>
 <template>
   <import-projects-table v-bind="$attrs">
-    <template #filter="{ importAllButtonText, showImportAllModal }">
+    <template #filter="{ importAllButtonText, showModalHandler }">
       <gl-tabs v-model="selectedRelationTypeTabIdx" content-class="!gl-py-0 gl-mb-3">
         <gl-tab v-for="tab in $options.relationTypes" :key="tab.title" :title="tab.title" lazy>
           <div
@@ -92,7 +92,7 @@ export default {
               :loading="isImportingAnyRepo"
               :disabled="!hasImportableRepos"
               type="button"
-              @click="showImportAllModal"
+              @click="showModalHandler"
             >
               {{ importAllButtonText }}
             </gl-button>

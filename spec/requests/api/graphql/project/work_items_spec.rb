@@ -502,35 +502,23 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
       create(:work_item_link, source: item2, target: related_items[0], link_type: 'relates_to')
     end
 
-    shared_examples 'query with limited N+1 queries' do |threshold: 0|
-      it :use_sql_query_cache do
-        post_graphql(query, current_user: current_user) # warm-up
+    it 'avoids N+1 queries', :use_sql_query_cache do
+      post_graphql(query, current_user: current_user) # warm-up
 
-        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-          post_graphql(query, current_user: current_user)
-        end
-
-        item3 = create(:work_item, project: project, discussion_locked: true, title: 'item1', labels: [label1])
-
-        [item1, item2, item3].each do |item|
-          create(:work_item_link, source: item, target: related_items[1], link_type: 'relates_to')
-          create(:work_item_link, source: item, target: related_items[2], link_type: 'relates_to')
-        end
-
-        expect_graphql_errors_to_be_empty
-        expect { post_graphql(query, current_user: current_user) }
-          .not_to exceed_all_query_limit(control).with_threshold(threshold)
-      end
-    end
-
-    it_behaves_like 'query with limited N+1 queries'
-
-    context 'when batch_load_linked_items feature flag is disabled' do
-      before do
-        stub_feature_flags(batch_load_linked_items: false)
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post_graphql(query, current_user: current_user)
       end
 
-      it_behaves_like 'query with limited N+1 queries', threshold: 33
+      item3 = create(:work_item, project: project, discussion_locked: true, title: 'item1', labels: [label1])
+
+      [item1, item2, item3].each do |item|
+        create(:work_item_link, source: item, target: related_items[1], link_type: 'relates_to')
+        create(:work_item_link, source: item, target: related_items[2], link_type: 'relates_to')
+      end
+
+      expect_graphql_errors_to_be_empty
+      expect { post_graphql(query, current_user: current_user) }
+        .not_to exceed_all_query_limit(control)
     end
   end
 

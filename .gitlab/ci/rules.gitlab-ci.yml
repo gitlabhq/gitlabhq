@@ -1549,6 +1549,8 @@
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - <<: *if-default-branch-schedule-weekly
+      when: never
     - <<: *if-dot-com-gitlab-org-default-branch
       changes: *code-backstage-patterns
     - <<: *if-merge-request-not-approved

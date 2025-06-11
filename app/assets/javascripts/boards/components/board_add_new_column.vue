@@ -207,6 +207,7 @@ export default {
       >
         <template #toggle>
           <gl-button
+            id="board-value-dropdown"
             class="gl-flex gl-max-w-full gl-items-center gl-truncate"
             :class="{ '!gl-shadow-inner-1-red-400': !selectedIdValid }"
             button-text-classes="gl-flex"

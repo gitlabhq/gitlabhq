@@ -29,6 +29,10 @@ export default {
       type: String,
       required: true,
     },
+    provider: {
+      type: String,
+      required: true,
+    },
     filterable: {
       type: Boolean,
       required: false,
@@ -61,6 +65,8 @@ export default {
       optionalStagesSelection: Object.fromEntries(
         this.optionalStages.map(({ name, selected }) => [name, selected]),
       ),
+      showImportAllModal: false,
+      showNamespaceRequiredModal: false,
     };
   },
 
@@ -72,6 +78,7 @@ export default {
       'hasImportableRepos',
       'hasIncompatibleRepos',
       'importAllCount',
+      'getImportTarget',
     ]),
 
     pagePaginationStateKey() {
@@ -101,6 +108,14 @@ export default {
     fromHeaderText() {
       return sprintf(__('From %{providerTitle}'), { providerTitle: this.providerTitle });
     },
+
+    missingNamespaceCount() {
+      return this.reposMissingTargetNamespace().length;
+    },
+
+    isManifestImport() {
+      return this.provider === 'manifest';
+    },
   },
 
   mounted() {
@@ -123,10 +138,28 @@ export default {
       'importAll',
     ]),
 
-    showImportAllModal() {
-      this.$refs.importAllModal.show();
+    showModalHandler() {
+      if (this.missingNamespaceCount > 0) {
+        this.showNamespaceRequiredModal = true;
+      } else {
+        this.showImportAllModal = true;
+      }
+    },
+
+    reposMissingTargetNamespace() {
+      if (this.isManifestImport) {
+        return [];
+      }
+
+      return this.repositories.filter((repo) => {
+        if (repo.importSource.target) return false;
+
+        const target = this.getImportTarget(repo.importSource.id);
+        return !target?.targetNamespace;
+      });
     },
   },
+  actionPrimary: { text: __('Okay') },
 };
 </script>
 
@@ -138,14 +171,14 @@ export default {
     <template v-if="hasIncompatibleRepos">
       <slot name="incompatible-repos-warning"></slot>
     </template>
-    <slot name="filter" v-bind="{ showImportAllModal, importAllButtonText }">
+    <slot name="filter" v-bind="{ showModalHandler, importAllButtonText }">
       <div class="gl-mb-5 gl-flex gl-flex-wrap gl-justify-between">
         <gl-button
           variant="confirm"
           :loading="isImportingAnyRepo"
           :disabled="!hasImportableRepos"
           type="button"
-          @click="showImportAllModal"
+          @click="showModalHandler"
           >{{ importAllButtonText }}</gl-button
         >
 
@@ -170,6 +203,7 @@ export default {
     />
     <gl-modal
       ref="importAllModal"
+      v-model="showImportAllModal"
       modal-id="import-all-modal"
       :title="s__('ImportProjects|Import repositories')"
       :ok-title="__('Import')"
@@ -180,6 +214,19 @@ export default {
           'Are you sure you want to import %d repository?',
           'Are you sure you want to import %d repositories?',
           importAllCount,
+        )
+      }}
+    </gl-modal>
+    <gl-modal
+      ref="namespaceRequiredModal"
+      v-model="showNamespaceRequiredModal"
+      modal-id="namespace-required-modal"
+      :title="s__('ImportProjects|Namespace required')"
+      :action-primary="$options.actionPrimary"
+    >
+      {{
+        s__(
+          'ImportProjects|Select a destination namespace for each repository before importing all.',
         )
       }}
     </gl-modal>

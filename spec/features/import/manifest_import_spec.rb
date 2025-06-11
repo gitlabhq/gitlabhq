@@ -34,7 +34,6 @@ RSpec.describe 'Import multiple repositories by uploading a manifest file', :js,
     page.within(second_row) do
       click_on 'Import'
     end
-    click_on 'Continue import'
 
     wait_for_requests
 
@@ -42,6 +41,21 @@ RSpec.describe 'Import multiple repositories by uploading a manifest file', :js,
       expect(page).to have_content 'Complete'
       expect(page).to have_content("#{group.full_path}/build/blueprint")
     end
+  end
+
+  it 'confirms user wishes to import all projects', :sidekiq_inline, :js do
+    visit new_import_manifest_path
+
+    attach_file('manifest', Rails.root.join('spec/fixtures/aosp_manifest.xml'))
+    click_on 'List available repositories'
+
+    wait_for_requests
+
+    click_on 'Import 660 repositories'
+
+    wait_for_requests
+
+    expect(page).to have_content 'Are you sure you want to import 660 repositories?'
   end
 
   it 'renders an error if the remote url scheme starts with javascript' do

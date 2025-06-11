@@ -181,6 +181,7 @@ GitLab documentation uses the following shortcodes:
 - [Icons](#gitlab-svg-icons)
 - [Tabs](#tabs)
 - [Cards](#cards)
+- [Maintained versions](#maintained-versions)
 
 ## Language
 
@@ -1989,6 +1990,20 @@ Cards render only on the GitLab documentation site (`https://docs.gitlab.com`).
 In the GitLab product help, a set of cards appears as an unordered list of links.
 
 Card descriptions are populated from the `description` metadata on the Markdown page headers.
+
+## Maintained versions
+
+Use the maintained versions shortcode to create an unordered list of the currently
+maintained GitLab versions as specified by the
+[maintenance policy](../../../policy/maintenance.md):
+
+```markdown
+{{</* maintained-versions */>}}
+```
+
+Maintained versions render only on the pre-release version of the GitLab
+documentation site (`https://docs.gitlab.com`). In all other cases and in
+`/help`, a link to the documentation site is shown instead.
 
 ## Plagiarism
 
