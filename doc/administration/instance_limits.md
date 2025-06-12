@@ -307,6 +307,38 @@ There is a limit when embedding metrics in GitLab Flavored Markdown (GLFM) for p
 
 - **Max limit**: 100 embeds.
 
+## HTTP response limits
+
+### Maximum Gzip-compressed size
+
+This setting is used to restrict the maximum allowed size in MiB for Gzip-compressed
+HTTP responses after decompression to prevent DoS.
+
+The default maximum size is 100 MiB. To disable this limit, set the value to 0.
+If the value is too high, it could expose the instance to DoS attacks.
+
+You can change this limit by using the GitLab Rails console or use
+[application setting API](../api/settings.md)
+
+ ```ruby
+ ApplicationSetting.update(max_http_decompressed_size: 50)
+ ```
+
+### Maximum HTTP responses size
+
+This setting is used to restrict the maximum allowed size in MiB for decompressed
+HTTP responses to prevent DoS. It applies to integrations, importers, and webhooks.
+
+The default maximum size is 100 MiB. To disable this limit, set the value to 0.
+If the value is too high, it could expose the instance to DoS attacks.
+
+You can change this limit by using the GitLab Rails console or use
+[application setting API](../api/settings.md)
+
+ ```ruby
+ ApplicationSetting.update(max_http_response_size_limit: 60)
+ ```
+
 ## Webhook limits
 
 Also see [Webhook rate limits](#webhook-rate-limit).

@@ -6697,6 +6697,7 @@ Input type: `HttpIntegrationCreateInput`
 | <a id="mutationhttpintegrationcreatepayloadattributemappings"></a>`payloadAttributeMappings` | [`[AlertManagementPayloadAlertFieldInput!]`](#alertmanagementpayloadalertfieldinput) | Custom mapping of GitLab alert attributes to fields from the payload example. |
 | <a id="mutationhttpintegrationcreatepayloadexample"></a>`payloadExample` | [`JsonString`](#jsonstring) | Example of an alert payload. |
 | <a id="mutationhttpintegrationcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to create the integration in. |
+| <a id="mutationhttpintegrationcreatetype"></a>`type` | [`AlertManagementIntegrationType`](#alertmanagementintegrationtype) | Type of integration to create. Cannot be changed after creation. |
 
 #### Fields
 
@@ -6704,7 +6705,7 @@ Input type: `HttpIntegrationCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationhttpintegrationcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationhttpintegrationcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
-| <a id="mutationhttpintegrationcreateintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | HTTP integration. |
+| <a id="mutationhttpintegrationcreateintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | Alerting integration. |
 
 ### `Mutation.httpIntegrationDestroy`
 
@@ -6723,7 +6724,7 @@ Input type: `HttpIntegrationDestroyInput`
 | ---- | ---- | ----------- |
 | <a id="mutationhttpintegrationdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationhttpintegrationdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
-| <a id="mutationhttpintegrationdestroyintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | HTTP integration. |
+| <a id="mutationhttpintegrationdestroyintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | Alerting integration. |
 
 ### `Mutation.httpIntegrationResetToken`
 
@@ -6742,7 +6743,7 @@ Input type: `HttpIntegrationResetTokenInput`
 | ---- | ---- | ----------- |
 | <a id="mutationhttpintegrationresettokenclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationhttpintegrationresettokenerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
-| <a id="mutationhttpintegrationresettokenintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | HTTP integration. |
+| <a id="mutationhttpintegrationresettokenintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | Alerting integration. |
 
 ### `Mutation.httpIntegrationUpdate`
 
@@ -6765,7 +6766,7 @@ Input type: `HttpIntegrationUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationhttpintegrationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationhttpintegrationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
-| <a id="mutationhttpintegrationupdateintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | HTTP integration. |
+| <a id="mutationhttpintegrationupdateintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | Alerting integration. |
 
 ### `Mutation.importSourceUserCancelReassignment`
 

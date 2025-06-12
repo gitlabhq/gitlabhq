@@ -2,7 +2,14 @@
 
 RSpec.shared_examples 'a deploy token creation service' do
   let(:user) { create(:user) }
-  let(:deploy_token_params) { attributes_for(:deploy_token) }
+  let(:deploy_token_params) { default_attributes }
+
+  def default_attributes(overrides = {})
+    {
+      name: 'Deploy Token',
+      read_repository: true
+    }.merge(overrides)
+  end
 
   describe '#execute' do
     subject { described_class.new(entity, user, deploy_token_params).execute }
@@ -32,7 +39,7 @@ RSpec.shared_examples 'a deploy token creation service' do
     end
 
     context 'when expires at date is not passed' do
-      let(:deploy_token_params) { attributes_for(:deploy_token, expires_at: '') }
+      let(:deploy_token_params) { default_attributes(expires_at: '') }
 
       it 'sets Forever.date' do
         expect(subject[:deploy_token].read_attribute(:expires_at)).to eq(Forever.date)
@@ -40,7 +47,7 @@ RSpec.shared_examples 'a deploy token creation service' do
     end
 
     context 'when username is empty string' do
-      let(:deploy_token_params) { attributes_for(:deploy_token, username: '') }
+      let(:deploy_token_params) { default_attributes(username: '') }
 
       it 'converts it to nil' do
         expect(subject[:deploy_token].read_attribute(:username)).to be_nil
@@ -48,7 +55,7 @@ RSpec.shared_examples 'a deploy token creation service' do
     end
 
     context 'when username is provided' do
-      let(:deploy_token_params) { attributes_for(:deploy_token, username: 'deployer') }
+      let(:deploy_token_params) { default_attributes(username: 'deployer') }
 
       it 'keeps the provided username' do
         expect(subject[:deploy_token].read_attribute(:username)).to eq('deployer')
@@ -57,7 +64,7 @@ RSpec.shared_examples 'a deploy token creation service' do
 
     context 'when the deploy token is invalid' do
       let(:deploy_token_params) do
-        attributes_for(:deploy_token, read_repository: false, read_registry: false, write_registry: false)
+        default_attributes(read_repository: false, read_registry: false, write_registry: false)
       end
 
       it 'does not create a new DeployToken' do

@@ -667,9 +667,7 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
 
       context 'pull code' do
         context 'when project is authorized' do
-          before do
-            deploy_token.projects << project
-          end
+          let(:deploy_token) { create(:deploy_token, projects: [project]) }
 
           it { expect { pull_access_check }.not_to raise_error }
         end

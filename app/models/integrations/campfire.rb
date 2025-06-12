@@ -109,14 +109,14 @@ module Integrations
           }
         }
       }
-      res = Gitlab::HTTP.post(path, base_uri: base_uri, **auth.merge(body))
+      res = Clients::HTTP.post(path, base_uri: base_uri, **auth.merge(body))
       res.code == 201 ? res : nil
     end
 
     # Returns a list of rooms, or [].
     # https://github.com/basecamp/campfire-api/blob/master/sections/rooms.md#get-rooms
     def rooms(auth)
-      res = Gitlab::HTTP.get("/rooms.json", base_uri: base_uri, **auth)
+      res = Clients::HTTP.get("/rooms.json", base_uri: base_uri, **auth)
       res.code == 200 ? res["rooms"] : []
     end
 

@@ -2,6 +2,27 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.0.2 (2025-06-11)
+
+### Fixed (5 changes)
+
+- [Fix Upgrade to 18.0: No such column](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bde20c3f31d324493d032be57be4465f0919760e)
+- [Fix IDE links returns about:blank in old code dropdown](https://gitlab.com/gitlab-org/security/gitlab/-/commit/633864727f574f9d9b93826bb76d66a790382915)
+- [Fix the title/body issue for todo apis when it is a duo todo](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d8080ea15af34cf804ce024b207f2fa4817c87a6) **GitLab Enterprise Edition**
+- [Fix gitpod button is missing in the edit dropdown](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4bbef760c63924f2821233d98dc04c1982751430)
+- [Move fork_networks organization_id NOT NULL to post-migrate](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2bbea09c16044981bf316dd43544a87e4bf67147)
+
+### Security (8 changes)
+
+- [Protect webhook from excessive payload lengths](https://gitlab.com/gitlab-org/security/gitlab/-/commit/990fae5b6be86c6769c2086578ae2096762e21a8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5059))
+- [Endless Redirect Loop in any project when query param "format" is "git"](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fdbfb6cd14973800abeec182823bcfa647a1a5a8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5038))
+- [Backport for "Add validation for board name length" to 18-0 stable](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ba616a03359751fc3add6f8504c79f4381efa703) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5044))
+- [Fix # #1329 - IDOR in compliance framework export endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ffea57e8e171b120f5f66fe81da39a21e5ab0258) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5041))
+- [Fix authorization for compliance frameworks projects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0d783852162009bc5286a939534f2a5e2f1ae7ef) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5034))
+- [security: Git redirection inconsistency](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3fb95759edb3e7729b981bf48140ef9a05a32761) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5020))
+- [Fix XSS with CSP bypass in JSON tables](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fcfebf2f188ed90eea3f7db92ebeedcbadc6504d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5022))
+- [Limit HTTP response size](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f8bf80825e1bd802be7be374905600059abd2726) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5014))
+
 ## 18.0.1 (2025-05-21)
 
 ### Fixed (1 change)
@@ -856,6 +877,24 @@ entry.
 - [Finalize migration BackfillContainerRepositoryStatesProjectId](https://gitlab.com/gitlab-org/gitlab/-/commit/78f333c76a39d0a85938318b3be49905c19074e6) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185869))
 - [Finalize migration BackfillPackagesRpmMetadataProjectId](https://gitlab.com/gitlab-org/gitlab/-/commit/d066d88be1fff7cfcf64017124af797e085a4b4f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184553))
 
+## 17.11.4 (2025-06-11)
+
+### Fixed (2 changes)
+
+- [Fix gitpod button is missing in the edit dropdown](https://gitlab.com/gitlab-org/security/gitlab/-/commit/813a005dc240c1bfafc313ded694317a96f1a877)
+- [Attempt to migrate ci_runner_taggings table (try 2)](https://gitlab.com/gitlab-org/security/gitlab/-/commit/706a075f79838d5d8421c5eae2e96a7601164201)
+
+### Security (8 changes)
+
+- [Protect webhook from excessive payload lengths](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a0d74cdeed26661b221446efc90fb5bd19b54d95) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5060))
+- [Endless Redirect Loop in any project when query param "format" is "git"](https://gitlab.com/gitlab-org/security/gitlab/-/commit/24d25f0b270337679bcfe282370ad169d137471f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5039))
+- [Backport for "Add validation for board name length" to 17-11-stable](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5ed051286369ec256431faeb44a16c848b6d0edc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5045))
+- [Fix # #1329 - IDOR in compliance framework export endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/071c88429e0974fdf1c0d67e7ba9d1f419843244) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5043))
+- [security: Git redirection inconsistency](https://gitlab.com/gitlab-org/security/gitlab/-/commit/373f9840af59eae05b14ea200fa10c1e4ecd7367) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5019))
+- [Fix XSS with CSP bypass in JSON tables](https://gitlab.com/gitlab-org/security/gitlab/-/commit/862a14acb446e9f7ce962404d8d472b19d832ff8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4987))
+- [Limit HTTP response size](https://gitlab.com/gitlab-org/security/gitlab/-/commit/94d20db29203681d75da5642fe4d1da51238863e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5015))
+- [Fix authorization for compliance frameworks projects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0eecdfe1df4254e2674efe9c0e309d9325db5c4b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5035))
+
 ## 17.11.3 (2025-05-21)
 
 ### Fixed (1 change)
@@ -1682,6 +1721,23 @@ entry.
 - [Cleanupp the no_onboarding_enterprise_users feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/7d9d548746a1b6dd2f2f074f64c7758745fb0494) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184478)) **GitLab Enterprise Edition**
 - [Remove feature flag allow_merge_request_pipelines_from_fork](https://gitlab.com/gitlab-org/gitlab/-/commit/b62f9187a57cc5ba66ce26889516cc55a425181a) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182862))
 - [Finalize migration BackfillNewAuditEventTables](https://gitlab.com/gitlab-org/gitlab/-/commit/1bc0f07ffd3af5b9fab8a0ea0b1af5f2759d25db) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181881))
+
+## 17.10.8 (2025-06-11)
+
+### Fixed (2 changes)
+
+- [Fix gitpod button is missing in the edit dropdown](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c3ad6f66e6f17a5bf8fa2489a7335dfa58fc55a6)
+- [Attempt to migrate ci_runner_taggings table (try 2)](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c2520ea439dcb4fee531fcc39efc85ab4b607a6c)
+
+### Security (7 changes)
+
+- [Protect webhook from excessive payload lengths](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1fb7390786ae5c22ec7f1bc172423a76835aa14c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5061))
+- [Endless Redirect Loop in any project when query param "format" is "git"](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fddb00a30506eb534dc9e1f5c1923eee3e33c0b3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5040))
+- [Backport for "Add validation for board name length" to 17-10-stable](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a69cf8ef367ef1897158af0619cd537fe5d2a5df) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5046))
+- [Fix # #1329 - IDOR in compliance framework export endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7b4f9e9fb7411a18185ada44dc88dd264e6a228b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5042))
+- [security: Git redirection inconsistency](https://gitlab.com/gitlab-org/security/gitlab/-/commit/12003cbfb9b4081a352724922e6ed9aa97656ace) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4900))
+- [Fix XSS with CSP bypass in JSON tables](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1b02f9ed79b3a999baae5c02fa4f26c487927cba) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4988))
+- [Limit HTTP response size](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1411cb581f68400b5370d694cce3c67e5f0e2294) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5016))
 
 ## 17.10.7 (2025-05-21)
 

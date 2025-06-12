@@ -7,8 +7,7 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be_with_reload(:project) { create(:project, :public) }
-  let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
-  let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token, project: project) }
+  let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true, projects: [project]) }
   let_it_be(:package) { create(:helm_package, project: project, without_package_files: true) }
   let_it_be(:package_file1) { create(:helm_package_file, package: package) }
   let_it_be(:package_file2) { create(:helm_package_file, package: package) }

@@ -19,8 +19,7 @@ RSpec.describe API::RubygemPackages, feature_category: :package_registry do
   let_it_be(:personal_access_token) { create(:personal_access_token) }
   let_it_be(:user) { personal_access_token.user }
   let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
-  let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
-  let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token, project: project) }
+  let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true, projects: [project]) }
   let_it_be(:headers) { {} }
 
   let(:snowplow_gitlab_standard_context) { snowplow_context }

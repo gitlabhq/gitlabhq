@@ -287,14 +287,16 @@ export default {
           });
         }
 
-        const selectedWorkItemType = this.workItemTypes?.find(
-          (workItemType) => workItemType.name === this.preselectedWorkItemType,
-        );
+        const selectedWorkItemType = this.findWorkItemType(this.preselectedWorkItemType);
 
         if (selectedWorkItemType) {
           this.selectedWorkItemTypeId = selectedWorkItemType?.id;
         } else {
           this.showWorkItemTypeSelect = true;
+          const defaultSelectedWorkItemType =
+            this.findWorkItemType(WORK_ITEM_TYPE_NAME_ISSUE) || this.workItemTypes?.at(0);
+          this.selectedWorkItemTypeId = defaultSelectedWorkItemType?.id;
+          this.$emit('changeType', defaultSelectedWorkItemType);
         }
       },
       error() {
@@ -606,6 +608,9 @@ export default {
     document.removeEventListener('keydown', this.handleKeydown);
   },
   methods: {
+    findWorkItemType(workItemTypeName) {
+      return this.workItemTypes?.find((workItemType) => workItemType.name === workItemTypeName);
+    },
     initialSelectedProject() {
       if (this.relatedItem) {
         return this.relatedItem.reference.substring(0, this.relatedItem.reference.lastIndexOf('#'));
@@ -913,12 +918,14 @@ export default {
             v-if="showProjectSelector"
             class="gl-max-w-26 gl-flex-grow"
             :label="__('Project')"
+            label-for="create-work-item-project"
           >
             <work-item-projects-listbox
               v-model="selectedProjectFullPath"
               :full-path="fullPath"
               :is-group="isGroup"
               :current-project-name="namespaceFullName"
+              toggle-id="create-work-item-project"
             />
           </gl-form-group>
         </template>

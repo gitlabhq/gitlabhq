@@ -3971,6 +3971,9 @@ msgstr ""
 msgid "AdherenceReport|There was an error loading adherence report."
 msgstr ""
 
+msgid "AdherenceReport|To show a status here, you must %{linkStart}create a compliance framework with requirements and controls%{linkEnd} and apply it to projects in this group. New frameworks can take a few minutes to appear."
+msgstr ""
+
 msgid "AdherenceReport|We are replacing the standards adherence report with the compliance status report, which includes new features to enhance your compliance workflow."
 msgstr ""
 
@@ -40016,10 +40019,10 @@ msgstr ""
 msgid "Must start with letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses."
 msgstr ""
 
-msgid "My awesome group"
+msgid "My company or team"
 msgstr ""
 
-msgid "My company or team"
+msgid "My group"
 msgstr ""
 
 msgid "My reaction"
@@ -43110,9 +43113,6 @@ msgstr ""
 msgid "Organization|Change organization URL"
 msgstr ""
 
-msgid "Organization|Changing an organization's URL can have unintended side effects."
-msgstr ""
-
 msgid "Organization|Choose organization visibility level."
 msgstr ""
 
@@ -43240,7 +43240,7 @@ msgid_plural "Organization|Organizations must have at least one owner. To delete
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Organization|Perform advanced options such as deleting the organization."
+msgid "Organization|Perform advanced options such as changing the organization URL."
 msgstr ""
 
 msgid "Organization|Private - The organization can only be viewed by members."
@@ -43279,7 +43279,7 @@ msgstr ""
 msgid "Organization|Unable to fetch organizations. Reload the page to try again."
 msgstr ""
 
-msgid "Organization|Update your organization name, description, and avatar."
+msgid "Organization|Update your organization name, description, and avatar. %{linkStart}Learn more about organizations%{linkEnd}."
 msgstr ""
 
 msgid "Organization|View all"
@@ -47764,6 +47764,9 @@ msgstr ""
 msgid "Project %{code_open}%{source_project}%{code_close} has more restricted access settings than %{code_open}%{target_project}%{code_close}. To avoid exposing private changes, make sure you're submitting changes to the correct project."
 msgstr ""
 
+msgid "Project %{project_name} and framework are not from same namespace."
+msgstr ""
+
 msgid "Project %{project_repo} could not be found"
 msgstr ""
 
@@ -47963,6 +47966,9 @@ msgid "Project was created and assigned as security policy project, but failed a
 msgstr ""
 
 msgid "Project was not found or you do not have permission to add this project to Security Dashboards."
+msgstr ""
+
+msgid "Project with ID %{project_id} not found"
 msgstr ""
 
 msgid "Project:Branches: %{source_project_path}:%{source_branch} to %{target_project_path}:%{target_branch}"
@@ -49132,7 +49138,7 @@ msgstr ""
 msgid "ProjectsNewEdit|Must start with a letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses."
 msgstr ""
 
-msgid "ProjectsNewEdit|My awesome project"
+msgid "ProjectsNewEdit|My project"
 msgstr ""
 
 msgid "ProjectsNewEdit|Project description"
@@ -49284,7 +49290,7 @@ msgstr ""
 msgid "ProjectsNew|Must start with a lowercase or uppercase letter, digit, emoji, or underscore. Can also contain dots, pluses, dashes, or spaces."
 msgstr ""
 
-msgid "ProjectsNew|My awesome project"
+msgid "ProjectsNew|My project"
 msgstr ""
 
 msgid "ProjectsNew|New project"
@@ -70841,9 +70847,6 @@ msgstr ""
 msgid "Workspaces|If your devfile is not in the root directory of your project, specify a relative path."
 msgstr ""
 
-msgid "Workspaces|In order to make an agent available/blocked, workspaces must be enabled in the agent's configuration."
-msgstr ""
-
 msgid "Workspaces|Instant development environments"
 msgstr ""
 
@@ -70926,6 +70929,9 @@ msgid "Workspaces|The source branch, tag, or commit hash of your workspace."
 msgstr ""
 
 msgid "Workspaces|This agent is already allowed."
+msgstr ""
+
+msgid "Workspaces|This agent is already available."
 msgstr ""
 
 msgid "Workspaces|This agent is already blocked."

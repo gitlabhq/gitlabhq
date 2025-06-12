@@ -85,7 +85,7 @@ export default {
           },
           inputAttrs: {
             class: 'gl-md-form-input-lg',
-            placeholder: s__('ProjectsNewEdit|My awesome project'),
+            placeholder: s__('ProjectsNewEdit|My project'),
           },
         },
         [FORM_FIELD_ID]: {

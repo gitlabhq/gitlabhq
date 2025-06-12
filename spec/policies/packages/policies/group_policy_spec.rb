@@ -66,20 +66,16 @@ RSpec.describe Packages::Policies::GroupPolicy, feature_category: :package_regis
   end
 
   describe 'deploy token access' do
-    let!(:group_deploy_token) do
-      create(:group_deploy_token, group: group, deploy_token: deploy_token)
-    end
-
     subject { described_class.new(deploy_token, group.packages_policy_subject) }
 
     context 'when a deploy token with read_package_registry scope' do
-      let(:deploy_token) { create(:deploy_token, :group, read_package_registry: true) }
+      let(:deploy_token) { create(:deploy_token, :group, read_package_registry: true, groups: [group]) }
 
       it { is_expected.to be_allowed(:read_package) }
     end
 
     context 'when a deploy token with write_package_registry scope' do
-      let(:deploy_token) { create(:deploy_token, :group, write_package_registry: true) }
+      let(:deploy_token) { create(:deploy_token, :group, write_package_registry: true, groups: [group]) }
 
       it { is_expected.to be_allowed(:read_package) }
     end

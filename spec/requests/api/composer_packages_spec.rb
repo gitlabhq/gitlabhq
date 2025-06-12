@@ -9,10 +9,8 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
   let_it_be(:package_name) { 'package-name' }
   let_it_be(:project, reload: true) { create(:project, :custom_repo, files: { 'composer.json' => { name: package_name }.to_json }, group: group) }
-  let_it_be(:deploy_token_for_project) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
-  let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token_for_project, project: project) }
-  let_it_be(:deploy_token_for_group) { create(:deploy_token, :group, read_package_registry: true, write_package_registry: true) }
-  let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: deploy_token_for_group, group: group) }
+  let_it_be(:deploy_token_for_project) { create(:deploy_token, read_package_registry: true, write_package_registry: true, projects: [project]) }
+  let_it_be(:deploy_token_for_group) { create(:deploy_token, :group, read_package_registry: true, write_package_registry: true, groups: [group]) }
   let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
 
   let(:snowplow_gitlab_standard_context) do

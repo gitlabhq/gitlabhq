@@ -64,7 +64,7 @@ module Integrations
             markdown: true
           }
 
-          response = Gitlab::HTTP.post(webhook, body: Gitlab::Json.dump(body))
+          response = Clients::HTTP.post(webhook, body: Gitlab::Json.dump(body))
 
           response if response.success?
         end

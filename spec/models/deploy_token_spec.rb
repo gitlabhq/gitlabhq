@@ -123,8 +123,7 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
 
   describe '#has_access_to_group?' do
     let_it_be(:group) { create(:group) }
-    let_it_be_with_reload(:deploy_token) { create(:deploy_token, :group) }
-    let_it_be(:group_deploy_token) { create(:group_deploy_token, group: group, deploy_token: deploy_token) }
+    let_it_be_with_reload(:deploy_token) { create(:deploy_token, :group, groups: [group]) }
 
     let(:test_group) { group }
 
@@ -320,11 +319,7 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
       context 'and when the token is of group type' do
         let_it_be(:group) { create(:group) }
 
-        let(:deploy_token) { create(:deploy_token, :group) }
-
-        before do
-          deploy_token.groups << group
-        end
+        let(:deploy_token) { create(:deploy_token, :group, groups: [group]) }
 
         context 'and the passed-in project does not belong to any group' do
           it { is_expected.to be_falsy }

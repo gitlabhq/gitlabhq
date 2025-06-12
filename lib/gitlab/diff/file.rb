@@ -454,6 +454,10 @@ module Gitlab
         new_file? || deleted_file? || content_changed?
       end
 
+      def no_preview?
+        collapsed? || !modified_file?
+      end
+
       def diffable_text?
         !too_large? && diffable? && text? && !whitespace_only?
       end

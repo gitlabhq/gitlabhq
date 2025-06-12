@@ -13,9 +13,12 @@ RSpec.describe Bitbucket::AppPasswordConnection, feature_category: :importers do
         .to receive(:get)
         .with(
           'https://api.bitbucket.org/2.0/user',
-          basic_auth: { username: 'foo', password: 'bar' },
-          headers: { 'Accept' => 'application/json' },
-          query: { page: 1 }
+          {
+            basic_auth: { username: 'foo', password: 'bar' },
+            headers: { 'Accept' => 'application/json' },
+            query: { page: 1 },
+            max_bytes: an_instance_of(Integer)
+          }
         )
         .and_return(
           instance_double(HTTParty::Response,

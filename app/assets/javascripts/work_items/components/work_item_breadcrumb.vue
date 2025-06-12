@@ -47,7 +47,7 @@ export default {
         return __('Epics');
       }
 
-      return this.isGroup ? s__('WorkItem|Work items') : __('Issues');
+      return __('Issues');
     },
     issueAsWorkItem() {
       return (

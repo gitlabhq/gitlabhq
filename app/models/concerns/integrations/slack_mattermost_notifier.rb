@@ -34,7 +34,7 @@ module Integrations
     class HTTPClient
       def self.post(uri, params = {})
         params.delete(:http_options) # these are internal to the client and we do not want them
-        Gitlab::HTTP.post(uri, body: params)
+        Clients::HTTP.post(uri, body: params)
       end
     end
   end

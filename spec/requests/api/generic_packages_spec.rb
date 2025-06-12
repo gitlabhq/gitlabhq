@@ -11,18 +11,15 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
   let_it_be(:personal_access_token) { create(:personal_access_token) }
   let_it_be(:project, reload: true) { create(:project) }
   let_it_be(:deploy_token_rw) do
-    create(:deploy_token, read_package_registry: true, write_package_registry: true)
-      .tap { |token| create(:project_deploy_token, deploy_token: token, project: project) }
+    create(:deploy_token, read_package_registry: true, write_package_registry: true, projects: [project])
   end
 
   let_it_be(:deploy_token_ro) do
-    create(:deploy_token, read_package_registry: true, write_package_registry: false)
-      .tap { |token| create(:project_deploy_token, deploy_token: token, project: project) }
+    create(:deploy_token, read_package_registry: true, write_package_registry: false, projects: [project])
   end
 
   let_it_be(:deploy_token_wo) do
-    create(:deploy_token, read_package_registry: false, write_package_registry: true)
-      .tap { |token| create(:project_deploy_token, deploy_token: token, project: project) }
+    create(:deploy_token, read_package_registry: false, write_package_registry: true, projects: [project])
   end
 
   let(:user) { personal_access_token.user }

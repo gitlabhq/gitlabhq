@@ -15,6 +15,7 @@ describe('WorkItemBreadcrumb', () => {
     listPath = '/epics',
     isGroup = true,
     workItemsAlpha = false,
+    workItemPlanningView = false,
     props = {},
   } = {}) => {
     wrapper = shallowMount(WorkItemBreadcrumb, {
@@ -23,6 +24,7 @@ describe('WorkItemBreadcrumb', () => {
         glFeatures: {
           workItemEpicsList,
           workItemsAlpha,
+          workItemPlanningView,
         },
         listPath,
         isGroup,
@@ -46,12 +48,26 @@ describe('WorkItemBreadcrumb', () => {
       ]);
     });
 
-    it('renders root `Work items` breadcrumb on work items list page', () => {
-      createComponent();
+    it('renders root `Work items` breadcrumb on work items list page when `workItemPlanningView` feature is enabled', () => {
+      createComponent({ workItemPlanningView: true });
 
       expect(findBreadcrumb().props('items')).toEqual([
         {
           text: 'Work items',
+          to: {
+            name: 'workItemList',
+            query: undefined,
+          },
+        },
+      ]);
+    });
+
+    it('renders root `Issues` breadcrumb on work items list page', () => {
+      createComponent();
+
+      expect(findBreadcrumb().props('items')).toEqual([
+        {
+          text: 'Issues',
           to: {
             name: 'workItemList',
             query: undefined,
@@ -147,7 +163,7 @@ describe('WorkItemBreadcrumb', () => {
 
     expect(findBreadcrumb().props('items')).toEqual([
       { text: 'Static', href: '/static' },
-      { text: 'Work items', to: { name: 'workItemList', query: undefined } },
+      { text: 'Issues', to: { name: 'workItemList', query: undefined } },
       { text: '#1', to: '/1' },
     ]);
   });

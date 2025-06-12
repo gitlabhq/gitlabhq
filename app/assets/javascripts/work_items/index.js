@@ -11,11 +11,12 @@ import { apolloProvider } from '~/graphql_shared/issuable_client';
 import App from './components/app.vue';
 import WorkItemBreadcrumb from './components/work_item_breadcrumb.vue';
 import activeDiscussionQuery from './components/design_management/graphql/client/active_design_discussion.query.graphql';
+import { WORK_ITEM_TYPE_NAME_EPIC } from './constants';
 import { createRouter } from './router';
 
 Vue.use(VueApollo);
 
-export const initWorkItemsRoot = ({ workspaceType, withTabs } = {}) => {
+export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}) => {
   const el = document.querySelector('#js-work-items');
 
   if (!el) {
@@ -46,7 +47,6 @@ export const initWorkItemsRoot = ({ workspaceType, withTabs } = {}) => {
     defaultBranch,
     initialSort,
     isSignedIn,
-    workItemType,
     hasEpicsFeature,
     showNewWorkItem,
     canCreateEpic,
@@ -71,7 +71,7 @@ export const initWorkItemsRoot = ({ workspaceType, withTabs } = {}) => {
 
   const breadcrumbParams = { workItemType, isGroup };
 
-  if (isGroup) {
+  if (workItemType === WORK_ITEM_TYPE_NAME_EPIC) {
     listPath = epicsListPath;
     breadcrumbParams.listPath = epicsListPath;
   } else {

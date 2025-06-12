@@ -9,7 +9,9 @@ export default {
   i18n: {
     settingsBlock: {
       title: __('Advanced'),
-      description: s__('Organization|Perform advanced options such as deleting the organization.'),
+      description: s__(
+        'Organization|Perform advanced options such as changing the organization URL.',
+      ),
     },
   },
   props: {

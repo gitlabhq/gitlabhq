@@ -13,6 +13,16 @@
       "type": "integer",
       "minimum": 0,
       "description": "Maximum allowed object count for GitHub API responses. Count is an estimate based on the number of : , { and [ occurrences in the response."
+    },
+    "max_http_decompressed_size": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Maximum allowed size in MB for Gzip-compressed HTTP responses after decompression."
+    },
+    "max_http_response_size_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Maximum allowed size in MB for HTTP responses."
     }
   }
 }

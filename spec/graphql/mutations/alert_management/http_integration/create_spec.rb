@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::AlertManagement::HttpIntegration::Create, feature_category: :api do
+RSpec.describe Mutations::AlertManagement::HttpIntegration::Create, feature_category: :incident_management do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
@@ -25,6 +25,11 @@ RSpec.describe Mutations::AlertManagement::HttpIntegration::Create, feature_cate
             integration: ::AlertManagement::HttpIntegration.last!,
             errors: []
           )
+          expect(resolve[:integration]).to have_attributes(
+            active: true,
+            name: 'HTTP Integration',
+            type_identifier: 'http'
+          )
         end
       end
 
@@ -39,6 +44,29 @@ RSpec.describe Mutations::AlertManagement::HttpIntegration::Create, feature_cate
           expect(resolve).to eq(
             integration: nil,
             errors: ['An integration already exists']
+          )
+        end
+      end
+
+      context 'when type argument is specified' do
+        let(:args) do
+          {
+            project_path: project.full_path,
+            active: true,
+            name: 'Prometheus',
+            type_identifier: :prometheus
+          }
+        end
+
+        it 'returns the integration with no errors' do
+          expect(resolve).to eq(
+            integration: ::AlertManagement::HttpIntegration.last!,
+            errors: []
+          )
+          expect(resolve[:integration]).to have_attributes(
+            active: true,
+            name: 'Prometheus',
+            type_identifier: 'prometheus'
           )
         end
       end

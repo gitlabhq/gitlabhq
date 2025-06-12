@@ -26,7 +26,7 @@ module RapidDiffs
     end
 
     def viewer_component
-      return Viewers::NoPreviewComponent if empty_diff?
+      return Viewers::NoPreviewComponent if @diff_file.no_preview?
 
       if @diff_file.diffable_text?
         return Viewers::Text::ParallelViewComponent if @parallel_view
@@ -39,16 +39,12 @@ module RapidDiffs
       Viewers::NoPreviewComponent
     end
 
-    def empty_diff?
-      @diff_file.collapsed? || !@diff_file.modified_file?
-    end
-
     def default_header
       render RapidDiffs::DiffFileHeaderComponent.new(diff_file: @diff_file)
     end
 
     def total_rows
-      return 0 unless !empty_diff? && @diff_file.diffable_text?
+      return 0 unless !@diff_file.no_preview? && @diff_file.diffable_text?
 
       count = 0
       @diff_file.viewer_hunks.each do |hunk|

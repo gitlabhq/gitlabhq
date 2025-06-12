@@ -139,14 +139,6 @@ describe('WorkItemNamespaceListbox', () => {
     expect(findRecentDropdownItems().at(0).text()).toContain(namespaceGroupsData[0].name);
   });
 
-  it('filters out archived projects', () => {
-    expect(namespaceProjectsFormLinksWidgetResolver).toHaveBeenCalledWith(
-      expect.objectContaining({
-        includeArchived: false,
-      }),
-    );
-  });
-
   it('does not include duplicate items if found in both query and localstorage results', async () => {
     await createComponent();
     gon.current_username = 'root';

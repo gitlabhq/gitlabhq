@@ -13,7 +13,7 @@ module BulkImports
       end
 
       def execute(query:, variables: {})
-        response = ::Gitlab::HTTP.post(
+        response = Import::Clients::HTTP.post(
           url,
           headers: headers,
           follow_redirects: false,

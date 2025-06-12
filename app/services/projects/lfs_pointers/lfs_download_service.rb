@@ -79,7 +79,10 @@ module Projects
       end
 
       def download_options
-        http_options = { headers: lfs_headers, stream_body: true }
+        # Set accept-encoding to identity to request web servers not to send a compressed response to avoid using too
+        # much memory to decompress the file. In case the response is encoded, the response size will be limited by
+        # `max_http_decompressed_size application` application setting.
+        http_options = { headers: lfs_headers.merge('accept-encoding' => 'identity'), stream_body: true }
 
         return http_options if lfs_download_object.has_authorization_header?
 

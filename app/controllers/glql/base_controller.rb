@@ -54,7 +54,9 @@ module Glql
     end
 
     def logs
-      super.map do |log|
+      graphql_logs = super.presence || [{}]
+
+      graphql_logs.map do |log|
         log.merge(
           glql_referer: request.headers["Referer"],
           glql_query_sha: query_sha

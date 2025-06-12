@@ -16,9 +16,6 @@ export default {
   inject: ['organization'],
   i18n: {
     cardHeaderTitle: s__('Organization|Change organization URL'),
-    cardHeaderDescription: s__(
-      "Organization|Changing an organization's URL can have unintended side effects.",
-    ),
     submitButtonText: s__('Organization|Change organization URL'),
     errorMessage: s__(
       'Organization|An error occurred changing your organization URL. Please try again.',
@@ -44,11 +41,6 @@ export default {
       loading: false,
       errors: [],
     };
-  },
-  computed: {
-    isSubmitButtonDisabled() {
-      return this.formValues.path === this.organization.path;
-    },
   },
   methods: {
     async onSubmit() {
@@ -84,7 +76,6 @@ export default {
         ]);
       } catch (error) {
         createAlert({ message: this.$options.i18n.errorMessage, error, captureError: true });
-      } finally {
         this.loading = false;
       }
     },
@@ -100,7 +91,6 @@ export default {
         <div class="gl-flex gl-grow">
           <h4 class="gl-m-0 gl-text-base gl-leading-24">{{ $options.i18n.cardHeaderTitle }}</h4>
         </div>
-        <p class="gl-m-0 gl-text-sm gl-text-subtle">{{ $options.i18n.cardHeaderDescription }}</p>
       </template>
       <gl-form :id="$options.formId">
         <gl-form-fields
@@ -120,14 +110,9 @@ export default {
           </template>
         </gl-form-fields>
         <div class="gl-flex gl-gap-3">
-          <gl-button
-            type="submit"
-            variant="danger"
-            class="js-no-auto-disable"
-            :loading="loading"
-            :disabled="isSubmitButtonDisabled"
-            >{{ $options.i18n.submitButtonText }}</gl-button
-          >
+          <gl-button type="submit" variant="danger" class="js-no-auto-disable" :loading="loading">{{
+            $options.i18n.submitButtonText
+          }}</gl-button>
         </div>
       </gl-form>
     </gl-card>

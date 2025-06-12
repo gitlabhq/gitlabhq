@@ -1366,4 +1366,18 @@ RSpec.describe Gitlab::Diff::File, feature_category: :shared do
   describe '#viewer_hunks' do
     it { expect(diff_file.viewer_hunks).to all(be_instance_of(Gitlab::Diff::ViewerHunk)) }
   end
+
+  describe '#no_preview?' do
+    subject(:no_preview?) { diff_file.no_preview? }
+
+    it 'returns true for collapsed file' do
+      allow(diff_file).to receive(:collapsed?).and_return(true)
+      expect(no_preview?).to eq(true)
+    end
+
+    it 'returns true for unmodified file' do
+      allow(diff_file).to receive(:modified_file?).and_return(false)
+      expect(no_preview?).to eq(true)
+    end
+  end
 end

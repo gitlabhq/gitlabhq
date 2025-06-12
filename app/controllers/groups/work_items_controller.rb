@@ -37,11 +37,9 @@ module Groups
     def handle_new_work_item_path
       return unless show_params[:iid] == 'new'
 
-      if group.supports_group_work_items?
-        render :show
-      else
-        not_found
-      end
+      authenticate_user!
+
+      render :show
     end
 
     def show_params

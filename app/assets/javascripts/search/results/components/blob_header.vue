@@ -2,6 +2,7 @@
 import { GlLink, GlLabel } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
+import { sanitize } from '~/lib/dompurify';
 import GlSafeHtmlDirective from '~/vue_shared/directives/safe_html';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
@@ -58,19 +59,21 @@ export default {
   computed: {
     ...mapState(['query']),
     gfmCopyText() {
-      return `\`${this.filePath}\``;
+      return `\`${this.purePath(this.filePath)}\``;
     },
     highlightedFilePath() {
+      const cleanFilePath = this.purePath(this.filePath);
+
       if (!this?.query?.search) {
-        return this.filePath;
+        return cleanFilePath;
       }
 
       if (containsPotentialRegex(this.query.search)) {
-        return this.filePath;
+        return cleanFilePath;
       }
 
       const regex = new RegExp(`(${this.query.search})`, 'g');
-      return this.filePath.replace(
+      return cleanFilePath.replace(
         regex,
         (match, p1) =>
           `<span class="highlight-search-term ${this.systemMatchCodeTheme}">${p1}</span>`,
@@ -92,6 +95,9 @@ export default {
     },
     trackHeaderClick() {
       this.trackEvent(EVENT_CLICK_HEADER_LINK);
+    },
+    purePath(path) {
+      return sanitize(path, { ALLOWED_TAGS: [] });
     },
   },
   DEFAULT_HEADER_LABEL_COLOR,

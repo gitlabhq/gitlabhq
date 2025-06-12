@@ -11,10 +11,14 @@ module Projects
         @merge_request
       end
 
-      def render_diff_files_collection(diff_files, view_context)
+      def diff_file_component(diff_file)
+        ::RapidDiffs::MergeRequestDiffFileComponent
+          .new(diff_file: diff_file, merge_request: @merge_request, parallel_view: view == :parallel)
+      end
+
+      def diff_files_collection(diff_files)
         ::RapidDiffs::MergeRequestDiffFileComponent
           .with_collection(diff_files, merge_request: @merge_request, parallel_view: view == :parallel)
-          .render_in(view_context)
       end
 
       def sorted?

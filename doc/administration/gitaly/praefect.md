@@ -275,6 +275,15 @@ instructions only work on the Linux package-provided PostgreSQL:
    Replace `<PRAEFECT_SQL_PASSWORD_HASH>` with the hash of the password you generated in the
    preparation step. It is prefixed with `md5` literal.
 
+1. Create a new user `pgbouncer` to be used by PgBouncer:
+
+   ```sql
+   CREATE ROLE pgbouncer WITH LOGIN;
+   ALTER USER pgbouncer WITH password 'md5<PGBOUNCER_SQL_PASSWORD_HASH>';
+   ```
+
+   Replace `PGBOUNCER_SQL_PASSWORD_HASH` with the strong password hash you generated in the preparation step.
+
 1. The PgBouncer that is shipped with the Linux package is configured to use [`auth_query`](https://www.pgbouncer.org/config.html#generic-settings)
    and uses `pg_shadow_lookup` function. You need to create this function in `praefect_production`
    database:

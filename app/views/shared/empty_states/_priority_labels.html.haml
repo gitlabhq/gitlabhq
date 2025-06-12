@@ -1,8 +1,8 @@
 .text-center.gl-mt-1.gl-mb-5
   .svg-content{ data: { testid: 'label-svg-content' } }
-    = image_tag 'illustrations/empty-state/empty-labels-starred-md.svg'
+    = image_tag 'illustrations/empty-state/empty-labels-starred-md.svg', role: 'presentation'
   - if can?(current_user, :admin_label, @project)
-    %h5.gl-my-0
+    %h3.gl-heading-5.gl-my-0
       = _("No prioritized labels yet!")
     %p.gl-text-subtle
       = _("Star labels to start sorting by priority.")

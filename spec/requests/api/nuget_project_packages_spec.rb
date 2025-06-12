@@ -7,8 +7,10 @@ RSpec.describe API::NugetProjectPackages, feature_category: :package_registry do
 
   using RSpec::Parameterized::TableSyntax
 
-  let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
-  let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token, project: project) }
+  let_it_be(:deploy_token) do
+    create(:deploy_token, read_package_registry: true, write_package_registry: true, projects: [project])
+  end
+
   let_it_be(:package_name) { 'Dummy.Package' }
 
   let(:target) { project }

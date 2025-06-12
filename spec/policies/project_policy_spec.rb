@@ -1427,17 +1427,13 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   context 'deploy token access' do
-    let!(:project_deploy_token) do
-      create(:project_deploy_token, project: project, deploy_token: deploy_token)
-    end
-
     subject { described_class.new(deploy_token, project) }
 
     context 'private project' do
       let(:project) { private_project }
 
       context 'a deploy token with read_registry scope' do
-        let(:deploy_token) { create(:deploy_token, read_registry: true, write_registry: false) }
+        let(:deploy_token) { create(:deploy_token, read_registry: true, write_registry: false, projects: [project]) }
 
         it { is_expected.to be_allowed(:read_container_image) }
         it { is_expected.to be_disallowed(:create_container_image) }
@@ -1452,7 +1448,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       end
 
       context 'a deploy token with write_registry scope' do
-        let(:deploy_token) { create(:deploy_token, read_registry: false, write_registry: true) }
+        let(:deploy_token) { create(:deploy_token, read_registry: false, write_registry: true, projects: [project]) }
 
         it { is_expected.to be_disallowed(:read_container_image) }
         it { is_expected.to be_allowed(:create_container_image) }
@@ -1466,14 +1462,14 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       end
 
       context 'a deploy token with no registry scope' do
-        let(:deploy_token) { create(:deploy_token, read_registry: false, write_registry: false) }
+        let(:deploy_token) { create(:deploy_token, read_registry: false, write_registry: false, projects: [project]) }
 
         it { is_expected.to be_disallowed(:read_container_image) }
         it { is_expected.to be_disallowed(:create_container_image) }
       end
 
       context 'a deploy token with read_package_registry scope' do
-        let(:deploy_token) { create(:deploy_token, read_repository: false, read_registry: false, read_package_registry: true) }
+        let(:deploy_token) { create(:deploy_token, read_repository: false, read_registry: false, read_package_registry: true, projects: [project]) }
 
         it { is_expected.to be_allowed(:read_project) }
         it { is_expected.to be_allowed(:read_package) }
@@ -1483,7 +1479,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       end
 
       context 'a deploy token with write_package_registry scope' do
-        let(:deploy_token) { create(:deploy_token, read_repository: false, read_registry: false, write_package_registry: true) }
+        let(:deploy_token) { create(:deploy_token, read_repository: false, read_registry: false, write_package_registry: true, projects: [project]) }
 
         it { is_expected.to be_allowed(:create_package) }
         it { is_expected.to be_allowed(:read_package) }
@@ -1498,7 +1494,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       let(:project) { public_project }
 
       context 'a deploy token with read_registry scope' do
-        let(:deploy_token) { create(:deploy_token, read_registry: true, write_registry: false) }
+        let(:deploy_token) { create(:deploy_token, read_registry: true, write_registry: false, projects: [project]) }
 
         it { is_expected.to be_allowed(:read_container_image) }
         it { is_expected.to be_disallowed(:create_container_image) }
@@ -1519,7 +1515,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       end
 
       context 'a deploy token with write_registry scope' do
-        let(:deploy_token) { create(:deploy_token, read_registry: false, write_registry: true) }
+        let(:deploy_token) { create(:deploy_token, read_registry: false, write_registry: true, projects: [project]) }
 
         it { is_expected.to be_allowed(:read_container_image) }
         it { is_expected.to be_allowed(:create_container_image) }

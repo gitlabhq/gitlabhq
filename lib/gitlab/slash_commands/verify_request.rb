@@ -31,7 +31,7 @@ module Gitlab
       def update_source_message
         request_body = Gitlab::Json.dump(verified_request_body)
 
-        Gitlab::HTTP.post(response_url, body: request_body, headers: headers)
+        Integrations::Clients::HTTP.post(response_url, body: request_body, headers: headers)
       end
 
       def verified_request_body

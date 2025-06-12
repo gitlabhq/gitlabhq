@@ -90,5 +90,28 @@ RSpec.describe 'Group Level Work Items', feature_category: :team_planning do
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
+
+    context 'when the new page gets requested' do
+      let(:iid) { 'new' }
+
+      context "with signed in user" do
+        it 'renders show' do
+          get work_items_path
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template(:show)
+        end
+      end
+
+      context "with signed out user" do
+        let(:current_user) { create(:user) }
+
+        it 'returns not found' do
+          get work_items_path
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
   end
 end

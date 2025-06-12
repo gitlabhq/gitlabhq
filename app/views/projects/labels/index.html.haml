@@ -5,6 +5,8 @@
 - labels_or_filters = @labels.exists? || @prioritized_labels.exists? || search.present? || subscribed.present?
 - add_page_specific_style 'page_bundles/labels'
 
+%h1.gl-sr-only= page_title
+
 - if labels_or_filters
   #js-promote-label-modal
   = render 'shared/labels/nav', labels_or_filters: labels_or_filters, can_admin_label: can_admin_label
@@ -23,8 +25,8 @@
       body_options: { class: '!gl-m-0' },
       description: _('Drag to reorder prioritized labels and change their relative priority.')) do |c|
       - c.with_body do
-        .js-prioritized-labels.gl-rounded-base.manage-labels-list{ data: { url: set_priorities_project_labels_path(@project), sortable: can_admin_label } }
-          #js-priority-labels-empty-state.priority-labels-empty-state{ class: "#{'hidden' unless @prioritized_labels.empty? && search.blank?}" }
+        %ul.js-prioritized-labels.gl-rounded-base.manage-labels-list{ data: { url: set_priorities_project_labels_path(@project), sortable: can_admin_label } }
+          %li#js-priority-labels-empty-state.priority-labels-empty-state{ class: "#{'hidden' unless @prioritized_labels.empty? && search.blank?}" }
             = render 'shared/empty_states/priority_labels'
           - if @prioritized_labels.any?
             = render partial: 'shared/label', collection: @prioritized_labels, as: :label, locals: { force_priority: true, subject: @project }
@@ -35,7 +37,7 @@
     - if @labels.any?
       = render ::Layouts::CrudComponent.new(hide ? _('Labels') : _('Other labels'), options: { class: 'other-labels' }, count: number_with_delimiter(@labels.total_count), icon: 'label', body_options: { class: '!gl-m-0' }) do |c|
         - c.with_body do
-          .js-other-labels.manage-labels-list
+          %ul.js-other-labels.manage-labels-list
             = render partial: 'shared/label', collection: @labels, as: :label, locals: { subject: @project }
         - c.with_pagination do
           = paginate @labels, theme: 'gitlab'

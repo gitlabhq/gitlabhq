@@ -3352,8 +3352,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     context 'for deploy tokens' do
-      let(:deploy_token) { create(:deploy_token, :gitlab_deploy_token) }
-
       let(:deploy_token_variables) do
         [
           { key: 'CI_DEPLOY_USER', value: deploy_token.username, public: true, masked: false },
@@ -3362,9 +3360,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       end
 
       context 'when gitlab-deploy-token exists for project' do
-        before do
-          project.deploy_tokens << deploy_token
-        end
+        let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, projects: [project]) }
 
         it 'includes deploy token variables' do
           is_expected.to include(*deploy_token_variables)
@@ -3378,9 +3374,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         context 'when gitlab-deploy-token exists for group' do
-          before do
-            group.deploy_tokens << deploy_token
-          end
+          let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, :group, groups: [group]) }
 
           it 'includes deploy token variables' do
             is_expected.to include(*deploy_token_variables)

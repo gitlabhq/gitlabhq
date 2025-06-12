@@ -51,12 +51,12 @@ module Projects
       end
 
       def download_links_for(oids)
-        response = Gitlab::HTTP.post(remote_uri, body: request_body(oids), headers: headers)
+        response = ::Import::Clients::HTTP.post(remote_uri, body: request_body(oids), headers: headers)
 
         raise DownloadLinksRequestEntityTooLargeError if response.request_entity_too_large?
         raise DownloadLinksError, response.message unless response.success?
 
-        # Since the LFS Batch API may return a Content-Ttpe of
+        # Since the LFS Batch API may return a Content-Type of
         # application/vnd.git-lfs+json
         # (https://github.com/git-lfs/git-lfs/blob/master/docs/api/batch.md#requests),
         # HTTParty does not know this is actually JSON.

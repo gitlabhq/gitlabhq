@@ -15,7 +15,9 @@ module API
 
     urgency :low, [
       '/projects/:id/merge_requests/:noteable_id/notes',
-      '/projects/:id/merge_requests/:noteable_id/notes/:note_id'
+      '/projects/:id/merge_requests/:noteable_id/notes/:note_id',
+      '/projects/:id/issues/:noteable_id/notes',
+      '/projects/:id/issues/:noteable_id/notes/:note_id'
     ]
 
     Helpers::NotesHelpers.noteable_types.each do |noteable_type|

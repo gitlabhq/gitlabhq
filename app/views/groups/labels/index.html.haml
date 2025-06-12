@@ -5,6 +5,8 @@
 - labels_or_filters = @labels.exists? || search.present? || subscribed.present?
 - add_page_specific_style 'page_bundles/labels'
 
+%h1.gl-sr-only= page_title
+
 - if labels_or_filters
   #js-promote-label-modal
   = render 'shared/labels/nav', labels_or_filters: labels_or_filters, can_admin_label: can_admin_label

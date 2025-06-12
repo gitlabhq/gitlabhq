@@ -55,18 +55,14 @@ RSpec.describe Packages::Policies::DependencyProxy::GroupPolicy, feature_categor
       end
 
       context 'with a deploy token user' do
-        before do
-          create(:group_deploy_token, group: group, deploy_token: auth_token)
-        end
-
         context 'with insufficient scopes' do
-          let_it_be(:auth_token) { create(:deploy_token, :group, user: current_user) }
+          let_it_be(:auth_token) { create(:deploy_token, :group, user: current_user, groups: [group]) }
 
           it_behaves_like 'disallows dependency proxy read access'
         end
 
         context 'with sufficient scopes' do
-          let_it_be(:auth_token) { create(:deploy_token, :group, :dependency_proxy_scopes) }
+          let_it_be(:auth_token) { create(:deploy_token, :group, :dependency_proxy_scopes, groups: [group]) }
 
           it_behaves_like 'allows dependency proxy read access'
         end

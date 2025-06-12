@@ -1,4 +1,5 @@
 <script>
+import { GlSprintf } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import { createAlert } from '~/alert';
 import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
@@ -11,19 +12,22 @@ import {
 } from '~/organizations/shared/constants';
 import FormErrorsAlert from '~/organizations/shared/components/errors_alert.vue';
 import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
+import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ORGANIZATION } from '~/graphql_shared/constants';
 import organizationUpdateMutation from '../graphql/mutations/organization_update.mutation.graphql';
 
 export default {
   name: 'OrganizationSettings',
-  components: { NewEditForm, SettingsBlock, FormErrorsAlert },
+  components: { NewEditForm, SettingsBlock, FormErrorsAlert, HelpPageLink, GlSprintf },
   inject: ['organization'],
   i18n: {
     submitButtonText: __('Save changes'),
     settingsBlock: {
       title: s__('Organization|Organization settings'),
-      description: s__('Organization|Update your organization name, description, and avatar.'),
+      description: s__(
+        'Organization|Update your organization name, description, and avatar. %{linkStart}Learn more about organizations%{linkEnd}.',
+      ),
     },
     errorMessage: s__(
       'Organization|An error occurred updating your organization. Please try again.',
@@ -116,7 +120,15 @@ export default {
     :title="$options.i18n.settingsBlock.title"
     @toggle-expand="$emit('toggle-expand', $event)"
   >
-    <template #description>{{ $options.i18n.settingsBlock.description }}</template>
+    <template #description>
+      <gl-sprintf :message="$options.i18n.settingsBlock.description">
+        <template #link="{ content }">
+          <help-page-link href="user/organization/_index.md" target="_blank">{{
+            content
+          }}</help-page-link>
+        </template>
+      </gl-sprintf>
+    </template>
     <template #default>
       <form-errors-alert v-model="errors" :scroll-on-error="true" />
       <new-edit-form

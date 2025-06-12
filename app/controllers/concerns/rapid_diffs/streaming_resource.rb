@@ -74,34 +74,36 @@ module RapidDiffs
 
       return render_empty_state if diff_files.empty?
 
-      each_growing_slice(diff_files, 5, 2) do |slice|
-        response.stream.write(render_diff_files_collection(slice, view_context))
+      skipped = []
+      diff_files.each do |diff_file|
+        if diff_file.no_preview?
+          skipped << diff_file
+        else
+          unless skipped.empty?
+            response.stream.write(diff_files_collection(skipped).render_in(view_context))
+            skipped = []
+          end
+
+          response.stream.write(diff_file_component(diff_file).render_in(view_context))
+        end
       end
+
+      response.stream.write(diff_files_collection(skipped).render_in(view_context)) unless skipped.empty?
     end
 
-    def each_growing_slice(collection, initial_size, growth_factor = 2)
-      position = 0
-      size = initial_size
-      total = collection.size
-
-      while position < total
-        yield collection.drop(position).first(size)
-
-        position = [position + size, total].min
-        size = (size * growth_factor).to_i
-      end
+    def diff_file_component(diff_file)
+      ::RapidDiffs::DiffFileComponent.new(diff_file: diff_file, parallel_view: view == :parallel)
     end
 
-    def render_diff_files_collection(diff_files, view_context)
+    def diff_files_collection(diff_files)
       ::RapidDiffs::DiffFileComponent.with_collection(diff_files, parallel_view: view == :parallel)
-        .render_in(view_context)
     end
 
     def stream_diff_blobs(options, view_context)
       return render_empty_state if resource.diffs_for_streaming(options).count == 0
 
       resource.diffs_for_streaming(options) do |diff_files_batch|
-        response.stream.write(render_diff_files_collection(diff_files_batch, view_context))
+        response.stream.write(diff_files_collection(diff_files_batch).render_in(view_context))
       end
     end
 

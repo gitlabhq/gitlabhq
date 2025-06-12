@@ -66,16 +66,6 @@ describe('ChangeUrl', () => {
     expect(findOrganizationUrlField().exists()).toBe(true);
   });
 
-  it('disables submit button until `Organization URL` field is changed', async () => {
-    createComponent();
-
-    expect(findSubmitButton().props('disabled')).toBe(true);
-
-    await findOrganizationUrlField().setValue('foo-bar-baz');
-
-    expect(findSubmitButton().props('disabled')).toBe(false);
-  });
-
   describe('when form is submitted', () => {
     it('requires `Organization URL` field', async () => {
       createComponent();

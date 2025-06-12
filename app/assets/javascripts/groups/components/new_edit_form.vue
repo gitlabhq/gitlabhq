@@ -96,7 +96,7 @@ export default {
           ],
           inputAttrs: {
             width: { md: 'lg' },
-            placeholder: __('My awesome group'),
+            placeholder: __('My group'),
           },
           groupAttrs: {
             description: s__(

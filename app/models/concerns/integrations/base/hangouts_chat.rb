@@ -69,7 +69,7 @@ module Integrations
           key = parse_thread_key(message)
           payload = { text: parse_simple_text_message(message), thread: { threadKey: key }.compact }.compact_blank!
 
-          Gitlab::HTTP.post(
+          Clients::HTTP.post(
             url,
             body: payload.to_json,
             headers: { 'Content-Type' => 'application/json' },

@@ -141,7 +141,7 @@ export default {
         :state="form.fields['project[name]'].state"
         name="project[name]"
         required
-        :placeholder="s__('ProjectsNew|My awesome project')"
+        :placeholder="s__('ProjectsNew|My project')"
         data-testid="project-name-input"
         @input="updateSlug"
       />

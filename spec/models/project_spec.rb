@@ -5536,12 +5536,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       subject { described_class.all.public_or_visible_to_user(user) }
 
-      context 'deploy token user without project' do
-        let_it_be(:user) { create(:deploy_token) }
-
-        it { is_expected.to eq [] }
-      end
-
       context 'deploy token user with projects' do
         let_it_be(:user) { create(:deploy_token, projects: [private_project, private_project2, private_project3]) }
 

@@ -95,6 +95,10 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
   shared_examples 'deploy token does not get confused with user' do
     before do
+      # We force the id of the deploy token and the user to be the same,
+      # which requires deleting the joining record as we cannot update
+      # the id while foreign keys reference it.
+      deploy_token.project_deploy_tokens.delete_all(:delete_all)
       deploy_token.update!(id: user_id)
     end
 
@@ -1469,14 +1473,10 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
   context 'package registry' do
     context 'deploy token user' do
-      let!(:group_deploy_token) do
-        create(:group_deploy_token, group: group, deploy_token: deploy_token)
-      end
-
       subject { described_class.new(deploy_token, group) }
 
       context 'with read_package_registry scope' do
-        let(:deploy_token) { create(:deploy_token, :group, read_package_registry: true) }
+        let(:deploy_token) { create(:deploy_token, :group, read_package_registry: true, groups: [group]) }
 
         it { is_expected.to be_allowed(:read_package) }
         it { is_expected.to be_allowed(:read_group) }
@@ -1484,7 +1484,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       end
 
       context 'with write_package_registry scope' do
-        let(:deploy_token) { create(:deploy_token, :group, write_package_registry: true) }
+        let(:deploy_token) { create(:deploy_token, :group, write_package_registry: true, groups: [group]) }
 
         it { is_expected.to be_allowed(:create_package) }
         it { is_expected.to be_allowed(:read_package) }

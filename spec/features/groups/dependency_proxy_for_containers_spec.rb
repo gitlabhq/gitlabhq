@@ -110,19 +110,15 @@ RSpec.describe 'Group Dependency Proxy for containers', :js, feature_category: :
       end
 
       context 'with a group deploy token' do
-        before do
-          create(:group_deploy_token, group: group, deploy_token: deploy_token)
-        end
-
         context 'with sufficient scopes' do
-          let_it_be(:deploy_token) { create(:deploy_token, :group, :dependency_proxy_scopes) }
+          let_it_be(:deploy_token) { create(:deploy_token, :group, :dependency_proxy_scopes, groups: [group]) }
           let_it_be(:headers) { { 'Authorization' => "Bearer #{build_jwt(deploy_token).encoded}" } }
 
           it_behaves_like 'responds with the file'
         end
 
         context 'with insufficient scopes' do
-          let_it_be(:deploy_token) { create(:deploy_token, :group) }
+          let_it_be(:deploy_token) { create(:deploy_token, :group, groups: [group]) }
           let_it_be(:headers) { { 'Authorization' => "Bearer #{build_jwt(deploy_token).encoded}" } }
 
           it_behaves_like 'returns not found'
