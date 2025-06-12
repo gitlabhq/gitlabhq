@@ -364,7 +364,7 @@ describe('Markdown field header component', () => {
       const field = document.createElement('div');
       const root = document.createElement('div');
       const textarea = document.createElement('textarea');
-      textarea.value = 'lorem ipsum dolor sit amet <img src="prompt">';
+      textarea.value = 'lorem ipsum dolor sit amet lorem <img src="prompt">';
       field.classList = 'js-vue-markdown-field';
       form.classList = 'md-area';
       form.appendChild(textarea);
@@ -378,6 +378,8 @@ describe('Markdown field header component', () => {
     const findFindInput = () => wrapper.findByTestId('find-btn');
     const findCloneDiv = () => formWrapper.findByTestId('find-and-replace-clone');
     const findFindAndReplaceBar = () => wrapper.findByTestId('find-and-replace');
+    const findNextButton = () => wrapper.findByTestId('find-next');
+    const findPrevButton = () => wrapper.findByTestId('find-prev');
 
     const showFindAndReplace = async () => {
       $(document).triggerHandler('markdown-editor:find-and-replace:show', [$('form')]);
@@ -464,7 +466,7 @@ describe('Markdown field header component', () => {
       await nextTick();
 
       expect(findCloneDiv().element.innerHTML).toBe(
-        'lorem ipsum dolor sit amet &lt;img src="<span class="js-highlight" style="background-color: orange; display: inline-block;">prompt</span>"&gt;',
+        'lorem ipsum dolor sit amet lorem &lt;img src="<span class="js-highlight js-highlight-active" style="background-color: rgb(230, 228, 242); display: inline-block;">prompt</span>"&gt;',
       );
     });
 
@@ -481,7 +483,57 @@ describe('Markdown field header component', () => {
       await findFindInput().vm.$emit('keyup', { target: { value: 'lorem' } });
       await nextTick();
 
-      expect(findFindAndReplaceBar().text()).toBe('1 of 1');
+      expect(findFindAndReplaceBar().text()).toBe('1 of 2');
+    });
+
+    it('highlights first item when there is a match', async () => {
+      await showFindAndReplace();
+
+      // Text that matches
+      await findFindInput().vm.$emit('keyup', { target: { value: 'lorem' } });
+      await nextTick();
+
+      expect(findCloneDiv().element.querySelectorAll('.js-highlight-active').length).toBe(1);
+    });
+
+    it('allows navigating between matches through next and prev buttons', async () => {
+      await showFindAndReplace();
+
+      // Text that matches
+      await findFindInput().vm.$emit('keyup', { target: { value: 'lorem' } });
+      await nextTick();
+
+      const matches = findCloneDiv().element.querySelectorAll('.js-highlight');
+
+      expect(matches.length).toBe(2);
+      expect(Array.from(matches[0].classList)).toEqual(['js-highlight', 'js-highlight-active']);
+      expect(Array.from(matches[1].classList)).toEqual(['js-highlight']);
+
+      findNextButton().vm.$emit('click');
+      await nextTick();
+
+      expect(Array.from(matches[0].classList)).toEqual(['js-highlight']);
+      expect(Array.from(matches[1].classList)).toEqual(['js-highlight', 'js-highlight-active']);
+
+      findPrevButton().vm.$emit('click');
+      await nextTick();
+
+      expect(Array.from(matches[0].classList)).toEqual(['js-highlight', 'js-highlight-active']);
+      expect(Array.from(matches[1].classList)).toEqual(['js-highlight']);
+
+      // Click again to navigate to last item
+      findPrevButton().vm.$emit('click');
+      await nextTick();
+
+      expect(Array.from(matches[0].classList)).toEqual(['js-highlight']);
+      expect(Array.from(matches[1].classList)).toEqual(['js-highlight', 'js-highlight-active']);
+
+      // Now that we're at last match, clicking next will bring us back to index 0
+      findNextButton().vm.$emit('click');
+      await nextTick();
+
+      expect(Array.from(matches[0].classList)).toEqual(['js-highlight', 'js-highlight-active']);
+      expect(Array.from(matches[1].classList)).toEqual(['js-highlight']);
     });
   });
 });

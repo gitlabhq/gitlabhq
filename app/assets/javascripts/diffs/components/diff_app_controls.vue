@@ -60,6 +60,11 @@ export default {
       required: false,
       default: true,
     },
+    hideOnNarrowScreen: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   computed: {
     expandButtonInfo() {
@@ -101,14 +106,15 @@ export default {
 </script>
 
 <template>
-  <div class="gl-hidden gl-items-center md:gl-flex">
+  <div class="gl-items-center" :class="hideOnNarrowScreen ? 'gl-hidden md:gl-flex' : 'gl-flex'">
     <template v-if="hasChanges">
       <diff-stats
         v-if="diffsCount !== ''"
-        class="inline-parallel-buttons ml-auto gl-hidden md:gl-flex"
+        class="inline-parallel-buttons ml-auto"
         :diffs-count="diffsCount"
         :added-lines="addedLines"
         :removed-lines="removedLines"
+        :hide-on-narrow-screen="hideOnNarrowScreen"
       />
       <gl-button-group class="gl-mr-3">
         <gl-button

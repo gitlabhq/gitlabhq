@@ -600,6 +600,32 @@ export const mockLabelList = {
   __typename: 'BoardList',
 };
 
+export const mockStatusList = {
+  id: 'gid://gitlab/List/5',
+  title: 'In Progress',
+  position: 0,
+  listType: 'status',
+  collapsed: false,
+  label: null,
+  assignee: null,
+  milestone: null,
+  iteration: null,
+  loading: false,
+  issuesCount: 0,
+  maxIssueCount: 0,
+  maxIssueWeight: 0,
+  status: {
+    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/2',
+    name: 'In progress',
+    iconName: 'status-running',
+    color: '#1f75cb',
+    position: 0,
+    __typename: 'WorkItemStatus',
+  },
+  limitMetric: 'issue_count',
+  __typename: 'BoardList',
+};
+
 export const mockMilestoneList = {
   id: 'gid://gitlab/List/3',
   title: 'To Do',
@@ -613,6 +639,7 @@ export const mockMilestoneList = {
     title: 'Backlog',
   },
   loading: false,
+  status: null,
   issuesCount: 0,
 };
 

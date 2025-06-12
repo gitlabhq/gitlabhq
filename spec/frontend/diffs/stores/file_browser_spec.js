@@ -34,4 +34,20 @@ describe('FileBrowser store', () => {
       expect(useFileBrowser().fileBrowserVisible).toBe(false);
     });
   });
+
+  describe('browser drawer visibility', () => {
+    it('is hidden by default', () => {
+      expect(useFileBrowser().fileBrowserDrawerVisible).toBe(false);
+    });
+
+    it('#setFileBrowserDrawerVisibility', () => {
+      useFileBrowser().setFileBrowserDrawerVisibility(true);
+      expect(useFileBrowser().fileBrowserDrawerVisible).toBe(true);
+    });
+
+    it('#toggleFileBrowserDrawerVisibility', () => {
+      useFileBrowser().toggleFileBrowserDrawerVisibility();
+      expect(useFileBrowser().fileBrowserDrawerVisible).toBe(true);
+    });
+  });
 });

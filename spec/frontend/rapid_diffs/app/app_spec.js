@@ -13,6 +13,7 @@ import { fixWebComponentsStreamingOnSafari } from '~/rapid_diffs/app/safari_fix'
 import { DIFF_FILE_MOUNTED } from '~/rapid_diffs/dom_events';
 import { useMockIntersectionObserver } from 'helpers/mock_dom_observer';
 import { disableBrokenContentVisibility } from '~/rapid_diffs/app/content_visibility_fix';
+import { useApp } from '~/rapid_diffs/stores/app';
 
 jest.mock('~/lib/graphql');
 jest.mock('~/awards_handler');
@@ -147,6 +148,19 @@ describe('Rapid Diffs App', () => {
     createApp({ shouldSortMetadataFiles: false });
     app.init();
     expect(app.appData.shouldSortMetadataFiles).toBe(false);
+  });
+
+  it('hides the app', () => {
+    createApp();
+    app.hide();
+    expect(useApp().appVisible).toBe(false);
+  });
+
+  it('shows the app', () => {
+    createApp();
+    app.hide();
+    app.show();
+    expect(useApp().appVisible).toBe(true);
   });
 
   it('delegates clicks', () => {

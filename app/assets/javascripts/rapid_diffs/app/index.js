@@ -14,6 +14,7 @@ import { DIFF_FILE_MOUNTED } from '~/rapid_diffs/dom_events';
 import { VIEWER_ADAPTERS } from '~/rapid_diffs/adapters';
 import { camelizeKeys } from '~/lib/utils/object_utils';
 import { disableBrokenContentVisibility } from '~/rapid_diffs/app/content_visibility_fix';
+import { useApp } from '~/rapid_diffs/stores/app';
 
 // This facade interface joins together all the bits and pieces of Rapid Diffs: DiffFile, Settings, File browser, etc.
 // It's a unified entrypoint for Rapid Diffs and all external communications should happen through this interface.
@@ -49,6 +50,16 @@ export class RapidDiffsFacade {
 
   unobserve(instance) {
     this.intersectionObserver.unobserve(instance);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  show() {
+    useApp().appVisible = true;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  hide() {
+    useApp().appVisible = false;
   }
 
   #delegateEvents() {

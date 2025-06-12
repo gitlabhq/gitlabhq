@@ -126,6 +126,7 @@ describe('Blob Embeddable', () => {
       });
       await waitForPromises();
       expect(findRichViewer().exists()).toBe(true);
+      expect(findRichViewer().props('isSnippet')).toBe(true);
     });
 
     it('correctly switches viewer type', async () => {

@@ -105,6 +105,7 @@ export default {
       :content="blobContent"
       :active-viewer="viewer"
       :blob="blob"
+      :is-snippet="true"
       @[$options.BLOB_RENDER_EVENT_LOAD]="forceQuery"
       @[$options.BLOB_RENDER_EVENT_SHOW_SOURCE]="switchViewer"
     />

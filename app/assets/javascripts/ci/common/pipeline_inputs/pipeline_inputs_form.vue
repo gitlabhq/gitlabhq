@@ -242,6 +242,10 @@ export default {
         this.emitEvents();
       }
     },
+    selectAll() {
+      const allInputs = this.searchFilteredInputs.map((input) => input.value);
+      this.selectInputs(allInputs);
+    },
     deselectAll() {
       this.inputs = this.inputs.map((input) => ({
         ...input,
@@ -277,6 +281,7 @@ export default {
         :toggle-text="s__('Pipelines|Select inputs')"
         :header-text="s__('Pipelines|Inputs')"
         :search-placeholder="s__('Pipelines|Search input name')"
+        :show-select-all-button-label="__('Select all')"
         :reset-button-label="__('Clear')"
         :disabled="!hasInputs"
         searchable
@@ -286,6 +291,7 @@ export default {
         size="small"
         @reset="deselectAll"
         @select="selectInputs"
+        @select-all="selectAll"
         @search="handleSearch"
       />
     </template>

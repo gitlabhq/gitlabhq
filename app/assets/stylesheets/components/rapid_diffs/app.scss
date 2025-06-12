@@ -84,8 +84,15 @@
     // override .diff-tree-list, remove when fully switched to Rapid Diffs
     width: auto !important;
     position: static !important;
-    padding: 0 0 $gl-spacing-scale-4 !important;
-    min-height: auto !important;
+    padding: $gl-spacing-scale-4 !important;
+    min-height: 0 !important;
+    box-sizing: border-box;
+  }
+}
+
+.rd-app .rd-app-sidebar {
+  @include media-breakpoint-down(constants.$app-vertical-breakpoint) {
+    display: none;
   }
 }
 

@@ -48,6 +48,7 @@ describe('DiffAppControls', () => {
         diffsCount: DEFAULT_PROPS.diffsCount,
         addedLines: DEFAULT_PROPS.addedLines,
         removedLines: DEFAULT_PROPS.removedLines,
+        hideOnNarrowScreen: true,
       });
     });
 

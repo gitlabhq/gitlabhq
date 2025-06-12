@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "vulnerability_export#report_data",
+  "description": "Schema for providing additional report data for vulnerability report exports",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "project_vulnerabilities_history": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "This object should include an SVG asset to be rendered in PDF reports"
+    },
+    "group_vulnerabilities_history": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "This object should include an SVG asset to be rendered in PDF reports"
+    },
+    "project_security_status": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "description": "Data for rendering the project grades summary in PDF reports"
+    },
+    "dashboard_type": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "product",
+        "group",
+        "dashboard",
+        null
+      ],
+      "description": "The type of vulnerability grouping this report is being created for"
+    },
+    "full_path": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "The full path of the vulnerable"
+    }
+  }
+}

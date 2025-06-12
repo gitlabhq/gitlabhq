@@ -125,6 +125,7 @@ describe('Board List Header Component', () => {
       ListType.milestone,
       ListType.iteration,
       ListType.assignee,
+      ListType.status,
     ];
 
     it.each(hasNoAddButton)('does not render dropdown when List Type is `%s`', (listType) => {

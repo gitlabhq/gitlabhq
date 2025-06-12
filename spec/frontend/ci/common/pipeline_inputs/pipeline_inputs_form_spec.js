@@ -267,6 +267,33 @@ describe('PipelineInputsForm', () => {
           expect(findInputsTable().exists()).toBe(false);
           expect(findEmptySelectionState().exists()).toBe(true);
         });
+
+        it('selects all inputs on select all button click', async () => {
+          findInputsSelector().vm.$emit('select-all');
+          await nextTick();
+
+          const updatedSelection = [
+            { ...expectedInputs[0], isSelected: true },
+            { ...expectedInputs[1], isSelected: true },
+            { ...expectedInputs[2], isSelected: true },
+          ];
+          expect(findInputsTable().props('inputs')).toEqual(updatedSelection);
+        });
+
+        it('selects only filtered inputs when search is active', async () => {
+          findInputsSelector().vm.$emit('search', 'api');
+          await nextTick();
+
+          findInputsSelector().vm.$emit('select-all');
+          await nextTick();
+
+          const updatedSelection = findInputsTable().props('inputs');
+          const apiTokenInput = updatedSelection.find((i) => i.name === 'api_token');
+          const otherInputs = updatedSelection.filter((i) => i.name !== 'api_token');
+
+          expect(apiTokenInput.isSelected).toBe(true);
+          expect(otherInputs.every((i) => !i.isSelected)).toBe(true);
+        });
       });
     });
 

@@ -219,29 +219,46 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
     end
   end
 
-  it 'ensures all organization_id columns are not nullable, have no default, and have a foreign key',
-    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/527615' do
+  it 'ensures all organization_id columns are not nullable, have no default, and have a foreign key' do
     loose_foreign_keys = Gitlab::Database::LooseForeignKeys.definitions.group_by(&:from_table)
 
-    sql = <<~SQL
-      SELECT c.table_name,
-        CASE WHEN c.column_default IS NOT NULL THEN 'has default' ELSE NULL END,
-        CASE WHEN c.is_nullable::boolean THEN 'nullable / not null constraint missing' ELSE NULL END,
-        CASE WHEN fk.name IS NULL THEN 'no foreign key' ELSE
-          CASE WHEN fk.is_valid THEN NULL ELSE 'foreign key exist but it is not validated' END
-        END
-      FROM information_schema.columns c
-      LEFT JOIN postgres_foreign_keys fk
-      ON fk.constrained_table_name = c.table_name AND fk.constrained_columns = '{organization_id}' and fk.referenced_columns = '{id}'
-      WHERE c.column_name = 'organization_id'
-        AND (fk.referenced_table_name = 'organizations' OR fk.referenced_table_name IS NULL)
-        AND (c.column_default IS NOT NULL OR c.is_nullable::boolean OR fk.name IS NULL OR NOT fk.is_valid)
-        AND (c.table_schema = 'public')
-      ORDER BY c.table_name;
+    # Step 1: Get all tables with organization_id columns
+    tables_sql = <<~SQL
+      SELECT table_name
+      FROM information_schema.columns
+      WHERE column_name = 'organization_id'
+        AND table_schema = 'public'
+      ORDER BY table_name;
     SQL
 
-    # To add a table to this list, create an issue under https://gitlab.com/groups/gitlab-org/-/epics/11670.
-    # Use https://gitlab.com/gitlab-org/gitlab/-/issues/476206 as an example.
+    table_names = ApplicationRecord.connection.select_values(tables_sql)
+
+    # Step 2: Check each table individually to avoid complex joins
+    organization_id_columns = []
+
+    # Process in batches of 50 to avoid statement timeout issues with large queries
+    table_names.each_slice(50) do |table_batch|
+      batch_conditions = table_batch.map do |table|
+        table_name = ApplicationRecord.connection.quote(table)
+        "c.table_name = #{table_name}"
+      end.join(' OR ')
+
+      batch_sql = <<~SQL
+        SELECT c.table_name,
+          CASE WHEN c.column_default IS NOT NULL THEN 'has default' ELSE NULL END,
+          CASE WHEN c.is_nullable::boolean THEN 'nullable / not null constraint missing' ELSE NULL END
+        FROM information_schema.columns c
+        WHERE c.column_name = 'organization_id'
+          AND c.table_schema = 'public'
+          AND (#{batch_conditions})
+        ORDER BY c.table_name;
+      SQL
+
+      batch_results = ApplicationRecord.connection.select_rows(batch_sql)
+      organization_id_columns.concat(batch_results)
+    end
+
+    # Step 3: Check foreign keys using Rails schema introspection
     work_in_progress = {
       "snippet_user_mentions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/517825",
       "bulk_import_failures" => "https://gitlab.com/gitlab-org/gitlab/-/issues/517824",
@@ -297,22 +314,38 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "ci_runners" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
       "group_type_ci_runners" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
       "instance_type_ci_runner_machines" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
-      "project_type_ci_runners" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293"
+      "project_type_ci_runners" => "https://gitlab.com/gitlab-org/gitlab/-/issues/525293",
+      "ci_runner_taggings_group_type" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549027",
+      "ci_runner_taggings_project_type" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549028",
+      "customer_relations_contacts" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549029",
+      "issue_tracker_data" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549030",
+      "jira_tracker_data" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549032",
+      "zentao_tracker_data" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549043"
     }
-
     has_lfk = ->(lfks) { lfks.any? { |k| k.options[:column] == 'organization_id' && k.to_table == 'organizations' } }
 
-    organization_id_columns = ApplicationRecord.connection.select_rows(sql)
-    checks = organization_id_columns.reject { |column| work_in_progress[column[0]] }
-    messages = checks.filter_map do |check|
-      table_name, *violations = check
+    columns_to_check = organization_id_columns.reject { |column| work_in_progress[column[0]] }
+    messages = columns_to_check.filter_map do |column|
+      table_name = column[0]
+      violations = column[1..].compact
+
+      # Check foreign keys using Rails
+      begin
+        foreign_keys = ApplicationRecord.connection.foreign_keys(table_name)
+        org_fk = foreign_keys.find { |fk| fk.column == 'organization_id' && fk.to_table == 'organizations' }
+
+        violations << 'no foreign key' unless org_fk || has_lfk.call(loose_foreign_keys.fetch(table_name, {}))
+      rescue ActiveRecord::StatementInvalid
+        # Table might not exist or be accessible
+        violations << 'no foreign key'
+      end
 
       violations.delete_if do |v|
         (v == 'nullable / not null constraint missing' && has_null_check_constraint?(table_name, 'organization_id')) ||
           (v == 'no foreign key' && has_lfk.call(loose_foreign_keys.fetch(table_name, {})))
       end
 
-      "  #{table_name} - #{violations.compact.join(', ')}" if violations.any?
+      "  #{table_name} - #{violations.join(', ')}" if violations.any?
     end
 
     expect(messages).to be_empty, "Expected all organization_id columns to be not nullable, have no default, " \

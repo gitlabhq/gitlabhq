@@ -70,6 +70,11 @@ export default {
       required: false,
       default: false,
     },
+    isSnippet: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return { richContentLoaded: false };
@@ -123,6 +128,7 @@ export default {
         :project-path="projectPath"
         :blob-path="blob.path || ''"
         :rich-viewer="richViewer"
+        :is-snippet="isSnippet"
         :is-raw-content="isRawContent"
         :show-blame="showBlame"
         :file-name="blob.name"

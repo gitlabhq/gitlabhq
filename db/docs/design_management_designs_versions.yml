@@ -8,14 +8,6 @@ description: The SHA referencing changes to a single design or multiple design f
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/10552
 milestone: '11.10'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  namespace_id:
-    references: namespaces
-    backfill_via:
-      parent:
-        foreign_key: design_id
-        table: design_management_designs
-        sharding_key: namespace_id
-        belongs_to: design
+sharding_key:
+  namespace_id: namespaces
 table_size: small
-desired_sharding_key_migration_job_name: BackfillDesignManagementDesignsVersionsNamespaceId

@@ -28316,6 +28316,9 @@ msgstr ""
 msgid "GitLab Premium"
 msgstr ""
 
+msgid "GitLab Query Language (GLQL) view"
+msgstr ""
+
 msgid "GitLab Security"
 msgstr ""
 
@@ -33941,6 +33944,9 @@ msgstr ""
 msgid "Issues are being rebalanced at the moment, so manual reordering is disabled."
 msgstr ""
 
+msgid "Issues assigned to current user"
+msgstr ""
+
 msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable."
 msgstr ""
 
@@ -37210,6 +37216,12 @@ msgid "MarkdownEditor|Click to expand"
 msgstr ""
 
 msgid "MarkdownEditor|Find and replace"
+msgstr ""
+
+msgid "MarkdownEditor|Find next"
+msgstr ""
+
+msgid "MarkdownEditor|Find previous"
 msgstr ""
 
 msgid "MarkdownEditor|Indent line (%{modifierKey}])"
@@ -50506,6 +50518,9 @@ msgid "RapidDiffs|Failed to expand lines, please try again."
 msgstr ""
 
 msgid "RapidDiffs|Failed to load changes, please try again."
+msgstr ""
+
+msgid "RapidDiffs|File browser"
 msgstr ""
 
 msgid "RapidDiffs|File moved from %{old} to %{new}"

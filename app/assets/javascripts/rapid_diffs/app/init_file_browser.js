@@ -7,7 +7,11 @@ import { generateTreeList } from '~/diffs/utils/tree_worker_utils';
 import { SET_TREE_DATA } from '~/diffs/store/mutation_types';
 import { linkTreeNodes, sortTree } from '~/ide/stores/utils';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useViewport } from '~/pinia/global_stores/viewport';
+import { useApp } from '~/rapid_diffs/stores/app';
 import FileBrowser from './file_browser.vue';
+import FileBrowserDrawer from './file_browser_drawer.vue';
+import FileBrowserDrawerToggle from './file_browser_drawer_toggle.vue';
 
 const loadFileBrowserData = async (diffFilesEndpoint, shouldSort) => {
   const { data } = await axios.get(diffFilesEndpoint);
@@ -21,9 +25,31 @@ const loadFileBrowserData = async (diffFilesEndpoint, shouldSort) => {
 const initToggle = (el) => {
   // eslint-disable-next-line no-new
   new Vue({
+    el: document.querySelector('#js-page-breadcrumbs-extra'),
+    pinia,
+    computed: {
+      visible() {
+        return useViewport().isNarrowScreen && useApp().appVisible;
+      },
+    },
+    render(h) {
+      if (!this.visible) return null;
+
+      return h(FileBrowserDrawerToggle);
+    },
+  });
+  // eslint-disable-next-line no-new
+  new Vue({
     el,
     pinia,
+    computed: {
+      visible() {
+        return !useViewport().isNarrowScreen;
+      },
+    },
     render(h) {
+      if (!this.visible) return null;
+
       return h(FileBrowserToggle);
     },
   });
@@ -35,7 +61,7 @@ const initBrowserComponent = async (el, shouldSort) => {
     el,
     pinia,
     render(h) {
-      return h(FileBrowser, {
+      return h(useViewport().isNarrowScreen ? FileBrowserDrawer : FileBrowser, {
         props: {
           groupBlobsListItems: shouldSort,
         },

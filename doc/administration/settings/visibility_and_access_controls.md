@@ -224,7 +224,7 @@ When restricting visibility levels, consider how these restrictions interact
 with permissions for subgroups and projects that inherit their visibility from
 the item you're changing.
 
-This setting does not apply to groups and projects created under a personal namespace.
+This setting does not apply to projects created under a personal namespace.
 There is a [feature request](https://gitlab.com/gitlab-org/gitlab/-/issues/382749) to extend this
 functionality to [enterprise users](../../user/enterprise_user/_index.md).
 

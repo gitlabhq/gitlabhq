@@ -6,11 +6,18 @@ export const useFileBrowser = defineStore('fileBrowser', {
   state() {
     return {
       fileBrowserVisible: true,
+      fileBrowserDrawerVisible: false,
     };
   },
   actions: {
     setFileBrowserVisibility(visible) {
       this.fileBrowserVisible = visible;
+    },
+    setFileBrowserDrawerVisibility(visible) {
+      this.fileBrowserDrawerVisible = visible;
+    },
+    toggleFileBrowserDrawerVisibility() {
+      this.fileBrowserDrawerVisible = !this.fileBrowserDrawerVisible;
     },
     toggleFileBrowserVisibility() {
       this.fileBrowserVisible = !this.fileBrowserVisible;

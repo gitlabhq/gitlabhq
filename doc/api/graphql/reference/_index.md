@@ -7868,6 +7868,35 @@ Input type: `LdapAdminRoleLinkDestroyInput`
 | <a id="mutationldapadminrolelinkdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationldapadminrolelinkdestroyldapadminrolelink"></a>`ldapAdminRoleLink` | [`LdapAdminRoleLink`](#ldapadminrolelink) | Deleted instance-level LDAP link. |
 
+### `Mutation.lifecycleUpdate`
+
+{{< details >}}
+**Introduced** in GitLab 18.1.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `LifecycleUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationlifecycleupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationlifecycleupdatedefaultclosedstatusindex"></a>`defaultClosedStatusIndex` | [`Int`](#int) | Index of the default closed status in the statuses array. |
+| <a id="mutationlifecycleupdatedefaultduplicatestatusindex"></a>`defaultDuplicateStatusIndex` | [`Int`](#int) | Index of the default duplicated status in the statuses array. |
+| <a id="mutationlifecycleupdatedefaultopenstatusindex"></a>`defaultOpenStatusIndex` | [`Int`](#int) | Index of the default open status in the statuses array. |
+| <a id="mutationlifecycleupdateid"></a>`id` | [`WorkItemsStatusesLifecycleID!`](#workitemsstatuseslifecycleid) | Global ID of the lifecycle to be updated. |
+| <a id="mutationlifecycleupdatenamespacepath"></a>`namespacePath` | [`ID!`](#id) | Namespace path where the lifecycle exists. |
+| <a id="mutationlifecycleupdatestatuses"></a>`statuses` | [`[WorkItemStatusInput!]`](#workitemstatusinput) | Statuses of the lifecycle. Can be existing (with id) or new (without id). |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationlifecycleupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationlifecycleupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationlifecycleupdatelifecycle"></a>`lifecycle` | [`WorkItemLifecycle`](#workitemlifecycle) | Lifecycle updated. |
+
 ### `Mutation.markAsSpamSnippet`
 
 Input type: `MarkAsSpamSnippetInput`
@@ -45348,7 +45377,7 @@ Issue type.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="issuetypeepic"></a>`EPIC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 16.7. **Status**: Experiment. Epic issue type. Available only when feature epics is available and the feature flag `work_item_epics` is enabled. |
+| <a id="issuetypeepic"></a>`EPIC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 16.7. **Status**: Experiment. Epic issue type. Available only when feature epics is available. |
 | <a id="issuetypeincident"></a>`INCIDENT` | Incident issue type. |
 | <a id="issuetypeissue"></a>`ISSUE` | Issue issue type. |
 | <a id="issuetypekey_result"></a>`KEY_RESULT` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 15.7. **Status**: Experiment. Key Result issue type. Available only when feature flag `okrs_mvc` is enabled. |
@@ -48779,6 +48808,12 @@ A `WorkItemsRelatedWorkItemLinkID` is a global ID. It is encoded as a string.
 
 An example `WorkItemsRelatedWorkItemLinkID` is: `"gid://gitlab/WorkItems::RelatedWorkItemLink/1"`.
 
+### `WorkItemsStatusesLifecycleID`
+
+A `WorkItemsStatusesLifecycleID` is a global ID. It is encoded as a string.
+
+An example `WorkItemsStatusesLifecycleID` is: `"gid://gitlab/WorkItems::Statuses::Lifecycle/1"`.
+
 ### `WorkItemsStatusesStatusID`
 
 A `WorkItemsStatusesStatusID` is a global ID. It is encoded as a string.
@@ -51417,6 +51452,18 @@ Attributes for value stream setting.
 | ---- | ---- | ----------- |
 | <a id="workitemresolvediscussionsinputdiscussionid"></a>`discussionId` | [`String`](#string) | ID of a discussion to resolve. |
 | <a id="workitemresolvediscussionsinputnoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | Global ID of the noteable where discussions will be resolved when the work item is created. Only `MergeRequestID` is supported at the moment. |
+
+### `WorkItemStatusInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemstatusinputcategory"></a>`category` | [`WorkItemStatusCategoryEnum`](#workitemstatuscategoryenum) | Category of the status. |
+| <a id="workitemstatusinputcolor"></a>`color` | [`String`](#string) | Color of the status. |
+| <a id="workitemstatusinputdescription"></a>`description` | [`String`](#string) | Description of the status. |
+| <a id="workitemstatusinputid"></a>`id` | [`GlobalID`](#globalid) | ID of the status. If not provided, a new status will be created. |
+| <a id="workitemstatusinputname"></a>`name` | [`String`](#string) | Name of the status. |
 
 ### `WorkItemWidgetAssigneesInput`
 

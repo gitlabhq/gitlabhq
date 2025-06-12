@@ -1,13 +1,14 @@
 <script>
-import { GlTooltip, GlDisclosureDropdown } from '@gitlab/ui';
+import { GlTooltip, GlDisclosureDropdown, GlBadge } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
-
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { __ } from '~/locale';
 
 export default {
   components: {
     GlDisclosureDropdown,
     GlTooltip,
+    GlBadge,
   },
   inject: ['tiptapEditor', 'contentEditor'],
   data() {
@@ -44,6 +45,17 @@ export default {
         {
           text: __('Horizontal rule'),
           action: () => this.execute('setHorizontalRule', 'horizontalRule'),
+        },
+        {
+          text: __('GitLab Query Language (GLQL) view'),
+          action: () => this.execute('insertGLQLView', 'glqlView'),
+          badge: {
+            text: __('Beta'),
+            variant: 'info',
+            size: 'small',
+            target: '_blank',
+            href: helpPagePath('user/glql/_index'),
+          },
         },
         {
           text: __('Mermaid diagram'),
@@ -109,7 +121,16 @@ export default {
       :toggle-text="__('More options')"
       text-sr-only
       right
-    />
+    >
+      <template #list-item="{ item }">
+        <span class="gl-flex gl-items-center gl-justify-between">
+          {{ item.text }}
+          <gl-badge v-if="item.badge" v-bind="item.badge" class="gl-ml-4" @click.stop>
+            {{ item.badge.text }}
+          </gl-badge>
+        </span>
+      </template>
+    </gl-disclosure-dropdown>
     <gl-tooltip :target="toggleId" placement="top">{{ __('More options') }}</gl-tooltip>
   </div>
 </template>

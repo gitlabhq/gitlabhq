@@ -97,4 +97,21 @@ describe('content_editor/extensions/code_block_highlight', () => {
       );
     });
   });
+
+  describe('when inserting a GLQL view', () => {
+    beforeEach(() => {
+      tiptapEditor.commands.insertGLQLView();
+    });
+
+    it('inserts a GLQL view', () => {
+      expect(tiptapEditor.getJSON()).toEqual(
+        doc(
+          codeBlock(
+            { language: 'glql' },
+            'query: assignee = currentUser()\nfields: title, createdAt, milestone, assignee\ntitle: Issues assigned to current user',
+          ),
+        ).toJSON(),
+      );
+    });
+  });
 });

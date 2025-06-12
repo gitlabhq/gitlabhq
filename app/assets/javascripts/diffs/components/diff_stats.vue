@@ -25,6 +25,11 @@ export default {
       required: false,
       default: null,
     },
+    hideOnNarrowScreen: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   computed: {
     diffFilesLength() {
@@ -65,8 +70,10 @@ export default {
   <div
     class="diff-stats"
     :class="{
-      'is-compare-versions-header gl-hidden lg:gl-inline-flex': isCompareVersionsHeader,
-      'gl-hidden sm:!gl-inline-flex': !isCompareVersionsHeader,
+      'is-compare-versions-header gl-hidden lg:gl-inline-flex':
+        isCompareVersionsHeader && hideOnNarrowScreen,
+      'gl-hidden sm:!gl-inline-flex': !isCompareVersionsHeader && hideOnNarrowScreen,
+      'gl-inline-flex': !hideOnNarrowScreen,
     }"
   >
     <div v-if="notDiffable" :class="fileStats.classes">

@@ -119,6 +119,15 @@ export default {
     listTitle() {
       return this.list?.label?.description || this.list?.assignee?.name || this.list.title || '';
     },
+    listStatus() {
+      return this.list?.status || {};
+    },
+    listStatusColor() {
+      return this.listStatus?.color;
+    },
+    listStatusIconName() {
+      return this.listStatus?.iconName;
+    },
     isIterationList() {
       return this.listType === ListType.iteration;
     },
@@ -377,6 +386,18 @@ export default {
           class="gl-mr-3"
         />
       </a>
+      <gl-icon
+        v-if="listType === 'status'"
+        data-testid="status-icon"
+        :name="listStatusIconName"
+        :size="12"
+        :class="{
+          'gl-mt-2': list.collapsed,
+          'gl-mx-2': !list.collapsed,
+          'gl-shrink-0': true,
+        }"
+        :style="{ color: listStatusColor }"
+      />
       <!-- EE end -->
       <div
         class="board-title-text"
@@ -387,6 +408,7 @@ export default {
         }"
       >
         <!-- EE start -->
+
         <span
           v-if="listType !== 'label'"
           v-gl-tooltip.hover

@@ -4,6 +4,8 @@
 - add_page_specific_style 'page_bundles/projects'
 - page_title _("Commits"), @ref
 
+%h1.gl-sr-only= page_title
+
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_commits_path(@project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
 

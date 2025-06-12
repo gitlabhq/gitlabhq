@@ -1,11 +1,14 @@
 - add_page_specific_style 'page_bundles/branches'
-- page_title _('Branches')
+- title = _('Branches')
+- page_title title
 - search = params[:search]
 
 -# Possible values for variables passed down from the projects/branches_controller.rb
 -#
 -#   @mode   - overview|active|stale|all (default:overview)
 -#   @sort   - name_asc|updated_asc|updated_desc
+
+%h1.gl-sr-only= title
 
 .top-area
   = gl_tabs_nav({ class: 'gl-grow gl-border-b-0' }) do

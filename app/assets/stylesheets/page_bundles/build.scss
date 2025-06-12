@@ -108,8 +108,7 @@
     overflow: auto;
 
     .icon-arrow-right {
-      left: 8px;
-      top: 12px;
+      @apply gl-top-3 gl-left-3;
     }
 
     .build-job {
@@ -119,6 +118,10 @@
 
       &:hover {
         @apply gl-bg-strong;
+      }
+
+      a:focus {
+        @apply gl-relative gl-z-2;
       }
     }
   }

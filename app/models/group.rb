@@ -1125,7 +1125,7 @@ class Group < Namespace
   end
 
   def create_group_level_work_items_feature_flag_enabled?
-    ::Feature.enabled?(:create_group_level_work_items, self, type: :wip)
+    ::Feature.enabled?(:create_group_level_work_items, self, type: :wip) && supports_group_work_items?
   end
 
   def supports_lock_on_merge?

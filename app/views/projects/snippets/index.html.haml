@@ -1,6 +1,8 @@
 - page_title s_("Snippets|Snippets")
 - new_project_snippet_link = new_project_snippet_path(@project) if can?(current_user, :create_snippet, @project)
 
+%h1.gl-sr-only= page_title
+
 - if @snippets.exists?
   - if current_user
     .top-area

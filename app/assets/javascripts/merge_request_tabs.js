@@ -337,6 +337,7 @@ export default class MergeRequestTabs {
       }
 
       this.expandSidebar?.forEach((el) => el.classList.toggle('!gl-hidden', action !== 'show'));
+      this.rapidDiffsApp?.hide?.();
 
       if (action === 'commits') {
         if (!this.commitsLoaded) {
@@ -537,6 +538,8 @@ export default class MergeRequestTabs {
         this.rapidDiffsApp = this.createRapidDiffsApp();
         this.rapidDiffsApp.reloadDiffs(true);
         this.rapidDiffsApp.init();
+      } else {
+        this.rapidDiffsApp.show();
       }
     } else {
       this.loadDiff(options);

@@ -13703,7 +13703,8 @@ CREATE TABLE design_management_designs_versions (
     version_id bigint NOT NULL,
     event smallint DEFAULT 0 NOT NULL,
     image_v432x230 character varying(255),
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_ae7359f44b CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE design_management_designs_versions_id_seq
