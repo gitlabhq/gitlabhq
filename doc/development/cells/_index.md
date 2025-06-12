@@ -64,9 +64,12 @@ to think about:
 
 ## Static data
 
-Problem: A clusterwide database table is used to store static data.
-But, the primary key of the table is used as a global reference.
-This primary key is not globally consistent which creates problems.
+Problem: A database table is used to store static data.
+However, the primary key is not static because it uses an auto-incrementing sequence.
+This means the primary key is not globally consistent.
+
+References to this inconsistent primary key will create problems because the
+reference clashes across cells / organizations.
 
 Example: The `plans` table on a given Cell has the following data:
 

@@ -82,6 +82,7 @@ import DateToken from '~/vue_shared/components/filtered_search_bar/tokens/date_t
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_work_item_state_counts.query.graphql';
 import CreateWorkItemModal from '../components/create_work_item_modal.vue';
 import WorkItemHealthStatus from '../components/work_item_health_status.vue';
 import WorkItemDrawer from '../components/work_item_drawer.vue';
@@ -97,7 +98,6 @@ import {
   WORK_ITEM_TYPE_NAME_KEY_RESULT,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
 } from '../constants';
-import getWorkItemStateCountsQuery from '../graphql/list/get_work_item_state_counts.query.graphql';
 import getWorkItemsQuery from '../graphql/list/get_work_items.query.graphql';
 import { sortOptions, urlSortParams } from './list/constants';
 
@@ -145,6 +145,7 @@ export default {
     'hasIssueDateFilterFeature',
     'hasOkrsFeature',
     'hasQualityManagementFeature',
+    'hasCustomFieldsFeature',
     'initialSort',
     'isGroup',
     'isSignedIn',
@@ -333,7 +334,9 @@ export default {
       return BASE_ALLOWED_CREATE_TYPES;
     },
     apiFilterParams() {
-      return convertToApiParams(this.filterTokens);
+      return convertToApiParams(this.filterTokens, {
+        hasCustomFieldsFeature: this.hasCustomFieldsFeature,
+      });
     },
     defaultWorkItemTypes() {
       return getDefaultWorkItemTypes({
@@ -611,7 +614,9 @@ export default {
       });
     },
     urlFilterParams() {
-      return convertToUrlParams(this.filterTokens);
+      return convertToUrlParams(this.filterTokens, {
+        hasCustomFieldsFeature: this.hasCustomFieldsFeature,
+      });
     },
     urlParams() {
       return {
@@ -874,6 +879,7 @@ export default {
 
       this.filterTokens = getFilterTokens(window.location.search, {
         includeStateToken: !this.withTabs,
+        hasCustomFieldsFeature: this.hasCustomFieldsFeature,
       });
       if (!this.hasStateToken && this.state === STATUS_ALL) {
         this.filterTokens = this.filterTokens.filter(

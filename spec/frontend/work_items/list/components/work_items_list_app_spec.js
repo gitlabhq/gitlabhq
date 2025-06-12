@@ -48,7 +48,7 @@ import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_ro
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemsListApp from '~/work_items/pages/work_items_list_app.vue';
 import { sortOptions, urlSortParams } from '~/work_items/pages/list/constants';
-import getWorkItemStateCountsQuery from '~/work_items/graphql/list/get_work_item_state_counts.query.graphql';
+import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_work_item_state_counts.query.graphql';
 import getWorkItemsQuery from '~/work_items/graphql/list/get_work_items.query.graphql';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import {
@@ -143,6 +143,7 @@ describeSkipVue3(skipReason, () => {
         hasGroupBulkEditFeature: true,
         hasOkrsFeature: false,
         hasQualityManagementFeature: false,
+        hasCustomFieldsFeature: false,
         initialSort: CREATED_DESC,
         isGroup: true,
         isSignedIn: true,
