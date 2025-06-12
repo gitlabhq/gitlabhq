@@ -46,6 +46,7 @@ export default {
     :filtered-search-term-key="$options.FILTERED_SEARCH_TERM_KEY"
     :filtered-search-namespace="$options.FILTERED_SEARCH_NAMESPACE"
     :filtered-search-recent-searches-storage-key="$options.RECENT_SEARCHES_STORAGE_KEY_GROUPS"
+    :filtered-search-input-placeholder="__('Search')"
     :sort-options="$options.SORT_OPTIONS"
     :default-sort-option="$options.SORT_OPTION_UPDATED"
     :timestamp-type-map="$options.timestampTypeMap"

@@ -3,7 +3,7 @@
 - extra_data = local_assigns.fetch(:extra_data, {})
 - filterable = local_assigns.fetch(:filterable, true)
 - paginatable = local_assigns.fetch(:paginatable, false)
-- default_namespace_path = local_assigns[:default_namespace]&.full_path
+- default_namespace_path = (local_assigns[:default_namespace] || current_user.namespace).full_path
 - cancel_path = local_assigns.fetch(:cancel_path, nil)
 - details_path = local_assigns.fetch(:details_path, nil)
 - provider_title = Gitlab::ImportSources.title(local_assigns.fetch(:provider))

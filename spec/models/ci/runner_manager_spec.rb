@@ -761,17 +761,6 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
           expect { runner_machine.save! }
             .to change { runner_machine.organization_id }.from(nil).to(runner.organization_id)
         end
-
-        context 'when populate_organization_id_in_runner_tables FF is disabled' do
-          before do
-            stub_feature_flags(populate_organization_id_in_runner_tables: false)
-          end
-
-          it 'does not populate organization_id from runner on save', :aggregate_failures do
-            expect { runner_machine.save! }
-              .not_to change { runner_machine.organization_id }.from(nil)
-          end
-        end
       end
     end
 
@@ -790,17 +779,6 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
         it 'populates organization_id from runner on save', :aggregate_failures do
           expect { runner_machine.save! }
             .to change { runner_machine.organization_id }.from(nil).to(runner.organization_id)
-        end
-
-        context 'when populate_organization_id_in_runner_tables FF is disabled' do
-          before do
-            stub_feature_flags(populate_organization_id_in_runner_tables: false)
-          end
-
-          it 'does not populate organization_id from runner on save', :aggregate_failures do
-            expect { runner_machine.save! }
-              .not_to change { runner_machine.organization_id }.from(nil)
-          end
         end
       end
     end

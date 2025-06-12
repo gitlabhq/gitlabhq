@@ -79,6 +79,31 @@ In the previous example:
 - **User 2** is an inherited shared member from the **Toolbox** group that is invited to the **demo** group.
 - **User 3** is a direct member added to this project.
 
+## Security considerations
+
+Before adding members to your project, it's important to understand the security implications.
+Git is a distributed version control system (DVCS). This means that everyone who works with the
+source code has a local copy of the complete repository.
+
+In GitLab, every project member with the Reporter role or higher can clone the repository to create
+a local copy. After obtaining a local copy, users can upload the full repository anywhere, including:
+
+- Another project under their control.
+- A different server.
+- External hosting services.
+
+Access controls cannot prevent the intentional sharing of source code by users who already have access
+to the repository. It is an inherent feature of a DVCS and applies to all Git management platforms.
+
+### Mitigate risks
+
+While you cannot prevent intentional sharing by authorized users, you can take steps to prevent
+unintentional sharing and information destruction:
+
+- Control who can [add users to a project](#add-users-to-a-project).
+- Use [protected branches](../repository/branches/protected.md) to prevent unauthorized force pushes.
+- Regularly review project membership and remove users who no longer require access.
+
 ## Add users to a project
 
 {{< history >}}

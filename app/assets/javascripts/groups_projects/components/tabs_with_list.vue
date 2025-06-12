@@ -64,6 +64,11 @@ export default {
       type: String,
       required: true,
     },
+    filteredSearchInputPlaceholder: {
+      type: String,
+      required: false,
+      default: __('Filter or search (3 character minimum)'),
+    },
     sortOptions: {
       type: Array,
       required: true,
@@ -197,7 +202,7 @@ export default {
         return this.initialSort;
       }
 
-      return `${this.defaultSortOption.value}_${SORT_DIRECTION_ASC}`;
+      return `${this.defaultSortOption.value}_${SORT_DIRECTION_DESC}`;
     },
     activeSortOption() {
       return this.sortOptions.find((sortItem) => this.sort.includes(sortItem.value));
@@ -532,6 +537,7 @@ export default {
           :filtered-search-term-key="filteredSearchTermKey"
           :filtered-search-recent-searches-storage-key="filteredSearchRecentSearchesStorageKey"
           :filtered-search-query="$route.query"
+          :search-input-placeholder="filteredSearchInputPlaceholder"
           :is-ascending="isAscending"
           :sort-options="sortOptions"
           :active-sort-option="activeSortOption"

@@ -81,22 +81,6 @@ RSpec.describe ::Ci::Runners::UpdateProjectRunnersOwnerService, '#execute', feat
     expect(execute).to be_success
   end
 
-  context 'when populate_organization_id_in_runner_tables FF is disabled' do
-    before do
-      stub_feature_flags(populate_organization_id_in_runner_tables: false)
-    end
-
-    it 'does not populate organization_id from owner on save', :aggregate_failures do
-      expect { execute }
-        # runners which had no organization_id
-        .to not_change { runner_without_org_id.reload.organization_id }.from(nil)
-        .and not_change { runner_manager_without_org_id.reload.organization_id }.from(nil)
-        .and not_change { tagging_org_id_for_runner(runner_without_org_id) }.from(nil)
-
-      expect(execute).to be_success
-    end
-  end
-
   private
 
   def tagging_sharding_key_id_for_runner(runner)

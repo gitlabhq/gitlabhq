@@ -80,6 +80,90 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
         end
       end
     end
+
+    context 'with conan package' do
+      let_it_be(:package) { create(:conan_package, without_package_files: true) }
+      let_it_be(:recipe_revision) { package.conan_recipe_revisions.first }
+      let_it_be(:package_reference) { package.conan_package_references.first }
+      let_it_be(:package_revision) { package.conan_package_revisions.first }
+
+      let_it_be_with_reload(:existing_file) do
+        create(:conan_package_file, :conan_package, package: package, conan_recipe_revision: recipe_revision, conan_package_revision: package_revision)
+      end
+
+      context 'when creating a new file' do
+        let(:new_file) do
+          build(
+            :conan_package_file,
+            :conan_package,
+            package: package,
+            file_name: 'conan_package.tgz',
+            conan_file_metadatum: build(
+              :conan_file_metadatum,
+              :package_file,
+              recipe_revision: recipe_revision,
+              package_reference: package_reference,
+              package_revision: package_revision
+            )
+          )
+        end
+
+        it 'validates uniqueness of file name with same recipe revision, package reference and package revision' do
+          expect(new_file).not_to be_valid
+          expect(new_file.errors[:file_name]).to include('already exists for the given recipe revision, package reference, and package revision')
+        end
+
+        it 'allows same file name with different recipe revision' do
+          new_file.conan_file_metadatum.recipe_revision = build_stubbed(:conan_recipe_revision, package: package)
+          expect(new_file).to be_valid
+        end
+
+        it 'allows same file name with different package reference' do
+          new_file.conan_file_metadatum.package_reference = build_stubbed(:conan_package_reference, package: package)
+          expect(new_file).to be_valid
+        end
+
+        it 'allows same file name with different package revision' do
+          new_file.conan_file_metadatum.package_revision = build_stubbed(:conan_package_revision, package: package)
+          expect(new_file).to be_valid
+        end
+
+        it 'allows same file name without revision' do
+          new_file.conan_file_metadatum.recipe_revision = nil
+          new_file.conan_file_metadatum.package_revision = nil
+          expect(new_file).to be_valid
+        end
+
+        context 'when existing file is not installable' do
+          it 'allows same file name' do
+            existing_file.update!(status: :pending_destruction)
+            expect(new_file).to be_valid
+          end
+        end
+
+        context 'when both existing and new files have no revision' do
+          let_it_be(:recipe_revision) { nil }
+          let_it_be(:package_revision) { nil }
+
+          it 'allows same file name' do
+            expect(new_file).to be_valid
+          end
+        end
+
+        context 'when updating an existing file' do
+          it 'does not validate uniqueness on update' do
+            duplicate_file = create(
+              :conan_package_file,
+              :conan_package,
+              package: package,
+              file_name: 'duplicate_conan_package.tgz'
+            )
+
+            expect { existing_file.update!(file_name: duplicate_file.file_name) }.not_to raise_error
+          end
+        end
+      end
+    end
   end
 
   context 'with package filenames' do

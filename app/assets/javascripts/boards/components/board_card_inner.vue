@@ -317,7 +317,7 @@ export default {
       <div
         class="align-items-start board-card-number-container gl-flex gl-flex-wrap-reverse gl-overflow-hidden"
       >
-        <span class="board-info-items gl-flex gl-items-center gl-leading-20">
+        <span class="board-info-items gl-inline-block gl-leading-20">
           <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-5" />
           <span
             v-if="showBoardCardNumber"

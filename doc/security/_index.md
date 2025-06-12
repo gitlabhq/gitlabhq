@@ -55,7 +55,7 @@ You can find all those directories listed in the [Linux package configuration do
 
 ### Data access
 
-- [Information exclusivity](information_exclusivity.md).
+- [Security considerations for project membership](../user/project/members/_index.md#security-considerations).
 - [Protecting and removing user file uploads](user_file_uploads.md).
 - [Proxying linked images for user privacy](asset_proxy.md).
 

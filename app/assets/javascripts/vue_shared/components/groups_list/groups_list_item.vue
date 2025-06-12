@@ -8,7 +8,7 @@ import axios from '~/lib/utils/axios_utils';
 import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import { __ } from '~/locale';
-import { numberToMetricPrefix } from '~/lib/utils/number_utils';
+import { numberToMetricPrefix, isNumeric } from '~/lib/utils/number_utils';
 import { ACTION_DELETE, ACTION_LEAVE } from '~/vue_shared/components/list_actions/constants';
 import {
   TIMESTAMP_TYPES,
@@ -110,6 +110,15 @@ export default {
     groupMembersCount() {
       return numberToMetricPrefix(this.group.groupMembersCount);
     },
+    showDescendantGroupsCount() {
+      return isNumeric(this.group.descendantGroupsCount);
+    },
+    showProjectsCount() {
+      return isNumeric(this.group.projectsCount);
+    },
+    showGroupMembersCount() {
+      return isNumeric(this.group.groupMembersCount);
+    },
     hasActionDelete() {
       return this.group.availableActions?.includes(ACTION_DELETE);
     },
@@ -181,18 +190,21 @@ export default {
     <template #stats>
       <group-list-item-inactive-badge :group="group" />
       <list-item-stat
+        v-if="showDescendantGroupsCount"
         :tooltip-text="$options.i18n.subgroups"
         icon-name="subgroup"
         :stat="descendantGroupsCount"
         data-testid="subgroups-count"
       />
       <list-item-stat
+        v-if="showProjectsCount"
         :tooltip-text="$options.i18n.projects"
         icon-name="project"
         :stat="projectsCount"
         data-testid="projects-count"
       />
       <list-item-stat
+        v-if="showGroupMembersCount"
         :tooltip-text="$options.i18n.directMembers"
         icon-name="users"
         :stat="groupMembersCount"

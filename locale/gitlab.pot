@@ -5714,6 +5714,12 @@ msgstr ""
 msgid "Agent not found for provided id."
 msgstr ""
 
+msgid "Agents"
+msgstr ""
+
+msgid "Agents Platform Index"
+msgstr ""
+
 msgid "AiAgents|Agent Name"
 msgstr ""
 
@@ -23668,6 +23674,15 @@ msgstr ""
 msgid "DuoTrialDiscover|Ask questions, explore concepts, test ideas, and receive instant feedback directly in your workflow."
 msgstr ""
 
+msgid "DuoWorkflowSettings|Model Context Protocol"
+msgstr ""
+
+msgid "DuoWorkflowSettings|Turn on MCP support for GitLab Duo Agentic Chat and GitLab Duo Workflow"
+msgstr ""
+
+msgid "DuoWorkflowSettings|Turn on Model Context Protocol (MCP) support"
+msgstr ""
+
 msgid "Duplicate entries found for compliance controls for the requirement."
 msgstr ""
 
@@ -32095,9 +32110,6 @@ msgstr ""
 msgid "ImportProjects|Importing the project failed: %{reason}"
 msgstr ""
 
-msgid "ImportProjects|Namespace required"
-msgstr ""
-
 msgid "ImportProjects|Organization"
 msgstr ""
 
@@ -32117,15 +32129,6 @@ msgid "ImportProjects|Requesting namespaces failed"
 msgstr ""
 
 msgid "ImportProjects|Requesting your %{provider} repositories failed"
-msgstr ""
-
-msgid "ImportProjects|Select a destination namespace for each repository before importing all."
-msgstr ""
-
-msgid "ImportProjects|Select a destination namespace."
-msgstr ""
-
-msgid "ImportProjects|Select namespace"
 msgstr ""
 
 msgid "ImportProjects|Select the repositories you want to import"
@@ -48544,9 +48547,6 @@ msgstr ""
 msgid "ProjectSettings|Configure your instance"
 msgstr ""
 
-msgid "ProjectSettings|Contact an admin to change this setting."
-msgstr ""
-
 msgid "ProjectSettings|Container registry"
 msgstr ""
 
@@ -48925,13 +48925,10 @@ msgstr ""
 msgid "ProjectSettings|This project can use Amazon Q."
 msgstr ""
 
-msgid "ProjectSettings|This setting is applied on the server level and can be overridden by an admin."
+msgid "ProjectSettings|This setting is on for the instance."
 msgstr ""
 
-msgid "ProjectSettings|This setting is applied on the server level but has been overridden for this project."
-msgstr ""
-
-msgid "ProjectSettings|This setting will be applied to all projects unless overridden by an admin."
+msgid "ProjectSettings|This setting will be applied to all projects unless overridden for a project."
 msgstr ""
 
 msgid "ProjectSettings|Title regex"
@@ -50347,6 +50344,15 @@ msgstr ""
 msgid "PushRules|Commit messages cannot match this %{wiki_syntax_link_start}regular expression%{wiki_syntax_link_end}. If empty, commit messages are not rejected based on any expression."
 msgstr ""
 
+msgid "PushRules|Configure push rules for this project. Project settings override group and instance defaults."
+msgstr ""
+
+msgid "PushRules|Define push rules for newly created projects and groups. Some settings apply to new groups, all settings apply to new projects."
+msgstr ""
+
+msgid "PushRules|Define push rules for newly created projects in this group. Group settings override instance defaults."
+msgstr ""
+
 msgid "PushRules|Do not allow users to remove Git tags with %{code_block_start}git push%{code_block_end}"
 msgstr ""
 
@@ -50378,9 +50384,6 @@ msgid "PushRules|Require expression in commit messages"
 msgstr ""
 
 msgid "PushRules|Restrict commits to existing GitLab users."
-msgstr ""
-
-msgid "PushRules|Restrict push operations for this project."
 msgstr ""
 
 msgid "PushRules|Save push rules"
@@ -52296,12 +52299,6 @@ msgstr ""
 msgid "Rule name is already taken."
 msgstr ""
 
-msgid "Rules that define what git pushes are accepted for a project in this group. All newly created projects in this group will use these settings."
-msgstr ""
-
-msgid "Rules that define what git pushes are accepted for a project. All newly created projects will use these settings."
-msgstr ""
-
 msgid "Run"
 msgstr ""
 
@@ -53584,6 +53581,9 @@ msgid "Runner|Your CSV export has started. It will be sent to your email inbox w
 msgstr ""
 
 msgid "Running"
+msgstr ""
+
+msgid "Runs"
 msgstr ""
 
 msgid "Runs a number of housekeeping tasks within the current repository, such as compressing file revisions and removing unreachable objects."
@@ -70790,6 +70790,9 @@ msgstr ""
 msgid "Workspaces|Available"
 msgstr ""
 
+msgid "Workspaces|Available agents for workspaces"
+msgstr ""
+
 msgid "Workspaces|Block agent"
 msgstr ""
 
@@ -70799,10 +70802,10 @@ msgstr ""
 msgid "Workspaces|Blocked"
 msgstr ""
 
-msgid "Workspaces|Blocking an agent doesn't delete it. Agents can only be deleted in the project where they were created."
+msgid "Workspaces|Blocked agents are not deleted and existing workspaces continue running. You can delete agents in their source project."
 msgstr ""
 
-msgid "Workspaces|Blocking an agent doesn't delete it. Agents can only be deleted in the project where they were created. In addition, existing workspaces using a blocked agent will continue to run."
+msgid "Workspaces|Blocking an agent doesn't delete it. Agents can only be deleted in the project where they were created."
 msgstr ""
 
 msgid "Workspaces|Cancel"
@@ -70811,7 +70814,7 @@ msgstr ""
 msgid "Workspaces|Cluster agent"
 msgstr ""
 
-msgid "Workspaces|Configure which Kubernetes agents are available for new workspaces. These settings do not affect existing workspaces."
+msgid "Workspaces|Configure which Kubernetes agents are available for new workspaces. %{learnMore}"
 msgstr ""
 
 msgid "Workspaces|Connected"
@@ -70895,6 +70898,9 @@ msgstr ""
 msgid "Workspaces|Instant development environments"
 msgstr ""
 
+msgid "Workspaces|Learn more about agents."
+msgstr ""
+
 msgid "Workspaces|Learn more."
 msgstr ""
 
@@ -70907,10 +70913,10 @@ msgstr ""
 msgid "Workspaces|No active workspaces"
 msgstr ""
 
-msgid "Workspaces|No agents available"
+msgid "Workspaces|No agents available to create workspaces. Please consult %{linkStart}Workspaces documentation%{linkEnd} for troubleshooting."
 msgstr ""
 
-msgid "Workspaces|No agents available to create workspaces. Please consult %{linkStart}Workspaces documentation%{linkEnd} for troubleshooting."
+msgid "Workspaces|No agents found."
 msgstr ""
 
 msgid "Workspaces|No terminated workspaces"
@@ -70976,9 +70982,6 @@ msgstr ""
 msgid "Workspaces|This agent is already allowed."
 msgstr ""
 
-msgid "Workspaces|This agent is already available."
-msgstr ""
-
 msgid "Workspaces|This agent is already blocked."
 msgstr ""
 
@@ -70989,6 +70992,9 @@ msgid "Workspaces|This group has no available agents. Select the %{strongStart}A
 msgstr ""
 
 msgid "Workspaces|To create a workspace, add a devfile to this project. A devfile is a configuration file for your workspace."
+msgstr ""
+
+msgid "Workspaces|Unable to complete request. Please try again."
 msgstr ""
 
 msgid "Workspaces|Unable to complete this action"
@@ -71013,9 +71019,6 @@ msgid "Workspaces|When no devfile is provided, the GitLab default devfile will b
 msgstr ""
 
 msgid "Workspaces|Workspaces"
-msgstr ""
-
-msgid "Workspaces|Workspaces Agent Availability"
 msgstr ""
 
 msgid "Workspaces|Workspaces Settings"
@@ -72483,6 +72486,9 @@ msgid "already being used for another group or project %{timebox_name}."
 msgstr ""
 
 msgid "already being used for another iteration within this cadence."
+msgstr ""
+
+msgid "already exists for the given recipe revision, package reference, and package revision"
 msgstr ""
 
 msgid "already has a \"created\" issue link"

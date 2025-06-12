@@ -2182,17 +2182,6 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
           expect { runner.save! }
             .to change { runner.organization_id }.from(nil).to(runner.owner.organization_id)
         end
-
-        context 'when populate_organization_id_in_runner_tables FF is disabled' do
-          before do
-            stub_feature_flags(populate_organization_id_in_runner_tables: false)
-          end
-
-          it 'does not populate organization_id from owner on save', :aggregate_failures do
-            expect { runner.save! }
-              .not_to change { runner.organization_id }.from(nil)
-          end
-        end
       end
     end
 
@@ -2212,17 +2201,6 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         it 'populates organization_id from owner on save', :aggregate_failures do
           expect { runner.save! }
             .to change { runner.organization_id }.from(nil).to(runner.owner.organization_id)
-        end
-
-        context 'when populate_organization_id_in_runner_tables FF is disabled' do
-          before do
-            stub_feature_flags(populate_organization_id_in_runner_tables: false)
-          end
-
-          it 'does not populate organization_id from owner on save', :aggregate_failures do
-            expect { runner.save! }
-              .not_to change { runner.organization_id }.from(nil)
-          end
         end
       end
     end

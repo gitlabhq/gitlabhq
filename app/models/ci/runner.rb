@@ -626,7 +626,6 @@ module Ci
     end
 
     def ensure_organization_id
-      return if Feature.disabled?(:populate_organization_id_in_runner_tables, owner)
       return unless instance_type? || owner.present?
 
       self.organization_id = instance_type? ? nil : owner.organization_id

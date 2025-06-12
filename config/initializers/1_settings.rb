@@ -387,8 +387,8 @@ Settings.gitlab_docs['host'] = nil unless Settings.gitlab_docs.enabled
 #
 Gitlab.ee do
   Settings['geo'] ||= {}
-  # For backwards compatibility, default to gitlab_url and if so, ensure it ends with "/"
-  Settings.geo['node_name'] = Settings.geo['node_name'].presence || Settings.gitlab['url'].chomp('/').concat('/')
+  # For backwards compatibility, default to gitlab_url
+  Settings.geo['node_name'] = Settings.geo['node_name'].presence || Settings.gitlab['url']
 
   #
   # Registry replication

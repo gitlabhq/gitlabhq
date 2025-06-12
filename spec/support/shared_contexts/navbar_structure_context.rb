@@ -86,6 +86,16 @@ RSpec.shared_context 'project navbar structure' do
         nav_item: _('Analyze'),
         nav_sub_items: project_analytics_sub_nav_item
       },
+
+      if Gitlab.ee?
+        {
+          nav_item: _('Agents'),
+          nav_sub_items: [
+            _('Runs')
+          ]
+        }
+      end,
+
       {
         nav_item: _('Settings'),
         nav_sub_items: [

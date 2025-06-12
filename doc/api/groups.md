@@ -2119,6 +2119,7 @@ Example response:
 ]
 ```
 
+<!--
 ### Credentials inventory management
 
 {{< details >}}
@@ -2137,7 +2138,7 @@ Example response:
 The Credentials Inventory API allows top-level-group owners to view, revoke, and rotate the credentials of their enterprise users on GitLab.com.
 
 Prerequisites:
- 
+
 - You must have the Owner role for the group.
 
 #### List all personal access tokens for a group
@@ -2325,9 +2326,7 @@ Other possible responses:
 - `401: Unauthorized` if the access token is invalid.
 - `403: Forbidden` if the access token does not have the required permissions.
 
-## Delete an SSH key for a user
-
-## Delete an SSH key for an enterprise user
+#### Delete an SSH key for an enterprise user
 
 Deletes a specified SSH public key for an enterprise user associated with the top-level group.
 
@@ -2349,7 +2348,7 @@ Other possible responses:
 - `401: Unauthorized` if the SSH Key is invalid.
 - `403: Forbidden` if the user does not have the required permissions.
 
-## Rotate a personal access token for an enterprise user
+#### Rotate a personal access token for an enterprise user
 
 Rotates a specified personal access token for an enterprise user associated with the top-level group. This revokes the previous token and creates a new token
 that expires after one week.
@@ -2401,7 +2400,7 @@ Other possible responses:
 - `404: Not Found` if the user is an group owner but the token does not exist.
 - `405: Method Not Allowed` if the token is not a personal access token.
 
-## Rotate a group or project access token for an enterprise user
+#### Rotate a group or project access token for an enterprise user
 
 Rotates a specified group or project access token for an enterprise user associated with the top-level group. This revokes the previous token and creates a new token
 that expires after one week.
@@ -2451,3 +2450,4 @@ Other possible responses:
   - You do not have access to the specified token.
 - `403: Forbidden` if the token is not allowed to rotate itself or token is not a bot user token.
 - `404: Not Found` if the user is a group owner but the token does not exist.
+-->

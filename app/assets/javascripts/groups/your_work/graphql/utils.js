@@ -20,7 +20,7 @@ export const formatGroupForGraphQLResolver = (group) => ({
     viewEditPage: group.can_edit,
   },
   webUrl: group.web_url,
-  groupMembersCount: group.group_members_count,
+  groupMembersCount: group.group_members_count ?? null,
   isLinkedToSubscription: group.is_linked_to_subscription,
   permanentDeletionDate: group.permanent_deletion_date,
   maxAccessLevel: {
@@ -31,8 +31,8 @@ export const formatGroupForGraphQLResolver = (group) => ({
   parent: {
     id: group.parent_id,
   },
-  descendantGroupsCount: group.subgroup_count,
-  projectsCount: group.project_count,
+  descendantGroupsCount: group.subgroup_count ?? null,
+  projectsCount: group.project_count ?? null,
   children: group.children?.length ? group.children.map(formatGroupForGraphQLResolver) : [],
-  childrenCount: group.subgroup_count,
+  childrenCount: group.subgroup_count ?? 0,
 });

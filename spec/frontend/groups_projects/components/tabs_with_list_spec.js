@@ -331,6 +331,7 @@ describe('TabsWithList', () => {
         filteredSearchNamespace: defaultPropsData.filteredSearchNamespace,
         filteredSearchRecentSearchesStorageKey:
           defaultPropsData.filteredSearchRecentSearchesStorageKey,
+        searchInputPlaceholder: 'Filter or search (3 character minimum)',
         sortOptions: defaultPropsData.sortOptions,
         activeSortOption: SORT_OPTION_CREATED,
         isAscending: false,
@@ -582,9 +583,9 @@ describe('TabsWithList', () => {
       });
     });
 
-    it('falls back to defaultSortOption prop ascending order', () => {
+    it('falls back to defaultSortOption prop descending order', () => {
       expect(findTabView().props()).toMatchObject({
-        sort: `${defaultPropsData.defaultSortOption.value}_${SORT_DIRECTION_ASC}`,
+        sort: `${defaultPropsData.defaultSortOption.value}_${SORT_DIRECTION_DESC}`,
       });
     });
   });

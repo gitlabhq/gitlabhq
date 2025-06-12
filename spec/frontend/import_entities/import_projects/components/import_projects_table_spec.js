@@ -1,8 +1,8 @@
 import { GlLoadingIcon, GlButton, GlIntersectionObserver, GlSearchBoxByClick } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { STATUSES } from '~/import_entities/constants';
 import ImportProjectsTable from '~/import_entities/import_projects/components/import_projects_table.vue';
 import ProviderRepoTableRow from '~/import_entities/import_projects/components/provider_repo_table_row.vue';
@@ -12,6 +12,8 @@ import state from '~/import_entities/import_projects/store/state';
 
 describe('ImportProjectsTable', () => {
   let wrapper;
+
+  const USER_NAMESPACE = 'root';
 
   const findFilterField = () =>
     wrapper
@@ -31,25 +33,24 @@ describe('ImportProjectsTable', () => {
   const findImportAllButton = () =>
     wrapper.findAllComponents(GlButton).wrappers.find((w) => w.props('variant') === 'confirm');
   const findImportAllModal = () => wrapper.findComponent({ ref: 'importAllModal' });
-  const findNamespaceRequiredModal = () => wrapper.findComponent({ ref: 'namespaceRequiredModal' });
   const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
 
   const importAllFn = jest.fn();
+  const importAllModalShowFn = jest.fn();
   const fetchReposFn = jest.fn();
 
   function createComponent({
     state: initialState,
-    getters: customGetters = {},
+    getters: customGetters,
     slots,
     filterable,
     paginatable,
     optionalStages,
-    provider = 'test-provider',
   } = {}) {
     Vue.use(Vuex);
 
     const store = new Vuex.Store({
-      state: { ...state(), ...initialState },
+      state: { ...state(), defaultTargetNamespace: USER_NAMESPACE, ...initialState },
       getters: {
         ...getters,
         ...customGetters,
@@ -64,16 +65,18 @@ describe('ImportProjectsTable', () => {
       },
     });
 
-    wrapper = shallowMountExtended(ImportProjectsTable, {
+    wrapper = shallowMount(ImportProjectsTable, {
       store,
       propsData: {
         providerTitle,
         filterable,
         paginatable,
         optionalStages,
-        provider,
       },
       slots,
+      stubs: {
+        GlModal: { template: '<div>Modal!</div>', methods: { show: importAllModalShowFn } },
+      },
     });
   }
 
@@ -159,36 +162,13 @@ describe('ImportProjectsTable', () => {
     expect(wrapper.text()).toContain(`No ${providerTitle} repositories found`);
   });
 
-  it('requires namespace selection when `import all` button is clicked before selection', async () => {
+  it('opens confirmation modal when import all button is clicked', async () => {
     createComponent({ state: { repositories: [providerRepo] } });
 
     findImportAllButton().vm.$emit('click');
     await nextTick();
 
-    const namespaceRequired = findNamespaceRequiredModal();
-    expect(namespaceRequired.props('title')).toBe('Namespace required');
-    expect(namespaceRequired.props('visible')).toBe(true);
-
-    expect(namespaceRequired.text()).toBe(
-      'Select a destination namespace for each repository before importing all.',
-    );
-  });
-
-  it('opens confirmation modal when `import all` button is clicked after namespace selection', async () => {
-    const mockGetImportTarget = jest.fn(() => () => ({
-      targetNamespace: 'some-namespace',
-    }));
-
-    createComponent({
-      state: { repositories: [providerRepo] },
-      getters: { getImportTarget: mockGetImportTarget },
-    });
-
-    findImportAllButton().vm.$emit('click');
-    await nextTick();
-
-    const verifyImport = findImportAllModal();
-    expect(verifyImport.props('visible')).toBe(true);
+    expect(importAllModalShowFn).toHaveBeenCalled();
   });
 
   it('triggers importAll action when modal is confirmed', async () => {

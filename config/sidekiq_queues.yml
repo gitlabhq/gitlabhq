@@ -71,6 +71,8 @@
   - 1
 - - auth_saml_group_sync
   - 1
+- - authn_cleanup_scim_group_memberships
+  - 1
 - - authn_sync_group_scim_identity_record
   - 1
 - - authn_sync_group_scim_token_record

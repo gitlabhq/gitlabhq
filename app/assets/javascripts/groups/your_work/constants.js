@@ -52,12 +52,12 @@ export const SORT_OPTION_NAME = {
 };
 
 export const SORT_OPTION_CREATED = {
-  value: 'created',
+  value: 'created_at',
   text: SORT_LABEL_CREATED,
 };
 
 export const SORT_OPTION_UPDATED = {
-  value: 'latest_activity',
+  value: 'updated_at',
   text: SORT_LABEL_UPDATED,
 };
 

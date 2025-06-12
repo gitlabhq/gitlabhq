@@ -12,6 +12,7 @@ Prerequisites:
   While many extension features might work with earlier versions, they are unsupported.
   - The GitLab Duo Code Suggestions feature requires GitLab version 16.8 or later.
 - You have [Neovim](https://neovim.io/) version 0.9 or later.
+- You have [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed. NPM is required for the Code Suggestions install.
 
 To install the extension, follow the installation steps for your chosen plugin manager:
 

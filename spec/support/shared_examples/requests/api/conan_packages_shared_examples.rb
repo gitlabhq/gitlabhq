@@ -919,7 +919,23 @@ RSpec.shared_examples 'workhorse recipe file upload endpoint' do |revision: fals
   it_behaves_like 'handling validation error for package'
   it_behaves_like 'protected package main example'
 
-  it { expect { request }.to change { Packages::Conan::RecipeRevision.count }.by(1) } if revision
+  if revision
+    it { expect { request }.to change { Packages::Conan::RecipeRevision.count }.by(1) }
+
+    context 'when the file already exists' do
+      let(:recipe_revision) { package.conan_recipe_revisions.first.revision }
+      let(:recipe_path_name) { package.name }
+
+      it 'does not upload the file again' do
+        expect { request }.not_to change { Packages::PackageFile.count }
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response).to eq({
+          'message' => '400 Bad request - Validation failed: ' \
+            'File name already exists for the given recipe revision, package reference, and package revision'
+        })
+      end
+    end
+  end
 end
 
 RSpec.shared_examples 'workhorse package file upload endpoint' do |revision: false|
@@ -951,6 +967,22 @@ RSpec.shared_examples 'workhorse package file upload endpoint' do |revision: fal
       expect { request }
         .to change { Packages::Conan::RecipeRevision.count }.by(1)
         .and change { Packages::Conan::PackageRevision.count }.by(1)
+    end
+
+    context 'when the file already exists' do
+      let(:recipe_revision) { package.conan_recipe_revisions.first.revision }
+      let(:package_revision) { package.conan_package_revisions.first.revision }
+      let(:conan_package_reference) { package.conan_package_references.first.reference }
+      let(:recipe_path_name) { package.name }
+
+      it 'does not upload the file again' do
+        expect { request }.not_to change { Packages::PackageFile.count }
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response).to eq({
+          'message' => '400 Bad request - Validation failed: ' \
+            'File name already exists for the given recipe revision, package reference, and package revision'
+        })
+      end
     end
   end
 

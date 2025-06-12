@@ -13,7 +13,17 @@ describe('your work groups resolver', () => {
 
   const endpoint = '/dashboard/groups.json';
 
-  const makeQuery = () => {
+  const makeQuery = (apiResponse = dashboardGroupsWithChildrenResponse) => {
+    mockAxios = new MockAdapter(axios);
+    mockAxios.onGet(endpoint).reply(200, apiResponse, {
+      'x-per-page': 10,
+      'x-page': 2,
+      'x-total': 21,
+      'x-total-pages': 3,
+      'x-next-page': 3,
+      'x-prev-page': 1,
+    });
+
     return mockApollo.clients.defaultClient.query({
       query: groupsQuery,
       variables: { search: 'foo', sort: 'created_desc', page: 2 },
@@ -22,16 +32,6 @@ describe('your work groups resolver', () => {
 
   beforeEach(() => {
     mockApollo = createMockApollo([], resolvers(endpoint));
-
-    mockAxios = new MockAdapter(axios);
-    mockAxios.onGet(endpoint).reply(200, dashboardGroupsWithChildrenResponse, {
-      'x-per-page': 10,
-      'x-page': 2,
-      'x-total': 21,
-      'x-total-pages': 3,
-      'x-next-page': 3,
-      'x-prev-page': 1,
-    });
   });
 
   afterEach(() => {
@@ -105,6 +105,46 @@ describe('your work groups resolver', () => {
       perPage: 10,
       nextPage: 3,
       previousPage: 1,
+    });
+  });
+
+  describe('when stats are undefined', () => {
+    it('returns null', async () => {
+      const {
+        data: {
+          groups: { nodes },
+        },
+      } = await makeQuery(
+        dashboardGroupsWithChildrenResponse.map((group) => ({
+          ...group,
+          group_members_count: undefined,
+          subgroup_count: undefined,
+          project_count: undefined,
+        })),
+      );
+
+      expect(nodes[0]).toMatchObject({
+        descendantGroupsCount: null,
+        projectsCount: null,
+        groupMembersCount: null,
+      });
+    });
+  });
+
+  describe('when subgroup_count is undefined', () => {
+    it('returns 0 for childrenCount', async () => {
+      const {
+        data: {
+          groups: { nodes },
+        },
+      } = await makeQuery(
+        dashboardGroupsWithChildrenResponse.map((group) => ({
+          ...group,
+          subgroup_count: undefined,
+        })),
+      );
+
+      expect(nodes[0].childrenCount).toBe(0);
     });
   });
 });

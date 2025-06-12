@@ -41,6 +41,7 @@ class Packages::PackageFile < ApplicationRecord
 
   validates :file_name, uniqueness: { scope: :package }, if: -> { !pending_destruction? && package&.pypi? }
   validates :file_sha256, format: { with: Gitlab::Regex.sha256_regex }, if: -> { package&.pypi? }, allow_nil: true
+  validate :ensure_unique_conan_file_name, if: -> { !pending_destruction? && package&.conan? }, on: :create
 
   scope :recent, -> { order(id: :desc) }
   scope :limit_recent, ->(limit) { recent.limit(limit) }
@@ -186,6 +187,22 @@ class Packages::PackageFile < ApplicationRecord
 
     carrierwave_file.copy_to(new_file_path)
     carrierwave_file.delete
+  end
+
+  def ensure_unique_conan_file_name
+    return unless conan_file_metadatum && conan_file_metadatum.recipe_revision_id.present?
+
+    return unless self.class.installable.where(
+      package_id: package_id,
+      file_name: file_name,
+      packages_conan_file_metadata: {
+        recipe_revision_id: conan_file_metadatum.recipe_revision_id,
+        package_reference_id: conan_file_metadatum.package_reference_id,
+        package_revision_id: conan_file_metadatum.package_revision_id
+      }
+    ).joins(:conan_file_metadatum).exists?
+
+    errors.add(:file_name, _('already exists for the given recipe revision, package reference, and package revision'))
   end
 end
 

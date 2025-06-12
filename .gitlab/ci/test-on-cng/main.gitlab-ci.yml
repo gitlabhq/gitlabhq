@@ -61,6 +61,7 @@ workflow:
     - bundle exec orchestrator metrics start --interval 1
   after_script:
     - !reference [.gitlab-qa-report, after_script]
+    - source $CI_PROJECT_DIR/scripts/utils.sh
     - |
       section_start "logs_section" "Saving environment logs"
       bundle exec orchestrator log events --save || true

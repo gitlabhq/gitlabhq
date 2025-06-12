@@ -198,8 +198,6 @@ module Ci
     end
 
     def ensure_organization_id
-      return if Feature.disabled?(:populate_organization_id_in_runner_tables, runner.owner)
-
       self.organization_id = runner.organization_id
     end
 
