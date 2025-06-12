@@ -231,8 +231,19 @@ describe('ContentEditor', () => {
     it('hides placeholder text', () => {
       expect(wrapper.text()).not.toContain('Enter some text here...');
     });
-  });
 
+    it('emits focus event', () => {
+      expect(wrapper.emitted('focus')).toHaveLength(1);
+    });
+
+    it('emits blur event when editorStateObserver emits blur event', async () => {
+      findEditorStateObserver().vm.$emit('blur');
+
+      await nextTick();
+
+      expect(wrapper.emitted('blur')).toHaveLength(1);
+    });
+  });
   describe('when editorStateObserver emits docUpdate event', () => {
     let markdown;
 

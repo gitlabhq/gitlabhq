@@ -626,6 +626,8 @@ export default {
             @startEditing="$emit('startEditing')"
             @stopEditing="$emit('stopEditing')"
             @error="$emit('error', $event)"
+            @focus="$emit('focus')"
+            @blur="$emit('blur')"
           />
         </ul>
       </div>

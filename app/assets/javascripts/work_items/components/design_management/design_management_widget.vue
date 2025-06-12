@@ -474,8 +474,8 @@ export default {
     class="work-item-design-widget-container gl-rounded-base focus:gl-focus"
     :class="{ 'gl-mt-5': hasDesignsAndVersions }"
     :tabindex="0"
-    @focusin="toggleOnPasteListener"
-    @focusout="toggleOffPasteListener"
+    @mouseenter="toggleOnPasteListener"
+    @mouseleave="toggleOffPasteListener"
   >
     <slot v-if="!hasDesignsAndVersions" name="empty-state"></slot>
     <crud-component

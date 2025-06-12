@@ -60,7 +60,7 @@ and cross-posted (with the command results) to the responsible team's Slack chan
 
 - [ ] Set a milestone to this rollout issue to signal for enabling and removing the feature flag when it is stable.
 - [ ] Check if the feature flag change needs to be accompanied with a
-  [change management issue](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process).
+  [change management issue](https://about.gitlab.com/handbook/engineering/infrastructure-platforms/change-management/#feature-flags-and-the-change-management-process).
   Cross link the issue here if it does.
 - [ ] Ensure that you or a representative in development can be available for at least 2 hours after feature flag updates in production.
   If a different developer will be covering, or an exception is needed, please inform the oncall SRE by using the `@sre-oncall` Slack alias.

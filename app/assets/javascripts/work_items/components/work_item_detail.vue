@@ -1247,6 +1247,8 @@ export default {
               @openReportAbuse="openReportAbuseModal"
               @startEditing="isAddingNotes = true"
               @stopEditing="isAddingNotes = false"
+              @focus="isAddingNotes = true"
+              @blur="isAddingNotes = false"
             />
           </div>
         </div>

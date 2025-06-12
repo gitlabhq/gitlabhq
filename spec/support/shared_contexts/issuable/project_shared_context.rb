@@ -12,6 +12,5 @@ RSpec.shared_context 'project show action' do
     stub_template 'shared/issuable/_sidebar' => ''
     stub_template 'projects/issues/_discussion' => ''
     allow(view).to receive(:user_status).and_return('')
-    allow(view).to receive(:can_admin_project_member?)
   end
 end

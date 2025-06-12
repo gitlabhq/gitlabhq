@@ -1,4 +1,4 @@
-- return unless can_admin_project_member?(project)
+- return unless can?(current_user, :invite_member, project)
 
 .js-invite-members-modal{ data: { is_project: 'true',
   access_levels: ProjectMember.permissible_access_level_roles(current_user, project).to_json,

@@ -29906,6 +29906,9 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="groupworkitemstatecountsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
 | <a id="groupworkitemstatecountsincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Include work items from ancestor groups. Ignored for project namespaces. |
 | <a id="groupworkitemstatecountsincludedescendants"></a>`includeDescendants` | [`Boolean`](#boolean) | Include work items from descendant groups and projects. Ignored for project namespaces. |
+| <a id="groupworkitemstatecountsiterationcadenceid"></a>`iterationCadenceId` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Filter by a list of iteration cadence IDs. |
+| <a id="groupworkitemstatecountsiterationid"></a>`iterationId` | [`[ID]`](#id) | List of iteration Global IDs applied to the issue. |
+| <a id="groupworkitemstatecountsiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter by iteration ID wildcard. |
 | <a id="groupworkitemstatecountslabelname"></a>`labelName` | [`[String!]`](#string) | Labels applied to the work item. |
 | <a id="groupworkitemstatecountsmilestonetitle"></a>`milestoneTitle` | [`[String!]`](#string) | Milestone applied to the work item. |
 | <a id="groupworkitemstatecountsmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter by milestone ID wildcard. Incompatible with `milestoneTitle`. |
@@ -29984,6 +29987,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupworkitemsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
 | <a id="groupworkitemsincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Include work items from ancestor groups. Ignored for project namespaces. |
 | <a id="groupworkitemsincludedescendants"></a>`includeDescendants` | [`Boolean`](#boolean) | Include work items from descendant groups and projects. Ignored for project namespaces. |
+| <a id="groupworkitemsiterationcadenceid"></a>`iterationCadenceId` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Filter by a list of iteration cadence IDs. |
+| <a id="groupworkitemsiterationid"></a>`iterationId` | [`[ID]`](#id) | List of iteration Global IDs applied to the issue. |
+| <a id="groupworkitemsiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter by iteration ID wildcard. |
 | <a id="groupworkitemslabelname"></a>`labelName` | [`[String!]`](#string) | Labels applied to the work item. |
 | <a id="groupworkitemsmilestonetitle"></a>`milestoneTitle` | [`[String!]`](#string) | Milestone applied to the work item. |
 | <a id="groupworkitemsmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter by milestone ID wildcard. Incompatible with `milestoneTitle`. |
@@ -34256,6 +34262,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespaceworkitemsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
 | <a id="namespaceworkitemsincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Include work items from ancestor groups. Ignored for project namespaces. |
 | <a id="namespaceworkitemsincludedescendants"></a>`includeDescendants` | [`Boolean`](#boolean) | Include work items from descendant groups and projects. Ignored for project namespaces. |
+| <a id="namespaceworkitemsiterationcadenceid"></a>`iterationCadenceId` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Filter by a list of iteration cadence IDs. |
+| <a id="namespaceworkitemsiterationid"></a>`iterationId` | [`[ID]`](#id) | List of iteration Global IDs applied to the issue. |
+| <a id="namespaceworkitemsiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter by iteration ID wildcard. |
 | <a id="namespaceworkitemslabelname"></a>`labelName` | [`[String!]`](#string) | Labels applied to the work item. |
 | <a id="namespaceworkitemsmilestonetitle"></a>`milestoneTitle` | [`[String!]`](#string) | Milestone applied to the work item. |
 | <a id="namespaceworkitemsmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter by milestone ID wildcard. Incompatible with `milestoneTitle`. |
@@ -38186,6 +38195,9 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="projectworkitemstatecountsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="projectworkitemstatecountsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="projectworkitemstatecountsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
+| <a id="projectworkitemstatecountsiterationcadenceid"></a>`iterationCadenceId` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Filter by a list of iteration cadence IDs. |
+| <a id="projectworkitemstatecountsiterationid"></a>`iterationId` | [`[ID]`](#id) | List of iteration Global IDs applied to the issue. |
+| <a id="projectworkitemstatecountsiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter by iteration ID wildcard. |
 | <a id="projectworkitemstatecountslabelname"></a>`labelName` | [`[String!]`](#string) | Labels applied to the work item. |
 | <a id="projectworkitemstatecountsmilestonetitle"></a>`milestoneTitle` | [`[String!]`](#string) | Milestone applied to the work item. |
 | <a id="projectworkitemstatecountsmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter by milestone ID wildcard. Incompatible with `milestoneTitle`. |
@@ -38260,6 +38272,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectworkitemsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="projectworkitemsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="projectworkitemsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
+| <a id="projectworkitemsiterationcadenceid"></a>`iterationCadenceId` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Filter by a list of iteration cadence IDs. |
+| <a id="projectworkitemsiterationid"></a>`iterationId` | [`[ID]`](#id) | List of iteration Global IDs applied to the issue. |
+| <a id="projectworkitemsiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter by iteration ID wildcard. |
 | <a id="projectworkitemslabelname"></a>`labelName` | [`[String!]`](#string) | Labels applied to the work item. |
 | <a id="projectworkitemsmilestonetitle"></a>`milestoneTitle` | [`[String!]`](#string) | Milestone applied to the work item. |
 | <a id="projectworkitemsmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter by milestone ID wildcard. Incompatible with `milestoneTitle`. |
@@ -51031,6 +51046,7 @@ A year and month input for querying product analytics usage data.
 | <a id="negatedworkitemfilterinputassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users not assigned to the work item. |
 | <a id="negatedworkitemfilterinputauthorusername"></a>`authorUsername` | [`[String!]`](#string) | Username of a user who didn't author the work item. |
 | <a id="negatedworkitemfilterinputhealthstatusfilter"></a>`healthStatusFilter` | [`[HealthStatus!]`](#healthstatus) | Health status not applied to the work items. Includes work items where health status is not set. |
+| <a id="negatedworkitemfilterinputiterationid"></a>`iterationId` | [`[ID!]`](#id) | List of iteration Global IDs not applied to the work items. |
 | <a id="negatedworkitemfilterinputlabelname"></a>`labelName` | [`[String!]`](#string) | Labels not applied to the work item. |
 | <a id="negatedworkitemfilterinputmilestonetitle"></a>`milestoneTitle` | [`[String!]`](#string) | Milestone not applied to the work item. |
 | <a id="negatedworkitemfilterinputmilestonewildcardid"></a>`milestoneWildcardId` | [`NegatedMilestoneWildcardId`](#negatedmilestonewildcardid) | Filter by negated milestone wildcard values. |

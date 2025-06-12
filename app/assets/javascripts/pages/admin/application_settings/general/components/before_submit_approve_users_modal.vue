@@ -9,7 +9,7 @@ export default {
     GlModal,
   },
   expose: ['show', 'hide'],
-  inject: ['beforeSubmitHook', 'beforeSubmitHookContexts', 'pendingUserCount'],
+  inject: ['addBeforeSubmitHook', 'beforeSubmitHookContexts', 'pendingUserCount'],
   props: {
     id: {
       type: String,
@@ -29,9 +29,6 @@ export default {
         },
       };
     },
-    modal() {
-      return this.$refs[this.id];
-    },
     text() {
       return n__(
         'ApplicationSettings|By changing this setting, you can also automatically approve %d user who is pending approval.',
@@ -41,14 +38,14 @@ export default {
     },
   },
   mounted() {
-    this.beforeSubmitHook(this.verifyApproveUsers);
+    this.addBeforeSubmitHook(this.verifyApproveUsers);
   },
   methods: {
     show() {
-      this.modal.show();
+      this.$refs.modal.show();
     },
     hide() {
-      this.modal.hide();
+      this.$refs.modal.hide();
     },
     verifyApproveUsers() {
       const context = this.beforeSubmitHookContexts[this.id];
@@ -82,7 +79,7 @@ export default {
 
 <template>
   <gl-modal
-    :ref="id"
+    ref="modal"
     :modal-id="id"
     :action-cancel="$options.modal.actionCancel"
     :action-primary="actionPrimary"

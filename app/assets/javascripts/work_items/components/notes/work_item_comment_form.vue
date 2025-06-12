@@ -368,6 +368,8 @@ export default {
             supports-quick-actions
             :autofocus="autofocus"
             :restricted-tool-bar-items="restrictedToolBarItems"
+            @focus="$emit('focus')"
+            @blur="$emit('blur')"
             @input="setCommentText"
             @keydown.up="handleKeydownUpArrow"
             @keydown.meta.enter="submitForm()"

@@ -8,9 +8,10 @@ title: GitLab Duo Model Selection
 
 {{< details >}}
 
-- Tier: Free, Premium, Ultimate
+- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro or Enterprise
 - Offering: GitLab.com
+- Status: Beta
 
 {{< /details >}}
 
@@ -33,7 +34,7 @@ If you do not select a specific LLM, the AI-native features use the GitLab-selec
 
 {{< alert type="note" >}}
 
-To maintain optimal performance, GitLab might change the default LLM without notifying the user.
+To maintain optimal performance and reliability, GitLab might change the default LLM without notifying the user.
 
 {{< /alert >}}
 
@@ -45,6 +46,11 @@ To maintain optimal performance, GitLab might change the default LLM without not
 - You must have the Owner role for the group.
 
 ## Select an LLM for a feature
+
+> Selecting an LLM for:
+>
+> - Code completion can cause latency issues for users with assigned seats when they use GitLab Duo Code Suggestions.
+> - GitLab Duo Chat disables [GitLab Duo Agentic Chat](../gitlab_duo_chat/agentic_chat.md) in that namespace.
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > GitLab Duo**.

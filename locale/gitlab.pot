@@ -7956,6 +7956,9 @@ msgstr ""
 msgid "ApplicationSettings|Change setting and approve pending users?"
 msgstr ""
 
+msgid "ApplicationSettings|Changing the user cap to %{userCap} would exceed the licensed user count of %{licensedUserCount}, which may result in %{linkStart}seat overages%{linkEnd}. Are you sure you want to proceed with the change?"
+msgstr ""
+
 msgid "ApplicationSettings|Controlled access"
 msgstr ""
 
@@ -8010,12 +8013,18 @@ msgstr ""
 msgid "ApplicationSettings|Prevent the billable user count from exceeding the number of seats in the license."
 msgstr ""
 
+msgid "ApplicationSettings|Proceed"
+msgstr ""
+
 msgid "ApplicationSettings|Proceed and approve %d user"
 msgid_plural "ApplicationSettings|Proceed and approve %d users"
 msgstr[0] ""
 msgstr[1] ""
 
 msgid "ApplicationSettings|Proceed without auto-approval"
+msgstr ""
+
+msgid "ApplicationSettings|Proposed user cap exceeds licensed user count"
 msgstr ""
 
 msgid "ApplicationSettings|Require admin approval for new sign-ups"

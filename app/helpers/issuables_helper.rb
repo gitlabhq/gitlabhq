@@ -272,7 +272,7 @@ module IssuablesHelper
       canCreateTimelogs: issuable.dig(:current_user, :can_create_timelogs),
       createNoteEmail: issuable[:create_note_email],
       issuableType: issuable[:type],
-      directlyInviteMembers: can_admin_project_member?(project).to_s
+      directlyInviteMembers: can?(current_user, :invite_member, project).to_s
     }
   end
 

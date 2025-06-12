@@ -3591,12 +3591,6 @@ class Project < ApplicationRecord
     end
   end
 
-  def has_container_registry_immutable_tag_rules?
-    strong_memoize_with(:has_container_registry_immutable_tag_rules) do
-      container_registry_protection_tag_rules.immutable.exists?
-    end
-  end
-
   def job_token_policies_enabled?
     namespace.root_ancestor.namespace_settings&.job_token_policies_enabled?
   end

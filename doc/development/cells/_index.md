@@ -48,19 +48,18 @@ table in the table is related to `projects`, or `namespaces`.
 Another alternative is the `gitlab_main_cell_local` schema.
 
 Consult with the [Tenant Scale group](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/tenant-scale/):
-If you believe that the `gitlab_main_clusterwide` schema is more suitable for a
-table, seek approval from the Tenant Scale group. Here are some considerations
-to think about:
+If you believe you require a clusterwide feature, seek design input from the
+Tenant Scale group.
+Here are some considerations to think about:
 
-- Can the feature be changed to be scoped to an Organization ?
+- Can the feature to be scoped per Organization (or lower) instead ?
 - The related feature must work on multiple cells, not just the legacy cell.
 - How would the related feature scale across many Organizations and Cells ?
-- The underlying data must be consistent on different cells.
-  For example, do not use cell-local IDs as the primary identifier.
-  Rather use global IDs.
-- Do not use cluster-wide database tables to store [static data](#static-data).
-- Should only have a tiny amount of rows. Larger tables with many rows are not suitable to be cluster-wide tables.
-- Must not have references to / from other tables that will cause data issues when synchronized to other cells.
+- How will data be stored ?
+- How will organizations reference the data consistently ?
+  Can you use globally unique identifiers ?
+- Does the data need to be consistent across different cells ?
+- Do not use database tables to store [static data](#static-data).
 
 ## Static data
 

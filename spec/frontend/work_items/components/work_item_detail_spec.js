@@ -1374,4 +1374,31 @@ describe('WorkItemDetail component', () => {
       },
     );
   });
+
+  it('sets `canPasteDesign` to true on work item notes focus event', async () => {
+    createComponent();
+    await waitForPromises();
+
+    expect(findWorkItemDesigns().props('canPasteDesign')).toBe(true);
+
+    findNotesWidget().vm.$emit('focus');
+    await nextTick();
+
+    expect(findWorkItemDesigns().props('canPasteDesign')).toBe(false);
+  });
+
+  it('sets `canPasteDesign` to false on work item notes blur event', async () => {
+    createComponent();
+    await waitForPromises();
+
+    findNotesWidget().vm.$emit('focus');
+    await nextTick();
+
+    expect(findWorkItemDesigns().props('canPasteDesign')).toBe(false);
+
+    findNotesWidget().vm.$emit('blur');
+    await nextTick();
+
+    expect(findWorkItemDesigns().props('canPasteDesign')).toBe(true);
+  });
 });

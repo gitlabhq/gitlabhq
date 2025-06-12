@@ -739,4 +739,22 @@ describe('WorkItemNotes component', () => {
       expect(gfmEventHub.$emit).not.toHaveBeenCalledWith('edit-note');
     });
   });
+
+  it('emits `focus` event when WorkItemAddNote emits `focus`', async () => {
+    createComponent();
+    await waitForPromises();
+
+    findWorkItemAddNote().vm.$emit('focus');
+
+    expect(wrapper.emitted('focus')).toHaveLength(1);
+  });
+
+  it('emits `blur` event when WorkItemAddNote emits `blur`', async () => {
+    createComponent();
+    await waitForPromises();
+
+    findWorkItemAddNote().vm.$emit('blur');
+
+    expect(wrapper.emitted('blur')).toHaveLength(1);
+  });
 });

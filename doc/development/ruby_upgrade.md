@@ -195,7 +195,7 @@ via `gdk update`.
 
 This pause is a good time to assess the risk of this upgrade for GitLab SaaS.
 For Ruby upgrades that are high risk, such as major version upgrades, it is recommended to
-coordinate the changes with the infrastructure team through a [change management request](https://handbook.gitlab.com/handbook/engineering/infrastructure/change-management/).
+coordinate the changes with the infrastructure team through a [change management request](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/change-management/).
 Create this issue early to give everyone enough time to schedule and prepare changes.
 
 ### Make it the default Ruby

@@ -560,7 +560,7 @@ the `webservice` container has the following tags:
 
 #### Base images for FIPS Builds
 
-- Current: [UBI 9.5 Micro](https://gitlab.com/gitlab-org/build/CNG/-/blob/master/ci_files/variables.yml?ref_type=heads#L4)
+- Current: [UBI 9.6 Micro](https://gitlab.com/gitlab-org/build/CNG/-/blob/master/ci_files/variables.yml?ref_type=heads#L4)
 
 ### Testing merge requests with a FIPS pipeline
 

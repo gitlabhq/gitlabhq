@@ -155,6 +155,18 @@ To run `gitlab:check`, run:
   bundle exec rake gitlab:check RAILS_ENV=production
   ```
 
+- Kubernetes installations:
+
+  ```shell
+  kubectl exec -it <toolbox-pod-name> -- sudo gitlab-rake gitlab:check
+  ```
+
+  {{< alert type="note" >}}
+  Due to the specific architecture of Helm-based GitLab installations, the output may contain
+  false negatives for connectivity verification to `gitlab-shell`, Sidekiq, and `systemd`-related files.
+  These reported failures are expected and do not indicate actual issues, disregard them when reviewing diagnostic results.
+  {{< /alert >}}
+  
 Use `SANITIZE=true` for `gitlab:check` if you want to omit project names from the output.
 
 Example output:

@@ -436,6 +436,8 @@ export default {
             :disabled="disabled"
             @input="updateMarkdownFromMarkdownField"
             @keydown="$emit('keydown', $event)"
+            @focus="$emit('focus')"
+            @blur="$emit('blur')"
           ></textarea>
         </component>
       </template>
@@ -462,6 +464,8 @@ export default {
         @change="updateMarkdownFromContentEditor"
         @keydown="onKeydown"
         @enableMarkdownEditor="onEditingModeChange('markdownField')"
+        @focus="$emit('focus')"
+        @blur="$emit('blur')"
       >
         <template #header-buttons><slot name="header-buttons"></slot></template>
         <template #toolbar><slot name="toolbar"></slot></template>

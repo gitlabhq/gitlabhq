@@ -209,7 +209,7 @@ The connection settings match those provided by [fog-aws](https://github.com/fog
 | `region`                                    | AWS region.                        | |
 | `host`                                      | DEPRECATED: Use `endpoint` instead. S3 compatible host for when not using AWS. For example, `localhost` or `storage.example.com`. HTTPS and port 443 is assumed. | `s3.amazonaws.com` |
 | `endpoint`                                  | Can be used when configuring an S3 compatible service such as [MinIO](https://min.io), by entering a URL such as `http://127.0.0.1:9000`. This takes precedence over `host`. Always use `endpoint` for consolidated form. | (optional) |
-| `path_style`                                | Set to `true` to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Set to `true` for using [MinIO](https://min.io). Leave as `false` for AWS S3. | `false`. |
+| `path_style`                                | Set to `true` to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Set to `true` for using [MinIO](https://min.io). Leave as `false` for AWS S3. | `false` |
 | `use_iam_profile`                           | Set to `true` to use IAM profile instead of access keys. | `false` |
 | `aws_credentials_refresh_threshold_seconds` | Sets the [automatic refresh threshold](https://github.com/fog/fog-aws#controlling-credential-refresh-time-with-iam-authentication) in seconds when using temporary credentials in IAM. | `15` |
 | `disable_imds_v2`                           | Force the use of IMDS v1 by disabling access to the IMDS v2 endpoint that retrieves `X-aws-ec2-metadata-token`. | `false` |
@@ -343,7 +343,7 @@ If you use ADC, be sure that:
   Typically this is done by granting the `Service Account Token Creator` role to the service account.
 - If you are using Google Compute virtual machines, ensure they have the [correct access scopes to access Google Cloud APIs](https://cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances#changeserviceaccountandscopes). If the machines do not have the right scope, the error logs may show:
 
-  ```markdown
+  ```shell
   Google::Apis::ClientError (insufficientPermissions: Request had insufficient authentication scopes.)
   ```
 

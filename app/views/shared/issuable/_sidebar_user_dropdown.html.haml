@@ -1,7 +1,7 @@
 - options = local_assigns.fetch(:options)
 - data = options[:data]
 
-- if can_admin_project_member?(@project)
+- if can?(current_user, :invite_member, @project)
   - options[:dropdown_class] += ' dropdown-extended-height'
   - options[:footer_content] = true
   - options[:wrapper_class] = local_assigns.fetch(:wrapper_class)

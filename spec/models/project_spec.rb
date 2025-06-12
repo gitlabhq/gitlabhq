@@ -10202,38 +10202,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#has_container_registry_immutable_tag_rules?' do
-    let_it_be_with_refind(:project) { create(:project) }
-
-    subject { project.has_container_registry_immutable_tag_rules? }
-
-    before_all do
-      create(:container_registry_protection_tag_rule, project: project)
-    end
-
-    context 'when there is no immutable tag rule' do
-      it { is_expected.to be false }
-    end
-
-    context 'when there is an immutable tag rule' do
-      before_all do
-        create(:container_registry_protection_tag_rule, :immutable, tag_name_pattern: 'immutable', project: project)
-      end
-
-      it { is_expected.to be true }
-    end
-
-    it 'memoizes calls with the same parameters' do
-      allow(project.container_registry_protection_tag_rules).to receive(:immutable).and_call_original
-
-      2.times do
-        project.has_container_registry_immutable_tag_rules?
-      end
-
-      expect(project.container_registry_protection_tag_rules).to have_received(:immutable).once
-    end
-  end
-
   describe '#job_token_policies_enabled?' do
     let_it_be(:project) { build_stubbed(:project) }
 

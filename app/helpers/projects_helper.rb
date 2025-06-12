@@ -404,10 +404,6 @@ module ProjectsHelper
     ) % { default_label: default_label }
   end
 
-  def can_admin_project_member?(project)
-    Ability.allowed?(current_user, :admin_project_member, project) && !membership_locked?
-  end
-
   def project_can_be_shared?
     !membership_locked? || @project.allowed_to_share_with_group?
   end

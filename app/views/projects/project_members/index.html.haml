@@ -20,7 +20,7 @@
 
     - c.with_actions do
       - if can_invite_members_for_project?(@project)
-        - if can_admin_project_member?(@project)
+        - if can?(current_user, :invite_member, @project)
           .js-import-project-members-trigger{ data: { classes: 'md:gl-w-auto gl-w-full' } }
           .js-import-project-members-modal{ data: { project_id: @project.id,
             project_name: @project.name,
@@ -29,7 +29,7 @@
         - if @project.allowed_to_share_with_group?
           .js-invite-group-trigger{ data: { classes: "md:gl-w-auto gl-w-full", display_text: _('Invite a group') } }
           = render 'projects/invite_groups_modal', project: @project, reload_page_on_submit: true
-        - if can_admin_project_member?(@project)
+        - if can?(current_user, :invite_member, @project)
           .js-invite-members-trigger{ data: { variant: 'confirm',
             classes: 'md:gl-w-auto gl-w-full',
             trigger_source: 'project_members_page',

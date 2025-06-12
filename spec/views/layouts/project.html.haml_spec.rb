@@ -4,13 +4,14 @@ require 'spec_helper'
 
 RSpec.describe 'layouts/project', feature_category: :groups_and_projects do
   let(:invite_member) { true }
-  let(:user) { build_stubbed(:user) }
 
   before do
-    allow(view).to receive(:can_admin_project_member?).and_return(invite_member)
-    assign(:project, build_stubbed(:project))
-    allow(view).to receive(:current_user_mode).and_return(Gitlab::Auth::CurrentUserMode.new(user))
-    allow(view).to receive(:current_user).and_return(user)
+    project = build_stubbed(:project)
+    assign(:project, project)
+    user = build_stubbed(:user)
+
+    allow(view).to receive_messages(current_user_mode: Gitlab::Auth::CurrentUserMode.new(user), current_user: user)
+    allow(view).to receive(:can?).with(user, :invite_member, project).and_return(invite_member)
   end
 
   subject do

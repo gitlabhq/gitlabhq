@@ -709,37 +709,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
-  describe '#can_admin_project_member?' do
-    context 'when user is project owner' do
-      let(:user) { project.owner }
-
-      it 'returns true for owner of project' do
-        expect(helper.can_admin_project_member?(project)).to eq true
-      end
-    end
-
-    context 'when user is not a project owner' do
-      using RSpec::Parameterized::TableSyntax
-
-      where(:user_project_role, :can_admin) do
-        :maintainer | true
-        :developer | false
-        :reporter | false
-        :guest | false
-      end
-
-      with_them do
-        before do
-          project.add_role(user, user_project_role)
-        end
-
-        it 'resolves if the user can import members' do
-          expect(helper.can_admin_project_member?(project)).to eq can_admin
-        end
-      end
-    end
-  end
-
   describe '#project_license_name(project)', :request_store do
     let_it_be(:repository) { project.repository }
 

@@ -101,7 +101,7 @@ This depends on the feature and what sort of impact it might have.
 Guidelines:
 
 - Notify `#support_gitlab-com` beforehand. So in case if the feature has any side effects on user experience, they can mitigate and disable the feature flag to reduce some impact.
-- If the feature meets the requirements for creating a [Change Management](https://handbook.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process) issue, create a Change Management issue per [criticality guidelines](https://handbook.gitlab.com/handbook/engineering/infrastructure/change-management/#change-request-workflows).
+- If the feature meets the requirements for creating a [Change Management](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/change-management/#feature-flags-and-the-change-management-process) issue, create a Change Management issue per [criticality guidelines](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/change-management/#change-request-workflows).
 - For simple, low-risk, easily reverted features, proceed and [enable the feature in `#production`](#process).
 - For support requests to toggle feature flags for specific groups or projects, follow the process outlined in the [support workflows](https://handbook.gitlab.com/handbook/support/workflows/saas_feature_flags/).
 
@@ -195,7 +195,7 @@ incidents or in-progress change issues, for example:
   2021-06-29 Canary deployment failing QA tests
 ```
 
-Before enabling a feature flag, verify that you are not violating any [Production Change Lock periods](https://handbook.gitlab.com/handbook/engineering/infrastructure/change-management/#production-change-lock-pcl) and are in compliance with the [Feature flags and the Change Management Process](https://handbook.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process).
+Before enabling a feature flag, verify that you are not violating any [Production Change Lock periods](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/change-management/#production-change-lock-pcl) and are in compliance with the [Feature flags and the Change Management Process](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/change-management/#feature-flags-and-the-change-management-process).
 
 The following `/chatops` commands must be performed in the Slack
 `#production` channel.

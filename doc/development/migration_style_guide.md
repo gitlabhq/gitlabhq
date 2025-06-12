@@ -1281,11 +1281,13 @@ class BuildMetadata
 end
 ```
 
-When using a `JSONB` column, use the [JsonSchemaValidator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/validators/json_schema_validator.rb) to keep control of the data being inserted over time.
+When using a `JSONB` column, use the [JsonSchemaValidator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/validators/json_schema_validator.rb) to keep control of the data being inserted over time. You must also specify a `size_limit` to prevent performance issues from large JSONB data, with **64 KB** as the recommended maximum.
+
+The `JsonbSizeLimit` cop enforces this requirement for new validations, as unbounded JSONB growth can cause memory pressure and slow query performance across millions of database records. For larger datasets, use object storage and store references in the database instead.
 
 ```ruby
 class BuildMetadata
-  validates :config_options, json_schema: { filename: 'build_metadata_config_option' }
+  validates :config_options, json_schema: { filename: 'build_metadata_config_option', size_limit: 64.kilobytes }
 end
 ```
 
