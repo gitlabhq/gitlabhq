@@ -1713,6 +1713,9 @@ msgstr ""
 msgid "'%{template_name}' is unknown or invalid"
 msgstr ""
 
+msgid "'%{type}' command '%{command}' must specify a 'component'"
+msgstr ""
+
 msgid "'%{value}' days of inactivity must be greater than or equal to 90"
 msgstr ""
 
@@ -14999,6 +15002,9 @@ msgstr ""
 msgid "Command"
 msgstr ""
 
+msgid "Command '%{command}' must have one of the supported command types: %{supported_types}"
+msgstr ""
+
 msgid "Command id '%{command}' must not start with '%{prefix}'"
 msgstr ""
 
@@ -22419,6 +22425,9 @@ msgid "Developer (default)"
 msgstr ""
 
 msgid "Development widget is not enabled for this work item type"
+msgstr ""
+
+msgid "Devfile size (%{current_size}) exceeds the maximum allowed size of %{max_size}"
 msgstr ""
 
 msgid "Device name"
@@ -46435,6 +46444,9 @@ msgstr ""
 msgid "Possible to override in each project."
 msgstr ""
 
+msgid "PostStart event references command '%{command}' which is not an exec command. Only exec commands are supported in postStart events"
+msgstr ""
+
 msgid "Postman collection"
 msgstr ""
 
@@ -49693,6 +49705,9 @@ msgid "Prompt users to upload SSH keys"
 msgstr ""
 
 msgid "Property 'dedicatedPod' of component '%{name}' is not yet supported"
+msgstr ""
+
+msgid "Property 'hotReloadCapable' for exec command '%{command}' must be false when specified"
 msgstr ""
 
 msgid "Protect"
@@ -56361,7 +56376,7 @@ msgstr ""
 msgid "SecurityOrchestration|This %{namespaceType} does not contain any security policies."
 msgstr ""
 
-msgid "SecurityOrchestration|This %{namespaceType} is not linked to a security policy project. Either link it to an existing project or create a new policy, which will create a new project that you can use as a security policy project. For help, see %{linkStart}policies%{linkEnd}."
+msgid "SecurityOrchestration|This %{namespaceType} is not linked to a security policy project. Create a policy, which also creates and links a security policy project. Alternatively, %{linkStart}link this %{namespaceType} to an existing security policy project%{linkEnd}."
 msgstr ""
 
 msgid "SecurityOrchestration|This applies to following compliance frameworks:"
@@ -65688,6 +65703,9 @@ msgid "Unsubscribes from notifications."
 msgstr ""
 
 msgid "Unsupported node type for alias: %{type}"
+msgstr ""
+
+msgid "Unsupported options '%{options}' for exec command '%{command}'. Only '%{supported_options}' are supported."
 msgstr ""
 
 msgid "Unsupported signature"

@@ -132,12 +132,20 @@ dependency scanning without adding reachability data to the SBOM.
 
 ## How static reachability analysis works
 
-Static reachability analysis requires two key components:
+SRA (Static reachability analysis) identifies dependencies used in a project's code and marks them and their dependencies as reachable.
+
+The following are marked as not found:
+
+- Dependencies that are found in the project's lock files but are not imported in the code.
+- Tools that are included in the project's lock files for local usage but are not imported in the code.
+  For example, tools such as coverage testing or linting packages are marked as not found even if used locally.
+
+SRA requires two key components:
 
 - Dependency scanning (DS): Generates an SBOM report that identifies all components and their transitive dependencies.
 - GitLab Advanced SAST (GLAS): Performs static reachability analysis to provide a report showing direct dependencies usage in the codebase.
 
-Static reachability analysis adds reachability data to the SBOM output by dependency scanning. The enriched SBOM is then ingested by the GitLab instance.
+SRA adds reachability data to the SBOM output by dependency scanning. The enriched SBOM is then ingested by the GitLab instance.
 
 Reachability data in the UI can have one of the following values:
 
