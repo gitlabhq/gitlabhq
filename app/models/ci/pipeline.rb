@@ -1592,6 +1592,9 @@ module Ci
 
       project.protected_for?(merge_request.source_branch) &&
         project.protected_for?(merge_request.target_branch)
+
+    rescue Repository::AmbiguousRefError
+      false
     end
   end
 end

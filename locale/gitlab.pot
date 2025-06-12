@@ -37230,6 +37230,9 @@ msgstr ""
 msgid "MarkdownEditor|Indent line (%{modifier_key}])"
 msgstr ""
 
+msgid "MarkdownEditor|No records"
+msgstr ""
+
 msgid "MarkdownEditor|Outdent line (%{modifierKey}[)"
 msgstr ""
 
@@ -74587,6 +74590,9 @@ msgid "security policy bot users cannot be added to other projects"
 msgstr ""
 
 msgid "selective_code_owner_removals can only be enabled when retain_approvals_on_push is enabled"
+msgstr ""
+
+msgid "service %{service_num} doesn't exist"
 msgstr ""
 
 msgid "service accounts"

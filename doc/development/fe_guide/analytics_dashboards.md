@@ -21,14 +21,21 @@ Analytics dashboards is intended for Premium and Ultimate subscriptions.
 
 {{< /alert >}}
 
-## Customizable dashboard framework
+## Customizable dashboard framework (deprecated)
 
-Analytics dashboards utilize a set of standardized UI components that ensure a consistent user experience. These components are modular and can be integrated into other dashboard interfaces where basic visualization capabilities are needed, without advanced features like data fetching, filtering, or editing.
+{{< history >}}
 
-Note that we are currently migrating these components to GitLab UI. During this transition period, components may be located in either the legacy system or the new GitLab UI framework.
+- [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191174) in GitLab 18.1.
 
-- [vue_shared/components/customizable_dashboard](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/assets/javascripts/vue_shared/components/customizable_dashboard)
-- [GlDashboardPanel](https://gitlab-org.gitlab.io/gitlab-ui/?path=/docs/dashboards-dashboards-panel--docs)
+{{< /history >}}
+
+Analytics dashboards utilizes a deprecated component, [customizable_dashboard.vue](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/assets/javascripts/vue_shared/components/customizable_dashboard), 
+to render the dashboard layout. As part the dashboard foundations epic [#18072](https://gitlab.com/groups/gitlab-org/-/epics/18072)
+we are updating Analytics dashboards to utilize a new customizable dashboard component that uses
+the new [dashboard layout framework](dashboard_layout_framework.md) in issue [#542166](https://gitlab.com/gitlab-org/gitlab/-/issues/542166).
+
+Note that we are currently migrating the dashboard layout framework components to GitLab UI as part of issue [#542162](https://gitlab.com/gitlab-org/gitlab/-/issues/542162).
+During this transition period, components may be located in either the legacy system or in GitLab UI.
 
 ## Overview
 

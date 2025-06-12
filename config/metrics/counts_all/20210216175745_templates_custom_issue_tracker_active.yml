@@ -2,7 +2,7 @@
 data_category: optional
 key_path: counts.templates_custom_issue_tracker_active
 description: Count of active service templates for a Custom Issue Tracker
-product_group: import_and_integrate
+product_group: import
 product_categories:
 - integrations
 value_type: number

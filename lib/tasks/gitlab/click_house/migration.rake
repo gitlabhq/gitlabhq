@@ -4,6 +4,29 @@ click_house_database_names = %i[main]
 
 namespace :gitlab do
   namespace :clickhouse do
+    namespace :drop do
+      click_house_database_names.each do |database|
+        desc "GitLab | ClickHouse | Drop the #{database} database (options: VERSION=x, VERBOSE=false, SCOPE=y)"
+        task database, [:skip_unless_configured] => :environment do |_t, args|
+          if args[:skip_unless_configured] && !::ClickHouse::Client.database_configured?(database)
+            puts "The '#{database}' ClickHouse database is not configured, cannot drop"
+            next
+          end
+
+          drop_db(database)
+        end
+      end
+    end
+
+    namespace :create do
+      click_house_database_names.each do |database|
+        desc "GitLab | ClickHouse | Create the #{database} database (options: VERSION=x, VERBOSE=false, SCOPE=y)"
+        task database, :environment do
+          create_db(database)
+        end
+      end
+    end
+
     namespace :migrate do
       click_house_database_names.each do |database|
         desc "GitLab | ClickHouse | Migrate the #{database} database (options: VERSION=x, VERBOSE=false, SCOPE=y)"
@@ -36,7 +59,37 @@ namespace :gitlab do
       end
     end
 
+    desc 'GitLab | ClickHouse | Drop the databases'
+    task :drop, [:skip_unless_configured] => :environment do |_t, args|
+      click_house_database_names.each do |database|
+        puts "Running gitlab:clickhouse:drop:#{database} rake task"
+        Rake::Task["gitlab:clickhouse:drop:#{database}"].invoke(args[:skip_unless_configured])
+      end
+    end
+
+    desc 'GitLab | ClickHouse | Create the databases'
+    task :create, [:skip_unless_configured] => :environment do
+      click_house_database_names.each do |database|
+        puts "Running gitlab:clickhouse:create:#{database} rake task"
+        Rake::Task["gitlab:clickhouse:create:#{database}"].invoke
+      end
+    end
+
     private
+
+    def drop_db(database)
+      db = ClickHouse::Client.configuration.databases[database]
+      ClickHouse::Client.configuration.databases[:default] = db.with_default_database
+
+      ClickHouse::Client.execute("DROP DATABASE IF EXISTS #{db.database}", :default)
+    end
+
+    def create_db(database)
+      main_db = ClickHouse::Client.configuration.databases[database]
+      ClickHouse::Client.configuration.databases[:default] = main_db.with_default_database
+
+      ClickHouse::Client.execute("CREATE DATABASE IF NOT EXISTS #{main_db.database}", :default)
+    end
 
     def check_target_version
       return unless target_version

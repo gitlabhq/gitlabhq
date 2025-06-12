@@ -1658,6 +1658,22 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
             is_expected.to be_falsey
           end
         end
+
+        context 'when ref is ambiguous' do
+          let(:merge_request) do
+            create(:merge_request, source_branch: 'ambiguous', source_project: project, target_branch: 'master', target_project: project)
+          end
+
+          before do
+            repository = project.repository
+            repository.add_branch(user, 'ambiguous', 'feature')
+            repository.add_tag(user, 'ambiguous', 'master')
+          end
+
+          it 'returns false if source or target branch ref is ambiguous' do
+            is_expected.to be_falsey
+          end
+        end
       end
 
       context 'when protect_merge_request_pipelines setting is disabled' do

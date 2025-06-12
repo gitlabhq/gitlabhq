@@ -1,7 +1,7 @@
 ---
 key_path: counts.projects_inheriting_google_play_active
 description: Count of active projects inheriting integrations for Google Play
-product_group: import_and_integrate
+product_group: import
 product_categories:
 - integrations
 value_type: number

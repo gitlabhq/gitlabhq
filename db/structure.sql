@@ -21491,7 +21491,7 @@ CREATE TABLE project_settings (
     pages_primary_domain text,
     extended_prat_expiry_webhooks_execute boolean DEFAULT false NOT NULL,
     merge_request_title_regex text,
-    protect_merge_request_pipelines boolean DEFAULT false NOT NULL,
+    protect_merge_request_pipelines boolean DEFAULT true NOT NULL,
     auto_duo_code_review_enabled boolean DEFAULT false NOT NULL,
     model_prompt_cache_enabled boolean,
     web_based_commit_signing_enabled boolean DEFAULT false NOT NULL,
@@ -26454,6 +26454,7 @@ CREATE TABLE zoekt_nodes (
     usable_storage_bytes bigint DEFAULT 0 NOT NULL,
     usable_storage_bytes_locked_until timestamp with time zone,
     schema_version smallint DEFAULT 0 NOT NULL,
+    services smallint[] DEFAULT '{0}'::smallint[] NOT NULL,
     CONSTRAINT check_32f39efba3 CHECK ((char_length(search_base_url) <= 1024)),
     CONSTRAINT check_38c354a3c2 CHECK ((char_length(index_base_url) <= 1024))
 );

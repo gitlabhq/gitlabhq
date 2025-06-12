@@ -139,7 +139,6 @@ Performance/StringIdentifierArgument:
     - 'spec/lib/gitlab/hook_data/merge_request_builder_spec.rb'
     - 'spec/lib/gitlab/import_export/project/relation_factory_spec.rb'
     - 'spec/lib/gitlab/runtime_spec.rb'
-    - 'spec/migrations/20240124043507_migrate_sidekiq_queued_and_future_jobs_spec.rb'
     - 'spec/models/appearance_spec.rb'
     - 'spec/models/badge_spec.rb'
     - 'spec/models/badges/project_badge_spec.rb'

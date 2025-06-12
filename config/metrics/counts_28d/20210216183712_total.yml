@@ -2,7 +2,7 @@
 data_category: optional
 key_path: usage_activity_by_stage_monthly.manage.projects_imported.total
 description: Count of all imported projects
-product_group: import_and_integrate
+product_group: import
 product_categories:
 - importers
 value_type: number

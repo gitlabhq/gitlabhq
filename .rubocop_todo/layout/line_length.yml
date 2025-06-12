@@ -1691,7 +1691,6 @@ Layout/LineLength:
     - 'ee/spec/services/quick_actions/interpret_service_spec.rb'
     - 'ee/spec/services/requirements_management/export_csv_service_spec.rb'
     - 'ee/spec/services/resource_events/change_weight_service_spec.rb'
-    - 'ee/spec/services/search/snippet_service_spec.rb'
     - 'ee/spec/services/security/ingestion/finding_map_collection_spec.rb'
     - 'ee/spec/services/security/ingestion/ingest_report_service_spec.rb'
     - 'ee/spec/services/security/ingestion/ingest_report_slice_service_spec.rb'

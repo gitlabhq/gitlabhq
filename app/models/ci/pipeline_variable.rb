@@ -5,6 +5,7 @@ module Ci
     include Ci::Partitionable
     include Ci::HasVariable
     include Ci::RawVariable
+    include Ci::ProjectsWithVariablesQuery
 
     before_validation :ensure_project_id
 

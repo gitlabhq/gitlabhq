@@ -2,7 +2,7 @@
 data_category: optional
 key_path: usage_activity_by_stage.manage.projects_imported.manifest
 description: Distinct count of users that imported projects using Manifest file
-product_group: import_and_integrate
+product_group: import
 product_categories:
 - importers
 value_type: number

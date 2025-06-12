@@ -173,6 +173,13 @@ class LimitedWorker
 end
 ```
 
+{{< alert type="warning" >}}
+
+Use only boolean feature flags (fully on/off) when rolling out the concurrency limit.
+Percentage-based rollouts with `Feature.current_request` can cause inconsistent behavior.
+
+{{< /alert >}}
+
 Alternatively, you can set a fixed limit directly:
 
 ```ruby

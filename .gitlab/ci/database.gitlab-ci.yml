@@ -85,7 +85,7 @@ db:rollback:
   script:
     - |
       function db_rollback() {
-        bundle exec rake db:migrate VERSION=20231220225325 # First 16-9-stable-ee migration
+        bundle exec rake db:migrate VERSION=20240116205430 # First 16-11-stable-ee migration
         bundle exec rake db:migrate
       }
 

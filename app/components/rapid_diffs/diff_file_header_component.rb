@@ -10,6 +10,12 @@ module RapidDiffs
       @additional_menu_items = additional_menu_items
     end
 
+    def file_title_chunks
+      parts = @diff_file.file_path.split('/')
+      last = parts.pop
+      { path_parts: parts, filename: last }
+    end
+
     def copy_path_button
       clipboard_button(
         text: @diff_file.file_path,

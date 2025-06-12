@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillNugetNormalizedVersion, schema: 20231220225325,
+RSpec.describe Gitlab::BackgroundMigration::BackfillNugetNormalizedVersion, schema: 20240116205430,
   feature_category: :package_registry do
   let(:packages_nuget_metadata) { table(:packages_nuget_metadata) }
   let(:versions) do

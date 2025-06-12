@@ -2,7 +2,7 @@
 data_category: optional
 key_path: usage_activity_by_stage_monthly.manage.project_imports.total
 description: Total count of projects imported
-product_group: import_and_integrate
+product_group: import
 value_type: number
 status: active
 milestone: "14.0"

@@ -101,7 +101,7 @@
     - "\n" # Select: [namespace, project, user]
     - "\n" # Select (add props): None! Continue to next step!
     - "\n" # Skip MR URL
-    - "\n" # Select core_platform:manage:import_and_integrate
+    - "\n" # Select core_platform:manage:import
     - " \n" # Select product category
     - "\n" # Select [free, premium, ultimate]
     - "\n" # Create file

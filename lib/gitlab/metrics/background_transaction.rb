@@ -46,7 +46,7 @@ module Gitlab
       private
 
       def current_context
-        Labkit::Context.current
+        ::Labkit::Context.current
       end
 
       def feature_category

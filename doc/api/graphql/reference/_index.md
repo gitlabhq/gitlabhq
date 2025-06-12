@@ -28198,6 +28198,7 @@ GPG signature for a signed commit.
 | <a id="groupavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
 | <a id="groupcicdsettings"></a>`ciCdSettings` {{< icon name="warning-solid" >}} | [`CiCdSettings`](#cicdsettings) | **Introduced** in GitLab 17.9. **Status**: Experiment. Namespace CI/CD settings for the namespace. |
 | <a id="groupcomplianceframeworkcoveragesummary"></a>`complianceFrameworkCoverageSummary` {{< icon name="warning-solid" >}} | [`ComplianceFrameworkCoverageSummary`](#complianceframeworkcoveragesummary) | **Introduced** in GitLab 18.1. **Status**: Experiment. Summary of compliance framework coverage in a group and its subgroups. |
+| <a id="groupcompliancerequirementcontrolcoverage"></a>`complianceRequirementControlCoverage` {{< icon name="warning-solid" >}} | [`RequirementControlCoverage`](#requirementcontrolcoverage) | **Introduced** in GitLab 18.1. **Status**: Experiment. Compliance control status summary showing count of passed, failed, and pending controls. |
 | <a id="groupcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the group. |
 | <a id="groupcontainslockedprojects"></a>`containsLockedProjects` | [`Boolean`](#boolean) | Includes at least one project where the repository size exceeds the limit. This only applies to namespaces under Project limit enforcement. |
 | <a id="groupcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of the group creation. |
@@ -39408,6 +39409,18 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="requirementtestreportssort"></a>`sort` | [`Sort`](#sort) | List test reports by sort order. |
+
+### `RequirementControlCoverage`
+
+Compliance control coverage statistics across all requirements.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="requirementcontrolcoveragefailed"></a>`failed` | [`Int!`](#int) | Number of controls that failed compliance checks. |
+| <a id="requirementcontrolcoveragepassed"></a>`passed` | [`Int!`](#int) | Number of controls that passed compliance checks. |
+| <a id="requirementcontrolcoveragepending"></a>`pending` | [`Int!`](#int) | Number of controls pending evaluation. |
 
 ### `RequirementPermissions`
 

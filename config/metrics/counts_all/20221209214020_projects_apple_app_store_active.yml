@@ -1,7 +1,7 @@
 ---
 key_path: counts.projects_apple_app_store_active
 description: Count of projects with active integrations for Apple App Store
-product_group: import_and_integrate
+product_group: import
 product_categories:
 - integrations
 value_type: number

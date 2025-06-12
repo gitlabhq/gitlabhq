@@ -5,7 +5,7 @@ action: keep_all_as_placeholder_user
 identifiers:
 - namespace
 - user
-product_group: import_and_integrate
+product_group: import
 product_categories:
 - importers
 milestone: '17.10'

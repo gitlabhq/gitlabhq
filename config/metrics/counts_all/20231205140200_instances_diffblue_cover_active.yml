@@ -2,7 +2,7 @@
 data_category: optional
 key_path: counts.instances_diffblue_cover_active
 description: Count of active instance-level integrations for Diffblue Cover
-product_group: import_and_integrate
+product_group: import
 value_type: number
 status: active
 time_frame: all

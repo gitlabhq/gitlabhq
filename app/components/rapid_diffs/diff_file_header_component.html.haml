@@ -33,7 +33,13 @@
             = new_path
         - else
           %h2.rd-diff-file-title{ id: heading_id }><
-            = @diff_file.file_path
+            - chunks = file_title_chunks
+            - chunks[:path_parts].each do |part|
+              = part
+              = '/'
+              -# allow paths to wrap around '/' symbols for better visuals
+              %wbr><
+            = chunks[:filename]
           - if @diff_file.deleted_file?
             %span.rd-diff-file-deleted><= _("deleted")
           = copy_path_button

@@ -477,7 +477,7 @@ describe('Markdown field header component', () => {
       await findFindInput().vm.$emit('keyup', { target: { value: 'my-text' } });
       await nextTick();
 
-      expect(findFindAndReplaceBar().text()).toBe('0 of 0');
+      expect(findFindAndReplaceBar().text()).toBe('No records');
 
       // Text that matches
       await findFindInput().vm.$emit('keyup', { target: { value: 'lorem' } });

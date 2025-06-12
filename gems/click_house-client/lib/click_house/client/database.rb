@@ -33,6 +33,16 @@ module ClickHouse
           'X-ClickHouse-Format' => 'JSON' # always return JSON data
         }.freeze
       end
+
+      def with_default_database
+        self.class.new(
+          database: 'default',
+          url: @url,
+          username: @username,
+          password: @password,
+          variables: @variables.merge(database: 'default')
+        )
+      end
     end
   end
 end

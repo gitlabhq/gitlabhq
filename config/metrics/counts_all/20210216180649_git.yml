@@ -2,7 +2,7 @@
 data_category: optional
 key_path: usage_activity_by_stage.manage.project_imports.git
 description: Count of projects imported by URL
-product_group: import_and_integrate
+product_group: import
 product_categories:
 - importers
 value_type: number

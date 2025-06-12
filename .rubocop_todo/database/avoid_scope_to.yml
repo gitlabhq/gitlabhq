@@ -4,7 +4,6 @@ Database/AvoidScopeTo:
   Exclude:
     - 'lib/gitlab/background_migration/backfill_catalog_resource_version_sem_ver.rb'
     - 'lib/gitlab/background_migration/backfill_default_organization_owners_again.rb'
-    - 'lib/gitlab/background_migration/backfill_default_organization_users.rb'
     - 'lib/gitlab/background_migration/backfill_epic_basic_fields_to_work_item_record.rb'
     - 'lib/gitlab/background_migration/backfill_epic_issues_into_work_item_parent_links.rb'
     - 'lib/gitlab/background_migration/backfill_events_sharding_key.rb'
@@ -28,7 +27,6 @@ Database/AvoidScopeTo:
     - 'lib/gitlab/background_migration/backfill_subscription_add_on_purchases_started_at.rb'
     - 'lib/gitlab/background_migration/backfill_users_color_mode_id.rb'
     - 'lib/gitlab/background_migration/backfill_vs_code_settings_settings_context_hash.rb'
-    - 'lib/gitlab/background_migration/backfill_vs_code_settings_uuid.rb'
     - 'lib/gitlab/background_migration/backfill_vs_code_settings_version.rb'
     - 'lib/gitlab/background_migration/backfill_vulnerability_reads_cluster_agent.rb'
     - 'lib/gitlab/background_migration/backup_and_remove_notes_with_null_noteable_type.rb'
@@ -44,7 +42,6 @@ Database/AvoidScopeTo:
     - 'lib/gitlab/background_migration/destroy_invalid_group_members.rb'
     - 'lib/gitlab/background_migration/destroy_invalid_members.rb'
     - 'lib/gitlab/background_migration/destroy_invalid_project_members.rb'
-    - 'lib/gitlab/background_migration/drop_vulnerabilities_without_finding_id.rb'
     - 'lib/gitlab/background_migration/encrypt_ci_trigger_token.rb'
     - 'lib/gitlab/background_migration/expire_o_auth_tokens.rb'
     - 'lib/gitlab/background_migration/fix_bad_sharding_key_id_on_project_ci_runners.rb'

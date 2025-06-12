@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.integrations.i_integrations_gitlab_for_slack_app_deployment_notification_weekly
 description: Calculated unique users to trigger a Slack message by performing a deployment by week
-product_group: import_and_integrate
+product_group: import
 value_type: number
 status: active
 milestone: "15.6"

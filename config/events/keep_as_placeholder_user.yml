@@ -12,7 +12,7 @@ additional_properties:
     description: nil (for related placeholder events, this is the reassigned user id)
   import_type:
     description: the import source e.g. gitlab_migration, github, bitbucket
-product_group: import_and_integrate
+product_group: import
 product_categories:
 - importers
 milestone: '17.10'

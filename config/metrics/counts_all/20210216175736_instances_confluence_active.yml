@@ -2,7 +2,7 @@
 data_category: optional
 key_path: counts.instances_confluence_active
 description: Count of active instance-level integrations for Confluence
-product_group: import_and_integrate
+product_group: import
 product_categories:
 - integrations
 value_type: number

@@ -38,7 +38,7 @@
     "gitaly_git",
     "global_search",
     "hosted_runners",
-    "import_and_integrate",
+    "import",
     "infrastructure",
     "knowledge",
     "mlops",

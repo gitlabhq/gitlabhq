@@ -93,4 +93,12 @@ RSpec.describe Ci::JobVariable, feature_category: :continuous_integration do
       let!(:model) { create(:ci_job_variable, project_id: parent.id) }
     end
   end
+
+  describe 'projects_with_pipeline_variables_query concern' do
+    def create_variable(project)
+      create(:ci_job_variable, job: create(:ci_build, project: project))
+    end
+
+    it_behaves_like 'projects_with_variables_query'
+  end
 end

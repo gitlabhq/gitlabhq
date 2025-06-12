@@ -2,7 +2,7 @@
 data_category: optional
 key_path: usage_activity_by_stage_monthly.manage.issues_imported.fogbugz
 description: Count of projects imported from Fogbugz
-product_group: import_and_integrate
+product_group: import
 product_categories:
 - importers
 value_type: number

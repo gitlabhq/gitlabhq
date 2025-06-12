@@ -56,14 +56,32 @@ class ProjectCiCdSetting < ApplicationRecord
   chronic_duration_attr :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval
   chronic_duration_attr_writer :delete_pipelines_in_human_readable, :delete_pipelines_in_seconds
 
+  scope :for_namespace, ->(namespace) { joins(:project).where({ projects: { namespace: namespace } }) }
   scope :for_project, ->(ids) { where(project_id: ids) }
   scope :order_project_id_asc, -> { order(project_id: :asc) }
   scope :configured_to_delete_old_pipelines, -> do
     where.not(delete_pipelines_in_seconds: nil)
   end
+  scope :with_pipeline_variables_enabled, -> do
+    where.not(pipeline_variables_minimum_override_role: NO_ONE_ALLOWED_ROLE)
+  end
 
   def self.pluck_project_id(limit)
     limit(limit).pluck(:project_id)
+  end
+
+  def self.bulk_restrict_pipeline_variables!(project_ids:)
+    for_project(project_ids).update_all(pipeline_variables_minimum_override_role: NO_ONE_ALLOWED_ROLE)
+  end
+
+  def self.project_ids_not_using_variables(settings_relation, limit)
+    project_ids = settings_relation.limit(limit).pluck(:project_id)
+
+    projects_with_vars =
+      Ci::PipelineVariable.projects_with_variables(project_ids, limit) +
+      Ci::JobVariable.projects_with_variables(project_ids, limit)
+
+    project_ids - projects_with_vars
   end
 
   def keep_latest_artifacts_available?

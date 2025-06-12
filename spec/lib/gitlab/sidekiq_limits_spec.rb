@@ -22,21 +22,23 @@ RSpec.describe Gitlab::SidekiqLimits, feature_category: :scalability do
       end
     end
 
-    context 'when the worker matches a rule selector' do
-      let(:worker_name) { 'PipelineProcessWorker' }
-
-      it 'returns limits' do
+    context 'when the worker is non-urgent' do
+      it 'returns catchall limits' do
         limits = described_class.limits_for(worker_name)
-        expect(limits.map(&:name)).to include(:main_db_duration_limit_per_worker, :ci_db_duration_limit_per_worker)
-        expect(limits.map(&:threshold).uniq).to eq([3000])
+        expect(limits.map(&:name)).to include(:main_db_duration_limit_per_worker, :ci_db_duration_limit_per_worker,
+          :sec_db_duration_limit_per_worker)
+        expect(limits.map(&:threshold).uniq).to eq([described_class::DEFAULT_DB_DURATION_THRESHOLD_SECONDS])
       end
     end
 
-    context 'when the worker is a generic worker' do
-      it 'returns catchall limits' do
+    context 'when the worker matches a rule selector' do
+      let(:worker_name) { 'PipelineProcessWorker' } # high urgency worker
+
+      it 'returns limits' do
         limits = described_class.limits_for(worker_name)
-        expect(limits.map(&:name)).to include(:main_db_duration_limit_per_worker, :ci_db_duration_limit_per_worker)
-        expect(limits.map(&:threshold).uniq).to eq([1000])
+        expect(limits.map(&:name)).to include(:main_db_duration_limit_per_worker, :ci_db_duration_limit_per_worker,
+          :sec_db_duration_limit_per_worker)
+        expect(limits.map(&:threshold).uniq).to eq([described_class::HIGH_URGENCY_DB_DURATION_THRESHOLD_SECONDS])
       end
     end
 

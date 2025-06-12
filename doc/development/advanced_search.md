@@ -1863,9 +1863,9 @@ New scopes must add visibility specs to ensure proper access control.
 To test that permissions are properly enforced, add tests using the [`'search respects visibility'` shared example](https://gitlab.com/gitlab-org/gitlab/-/blob/a489ad0fe4b4d1e392272736b020cf9bd43646da/ee/spec/support/shared_examples/services/search_service_shared_examples.rb)
 in the EE specs:
 
-- `ee/spec/services/search/global_service_spec.rb`
-- `ee/spec/services/search/group_service_spec.rb`
-- `ee/spec/services/search/project_service_spec.rb`
+- `ee/spec/services/ee/search/global_service_spec.rb`
+- `ee/spec/services/ee/search/group_service_spec.rb`
+- `ee/spec/services/ee/search/project_service_spec.rb`
 
 ## Zero-downtime reindexing with multiple indices
 

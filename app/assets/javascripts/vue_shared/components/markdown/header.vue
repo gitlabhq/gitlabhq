@@ -171,6 +171,10 @@ export default {
       );
     },
     findAndReplace_MatchCountText() {
+      if (!this.findAndReplace.totalMatchCount) {
+        return s__('MarkdownEditor|No records');
+      }
+
       return sprintf(s__('MarkdownEditor|%{currentHighlight} of %{totalHighlights}'), {
         currentHighlight: this.findAndReplace.highlightedMatchIndex,
         totalHighlights: this.findAndReplace.totalMatchCount,

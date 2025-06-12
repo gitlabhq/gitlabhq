@@ -1034,6 +1034,37 @@ RSpec.shared_examples 'uploads a package file' do
         )
       end
 
+      context 'with X-Checksum-Deploy header' do
+        context 'when X-Checksum-Deploy header is "true"' do
+          before do
+            headers_with_token['X-Checksum-Deploy'] = 'true'
+          end
+
+          it 'returns not found without creating package or package file' do
+            expect { subject }
+              .to not_change { project.packages.count }
+              .and not_change { Packages::PackageFile.count }
+
+            expect(response).to have_gitlab_http_status(:not_found)
+            expect(json_response['message']).to eq('404 Non checksum storage Not Found')
+          end
+        end
+
+        context 'when X-Checksum-Deploy header has other value' do
+          before do
+            headers_with_token['X-Checksum-Deploy'] = 'false'
+          end
+
+          it 'creates package and stores package file' do
+            expect { subject }
+              .to change { project.packages.count }.by(1)
+              .and change { Packages::PackageFile.count }.by(1)
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+      end
+
       context 'with existing package' do
         let!(:existing_package) do
           create(:conan_package, name: recipe_path_name, version: recipe_path_version, project: project)

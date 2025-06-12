@@ -7,7 +7,7 @@ identifiers:
 - project
 - namespace
 - user
-product_group: import_and_integrate
+product_group: import
 product_categories:
 - acquisition
 milestone: '16.6'

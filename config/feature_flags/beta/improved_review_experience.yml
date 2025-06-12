@@ -6,4 +6,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/535461
 milestone: '17.11'
 group: group::code review
 type: beta
-default_enabled: false
+default_enabled: true
