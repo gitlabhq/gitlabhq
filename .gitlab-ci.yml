@@ -3,6 +3,7 @@ stages:
   - preflight
   - prepare
   - build-images
+  - release-environments
   - fixtures
   - lint
   - test-frontend
@@ -14,7 +15,6 @@ stages:
   - pre-merge
   - pages
   - notify
-  - release-environments
   - benchmark
   - ai-gateway
 
