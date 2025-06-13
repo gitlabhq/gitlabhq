@@ -1,3 +1,3 @@
-import { mountApplications } from '~/pages/shared/wikis/show';
+import { mountApplications } from '~/wikis/show';
 
 mountApplications();

@@ -1,6 +1,6 @@
 import { escape } from 'lodash';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import Wikis from '~/pages/shared/wikis/wikis';
+import Wikis from '~/wikis/wikis';
 import Tracking from '~/tracking';
 
 describe('Wikis', () => {

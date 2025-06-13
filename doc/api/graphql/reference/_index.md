@@ -12346,6 +12346,7 @@ Input type: `UserPreferencesUpdateInput`
 | <a id="mutationuserpreferencesupdateprojectssort"></a>`projectsSort` | [`ProjectSort`](#projectsort) | Sort order for projects. |
 | <a id="mutationuserpreferencesupdateuseworkitemsview"></a>`useWorkItemsView` | [`Boolean`](#boolean) | Use work item view instead of legacy issue view. |
 | <a id="mutationuserpreferencesupdatevisibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
+| <a id="mutationuserpreferencesupdateworkitemsdisplaysettings"></a>`workItemsDisplaySettings` {{< icon name="warning-solid" >}} | [`JSON`](#json) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.1. |
 
 #### Fields
 
@@ -41444,6 +41445,7 @@ Returns [`String`](#string).
 | <a id="userpreferencestimezone"></a>`timezone` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Timezone of the user. |
 | <a id="userpreferencesuseworkitemsview"></a>`useWorkItemsView` | [`Boolean`](#boolean) | Use work item view instead of legacy issue view. |
 | <a id="userpreferencesvisibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
+| <a id="userpreferencesworkitemsdisplaysettings"></a>`workItemsDisplaySettings` | [`JSON!`](#json) | Display settings for the work item lists. |
 
 ### `UserStatus`
 

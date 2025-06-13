@@ -53,6 +53,11 @@ module Types
       description: 'Timezone of the user.',
       experiment: { milestone: '17.7' }
 
+    field :work_items_display_settings,
+      type: GraphQL::Types::JSON,
+      null: false,
+      description: 'Display settings for the work item lists.'
+
     def issues_sort
       user_preference.issues_sort&.to_sym
     end

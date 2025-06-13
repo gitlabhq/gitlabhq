@@ -66,7 +66,7 @@ gem 'responders', '~> 3.0', feature_category: :shared
 gem 'sprockets', '~> 3.7.0', feature_category: :shared
 gem 'sprockets-rails', '~>  3.5.1', feature_category: :shared
 
-gem 'view_component', '~> 3.21.0', feature_category: :shared
+gem 'view_component', '~> 3.23.2', feature_category: :shared
 
 # Supported DBs
 gem 'pg', '~> 1.5.6', feature_category: :database

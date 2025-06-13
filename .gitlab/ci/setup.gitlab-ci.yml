@@ -150,8 +150,8 @@ detect-tests:
 
         tooling/bin/predictive_tests
 
-        filter_rspec_matched_foss_tests ${RSPEC_MATCHING_TESTS_PATH} ${RSPEC_MATCHING_TESTS_FOSS_PATH};
-        filter_rspec_matched_ee_tests ${RSPEC_MATCHING_TESTS_PATH} ${RSPEC_MATCHING_TESTS_EE_PATH};
+        filter_rspec_matched_foss_tests ${RSPEC_MATCHING_TEST_FILES_PATH} ${RSPEC_MATCHING_TESTS_FOSS_PATH};
+        filter_rspec_matched_ee_tests ${RSPEC_MATCHING_TEST_FILES_PATH} ${RSPEC_MATCHING_TESTS_EE_PATH};
 
         echoinfo 'Changed files:'
         echoinfo "$(tr ' ' '\n' < $RSPEC_CHANGED_FILES_PATH)"
@@ -177,7 +177,7 @@ detect-tests:
       - ${RSPEC_MATCHING_JS_FILES_PATH}
       - ${RSPEC_MATCHING_TESTS_EE_PATH}
       - ${RSPEC_MATCHING_TESTS_FOSS_PATH}
-      - ${RSPEC_MATCHING_TESTS_PATH}
+      - ${RSPEC_MATCHING_TEST_FILES_PATH}
       - ${RSPEC_VIEWS_INCLUDING_PARTIALS_PATH}
 
 # This job is used for evaluating rspec test mappings created based on coverage strategy

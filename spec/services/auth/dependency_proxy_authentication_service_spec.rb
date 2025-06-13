@@ -42,6 +42,18 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
       end
     end
 
+    shared_examples 'a token with sufficient authentication abilities' do |token_type:|
+      [described_class::REQUIRED_CI_ABILITIES,
+        described_class::REQUIRED_USER_ABILITIES,
+        described_class::REQUIRED_USER_VR_ABILITIES].each do |abilities|
+        context "with #{abilities}" do
+          let(:authentication_abilities) { abilities }
+
+          it_behaves_like 'returning a token with an encoded field', token_type
+        end
+      end
+    end
+
     context 'dependency proxy is not enabled' do
       before do
         stub_config(dependency_proxy: { enabled: false })
@@ -64,7 +76,9 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
 
       it_behaves_like 'returning', status: 403, message: 'access forbidden'
 
-      [described_class::REQUIRED_USER_ABILITIES, described_class::REQUIRED_CI_ABILITIES].each do |abilities|
+      [described_class::REQUIRED_CI_ABILITIES,
+        described_class::REQUIRED_USER_ABILITIES,
+        described_class::REQUIRED_USER_VR_ABILITIES].each do |abilities|
         context "with #{abilities}" do
           let(:authentication_abilities) { abilities }
 
@@ -81,17 +95,7 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
 
       it_behaves_like 'returning', status: 403, message: 'access forbidden'
 
-      context 'with the required abilities' do
-        let(:authentication_abilities) { described_class::REQUIRED_USER_ABILITIES }
-
-        [described_class::REQUIRED_USER_ABILITIES, described_class::REQUIRED_CI_ABILITIES].each do |abilities|
-          context "with #{abilities}" do
-            let(:authentication_abilities) { abilities }
-
-            it_behaves_like 'returning a token with an encoded field', 'deploy_token'
-          end
-        end
-      end
+      it_behaves_like 'a token with sufficient authentication abilities', token_type: 'deploy_token'
 
       context 'when the the deploy token is restricted with external_authorization' do
         before do
@@ -130,16 +134,7 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
         it_behaves_like 'returning', status: 403, message: 'access forbidden'
       end
 
-      context 'with sufficient authentication abilities' do
-        [described_class::REQUIRED_USER_ABILITIES,
-          described_class::REQUIRED_CI_ABILITIES].each do |abilities|
-          context "with #{abilities}" do
-            let(:authentication_abilities) { abilities }
-
-            it_behaves_like 'returning a token with an encoded field', 'personal_access_token'
-          end
-        end
-      end
+      it_behaves_like 'a token with sufficient authentication abilities', token_type: 'personal_access_token'
     end
 
     context 'with a group access token' do
@@ -157,19 +152,7 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
         it_behaves_like 'returning', status: 403, message: 'access forbidden'
       end
 
-      context 'with sufficient authentication abilities' do
-        [described_class::REQUIRED_USER_ABILITIES,
-          described_class::REQUIRED_CI_ABILITIES].each do |abilities|
-          context "with #{abilities}" do
-            let(:authentication_abilities) { abilities }
-            let(:params) { { raw_token: token.token } }
-
-            subject { service.execute(authentication_abilities: authentication_abilities) }
-
-            it_behaves_like 'returning a token with an encoded field', 'group_access_token'
-          end
-        end
-      end
+      it_behaves_like 'a token with sufficient authentication abilities', token_type: 'group_access_token'
     end
 
     context 'all other user types' do
@@ -183,17 +166,7 @@ RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :vi
 
           it_behaves_like 'returning', status: 403, message: 'access forbidden'
 
-          context 'with the required authentication abilities' do
-            [described_class::REQUIRED_USER_ABILITIES,
-              described_class::REQUIRED_CI_ABILITIES].each do |abilities|
-              context "with #{abilities}" do
-                let(:authentication_abilities) { abilities }
-                let(:params) { { raw_token: token.token } }
-
-                it_behaves_like 'returning a token with an encoded field', 'user_id'
-              end
-            end
-          end
+          it_behaves_like 'a token with sufficient authentication abilities', token_type: 'user_id'
         end
       end
     end

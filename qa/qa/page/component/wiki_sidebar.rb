@@ -9,11 +9,11 @@ module QA
         def self.included(base)
           super
 
-          base.view 'app/assets/javascripts/pages/shared/wikis/components/wiki_sidebar_entries.vue' do
+          base.view 'app/assets/javascripts/wikis/components/wiki_sidebar_entries.vue' do
             element 'view-all-pages-button'
           end
 
-          base.view 'app/assets/javascripts/pages/shared/wikis/components/wiki_sidebar_entry.vue' do
+          base.view 'app/assets/javascripts/wikis/components/wiki_sidebar_entry.vue' do
             element 'wiki-page-link'
             element 'wiki-directory-content'
             element 'wiki-dir-page-link'

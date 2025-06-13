@@ -85,6 +85,7 @@ export default {
     :action-primary="actionPrimary"
     :action-secondary="$options.modal.actionSecondary"
     :title="s__('ApplicationSettings|Change setting and approve pending users?')"
+    :no-focus-on-show="true"
     @hide="$emit('hide')"
     @primary="$emit('primary')"
     @secondary="$emit('secondary')"

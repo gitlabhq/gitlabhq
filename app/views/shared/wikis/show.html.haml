@@ -45,7 +45,8 @@
     noteable_type: @noteable_type,
     is_container_archived: @wiki.container.is_a?(Project) ? @wiki.container.archived : false,
     notes_filters: UserPreference.notes_filters.to_json,
-    report_abuse_path: add_category_abuse_reports_path
+    report_abuse_path: add_category_abuse_reports_path,
+    container_name: @wiki.container.name
   }
 }
 

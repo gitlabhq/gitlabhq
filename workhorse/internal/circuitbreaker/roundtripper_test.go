@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/alicebob/miniredis/v2"
 	"github.com/stretchr/testify/assert"
@@ -59,7 +60,7 @@ func TestRoundTripCircuitBreaker(t *testing.T) {
 					Header:     delegateResponseHeader,
 				},
 			}
-			rt := NewRoundTripper(mockRT, redisConfig)
+			rt := NewRoundTripper(mockRT, &config.DefaultCircuitBreakerConfig, redisConfig)
 
 			reqBody, err := json.Marshal(map[string]string{"key_id": "test-user-" + tc.name})
 			require.NoError(t, err)
@@ -67,7 +68,7 @@ func TestRoundTripCircuitBreaker(t *testing.T) {
 			require.NoError(t, err)
 
 			// Make enough requests to trip the circuit breaker
-			for range ConsecutiveFailures + 1 {
+			for range config.DefaultCircuitBreakerConfig.ConsecutiveFailures + 1 {
 				resp, _ := rt.RoundTrip(req)
 
 				body, err := io.ReadAll(resp.Body)
@@ -93,7 +94,7 @@ func TestRoundTripCircuitBreaker(t *testing.T) {
 				resp.Body = io.NopCloser(bytes.NewBuffer(body))
 
 				circuitBreakerHeader := http.Header{
-					"Retry-After": []string{Timeout.String()},
+					"Retry-After": []string{(time.Duration(config.DefaultCircuitBreakerConfig.Timeout) * time.Second).String()},
 				}
 				assert.Equal(t, http.StatusTooManyRequests, resp.StatusCode)
 				assert.Equal(t, "This endpoint has been requested too many times. Try again later.", string(body))
@@ -192,7 +193,7 @@ func TestRedisConfigErrors(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			rt := NewRoundTripper(mockRT, tc.redisConfig)
+			rt := NewRoundTripper(mockRT, &config.DefaultCircuitBreakerConfig, tc.redisConfig)
 
 			req, err := http.NewRequest("GET", "http://example.com", nil)
 			require.NoError(t, err)
@@ -218,7 +219,7 @@ func TestCircuitBreakerNilRedisKey(t *testing.T) {
 	errorResp := delegateErrorResponse()
 	mockRT := &mockRoundTripper{response: errorResp}
 	errorResp.Body.Close()
-	rt := NewRoundTripper(mockRT, redisConfig)
+	rt := NewRoundTripper(mockRT, &config.DefaultCircuitBreakerConfig, redisConfig)
 
 	reqBody, err := json.Marshal(map[string]string{"not_a_key_id": "test-value"})
 	require.NoError(t, err)
@@ -236,7 +237,7 @@ func TestCircuitBreakerRedisKeyException(t *testing.T) {
 	errorResp := delegateErrorResponse()
 	mockRT := &mockRoundTripper{response: errorResp}
 	errorResp.Body.Close()
-	rt := NewRoundTripper(mockRT, redisConfig)
+	rt := NewRoundTripper(mockRT, &config.DefaultCircuitBreakerConfig, redisConfig)
 
 	req, err := http.NewRequest("POST", "http://example.com", &errorReader{})
 	require.NoError(t, err)
@@ -258,7 +259,7 @@ func (e *errorReader) Read(_ []byte) (n int, err error) {
 }
 
 func testCircuitBreakerResponse(t *testing.T, rt http.RoundTripper, req *http.Request, expectedBody string) {
-	for range ConsecutiveFailures + 2 {
+	for range config.DefaultCircuitBreakerConfig.ConsecutiveFailures + 2 {
 		resp, _ := rt.RoundTrip(req)
 
 		body, err := io.ReadAll(resp.Body)

@@ -81,6 +81,49 @@ To open group settings:
    - **Disabled**: The wiki isn't accessible, and cannot be downloaded.
 1. Select **Save changes**.
 
+### Delete the contents of a group wiki
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+You can delete the contents of a group wiki with the Rails console. You can then populate the wiki with new content.
+
+{{< alert type="warning" >}}
+
+This operation deletes all data in the wiki.
+
+{{< /alert >}}
+
+{{< alert type="warning" >}}
+
+This command changes data directly and could be damaging if not run correctly.
+You should run these instructions in a test environment first. Keep a backup of the
+instance ready so you can restore the instance, if necessary.
+
+{{< /alert >}}
+
+To delete all of the data from a group wiki and recreate it in a blank state:
+
+1. [Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Run these commands:
+
+   ```ruby
+   # Enter your group's path
+   g = Group.find_by_full_path('<group-name>')
+
+   # This command deletes the wiki group from the filesystem.
+   g.wiki.repository.remove
+
+   # Refresh the wiki repository state.
+   g.wiki.repository.expire_exists_cache
+   ```
+
+All data from the wiki has been cleared, and the wiki is ready for use.
+
 ## Related topics
 
 - [Wiki settings for administrators](../../../administration/wikis/_index.md)

@@ -135,7 +135,7 @@ For a list of other metrics tables refer to the [Data Models Cheat Sheet](https:
 ### Product Analytics
 
 Internal Analytics is dogfooding the GitLab [Product Analytics](https://www.youtube.com/watch?v=i8Mze9lRZiY?) functionality, which allows you to visualize events as well.
-The [Analytics Dashboards documentation](../../user/analytics/analytics_dashboards.md#create-a-dashboard-by-configuration) explains how to build custom visualizations and dashboards.
+The [Analytics Dashboards documentation](../../user/analytics/analytics_dashboards.md#create-a-dashboard-by-configuration-deprecated) explains how to build custom visualizations and dashboards.
 The custom dashboards accessible [within the GitLab project](https://gitlab.com/gitlab-org/gitlab/-/analytics/dashboards) are defined in a [separate repository](https://gitlab.com/gitlab-org/analytics-section/gitlab-com-dashboards).
 It is possible to build dashboards based on events instrumented via the Internal events system. Only events emitted by the .com installation will be counted in those visualizations.
 

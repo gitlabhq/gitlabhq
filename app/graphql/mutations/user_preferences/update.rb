@@ -46,6 +46,12 @@ module Mutations
         description: 'Default list view for organization groups and projects.',
         experiment: { milestone: '17.2' }
 
+      argument :work_items_display_settings,
+        type: GraphQL::Types::JSON,
+        description: 'Display settings for the work item lists, e.g.: "{ shouldOpenItemsInSidePanel: false }".',
+        required: false,
+        experiment: { milestone: '18.1' }
+
       field :user_preferences,
         Types::UserPreferencesType,
         null: true,
@@ -60,6 +66,12 @@ module Mutations
         end
 
         user_preferences = current_user.user_preference
+        if attributes[:work_items_display_settings].present?
+          existing_settings = user_preferences.work_items_display_settings
+          attributes[:work_items_display_settings] =
+            existing_settings.merge(attributes[:work_items_display_settings])
+        end
+
         user_preferences.update(attributes)
 
         {

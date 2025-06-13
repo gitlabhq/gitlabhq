@@ -3,10 +3,6 @@
   "title": "Work item user preference display settings",
   "type": "object",
   "properties": {
-    "shouldOpenItemsInSidePanel": {
-      "description": "Setting to toggle the drawer capability in listing pages.",
-      "type": "boolean"
-    },
     "hiddenMetadataKeys": {
       "description": "Array of metadata keys that should be hidden in the work item display",
       "type": "array",

@@ -363,14 +363,34 @@ rspec fast_spec_helper:
     # Load fast_spec_helper as well just in case there are no specs available.
     - rspec_section bin/rspec --dry-run spec/fast_spec_helper.rb ${fast_spec_helper_specs}
 
-rspec unit clickhouse:
+rspec unit clickhouse23:
   extends:
     - .rspec-base-pg16-clickhouse23
     - .rails:rules:clickhouse-changes
 
-rspec-ee unit clickhouse:
+rspec-ee unit clickhouse23:
   extends:
     - .rspec-base-pg16-clickhouse23
+    - .rails:rules:ee-only-clickhouse-changes
+
+rspec unit clickhouse24:
+  extends:
+    - .rspec-base-pg16-clickhouse24
+    - .rails:rules:clickhouse-changes
+
+rspec-ee unit clickhouse24:
+  extends:
+    - .rspec-base-pg16-clickhouse24
+    - .rails:rules:ee-only-clickhouse-changes
+
+rspec unit clickhouse25:
+  extends:
+    - .rspec-base-pg16-clickhouse25
+    - .rails:rules:clickhouse-changes
+
+rspec-ee unit clickhouse25:
+  extends:
+    - .rspec-base-pg16-clickhouse25
     - .rails:rules:ee-only-clickhouse-changes
 
 rspec ci-config-validation branch-pipelines:
@@ -467,7 +487,11 @@ rspec:artifact-collector unit:
   needs:
     - job: rspec unit pg16  # 44 jobs
       optional: true
-    - job: rspec unit clickhouse  # 1 job
+    - job: rspec unit clickhouse23 # 1 job
+      optional: true
+    - job: rspec unit clickhouse24 # 1 job
+      optional: true
+    - job: rspec unit clickhouse25 # 1 job
       optional: true
 
 rspec:artifact-collector part-a:
@@ -549,7 +573,11 @@ rspec:artifact-collector ee remainder:
       optional: true
     - job: rspec-ee background_migration pg16  # 3 jobs
       optional: true
-    - job: rspec-ee unit clickhouse  # 1 job
+    - job: rspec-ee unit clickhouse23  # 1 job
+      optional: true
+    - job: rspec-ee unit clickhouse24  # 1 job
+      optional: true
+    - job: rspec-ee unit clickhouse25  # 1 job
       optional: true
     - job: rspec-ee integration pg16  # 9 jobs
       optional: true

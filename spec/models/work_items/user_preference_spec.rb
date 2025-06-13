@@ -79,22 +79,6 @@ RSpec.describe WorkItems::UserPreference, type: :model, feature_category: :team_
         expect(preferences.errors[:display_settings]).to include('must be a valid json schema')
       end
 
-      it 'is valid with a valid display_settings hash' do
-        valid_display_settings = { 'shouldOpenItemsInSidePanel' => true }
-        preferences = described_class.new(namespace: namespace, display_settings: valid_display_settings)
-
-        expect(preferences).to be_valid
-        expect(preferences.display_settings).to eq(valid_display_settings)
-      end
-
-      it 'is invalid with a wrong type as per schema validation' do
-        invalid_display_settings = { 'shouldOpenItemsInSidePanel' => 'string_type' }
-        preferences = described_class.new(namespace: namespace, display_settings: invalid_display_settings)
-
-        expect(preferences).not_to be_valid
-        expect(preferences.errors[:display_settings]).to include('must be a valid json schema')
-      end
-
       context 'with hiddenMetadataKeys property' do
         it 'is valid with an empty hiddenMetadataKeys array' do
           valid_display_settings = { 'hiddenMetadataKeys' => [] }

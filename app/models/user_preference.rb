@@ -40,6 +40,8 @@ class UserPreference < ApplicationRecord
   validates :time_display_format, inclusion: { in: TIME_DISPLAY_FORMATS.values }, presence: true
   validates :extensions_marketplace_opt_in_url, length: { maximum: 512 }
 
+  validates :work_items_display_settings, json_schema: { filename: 'user_preference_work_items_display_settings' }
+
   validate :user_belongs_to_home_organization, if: :home_organization_changed?
 
   attribute :dark_color_scheme_id, default: -> { Gitlab::CurrentSettings.default_syntax_highlighting_theme }

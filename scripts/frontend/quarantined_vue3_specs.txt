@@ -128,7 +128,7 @@ spec/frontend/packages_and_registries/settings/project/settings/components/clean
 spec/frontend/packages_and_registries/settings/project/settings/components/container_expiration_policy_spec.js
 spec/frontend/pages/projects/forks/new/components/project_namespace_spec.js
 spec/frontend/pages/projects/pipeline_schedules/shared/components/interval_pattern_input_spec.js
-spec/frontend/pages/shared/wikis/components/delete_wiki_modal_spec.js
+spec/frontend/wikis/components/delete_wiki_modal_spec.js
 spec/frontend/performance_bar/index_spec.js
 spec/frontend/pipeline_wizard/components/step_spec.js
 spec/frontend/projects/commit/components/form_modal_spec.js

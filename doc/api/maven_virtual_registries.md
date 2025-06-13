@@ -275,6 +275,7 @@ Example response:
     "updated_at": "2024-05-30T12:28:27.855Z",
     "registry_upstream": {
       "id": 1,
+      "registry_id": 1,
       "position": 1
     }
   }
@@ -335,6 +336,7 @@ Example response:
   "updated_at": "2024-05-30T12:28:27.855Z",
   "registry_upstream": {
     "id": 1,
+    "registry_id": 1,
     "position": 1
   }
 }
@@ -382,7 +384,14 @@ Example response:
   "cache_validity_hours": 24,
   "username": "user",
   "created_at": "2024-05-30T12:28:27.855Z",
-  "updated_at": "2024-05-30T12:28:27.855Z"
+  "updated_at": "2024-05-30T12:28:27.855Z",
+  "registry_upstreams": [
+    {
+      "id": 1,
+      "registry_id": 1,
+      "position": 1
+    }
+  ]
 }
 ```
 
@@ -489,6 +498,83 @@ Example request:
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Accept: application/json" \
      --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/upstreams/1"
+```
+
+If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes) status code.
+
+### Associate an upstream with a registry
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) in GitLab 18.1 [with a flag](../administration/feature_flags.md) named `maven_virtual_registry`. Disabled by default.
+
+{{< /history >}}
+
+Associates an existing upstream registry with a Maven virtual registry.
+
+```plaintext
+POST /virtual_registries/packages/maven/registry_upstreams
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `registry_id` | integer | yes | The ID of the Maven virtual registry. |
+| `upstream_id` | integer | yes | The ID of the Maven upstream registry. |
+
+Example request:
+
+```shell
+curl --request POST \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --header "Accept: application/json" \
+     --data '{"registry_id": 1, "upstream_id": 2}' \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/registry_upstreams"
+```
+
+Example response:
+
+```json
+{
+  "id": 5,
+  "registry_id": 1,
+  "upstream_id": 2,
+  "position": 2
+}
+```
+
+### Disassociate an upstream from a registry
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) in GitLab 18.1 [with a flag](../administration/feature_flags.md) named `maven_virtual_registry`. Disabled by default.
+
+{{< /history >}}
+
+Removes the association between an upstream registry and a Maven virtual registry.
+
+{{< alert type="warning" >}}
+
+If this is the last association for the upstream, removal of the association deletes the upstream itself and all its cache entries.
+
+{{< /alert >}}
+
+```plaintext
+DELETE /virtual_registries/packages/maven/registry_upstreams/:id
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of the registry upstream association. |
+
+Example request:
+
+```shell
+curl --request DELETE \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Content-Type: application/json" \
+     --header "Accept: application/json" \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/registry_upstreams/1"
 ```
 
 If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes) status code.

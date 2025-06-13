@@ -394,6 +394,12 @@ Prerequisites:
 Administrators can prevent non-administrators from inviting users to all groups or projects on the instance.
 When you configure this setting, only administrators can invite users to groups or projects on the instance.
 
+{{< alert type="note" >}}
+
+Features such as [sharing](../../user/project/members/sharing_projects_groups.md) or [migrations](../../user/project/import/_index.md) can still allow access to these groups and projects.
+
+{{< /alert >}}
+
 Administrators can also [prevent user invitations to a specific group](../../user/group/manage.md#prevent-invitations-to-a-group).
 
 Prerequisites:

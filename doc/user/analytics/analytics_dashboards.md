@@ -22,8 +22,9 @@ title: Analytics dashboards
 
 {{< /history >}}
 
-Analytics dashboards help you visualize collected data.
-You can use built-in dashboards by GitLab or create your own custom dashboards.
+Analytics dashboards help you visualize collected data on built-in dashboards.
+
+An enhanced dashboard experience is proposed in [epic 13801](https://gitlab.com/groups/gitlab-org/-/epics/13801).
 
 ## Data sources
 
@@ -47,9 +48,18 @@ The following built-in dashboards are available:
 - [**Value Streams Dashboard**](value_streams_dashboard.md) displays metrics related to DevOps performance, security exposure, and workstream optimization.
 - [**AI Impact Dashboard**](ai_impact_analytics.md) displays the impact of AI tools on software development lifecycle (SDLC) metrics for a project or group.
 
-## Custom dashboards
+<!--- start_remove The following content will be removed on remove_date: '2025-07-31' -->
 
-You can [create custom dashboards](#create-a-dashboard-by-configuration) to visualize the metrics that are most relevant to your case.
+## Custom dashboards (deprecated)
+
+{{< alert type="warning" >}}
+
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/497577) in GitLab 17.7
+and is planned for removal in 18.2.
+
+{{< /alert >}}
+
+You can [create custom dashboards](#create-a-dashboard-by-configuration-deprecated) to visualize the metrics that are most relevant to your case.
 
 - Each project can have an unlimited number of dashboards.
   The only limitation might be the [repository size limit](../project/repository/repository_size.md#size-and-storage-limits).
@@ -58,6 +68,8 @@ You can [create custom dashboards](#create-a-dashboard-by-configuration) to visu
 
 Project maintainers can enforce approval rules on dashboard changes with features such as [code owners](../project/codeowners/_index.md) and [approval rules](../project/merge_requests/approvals/rules.md).
 Your dashboard files are versioned in source control with the rest of a project's code.
+
+<!--- end_remove -->
 
 ## View project dashboards
 
@@ -139,7 +151,16 @@ To change the location of project dashboards:
 1. In the **Analytics Dashboards** section, select your dashboard files project.
 1. Select **Save changes**.
 
-## Create a dashboard by configuration
+<!--- start_remove The following content will be removed on remove_date: '2025-07-31' -->
+
+## Create a dashboard by configuration (deprecated)
+
+{{< alert type="warning" >}}
+
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/497577) in GitLab 17.7
+and is planned for removal in 18.2.
+
+{{< /alert >}}
 
 You can create dashboards manually by configuration.
 
@@ -234,6 +255,8 @@ create a `line_chart.yaml` file with the following required fields:
 - type
 - data
 - options
+
+<!--- end_remove -->
 
 ## Dashboard designer
 

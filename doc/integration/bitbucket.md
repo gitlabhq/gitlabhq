@@ -42,15 +42,15 @@ you to use.
    - **Application description**: Optional. Fill this in if you wish.
    - **Callback URL**: (Required in GitLab versions 8.15 and greater)
      The URL to your GitLab installation, such as
-     `https://gitlab.example.com/users/auth/bitbucket/callback`.
-     Leaving this field empty
-     results in an `Invalid redirect_uri` message.
+     `https://gitlab.example.com/users/auth`. Leaving this
+     field empty results in an `Invalid redirect_uri` message.
 
      {{< alert type="warning" >}}
 
      To help prevent an [OAuth 2 covert redirect](https://oauth.net/advisories/2014-1-covert-redirect/)
-     vulnerability in which users' GitLab accounts could be compromised, append `/users/auth`
-     to the end of the Bitbucket authorization callback URL.
+     attack, append `/users/auth` to the end of your Bitbucket authorization callback URL. You must
+     include this authorization endpoint to authenticate with Bitbucket and import data from Bitbucket
+     repositories.
 
      {{< /alert >}}
 
@@ -91,8 +91,7 @@ you to use.
        # label: "Provider name", # optional label for login button, defaults to "Bitbucket"
        app_id: "<bitbucket_app_key>",
        app_secret: "<bitbucket_app_secret>",
-       url: "https://bitbucket.org/",
-       args: { redirect_uri: "https://gitlab.example.com/users/auth/bitbucket/callback" },
+       url: "https://bitbucket.org/"
      }
    ]
    ```
@@ -107,8 +106,7 @@ you to use.
            # label: 'Provider name', # optional label for login button, defaults to "Bitbucket"
            app_id: '<bitbucket_app_key>',
            app_secret: '<bitbucket_app_secret>',
-           url: 'https://bitbucket.org/',
-           args: { redirect_uri: "https://gitlab.example.com/users/auth/bitbucket/callback" },
+           url: 'https://bitbucket.org/'
          }
    ```
 

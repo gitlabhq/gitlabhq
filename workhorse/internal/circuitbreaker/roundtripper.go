@@ -19,40 +19,44 @@ import (
 )
 
 const (
-	Timeout                    = 60 * time.Second  // Timeout is the duration to transition to half-open when open
-	Interval                   = 180 * time.Second // Interval is the duration to clear consecutive failures (and other gobreaker.Counts) when closed
-	MaxRequests                = 1                 // MaxRequests is the number of failed requests to open the circuit breaker when half-open
-	ConsecutiveFailures        = 5                 // ConsecutiveFailures is the number of consecutive failures to open the circuit breaker when closed
 	enableCircuitBreakerHeader = "Enable-Workhorse-Circuit-Breaker"
 	errorMsg                   = "This endpoint has been requested too many times. Try again later."
 )
 
 type roundTripper struct {
-	delegate http.RoundTripper
-	store    *gobreaker.RedisStore
+	delegate            http.RoundTripper
+	store               *gobreaker.RedisStore
+	timeout             time.Duration // Timeout is the duration to transition to half-open when open
+	interval            time.Duration // Interval is the duration to clear consecutive failures (and other gobreaker.Counts) when closed
+	maxRequests         uint32        // MaxRequests is the number of failed requests to open the circuit breaker when half-open
+	consecutiveFailures uint32        // ConsecutiveFailures is the number of consecutive failures to open the circuit breaker when closed
 }
 
 // NewRoundTripper returns a new RoundTripper that wraps the provided RoundTripper with a circuit breaker
-func NewRoundTripper(delegate http.RoundTripper, cfg *config.RedisConfig) http.RoundTripper {
-	if cfg == nil {
+func NewRoundTripper(delegate http.RoundTripper, circuitBreakerConfig *config.CircuitBreakerConfig, redisConfig *config.RedisConfig) http.RoundTripper {
+	if redisConfig == nil {
 		return delegate
 	}
 
-	opt, err := redis.ParseURL(cfg.URL.String())
+	opt, err := redis.ParseURL(redisConfig.URL.String())
 	if err != nil {
 		log.WithError(err).Info("gobreaker: failed to parse redis URL")
 		return delegate
 	}
 
 	return &roundTripper{
-		delegate: delegate,
-		store:    gobreaker.NewRedisStore(opt.Addr),
+		delegate:            delegate,
+		store:               gobreaker.NewRedisStore(opt.Addr),
+		timeout:             time.Duration(circuitBreakerConfig.Timeout) * time.Second,
+		interval:            time.Duration(circuitBreakerConfig.Interval) * time.Second,
+		maxRequests:         circuitBreakerConfig.MaxRequests,
+		consecutiveFailures: circuitBreakerConfig.ConsecutiveFailures,
 	}
 }
 
 // RoundTrip wraps the provided delegate RoundTripper with a circuit breaker.
 func (r roundTripper) RoundTrip(req *http.Request) (res *http.Response, err error) {
-	cb, err := newCircuitBreaker(req, r.store)
+	cb, err := r.newCircuitBreaker(req, r.store)
 	if err != nil {
 		return r.delegate.RoundTrip(req)
 	}
@@ -79,7 +83,7 @@ func (r roundTripper) RoundTrip(req *http.Request) (res *http.Response, err erro
 			Header:     make(http.Header),
 		}
 
-		resp.Header.Set("Retry-After", Timeout.String())
+		resp.Header.Set("Retry-After", r.timeout.String())
 
 		return resp, nil
 	}
@@ -87,7 +91,7 @@ func (r roundTripper) RoundTrip(req *http.Request) (res *http.Response, err erro
 	return nil, executeErr
 }
 
-func newCircuitBreaker(req *http.Request, store *gobreaker.RedisStore) (*gobreaker.DistributedCircuitBreaker[any], error) {
+func (r roundTripper) newCircuitBreaker(req *http.Request, store *gobreaker.RedisStore) (*gobreaker.DistributedCircuitBreaker[any], error) {
 	var st gobreaker.Settings
 
 	key, err := getRedisKey(req)
@@ -95,14 +99,15 @@ func newCircuitBreaker(req *http.Request, store *gobreaker.RedisStore) (*gobreak
 		return nil, err
 	}
 	st.Name = key
-	st.MaxRequests = MaxRequests
-	st.Timeout = Timeout
+	st.MaxRequests = r.maxRequests
+	st.Timeout = r.timeout
+	st.Interval = r.interval
 
 	st.OnStateChange = func(name string, from gobreaker.State, to gobreaker.State) {
 		log.WithFields(log.Fields{"name": name, "from": from.String(), "to": to.String()}).Info("gobreaker: state change")
 	}
 	st.ReadyToTrip = func(counts gobreaker.Counts) bool {
-		return counts.ConsecutiveFailures > ConsecutiveFailures
+		return counts.ConsecutiveFailures > r.consecutiveFailures
 	}
 	st.IsSuccessful = func(err error) bool {
 		return err == nil

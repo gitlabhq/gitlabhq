@@ -5,6 +5,7 @@ fragment WikiPageNote on Note {
   author {
     ...Author
   }
+  maxAccessLevelOfAuthor
   body
   bodyHtml
   createdAt

@@ -49,7 +49,7 @@ The rich text editor requires two properties:
 - `uploadsPath` is a URL that points to a [GitLab upload service](../uploads/_index.md)
   with `multipart/form-data` support.
 
-See the [`WikiForm.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/pages/shared/wikis/components/wiki_form.vue#L207)
+See the [`WikiForm.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/wikis/components/wiki_form.vue#L207)
 component for a production example of these two properties.
 
 ### Set and get Markdown

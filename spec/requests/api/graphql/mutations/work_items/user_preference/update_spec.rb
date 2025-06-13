@@ -10,7 +10,7 @@ RSpec.describe 'Update work items user preferences', feature_category: :team_pla
   let_it_be(:work_item_type) { WorkItems::Type.default_by_type(:incident) }
 
   let(:sorting_value) { 'CREATED_ASC' }
-  let(:display_settings) { { 'shouldOpenItemsInSidePanel' => true } }
+  let(:display_settings) { { 'hiddenMetadataKeys' => %w[assignee labels milestone] } }
 
   let(:input) do
     {
@@ -117,7 +117,7 @@ RSpec.describe 'Update work items user preferences', feature_category: :team_pla
       end
 
       context 'when display settings are not valid' do
-        let_it_be(:display_settings) { { 'shouldOpenItemsInSidePanel' => 'test' } }
+        let_it_be(:display_settings) { { 'hiddenMetadataKeys' => 'test' } }
 
         it 'updates the user preferences successfully' do
           post_graphql_mutation(mutation, current_user: user)
@@ -133,7 +133,6 @@ RSpec.describe 'Update work items user preferences', feature_category: :team_pla
       context 'with hiddenMetadataKeys in display settings' do
         let(:display_settings) do
           {
-            'shouldOpenItemsInSidePanel' => true,
             'hiddenMetadataKeys' => %w[assignee labels milestone]
           }
         end
