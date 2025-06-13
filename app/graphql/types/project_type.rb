@@ -136,6 +136,12 @@ module Types
       null: true,
       description: 'Indicates the archived status of the project.'
 
+    field :marked_for_deletion, GraphQL::Types::Boolean,
+      null: true,
+      description: 'Indicates if the project or any ancestor is scheduled for deletion.',
+      method: :scheduled_for_deletion_in_hierarchy_chain?,
+      experiment: { milestone: '18.1' }
+
     field :marked_for_deletion_on, ::Types::TimeType,
       null: true,
       description: 'Date when project was scheduled to be deleted.',

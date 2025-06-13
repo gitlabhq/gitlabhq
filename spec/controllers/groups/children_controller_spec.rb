@@ -253,86 +253,103 @@ RSpec.describe Groups::ChildrenController, feature_category: :groups_and_project
       context 'with active parameter' do
         let_it_be(:group) { create(:group) }
 
-        let_it_be(:active_child) { create(:group, parent: group) }
+        let_it_be(:active_subgroup) { create(:group, parent: group) }
+        let_it_be(:active_project) { create(:project, :public, group: group) }
 
-        let_it_be(:marked_for_deletion_child) { create(:group_with_deletion_schedule, parent: group) }
-        let_it_be(:marked_for_deletion_project) do
-          create(:project, :public, group: group, marked_for_deletion_at: Date.current)
-        end
+        let_it_be(:inactive_subgroup) { create(:group, :archived, parent: group) }
+        let_it_be(:inactive_project) { create(:project, :archived, :public, group: group) }
 
-        let_it_be(:archived_project) { create(:project, :archived, :public, group: group) }
-        let_it_be(:archived_child) do
-          create(:group, parent: group, namespace_settings: create(:namespace_settings, archived: true))
-        end
+        subject(:make_request) { get :index, params: { group_id: group.to_param, active: active_param }, format: :json }
 
-        shared_examples 'endpoint that returns all child' do
-          it 'returns all child', :aggregate_failures do
-            make_request
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(descendant_ids(json_response))
-              .to contain_exactly(
-                active_child.id,
-                marked_for_deletion_child.id,
-                marked_for_deletion_project.id,
-                archived_child.id,
-                archived_project.id
-              )
-          end
-        end
-
-        context 'when true' do
-          subject(:make_request) { get :index, params: { group_id: group.to_param, active: true }, format: :json }
-
-          it 'returns active child', :aggregate_failures do
-            make_request
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(descendant_ids(json_response)).to contain_exactly(active_child.id)
-          end
-
-          context 'when group_descendants_active_filter flag is disabled' do
-            before do
-              stub_feature_flags(group_descendants_active_filter: false)
-            end
-
-            it_behaves_like 'endpoint that returns all child'
-          end
-
-          context 'when group is inactive' do
-            let_it_be(:deletion_schedule) { create(:group_deletion_schedule, group: group) }
-
-            it_behaves_like 'endpoint that returns all child'
-          end
-        end
-
-        context 'when false' do
-          subject(:make_request) { get :index, params: { group_id: group.to_param, active: false }, format: :json }
-
-          it 'returns inactive child', :aggregate_failures do
+        shared_examples 'request with no parameter' do
+          it 'returns direct child', :aggregate_failures do
             make_request
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(descendant_ids(json_response)).to contain_exactly(
-              marked_for_deletion_child.id,
-              marked_for_deletion_project.id,
-              archived_child.id,
-              archived_project.id
+              active_subgroup.id,
+              active_project.id,
+              inactive_subgroup.id,
+              inactive_project.id
             )
           end
+        end
 
-          context 'when group_descendants_active_filter flag is disabled' do
+        context 'when true' do
+          let_it_be(:active_param) { true }
+
+          it 'returns active direct children', :aggregate_failures do
+            make_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(descendant_ids(json_response)).to include(active_subgroup.id, active_project.id)
+            expect(descendant_ids(json_response)).not_to include(inactive_subgroup.id, inactive_project.id)
+          end
+
+          context 'when `group_descendants_active_filter` flag is disabled' do
             before do
               stub_feature_flags(group_descendants_active_filter: false)
             end
 
-            it_behaves_like 'endpoint that returns all child'
+            it_behaves_like 'request with no parameter'
+          end
+        end
+
+        context 'when false' do
+          let_it_be(:active_param) { false }
+
+          it 'returns inactive direct children', :aggregate_failures do
+            make_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(descendant_ids(json_response)).to include(inactive_subgroup.id, inactive_project.id)
+            expect(descendant_ids(json_response)).not_to include(active_subgroup.id, active_project.id)
           end
 
-          context 'when group is inactive' do
-            let_it_be(:deletion_schedule) { create(:group_deletion_schedule, group: group) }
+          context 'when active subgroup has children' do
+            let_it_be(:active_descendant_group) { create(:group, parent: active_subgroup) }
+            let_it_be(:active_descendant_project) { create(:project, :public, group: active_subgroup) }
 
-            it_behaves_like 'endpoint that returns all child'
+            let_it_be(:inactive_descendant_group) { create(:group, :archived, parent: active_subgroup) }
+            let_it_be(:inactive_descendant_project) { create(:project, :public, :archived, group: active_subgroup) }
+
+            it 'returns inactive descendants', :aggregate_failures do
+              make_request
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(descendant_ids(json_response))
+                .to include(inactive_descendant_group.id, inactive_descendant_project.id)
+              expect(descendant_ids(json_response))
+                .not_to include(active_descendant_group.id, active_descendant_project.id)
+            end
+          end
+
+          context 'when inactive subgroup has children' do
+            let_it_be(:active_descendant_group) { create(:group, parent: inactive_subgroup) }
+            let_it_be(:active_descendant_project) { create(:project, :public, group: inactive_subgroup) }
+
+            let_it_be(:inactive_descendant_group) { create(:group, :archived, parent: inactive_subgroup) }
+            let_it_be(:inactive_descendant_project) { create(:project, :public, :archived, group: inactive_subgroup) }
+
+            it 'returns all descendants' do
+              make_request
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(descendant_ids(json_response)).to include(
+                active_descendant_group.id,
+                active_descendant_project.id,
+                inactive_descendant_group.id,
+                inactive_descendant_project.id
+              )
+            end
+          end
+
+          context 'when `group_descendants_active_filter` flag is disabled' do
+            before do
+              stub_feature_flags(group_descendants_active_filter: false)
+            end
+
+            it_behaves_like 'request with no parameter'
           end
         end
       end

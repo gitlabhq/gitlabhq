@@ -3,9 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe GroupDescendant do
-  let(:parent) { create(:group) }
-  let(:subgroup) { create(:group, parent: parent) }
-  let(:subsub_group) { create(:group, parent: subgroup) }
+  using RSpec::Parameterized::TableSyntax
+
+  let_it_be(:parent) { create(:group) }
+  let_it_be(:subgroup) { create(:group, parent: parent) }
+  let_it_be(:subsub_group) { create(:group, parent: subgroup) }
 
   def all_preloaded_groups(*groups)
     groups + [parent, subgroup, subsub_group]
@@ -45,6 +47,27 @@ RSpec.describe GroupDescendant do
       it 'raises an error if specifying a base that is not part of the tree' do
         expect { subsub_group.hierarchy(build_stubbed(:group)) }
           .to raise_error('specified top is not part of the tree')
+      end
+
+      context 'with upto_preloaded_ancestors_only option' do
+        where :top, :preloaded, :expected_hierarchy do
+          nil          | []                             | ref(:subsub_group)
+          nil          | [ref(:parent)]                 | ref(:subsub_group)
+          nil          | [ref(:subgroup)]               | { ref(:subgroup) => ref(:subsub_group) }
+          nil          | [ref(:parent), ref(:subgroup)] | { ref(:parent) => { ref(:subgroup) => ref(:subsub_group) } }
+          ref(:parent) | []                             | ref(:subsub_group)
+          ref(:parent) | [ref(:parent)]                 | ref(:subsub_group)
+          ref(:parent) | [ref(:subgroup)]               | { ref(:subgroup) => ref(:subsub_group) }
+          ref(:parent) | [ref(:parent), ref(:subgroup)] | { ref(:subgroup) => ref(:subsub_group) }
+        end
+
+        with_them do
+          subject { subsub_group.hierarchy(top, preloaded, { upto_preloaded_ancestors_only: true }) }
+
+          it 'builds hierarchy upto preloaded ancestors only' do
+            is_expected.to eq(expected_hierarchy)
+          end
+        end
       end
     end
 
@@ -95,7 +118,7 @@ RSpec.describe GroupDescendant do
           described_class.build_hierarchy([subsub_group])
 
           expect(Gitlab::ErrorTracking).to have_received(:track_and_raise_for_dev_exception)
-                                             .at_least(:once) do |exception, _|
+            .at_least(:once) do |exception, _|
             expect(exception.backtrace).to be_present
           end
         end
@@ -114,11 +137,24 @@ RSpec.describe GroupDescendant do
         expect { described_class.build_hierarchy([subsub_group]) }
           .to raise_error(/was not preloaded/)
       end
+
+      context 'with upto_preloaded_ancestors_only option' do
+        let_it_be(:other_subgroup) { create(:group, parent: parent) }
+        let_it_be(:descendants) { [subgroup, other_subgroup, subsub_group] }
+
+        subject do
+          described_class.build_hierarchy(descendants, nil, { upto_preloaded_ancestors_only: true })
+        end
+
+        it "builds descendant's hierarchies with the preloaded ancestors only" do
+          is_expected.to match_array([{ subgroup => subsub_group }, other_subgroup])
+        end
+      end
     end
   end
 
   context 'for a project' do
-    let(:project) { create(:project, namespace: subsub_group) }
+    let_it_be(:project) { create(:project, namespace: subsub_group) }
 
     describe '#hierarchy' do
       it 'builds a hierarchy for a project' do
@@ -131,6 +167,27 @@ RSpec.describe GroupDescendant do
         expected_hierarchy = { subsub_group => project }
 
         expect(project.hierarchy(subgroup)).to eq(expected_hierarchy)
+      end
+
+      context 'with upto_preloaded_ancestors_only option' do
+        where :top, :preloaded, :expected_hierarchy do
+          nil            | []                                   | ref(:project)
+          nil            | [ref(:subgroup)]                     | ref(:project)
+          nil            | [ref(:subsub_group)]                 | { ref(:subsub_group) => ref(:project) }
+          nil            | [ref(:subgroup), ref(:subsub_group)] | { ref(:subgroup) => { ref(:subsub_group) => ref(:project) } }
+          ref(:subgroup) | []                                   | ref(:project)
+          ref(:subgroup) | [ref(:subgroup)]                     | ref(:project)
+          ref(:subgroup) | [ref(:subsub_group)]                 | { ref(:subsub_group) => ref(:project) }
+          ref(:subgroup) | [ref(:subgroup), ref(:subsub_group)] | { ref(:subsub_group) => ref(:project) }
+        end
+
+        with_them do
+          subject { project.hierarchy(top, preloaded, { upto_preloaded_ancestors_only: true }) }
+
+          it 'builds hierarchy upto preloaded ancestors only' do
+            is_expected.to eq(expected_hierarchy)
+          end
+        end
       end
     end
 
@@ -191,6 +248,19 @@ RSpec.describe GroupDescendant do
         actual_hierarchy = described_class.build_hierarchy(elements, parent)
 
         expect(actual_hierarchy).to eq(expected_hierarchy)
+      end
+
+      context 'with upto_preloaded_ancestors_only option' do
+        let_it_be(:other_subgroup) { create(:group, parent: parent) }
+        let_it_be(:descendants) { [subgroup, other_subgroup, subsub_group, project] }
+
+        subject do
+          described_class.build_hierarchy(descendants, nil, { upto_preloaded_ancestors_only: true })
+        end
+
+        it "builds descendant's hierarchies with the preloaded ancestors only" do
+          is_expected.to match_array([{ subgroup => { subsub_group => project } }, other_subgroup])
+        end
       end
     end
   end

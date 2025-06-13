@@ -10745,7 +10745,8 @@ CREATE TABLE bulk_import_export_uploads (
     batch_id bigint,
     project_id bigint,
     group_id bigint,
-    CONSTRAINT check_5add76239d CHECK ((char_length(export_file) <= 255))
+    CONSTRAINT check_5add76239d CHECK ((char_length(export_file) <= 255)),
+    CONSTRAINT check_e1d215df28 CHECK ((num_nonnulls(group_id, project_id) = 1))
 );
 
 CREATE SEQUENCE bulk_import_export_uploads_id_seq
@@ -15637,7 +15638,8 @@ CREATE TABLE incident_management_oncall_participants (
     color_palette smallint NOT NULL,
     color_weight smallint NOT NULL,
     is_removed boolean DEFAULT false NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_d53b689825 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE incident_management_oncall_participants_id_seq

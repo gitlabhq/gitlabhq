@@ -9,24 +9,7 @@ description: Used to store information of the exported files containing the data
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59976
 milestone: '13.12'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: export_id
-        table: bulk_import_exports
-        sharding_key: project_id
-        belongs_to: export
-  group_id:
-    references: namespaces
-    backfill_via:
-      parent:
-        foreign_key: export_id
-        table: bulk_import_exports
-        sharding_key: group_id
-        belongs_to: export
+sharding_key:
+  project_id: projects
+  group_id: namespaces
 table_size: small
-desired_sharding_key_migration_job_name:
-- BackfillBulkImportExportUploadsProjectId
-- BackfillBulkImportExportUploadsGroupId

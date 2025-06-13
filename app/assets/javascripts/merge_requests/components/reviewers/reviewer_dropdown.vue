@@ -228,7 +228,7 @@ export default {
   },
   i18n: {
     selectReviewer: __('Select reviewer'),
-    unassign: __('Unassign'),
+    unassign: __('Unassign all'),
   },
 };
 </script>

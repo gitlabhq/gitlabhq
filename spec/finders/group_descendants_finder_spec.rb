@@ -75,25 +75,76 @@ RSpec.describe GroupDescendantsFinder, feature_category: :groups_and_projects do
     end
 
     context 'with active parameter' do
-      let_it_be(:active_child) { create(:group, parent: group) }
+      let_it_be(:active_subgroup) { create(:group, parent: group) }
       let_it_be(:active_project) { create(:project, group: group) }
 
-      let_it_be(:inactive_child) { create(:group_with_deletion_schedule, parent: group) }
+      let_it_be(:inactive_subgroup) { create(:group, :archived, parent: group) }
       let_it_be(:inactive_project) { create(:project, :archived, group: group) }
 
-      context 'when parameter is true' do
+      subject { finder.execute }
+
+      context 'when true' do
         let(:params) { { active: true } }
 
         it 'returns active children' do
-          expect(finder.execute).to contain_exactly(active_child, active_project)
+          is_expected.to contain_exactly(active_subgroup, active_project)
         end
       end
 
-      context 'when parameter is false' do
+      context 'when false' do
         let(:params) { { active: false } }
 
         it 'returns inactive children' do
-          expect(finder.execute).to contain_exactly(inactive_child, inactive_project)
+          is_expected.to include(inactive_subgroup, inactive_project)
+          is_expected.not_to include(active_subgroup, active_project)
+        end
+
+        context 'when subgroup is inactive' do
+          let_it_be(:inactive_subgroup_subgroup) { create(:group, parent: inactive_subgroup) }
+          let_it_be(:inactive_subgroup_project) { create(:project, group: inactive_subgroup) }
+
+          it 'returns all children' do
+            is_expected.to include(inactive_subgroup_subgroup, inactive_subgroup_project)
+          end
+        end
+
+        context 'when subgroup is active' do
+          let_it_be(:active_subgroup_active_subgroup) { create(:group, parent: active_subgroup) }
+          let_it_be(:active_subgroup_active_project) { create(:project, group: active_subgroup) }
+
+          let_it_be(:active_subgroup_inactive_subgroup) { create(:group, :archived, parent: active_subgroup) }
+          let_it_be(:active_subgroup_inactive_project) { create(:project, :archived, group: active_subgroup) }
+
+          it 'returns inactive descendant', :aggregate_failures do
+            is_expected.to include(active_subgroup_inactive_subgroup, active_subgroup_inactive_project)
+            is_expected.not_to include(active_subgroup_active_subgroup, active_subgroup_active_project)
+          end
+        end
+
+        context 'when matched descendant has inactive ancestor' do
+          let_it_be(:inactive_descendant) { create(:group, :archived, parent: inactive_subgroup) }
+
+          # Filter and page size params ensure only the leaf descendant matches the query,
+          # so any ancestors must be there due to preloading, not because they happen to be
+          # a part of the initial results.
+          let(:params) { { active: false, filter: inactive_descendant.name, per_page: 1 } }
+
+          it 'preloads inactive ancestor' do
+            is_expected.to contain_exactly(inactive_descendant, inactive_subgroup)
+          end
+        end
+
+        context 'when matches descendant has active ancestor' do
+          let_it_be(:inactive_descendant) { create(:group, :archived, parent: active_subgroup) }
+
+          # Filter and page size params ensure only the leaf descendant matches the query,
+          # so any ancestors must be there due to preloading, not because they happen to be
+          # a part of the initial results.
+          let(:params) { { active: false, filter: inactive_descendant.name, per_page: 1 } }
+
+          it 'does not preload active ancestor' do
+            is_expected.to contain_exactly(inactive_descendant)
+          end
         end
       end
     end

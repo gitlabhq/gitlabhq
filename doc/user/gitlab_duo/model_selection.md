@@ -34,7 +34,7 @@ If you do not select a specific LLM, the AI-native features use the GitLab-selec
 
 {{< alert type="note" >}}
 
-To maintain optimal performance and reliability, GitLab might change the default LLM without notifying the user.
+To maintain optimal performance and reliability, GitLab might change the default LLM without notifying the user. GitLab does not change non-default LLMs that have been explicitly selected.
 
 {{< /alert >}}
 

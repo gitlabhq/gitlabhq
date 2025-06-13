@@ -85,6 +85,7 @@ describe('JobActionButton', () => {
         ${'run'}        | ${'play'}     | ${'Run'}        | ${1}
         ${'retry'}      | ${'retry'}    | ${'Run again'}  | ${2}
         ${'unschedule'} | ${'time-out'} | ${'Unschedule'} | ${3}
+        ${'stop'}       | ${'stop'}     | ${'Stop'}       | ${4}
       `('$action action', ({ icon, mockIndex, tooltip }) => {
         beforeEach(() => {
           createComponent({ props: { jobAction: mockJobActions[mockIndex] } });
@@ -109,6 +110,7 @@ describe('JobActionButton', () => {
         ${'run'}        | ${1}      | ${playJobMutation}       | ${playMutationHandler}       | ${i18n.errors.playJob}
         ${'retry'}      | ${2}      | ${retryJobMutation}      | ${retryMutationHandler}      | ${i18n.errors.retryJob}
         ${'unschedule'} | ${3}      | ${unscheduleJobMutation} | ${unscheduleMutationHandler} | ${i18n.errors.unscheduleJob}
+        ${'stop'}       | ${4}      | ${playJobMutation}       | ${playMutationHandler}       | ${i18n.errors.playJob}
       `('$action action', ({ mockIndex, mutation, handler, errorMessage }) => {
         it('calls the correct mutation on button click', async () => {
           await createComponent({

@@ -21,10 +21,14 @@ module Groups
       respond_to do |format|
         format.json do
           serializer = GroupChildSerializer
-                         .new(current_user: current_user)
-                         .with_pagination(request, response)
-          serializer.expand_hierarchy(parent) if params[:filter].present?
-          render json: serializer.represent(children)
+            .new(current_user: current_user)
+            .with_pagination(request, response)
+
+          serializer.expand_hierarchy(parent) if expand_hierarchy?
+
+          render json: serializer.represent(children, {
+            upto_preloaded_ancestors_only: expand_inactive_hierarchy?
+          })
         end
       end
     end
@@ -58,8 +62,17 @@ module Groups
         archived: Gitlab::Utils.to_boolean(safe_params[:archived], default: safe_params[:archived]),
         not_aimed_for_deletion: Gitlab::Utils.to_boolean(safe_params[:not_aimed_for_deletion])
       )
-      params_copy.delete(:active) unless filter_active?
+      params_copy.delete(:active) unless Feature.enabled?(:group_descendants_active_filter, current_user)
       params_copy.compact
+    end
+    strong_memoize_attr :descendants_params
+
+    def expand_inactive_hierarchy?
+      descendants_params[:active] == false
+    end
+
+    def expand_hierarchy?
+      descendants_params[:filter] || expand_inactive_hierarchy?
     end
 
     def validate_per_page
@@ -76,12 +89,6 @@ module Groups
           render status: :bad_request, json: { message: 'per_page does not have a valid value' } if per_page < 1
         end
       end
-    end
-
-    def filter_active?
-      return false unless Feature.enabled?(:group_descendants_active_filter, current_user)
-
-      parent.active?
     end
   end
 end

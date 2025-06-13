@@ -1478,7 +1478,12 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project) }
     let_it_be(:marked_for_deletion_at) { Time.new(2025, 5, 25) }
+    let_it_be(:pending_delete_group) do
+      create(:group_with_deletion_schedule, marked_for_deletion_on: marked_for_deletion_at, developers: user)
+    end
+
     let_it_be(:pending_delete_project) { create(:project, marked_for_deletion_at: marked_for_deletion_at) }
+    let_it_be(:parent_pending_delete_project) { create(:project, group: pending_delete_group) }
 
     let(:project_full_path) { pending_delete_project.full_path }
 
@@ -1486,6 +1491,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       %(
         query {
           project(fullPath: "#{project_full_path}") {
+            markedForDeletion
             markedForDeletionOn
             permanentDeletionDate
           }
@@ -1496,14 +1502,20 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     before do
       pending_delete_project.add_developer(user)
       project.add_developer(user)
+      stub_application_setting(deletion_adjourned_period: 7)
     end
 
     subject(:project_data) do
       result = GitlabSchema.execute(query, context: { current_user: user }).as_json
       {
+        marked_for_deletion: result.dig('data', 'project', 'markedForDeletion'),
         marked_for_deletion_on: result.dig('data', 'project', 'markedForDeletionOn'),
         permanent_deletion_date: result.dig('data', 'project', 'permanentDeletionDate')
       }
+    end
+
+    it 'marked_for_deletion returns true' do
+      expect(project_data[:marked_for_deletion]).to be true
     end
 
     it 'marked_for_deletion_on returns correct date' do
@@ -1521,8 +1533,20 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       end
     end
 
+    context 'when parent is scheduled for deletion' do
+      let(:project_full_path) { parent_pending_delete_project.full_path }
+
+      it 'marked_for_deletion returns true' do
+        expect(project_data[:marked_for_deletion]).to be true
+      end
+    end
+
     context 'when project is not scheduled for deletion' do
       let(:project_full_path) { project.full_path }
+
+      it 'marked_for_deletion returns false' do
+        expect(project_data[:marked_for_deletion]).to be false
+      end
 
       it 'returns theoretical date project will be permanently deleted for permanent_deletion_date' do
         expect(project_data[:permanent_deletion_date])

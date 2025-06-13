@@ -29,7 +29,7 @@ class GroupChildSerializer < BaseSerializer
     if children.is_a?(GroupDescendant)
       represent_hierarchy(children.hierarchy(hierarchy_root), opts).first
     else
-      hierarchies = GroupDescendant.build_hierarchy(children, hierarchy_root)
+      hierarchies = GroupDescendant.build_hierarchy(children, hierarchy_root, opts)
       # When an array was passed, we always want to represent an array.
       # Even if the hierarchy only contains one element
       represent_hierarchy(Array.wrap(hierarchies), opts)
