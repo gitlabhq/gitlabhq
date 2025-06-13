@@ -12,7 +12,7 @@ Settings = GitlabSettings.load(file, Rails.env) do
     on_standard_port?(gitlab)
   end
 
-  def build_ci_server_fqdn
+  def build_server_fqdn
     custom_port = ":#{gitlab.port}" unless on_standard_port?(gitlab)
 
     [

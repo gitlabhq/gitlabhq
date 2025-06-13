@@ -32,47 +32,71 @@ When you create a workspace in a project, you might get the following error:
 No agents available to create workspaces. Please consult Workspaces documentation for troubleshooting.
 ```
 
-To resolve this issue:
+This error can occur for several reasons. Work through the following troubleshooting steps.
 
-1. Check agent configuration:
+### Check permissions
 
-   - Verify the `remote_development` module is enabled in your agent configuration:
+1. Ensure you have at least the Developer role for both the workspace project and agent project.
+1. Verify the agent is allowed in an ancestor group of your workspace project.
+For more information, see [allow an agent](gitlab_agent_configuration.md#allow-a-cluster-agent-for-workspaces-in-a-group).
 
-     ```yaml
-     remote_development:
-       enabled: true
-     ```
+### Check agent configuration
 
-     - If the `remote_development` module is disabled for the GitLab agent,
-     set [`enabled`](settings.md#enabled) to `true`.
+Verify the `remote_development` module is enabled in your agent configuration:
 
-1. Check permissions:
+   ```yaml
+   remote_development:
+     enabled: true
+   ```
 
-   - Ensure you have at least the Developer role for both the workspace project and agent project.
-     - If you do not have at least the Developer role for the workspace and agent projects, contact your administrator.
-   - Verify the agent is allowed in an ancestor group of your workspace project.
-     - If the ancestor groups of the project do not have an allowed agent,
-    [allow an agent](gitlab_agent_configuration.md#allow-a-cluster-agent-for-workspaces-in-a-group)
-    for any of these groups.
+If the `remote_development` module is disabled for the GitLab agent,
+set [`enabled`](settings.md#enabled) to `true`.
 
-1. Check agent logs:
+### Check agent name mismatch
+
+Ensure the agent name you created in the [Create a GitLab Agent for Kubernetes token](set_up_infrastructure.md#create-a-gitlab-agent-for-kubernetes-token) step matches the folder name in
+`.gitlab/agents/FOLDER_NAME/`.
+
+If the names are different, rename the folder to match the agent name exactly.
+
+### Check agent connection status
+
+Verify the agent is connected to GitLab:
+
+1. Go to your group.
+1. Select **Operate** > **Kubernetes clusters**.
+1. Verify if **Connection status** is **Connected**. If not connected, check the agent logs:
 
    ```shell
    kubectl logs -f -l app=gitlab-agent -n gitlab-workspaces
    ```
 
-<!--- Other suggested topics:
+## Error: `unsupported scheme in GitLab Kubernetes Agent Server address`
 
-## DNS configuration
+This error occurs when the Kubernetes Agent Server (KAS) address is missing the required protocol
+scheme.
 
-## Workspace stops unexpectedly
+To resolve this issue:
 
-## Workspace creation fails due to quotas
+1. Add the `wss://` prefix to your `TF_VAR_kas_address` variable. For example: `wss://kas.gitlab.com`.
+1. Update your configuration and redeploy the agent.
 
-## Network connectivity
+## Error: `redirect URI included is not valid`
 
-## SSH connection failures
+When accessing a workspace, you might encounter an OAuth error about an invalid redirect URI.
 
-### Network policy restrictions
+This error can occur for the following reasons:
 
--->
+- OAuth application is not configured correctly. To resolve this issue:
+
+  1. Verify your OAuth application redirect URI in GitLab matches your domain.
+  1. Update the OAuth application redirect URI. For example: `https://YOUR_DOMAIN/auth/callback`.
+
+- Workspaces proxy is using outdated OAuth credentials. to resolve this issue:
+
+  1. Verify the proxy is using the latest OAuth credentials.
+  1. Restart the workspaces proxy:
+
+      ```shell
+      kubectl rollout restart deployment -n gitlab-workspaces gitlab-workspaces-proxy
+      ```

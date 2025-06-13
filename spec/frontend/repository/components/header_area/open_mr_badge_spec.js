@@ -9,7 +9,6 @@ import getOpenMrCountsForBlobPath from '~/repository/queries/open_mr_count.query
 import getOpenMrsForBlobPath from '~/repository/queries/open_mrs.query.graphql';
 import MergeRequestListItem from '~/repository/components/header_area/merge_request_list_item.vue';
 import { logError } from '~/lib/logger';
-import { visitUrl } from '~/lib/utils/url_utility';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { useFakeDate } from 'helpers/fake_date';
@@ -19,7 +18,6 @@ import { openMRQueryResult, zeroOpenMRQueryResult, openMRsDetailResult } from '.
 Vue.use(VueApollo);
 jest.mock('~/lib/logger');
 jest.mock('~/sentry/sentry_browser_wrapper');
-jest.mock('~/lib/utils/url_utility');
 
 describe('OpenMrBadge', () => {
   let wrapper;
@@ -59,6 +57,7 @@ describe('OpenMrBadge', () => {
         GlDisclosureDropdown: stubComponent(GlDisclosureDropdown, {
           template: RENDER_ALL_SLOTS_TEMPLATE,
         }),
+        GlDisclosureDropdownItem,
       },
     });
   }
@@ -66,7 +65,6 @@ describe('OpenMrBadge', () => {
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findOpenMrBadge = () => wrapper.findByTestId('open-mr-badge');
   const findAllMergeRequestItems = () => wrapper.findAllComponents(MergeRequestListItem);
-  const findDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
   const findLoader = () => wrapper.findComponent(GlSkeletonLoader);
 
   describe('rendering', () => {
@@ -218,16 +216,6 @@ describe('OpenMrBadge', () => {
       await nextTick();
 
       expect(openMrsQueryHandler).toHaveBeenCalled();
-    });
-
-    it('calls visitUrl with correct URL when dropdown item is clicked', async () => {
-      findDropdown().vm.$emit('shown');
-      await waitForPromises();
-
-      const firstDropdownItem = findDropdownItems().at(0);
-      firstDropdownItem.vm.$emit('action');
-
-      expect(visitUrl).toHaveBeenCalledWith('https://gitlab.com/root/project/-/merge_requests/123');
     });
   });
 });

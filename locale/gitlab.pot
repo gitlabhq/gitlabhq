@@ -9928,6 +9928,12 @@ msgstr ""
 msgid "BillingPlans|Introducing GitLab Duo Enterprise"
 msgstr ""
 
+msgid "BillingPlans|Learn more about Premium"
+msgstr ""
+
+msgid "BillingPlans|Learn more about Ultimate"
+msgstr ""
+
 msgid "BillingPlans|Learn more about each plan by visiting our %{pricing_page_link}."
 msgstr ""
 
@@ -10028,9 +10034,6 @@ msgid "BillingPlans|Try GitLab Duo Pro"
 msgstr ""
 
 msgid "BillingPlans|Ultimate"
-msgstr ""
-
-msgid "BillingPlans|Upgrade"
 msgstr ""
 
 msgid "BillingPlans|Upgrade to Premium"
@@ -11390,6 +11393,9 @@ msgid "Bulk request concurrency"
 msgstr ""
 
 msgid "Bulk update"
+msgstr ""
+
+msgid "BulkImports|Placeholder user confirmation"
 msgstr ""
 
 msgid "BulkImport|%{count} placeholder user has been matched to a user."
@@ -25815,6 +25821,9 @@ msgid "Expires at"
 msgstr ""
 
 msgid "Expiring soon"
+msgstr ""
+
+msgid "Expiry date"
 msgstr ""
 
 msgid "Explain current vulnerability."
@@ -66929,6 +66938,9 @@ msgid "UserMapping|Placeholder users were created in %{group_names}. These users
 msgstr ""
 
 msgid "UserMapping|Placeholders"
+msgstr ""
+
+msgid "UserMapping|Placeholders can be reassigned to enterprise users without user confirmation."
 msgstr ""
 
 msgid "UserMapping|Please upload a valid CSV file."

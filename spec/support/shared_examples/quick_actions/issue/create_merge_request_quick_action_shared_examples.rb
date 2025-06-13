@@ -20,20 +20,23 @@ RSpec.shared_examples 'create_merge_request quick action' do
 
     it "doesn't create a merge request when the branch name is invalid" do
       branch_name = 'invalid branch name'
-      add_note("/create_merge_request #{branch_name}")
+      fill_in('Add a reply', with: "/create_merge_request #{branch_name}")
+      click_button 'Comment'
 
       expect_mr_quickaction(false, branch_name)
     end
 
     it "doesn't create a merge request when a branch with that name already exists" do
       branch_name = 'feature'
-      add_note("/create_merge_request #{branch_name}")
+      fill_in('Add a reply', with: "/create_merge_request #{branch_name}")
+      click_button 'Comment'
 
       expect_mr_quickaction(false, branch_name)
     end
 
     it 'creates a new merge request using issue iid and title as branch name when the branch name is empty' do
-      add_note("/create_merge_request")
+      fill_in('Add a reply', with: '/create_merge_request')
+      click_button 'Comment'
 
       expect_mr_quickaction(true)
 
@@ -46,7 +49,8 @@ RSpec.shared_examples 'create_merge_request quick action' do
 
     it 'creates a merge request using the given branch name' do
       branch_name = '1-feature'
-      add_note("/create_merge_request #{branch_name}")
+      fill_in('Add a reply', with: "/create_merge_request #{branch_name}")
+      click_button 'Comment'
 
       expect_mr_quickaction(true, branch_name)
 

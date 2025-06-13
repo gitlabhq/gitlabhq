@@ -1,0 +1,10 @@
+---
+name: group_owner_placeholder_confirmation_bypass
+description: 'Enables ability for owners of top-level enterprise groups to skip placeholder user confirmation during direct transfer'
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/544024
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189546
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/548946
+milestone: '18.1'
+group: group::import
+type: wip
+default_enabled: false

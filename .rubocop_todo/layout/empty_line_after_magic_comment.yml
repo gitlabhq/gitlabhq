@@ -170,7 +170,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'ee/lib/gem_extensions/elasticsearch/model/response/records.rb'
     - 'ee/lib/gitlab/cidr.rb'
     - 'ee/lib/quality/seeders/vulnerabilities.rb'
-    - 'ee/spec/components/billing/plan_component_spec.rb'
     - 'ee/spec/controllers/admin/geo/nodes_controller_spec.rb'
     - 'ee/spec/controllers/ee/projects/autocomplete_sources_controller_spec.rb'
     - 'ee/spec/controllers/ee/projects/protected_branches_controller_spec.rb'

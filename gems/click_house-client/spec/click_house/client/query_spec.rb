@@ -39,17 +39,18 @@ RSpec.describe ClickHouse::Client::Query do
         WHERE
         id = {id:UInt64} AND
         title = {some_title:String} AND
+        label IN ({labels:Array(String)}) AND
         another_id = {id:UInt64}
       SQL
     end
 
-    let(:placeholders) { { id: 1, some_title: "'title'" } }
+    let(:placeholders) { { id: 1, some_title: 'title', labels: %w[foo bar] } }
 
-    it do
+    it 'does not change the query' do
       expect(sql).to eq(raw_query)
     end
 
-    it do
+    it 'replaces params with numerical references' do
       expect(redacted_sql).to eq(
         <<~SQL.squish
           SELECT *
@@ -57,9 +58,14 @@ RSpec.describe ClickHouse::Client::Query do
           WHERE
           id = $1 AND
           title = $2 AND
-          another_id = $3
+          label IN ($3) AND
+          another_id = $4
         SQL
       )
+    end
+
+    it 'prepares escaped placeholders' do
+      expect(query.prepared_placeholders).to eq(id: 1, some_title: 'title', labels: "['foo','bar']")
     end
   end
 
@@ -82,7 +88,7 @@ RSpec.describe ClickHouse::Client::Query do
     end
 
     it 'merges the placeholders' do
-      expect(query.placeholders).to eq({ min_id: 100, max_id: 11 })
+      expect(query.prepared_placeholders).to eq({ min_id: 100, max_id: 11 })
     end
   end
 
@@ -117,7 +123,7 @@ RSpec.describe ClickHouse::Client::Query do
 
       it 'raises error' do
         expect do
-          query.placeholders
+          query.prepared_placeholders
         end.to raise_error(ClickHouse::Client::QueryError, /mismatching values for the 'id' placeholder/)
       end
     end

@@ -98,8 +98,41 @@ RSpec.describe ClickHouse::Client do
       end
     end
 
+    describe 'params transformation' do
+      let(:query_object) do
+        ClickHouse::Client::Query.new(raw_query: 'SELECT * FROM issues',
+          placeholders: { id: 1, title: %w[foo bar], description: 'baz' })
+      end
+
+      let(:expected_params) do
+        {
+          'param_id' => 1,
+          'param_title' => "['foo','bar']",
+          "param_description" => "baz",
+          'query' => 'SELECT * FROM issues'
+        }
+      end
+
+      it 'transforms query params to request params' do
+        db_url_params = {
+          database: :test_db,
+          enable_http_compression: 1
+        }.merge(database_config[:variables])
+
+        expect(configuration.http_post_proc).to receive(:call).with(
+          "#{database_config[:url]}?#{db_url_params.to_query}",
+          kind_of(Hash),
+          expected_params).and_call_original
+
+        described_class.select(
+          query_object,
+          :test_db,
+          configuration)
+      end
+    end
+
     describe 'default logging' do
-      let(:fake_logger) { instance_double("Logger", info: 'logged!') }
+      let(:fake_logger) { instance_double(Logger, info: 'logged!') }
       let(:query_string) { 'SELECT * FROM issues' }
 
       before do

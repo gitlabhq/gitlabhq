@@ -75,7 +75,7 @@ RSpec.describe Ci::Catalog::Resources::Component, type: :model, feature_category
                         "#{component.version.name}"
 
         expect(component.include_path).to eq(expected_path)
-        expect(Gitlab.config.gitlab_ci.server_fqdn).not_to be_nil
+        expect(Gitlab.config.gitlab.server_fqdn).not_to be_nil
       end
     end
   end

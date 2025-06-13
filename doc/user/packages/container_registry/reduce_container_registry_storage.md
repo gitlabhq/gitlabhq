@@ -185,6 +185,7 @@ The cleanup policy:
 1. Excludes the N tags based on the `keep_n` value (Number of tags to retain).
 1. Excludes the tags more recent than the `older_than` value (Expiration interval).
 1. Excludes [protected tags](protected_container_tags.md).
+1. Excludes [immutable tags](immutable_container_tags.md).
 1. Deletes the remaining tags in the list from the container registry.
 
 {{< alert type="warning" >}}

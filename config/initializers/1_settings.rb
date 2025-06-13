@@ -247,6 +247,7 @@ Settings.gitlab['trusted_proxies'] ||= []
 Settings.gitlab['content_security_policy'] ||= {}
 Settings.gitlab['allowed_hosts'] ||= []
 Settings.gitlab['impersonation_enabled'] ||= true if Settings.gitlab['impersonation_enabled'].nil?
+Settings.gitlab['server_fqdn'] ||= Settings.__send__(:build_server_fqdn)
 Settings.gitlab['usage_ping_enabled'] = true if Settings.gitlab['usage_ping_enabled'].nil?
 Settings.gitlab['max_request_duration_seconds'] ||= 57
 Settings.gitlab['display_initial_root_password'] = false if Settings.gitlab['display_initial_root_password'].nil?
@@ -282,7 +283,6 @@ Settings.gitlab_ci['shared_runners_enabled'] = true if Settings.gitlab_ci['share
 # If you are changing default storage paths, then you must change them in the gitlab-backup-cli gem as well
 Settings.gitlab_ci['builds_path']           = Settings.absolute(Settings.gitlab_ci['builds_path'] || "builds/")
 Settings.gitlab_ci['url']                 ||= Settings.__send__(:build_gitlab_ci_url)
-Settings.gitlab_ci['server_fqdn']         ||= Settings.__send__(:build_ci_server_fqdn)
 
 #
 # CI Secure Files

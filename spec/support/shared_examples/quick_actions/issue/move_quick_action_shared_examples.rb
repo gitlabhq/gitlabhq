@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'move quick action' do
   before do
-    allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(105)
+    allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(250)
   end
 
   context 'move the issue to another project' do
@@ -14,7 +14,8 @@ RSpec.shared_examples 'move quick action' do
       end
 
       it 'moves the issue' do
-        add_note("/move #{target_project.full_path}")
+        fill_in('Add a reply', with: "/move #{target_project.full_path}")
+        click_button 'Comment'
 
         expect(page).to have_content "Moved this item to #{target_project.full_path}."
         expect(issue.reload).to be_closed
@@ -29,7 +30,8 @@ RSpec.shared_examples 'move quick action' do
       let(:project_unauthorized) { create(:project, :public) }
 
       it 'does not move the issue' do
-        add_note("/move #{project_unauthorized.full_path}")
+        fill_in('Add a reply', with: "/move #{project_unauthorized.full_path}")
+        click_button 'Comment'
 
         expect(page).to have_content "Unable to move. Insufficient permissions"
         expect(issue.reload).to be_open
@@ -38,7 +40,8 @@ RSpec.shared_examples 'move quick action' do
 
     context 'when the project is invalid' do
       it 'does not move the issue' do
-        add_note("/move not/valid")
+        fill_in('Add a reply', with: '/move not/valid')
+        click_button 'Comment'
 
         expect(page).to have_content "Unable to move. Target project or group doesn't exist or doesn't support this item type."
         expect(issue.reload).to be_open
@@ -77,7 +80,8 @@ RSpec.shared_examples 'move quick action' do
 
       context 'applies multiple commands with move command in the end' do
         before do
-          add_note("/label ~#{bug.title} ~#{wontfix.title}\n\n/milestone %\"#{milestone.title}\"\n\n/move #{target_project.full_path}")
+          fill_in('Add a reply', with: "/label ~#{bug.title} ~#{wontfix.title}\n\n/milestone %\"#{milestone.title}\"\n\n/move #{target_project.full_path}")
+          click_button 'Comment'
         end
 
         it_behaves_like 'applies the commands to issues in both projects, target and source'
@@ -85,7 +89,8 @@ RSpec.shared_examples 'move quick action' do
 
       context 'applies multiple commands with move command in the begining' do
         before do
-          add_note("/move #{target_project.full_path}\n\n/label ~#{bug.title} ~#{wontfix.title}\n\n/milestone %\"#{milestone.title}\"")
+          fill_in('Add a reply', with: "/move #{target_project.full_path}\n\n/label ~#{bug.title} ~#{wontfix.title}\n\n/milestone %\"#{milestone.title}\"")
+          click_button 'Comment'
         end
 
         it_behaves_like 'applies the commands to issues in both projects, target and source'
@@ -105,11 +110,16 @@ RSpec.shared_examples 'move quick action' do
 
       it 'moves the issue after quickcommand note was updated' do
         # misspelled quick action
-        add_note("test note.\n/mvoe #{target_project.full_path}")
+        fill_in('Add a reply', with: "test note.\n/mvoe #{target_project.full_path}")
+        click_button 'Comment'
 
         expect(issue.reload).not_to be_closed
 
-        edit_note("/mvoe #{target_project.full_path}", "test note.\n/move #{target_project.full_path}")
+        within('li.note', text: "/mvoe #{target_project.full_path}") do
+          click_button 'Edit comment'
+          fill_in('Edit comment', with: "test note.\n/move #{target_project.full_path}")
+          click_button 'Save comment'
+        end
 
         expect(page).to have_content 'test note.'
         expect(issue.reload).to be_closed
@@ -122,12 +132,17 @@ RSpec.shared_examples 'move quick action' do
 
       it 'deletes the note if it was updated to just contain a command' do
         # missspelled quick action
-        add_note("test note.\n/mvoe #{target_project.full_path}")
+        fill_in('Add a reply', with: "test note.\n/mvoe #{target_project.full_path}")
+        click_button 'Comment'
 
         expect(page).not_to have_content 'Commands applied'
         expect(issue.reload).not_to be_closed
 
-        edit_note("/mvoe #{target_project.full_path}", "/move #{target_project.full_path}")
+        within('li.note', text: "/mvoe #{target_project.full_path}") do
+          click_button 'Edit comment'
+          fill_in('Edit comment', with: "/move #{target_project.full_path}")
+          click_button 'Save comment'
+        end
 
         expect(page).not_to have_content "/move #{target_project.full_path}"
         expect(issue.reload).to be_closed

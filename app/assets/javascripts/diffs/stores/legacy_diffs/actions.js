@@ -1130,6 +1130,7 @@ export function fetchLinkedExpandedLine({ fileHash, oldLine, newLine }) {
   const matchLine = findClosestMatchLine(lines, newLine);
   const { new_pos: matchNewPosition, old_pos: matchOldPosition } = matchLine.meta_data;
   const matchLineIndex = lines.indexOf(matchLine);
+  const targetIsBeforeMatch = newLine < matchNewPosition;
   const linesInBetween = countLinesInBetween(lines, matchLineIndex);
   const isExpandBoth = linesInBetween !== -1 && linesInBetween < 20;
   const previousLine = lines[matchLineIndex - 1];
@@ -1161,6 +1162,15 @@ export function fetchLinkedExpandedLine({ fileHash, oldLine, newLine }) {
       since: previousLine.new_line + 1,
       to: matchNewPosition - 1,
       bottom: false,
+    });
+  }
+
+  if (targetIsBeforeMatch && isExpandDown && previousLine && newLine < previousLine.new_line) {
+    return loadLines({
+      unfold: true,
+      since: newLine,
+      to: matchNewPosition - 1,
+      bottom: isLastMatchLine,
     });
   }
 

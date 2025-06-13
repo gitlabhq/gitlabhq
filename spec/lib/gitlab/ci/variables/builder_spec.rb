@@ -34,7 +34,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
       { key: 'GITLAB_CI',
         value: 'true' },
       { key: 'CI_SERVER_FQDN',
-        value: Gitlab.config.gitlab_ci.server_fqdn },
+        value: Gitlab.config.gitlab.server_fqdn },
       { key: 'CI_SERVER_URL',
         value: Gitlab.config.gitlab.url },
       { key: 'CI_SERVER_HOST',

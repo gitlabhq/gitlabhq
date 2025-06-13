@@ -5,6 +5,11 @@ RSpec.shared_examples 'zoom quick actions' do
   let(:existing_zoom_link) { 'https://zoom.us/j/123456780' }
   let(:invalid_zoom_link) { 'https://invalid-zoom' }
 
+  before do
+    stub_feature_flags(work_item_view_for_issues: false)
+    visit project_issue_path(project, issue)
+  end
+
   describe '/zoom' do
     shared_examples 'skip silently' do
       it 'skips addition silently' do

@@ -494,12 +494,18 @@ Project permissions for [wikis](project/wiki/_index.md):
 
 Project permissions for [container registry](packages/_index.md):
 
-| Action                                    | Guest | Planner | Reporter | Developer | Maintainer | Owner | Notes |
-| ----------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: | ----- |
-| Pull an image from the container registry |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   | The ability to view the container registry and pull images is controlled by the [container registry's visibility permissions](packages/container_registry/_index.md#container-registry-visibility-permissions). |
-| Push an image to the container registry   |       |         |          |     ✓     |     ✓      |   ✓   |       |
-| Delete a container registry image         |       |         |          |     ✓     |     ✓      |   ✓   |       |
-| Manage cleanup policies                   |       |         |          |           |     ✓      |   ✓   |       |
+| Action                                                                                            | Guest | Planner | Reporter | Developer | Maintainer | Owner |                                                                                                                                                                                                           |
+| ------------------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
+| Pull an image from the container registry <sup>1</sup>                                            |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
+| Push an image to the container registry                                                           |   x   |    x    |    x     |     ✓     |     ✓      |   ✓   |                                                                                                                                                                                                                 
+| Delete a container registry image                                                                 |   x   |    x    |    x     |     ✓     |     ✓      |   ✓   |                                                                                                                                                                                                                 
+| Manage cleanup policies                                                                           |   x   |    x    |    x     |     x     |     ✓      |   ✓   |                                                                                                                                                                                                                 
+| Create [tag protection](packages/container_registry/protected_container_tags.md) rule             |   x   |    x    |    x     |     x     |     ✓      |   ✓   |                                                                                                                                                                                                                 
+| Create [immutable tag protection](packages/container_registry/immutable_container_tags.md) rule   |   x    |    x   |    x     |      x    |     x      |   ✓   |        
+
+**Footnotes**:
+
+1. Viewing the container registry and pulling images is controlled by [container registry visibility permissions](packages/container_registry/_index.md#container-registry-visibility-permissions).                                                                                                                                                                                                         
 
 Project permissions for [package registry](packages/_index.md):
 

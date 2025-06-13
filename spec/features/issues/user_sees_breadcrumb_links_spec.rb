@@ -12,15 +12,17 @@ RSpec.describe 'New issue breadcrumb', :js, feature_category: :team_planning do
     # we won't need the tests for the issues listing page, since we'll be using
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
+    stub_feature_flags(work_item_view_for_issues: true)
 
     sign_in(user)
-    visit(new_project_issue_path(project))
   end
 
   it 'displays link to project issues and new issue' do
+    visit(new_project_issue_path(project))
+
     within_testid 'breadcrumb-links' do
-      expect(find_link('Issues')[:href]).to end_with(project_issues_path(project))
-      expect(find_link('New')[:href]).to end_with(new_project_issue_path(project))
+      expect(page).to have_link('Issues', href: project_issues_path(project))
+      expect(page).to have_link('New', href: new_project_issue_path(project))
     end
   end
 

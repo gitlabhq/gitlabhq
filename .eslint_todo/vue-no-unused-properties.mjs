@@ -286,8 +286,6 @@ export default {
     'ee/app/assets/javascripts/oncall_schedules/components/rotations/components/rotation_assignee.vue',
     'ee/app/assets/javascripts/oncall_schedules/components/schedule/components/preset_days/days_header_sub_item.vue',
     'ee/app/assets/javascripts/oncall_schedules/components/schedule/components/preset_weeks/weeks_header_item.vue',
-    'ee/app/assets/javascripts/packages_and_registries/container_registry/explorer/components/list_page/container_scanning_counts.vue',
-    'ee/app/assets/javascripts/packages_and_registries/settings/project/components/dependency_proxy_packages_settings_form.vue',
     'ee/app/assets/javascripts/projects/components/move_personal_project_to_group_modal.vue',
     'ee/app/assets/javascripts/projects/merge_requests/blocking_mr_input_root.vue',
     'ee/app/assets/javascripts/projects/settings/branch_rules/components/view/index.vue',

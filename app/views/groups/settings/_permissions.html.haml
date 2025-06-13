@@ -42,6 +42,7 @@
     = render_if_exists 'groups/settings/enforce_ssh_certificates', f: f, group: @group
     = render 'groups/settings/two_factor_auth', f: f, group: @group
     = render 'groups/settings/membership', f: f, group: @group
+    = render_if_exists 'groups/settings/placeholder_confirmation_bypass', f: f, group: @group
     = render_if_exists 'groups/settings/remove_dormant_members', f: f, group: @group
     = render_if_exists 'groups/settings/disable_invite_members', f: f, group: @group
     = render_if_exists 'groups/settings/extensions_marketplace', f: f, group: @group

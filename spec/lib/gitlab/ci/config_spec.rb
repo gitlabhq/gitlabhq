@@ -203,8 +203,7 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
       project1.add_developer(user)
       project2.add_developer(user)
 
-      settings = GitlabSettings::Options.build({ 'server_fqdn' => server_fqdn })
-      allow(::Settings).to receive(:gitlab_ci).and_return(settings)
+      allow(Gitlab.config.gitlab).to receive(:server_fqdn).and_return(server_fqdn)
     end
 
     it 'returns only components included with `include:component`' do

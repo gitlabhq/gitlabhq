@@ -2727,7 +2727,7 @@ class Project < ApplicationRecord
     Gitlab::Ci::Variables::Collection.new
       .append(key: 'CI', value: 'true')
       .append(key: 'GITLAB_CI', value: 'true')
-      .append(key: 'CI_SERVER_FQDN', value: Gitlab.config.gitlab_ci.server_fqdn)
+      .append(key: 'CI_SERVER_FQDN', value: Gitlab.config.gitlab.server_fqdn)
       .append(key: 'CI_SERVER_URL', value: Gitlab.config.gitlab.url)
       .append(key: 'CI_SERVER_HOST', value: Gitlab.config.gitlab.host)
       .append(key: 'CI_SERVER_PORT', value: Gitlab.config.gitlab.port.to_s)

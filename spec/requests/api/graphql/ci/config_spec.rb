@@ -407,8 +407,7 @@ RSpec.describe 'Query.ciConfig', feature_category: :continuous_integration do
     before do
       stub_full_request('https://gitlab.com/gitlab-org/gitlab/raw/1234/.hello.yml').to_return(body: remote_file_content)
 
-      settings = GitlabSettings::Options.build({ 'server_fqdn' => 'gitlab.com' })
-      allow(::Settings).to receive(:gitlab_ci).and_return(settings)
+      allow(Gitlab.config.gitlab).to receive(:server_fqdn).and_return('gitlab.com')
 
       post_graphql_query
     end

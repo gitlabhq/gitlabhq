@@ -16,6 +16,13 @@ module ClickHouse
       end
 
       # Override when placeholders should be supported
+      def prepared_placeholders
+        {}
+      end
+
+      private
+
+      # Override when placeholders should be supported
       def placeholders
         {}
       end

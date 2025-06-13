@@ -6,12 +6,11 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
   let_it_be(:user) { create(:user) }
 
   let(:path) { described_class.new(address: address) }
-  let(:settings) { GitlabSettings::Options.build({ 'server_fqdn' => server_fqdn }) }
   let(:server_fqdn) { 'acme.com' }
   let(:fqdn_prefix) { "#{server_fqdn}/" }
 
   before do
-    allow(::Settings).to receive(:gitlab_ci).and_return(settings)
+    allow(Gitlab.config.gitlab).to receive(:server_fqdn).and_return(server_fqdn)
   end
 
   describe '#fetch_content!' do

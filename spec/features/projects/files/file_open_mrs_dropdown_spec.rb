@@ -55,7 +55,7 @@ RSpec.describe 'Projects > Files > Open MRs dropdown', :js, feature_category: :s
         expect(page).to have_content(mr_title)
         expect(page).to have_content(another_mr_title)
 
-        click_button mr_title
+        click_link mr_title
       end
 
       expect(page).to have_content(mr_title)
