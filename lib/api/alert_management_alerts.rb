@@ -13,6 +13,10 @@ module API
     end
 
     resource :projects, requirements: ::API::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      before do
+        @alert = find_project_alert(params[:alert_iid])
+        not_found! if Feature.enabled?(:hide_incident_management_features, @alert&.project)
+      end
       namespace ':id/alert_management_alerts/:alert_iid/metric_images' do
         desc 'Workhorse authorize metric image file upload' do
           success code: 200
@@ -56,12 +60,10 @@ module API
           require_gitlab_workhorse!
           bad_request!('File is too large') if max_file_size_exceeded?
 
-          alert = find_project_alert(params[:alert_iid])
-
-          authorize!(:upload_alert_management_metric_image, alert)
+          authorize!(:upload_alert_management_metric_image, @alert)
 
           upload = ::AlertManagement::MetricImages::UploadService.new(
-            alert,
+            @alert,
             current_user,
             params.slice(:file, :url, :url_text)
           ).execute
@@ -85,10 +87,8 @@ module API
           tags %w[alert_management]
         end
         get do
-          alert = find_project_alert(params[:alert_iid])
-
-          if can?(current_user, :read_alert_management_metric_image, alert)
-            present alert.metric_images.order_created_at_asc, with: Entities::MetricImage
+          if can?(current_user, :read_alert_management_metric_image, @alert)
+            present @alert.metric_images.order_created_at_asc, with: Entities::MetricImage
           else
             render_api_error!('Alert not found', 404)
           end
@@ -112,11 +112,9 @@ module API
             documentation: { example: 'An example metric' }
         end
         put ':metric_image_id' do
-          alert = find_project_alert(params[:alert_iid])
+          authorize!(:update_alert_management_metric_image, @alert)
 
-          authorize!(:update_alert_management_metric_image, alert)
-
-          metric_image = alert.metric_images.find_by_id(params[:metric_image_id])
+          metric_image = @alert.metric_images.find_by_id(params[:metric_image_id])
 
           render_api_error!('Metric image not found', 404) unless metric_image
 
@@ -140,11 +138,9 @@ module API
             documentation: { example: 42 }
         end
         delete ':metric_image_id' do
-          alert = find_project_alert(params[:alert_iid])
+          authorize!(:destroy_alert_management_metric_image, @alert)
 
-          authorize!(:destroy_alert_management_metric_image, alert)
-
-          metric_image = alert.metric_images.find_by_id(params[:metric_image_id])
+          metric_image = @alert.metric_images.find_by_id(params[:metric_image_id])
 
           render_api_error!('Metric image not found', 404) unless metric_image
 

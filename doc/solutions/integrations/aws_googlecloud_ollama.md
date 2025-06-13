@@ -88,7 +88,7 @@ Why Use Internal IPs?
 
 ### GitLab
 
-The rest of this guide assumes you already have a instance of GitLab up and running that meets the requirements below:
+The rest of this guide assumes you already have an instance of GitLab up and running that meets the following requirements:
 
 #### Licensing
 
@@ -162,7 +162,8 @@ Designed for simplicity and performance, Ollama empowers users to harness the po
 
 ### AI Gateway
 
-While the official installation guide is available [here](../../install/install_ai_gateway.md), here's a streamlined approach for setting up the AI Gateway. As of January 2025, the image `gitlab/model-gateway:self-hosted-v17.6.0-ee` has been verified to work with GitLab 17.7.
+While the official installation guide is available in [Install the GitLab AI gateway](../../install/install_ai_gateway.md), here's a streamlined approach for setting up the AI Gateway. As of January 
+2025, the image `gitlab/model-gateway:self-hosted-v17.6.0-ee` has been verified to work with GitLab 17.7.
 
 1. Ensure that ...
 
@@ -180,7 +181,7 @@ While the official installation guide is available [here](../../install/install_
      gitlab/model-gateway:self-hosted-v17.6.0-ee
    ```
 
-Below is a table explaining key environment variables and their roles in setting up your instance:
+The following table explains key environment variables and their roles in setting up your instance:
 
 | **Variable**                 | **Description** |
 |------------------------------|-----------------|

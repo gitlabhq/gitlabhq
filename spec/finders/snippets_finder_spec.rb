@@ -409,7 +409,8 @@ RSpec.describe SnippetsFinder do
 
     it_behaves_like 'a finder with external authorization service' do
       let!(:subject) { create(:project_snippet, project: project) }
-      let(:project_params) { { project: project } }
+      let(:execute) { described_class.new(user).execute }
+      let(:project_execute) { described_class.new(user, project: project).execute }
     end
 
     it 'includes the result if the external service allows access' do

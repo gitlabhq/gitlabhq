@@ -23,7 +23,7 @@ module WorkItems
       end
 
       def mark_as_done(todo_id)
-        todos = TodosFinder.new(current_user, state: :pending, target_id: work_item.id).execute
+        todos = TodosFinder.new(users: current_user, state: :pending, target_id: work_item.id).execute
         todos = todo_id ? todos.id_in(todo_id) : todos
 
         return if todos.empty?

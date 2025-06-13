@@ -562,7 +562,6 @@ RSpec/BeEq:
     - 'spec/finders/concerns/finder_with_cross_project_access_spec.rb'
     - 'spec/finders/packages/go/package_finder_spec.rb'
     - 'spec/finders/repositories/changelog_tag_finder_spec.rb'
-    - 'spec/finders/todos_finder_spec.rb'
     - 'spec/graphql/mutations/issues/move_spec.rb'
     - 'spec/graphql/mutations/merge_requests/update_spec.rb'
     - 'spec/graphql/mutations/releases/update_spec.rb'

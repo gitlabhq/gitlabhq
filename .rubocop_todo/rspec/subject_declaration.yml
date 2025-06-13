@@ -35,7 +35,6 @@ RSpec/SubjectDeclaration:
     - 'spec/finders/labels_finder_spec.rb'
     - 'spec/finders/merge_requests_finder_spec.rb'
     - 'spec/finders/snippets_finder_spec.rb'
-    - 'spec/finders/todos_finder_spec.rb'
     - 'spec/helpers/labels_helper_spec.rb'
     - 'spec/helpers/routing/pseudonymization_helper_spec.rb'
     - 'spec/lib/banzai/filter/references/design_reference_filter_spec.rb'

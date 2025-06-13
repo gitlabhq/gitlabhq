@@ -1183,7 +1183,6 @@ RSpec/ContextWording:
     - 'spec/finders/tags_finder_spec.rb'
     - 'spec/finders/template_finder_spec.rb'
     - 'spec/finders/terraform/states_finder_spec.rb'
-    - 'spec/finders/todos_finder_spec.rb'
     - 'spec/finders/user_group_notification_settings_finder_spec.rb'
     - 'spec/finders/user_recent_events_finder_spec.rb'
     - 'spec/frontend/fixtures/merge_requests.rb'

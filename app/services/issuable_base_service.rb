@@ -490,7 +490,7 @@ class IssuableBaseService < ::BaseContainerService
     when 'add'
       todo_service.mark_todo(issuable, current_user)
     when 'done'
-      todo = TodosFinder.new(current_user).find_by(target: issuable)
+      todo = TodosFinder.new(users: current_user).find_by(target: issuable)
       todo_service.resolve_todo(todo, current_user) if todo
     end
   end

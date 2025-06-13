@@ -2395,6 +2395,9 @@ msgstr ""
 msgid "AISummary|View summary"
 msgstr ""
 
+msgid "AI|AI Catalog"
+msgstr ""
+
 msgid "AI|Accept & Insert"
 msgstr ""
 
@@ -15960,6 +15963,9 @@ msgstr ""
 msgid "ComplianceReport|Full target branch name"
 msgstr ""
 
+msgid "ComplianceReport|Have questions or thoughts on the new improvements? %{linkStart}Please provide feedback on your experience%{linkEnd}."
+msgstr ""
+
 msgid "ComplianceReport|However, there is still a configured compliance pipeline that must be removed. Otherwise, the compliance pipeline will continue to take precedence over the new pipeline execution policy."
 msgstr ""
 
@@ -16005,6 +16011,9 @@ msgstr ""
 msgid "ComplianceReport|Select frameworks"
 msgstr ""
 
+msgid "ComplianceReport|Show old report"
+msgstr ""
+
 msgid "ComplianceReport|This compliance framework's compliance pipeline has been migrated to a pipeline execution policy."
 msgstr ""
 
@@ -16024,6 +16033,9 @@ msgid "ComplianceReport|Update result"
 msgstr ""
 
 msgid "ComplianceReport|View the framework details"
+msgstr ""
+
+msgid "ComplianceReport|We are replacing the violations report with a new version that includes enhanced features for your compliance workflow."
 msgstr ""
 
 msgid "ComplianceReport|You are viewing the compliance centre for %{project}. To see information for all projects, go to %{linkStart}group%{linkEnd}."

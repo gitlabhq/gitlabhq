@@ -2696,7 +2696,6 @@ Layout/LineLength:
     - 'spec/finders/security/security_jobs_finder_spec.rb'
     - 'spec/finders/snippets_finder_spec.rb'
     - 'spec/finders/tags_finder_spec.rb'
-    - 'spec/finders/todos_finder_spec.rb'
     - 'spec/finders/user_group_notification_settings_finder_spec.rb'
     - 'spec/finders/user_groups_counter_spec.rb'
     - 'spec/finders/user_recent_events_finder_spec.rb'

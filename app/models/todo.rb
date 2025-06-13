@@ -267,7 +267,8 @@ class Todo < ApplicationRecord
     end
 
     def distinct_user_ids
-      distinct.pluck(:user_id)
+      # When used from the todos finder that applies a default order, we need to reset it.
+      reorder(nil).distinct.pluck(:user_id)
     end
 
     # Count pending todos grouped by user_id and state

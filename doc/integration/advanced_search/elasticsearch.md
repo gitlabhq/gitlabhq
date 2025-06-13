@@ -1016,7 +1016,7 @@ Indexing vulnerability records on GitLab Self-Managed is proposed in
 
 ### Guidance on choosing optimal cluster configuration
 
-For basic guidance on choosing a cluster configuration you may refer to [Elastic Cloud Calculator](https://cloud.elastic.co/pricing). You can find more information below.
+For basic guidance on choosing a cluster configuration, see also [Elastic Cloud Calculator](https://cloud.elastic.co/pricing).
 
 - Generally, you want to use at least a 2-node cluster configuration with one replica, which allows you to have resilience. If your storage usage is growing quickly, you may want to plan horizontal scaling (adding more nodes) beforehand.
 - It's not recommended to use HDD storage with the search cluster, because it takes a hit on performance. It's better to use SSD storage (NVMe or SATA SSD drives for example).
@@ -1290,7 +1290,9 @@ However, some larger installations may wish to tune the merge policy settings:
 
 {{< alert type="warning" >}}
 
-Most instances should not need to configure this. The steps below use an advanced setting of Sidekiq called [routing rules](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules).
+For most instances, you do not have to configure dedicated Sidekiq nodes or processes.
+The following steps use an advanced setting of Sidekiq
+called [routing rules](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules).
 Be sure to fully understand about the implication of using routing rules to avoid losing jobs entirely.
 
 {{< /alert >}}
@@ -1312,7 +1314,7 @@ To handle this, we generally recommend one of the following two options. You can
 - [Use two queue groups on one single node](#single-node-two-processes).
 - [Use two queue groups, one on each node](#two-nodes-one-process-for-each).
 
-For the steps below, consider the entry of `sidekiq['routing_rules']`:
+For the following steps, consider the entry of `sidekiq['routing_rules']`:
 
 - `["feature_category=global_search", "global_search"]` as all indexing jobs are routed to the `global_search` queue.
 - `["*", "default"]` as all other non-indexing jobs are routed to the `default` queue.

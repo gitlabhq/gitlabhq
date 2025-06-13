@@ -61,9 +61,12 @@ export default {
     },
   },
   data() {
+    const currentTab = this.$route.params.filter || '';
+
     return {
-      currentTab: this.$route.params.filter || '',
+      currentTab,
       isVisible: !Visibility.hidden(),
+      visitedTabs: new Set([currentTab]),
     };
   },
   computed: {
@@ -82,6 +85,13 @@ export default {
       if (this.currentTab === key) return;
 
       this.currentTab = key;
+
+      // For tabs that we have already visited we cache that its been visited
+      // and with this value we then stop the lazy rendering of the tabs
+      // which causes GitLab UI tabs to not destroy and then re-create
+      // the components inside.
+      this.visitedTabs.add(key);
+
       this.$router.push({ path: key || '/' });
     },
     queriesForTab(tab) {
@@ -124,7 +134,7 @@ export default {
         v-for="tab in tabs"
         :key="tab.title"
         :active="tab.key === currentTab"
-        lazy
+        :lazy="!visitedTabs.has(tab.key)"
         data-testid="merge-request-dashboard-tab"
         @click="clickTab(tab)"
       >

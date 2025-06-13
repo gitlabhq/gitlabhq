@@ -2213,7 +2213,7 @@ class User < ApplicationRecord
 
   def todos_pending_count(force: false)
     Rails.cache.fetch(['users', id, 'todos_pending_count'], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
-      TodosFinder.new(self, state: :pending).execute.count
+      TodosFinder.new(users: self, state: :pending).execute.count
     end
   end
 

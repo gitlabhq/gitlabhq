@@ -73,8 +73,7 @@ mattermost_nginx['redirect_http_to_https'] = true
 ```
 
 If you haven't named your certificate and key `mattermost.gitlab.example.crt`
-and `mattermost.gitlab.example.key` then you need to also add the full paths
-as shown below.
+and `mattermost.gitlab.example.key`, then you must also add the following full paths:
 
 ```ruby
 mattermost_nginx['ssl_certificate'] = "/etc/gitlab/ssl/mattermost-nginx.crt"
@@ -142,7 +141,8 @@ By default GitLab Mattermost requires all users to sign up with GitLab and disab
 ### Reauthorize GitLab Mattermost
 
 To reauthorize GitLab Mattermost, you first need to revoke the existing
-authorization. This can be done in the **Settings > Applications** area of GitLab. Then follow the steps below to complete authorization.
+authorization. This can be done in the **Settings > Applications** area of GitLab. Then follow the steps
+in the following section to complete authorization.
 
 ### Authorize GitLab Mattermost
 
@@ -370,7 +370,7 @@ For a complete list of upgrade notices and special considerations for older vers
 
 ### GitLab Mattermost versions and edition shipped with the Linux package
 
-Below is a list of Mattermost version changes for GitLab 15.0 and later:
+The following table outlines Mattermost version changes for GitLab 15.0 and later:
 
 | GitLab version | Mattermost version | Notes                                                                                    |
 | :------------- | :----------------- | ---------------------------------------------------------------------------------------- |

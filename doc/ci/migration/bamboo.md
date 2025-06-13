@@ -482,8 +482,8 @@ job:
 
 Bamboo has a number of options for [triggering builds](https://confluence.atlassian.com/bamboo/triggering-builds-289276897.html),
 which can be based on code changes, a schedule, the outcomes of other plans, or on demand.
-A plan can be configured to periodically poll a project for new changes,
-as shown below.
+
+A plan can be configured to periodically poll a project for new changes.
 
 For example, in a Bamboo build plan:
 

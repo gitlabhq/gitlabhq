@@ -456,7 +456,7 @@ In addition to the `build` and `helper` containers, six more containers are crea
 >   Instead, it represents the service's position when no available alias is found.
 >
 > - When an invalid alias is provided (doesn't meet Kubernetes constraint), the job fails with the
->   error below (example with the alias `alpine_edge`). This failure occurs because aliases are
+>   following error (example with the alias `alpine_edge`). This failure occurs because aliases are
 >   also used to create local DNS entries on the job Pod.
 >
 >   ```plaintext
@@ -500,7 +500,7 @@ For this solution to work, you must:
 
 ## How Docker integration works
 
-Below is a high level overview of the steps performed by Docker during job
+The following is a high level overview of the steps performed by Docker during job
 time.
 
 1. Create any service container: `mysql`, `postgresql`, `mongodb`, `redis`.

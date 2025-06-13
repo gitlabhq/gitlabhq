@@ -262,9 +262,13 @@ module Projects
       # Until we compare the inconsistency rates of the new specialized worker and
       # the old approach, we still run AuthorizedProjectsWorker
       # but with some delay and lower urgency as a safety net.
-      UserProjectAccessChangedService.new(user_ids).execute(
-        priority: UserProjectAccessChangedService::LOW_PRIORITY
-      )
+      if Feature.enabled?(:project_authorizations_update_in_background_in_transfer_service, project)
+        AuthorizedProjectUpdate::EnqueueUsersRefreshAuthorizedProjectsWorker.perform_async(user_ids)
+      else
+        UserProjectAccessChangedService.new(user_ids).execute(
+          priority: UserProjectAccessChangedService::LOW_PRIORITY
+        )
+      end
     end
 
     def rollback_side_effects

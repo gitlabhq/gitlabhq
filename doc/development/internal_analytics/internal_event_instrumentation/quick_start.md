@@ -196,49 +196,7 @@ Notice that only updates to total counters are batched. If `n` unique metrics an
 
 ### Backend testing
 
-When testing code that simply triggers an internal event and make sure it increments all the related metrics,
-you can use the `internal_event_tracking` shared example.
-
-```ruby
-it_behaves_like 'internal event tracking' do
-  let(:event) { 'update_issue_severity' }
-  let(:category) { described_class.name }
-  let(:project) { issue.project }
-  let(:user) { issue.author }
-  let(:additional_properties) { { label: issue.issueable_severity } }
-  subject(:service_action) { described_class.new(issue).execute }
-end
-```
-
-It requires a context containing:
-
-- `subject` - the action that triggers the event
-- `event` - the name of the event
-
-Optionally, the context can contain:
-
-- `user`
-- `project`
-- `namespace`. If not provided, `project.namespace` will be used (if `project` is available).
-- `category`
-- `additional_properties`
-
-If present in the context, the following legacy options will be respected by the shared example but are discouraged:
-
-- `label`
-- `property`
-- `value`
-
-Prefer including these attributes via `additional_properties` instead.
-
-```ruby
-let(:additional_properties) { { label: "value" } }
-```
-
-#### Composable matchers
-
-When a singe action triggers an event multiple times, triggers multiple different events, or increments some metrics but not others for the event,
-you can use the `trigger_internal_events` and `increment_usage_metrics` matchers on a block argument.
+When testing code that triggers internal events or increments metrics, you can use the `trigger_internal_events` and `increment_usage_metrics` matchers on a block argument.
 
 ```ruby
  expect { subject }
@@ -586,7 +544,7 @@ describe('DeleteApplication', () => {
 #### Haml with data attributes
 
 If you are using [data attributes](#data-event-attribute) to track internal events at the Haml layer,
-you can use the [`trigger_internal_events` matcher](#composable-matchers) to assert that the expected properties are present.
+you can use the [`trigger_internal_events` matcher](#backend-testing) to assert that the expected properties are present.
 
 For example, if you need to test the below Haml,
 

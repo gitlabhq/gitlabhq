@@ -53,7 +53,7 @@ module API
         end
 
         def find_todos
-          TodosFinder.new(current_user, declared_params(include_missing: false)).execute
+          TodosFinder.new(users: current_user, **declared_params(include_missing: false)).execute
         end
 
         def issuable_and_awardable?(type)

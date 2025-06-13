@@ -13,8 +13,7 @@ title: Using Redis
 {{< /details >}}
 
 As many applications depend on Redis as their key-value store, you
-eventually need it in order for your tests to run. Below you are guided how to
-do this with the Docker and Shell executors of GitLab Runner.
+have to use it to run your tests.
 
 ## Use Redis with the Docker executor
 

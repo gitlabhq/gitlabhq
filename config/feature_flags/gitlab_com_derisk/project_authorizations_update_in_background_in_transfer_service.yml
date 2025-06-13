@@ -1,0 +1,10 @@
+---
+name: project_authorizations_update_in_background_in_transfer_service
+description: Enqueues the worker that calls the UserProjectAccessChangedService in Projects::TransferService
+feature_issue_url: https://gitlab.com/gitlab-com/request-for-help/-/issues/2980
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194252
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/548979
+milestone: '18.1'
+group: group::authorization
+type: gitlab_com_derisk
+default_enabled: false

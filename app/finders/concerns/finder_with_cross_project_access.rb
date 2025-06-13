@@ -46,7 +46,7 @@ module FinderWithCrossProjectAccess
     end
   end
 
-  # We can skip the cross project check for finding indivitual records.
+  # We can skip the cross project check for finding individual records.
   # this would be handled by the `can?(:read_*, result)` call in `FinderMethods`
   # itself.
   override :find_by!

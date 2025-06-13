@@ -147,7 +147,7 @@ To skip confirmation when administrators reassign placeholder users:
 1. Under **Skip confirmation when administrators reassign placeholder users**, select the **Enabled** checkbox.
 
 When this setting is enabled, administrators can reassign contributions and memberships
-to users with any of the following states:
+to non-bot users with any of the following states:
 
 - `active`
 - `banned`
