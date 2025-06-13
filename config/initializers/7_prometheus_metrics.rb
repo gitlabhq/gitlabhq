@@ -38,10 +38,10 @@ if puma_master?
   # since it must happen prior to any worker processes or the metrics server starting up.
   Prometheus::CleanupMultiprocDirService.new(prometheus_metrics_dir).execute
 
-  Gitlab::Metrics.client.reinitialize_on_pid_change(force: true)
+  ::Prometheus::Client.reinitialize_on_pid_change(force: true)
 end
 
-Gitlab::Metrics.client.configure do |config|
+::Prometheus::Client.configure do |config|
   config.logger = Gitlab::AppLogger
 
   config.multiprocess_files_dir = prometheus_metrics_dir
@@ -79,7 +79,7 @@ rescue IOError => e
 end
 
 Gitlab::Cluster::LifecycleEvents.on_worker_start do
-  defined?(Gitlab::Metrics.client.reinitialize_on_pid_change) && Gitlab::Metrics.client.reinitialize_on_pid_change
+  defined?(::Prometheus::Client.reinitialize_on_pid_change) && ::Prometheus::Client.reinitialize_on_pid_change
   logger = Gitlab::AppLogger
   # Since we also run these samplers in the Puma primary, we need to re-create them each time we fork.
   # For Sidekiq, this does not make any difference, since there is no primary.

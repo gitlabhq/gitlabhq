@@ -2,13 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Gitlab::Metrics::Prometheus, :prometheus, feature_category: :scalability do
-  let(:all_metrics) do
-    Class.new do
-      include ::Gitlab::Metrics::Prometheus
-    end
-  end
-
+RSpec.describe Gitlab::Metrics::Prometheus, :prometheus do
+  let(:all_metrics) { Gitlab::Metrics }
   let(:registry) { all_metrics.registry }
 
   after do

@@ -3,7 +3,7 @@
   testid: 'admin-editor-extensions-settings',
   expanded: expanded_by_default?) do |c|
   - c.with_description do
-    = _('Configure instance-wide Editor Extensions settings')
+    = _('Configure Editor Extensions settings for your instance')
   - c.with_body do
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-editor-extensions-settings'), html: { class: 'fieldset-form', id: 'editor-extensions-settings' } do |f|
       = form_errors(@application_setting)

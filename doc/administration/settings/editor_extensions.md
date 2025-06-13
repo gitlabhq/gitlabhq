@@ -13,13 +13,9 @@ title: Configure Editor Extensions
 
 {{< /details >}}
 
-Configure Editor Extensions settings for your GitLab instance in the Admin area.
+Configure Editor Extensions settings for your GitLab instance.
 
-You can enforce the following restrictions on Editor Extensions:
-
-- Enforce a minimum language server version.
-
-## Enforce a minimum language server version
+## Require a minimum language server version
 
 {{< history >}}
 
@@ -36,8 +32,9 @@ On GitLab Dedicated, this feature is available.
 {{< /alert >}}
 
 By default, any GitLab Language Server version can connect to your GitLab instance when
-Personal Access Tokens are enabled. You can configure a minimum language server version and
-block requests from clients on older versions. Existing clients will receive an API error
+personal access tokens are enabled. To block requests from clients on older versions,
+configure a minimum language server version. Clients older than the minimum allowed
+Language Server version receive an API error.
 
 Prerequisites:
 
@@ -69,7 +66,8 @@ To allow any GitLab Language Server clients:
 
 {{< alert type="note" >}}
 
-Allowing all requests is **not recommended** because it can cause incompatibility if your GitLab version is ahead of your Editor Extensions.
-Updating your Editor Extensions is **recommended** to receive the latest feature improvements, bug fixes, and security fixes.
+Allowing all requests is not recommended. It can cause incompatibility if your
+GitLab version is ahead of your extension version. You should update your extensions
+to receive the latest feature improvements, bug fixes, and security fixes.
 
 {{< /alert >}}

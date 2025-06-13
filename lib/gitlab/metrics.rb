@@ -2,18 +2,18 @@
 
 module Gitlab
   module Metrics
-    # TODO: remove when we move away from Prometheus::Client to Labkit::Metrics::Client completely
-    # https://gitlab.com/gitlab-com/gl-infra/observability/team/-/issues/4160
-    if ENV["LABKIT_METRICS_ENABLED"] == "true"
-      include ::Gitlab::Metrics::Labkit
-    else
-      include ::Gitlab::Metrics::Prometheus
-    end
+    include Gitlab::Metrics::Prometheus
 
     EXECUTION_MEASUREMENT_BUCKETS = [0.001, 0.01, 0.1, 1].freeze
 
+    @error = false
+
     def self.enabled?
       prometheus_metrics_enabled?
+    end
+
+    def self.error?
+      @error
     end
 
     def self.record_duration_for_status?(status)

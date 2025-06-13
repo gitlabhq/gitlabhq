@@ -3959,6 +3959,14 @@ msgstr ""
 msgid "Adds this %{issuable_type} as related to the %{issuable_type} it was created from"
 msgstr ""
 
+msgid "AdherenceReport|%{pendingCount}/%{totalCount} control is pending"
+msgid_plural "AdherenceReport|%{pendingCount}/%{totalCount} controls are pending"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "AdherenceReport|Completed controls"
+msgstr ""
+
 msgid "AdherenceReport|Have questions or thoughts on the new improvements we made? %{linkStart}Please provide feedback on your experience%{linkEnd}."
 msgstr ""
 
@@ -3966,6 +3974,9 @@ msgid "AdherenceReport|Learn more about the changes in our %{linkStart}documenta
 msgstr ""
 
 msgid "AdherenceReport|No statuses found."
+msgstr ""
+
+msgid "AdherenceReport|Pending controls"
 msgstr ""
 
 msgid "AdherenceReport|Show old report"
@@ -16029,6 +16040,9 @@ msgid_plural "ComplianceStandardsAdherence|%d controls"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "ComplianceStandardsAdherence|%{failedCount} failed"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|%{failedCount}/%{totalCount} failed"
 msgstr ""
 
@@ -16791,6 +16805,18 @@ msgstr ""
 msgid "ComplianceViolations|Your Compliance Violations CSV export for the group %{group_link} has been attached to this email."
 msgstr ""
 
+msgid "ComplianceViolation|Detected"
+msgstr ""
+
+msgid "ComplianceViolation|Dismissed"
+msgstr ""
+
+msgid "ComplianceViolation|In review"
+msgstr ""
+
+msgid "ComplianceViolation|Resolved"
+msgstr ""
+
 msgid "Compliance|Framework deleted successfully"
 msgstr ""
 
@@ -16896,6 +16922,9 @@ msgstr ""
 msgid "Configure Dependency Scanning in `.gitlab-ci.yml`, creating this file if it does not already exist"
 msgstr ""
 
+msgid "Configure Editor Extensions settings for your instance"
+msgstr ""
+
 msgid "Configure Error Tracking"
 msgstr ""
 
@@ -16951,9 +16980,6 @@ msgid "Configure feature \"%{name}\""
 msgstr ""
 
 msgid "Configure import sources and settings related to import and export features."
-msgstr ""
-
-msgid "Configure instance-wide Editor Extensions settings"
 msgstr ""
 
 msgid "Configure it later"
@@ -26365,6 +26391,9 @@ msgstr ""
 msgid "Failed to update compliance requirement control. Error: %{error_message}"
 msgstr ""
 
+msgid "Failed to update compliance violation status. Please try again later."
+msgstr ""
+
 msgid "Failed to update framework"
 msgstr ""
 
@@ -32320,9 +32349,6 @@ msgid "In progress"
 msgstr ""
 
 msgid "In progress, queued for %{queuedDuration} seconds"
-msgstr ""
-
-msgid "In review"
 msgstr ""
 
 msgid "In the background, we're attempting to connect you again."

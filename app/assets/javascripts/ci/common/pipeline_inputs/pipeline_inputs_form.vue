@@ -125,10 +125,20 @@ export default {
       });
     },
     nameValuePairs() {
-      return this.inputsToEmit.map((input) => ({
-        name: input.name,
-        value: this.formatInputValue(input),
-      }));
+      return this.inputsToEmit.flatMap((input) => {
+        const baseNameValuePair = {
+          name: input.name,
+          value: this.formatInputValue(input),
+        };
+
+        if (input.isSelected) {
+          return [baseNameValuePair];
+        }
+        if (input.savedValue !== undefined) {
+          return [{ ...baseNameValuePair, destroy: true }];
+        }
+        return [];
+      });
     },
     inputsList() {
       return this.inputs.map((input) => ({ text: input.name, value: input.name }));
@@ -217,15 +227,15 @@ export default {
       this.$emit('update-inputs', this.nameValuePairs);
     },
     selectInputs(items) {
-      const changedInputs = [];
+      const selectionChangedInputs = [];
 
       this.inputs = this.inputs.map((input) => {
-        const oldValue = input.value;
+        const wasSelected = input.isSelected;
         const isSelected = items.includes(input.name);
         const newValue = isSelected ? input.value : input.default;
 
-        if (newValue !== oldValue) {
-          changedInputs.push(input.name);
+        if (isSelected !== wasSelected) {
+          selectionChangedInputs.push(input.name);
         }
 
         return {
@@ -237,8 +247,8 @@ export default {
 
       this.selectedInputNames = items;
 
-      // Note: we need to emit an event from here as the input value of deselected input changed
-      if (changedInputs.length > 0) {
+      // Emit events for inputs that had selection changes
+      if (selectionChangedInputs.length > 0) {
         this.emitEvents();
       }
     },

@@ -2,7 +2,6 @@ import { GlModal, GlFormSelect } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 
-import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/project_namespace_work_item_types.query.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -20,6 +19,7 @@ import {
 
 import {
   convertWorkItemMutationResponse,
+  namespaceWorkItemTypesQueryResponse,
   workItemChangeTypeWidgets,
   workItemQueryResponse,
   workItemWithEpicParentQueryResponse,

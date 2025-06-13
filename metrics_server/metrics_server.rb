@@ -8,7 +8,7 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
 
   class << self
     def start_for_puma
-      metrics_dir = Gitlab::Metrics.client.configuration.multiprocess_files_dir
+      metrics_dir = ::Prometheus::Client.configuration.multiprocess_files_dir
 
       start_server = proc do
         MetricsServer.spawn('puma', metrics_dir: metrics_dir).tap do |pid|
@@ -105,7 +105,7 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
   end
 
   def start
-    Gitlab::Metrics.client.configure do |config|
+    ::Prometheus::Client.configure do |config|
       config.multiprocess_files_dir = @metrics_dir
       config.pid_provider = proc { name }
     end

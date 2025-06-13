@@ -14,6 +14,6 @@ class MetricsService
   private
 
   def multiprocess_metrics_path
-    ::Gitlab::Metrics.client.configuration.multiprocess_files_dir
+    ::Prometheus::Client.configuration.multiprocess_files_dir
   end
 end

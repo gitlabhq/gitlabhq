@@ -11,22 +11,8 @@ module Gitlab
       class_methods do
         include Gitlab::Utils::StrongMemoize
 
-        @error = false
-
-        def error?
-          @error
-        end
-
-        def client
-          ::Prometheus::Client
-        end
-
-        def null_metric
-          NullMetric.instance
-        end
-
         def metrics_folder_present?
-          multiprocess_files_dir = client.configuration.multiprocess_files_dir
+          multiprocess_files_dir = ::Prometheus::Client.configuration.multiprocess_files_dir
 
           multiprocess_files_dir &&
             ::Dir.exist?(multiprocess_files_dir) &&
@@ -41,11 +27,10 @@ module Gitlab
 
         def reset_registry!
           clear_memoization(:registry)
-          clear_memoization(:prometheus_metrics_enabled)
 
           REGISTRY_MUTEX.synchronize do
-            client.cleanup!
-            client.reset!
+            ::Prometheus::Client.cleanup!
+            ::Prometheus::Client.reset!
           end
         end
 
@@ -53,7 +38,7 @@ module Gitlab
           strong_memoize(:registry) do
             REGISTRY_MUTEX.synchronize do
               strong_memoize(:registry) do
-                client.registry
+                ::Prometheus::Client.registry
               end
             end
           end
@@ -71,7 +56,7 @@ module Gitlab
           safe_provide_metric(:gauge, name, docstring, base_labels, multiprocess_mode)
         end
 
-        def histogram(name, docstring, base_labels = {}, buckets = client::Histogram::DEFAULT_BUCKETS)
+        def histogram(name, docstring, base_labels = {}, buckets = ::Prometheus::Client::Histogram::DEFAULT_BUCKETS)
           safe_provide_metric(:histogram, name, docstring, base_labels, buckets)
         end
 
@@ -93,17 +78,20 @@ module Gitlab
 
         private
 
-        def safe_provide_metric(metric_type, metric_name, *args)
+        def safe_provide_metric(method, name, *args)
+          metric = provide_metric(name)
+          return metric if metric
+
           PROVIDER_MUTEX.synchronize do
-            provide_metric(metric_type, metric_name, *args)
+            provide_metric(name) || registry.method(method).call(name, *args)
           end
         end
 
-        def provide_metric(metric_type, metric_name, *args)
+        def provide_metric(name)
           if prometheus_metrics_enabled?
-            registry.get(metric_name) || registry.method(metric_type).call(metric_name, *args)
+            registry.get(name)
           else
-            null_metric
+            NullMetric.instance
           end
         end
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'OmniAuth Rack middlewares', :prometheus, feature_category: :system_access do
+RSpec.describe 'OmniAuth Rack middlewares', feature_category: :system_access do
   include SessionHelpers
 
   describe 'OmniAuth before_request_phase callback' do

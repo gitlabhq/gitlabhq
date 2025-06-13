@@ -7333,3 +7333,1423 @@ export const restoredDraftDataWidgetsEmpty = [
     __typename: 'WorkItemWidgetTimeTracking',
   },
 ];
+
+export const namespaceWorkItemTypesQueryResponse = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Project/8',
+      webUrl: 'web/url',
+      workItemTypes: {
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItems::Type/8',
+            name: 'Epic',
+            iconName: 'issue-type-epic',
+            supportedConversionTypes: [
+              {
+                id: 'gid://gitlab/WorkItems::Type/2',
+                name: 'Incident',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/1',
+                name: 'Issue',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/5',
+                name: 'Task',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/3',
+                name: 'Test Case',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/9',
+                name: 'Ticket',
+                __typename: 'WorkItemType',
+              },
+            ],
+            widgetDefinitions: [
+              {
+                type: 'ASSIGNEES',
+                allowsMultipleAssignees: true,
+                canInviteMembers: false,
+                __typename: 'WorkItemWidgetDefinitionAssignees',
+              },
+              {
+                type: 'AWARD_EMOJI',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'CURRENT_USER_TODOS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'DESCRIPTION',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'HIERARCHY',
+                allowedChildTypes: {
+                  nodes: [
+                    {
+                      id: 'gid://gitlab/WorkItems::Type/8',
+                      name: 'Epic',
+                      __typename: 'WorkItemType',
+                    },
+                    {
+                      id: 'gid://gitlab/WorkItems::Type/1',
+                      name: 'Issue',
+                      __typename: 'WorkItemType',
+                    },
+                  ],
+                  __typename: 'WorkItemTypeConnection',
+                },
+                allowedParentTypes: {
+                  nodes: [
+                    {
+                      id: 'gid://gitlab/WorkItems::Type/8',
+                      name: 'Epic',
+                      __typename: 'WorkItemType',
+                    },
+                  ],
+                  __typename: 'WorkItemTypeConnection',
+                },
+                __typename: 'WorkItemWidgetDefinitionHierarchy',
+              },
+              {
+                type: 'LABELS',
+                allowsScopedLabels: false,
+                __typename: 'WorkItemWidgetDefinitionLabels',
+              },
+              {
+                type: 'LINKED_ITEMS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'MILESTONE',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'NOTES',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'NOTIFICATIONS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'PARTICIPANTS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'START_AND_DUE_DATE',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'TIME_TRACKING',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'WEIGHT',
+                editable: false,
+                rollUp: true,
+                __typename: 'WorkItemWidgetDefinitionWeight',
+              },
+            ],
+            __typename: 'WorkItemType',
+          },
+          {
+            id: 'gid://gitlab/WorkItems::Type/2',
+            name: 'Incident',
+            iconName: 'issue-type-incident',
+            supportedConversionTypes: [
+              {
+                id: 'gid://gitlab/WorkItems::Type/8',
+                name: 'Epic',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/1',
+                name: 'Issue',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/5',
+                name: 'Task',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/3',
+                name: 'Test Case',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/9',
+                name: 'Ticket',
+                __typename: 'WorkItemType',
+              },
+            ],
+            widgetDefinitions: [
+              {
+                type: 'ASSIGNEES',
+                allowsMultipleAssignees: true,
+                canInviteMembers: false,
+                __typename: 'WorkItemWidgetDefinitionAssignees',
+              },
+              {
+                type: 'AWARD_EMOJI',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'CRM_CONTACTS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'CURRENT_USER_TODOS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'DESCRIPTION',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'DEVELOPMENT',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'EMAIL_PARTICIPANTS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'HIERARCHY',
+                allowedChildTypes: {
+                  nodes: [
+                    {
+                      id: 'gid://gitlab/WorkItems::Type/5',
+                      name: 'Task',
+                      __typename: 'WorkItemType',
+                    },
+                  ],
+                  __typename: 'WorkItemTypeConnection',
+                },
+                allowedParentTypes: { nodes: [], __typename: 'WorkItemTypeConnection' },
+                __typename: 'WorkItemWidgetDefinitionHierarchy',
+              },
+              {
+                type: 'ITERATION',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'LABELS',
+                allowsScopedLabels: false,
+                __typename: 'WorkItemWidgetDefinitionLabels',
+              },
+              {
+                type: 'LINKED_ITEMS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'MILESTONE',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'NOTES',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'NOTIFICATIONS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'PARTICIPANTS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              { type: 'TIME_TRACKING', __typename: 'WorkItemWidgetDefinitionGeneric' },
+            ],
+            __typename: 'WorkItemType',
+          },
+          {
+            id: 'gid://gitlab/WorkItems::Type/1',
+            name: 'Issue',
+            iconName: 'issue-type-issue',
+            supportedConversionTypes: [
+              {
+                id: 'gid://gitlab/WorkItems::Type/8',
+                name: 'Epic',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/2',
+                name: 'Incident',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/5',
+                name: 'Task',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/3',
+                name: 'Test Case',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/9',
+                name: 'Ticket',
+                __typename: 'WorkItemType',
+              },
+            ],
+            widgetDefinitions: [
+              {
+                type: 'ASSIGNEES',
+                allowsMultipleAssignees: true,
+                canInviteMembers: false,
+                __typename: 'WorkItemWidgetDefinitionAssignees',
+              },
+              {
+                type: 'AWARD_EMOJI',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'CRM_CONTACTS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'CURRENT_USER_TODOS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'DESCRIPTION',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'DESIGNS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'DEVELOPMENT',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'EMAIL_PARTICIPANTS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'ERROR_TRACKING',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'HIERARCHY',
+                allowedChildTypes: {
+                  nodes: [
+                    {
+                      id: 'gid://gitlab/WorkItems::Type/5',
+                      name: 'Task',
+                      __typename: 'WorkItemType',
+                    },
+                  ],
+                  __typename: 'WorkItemTypeConnection',
+                },
+                allowedParentTypes: {
+                  nodes: [
+                    {
+                      id: 'gid://gitlab/WorkItems::Type/8',
+                      name: 'Epic',
+                      __typename: 'WorkItemType',
+                    },
+                  ],
+                  __typename: 'WorkItemTypeConnection',
+                },
+                __typename: 'WorkItemWidgetDefinitionHierarchy',
+              },
+              {
+                type: 'ITERATION',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'LABELS',
+                allowsScopedLabels: false,
+                __typename: 'WorkItemWidgetDefinitionLabels',
+              },
+              {
+                type: 'LINKED_ITEMS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'MILESTONE',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'NOTES',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'NOTIFICATIONS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'PARTICIPANTS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'START_AND_DUE_DATE',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'TIME_TRACKING',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'WEIGHT',
+                editable: true,
+                rollUp: false,
+                __typename: 'WorkItemWidgetDefinitionWeight',
+              },
+              {
+                type: 'STATUS',
+                allowedStatuses: [
+                  {
+                    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/1',
+                    name: 'To do',
+                    iconName: 'status-waiting',
+                    color: '#737278',
+                    position: 0,
+                    __typename: 'WorkItemStatus',
+                  },
+                  {
+                    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/2',
+                    name: 'In progress',
+                    iconName: 'status-running',
+                    color: '#1f75cb',
+                    position: 0,
+                    __typename: 'WorkItemStatus',
+                  },
+                  {
+                    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/3',
+                    name: 'Done',
+                    iconName: 'status-success',
+                    color: '#108548',
+                    position: 0,
+                    __typename: 'WorkItemStatus',
+                  },
+                  {
+                    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/4',
+                    name: "Won't do",
+                    iconName: 'status-cancelled',
+                    color: '#DD2B0E',
+                    position: 0,
+                    __typename: 'WorkItemStatus',
+                  },
+                  {
+                    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/5',
+                    name: 'Duplicate',
+                    iconName: 'status-cancelled',
+                    color: '#DD2B0E',
+                    position: 10,
+                    __typename: 'WorkItemStatus',
+                  },
+                ],
+                defaultOpenStatus: {
+                  id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/1',
+                  name: 'To do',
+                  iconName: 'status-waiting',
+                  color: '#737278',
+                  position: 0,
+                  __typename: 'WorkItemStatus',
+                },
+                __typename: 'WorkItemWidgetDefinitionStatus',
+              },
+            ],
+            __typename: 'WorkItemType',
+          },
+          {
+            id: 'gid://gitlab/WorkItems::Type/7',
+            name: 'Key Result',
+            iconName: 'issue-type-keyresult',
+            supportedConversionTypes: [
+              {
+                id: 'gid://gitlab/WorkItems::Type/8',
+                name: 'Epic',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/2',
+                name: 'Incident',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/1',
+                name: 'Issue',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/5',
+                name: 'Task',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/3',
+                name: 'Test Case',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/9',
+                name: 'Ticket',
+                __typename: 'WorkItemType',
+              },
+            ],
+            widgetDefinitions: [
+              {
+                type: 'ASSIGNEES',
+                allowsMultipleAssignees: true,
+                canInviteMembers: false,
+                __typename: 'WorkItemWidgetDefinitionAssignees',
+              },
+              {
+                type: 'AWARD_EMOJI',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'CURRENT_USER_TODOS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'DESCRIPTION',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'HIERARCHY',
+                allowedChildTypes: { nodes: [], __typename: 'WorkItemTypeConnection' },
+                allowedParentTypes: {
+                  nodes: [
+                    {
+                      id: 'gid://gitlab/WorkItems::Type/6',
+                      name: 'Objective',
+                      __typename: 'WorkItemType',
+                    },
+                  ],
+                  __typename: 'WorkItemTypeConnection',
+                },
+                __typename: 'WorkItemWidgetDefinitionHierarchy',
+              },
+              {
+                type: 'LABELS',
+                allowsScopedLabels: false,
+                __typename: 'WorkItemWidgetDefinitionLabels',
+              },
+              {
+                type: 'LINKED_ITEMS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'NOTES',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'NOTIFICATIONS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'PARTICIPANTS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'START_AND_DUE_DATE',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              { type: 'PROGRESS', __typename: 'WorkItemWidgetDefinitionGeneric' },
+            ],
+            __typename: 'WorkItemType',
+          },
+          {
+            id: 'gid://gitlab/WorkItems::Type/6',
+            name: 'Objective',
+            iconName: 'issue-type-objective',
+            supportedConversionTypes: [
+              {
+                id: 'gid://gitlab/WorkItems::Type/8',
+                name: 'Epic',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/2',
+                name: 'Incident',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/1',
+                name: 'Issue',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/5',
+                name: 'Task',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/3',
+                name: 'Test Case',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/9',
+                name: 'Ticket',
+                __typename: 'WorkItemType',
+              },
+            ],
+            widgetDefinitions: [
+              {
+                type: 'ASSIGNEES',
+                allowsMultipleAssignees: true,
+                canInviteMembers: false,
+                __typename: 'WorkItemWidgetDefinitionAssignees',
+              },
+              {
+                type: 'AWARD_EMOJI',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'CURRENT_USER_TODOS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'DESCRIPTION',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'HIERARCHY',
+                allowedChildTypes: {
+                  nodes: [
+                    {
+                      id: 'gid://gitlab/WorkItems::Type/7',
+                      name: 'Key Result',
+                      __typename: 'WorkItemType',
+                    },
+                    {
+                      id: 'gid://gitlab/WorkItems::Type/6',
+                      name: 'Objective',
+                      __typename: 'WorkItemType',
+                    },
+                  ],
+                  __typename: 'WorkItemTypeConnection',
+                },
+                allowedParentTypes: {
+                  nodes: [
+                    {
+                      id: 'gid://gitlab/WorkItems::Type/6',
+                      name: 'Objective',
+                      __typename: 'WorkItemType',
+                    },
+                  ],
+                  __typename: 'WorkItemTypeConnection',
+                },
+                __typename: 'WorkItemWidgetDefinitionHierarchy',
+              },
+              {
+                type: 'LABELS',
+                allowsScopedLabels: false,
+                __typename: 'WorkItemWidgetDefinitionLabels',
+              },
+              {
+                type: 'LINKED_ITEMS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'MILESTONE',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'NOTES',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'NOTIFICATIONS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'PARTICIPANTS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              { type: 'PROGRESS', __typename: 'WorkItemWidgetDefinitionGeneric' },
+            ],
+            __typename: 'WorkItemType',
+          },
+          {
+            id: 'gid://gitlab/WorkItems::Type/4',
+            name: 'Requirement',
+            iconName: 'issue-type-requirements',
+            supportedConversionTypes: [
+              {
+                id: 'gid://gitlab/WorkItems::Type/8',
+                name: 'Epic',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/2',
+                name: 'Incident',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/1',
+                name: 'Issue',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/5',
+                name: 'Task',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/3',
+                name: 'Test Case',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/9',
+                name: 'Ticket',
+                __typename: 'WorkItemType',
+              },
+            ],
+            widgetDefinitions: [
+              {
+                type: 'AWARD_EMOJI',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'CURRENT_USER_TODOS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'DESCRIPTION',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'LINKED_ITEMS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'NOTES',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'NOTIFICATIONS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'PARTICIPANTS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              { type: 'TIME_TRACKING', __typename: 'WorkItemWidgetDefinitionGeneric' },
+            ],
+            __typename: 'WorkItemType',
+          },
+          {
+            id: 'gid://gitlab/WorkItems::Type/5',
+            name: 'Task',
+            iconName: 'issue-type-task',
+            supportedConversionTypes: [
+              {
+                id: 'gid://gitlab/WorkItems::Type/8',
+                name: 'Epic',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/2',
+                name: 'Incident',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/1',
+                name: 'Issue',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/3',
+                name: 'Test Case',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/9',
+                name: 'Ticket',
+                __typename: 'WorkItemType',
+              },
+            ],
+            widgetDefinitions: [
+              {
+                type: 'ASSIGNEES',
+                allowsMultipleAssignees: true,
+                canInviteMembers: false,
+                __typename: 'WorkItemWidgetDefinitionAssignees',
+              },
+              {
+                type: 'AWARD_EMOJI',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'CRM_CONTACTS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'CURRENT_USER_TODOS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'DESCRIPTION',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'DEVELOPMENT',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'HIERARCHY',
+                allowedChildTypes: { nodes: [], __typename: 'WorkItemTypeConnection' },
+                allowedParentTypes: {
+                  nodes: [
+                    {
+                      id: 'gid://gitlab/WorkItems::Type/2',
+                      name: 'Incident',
+                      __typename: 'WorkItemType',
+                    },
+                    {
+                      id: 'gid://gitlab/WorkItems::Type/1',
+                      name: 'Issue',
+                      __typename: 'WorkItemType',
+                    },
+                    {
+                      id: 'gid://gitlab/WorkItems::Type/9',
+                      name: 'Ticket',
+                      __typename: 'WorkItemType',
+                    },
+                  ],
+                  __typename: 'WorkItemTypeConnection',
+                },
+                __typename: 'WorkItemWidgetDefinitionHierarchy',
+              },
+              {
+                type: 'ITERATION',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'LABELS',
+                allowsScopedLabels: false,
+                __typename: 'WorkItemWidgetDefinitionLabels',
+              },
+              {
+                type: 'LINKED_ITEMS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'MILESTONE',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'NOTES',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'NOTIFICATIONS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'PARTICIPANTS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'START_AND_DUE_DATE',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'TIME_TRACKING',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'WEIGHT',
+                editable: true,
+                rollUp: false,
+                __typename: 'WorkItemWidgetDefinitionWeight',
+              },
+              {
+                type: 'STATUS',
+                allowedStatuses: [
+                  {
+                    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/1',
+                    name: 'To do',
+                    iconName: 'status-waiting',
+                    color: '#737278',
+                    position: 0,
+                    __typename: 'WorkItemStatus',
+                  },
+                  {
+                    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/2',
+                    name: 'In progress',
+                    iconName: 'status-running',
+                    color: '#1f75cb',
+                    position: 0,
+                    __typename: 'WorkItemStatus',
+                  },
+                  {
+                    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/3',
+                    name: 'Done',
+                    iconName: 'status-success',
+                    color: '#108548',
+                    position: 0,
+                    __typename: 'WorkItemStatus',
+                  },
+                  {
+                    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/4',
+                    name: "Won't do",
+                    iconName: 'status-cancelled',
+                    color: '#DD2B0E',
+                    position: 0,
+                    __typename: 'WorkItemStatus',
+                  },
+                  {
+                    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/5',
+                    name: 'Duplicate',
+                    iconName: 'status-cancelled',
+                    color: '#DD2B0E',
+                    position: 10,
+                    __typename: 'WorkItemStatus',
+                  },
+                ],
+                defaultOpenStatus: {
+                  id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/1',
+                  name: 'To do',
+                  iconName: 'status-waiting',
+                  color: '#737278',
+                  position: 0,
+                  __typename: 'WorkItemStatus',
+                },
+                __typename: 'WorkItemWidgetDefinitionStatus',
+              },
+            ],
+            __typename: 'WorkItemType',
+          },
+          {
+            id: 'gid://gitlab/WorkItems::Type/3',
+            name: 'Test Case',
+            iconName: 'issue-type-test-case',
+            supportedConversionTypes: [
+              {
+                id: 'gid://gitlab/WorkItems::Type/8',
+                name: 'Epic',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/2',
+                name: 'Incident',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/1',
+                name: 'Issue',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/5',
+                name: 'Task',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/9',
+                name: 'Ticket',
+                __typename: 'WorkItemType',
+              },
+            ],
+            widgetDefinitions: [
+              {
+                type: 'AWARD_EMOJI',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'CURRENT_USER_TODOS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'DESCRIPTION',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'LINKED_ITEMS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'NOTES',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'NOTIFICATIONS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'PARTICIPANTS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              { type: 'TIME_TRACKING', __typename: 'WorkItemWidgetDefinitionGeneric' },
+            ],
+            __typename: 'WorkItemType',
+          },
+          {
+            id: 'gid://gitlab/WorkItems::Type/9',
+            name: 'Ticket',
+            iconName: 'issue-type-issue',
+            supportedConversionTypes: [
+              {
+                id: 'gid://gitlab/WorkItems::Type/8',
+                name: 'Epic',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/2',
+                name: 'Incident',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/1',
+                name: 'Issue',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/5',
+                name: 'Task',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/3',
+                name: 'Test Case',
+                __typename: 'WorkItemType',
+              },
+            ],
+            widgetDefinitions: [
+              {
+                type: 'ASSIGNEES',
+                allowsMultipleAssignees: true,
+                canInviteMembers: false,
+                __typename: 'WorkItemWidgetDefinitionAssignees',
+              },
+              {
+                type: 'AWARD_EMOJI',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'CRM_CONTACTS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'CURRENT_USER_TODOS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'DESCRIPTION',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'DESIGNS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'DEVELOPMENT',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'EMAIL_PARTICIPANTS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'HIERARCHY',
+                allowedChildTypes: {
+                  nodes: [
+                    {
+                      id: 'gid://gitlab/WorkItems::Type/5',
+                      name: 'Task',
+                      __typename: 'WorkItemType',
+                    },
+                  ],
+                  __typename: 'WorkItemTypeConnection',
+                },
+                allowedParentTypes: { nodes: [], __typename: 'WorkItemTypeConnection' },
+                __typename: 'WorkItemWidgetDefinitionHierarchy',
+              },
+              {
+                type: 'ITERATION',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'LABELS',
+                allowsScopedLabels: false,
+                __typename: 'WorkItemWidgetDefinitionLabels',
+              },
+              {
+                type: 'LINKED_ITEMS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'MILESTONE',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'NOTES',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'NOTIFICATIONS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'PARTICIPANTS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'START_AND_DUE_DATE',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'TIME_TRACKING',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'WEIGHT',
+                editable: true,
+                rollUp: false,
+                __typename: 'WorkItemWidgetDefinitionWeight',
+              },
+            ],
+            __typename: 'WorkItemType',
+          },
+        ],
+        __typename: 'WorkItemTypeConnection',
+      },
+      __typename: 'Namespace',
+    },
+  },
+};
+
+export const namespaceWorkItemTypesWithOKRsQueryResponse = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Namespaces::ProjectNamespace/9',
+      webUrl: 'http://localhost/group2/project-4',
+      workItemTypes: {
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItems::Type/8',
+            name: 'Epic',
+            iconName: 'issue-type-epic',
+            supportedConversionTypes: [],
+            widgetDefinitions: [],
+            __typename: 'WorkItemType',
+          },
+          {
+            id: 'gid://gitlab/WorkItems::Type/2',
+            name: 'Incident',
+            iconName: 'issue-type-incident',
+            supportedConversionTypes: [],
+            widgetDefinitions: [],
+            __typename: 'WorkItemType',
+          },
+          {
+            id: 'gid://gitlab/WorkItems::Type/1',
+            name: 'Issue',
+            iconName: 'issue-type-issue',
+            supportedConversionTypes: [
+              {
+                id: 'gid://gitlab/WorkItems::Type/8',
+                name: 'Epic',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/2',
+                name: 'Incident',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/7',
+                name: 'Key Result',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/6',
+                name: 'Objective',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/5',
+                name: 'Task',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/3',
+                name: 'Test Case',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/9',
+                name: 'Ticket',
+                __typename: 'WorkItemType',
+              },
+            ],
+            widgetDefinitions: [
+              {
+                type: 'ASSIGNEES',
+                allowsMultipleAssignees: true,
+                canInviteMembers: false,
+                __typename: 'WorkItemWidgetDefinitionAssignees',
+              },
+              {
+                type: 'AWARD_EMOJI',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'CRM_CONTACTS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'CURRENT_USER_TODOS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'DESCRIPTION',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'DESIGNS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'DEVELOPMENT',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'EMAIL_PARTICIPANTS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'ERROR_TRACKING',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'HIERARCHY',
+                allowedChildTypes: {
+                  nodes: [
+                    {
+                      id: 'gid://gitlab/WorkItems::Type/5',
+                      name: 'Task',
+                      __typename: 'WorkItemType',
+                    },
+                  ],
+                  __typename: 'WorkItemTypeConnection',
+                },
+                allowedParentTypes: {
+                  nodes: [
+                    {
+                      id: 'gid://gitlab/WorkItems::Type/8',
+                      name: 'Epic',
+                      __typename: 'WorkItemType',
+                    },
+                  ],
+                  __typename: 'WorkItemTypeConnection',
+                },
+                __typename: 'WorkItemWidgetDefinitionHierarchy',
+              },
+              {
+                type: 'ITERATION',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'LABELS',
+                allowsScopedLabels: false,
+                __typename: 'WorkItemWidgetDefinitionLabels',
+              },
+              {
+                type: 'LINKED_ITEMS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'MILESTONE',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'NOTES',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'NOTIFICATIONS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'PARTICIPANTS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'START_AND_DUE_DATE',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'TIME_TRACKING',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'WEIGHT',
+                editable: true,
+                rollUp: false,
+                __typename: 'WorkItemWidgetDefinitionWeight',
+              },
+            ],
+            __typename: 'WorkItemType',
+          },
+          {
+            id: 'gid://gitlab/WorkItems::Type/7',
+            name: 'Key Result',
+            iconName: 'issue-type-keyresult',
+            supportedConversionTypes: [
+              {
+                id: 'gid://gitlab/WorkItems::Type/8',
+                name: 'Epic',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/2',
+                name: 'Incident',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/1',
+                name: 'Issue',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/6',
+                name: 'Objective',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/5',
+                name: 'Task',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/3',
+                name: 'Test Case',
+                __typename: 'WorkItemType',
+              },
+              {
+                id: 'gid://gitlab/WorkItems::Type/9',
+                name: 'Ticket',
+                __typename: 'WorkItemType',
+              },
+            ],
+            widgetDefinitions: [
+              {
+                type: 'ASSIGNEES',
+                allowsMultipleAssignees: true,
+                canInviteMembers: false,
+                __typename: 'WorkItemWidgetDefinitionAssignees',
+              },
+              {
+                type: 'AWARD_EMOJI',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'CURRENT_USER_TODOS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'DESCRIPTION',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'HIERARCHY',
+                allowedChildTypes: { nodes: [], __typename: 'WorkItemTypeConnection' },
+                allowedParentTypes: {
+                  nodes: [
+                    {
+                      id: 'gid://gitlab/WorkItems::Type/6',
+                      name: 'Objective',
+                      __typename: 'WorkItemType',
+                    },
+                  ],
+                  __typename: 'WorkItemTypeConnection',
+                },
+                __typename: 'WorkItemWidgetDefinitionHierarchy',
+              },
+              {
+                type: 'LABELS',
+                allowsScopedLabels: false,
+                __typename: 'WorkItemWidgetDefinitionLabels',
+              },
+              {
+                type: 'LINKED_ITEMS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'NOTES',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'NOTIFICATIONS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'PARTICIPANTS',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              {
+                type: 'START_AND_DUE_DATE',
+                __typename: 'WorkItemWidgetDefinitionGeneric',
+              },
+              { type: 'PROGRESS', __typename: 'WorkItemWidgetDefinitionGeneric' },
+            ],
+            __typename: 'WorkItemType',
+          },
+          {
+            id: 'gid://gitlab/WorkItems::Type/6',
+            name: 'Objective',
+            iconName: 'issue-type-objective',
+            supportedConversionTypes: [],
+            widgetDefinitions: [],
+            __typename: 'WorkItemType',
+          },
+          {
+            id: 'gid://gitlab/WorkItems::Type/4',
+            name: 'Requirement',
+            iconName: 'issue-type-requirements',
+            supportedConversionTypes: [],
+            widgetDefinitions: [],
+            __typename: 'WorkItemType',
+          },
+          {
+            id: 'gid://gitlab/WorkItems::Type/5',
+            name: 'Task',
+            iconName: 'issue-type-task',
+            supportedConversionTypes: [],
+            widgetDefinitions: [],
+            __typename: 'WorkItemType',
+          },
+          {
+            id: 'gid://gitlab/WorkItems::Type/3',
+            name: 'Test Case',
+            iconName: 'issue-type-test-case',
+            supportedConversionTypes: [],
+            widgetDefinitions: [],
+            __typename: 'WorkItemType',
+          },
+          {
+            id: 'gid://gitlab/WorkItems::Type/9',
+            name: 'Ticket',
+            iconName: 'issue-type-issue',
+            supportedConversionTypes: [],
+            widgetDefinitions: [],
+            __typename: 'WorkItemType',
+          },
+        ],
+        __typename: 'WorkItemTypeConnection',
+      },
+      __typename: 'Namespace',
+    },
+  },
+};

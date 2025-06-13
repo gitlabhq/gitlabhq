@@ -3,7 +3,6 @@ import VueApollo from 'vue-apollo';
 import { GlAlert, GlButton, GlFormSelect, GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
-import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/project_namespace_work_item_types.query.graphql.json';
 import { setHTMLFixture } from 'helpers/fixtures';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -42,6 +41,7 @@ import {
   createWorkItemMutationResponse,
   createWorkItemMutationErrorResponse,
   createWorkItemQueryResponse,
+  namespaceWorkItemTypesQueryResponse,
 } from 'ee_else_ce_jest/work_items/mock_data';
 
 jest.mock('~/alert');
@@ -223,7 +223,7 @@ describe('Create work item component', () => {
 
         expect(setNewWorkItemCache).toHaveBeenCalledWith({
           fullPath: 'full-path',
-          widgetDefinitions: expectedWorkItemTypeData.widgetDefinitions,
+          widgetDefinitions: expect.any(Array),
           workItemType: expectedWorkItemTypeData.name,
           workItemTypeId: expectedWorkItemTypeData.id,
           workItemTypeIconName: expectedWorkItemTypeData.iconName,

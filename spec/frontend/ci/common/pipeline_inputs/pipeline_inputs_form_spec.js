@@ -402,10 +402,13 @@ describe('PipelineInputsForm', () => {
       await createComponent();
       await selectInputs();
 
-      const updatedInput = { ...expectedInputs[0], value: 'updated-value' };
+      // Emits an event on inputs select
+      expect(wrapper.emitted()['update-inputs']).toHaveLength(1);
+
+      const updatedInput = { ...expectedInputs[0], value: 'updated-value', isSelected: true };
       findInputsTable().vm.$emit('update', updatedInput);
 
-      expect(wrapper.emitted()['update-inputs']).toHaveLength(1);
+      expect(wrapper.emitted()['update-inputs']).toHaveLength(2);
 
       const expectedEmittedValue = [
         { name: 'deploy_environment', value: 'updated-value' },
@@ -413,7 +416,7 @@ describe('PipelineInputsForm', () => {
         { name: 'tags', value: '' },
       ];
 
-      expect(wrapper.emitted()['update-inputs'][0][0]).toEqual(expectedEmittedValue);
+      expect(wrapper.emitted('update-inputs')[1][0]).toEqual(expectedEmittedValue);
     });
 
     it('only emits modified inputs when emitModifiedOnly is true', async () => {
@@ -423,14 +426,28 @@ describe('PipelineInputsForm', () => {
 
       const inputs = findInputsTable().props('inputs');
       const totalInputsCount = inputs.length;
-      const inputToModify = { ...inputs[0], value: 'modified-value' };
+      const inputToModify = { ...inputs[0], value: 'modified-value', isSelected: true };
 
       findInputsTable().vm.$emit('update', inputToModify);
 
-      const emittedNameValuePairs = wrapper.emitted()['update-inputs'][0][0];
+      const emittedNameValuePairs = wrapper.emitted('update-inputs')[1][0];
 
       expect(emittedNameValuePairs).toHaveLength(1);
       expect(emittedNameValuePairs.length).toBeLessThan(totalInputsCount);
+    });
+
+    it('when saved input is unselected restores value to default and emits destroy property', async () => {
+      pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
+      const savedInputs = [{ name: 'deploy_environment', value: 'saved-value' }];
+      await createComponent({ props: { savedInputs } });
+
+      await selectInputs([]);
+
+      const expectedEmittedValue = [
+        { name: 'deploy_environment', value: 'staging', destroy: true },
+      ];
+
+      expect(wrapper.emitted('update-inputs')[0][0]).toEqual(expectedEmittedValue);
     });
 
     it('converts string values to arrays for ARRAY type inputs', async () => {
@@ -450,7 +467,7 @@ describe('PipelineInputsForm', () => {
       findInputsTable().vm.$emit('update', updatedInput);
 
       // Check that the emitted value contains the converted array
-      const emittedValues = wrapper.emitted()['update-inputs'][0][0];
+      const emittedValues = wrapper.emitted('update-inputs')[1][0];
       const emittedArrayValue = emittedValues.find((item) => item.name === 'tags').value;
 
       expect(Array.isArray(emittedArrayValue)).toBe(true);
@@ -472,22 +489,24 @@ describe('PipelineInputsForm', () => {
 
       findInputsTable().vm.$emit('update', updatedInput);
 
-      const emittedValues = wrapper.emitted()['update-inputs'][0][0];
+      const emittedValues = wrapper.emitted('update-inputs')[1][0];
       const emittedArrayValue = emittedValues.find((item) => item.name === 'tags').value;
 
       expect(Array.isArray(emittedArrayValue)).toBe(true);
       expect(emittedArrayValue).toEqual([{ key: 'value' }, { another: 'object' }]);
     });
 
-    it('restores default values when inputs are deselected', async () => {
+    it('restores input defaults and emits empty array when all inputs are deselected', async () => {
       pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
       await createComponent();
       await selectInputs();
 
-      const updatedInput = { ...expectedInputs[0], value: 'updated-value' };
+      expect(wrapper.emitted('update-inputs')).toHaveLength(1);
+
+      const updatedInput = { ...expectedInputs[0], value: 'updated-value', isSelected: true };
       findInputsTable().vm.$emit('update', updatedInput);
 
-      expect(wrapper.emitted()['update-inputs']).toHaveLength(1);
+      expect(wrapper.emitted('update-inputs')).toHaveLength(2);
 
       const expectedEmittedValue = [
         { name: 'deploy_environment', value: 'updated-value' },
@@ -495,19 +514,13 @@ describe('PipelineInputsForm', () => {
         { name: 'tags', value: '' },
       ];
 
-      expect(wrapper.emitted()['update-inputs'][0][0]).toEqual(expectedEmittedValue);
+      expect(wrapper.emitted('update-inputs')[1][0]).toEqual(expectedEmittedValue);
 
       findInputsSelector().vm.$emit('reset');
       await nextTick();
 
-      // Note: 'staging' is a default value
-      const newExpectedEmittedValue = [
-        { name: 'deploy_environment', value: 'staging' },
-        { name: 'api_token', value: '' },
-        { name: 'tags', value: '' },
-      ];
-      expect(wrapper.emitted()['update-inputs']).toHaveLength(2);
-      expect(wrapper.emitted()['update-inputs'][1][0]).toEqual(newExpectedEmittedValue);
+      expect(wrapper.emitted('update-inputs')).toHaveLength(3);
+      expect(wrapper.emitted('update-inputs')[2][0]).toEqual([]);
     });
   });
 
@@ -519,7 +532,7 @@ describe('PipelineInputsForm', () => {
     });
 
     it('emits total available and modified counts when receives the inputs', () => {
-      expect(wrapper.emitted()['update-inputs-metadata']).toHaveLength(1);
+      expect(wrapper.emitted()['update-inputs-metadata']).toHaveLength(2);
       expect(wrapper.emitted()['update-inputs-metadata'][0][0]).toEqual({
         totalAvailable: 3,
         totalModified: 0,
@@ -531,8 +544,8 @@ describe('PipelineInputsForm', () => {
       const updatedInput = { ...inputs[0], savedValue: 'saved-value', value: 'new-updated-value' };
       findInputsTable().vm.$emit('update', updatedInput);
 
-      expect(wrapper.emitted()['update-inputs-metadata']).toHaveLength(2);
-      expect(wrapper.emitted()['update-inputs-metadata'][1][0]).toEqual({
+      expect(wrapper.emitted()['update-inputs-metadata']).toHaveLength(3);
+      expect(wrapper.emitted()['update-inputs-metadata'][2][0]).toEqual({
         totalModified: 1,
         newlyModified: 1,
       });

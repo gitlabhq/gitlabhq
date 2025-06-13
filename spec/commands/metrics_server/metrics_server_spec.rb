@@ -2,7 +2,6 @@
 
 require 'spec_helper'
 
-require_relative '../../../metrics_server/dependencies'
 require_relative '../../../metrics_server/metrics_server'
 
 # End-to-end tests for the metrics server process we use to serve metrics

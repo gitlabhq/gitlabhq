@@ -1,7 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import { GlForm, GlFormGroup, GlFormInput, GlFormCheckbox, GlTooltip } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
-import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/project_namespace_work_item_types.query.graphql.json';
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -24,11 +23,12 @@ import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutati
 import updateWorkItemHierarchyMutation from '~/work_items/graphql/update_work_item_hierarchy.mutation.graphql';
 import namespaceProjectsForLinksWidgetQuery from '~/work_items/graphql/namespace_projects_for_links_widget.query.graphql';
 import {
-  createWorkItemMutationResponse,
-  updateWorkItemMutationResponse,
   availableWorkItemsResponse,
-  namespaceProjectsList,
+  createWorkItemMutationResponse,
   generateWorkItemsListWithId,
+  namespaceProjectsList,
+  namespaceWorkItemTypesQueryResponse,
+  updateWorkItemMutationResponse,
 } from 'ee_else_ce_jest/work_items/mock_data';
 
 Vue.use(VueApollo);

@@ -1,15 +1,7 @@
 # frozen_string_literal: true
 
 require 'webrick'
-
-RACK_EXPORTER =
-  if ENV["LABKIT_METRICS_ENABLED"] == "true"
-    require 'labkit/metrics/rack_exporter'
-    ::Labkit::Metrics::RackExporter
-  else
-    require 'prometheus/client/rack/exporter'
-    ::Prometheus::Client::Rack::Exporter
-  end
+require 'prometheus/client/rack/exporter'
 
 module Gitlab
   module Metrics
@@ -91,8 +83,7 @@ module Gitlab
             use Rack::Deflater
             use Gitlab::Metrics::Exporter::MetricsMiddleware, pid
             use Gitlab::Metrics::Exporter::GcRequestMiddleware if gc_requests
-            use RACK_EXPORTER if ::Gitlab::Metrics.enabled?
-
+            use ::Prometheus::Client::Rack::Exporter if ::Gitlab::Metrics.metrics_folder_present?
             run ->(env) { [404, {}, ['']] }
           end
         end

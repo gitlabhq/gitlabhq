@@ -7,13 +7,13 @@
     "enable_language_server_restrictions": {
       "type": "boolean",
       "default": false,
-      "description": "Enables enforcing language server restrictions"
+      "description": "Enforce restrictions on Language Server"
     },
     "minimum_language_server_version": {
       "type": "string",
       "pattern": "^\\d+\\.\\d+\\.\\d+$",
       "maxLength": 64,
-      "description": "Minimum language server version to accept requests from"
+      "description": "Minimum required Language Server version"
     }
   }
 }
