@@ -324,9 +324,7 @@ the migration that was used to enqueue it. Pay careful attention to:
 When finalizing a batched background migration you also need to update the
 `finalized_by` in the corresponding `db/docs/batched_background_migrations`
 file. The value should be the timestamp/version of the migration you added to
-finalize it. The [schema version of the RSpec tests](../testing_guide/testing_migrations_guide.md#testing-a-non-activerecordmigration-class)
-associated with the migration should also be set to this version to avoid having the tests fail due
-to future schema changes.
+finalize it.
 
 See the below [Examples](#examples) for specific details on what the actual
 migration code should be.

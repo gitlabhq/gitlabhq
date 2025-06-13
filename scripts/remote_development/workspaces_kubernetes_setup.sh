@@ -271,11 +271,18 @@ helm repo update
 
 helm --namespace ingress-nginx uninstall ingress-nginx --ignore-not-found --timeout=600s --wait
 
+# Helm 3.18.0 which is packaged with Rancher Desktop 1.19.1 has introduced a bug
+# which renders integers as floats in the helm templates.
+# https://github.com/helm/helm/issues/30878#issuecomment-2894349468
+# To avoid the issue, we explicitly set the problematic field to `null`.
+# This issue has been fixed in helm 3.18.1 - https://github.com/helm/helm/releases/tag/v3.18.1
+# Once Rancher Desktop packages this new version, we can remove this patch.
 helm upgrade --install \
   ingress-nginx ingress-nginx/ingress-nginx \
   --namespace="ingress-nginx" \
   --create-namespace \
   --version="${INGRESS_NGINX_HELM_CHART_VERSION}" \
+  --set="controller.progressDeadlineSeconds=null" \
   --timeout=600s --wait --wait-for-jobs
 
 kubectl wait pod \

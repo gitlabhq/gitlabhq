@@ -10,11 +10,7 @@
 .expandable-card {
   &.is-collapsed header {
     border-bottom: 0;
-    border-radius: $gl-border-radius-lg;
-
-    &:hover {
-      background-color: $gl-background-color-subtle;
-    }
+    @apply gl-rounded-lg hover:gl-bg-subtle;
   }
 
   .crud-body {
