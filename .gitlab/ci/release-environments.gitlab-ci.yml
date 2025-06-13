@@ -8,6 +8,9 @@ start-release-environments-security-pipeline:
   # as they cannot be overridden. See this issue for more context:
   #
   # https://gitlab.com/gitlab-org/gitlab/-/issues/387183
+  needs:
+    - compile-production-assets
+    - build-qa-image
   inherit:
     variables:
       - RUBY_VERSION_DEFAULT
