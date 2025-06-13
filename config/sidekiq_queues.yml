@@ -895,6 +895,10 @@
   - 1
 - - security_analyzers_status_process_deleted_events
   - 1
+- - security_analyzers_status_process_group_transfer_events
+  - 1
+- - security_analyzers_status_process_project_transfer_events
+  - 1
 - - security_configuration_set_group_secret_push_protection
   - 1
 - - security_create_security_policy_project

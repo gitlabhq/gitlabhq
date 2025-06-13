@@ -29,7 +29,7 @@ Make sure to read the whole page as it contains information related to every upg
 To upgrade GitLab:
 
 1. Create an [upgrade plan](plan_your_upgrade.md) to document your upgrade steps.
-1. Familiarize yourself with the [maintenance policy documentation](../policy/maintenance.md) and the [currently maintained versions](https://about.gitlab.com/releases/#currently-maintained-versions).
+1. Familiarize yourself with the [maintenance policy documentation](../policy/maintenance.md) and the [currently maintained versions](../policy/maintenance.md#maintained-versions).
 1. Read the [release posts](https://about.gitlab.com/releases/categories/releases/) for versions you're passing over.
    In particular, deprecations, removals, and important notes on upgrading.
 1. Using the [upgrade path tool](upgrade_paths.md#upgrade-path-tool), determine what [upgrade path](upgrade_paths.md) you should take.

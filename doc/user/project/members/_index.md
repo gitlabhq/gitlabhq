@@ -81,24 +81,24 @@ In the previous example:
 
 ## Security considerations
 
-Before adding members to your project, it's important to understand the security implications.
-Git is a distributed version control system (DVCS). This means that everyone who works with the
-source code has a local copy of the complete repository.
+Git is a distributed version control system (DVCS).
+Everyone who works with the source code has a local copy of the complete repository.
 
 In GitLab, every project member with the Reporter role or higher can clone the repository to create
-a local copy. After obtaining a local copy, users can upload the full repository anywhere, including:
+a local copy.
+Users can upload the full repository anywhere after they obtain a local copy, including:
 
 - Another project under their control.
 - A different server.
 - External hosting services.
 
-Access controls cannot prevent the intentional sharing of source code by users who already have access
-to the repository. It is an inherent feature of a DVCS and applies to all Git management platforms.
+Access controls cannot prevent the intentional sharing of source code by users who already have
+access to the repository.
+All Git management platforms have this inherent characteristic of distributed version control
+systems.
 
-### Mitigate risks
-
-While you cannot prevent intentional sharing by authorized users, you can take steps to prevent
-unintentional sharing and information destruction:
+While you cannot prevent intentional sharing by authorized users, you can take the following steps
+to prevent unintentional sharing and information destruction:
 
 - Control who can [add users to a project](#add-users-to-a-project).
 - Use [protected branches](../repository/branches/protected.md) to prevent unauthorized force pushes.

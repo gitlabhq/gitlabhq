@@ -47,6 +47,7 @@ You can use GitLab Duo Chat in:
 - [The GitLab Web IDE (VS Code in the cloud)](../project/web_ide/_index.md)
 - VS Code, with the [GitLab Workflow extension for VS Code](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)
 - JetBrains IDEs, with the [GitLab Duo Plugin for JetBrains](https://plugins.jetbrains.com/plugin/22325-gitlab-duo)
+- Eclipse, with the [GitLab for Eclipse extension](https://marketplace.eclipse.org/content/gitlab-eclipse)
 - Visual Studio for Windows, with the [GitLab Extension for Visual Studio](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio)
 
 {{< alert type="note" >}}
@@ -335,7 +336,7 @@ To open GitLab Duo Chat Quick Chat in the editor window, use any of these method
 - From a keyboard shortcut, by pressing:
   - MacOS: <kbd>Option</kbd> + <kbd>c</kbd>
   - Windows and Linux: <kbd>ALT</kbd> + <kbd>c</kbd>
-- In the currently open file in your IDE, by selecting some code,
+- In an open file in your IDE, by selecting some code,
   then, in the floating toolbar, selecting **GitLab Duo Quick Chat** ({{< icon name="tanuki-ai" >}}).
 - Right-clicking, then selecting **GitLab Duo Chat > Open Quick Chat**.
 
@@ -355,6 +356,26 @@ After Quick Chat opens:
   <iframe src="https://www.youtube.com/embed/5JbAM5g2VbQ?si=pm7bTRDCR5we_1IX" frameborder="0" allowfullscreen> </iframe>
 </figure>
 <!-- Video published on 2024-10-15 -->
+
+## Use GitLab Duo Chat in Eclipse
+
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/editor-extensions/gitlab-eclipse-plugin/-/issues/163) from experiment to beta in GitLab 17.11.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You've [installed and configured the GitLab Eclipse Plugin](../../editor_extensions/eclipse/setup.md).
+
+To use GitLab Duo Chat in the GitLab Eclipse Plugin:
+
+1. Open a project in Eclipse.
+1. To open the chat window, select **GitLab Duo Chat** ({{< icon name="duo-chat" >}}), or use the keyboard shortcut:
+   - Windows and Linux: <kbd>ALT</kbd> + <kbd>d</kbd> on Windows and Linux
+   - MacOS: <kbd>Option</kbd> + <kbd>d</kbd>
+1. In the message box, enter your question and press **Enter** or select **Send**.
 
 ## Watch a demo and get tips
 

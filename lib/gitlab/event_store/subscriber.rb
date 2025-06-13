@@ -36,6 +36,10 @@ module Gitlab
         end
       end
 
+      def handle_event_in(delay, event)
+        self.class.perform_in(delay, event.class.name, event.data)
+      end
+
       def handle_event(event)
         raise NotImplementedError, 'you must implement this methods in order to handle events'
       end
