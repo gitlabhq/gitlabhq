@@ -67,7 +67,6 @@ FactoryBot.define do
       import_last_error { nil }
       forward_deployment_enabled { nil }
       forward_deployment_rollback_allowed { nil }
-      restrict_user_defined_variables { nil }
       ci_outbound_job_token_scope_enabled { nil }
       ci_inbound_job_token_scope_enabled { nil }
       runners_token { nil }

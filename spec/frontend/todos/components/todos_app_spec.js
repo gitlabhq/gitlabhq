@@ -12,7 +12,12 @@ import TodosFilterBar from '~/todos/components/todos_filter_bar.vue';
 import TodosBulkBar from '~/todos/components/todos_bulk_bar.vue';
 import TodosPagination, { CURSOR_CHANGED_EVENT } from '~/todos/components/todos_pagination.vue';
 import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
-import { INSTRUMENT_TAB_LABELS, STATUS_BY_TAB, TODO_WAIT_BEFORE_RELOAD } from '~/todos/constants';
+import {
+  INSTRUMENT_TAB_LABELS,
+  STATUS_BY_TAB,
+  TABS_INDICES,
+  TODO_WAIT_BEFORE_RELOAD,
+} from '~/todos/constants';
 import { mockTracking, unmockTracking } from 'jest/__helpers__/tracking_helper';
 import getPendingTodosCount from '~/todos/components/queries/get_pending_todos_count.query.graphql';
 import {
@@ -461,6 +466,10 @@ describe('TodosApp', () => {
     });
 
     describe('bulk actions', () => {
+      it('renders TodoItems with `selectable` prop', () => {
+        expect(findFirstTodoItem().props('selectable')).toBe(true);
+      });
+
       it('shows bulk bar when items are selected', async () => {
         expect(findBulkBar().isVisible()).toBe(false);
 
@@ -488,6 +497,29 @@ describe('TodosApp', () => {
         expect(findSelectedTodoItems()).toHaveLength(0);
         expect(todosQuerySuccessHandler).toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('provide/inject', () => {
+    it('provides the correct values to child components', () => {
+      createComponent();
+
+      const provided = wrapper.vm.$options.provide.call(wrapper.vm);
+
+      expect(provided.currentTab.value).toBe(TABS_INDICES.pending);
+      expect(provided.currentTime.value).toBeInstanceOf(Date);
+      expect(provided.currentUserId).toBeDefined();
+    });
+
+    it('provides reactive currentUserId after query resolves', async () => {
+      createComponent();
+
+      const provided = wrapper.vm.$options.provide.call(wrapper.vm);
+      expect(provided.currentUserId.value).toBeNull();
+
+      await waitForPromises();
+
+      expect(provided.currentUserId.value).toBe(todosResponse.data.currentUser.id);
     });
   });
 });

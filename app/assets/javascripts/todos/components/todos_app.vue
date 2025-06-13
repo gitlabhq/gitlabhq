@@ -53,6 +53,7 @@ export default {
     return {
       currentTab: computed(() => this.currentTab),
       currentTime: computed(() => this.currentTime),
+      currentUserId: computed(() => this.currentUserId),
     };
   },
   data() {
@@ -425,7 +426,7 @@ export default {
               v-for="todo in todos"
               :key="todo.id"
               :todo="todo"
-              :current-user-id="currentUserId"
+              selectable
               :selected="selectedIds.includes(todo.id)"
               @change="handleItemChanged"
               @select-change="handleSelectionChanged"

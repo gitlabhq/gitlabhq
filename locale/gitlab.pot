@@ -6548,6 +6548,9 @@ msgstr ""
 msgid "All threads resolved!"
 msgstr ""
 
+msgid "All to-do items"
+msgstr ""
+
 msgid "All users"
 msgstr ""
 
@@ -32795,6 +32798,9 @@ msgstr ""
 msgid "Indexing status"
 msgstr ""
 
+msgid "Indexing timeout per project"
+msgstr ""
+
 msgid "Inform users without uploaded SSH keys that they can't push over SSH until one is added"
 msgstr ""
 
@@ -40082,6 +40088,9 @@ msgid "Must be 90 days or more. Applies only to users with sign-in history. User
 msgstr ""
 
 msgid "Must be in the following format: `30m`, `2h`, or `1d`"
+msgstr ""
+
+msgid "Must be in the following format: `30m`, `2h`, or `1d`."
 msgstr ""
 
 msgid "Must be in the following format: `30m`, `2h`, or `1d`. Set to `%{val}` for no retries."

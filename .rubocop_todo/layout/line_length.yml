@@ -1003,7 +1003,6 @@ Layout/LineLength:
     - 'ee/spec/features/projects_spec.rb'
     - 'ee/spec/features/promotion_spec.rb'
     - 'ee/spec/features/read_only_spec.rb'
-    - 'ee/spec/features/search/elastic/snippet_search_spec.rb'
     - 'ee/spec/features/users/login_spec.rb'
     - 'ee/spec/finders/analytics/devops_adoption/enabled_namespaces_finder_spec.rb'
     - 'ee/spec/finders/analytics/devops_adoption/snapshots_finder_spec.rb'

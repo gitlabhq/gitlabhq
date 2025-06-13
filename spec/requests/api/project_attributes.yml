@@ -116,6 +116,9 @@ ci_cd_settings:
     separated_caches: ci_separated_caches
     allow_fork_pipelines_to_run_in_parent_project: ci_allow_fork_pipelines_to_run_in_parent_project
     delete_pipelines_in_seconds: ci_delete_pipelines_in_seconds
+  computed_attributes:
+    - restrict_user_defined_variables
+
 
 build_import_state: # import_state
   unexposed_attributes:

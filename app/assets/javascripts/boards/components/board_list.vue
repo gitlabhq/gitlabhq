@@ -811,22 +811,20 @@ export default {
           @appear="onReachingListBottom"
         />
       </board-card>
-      <div>
-        <!-- for supporting previous structure with intersection observer -->
-        <li
-          v-if="showCount"
-          class="board-list-count gl-py-4 gl-text-center gl-text-subtle"
-          data-issue-id="-1"
-        >
-          <gl-loading-icon
-            v-if="isLoadingMore"
-            size="sm"
-            :label="$options.i18n.loadingMoreBoardItems"
-          />
-          <span v-if="showingAllItems">{{ showingAllItemsText }}</span>
-          <span v-else>{{ paginatedIssueText }}</span>
-        </li>
-      </div>
+      <!-- for supporting previous structure with intersection observer -->
+      <li
+        v-if="showCount"
+        class="board-list-count gl-py-4 gl-text-center gl-text-subtle"
+        data-issue-id="-1"
+      >
+        <gl-loading-icon
+          v-if="isLoadingMore"
+          size="sm"
+          :label="$options.i18n.loadingMoreBoardItems"
+        />
+        <span v-if="showingAllItems">{{ showingAllItemsText }}</span>
+        <span v-else>{{ paginatedIssueText }}</span>
+      </li>
     </component>
   </div>
 </template>

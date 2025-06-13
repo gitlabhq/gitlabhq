@@ -30,9 +30,10 @@ You can connect ClickHouse to GitLab either:
 
 ## Supported ClickHouse versions
 
-| First GitLab version | ClickHouse versions |
-|-|-|
-|18.1.0 | 23.x, 24.x, 25.x |
+| First GitLab version | ClickHouse versions | Comment |
+|-|-|-|
+|17.7.0 | 23.x (24.x, 25.x) | For using ClickHouse 24.x and 25.x see the [workaround section](#database-schema-migrations-on-gitlab-1800-and-earlier). |
+|18.1.0 | 23.x, 24.x, 25.x | |
 
 {{< alert type="note" >}}
 
@@ -136,7 +137,7 @@ To provide GitLab with ClickHouse credentials:
 To verify that your connection is set up successfully:
 
 1. Sign in to [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session)
-1. Execute the following:
+1. Execute the following command:
 
    ```ruby
    ClickHouse::Client.select('SELECT 1', :main)
@@ -155,3 +156,32 @@ sudo gitlab-rake gitlab:clickhouse:migrate
 ### Enable ClickHouse for Analytics
 
 Now that your GitLab instance is connected to ClickHouse, you can enable features to use ClickHouse by [enabling ClickHouse for Analytics](../administration/analytics.md).
+
+## Troubleshooting
+
+### Database schema migrations on GitLab 18.0.0 and earlier
+
+On GitLab 18.0.0 and earlier, running database schema migrations for ClickHouse may fail for ClickHouse 24.x and 25.x with the following error message:
+
+```plaintext
+Code: 344. DB::Exception: Projection is fully supported in ReplacingMergeTree with deduplicate_merge_projection_mode = throw. Use 'drop' or 'rebuild' option of deduplicate_merge_projection_mode
+```
+
+Without running all migrations, the ClickHouse integration will not work.
+
+To work around this issue and run the migrations:
+
+1. Sign in to [Rails console](../administration/operations/rails_console.md#starting-a-rails-console-session)
+1. Execute the following command:
+
+   ```ruby
+   ClickHouse::Client.execute("INSERT INTO schema_migrations (version) VALUES ('20231114142100'), ('20240115162101')", :main)
+   ```
+
+1. Migrate the database again:
+
+   ```shell
+   sudo gitlab-rake gitlab:clickhouse:migrate
+   ```
+
+This time the database migration should successfully finish.

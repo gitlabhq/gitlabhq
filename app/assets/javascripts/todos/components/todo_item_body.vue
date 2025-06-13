@@ -31,11 +31,8 @@ export default {
   directives: {
     SafeHtml,
   },
+  inject: ['currentUserId'],
   props: {
-    currentUserId: {
-      type: String,
-      required: true,
-    },
     todo: {
       type: Object,
       required: true,

@@ -306,11 +306,6 @@ These known issues reflect only the latest version of GitLab. If you are using a
 - When a [secondary site uses a separate URL](secondary_proxy/_index.md#set-up-a-separate-url-for-a-secondary-geo-site) from the primary site, [signing in the secondary site using SAML](replication/single_sign_on.md#saml-with-separate-url-with-proxying-enabled) is only supported if the SAML Identity Provider (IdP) allows an application to be configured with multiple callback URLs.
 - Git clone and fetch requests with option `--depth` over SSH against a secondary site does not work and hangs indefinitely if the secondary site is not up to date at the time the request is initiated. This is due to problems related to translating Git SSH to Git https during proxying. For more information, see [issue 391980](https://gitlab.com/gitlab-org/gitlab/-/issues/391980). A new workflow that does not involve the aforementioned translation step is now available for Linux-packaged GitLab Geo secondary sites which can be enabled with a feature flag. For more details, see [comment in issue 454707](https://gitlab.com/gitlab-org/gitlab/-/issues/454707#note_2102067451). The fix for Cloud Native GitLab Geo secondary sites is tracked in [issue 5641](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/5641).
 - Some customers have reported that `git fetch` over SSH when the secondary site is out of date hangs and/or times out and fails. `git clone` requests over SSH are not impacted. For more information, see [issue 454707](https://gitlab.com/gitlab-org/gitlab/-/issues/454707). A fix available for Linux-packaged GitLab Geo secondary sites which can be enabled with a feature flag. For more details, see [comment in issue 454707](https://gitlab.com/gitlab-org/gitlab/-/issues/454707#note_2102067451). The fix for Cloud Native GitLab Geo secondary sites is tracked in [issue 5641](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/5641).
-- When the site name is configured to match the external URL, it is important to ensure
-  that you add the trailing slash of the URL to the `gitlab_rails['geo_node_name']`
-  definition in `/etc/gitlab/gitlab.rb`. Otherwise, it can cause the site to be
-  misconfigured after updating the site's data from the Admin page.
-  For more information, see [issue 536444](https://gitlab.com/gitlab-org/gitlab/-/issues/536444).
 
 ### Replicated data types
 

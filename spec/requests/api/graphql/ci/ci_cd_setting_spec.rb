@@ -65,12 +65,11 @@ RSpec.describe 'Getting Ci Cd Setting', feature_category: :continuous_integratio
 
     describe '#pipelineVariablesMinimumOverrideRole' do
       before do
-        project.ci_pipeline_variables_minimum_override_role = :no_one_allowed
-        project.restrict_user_defined_variables = false
+        project.ci_pipeline_variables_minimum_override_role = :developer
         project.save!
       end
 
-      context 'when restrict_user_defined_variables is disabled' do
+      context 'when restrict_user_defined_variables is disabled via developer role' do
         it 'fetches according translation layer' do
           expect(settings_data['pipelineVariablesMinimumOverrideRole']).to eql('developer')
         end

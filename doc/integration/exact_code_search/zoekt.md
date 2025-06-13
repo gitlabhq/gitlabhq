@@ -302,6 +302,30 @@ To define when offline nodes are automatically deleted:
    To disable automatic deletion, set to `0`.
 1. Select **Save changes**.
 
+## Define the indexing timeout for a project
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182581) in GitLab 18.2.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+You can define the indexing timeout for a project.
+The default value is `30m` (30 minutes).
+
+To define the indexing timeout for a project:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Search**.
+1. Expand **Exact code search configuration**.
+1. In the **Indexing timeout per project** text box, enter a value
+   (for example, `30m` (30 minutes), `2h` (two hours), or `1d` (one day)).
+1. Select **Save changes**.
+
 ## Define the retry interval for failed namespaces
 
 {{< history >}}

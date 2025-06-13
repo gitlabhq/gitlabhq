@@ -29,7 +29,6 @@ describe('TodoItemBody', () => {
   const createComponent = (todoExtras = {}, otherProps = {}) => {
     wrapper = shallowMount(TodoItemBody, {
       propsData: {
-        currentUserId: '1',
         todo: {
           author: {
             id: '2',
@@ -45,6 +44,9 @@ describe('TodoItemBody', () => {
         },
         isHiddenBySaml: false,
         ...otherProps,
+      },
+      provide: {
+        currentUserId: '1',
       },
     });
   };
@@ -136,18 +138,15 @@ describe('TodoItemBody', () => {
 
   describe('when current user is the author', () => {
     it('renders "You" instead of author name', () => {
-      createComponent({ author: { id: '2' } }, { currentUserId: '2' });
+      createComponent({ author: { id: '1' } });
       expect(wrapper.text()).toContain('You');
     });
 
     it('renders correct text for self-assigned action', () => {
-      createComponent(
-        {
-          author: { id: '2' },
-          action: TODO_ACTION_TYPE_ASSIGNED,
-        },
-        { currentUserId: '2' },
-      );
+      createComponent({
+        author: { id: '1' },
+        action: TODO_ACTION_TYPE_ASSIGNED,
+      });
       expect(wrapper.text()).toContain('assigned to yourself.');
     });
   });

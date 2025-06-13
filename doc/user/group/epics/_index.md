@@ -96,19 +96,23 @@ To do it, paste the issue URL when
 
 {{< /details >}}
 
-If your epic contains one or more [child epics](manage_epics.md#multi-level-child-epics) that
-have a start or due date, you can go to a [roadmap](../roadmap/_index.md)
-of the child epics from the epic.
-
-![Child epics roadmap](img/epic_view_roadmap_v12_9.png)
-
-<!-- When epics as work items are generally available, the steps below should be the only ones here. -->
-
-If [the new look for epics](epic_work_items.md) is enabled:
-
-- On the **Child items** section header, select **More actions** ({{< icon name="ellipsis_v" >}}) **> View on a roadmap**.
+On the **Child items** section header, select **More actions** ({{< icon name="ellipsis_v" >}}) **> View on a roadmap**.
 
 A roadmap filtered for the parent epic opens.
+
+## Epics as work items
+
+We have changed how epics look by migrating them to a unified framework for work items to better
+meet the product needs of our Agile Planning offering.
+
+For more information, see [epic 9290](https://gitlab.com/groups/gitlab-org/-/epics/9290) and the
+following blog posts:
+
+- [First look: The new Agile planning experience in GitLab](https://about.gitlab.com/blog/2024/06/18/first-look-the-new-agile-planning-experience-in-gitlab/) (June 2024)
+- [Unveiling a new epic experience for improved Agile planning](https://about.gitlab.com/blog/2024/07/03/unveiling-a-new-epic-experience-for-improved-agile-planning/) (July 2024)
+
+If you run into any issues while trying out this change, you can use the
+[feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/494462) to provide more details.
 
 ## Related topics
 

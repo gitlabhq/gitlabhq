@@ -24,13 +24,14 @@ export default {
   },
   inject: ['currentTab'],
   props: {
-    currentUserId: {
-      type: String,
-      required: true,
-    },
     todo: {
       type: Object,
       required: true,
+    },
+    selectable: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     selected: {
       type: Boolean,
@@ -73,6 +74,7 @@ export default {
     :class="{ 'gl-bg-subtle': isDone }"
   >
     <gl-form-checkbox
+      v-if="selectable"
       class="gl-inline-block gl-pt-2"
       :aria-label="__('Select')"
       :checked="selected"
@@ -93,11 +95,7 @@ export default {
           :todo="todo"
           class="gl-flex gl-items-center gl-gap-2 gl-overflow-hidden gl-whitespace-nowrap gl-px-2 gl-pb-3 gl-pt-2 gl-text-sm gl-text-subtle sm:gl-mr-0 sm:gl-pr-4 md:gl-mb-1"
         />
-        <todo-item-body
-          :todo="todo"
-          :current-user-id="currentUserId"
-          :is-hidden-by-saml="isHiddenBySaml"
-        />
+        <todo-item-body :todo="todo" :is-hidden-by-saml="isHiddenBySaml" />
       </div>
 
       <todo-snoozed-timestamp

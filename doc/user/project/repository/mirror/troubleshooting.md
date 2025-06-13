@@ -94,14 +94,27 @@ Check if the repository owner is specified in the URL of your mirrored repositor
 
 When connecting to the Cloud or self-hosted Bitbucket repository for mirroring, the repository owner is required in the string.
 
+## Push mirror: `LFS objects are missing`
+
+You might get an error that states:
+
+```plaintext
+GitLab: GitLab: LFS objects are missing. Ensure LFS is properly set up or try a manual "git lfs push --all".
+```
+
+This issue occurs when you use an SSH repository URL for push mirroring.
+Push mirroring to transfer LFS files over SSH is not supported.
+
+The workaround is to use an HTTPS repository URL instead of SSH for your push mirror.
+
+An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/249587) to fix this problem.
+
 ## Pull mirror is missing LFS files
 
-In some cases, pull mirroring does not transfer LFS files. This issue occurs when:
+In some cases, pull mirroring does not transfer LFS files.
+This issue occurs when you use an SSH repository URL.
 
-- You use an SSH repository URL. The workaround is to use an HTTPS repository URL instead.
-  An issue exists [to fix this problem for SSH URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/11997).
-- You mirror an external repository using object storage.
-  An issue exists [to fix this problem](https://gitlab.com/gitlab-org/gitlab/-/issues/335495).
+The workaround is to use an HTTPS repository URL instead.
 
 ## Pull mirroring is not triggering pipelines
 

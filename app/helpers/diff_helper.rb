@@ -306,7 +306,7 @@ module DiffHelper
   end
 
   def file_heading_id(diff_file)
-    "#{diff_file.file_hash}-heading"
+    "#{diff_file.file_hash[0..8]}-heading"
   end
 
   private

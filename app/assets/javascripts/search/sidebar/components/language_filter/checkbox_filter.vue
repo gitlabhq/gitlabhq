@@ -1,5 +1,4 @@
 <script>
-import Vue from 'vue';
 import { GlFormCheckboxGroup, GlFormCheckbox } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters } from 'vuex';
@@ -44,8 +43,9 @@ export default {
       async set(value) {
         this.setQuery({ key: this.queryParam, value });
 
-        await Vue.nextTick();
-        this.trackSelectCheckbox();
+        this.$nextTick(() => {
+          this.trackSelectCheckbox();
+        });
       },
     },
     labelCountClasses() {

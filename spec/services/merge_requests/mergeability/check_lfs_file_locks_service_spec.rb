@@ -139,4 +139,32 @@ RSpec.describe MergeRequests::Mergeability::CheckLfsFileLocksService, feature_ca
       it { expect(cache_key).to eq('inactive_lfs_file_locks_mergeability_check') }
     end
   end
+
+  describe '#has_lfs_file_locks?' do
+    context 'when lfs_file_locks association is not loaded' do
+      before do
+        allow(project.lfs_file_locks).to receive(:loaded?).and_return(false)
+        allow(project.lfs_file_locks).to receive(:exists?)
+      end
+
+      it 'calls exists?' do
+        check_lfs_file_locks.has_lfs_file_locks?
+
+        expect(project.lfs_file_locks).to have_received(:exists?)
+      end
+    end
+
+    context 'when lfs_file_locks association is loaded' do
+      before do
+        allow(project.lfs_file_locks).to receive(:loaded?).and_return(true)
+        allow(project.lfs_file_locks).to receive(:any?)
+      end
+
+      it 'calls any?' do
+        check_lfs_file_locks.has_lfs_file_locks?
+
+        expect(project.lfs_file_locks).to have_received(:any?)
+      end
+    end
+  end
 end

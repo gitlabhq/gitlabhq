@@ -285,7 +285,7 @@ To link the SAML groups:
 
 {{< details >}}
 
-- Offering: GitLab.com
+- Offering: GitLab.com, GitLab Self-Managed
 
 {{< /details >}}
 

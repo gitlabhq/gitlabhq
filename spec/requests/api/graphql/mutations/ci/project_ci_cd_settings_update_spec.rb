@@ -228,15 +228,15 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
       end
 
       before do
+        override_role = initial_restrict_user_defined_variables ? 'no_one_allowed' : 'developer'
         project.ci_cd_settings.update!(
-          pipeline_variables_minimum_override_role: 'no_one_allowed',
-          restrict_user_defined_variables: initial_restrict_user_defined_variables
+          pipeline_variables_minimum_override_role: override_role
         )
       end
 
       specify do
         expect { post_graphql_mutation(mutation, current_user: maintainer) }.to(
-          change { project.reload.restrict_user_defined_variables }
+          change { project.reload.restrict_user_defined_variables? }
             .from(false)
             .to(true)
         )
@@ -257,7 +257,7 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
         with_them do
           specify do
             expect { post_graphql_mutation(mutation, current_user: maintainer) }.not_to(
-              change { project.reload.restrict_user_defined_variables }
+              change { project.reload.restrict_user_defined_variables? }
                 .from(initial_restrict_user_defined_variables)
             )
           end

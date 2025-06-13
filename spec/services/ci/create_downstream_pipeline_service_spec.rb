@@ -523,8 +523,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
           before do
             bridge.yaml_variables = [{ key: 'BRIDGE', value: '$PIPELINE_VARIABLE-var', public: true }]
 
-            upstream_pipeline.project.update!(restrict_user_defined_variables: true,
-              ci_pipeline_variables_minimum_override_role: :maintainer)
+            upstream_pipeline.project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
           end
 
           it 'creates a new pipeline allowing variables to be passed downstream' do
@@ -753,8 +752,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
 
         context 'when downstream project does not allow user-defined variables for multi-project pipelines' do
           before do
-            downstream_project.update!(restrict_user_defined_variables: true,
-              ci_pipeline_variables_minimum_override_role: :maintainer)
+            downstream_project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
           end
 
           it 'does not create a new pipeline' do

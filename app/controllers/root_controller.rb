@@ -14,6 +14,10 @@ class RootController < Dashboard::ProjectsController
   before_action :redirect_unlogged_user, if: -> { current_user.nil? }
   before_action :redirect_logged_user, if: -> { current_user.present? }
 
+  before_action only: [:index] do
+    push_frontend_feature_flag(:personal_homepage, current_user)
+  end
+
   CACHE_CONTROL_HEADER = 'no-store'
 
   def index

@@ -758,9 +758,6 @@ version to reference other projects from the same namespace.
 
 GitLab Flavored Markdown recognizes the following:
 
-<!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
-update the Epic entry to use only the `#` symbol. -->
-
 | References                                                                           | Input                                                 | Cross-project reference                        | Shortcut inside the same namespace |
 |--------------------------------------------------------------------------------------|-------------------------------------------------------|------------------------------------------------|------------------------------------|
 | Specific user                                                                        | `@user_name`                                          |                                                |                                    |
@@ -770,7 +767,7 @@ update the Epic entry to use only the `#` symbol. -->
 | Issue                                                                                | ``#123``                                              | `namespace/project#123`                        | `project#123`                      |
 | Merge request                                                                        | `!123`                                                | `namespace/project!123`                        | `project!123`                      |
 | Snippet                                                                              | `$123`                                                | `namespace/project$123`                        | `project$123`                      |
-| [Epic](group/epics/_index.md)                                                        | `&123` or ``#123`` (when [the new look for epics](group/epics/epic_work_items.md) is enabled) | `group1/subgroup&123` or `group1/subgroup#123` | |
+| [Epic](group/epics/_index.md)                                                        | `#123`  | `group1/subgroup&123` or `group1/subgroup#123` | |
 | [Iteration](group/iterations/_index.md)                                              | `*iteration:"iteration title"`                        |                                                |                                    |
 | [Iteration cadence](group/iterations/_index.md) by ID<sup>1</sup>                    | `[cadence:123]`                                       |                                                |                                    |
 | [Iteration cadence](group/iterations/_index.md) by title (one word)<sup>1</sup>      | `[cadence:plan]`                                      |                                                |                                    |
@@ -819,14 +816,12 @@ For example:
 {{< history >}}
 
 - Support for work items (tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
+- Supported for epics in GitLab 17.7, when `work_item_epics` flag got enabled by default.
+- Generally available for epics in GitLab 18.1.
 
 {{< /history >}}
 
-<!-- When epics as work items are generally available and `work_item_epics` flag is removed,
-refactor the link below and add a history note -->
-
-To include the title in the rendered link of an epic ([using the new look](group/epics/epic_work_items.md)),
-issue, task, objective, key result, merge request, or epic:
+To include the title in the rendered link of an issue, task, objective, key result, merge request, or epic:
 
 - Add a plus (`+`) at the end of the reference.
 
@@ -840,14 +835,12 @@ URL references like `https://gitlab.com/gitlab-org/gitlab/-/issues/1234+` are al
 
 - Support for issues and merge requests [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386937) in GitLab 15.10.
 - Support for work items (tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
+- Supported for epics in GitLab 17.7, when `work_item_epics` flag got enabled by default.
+- Generally available for epics in GitLab 18.1.
 
 {{< /history >}}
 
-<!-- When epics as work items are generally available and `work_item_epics` flag is removed,
-refactor the link below and add a history note -->
-
-To include an extended summary in the rendered link of an epic ([using the new look](group/epics/epic_work_items.md)),
-issue, task, objective, key result, or merge request:
+To include an extended summary in the rendered link of an epic, issue, task, objective, key result, or merge request:
 
 - Add a `+s` at the end of the reference.
 

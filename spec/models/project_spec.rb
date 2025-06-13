@@ -1540,7 +1540,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           'forward_deployment_enabled' => 'ci_',
           'forward_deployment_rollback_allowed' => 'ci_',
           'keep_latest_artifact' => '',
-          'restrict_user_defined_variables' => '',
           'pipeline_variables_minimum_override_role' => 'ci_',
           'runner_token_expiration_interval' => '',
           'separated_caches' => 'ci_',

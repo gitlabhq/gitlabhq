@@ -173,14 +173,14 @@ RSpec.describe Gitlab::Diff::Line do
         )
       end
 
-      let(:file_hash) { 'foo' }
+      let(:file_hash) { '1234567890' }
 
       it 'returns the correct old side ID' do
-        expect(line.id(file_hash, :old)).to eq("line_#{file_hash}_L#{line.old_pos}")
+        expect(line.id(file_hash, :old)).to eq("line_#{file_hash[0..8]}_L#{line.old_pos}")
       end
 
       it 'returns the correct new side ID' do
-        expect(line.id(file_hash, :new)).to eq("line_#{file_hash}_R#{line.new_pos}")
+        expect(line.id(file_hash, :new)).to eq("line_#{file_hash[0..8]}_R#{line.new_pos}")
       end
     end
   end

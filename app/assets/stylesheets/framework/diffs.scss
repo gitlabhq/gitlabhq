@@ -7,9 +7,9 @@ $diff-file-header: 41px;
 .diff-file {
   margin-bottom: $gl-padding;
 
-  table.code tr:last-of-type td:last-of-type {
-    border-bottom-left-radius: $gl-border-radius-lg-inner;
-    border-bottom-right-radius: $gl-border-radius-lg-inner;
+  .code.md-suggestion-diff {
+    border-bottom-left-radius: $gl-border-radius-base-inner;
+    border-bottom-right-radius: $gl-border-radius-base-inner;
   }
 
   .file-title,

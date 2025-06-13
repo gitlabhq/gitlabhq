@@ -4,6 +4,8 @@ class ProjectCiCdSetting < ApplicationRecord
   include ChronicDurationAttribute
   include EachBatch
 
+  ignore_column :restrict_user_defined_variables, remove_with: '18.3', remove_after: '2025-08-14'
+
   belongs_to :project, inverse_of: :ci_cd_settings
 
   DEFAULT_GIT_DEPTH = 20
@@ -101,23 +103,8 @@ class ProjectCiCdSetting < ApplicationRecord
     role_access_level >= role_project_minimum_access_level || user&.can_admin_all_resources?
   end
 
-  def pipeline_variables_minimum_override_role=(value)
-    return if value.nil?
-
-    self[:restrict_user_defined_variables] = true # don't use the method because it's overridden
-    self[:pipeline_variables_minimum_override_role] = value
-  end
-
-  def pipeline_variables_minimum_override_role
-    return 'developer' unless restrict_user_defined_variables
-
-    self[:pipeline_variables_minimum_override_role]
-  end
-
   def restrict_user_defined_variables=(value)
     return unless [true, false].include?(value)
-
-    self[:restrict_user_defined_variables] = true
 
     if value == true && pipeline_variables_minimum_override_role == 'developer'
       self[:pipeline_variables_minimum_override_role] = 'maintainer'
@@ -128,14 +115,13 @@ class ProjectCiCdSetting < ApplicationRecord
     end
   end
 
-  def restrict_user_defined_variables
-    self[:restrict_user_defined_variables] && self[:pipeline_variables_minimum_override_role] != 'developer'
+  def restrict_user_defined_variables?
+    self[:pipeline_variables_minimum_override_role] != 'developer'
   end
 
   private
 
   def set_pipeline_variables_secure_defaults
-    self.restrict_user_defined_variables = true
     self.pipeline_variables_minimum_override_role = project.root_namespace.pipeline_variables_default_role
   end
 

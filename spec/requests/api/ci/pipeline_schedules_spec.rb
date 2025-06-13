@@ -799,7 +799,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
         context 'when project does not restrict use of user defined variables' do
           before do
-            project.update!(restrict_user_defined_variables: false)
+            project.update!(ci_pipeline_variables_minimum_override_role: :developer)
           end
 
           context 'as developer' do
@@ -931,7 +931,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
       context 'when project does not restrict use of user defined variables' do
         before do
-          project.update!(restrict_user_defined_variables: false)
+          project.update!(ci_pipeline_variables_minimum_override_role: :developer)
         end
 
         context 'as developer' do
@@ -1044,7 +1044,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
       context 'when project does not restrict use of user defined variables' do
         before do
-          project.update!(restrict_user_defined_variables: false)
+          project.update!(ci_pipeline_variables_minimum_override_role: :developer)
         end
 
         context 'as developer' do

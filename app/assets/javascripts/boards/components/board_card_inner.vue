@@ -257,7 +257,7 @@ export default {
 <template>
   <div class="gl-p-4">
     <div class="gl-flex" dir="auto">
-      <h4
+      <h3
         class="board-card-title gl-isolate gl-mb-0 gl-mt-0 gl-min-w-0 gl-hyphens-auto gl-break-words gl-text-base"
         :class="{ 'gl-mr-6': hasActions }"
       >
@@ -294,7 +294,7 @@ export default {
           @click.prevent
           >{{ item.title }}</a
         >
-      </h4>
+      </h3>
       <slot></slot>
     </div>
     <div v-if="showLabelFooter" class="board-card-labels gl-mt-2 gl-flex gl-flex-wrap">
