@@ -1,5 +1,6 @@
 import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
+import { groupsProvideData } from 'ee_else_ce/invite_members/utils';
 import InviteGroupsModal from '~/invite_members/components/invite_groups_modal.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
@@ -28,12 +29,7 @@ export default function initInviteGroupsModal() {
 
   return new Vue({
     el,
-    provide: {
-      freeUsersLimit: parseInt(el.dataset.freeUsersLimit, 10),
-      overageMembersModalAvailable: parseBoolean(el.dataset.overageMembersModalAvailable),
-      hasGitlabSubscription: parseBoolean(el.dataset.hasGitlabSubscription),
-      inviteWithCustomRoleEnabled: parseBoolean(el.dataset.inviteWithCustomRoleEnabled),
-    },
+    provide: groupsProvideData(el),
     render: (createElement) =>
       createElement(InviteGroupsModal, {
         props: {

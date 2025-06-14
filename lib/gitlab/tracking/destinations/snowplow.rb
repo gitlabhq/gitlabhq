@@ -136,6 +136,9 @@ module Gitlab
         end
 
         def emitter_class
+          # Use test emitter in test environment to prevent HTTP requests
+          return SnowplowTestEmitter if Rails.env.test?
+
           # snowplow_enabled? is true for gitlab.com and customers that configured their own Snowplow collector
           # In both bases we do not want to log the events being sent as the instance is controlled by the same company
           # controlling the Snowplow collector.

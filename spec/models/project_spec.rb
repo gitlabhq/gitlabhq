@@ -10241,4 +10241,16 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(project.valid_lfs_oids(oids)).to eq([lfs_object.oid])
     end
   end
+
+  describe '#merge_base_commit' do
+    let_it_be(:project) { create(:project, :repository) }
+    let(:commit1) { project.repository.commit }
+    let(:commit2) { project.repository.commit('feature') }
+
+    it 'memoizes the result' do
+      expect(project.repository).to receive(:merge_base).once.and_call_original
+
+      2.times { project.merge_base_commit(commit1.id, commit2.id) }
+    end
+  end
 end

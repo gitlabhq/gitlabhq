@@ -9,6 +9,8 @@
 # For users who haven't customized the setting, we simply delegate to
 # `DashboardController#show`, which is the default.
 class RootController < Dashboard::ProjectsController
+  include HomepageData
+
   skip_before_action :authenticate_user!, only: [:index]
 
   before_action :redirect_unlogged_user, if: -> { current_user.nil? }
@@ -21,6 +23,7 @@ class RootController < Dashboard::ProjectsController
   CACHE_CONTROL_HEADER = 'no-store'
 
   def index
+    @homepage_app_data = @current_user.nil? ? {} : homepage_app_data(@current_user)
     render('root/index') && return if Feature.enabled?(:personal_homepage, current_user)
 
     super

@@ -349,7 +349,7 @@ use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make sure to
     ...
     computed: {
       userWelcome() {
-        sprintf(__('Hello %{username}'), { username: this.user.name });
+        return sprintf(__('Hello %{username}'), { username: this.user.name });
       }
     }
     ...

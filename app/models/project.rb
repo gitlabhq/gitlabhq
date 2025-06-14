@@ -1562,8 +1562,10 @@ class Project < ApplicationRecord
   end
 
   def merge_base_commit(first_commit_id, second_commit_id)
-    sha = repository.merge_base(first_commit_id, second_commit_id)
-    commit_by(oid: sha) if sha
+    strong_memoize(:"merge_base_commit_#{first_commit_id}_#{second_commit_id}") do
+      sha = repository.merge_base(first_commit_id, second_commit_id)
+      commit_by(oid: sha) if sha
+    end
   end
 
   def saved?

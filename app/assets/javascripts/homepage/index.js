@@ -12,13 +12,20 @@ export default () => {
     return false;
   }
 
+  const { reviewRequestedPath, assignedToYouPath } = el.dataset;
+
   return new Vue({
     el,
     apolloProvider: new VueApollo({
       defaultClient: createDefaultClient(),
     }),
     render(createElement) {
-      return createElement(HomepageApp);
+      return createElement(HomepageApp, {
+        props: {
+          reviewRequestedPath,
+          assignedToYouPath,
+        },
+      });
     },
   });
 };

@@ -7,6 +7,22 @@ module Gitlab
         Gitlab::Routing.url_helpers.help_page_path('ci/variables/_index.md', anchor: 'define-a-cicd-variable-in-the-ui')
       end
 
+      def self.vulnerability_checks_documentation_link
+        Gitlab::Routing.url_helpers.help_page_path('user/application_security/dast/browser/checks/_index.md')
+      end
+
+      def self.secure_log_level_documentation_link
+        Gitlab::Routing.url_helpers.help_page_path('user/application_security/dast/browser/troubleshooting.md',
+          anchor: 'secure_log_level')
+      end
+
+      def self.authentication_actions_documentation_link
+        Gitlab::Routing.url_helpers.help_page_path(
+          'user/application_security/dast/browser/configuration/authentication.md',
+          anchor: 'taking-additional-actions-after-submitting-the-login-form'
+        )
+      end
+
       # rubocop: disable Metrics/AbcSize -- Generate dynamic translation as per
       # https://docs.gitlab.com/ee/development/i18n/externalization.html#keep-translations-dynamic
       def self.data
@@ -35,11 +51,11 @@ module Gitlab
               type: "string",
               example: "select(option=id:accept-yes),click(on=css:.continue)",
               name: s_("DastProfiles|After-login actions"),
-              description: s_(
+              description: format(s_(
                 "DastProfiles|A comma-separated list of actions to take after login but before login verification. " \
                   "Supports `click` and `select` actions. " \
-                  "See [Taking additional actions after submitting the login form]" \
-                  "(authentication.md#taking-additional-actions-after-submitting-the-login-form)."
+                  "See [Taking additional actions after submitting the login form](%{documentation_link})."),
+                documentation_link: authentication_actions_documentation_link
               )
             },
             DAST_AUTH_BEFORE_LOGIN_ACTIONS: {
@@ -519,6 +535,7 @@ module Gitlab
           },
           scanner: {
             DAST_AUTH_REPORT: {
+              additional: true,
               auth: true,
               type: "boolean",
               example: true,
@@ -531,24 +548,29 @@ module Gitlab
               )
             },
             DAST_CHECKS_TO_EXCLUDE: {
+              additional: true,
               type: "string",
               example: "552.2,78.1",
               name: s_("DastProfiles|Excluded checks"),
-              description: s_(
+              description: format(s_(
                 "DastProfiles|Comma-separated list of check identifiers to exclude from the scan. " \
-                  "For identifiers, see [vulnerability checks](../checks/_index.md)."
+                  "For identifiers, see [vulnerability checks](%{documentation_link})."),
+                documentation_link: vulnerability_checks_documentation_link
               )
             },
             DAST_CHECKS_TO_RUN: {
+              additional: true,
               type: "List of strings",
               example: "16.1,16.2,16.3",
               name: s_("DastProfiles|Included checks"),
-              description: s_(
+              description: format(s_(
                 "DastProfiles|Comma-separated list of check identifiers to use for the scan. " \
-                  "For identifiers, see [vulnerability checks](../checks/_index.md)."
+                  "For identifiers, see [vulnerability checks](%{documentation_link})."),
+                documentation_link: vulnerability_checks_documentation_link
               )
             },
             DAST_CRAWL_GRAPH: {
+              additional: true,
               type: "boolean",
               example: true,
               name: s_("DastProfiles|Generate graph"),
@@ -559,18 +581,21 @@ module Gitlab
               )
             },
             DAST_FULL_SCAN: {
+              additional: true,
               type: "boolean",
               example: true,
               name: s_("DastProfiles|Full scan"),
               description: s_("DastProfiles|Set to `true` to run both passive and active checks. Default is `false`.")
             },
             DAST_LOG_BROWSER_OUTPUT: {
+              additional: true,
               type: "boolean",
               example: true,
               name: s_("DastProfiles|Log browser output"),
               description: s_("DastProfiles|Set to `true` to log Chromium `STDOUT` and `STDERR`.")
             },
             DAST_LOG_CONFIG: {
+              additional: true,
               type: "List of strings",
               example: "brows:debug,auth:debug",
               name: s_("DastProfiles|Log levels"),
@@ -578,12 +603,14 @@ module Gitlab
                 "DastProfiles|A list of modules and their intended logging level for use in the console log.")
             },
             DAST_LOG_DEVTOOLS_CONFIG: {
+              additional: true,
               type: "string",
               example: "Default:messageAndBody,truncate:2000",
               name: s_("DastProfiles|Log messages"),
               description: s_("DastProfiles|Set to log protocol messages between DAST and the Chromium browser.")
             },
             DAST_LOG_FILE_CONFIG: {
+              additional: true,
               type: "List of strings",
               example: "brows:debug,auth:debug",
               name: s_("DastProfiles|Log file levels"),
@@ -591,24 +618,28 @@ module Gitlab
                 "DastProfiles|A list of modules and their intended logging level for use in the file log.")
             },
             DAST_LOG_FILE_PATH: {
+              additional: true,
               type: "string",
               example: "/output/browserker.log",
               name: s_("DastProfiles|Log file path"),
               description: s_("DastProfiles|Set to the path of the file log. Default is `gl-dast-scan.log`.")
             },
             SECURE_ANALYZERS_PREFIX: {
+              additional: true,
               type: "URL",
               example: "registry.organization.com",
               name: s_("DastProfiles|Docker registry"),
               description: s_("DastProfiles|Set the Docker registry base address from which to download the analyzer.")
             },
             SECURE_LOG_LEVEL: {
+              additional: true,
               type: "string",
               example: "debug",
               name: s_("DastProfiles|Default log level"),
-              description: s_(
+              description: format(s_(
                 "DastProfiles|Set the default level for the file log. " \
-                  "See [SECURE_LOG_LEVEL](../troubleshooting.md#secure_log_level)." \
+                  "See [SECURE_LOG_LEVEL](%{documentation_link})."),
+                documentation_link: secure_log_level_documentation_link
               )
             }
           }
@@ -617,7 +648,7 @@ module Gitlab
       # rubocop: enable Metrics/AbcSize
 
       def self.additional_site_variables
-        data[:site].filter { |_, variable| variable[:additional] }
+        data[:site].merge(data[:scanner]).filter { |_, variable| variable[:additional] }
       end
 
       def self.auth_variables

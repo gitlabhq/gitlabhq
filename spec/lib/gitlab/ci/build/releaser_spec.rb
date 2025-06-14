@@ -40,7 +40,7 @@ RSpec.describe Gitlab::Ci::Build::Releaser, feature_category: :continuous_integr
       result_for_release_cli_without_catalog_publish = "#{release_cli_command} #{release_cli_assets_links}"
 
       glab_create_unix = 'glab release create -R $CI_PROJECT_PATH'
-      glab_create_windows = 'glab release create -R $env:CI_PROJECT_PATH'
+      glab_create_windows = 'glab release create -R $$env:CI_PROJECT_PATH'
       glab_command = "\"release-$CI_COMMIT_SHA\" #{glab_assets_links} --milestone \"m1,m2,m3\" --name \"Release $CI_COMMIT_SHA\" --experimental-notes-text-or-file \"Created using the release-cli $EXTRA_DESCRIPTION\" --ref \"$CI_COMMIT_SHA\" --tag-message \"Annotated tag message\" --released-at \"2020-07-15T08:00:00Z\" --no-update --no-close-milestone"
 
       warning_message = "Warning: release-cli will not be supported after 19.0. Please use glab version >= #{described_class::GLAB_REQUIRED_VERSION}. Troubleshooting: http://localhost/help/user/project/releases/_index.md#gitlab-cli-version-requirement"
@@ -66,10 +66,10 @@ RSpec.describe Gitlab::Ci::Build::Releaser, feature_category: :continuous_integr
       BASH
       windows_result_for_glab_or_release_cli_without_catalog_publish = <<~POWERSHELL
       if (Get-Command glab -ErrorAction SilentlyContinue) {
-        $glabVersionOutput = (glab --version | Select-Object -First 1) -as [string]
+        $$glabVersionOutput = (glab --version | Select-Object -First 1) -as [string]
 
-        if ($glabVersionOutput -match 'glab (\\\d+\\\.\\\d+\\\.\\\d+)') {
-          if ([version]$matches[1] -ge [version]"#{described_class::GLAB_REQUIRED_VERSION}") {
+        if ($$glabVersionOutput -match 'glab (\\\d+\\\.\\\d+\\\.\\\d+)') {
+          if ([version]$$matches[1] -ge [version]"#{described_class::GLAB_REQUIRED_VERSION}") {
             #{described_class::GLAB_ENV_SET_WINDOWS}
             #{described_class::GLAB_CA_CERT_CONFIG_WINDOWS}
             #{described_class::GLAB_LOGIN_WINDOWS}
@@ -145,10 +145,10 @@ RSpec.describe Gitlab::Ci::Build::Releaser, feature_category: :continuous_integr
         BASH
         windows_result_for_glab_or_release_cli_with_catalog_publish = <<~POWERSHELL
         if (Get-Command glab -ErrorAction SilentlyContinue) {
-          $glabVersionOutput = (glab --version | Select-Object -First 1) -as [string]
+          $$glabVersionOutput = (glab --version | Select-Object -First 1) -as [string]
 
-          if ($glabVersionOutput -match 'glab (\\\d+\\\.\\\d+\\\.\\\d+)') {
-            if ([version]$matches[1] -ge [version]"#{described_class::GLAB_REQUIRED_VERSION}") {
+          if ($$glabVersionOutput -match 'glab (\\\d+\\\.\\\d+\\\.\\\d+)') {
+            if ([version]$$matches[1] -ge [version]"#{described_class::GLAB_REQUIRED_VERSION}") {
               #{described_class::GLAB_ENV_SET_WINDOWS}
               #{described_class::GLAB_CA_CERT_CONFIG_WINDOWS}
               #{described_class::GLAB_LOGIN_WINDOWS}
