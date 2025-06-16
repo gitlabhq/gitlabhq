@@ -7,12 +7,14 @@ module Gitlab
       GITLAB_RAILS_SOURCE = 'gitlab-rails'
 
       def initialize(
-        namespace: nil, plan_name: nil, project_id: nil, user: nil,
+        namespace: nil, project_id: nil, user: nil,
         feature_enabled_by_namespace_ids: nil, **extra)
         check_argument_type(:namespace, namespace, [Namespace])
-        check_argument_type(:plan_name, plan_name, [String])
         check_argument_type(:project_id, project_id, [Integer])
         check_argument_type(:user, user, [User, DeployToken])
+
+        plan_name = get_plan_name(namespace)
+        check_argument_type(:plan_name, plan_name, [String])
 
         @namespace = namespace
         @plan_name = plan_name
@@ -45,6 +47,10 @@ module Gitlab
       private
 
       attr_accessor :namespace, :project_id, :extra, :plan_name, :user, :feature_enabled_by_namespace_ids
+
+      def get_plan_name(_namespace)
+        'free' # GitLab CE edition is always free
+      end
 
       def to_h
         {

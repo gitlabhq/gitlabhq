@@ -71,7 +71,6 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
       let(:bottom_level_group) { create(:group, parent: subgroup2) }
       let(:project_id) { 2 }
       let(:namespace) { bottom_level_group }
-      let(:plan_name) { "plan name" }
       let(:hostname) { 'example.com' }
       let(:version) { '17.3.0' }
       let(:json_data) { snowplow_context.to_json.fetch(:data) }
@@ -82,7 +81,7 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
       end
 
       subject do
-        described_class.new(user: user, project_id: project_id, namespace: namespace, plan_name: plan_name)
+        described_class.new(user: user, project_id: project_id, namespace: namespace)
       end
 
       it 'holds the correct values', :aggregate_failures do
@@ -90,7 +89,7 @@ RSpec.describe Gitlab::Tracking::StandardContext, feature_category: :service_pin
         expect(json_data[:project_id]).to eq(project_id)
         expect(json_data[:namespace_id]).to eq(namespace.id)
         expect(json_data[:ultimate_parent_namespace_id]).to eq(top_level_group.id)
-        expect(json_data[:plan]).to eq(plan_name)
+        expect(json_data[:plan]).to eq('free')
         expect(json_data[:host_name]).to eq(hostname)
         expect(json_data[:instance_version]).to eq(version)
         expect(json_data[:correlation_id]).to eq(Labkit::Correlation::CorrelationId.current_or_new_id)

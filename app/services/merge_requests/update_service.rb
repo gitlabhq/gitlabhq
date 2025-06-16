@@ -162,7 +162,7 @@ module MergeRequests
         next unless changed_fields.include?(action)
 
         merge_request_activity_counter
-          .public_send("track_#{action}_edit_action".to_sym, user: current_user) # rubocop:disable GitlabSecurity/PublicSend
+          .public_send(:"track_#{action}_edit_action", user: current_user) # rubocop:disable GitlabSecurity/PublicSend
       end
     end
 

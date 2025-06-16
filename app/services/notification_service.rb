@@ -875,7 +875,7 @@ class NotificationService
   private
 
   def send_new_note_notifications(note)
-    notify_method = "note_#{note.noteable_ability_name}_email".to_sym
+    notify_method = :"note_#{note.noteable_ability_name}_email"
 
     recipients = NotificationRecipients::BuildService.build_new_note_recipients(note)
     recipients.each do |recipient|

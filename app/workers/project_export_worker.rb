@@ -58,7 +58,7 @@ class ProjectExportWorker # rubocop:disable Scalability/IdempotentWorker
 
   def log_exporters_duration(export_service)
     export_service.exporters.each do |exporter|
-      exporter_key = "#{exporter.class.name.demodulize.underscore}_duration_s".to_sym # e.g. uploads_saver_duration_s
+      exporter_key = :"#{exporter.class.name.demodulize.underscore}_duration_s" # e.g. uploads_saver_duration_s
       exporter_duration = exporter.duration_s&.round(6)
 
       log_extra_metadata_on_done(exporter_key, exporter_duration)

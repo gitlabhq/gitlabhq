@@ -141,7 +141,6 @@ module Gitlab
           project_id: project&.id,
           user: user,
           namespace: namespace,
-          plan_name: namespace&.actual_plan_name,
           feature_enabled_by_namespace_ids: feature_enabled_by_namespace_ids,
           **extra
         ).to_context

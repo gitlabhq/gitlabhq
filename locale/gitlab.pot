@@ -3967,7 +3967,7 @@ msgid_plural "AdherenceReport|%{pendingCount}/%{totalCount} controls are pending
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "AdherenceReport|Completed controls"
+msgid "AdherenceReport|Failed controls"
 msgstr ""
 
 msgid "AdherenceReport|Have questions or thoughts on the new improvements we made? %{linkStart}Please provide feedback on your experience%{linkEnd}."
@@ -3977,6 +3977,9 @@ msgid "AdherenceReport|Learn more about the changes in our %{linkStart}documenta
 msgstr ""
 
 msgid "AdherenceReport|No statuses found."
+msgstr ""
+
+msgid "AdherenceReport|Passed controls"
 msgstr ""
 
 msgid "AdherenceReport|Pending controls"

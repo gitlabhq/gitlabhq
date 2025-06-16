@@ -24,7 +24,6 @@ module Gitlab
         contexts = [
           Tracking::StandardContext.new(
             namespace: namespace,
-            plan_name: namespace&.actual_plan_name,
             project_id: project_id,
             user: user,
             **extra).to_context, *context
