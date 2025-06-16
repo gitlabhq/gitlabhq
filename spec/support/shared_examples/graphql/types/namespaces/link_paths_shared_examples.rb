@@ -7,6 +7,7 @@ RSpec.shared_examples "expose all link paths fields for the namespace" do
 
   specify do
     expected_fields = %i[
+      contributionGuidePath
       issuesList
       labelsManage
       newCommentTemplate

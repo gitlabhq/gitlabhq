@@ -20,6 +20,7 @@ RSpec.describe Types::Namespaces::LinkPaths::ProjectNamespaceLinksType, feature_
       :labels_manage | lazy { "/#{namespace.full_path}/-/labels" }
       :new_project | lazy { "/projects/new?namespace_id=#{group.id}" }
       :new_comment_template | "/-/profile/comment_templates"
+      :contribution_guide_path | nil
     end
 
     with_them do
@@ -50,6 +51,58 @@ RSpec.describe Types::Namespaces::LinkPaths::ProjectNamespaceLinksType, feature_
       end
 
       it_behaves_like "project namespace link paths values"
+    end
+  end
+
+  describe '#contribution_guide_path' do
+    let_it_be(:group) { create(:group, :public) }
+    let_it_be(:project) { create(:project, :public, group: group) }
+    let_it_be(:namespace) { project.project_namespace }
+
+    context 'when contribution guide exists' do
+      before do
+        contribution_guide = instance_double(Gitlab::Git::Tree, name: 'CONTRIBUTING.md')
+        allow(project.repository).to receive(:contribution_guide).and_return(contribution_guide)
+        allow(project).to receive(:default_branch).and_return('main')
+      end
+
+      it 'returns the contribution guide path' do
+        expected_path = "/#{project.full_path}/-/blob/main/CONTRIBUTING.md"
+
+        expect(resolve_field(:contribution_guide_path, namespace, current_user: user)).to eq(expected_path)
+      end
+    end
+
+    context 'when contribution guide does not exist' do
+      before do
+        allow(project.repository).to receive(:contribution_guide).and_return(nil)
+      end
+
+      it 'returns nil' do
+        expect(resolve_field(:contribution_guide_path, namespace, current_user: user)).to be_nil
+      end
+    end
+
+    context 'when project does not exist' do
+      let(:namespace) { build(:project_namespace) }
+
+      before do
+        allow(namespace).to receive(:project).and_return(nil)
+      end
+
+      it 'returns nil' do
+        expect(resolve_field(:contribution_guide_path, namespace, current_user: user)).to be_nil
+      end
+    end
+
+    context 'when repository does not exist' do
+      before do
+        allow(project).to receive(:repository).and_return(nil)
+      end
+
+      it 'returns nil' do
+        expect(resolve_field(:contribution_guide_path, namespace, current_user: user)).to be_nil
+      end
     end
   end
 end

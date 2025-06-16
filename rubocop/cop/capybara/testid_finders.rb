@@ -26,7 +26,7 @@ module RuboCop
 
         RESTRICT_ON_SEND = METHOD_MAP.keys.to_set.freeze
 
-        # @!method find_argument(node)
+        # @!method argument(node)
         def_node_matcher :argument, <<~PATTERN
           (send _ ${RESTRICT_ON_SEND} (str $_) ...)
         PATTERN

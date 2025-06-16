@@ -55,8 +55,7 @@ nplus1-instance-image:
 # ------------------------------------------
 # Elasticsearch compatibility jobs
 # ------------------------------------------
-# TODO: Enable job when https://gitlab.com/gitlab-org/gitlab/-/issues/541380 is completed
-.integration-elasticsearch-compatibility-version-7:
+integration-elasticsearch-compatibility-version-7:
   extends:
     - .omnibus-e2e
     - .with-ignored-runtime-data
@@ -65,8 +64,7 @@ nplus1-instance-image:
     QA_SCENARIO: "Test::Integration::Elasticsearch"
     ELASTIC_URL: "http://elastic68:9200"
 
-# TODO: Enable job when https://gitlab.com/gitlab-org/gitlab/-/issues/541380 is completed
-.integration-elasticsearch-compatibility-version-8:
+integration-elasticsearch-compatibility-version-8:
   extends:
     - .omnibus-e2e
     - .with-ignored-runtime-data
@@ -78,8 +76,7 @@ nplus1-instance-image:
 # ------------------------------------------
 # Opensearch compatibility jobs
 # ------------------------------------------
-# TODO: Enable job when https://gitlab.com/gitlab-org/gitlab/-/issues/541380 is completed
-.integration-opensearch-compatibility-version-1:
+integration-opensearch-compatibility-version-1:
   extends:
     - .omnibus-e2e
   variables:
@@ -87,8 +84,7 @@ nplus1-instance-image:
     QA_SCENARIO: "Test::Integration::Opensearch"
     ELASTIC_URL: "http://elastic68:9200"
 
-# TODO: Enable job when https://gitlab.com/gitlab-org/gitlab/-/issues/541380 is completed
-.integration-opensearch-compatibility-version-2:
+integration-opensearch-compatibility-version-2:
   extends:
     - .omnibus-e2e
   variables:

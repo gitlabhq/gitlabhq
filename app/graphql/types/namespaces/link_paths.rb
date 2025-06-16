@@ -72,6 +72,13 @@ module Types
         null: true,
         description: 'Namespace sign_in_path.'
 
+      field :contribution_guide_path,
+        GraphQL::Types::String,
+        null: true,
+        description: 'Namespace contribution guide path.',
+        fallback_value: nil,
+        calls_gitaly: true
+
       def self.type_mappings
         TYPE_MAPPINGS
       end

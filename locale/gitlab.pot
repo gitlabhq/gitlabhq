@@ -4066,22 +4066,13 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|GitLab Duo Chat"
 msgstr ""
 
-msgid "AdminAIPoweredFeatures|Main feature"
-msgstr ""
-
 msgid "AdminAIPoweredFeatures|Model"
-msgstr ""
-
-msgid "AdminAIPoweredFeatures|Model name"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Other GitLab Duo features"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Select a self-hosted model"
-msgstr ""
-
-msgid "AdminAIPoweredFeatures|Sub feature"
 msgstr ""
 
 msgid "AdminAiPoweredFeatures|%{selected_model} is incompatible with the %{title} feature"

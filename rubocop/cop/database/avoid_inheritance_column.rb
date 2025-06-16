@@ -7,6 +7,7 @@ module RuboCop
       class AvoidInheritanceColumn < RuboCop::Cop::Base
         MSG = "Do not use Single Table Inheritance https://docs.gitlab.com/ee/development/database/single_table_inheritance.html"
 
+        # @!method inheritance_column_used?(node)
         def_node_search :inheritance_column_used?, <<~PATTERN
           (send (self) :inheritance_column= !(sym :_type_disabled))
         PATTERN

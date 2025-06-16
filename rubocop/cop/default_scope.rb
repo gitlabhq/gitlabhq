@@ -10,6 +10,7 @@ module RuboCop
         for more details.
       EOF
 
+      # @!method default_scope?(node)
       def_node_matcher :default_scope?, <<~PATTERN
         (send {nil? (const nil? ...)} :default_scope ...)
       PATTERN

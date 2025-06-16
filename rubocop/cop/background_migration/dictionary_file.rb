@@ -25,10 +25,12 @@ module RuboCop
 
         DICTIONARY_DIR = "db/docs/batched_background_migrations"
 
+        # @!method batched_background_migration_name_node(node)
         def_node_matcher :batched_background_migration_name_node, <<~PATTERN
           `(send nil? :queue_batched_background_migration $_ ...)
         PATTERN
 
+        # @!method migration_constant_value(node)
         def_node_matcher :migration_constant_value, <<~PATTERN
           `(casgn nil? %const_name ({sym|str} $_))
         PATTERN

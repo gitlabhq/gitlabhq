@@ -29,7 +29,10 @@ module RuboCop
         MSG = 'Inherit from ::API::Base instead of Grape::API::Instance or Grape::API. ' \
               'For more details check https://gitlab.com/gitlab-org/gitlab/-/issues/215230.'
 
+        # @!method grape_api(node)
         def_node_matcher :grape_api, '(const (const {nil? (cbase)} :Grape) :API)'
+
+        # @!method grape_api_definition(node)
         def_node_matcher :grape_api_definition, <<~PATTERN
           (class
             (const _ _)

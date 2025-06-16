@@ -1,6 +1,7 @@
-= render Pajamas::ButtonComponent.new(category: :tertiary,
-  href: project_restore_path(project),
-  method: :post,
-  variant: :link,
-  button_options: { class: 'gl-ml-3' }) do
-  = _("Restore")
+- if project.self_deletion_scheduled?
+  = render Pajamas::ButtonComponent.new(category: :tertiary,
+    href: project_restore_path(project),
+    method: :post,
+    variant: :link,
+    button_options: { class: 'gl-ml-3' }) do
+    = _("Restore")

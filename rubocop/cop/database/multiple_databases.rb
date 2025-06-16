@@ -24,6 +24,7 @@ module RuboCop
           logger
         ].freeze
 
+        # @!method active_record_base_method_is_used?(node)
         def_node_matcher :active_record_base_method_is_used?, <<~PATTERN
         (send (const (const _ :ActiveRecord) :Base) $_)
         PATTERN

@@ -29,6 +29,7 @@ module RuboCop
 
         RESTRICT_ON_SEND = %i[pluck].freeze
 
+        # @!method pluck_with_limit?(node)
         def_node_matcher :pluck_with_limit?, <<~PATTERN
         (send (send _ :limit _) ...)
         PATTERN

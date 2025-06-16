@@ -23,6 +23,12 @@ module Types
           url_helpers.new_comment_template_paths(group, project)&.dig(0, :href)
         end
 
+        def contribution_guide_path
+          return unless project&.repository
+
+          ::ProjectPresenter.new(project).contribution_guide_path
+        end
+
         private
 
         def project
