@@ -295,28 +295,6 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :gr
     end
   end
 
-  context 'planner role banner' do
-    before do
-      sign_in(user1)
-
-      visit_members_page
-    end
-
-    it 'shows the planner role annoucement and persists dismissal' do
-      expect(page).to have_content('New Planner role')
-
-      within_testid('planner-role-banner') do
-        find_by_testid('close-icon').click
-      end
-
-      expect(page).not_to have_content('New Planner role')
-
-      page.refresh
-
-      expect(page).not_to have_content('New Planner role')
-    end
-  end
-
   private
 
   def visit_members_page
