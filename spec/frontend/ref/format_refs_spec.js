@@ -13,9 +13,9 @@ import {
 describe('formatListBoxItems', () => {
   const FORMATTED_SELECTED = {
     text: DEFAULT_I18N.selected,
-    options: [{ text: 'main', value: 'main', default: undefined, protected: undefined }],
+    options: [{ text: 'selected', value: 'selected', default: undefined, protected: undefined }],
   };
-  const selected = { name: 'main', value: 'main' };
+  const selected = { name: 'selected', value: 'selected' };
 
   it.each`
     branches         | tags         | commits         | selectedRef  | expectedResult

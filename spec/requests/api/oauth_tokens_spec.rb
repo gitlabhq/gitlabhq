@@ -5,7 +5,11 @@ require 'spec_helper'
 RSpec.describe 'OAuth tokens', feature_category: :system_access do
   include HttpBasicAuthHelpers
 
-  let_it_be(:organization) { create(:organization, :default) }
+  let_it_be(:organization) { create(:organization) }
+
+  before do
+    stub_current_organization(organization)
+  end
 
   context 'Resource Owner Password Credentials' do
     def request_oauth_token(user, headers = {}, password = user.password)

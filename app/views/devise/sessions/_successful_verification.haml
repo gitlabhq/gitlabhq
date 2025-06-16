@@ -1,0 +1,12 @@
+= content_for :meta_tags do
+  %meta{ 'http-equiv': 'refresh', content: "3; url=#{@redirect_url}" }
+
+.gl-text-center.gl-max-w-62.gl-mx-auto{ data: local_assigns.fetch(:data, {}) }
+  .svg-content.svg-80
+    = image_tag 'illustrations/success-sm.svg'
+  %h2
+    = s_('IdentityVerification|Verification successful')
+  %p.gl-pt-2
+    - redirect_url_start = '<a href="%{url}">'.html_safe % { url: @redirect_url }
+    - redirect_url_end = '</a>'.html_safe
+    = html_escape(s_("IdentityVerification|Your account has been successfully verified. You'll be redirected to your account in just a moment. You can also %{redirect_url_start}refresh the page%{redirect_url_end}.")) % { redirect_url_start: redirect_url_start, redirect_url_end: redirect_url_end }

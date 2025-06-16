@@ -9,7 +9,6 @@ RSpec.describe ::Gitlab::Counters::FlushStaleCounterIncrementsCronWorker, featur
     context 'when we are on gitlab.com' do
       before do
         allow(Gitlab).to receive(:com_except_jh?).and_return(true)
-        allow(::Gitlab::Counters::FlushStaleCounterIncrementsWorker).to receive(:perform_with_capacity)
       end
 
       it 'calls FlushStaleCounterIncrementsWorker.perform_with_capacity' do

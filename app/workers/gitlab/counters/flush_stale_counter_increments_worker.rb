@@ -28,17 +28,24 @@ module Gitlab
       feature_category :continuous_integration
       urgency :throttled
       idempotent!
-      deduplicate :until_executed
+      deduplicate :until_executing
       sidekiq_options retry: true
 
       def perform_work
         return unless ::Gitlab.com_except_jh? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- we need to check on which instance this happens
 
-        ID_RANGES.each do |model, attributes|
-          min_id = start_id(model)
-          last_id = flush_stale_for_model(model, min_id, attributes[:end_id])
-          # we need to add +1 here, because otherwise, we'd process the last record twice.
-          update_start_id(model, last_id + 1)
+        # Process up to 100 batches per job execution as a compromise between
+        # performance (avoiding too many small jobs) and efficiency (preventing
+        # jobs from running too long and potentially timing out)
+        100.times do
+          ID_RANGES.each do |model, attributes|
+            min_id = start_id(model)
+            remaining_work = [(attributes[:end_id] - min_id), 0].max
+            last_id = flush_stale_for_model(model, min_id, attributes[:end_id])
+            # we need to add +1 here, because otherwise, we'd process the last record twice.
+            update_start_id(model, last_id + 1)
+            return if remaining_work == 0 # rubocop:disable Lint/NonLocalExitFromIterator -- return if we don't have anymore work to do
+          end
         end
       end
 

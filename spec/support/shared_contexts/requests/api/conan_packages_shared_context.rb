@@ -8,11 +8,7 @@ RSpec.shared_context 'with conan api setup' do
   let_it_be(:user) { create(:user, developer_of: [project]) }
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
   let_it_be(:deploy_token) do
-    create(:deploy_token, read_package_registry: true, write_package_registry: true)
-  end
-
-  let_it_be(:project_deploy_token, freeze: true) do
-    create(:project_deploy_token, deploy_token: deploy_token, project: project)
+    create(:deploy_token, read_package_registry: true, write_package_registry: true, projects: [project])
   end
 
   let_it_be(:job, freeze: true) { create(:ci_build, :running, user: user, project: project) }

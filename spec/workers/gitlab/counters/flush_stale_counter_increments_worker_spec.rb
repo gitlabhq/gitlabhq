@@ -78,18 +78,26 @@ RSpec.describe ::Gitlab::Counters::FlushStaleCounterIncrementsWorker, :saas, :cl
       before do
         Gitlab::Redis::SharedState.with do |redis|
           redis.set(redis_key, project_daily_statistic.id)
+          stub_const("#{described_class}::ID_RANGES", { ProjectDailyStatistic => {
+            end_id: project_daily_statistic_three.id
+          } })
+          stub_const("#{described_class}::BATCH_LIMIT", 1)
         end
-        allow(Gitlab::Saas).to receive(:feature_available?).with(:purchases_additional_minutes).and_return(true)
       end
 
       it "flushes stale counters and updates the redis start id" do
         Gitlab::Redis::SharedState.with do |redis|
           expect(redis.get(redis_key).to_i).to eq(project_daily_statistic.id)
         end
+
+        # Test that the service is called multiple times (batching behavior)
+        # without running the full 100 iterations, and verify early termination
+        # when no more work is available
+
         expect_next_instance_of(Gitlab::Counters::FlushStaleCounterIncrements) do |service|
           expect(service).to receive(:execute)
           .and_call_original
-        end
+        end.thrice
 
         expect_initial_counts
         worker.perform_work

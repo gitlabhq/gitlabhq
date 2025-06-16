@@ -2,6 +2,7 @@
 import { GlFormGroup, GlLink, GlFormInputGroup } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
   components: {
@@ -13,7 +14,8 @@ export default {
   directives: {
     SafeHtml,
   },
-  inject: ['projectHelpPath', 'pushToCreateProjectCommand'],
+  helpPath: helpPagePath('topics/git/project.md'),
+  inject: ['pushToCreateProjectCommand'],
 };
 </script>
 
@@ -30,7 +32,7 @@ export default {
       data-testid="new-project-with-command"
     >
       <template #label-description>
-        <gl-link :href="`${projectHelpPath}#create-a-new-project-with-git-push`" target="_blank">
+        <gl-link :href="$options.helpPath" target="_blank">
           {{ s__('ProjectNew|What does this command do?') }}
         </gl-link>
       </template>

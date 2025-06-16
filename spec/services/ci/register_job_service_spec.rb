@@ -9,8 +9,8 @@ module Ci
     let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
 
     let_it_be(:shared_runner) { create(:ci_runner, :instance) }
-    let!(:project_runner) { create(:ci_runner, :project, projects: [project]) }
-    let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+    let_it_be_with_reload(:project_runner) { create(:ci_runner, :project, projects: [project]) }
+    let_it_be_with_reload(:group_runner) { create(:ci_runner, :group, groups: [group]) }
     let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
 
     describe '#execute' do
@@ -463,9 +463,11 @@ module Ci
 
         context 'when first build is stalled' do
           before do
-            allow_any_instance_of(described_class).to receive(:assign_runner!).and_call_original
-            allow_any_instance_of(described_class).to receive(:assign_runner!)
-              .with(pending_job, anything).and_raise(ActiveRecord::StaleObjectError)
+            allow_next_instance_of(described_class) do |instance|
+              allow(instance).to receive(:assign_runner!).and_call_original
+              allow(instance).to receive(:assign_runner!)
+                .with(pending_job, anything).and_raise(ActiveRecord::StaleObjectError)
+            end
           end
 
           subject { described_class.new(project_runner, nil).execute }
@@ -474,9 +476,10 @@ module Ci
             let!(:other_build) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
 
             before do
-              allow_any_instance_of(::Ci::Queue::BuildQueueService)
-                .to receive(:execute)
-                .and_return(Ci::Build.where(id: [pending_job, other_build]).pluck(:id, :partition_id))
+              allow_next_instance_of(::Ci::Queue::BuildQueueService) do |instance|
+                allow(instance).to receive(:execute)
+                  .and_return(Ci::Build.where(id: [pending_job, other_build]).pluck(:id, :partition_id))
+              end
             end
 
             it "receives second build from the queue" do
@@ -487,9 +490,10 @@ module Ci
 
           context 'when single build is in queue' do
             before do
-              allow_any_instance_of(::Ci::Queue::BuildQueueService)
-                .to receive(:execute)
-                .and_return(Ci::Build.where(id: pending_job).pluck(:id, :partition_id))
+              allow_next_instance_of(::Ci::Queue::BuildQueueService) do |instance|
+                allow(instance).to receive(:execute)
+                  .and_return(Ci::Build.where(id: pending_job).pluck(:id, :partition_id))
+              end
             end
 
             it "does not receive any valid result" do
@@ -499,9 +503,10 @@ module Ci
 
           context 'when there is no build in queue' do
             before do
-              allow_any_instance_of(::Ci::Queue::BuildQueueService)
-                .to receive(:execute)
-                .and_return([])
+              allow_next_instance_of(::Ci::Queue::BuildQueueService) do |instance|
+                allow(instance).to receive(:execute)
+                  .and_return([])
+              end
             end
 
             it "does not receive builds but result is valid" do
@@ -893,6 +898,66 @@ module Ci
             end
           end
         end
+
+        context 'when metrics recording fails' do
+          before do
+            project.update!(shared_runners_enabled: true)
+            pending_job.reload.create_queuing_entry!
+
+            allow_next_instance_of(::Gitlab::Ci::Queue::Metrics) do |metric|
+              allow(metric).to receive(:register_success).and_raise(StandardError, 'metrics failure')
+            end
+          end
+
+          it 'continues assignment when register_success fails' do
+            expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+              .with(
+                instance_of(StandardError),
+                hash_including(
+                  build_id: pending_job.id,
+                  build_name: pending_job.name,
+                  build_stage: pending_job.stage_name,
+                  pipeline_id: pending_job.pipeline_id,
+                  project_id: pending_job.project_id
+                )
+              )
+
+            result = described_class.new(shared_runner, nil).execute
+
+            expect(result).to be_valid
+            expect(result.build).to eq(pending_job)
+            expect(result.build_json).to be_present
+            expect(pending_job.reload).to be_running
+          end
+
+          it 'continues assignment when observe_queue_depth fails' do
+            allow_next_instance_of(::Gitlab::Ci::Queue::Metrics) do |metric|
+              allow(metric).to receive(:register_success).and_call_original
+              allow(metric).to receive(:observe_queue_depth)
+              .with(:found, anything)
+              .and_raise(StandardError, 'queue depth metrics failure')
+            end
+
+            expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+              .with(
+                instance_of(StandardError),
+                hash_including(
+                  build_id: pending_job.id,
+                  build_name: pending_job.name,
+                  build_stage: pending_job.stage_name,
+                  pipeline_id: pending_job.pipeline_id,
+                  project_id: pending_job.project_id
+                )
+              )
+
+            result = described_class.new(shared_runner, nil).execute
+
+            expect(result).to be_valid
+            expect(result.build).to eq(pending_job)
+            expect(result.build_json).to be_present
+            expect(pending_job.reload).to be_running
+          end
+        end
       end
 
       context 'when using pending builds table' do
@@ -1136,6 +1201,25 @@ module Ci
         expect(result).not_to be_valid
         expect(result.build).to be_nil
         expect(result.build_json).to be_nil
+      end
+
+      context 'when metrics tracking raises an error during conflict' do
+        let(:error) { StandardError.new('Metrics tracking failed') }
+
+        before do
+          allow_next_instance_of(Gitlab::Ci::Queue::Metrics) do |metric|
+            allow(metric).to receive(:observe_queue_depth).with(:conflict, any_args).and_raise(error)
+          end
+        end
+
+        it 'tracks and raises the exception for dev without affecting the result' do
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(error)
+
+          result = described_class.new(project_runner, nil).execute
+
+          expect(result).not_to be_valid
+          expect(result.build).to be_nil
+        end
       end
     end
 

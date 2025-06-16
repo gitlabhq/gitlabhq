@@ -23,9 +23,7 @@ export const formatListBoxItems = ({ branches, tags, commits, selectedRef }) => 
   const addToFinalResult = (items, header, shouldFilter = true) => {
     if (!items) return;
     const filteredItems =
-      shouldFilter && selectedRef
-        ? items.filter((item) => item.value !== selectedRef.value)
-        : items; // Filter out the selected
+      shouldFilter && selectedRef ? items.filter((item) => item.name !== selectedRef.name) : items; // Filter out the selected
 
     if (!filteredItems?.length) return;
     listBoxItems.push({

@@ -2,6 +2,7 @@
 import { GlPopover, GlFormInputGroup } from '@gitlab/ui';
 import { __ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
   components: {
@@ -9,13 +10,14 @@ export default {
     GlFormInputGroup,
     ClipboardButton,
   },
-  inject: ['pushToCreateProjectCommand', 'projectHelpPath'],
+  inject: ['pushToCreateProjectCommand'],
   props: {
     target: {
       type: [Function, HTMLElement],
       required: true,
     },
   },
+  helpPath: helpPagePath('topics/git/project.md'),
   i18n: {
     clipboardButtonTitle: __('Copy command'),
     commandInputAriaLabel: __('Push project from command line'),
@@ -55,12 +57,9 @@ export default {
       </gl-form-input-group>
     </p>
     <p>
-      <a
-        :href="`${projectHelpPath}#create-a-new-project-with-git-push`"
-        class="gl-text-sm"
-        target="_blank"
-        >{{ $options.i18n.helpLinkText }}</a
-      >
+      <a :href="$options.helpPath" class="gl-text-sm" target="_blank">{{
+        $options.i18n.helpLinkText
+      }}</a>
     </p>
   </gl-popover>
 </template>

@@ -173,7 +173,9 @@ Doorkeeper.configure do
         expires_in: configuration.device_code_expires_in,
         scopes: scopes.to_s,
         user_code: generate_user_code,
-        organization_id: Organizations::Organization::DEFAULT_ORGANIZATION_ID
+        # This will result in a fallback to Default Organizzation
+        # OAuth device grant flow doesn't support other organizations yet
+        organization_id: Gitlab::Current::Organization.new.organization.id
       }
     end
   end

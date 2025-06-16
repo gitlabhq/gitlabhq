@@ -8,9 +8,7 @@ RSpec.shared_context 'with current_organization setting' do
   end
 
   before do
-    allow_next_instance_of(::Gitlab::Current::Organization) do |organization|
-      allow(organization).to receive(:organization).and_return(current_organization)
-    end
+    stub_current_organization(current_organization)
   end
 end
 

@@ -98,8 +98,7 @@ module Ci
         next unless result
 
         if result.valid?
-          @metrics.register_success(result.build_presented)
-          @metrics.observe_queue_depth(:found, depth)
+          track_success(result, depth)
 
           return result # rubocop:disable Cop/AvoidReturnFromBlocks
         else
@@ -109,10 +108,7 @@ module Ci
         end
       end
 
-      @metrics.increment_queue_operation(:queue_conflict) unless valid
-      @metrics.observe_queue_depth(:conflict, depth) unless valid
-      @metrics.observe_queue_depth(:not_found, depth) if valid
-      @metrics.register_failure
+      track_conflict(depth, valid)
 
       Result.new(nil, nil, nil, valid)
     end
@@ -308,14 +304,40 @@ module Ci
       track_exception_for_build(ex, build)
     end
 
+    def track_success(result, depth)
+      @metrics.register_success(result.build_presented)
+      @metrics.observe_queue_depth(:found, depth)
+    rescue StandardError => ex
+      # We should know about any errors during tracking but we don't want them to prevent
+      # reporting a result to the runner
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
+        ex, **build_tracking_data(result.build)
+      )
+    end
+
+    def track_conflict(depth, valid)
+      @metrics.increment_queue_operation(:queue_conflict) unless valid
+      @metrics.observe_queue_depth(:conflict, depth) unless valid
+      @metrics.observe_queue_depth(:not_found, depth) if valid
+      @metrics.register_failure
+    rescue StandardError => ex
+      # We should know about any errors during tracking but we don't want them to prevent
+      # reporting a result to the runner
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(ex)
+    end
+
     def track_exception_for_build(ex, build)
-      Gitlab::ErrorTracking.track_exception(ex,
+      Gitlab::ErrorTracking.track_exception(ex, **build_tracking_data(build))
+    end
+
+    def build_tracking_data(build)
+      {
         build_id: build.id,
         build_name: build.name,
         build_stage: build.stage_name,
         pipeline_id: build.pipeline_id,
         project_id: build.project_id
-      )
+      }
     end
 
     def pre_assign_runner_checks

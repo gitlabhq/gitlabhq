@@ -37,4 +37,5 @@ If you have questions about the patch release process, please:
 [patch release runbook for engineers and maintainers]: https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/engineers.md
 [`#releases`]: https://gitlab.slack.com/archives/C0XM5UU6B
 
+/label ~backport
 /assign me
