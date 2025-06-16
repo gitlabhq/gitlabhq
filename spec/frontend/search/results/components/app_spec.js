@@ -101,7 +101,7 @@ describe('GlobalSearchResultsApp', () => {
     beforeEach(async () => {
       createComponent({
         initialState: {
-          query: { scope: 'blobs' },
+          query: { scope: 'blobs', search: 'foo' },
           searchType: 'zoekt',
           navigation: MOCK_NAVIGATION_DATA,
         },

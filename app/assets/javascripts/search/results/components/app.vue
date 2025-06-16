@@ -32,6 +32,7 @@ export default {
     return {
       hasError: false,
       blobSearch: {},
+      loaded: false,
     };
   },
   apollo: {
@@ -65,6 +66,7 @@ export default {
       },
       result({ data }) {
         this.hasError = false;
+        this.loaded = true;
         this.blobSearch = data?.blobSearch;
         this.$store.commit(RECEIVE_NAVIGATION_COUNT, {
           key: 'blobs',
@@ -74,6 +76,7 @@ export default {
       debounce: 500,
       error(error) {
         logError(error);
+        this.loaded = true;
         this.hasError = true;
       },
     },
@@ -84,6 +87,9 @@ export default {
       return this.query?.page ? parseInt(this.query?.page, 10) : 1;
     },
     isLoading() {
+      if (!this.loaded && !this.$apollo?.queries?.blobSearch?.loading) {
+        return true;
+      }
       return this.$apollo.queries.blobSearch.loading;
     },
     hasResults() {
@@ -98,13 +104,13 @@ export default {
     <error-result v-if="hasError" />
     <section v-else>
       <status-bar v-if="!isLoading" :blob-search="blobSearch" />
-      <empty-result v-if="!hasResults && !isLoading" />
       <zoekt-blob-results
         v-if="hasResults || isLoading"
         :blob-search="blobSearch"
         :has-results="hasResults"
         :is-loading="isLoading"
       />
+      <empty-result v-else />
     </section>
   </div>
 </template>
