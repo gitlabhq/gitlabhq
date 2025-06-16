@@ -13595,6 +13595,12 @@ paths:
         type: string
         required: true
       - in: query
+        name: state
+        description: Filter merge-requests by state
+        type: string
+        required: false
+        example: merged
+      - in: query
         name: page
         description: Current page number
         type: integer

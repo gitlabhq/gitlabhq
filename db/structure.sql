@@ -13774,7 +13774,8 @@ CREATE TABLE design_user_mentions (
     mentioned_projects_ids bigint[],
     mentioned_groups_ids bigint[],
     note_id bigint NOT NULL,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_6e9fbd8673 CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE design_user_mentions_id_seq

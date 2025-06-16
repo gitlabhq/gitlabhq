@@ -129,7 +129,7 @@ module QA
 
         unless user_response.code == HTTP_STATUS_OK
           logger.error("Request for #{qa_username} returned (#{user_response.code}): `#{user_response}` ")
-          exit 1 if user_response.code == HTTP_STATUS_UNAUTHORIZED
+          exit 1 if fatal_response?(user_response.code)
           return
         end
 
@@ -167,7 +167,7 @@ module QA
             resources.concat(parse_body(response).select { |r| Date.parse(r[:created_at]) < @delete_before })
           else
             logger.error("Request for #{@type} returned (#{response.code}): `#{response}` ")
-            exit 1 if response.code == HTTP_STATUS_UNAUTHORIZED
+            exit 1 if fatal_response?(response.code)
           end
 
           page_no = response.headers[:x_next_page].to_s

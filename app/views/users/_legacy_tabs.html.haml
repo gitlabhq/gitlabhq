@@ -6,6 +6,6 @@
     - when 'activity'
       .flash-container
       - if can?(current_user, :read_cross_project)
-        .content_list.user-activity-content{ data: { href: user_activity_path } }
+        %ul.content_list.gl-list-none.gl-pl-0.user-activity-content{ data: { href: user_activity_path } }
         .loading
           = render Pajamas::SpinnerComponent.new(size: :md)

@@ -14,7 +14,7 @@ module QA
 
           if group_search_response.code != HTTP_STATUS_OK
             logger.error("Response code #{group_search_response.code}: #{group_search_response.body}")
-            exit 1 if group_search_response.code == HTTP_STATUS_UNAUTHORIZED
+            exit 1 if fatal_response?(group_search_response.code)
             return
           end
 

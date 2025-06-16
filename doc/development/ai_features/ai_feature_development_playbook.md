@@ -5,229 +5,139 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: AI feature development playbook
 ---
 
-This playbook outlines the key aspects of working with Large Language Models (LLMs),
-prompts, data, evaluation, and system architecture.
-It serves as a playbook for AI feature development and operational considerations.
-
-## Understanding prompt engineering
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [this video](https://youtu.be/bOA6BtBaMTQ).
-
-Most important takeaways:
-
-- **Definition of a prompt:**
-  - An instruction sent to a language model to solve a task
-  - Forms the core of AI features in user interfaces
+This playbook outlines our approach to developing AI features at GitLab, similar to and concurrent with [the Build track of our product development flow](https://handbook.gitlab.com/handbook/product-development/product-development-flow/#build-track). It serves as a playbook for AI feature development and operational considerations.
 
-- **Importance of prompt quality:**
-  - Greatly influences the quality of the language model's response
-  - Iterating on prompts is crucial for optimal results
+## Getting Started
 
-- **Key considerations when crafting prompts:**
-  - Understand the task you're asking the model to perform
-  - Know what kind of response you're expecting
-  - Prepare a dataset to test the prompts
-  - Be specific - provide lots of details and context to help the AI understand
-  - Give examples of potential questions and desired answers
+- Start with [an overview of the AI-powered stage](https://about.gitlab.com/direction/ai-powered/).
+- Play around with [existing features](../../user/gitlab_duo/feature_summary.md) in your [local development environment](_index.md#instructions-for-setting-up-gitlab-duo-features-in-the-local-development-environment).
+- When you're ready, proceed with the development flow below.
 
-- **Prompt universality:**
-  - Prompts are not universal across different language models
-  - When changing models, prompts need to be adjusted
-  - Consult the language model provider's documentation for specific tips
-  - Test new models before fully switching
+## AI Feature Development Flow
 
-- **Tools for working with prompts:**
-  - Anthropic Console: A platform for writing and testing prompts
-  - Generator Prompt: A tool that creates crafted prompts based on task descriptions
+The AI feature development process consists of five key interdependent and iterative phases:
 
-- **Prompt structure:**
-  - Typically includes a general task description
-  - Contains placeholders for input text
-  - May include specific instructions and suggested output formats
-  - Consider wrapping inputs in XML tags for better understanding and data extraction
+### Plan
 
-- **System prompts:**
-  - Set the general tone and role for the AI
-  - Can improve the model's performance
-  - Usually placed at the beginning of the prompt
-  - Set the role for the language model
+This phase prepares AI features so they are ready to be built by engineering. It supplements the [plan phase of the build track of the product development flow](https://handbook.gitlab.com/handbook/product-development/product-development-flow/#build-phase-1-plan).
 
-- **Best practices:**
-  - Invest time in understanding the assignment
-  - Use prompt generation tools as a starting point
-  - Test and iterate on prompts to improve results
-  - Use proper English grammar and syntax to help the AI understand
-  - Allow uncertainty - tell the AI to say "I don't know" if it is unsure
-  - Use positive phrasing - say what the AI should do, not what it shouldn't do
+At this point, the customer problem should be well understood, either because of a clearly stated requirement,
+or by working through the [product development flow validation track](https://handbook.gitlab.com/handbook/product-development/product-development-flow/#validation-track).
 
-### Best practices for writing effective prompts
+As part of this phase, teams decide if [approved models](../ai_architecture.md#models) satisfy the requirements of the new feature, or [submit a proposal for the approval of other models](../ai_architecture.md#supported-technologies). Teams also design or adopt testing and evaluation strategies, which includes identifying required datasets.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [this video about writing effective prompts](https://youtu.be/xL-zj-Z4Mh4).
+#### Key Activities
 
-Here are the key takeaways from this video:
+- Define AI feature requirements and success criteria
+- Select models and assess their capabilities
+- Plan testing and evaluation strategy
 
-- **No universal "good" prompt:**
-  - The effectiveness of a prompt depends on the specific task
-  - There's no one-size-fits-all approach to prompt writing
+#### Resources
 
-- **Characteristics of effective prompts:**
-  - Clear and explanatory of the task and expected outcomes
-  - Direct and detailed
-  - Specific about the desired output
+- [AI architecture overview](../ai_architecture.md)
+- [AI evaluation and testing (internal)](https://internal.gitlab.com/handbook/product/ai-strategy/ai-integration-effort/ai_testing_and_evaluation/)
 
-- **Key elements to consider:**
-  - Understand the task, audience, and end goal
-  - Explain these elements clearly in the prompt
+### Develop
 
-- **Strategies for improving prompt performance:**
-  - Add instructions in sequential steps
-  - Include relevant examples
-  - Ask the model to think in steps (chain of thought)
-  - Request reasoning before providing answers
-  - Guide the input - use delimiters to clearly indicate where the user's input starts and ends
+The develop phase, and the closely aligned test and evaluate phase, are where we build AI features,
+address bugs or technical debt, and test the solutions before launching them. It supplements the [develop and test phase of the build track of the product development flow](https://handbook.gitlab.com/handbook/product-development/product-development-flow/#build-phase-2-develop--test).
 
-- **Adapting to model preferences:**
-  - Adjust prompts to suit the preferred data structure of the model
-  - For example, Anthropic models work well with XML tags
+This phase includes prompt engineering, where teams craft and refine prompts to achieve desired AI model behavior.
+This often requires multiple iterations to optimize for accuracy, consistency, and user experience.
 
-- **Importance of system prompts:**
-  - Set the role for the language model
-  - Placed at the beginning of the interaction
-  - Can include awareness of tools or long context
+Development might include integrating chosen models with GitLab infrastructure through the AI Gateway,
+and implementing API interfaces.
+Teams must consider requirements for supporting [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md).
 
-- **Iteration is crucial:**
-  - Emphasized as the most important part of working with prompts
-  - Continual refinement leads to better results
-  - Build quality control - automate testing prompts with RSpec or Rake tasks to catch differences
+#### Key Activities
 
-- **Use traditional code:**
-  - If a task can be done efficiently outside of calling an LLM, use code for more reliable and deterministic outputs
+- [Local development environment setup](_index.md)
+- [Prompt development and engineering](prompt_engineering.md)
+- Model integration and API development
+- [Feature flag implementation](_index.md#push-feature-flags-to-ai-gateway)
 
-## Tuning and optimizing workflows for prompts
+#### Resources
 
-### Prompt tuning for LLMs using Langsmith and Anthropic Workbench together + CEF
+- [AI Gateway architecture design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/)
+- [AI Gateway API documentation](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/api.md)
+- [AI Gateway prompt registry](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/aigw_prompt_registry.md)
+- [Developing AI Features for Duo Self-Hosted](developing_ai_features_for_duo_self_hosted.md)
 
-#### Iterating on the prompt using Anthropic console
+### Test & Evaluate
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [this video](https://youtu.be/03nOKxr8BS4).
+In the test and evaluate phase, we validate AI feature quality, performance, and security,
+using [traditional automated testing practices](../testing_guide/_index.md), as well as evaluation of AI-generated content.
+It supplements the [develop and test phase of the build track of the product development flow](https://handbook.gitlab.com/handbook/product-development/product-development-flow/#build-phase-2-develop--test).
 
-#### Iterating on the prompt using Langsmith
+Evaluation involves creating datasets that represent real-world usage scenarios to ensure comprehensive coverage of the feature's behavior.
+Teams implement evaluation strategies covering multiple aspects of the quality of AI-generated content, as well as performance characteristics.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [this video](https://youtu.be/9WXT0licAdg).
+#### Key Activities
 
-#### Using Datasets for prompt tuning with Langsmith
+- [Functional testing (internal)](https://internal.gitlab.com/handbook/product/ai-strategy/ai-integration-effort/ai_functional_test_strategy/)
+- Performance testing
+- Security and safety validation
+- [Dataset creation](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/datasets/-/blob/main/doc/guidelines/create_dataset.md) and [management](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/datasets/-/blob/main/doc/dataset_management.md)
+- [Evaluation (internal)](https://internal.gitlab.com/handbook/product/ai-strategy/ai-integration-effort/ai_testing_and_evaluation/#test-2-ai-response-evaluation)
+  - Feature evaluation
+  - Prompt evaluation
+  - Tool evaluation
+  - Model evaluation
+  - Latency evaluation
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [this video](https://www.youtube.com/watch?v=kUnm0c2LMlQ).
+#### Resources
 
-#### Using automated evaluation in Langsmith
+- [Testing and validation](testing_and_validation.md)
+- [AI evaluation and testing (internal)](https://internal.gitlab.com/handbook/product/ai-strategy/ai-integration-effort/ai_testing_and_evaluation/)
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [this video](https://youtu.be/MT6SK4y47Zw).
+### Launch & Monitor
 
-#### Using pairwise experiments in Langsmith
+This phase focuses on safely introducing AI features to production through controlled rollouts and comprehensive monitoring.
+It supplements the [launch phase of the build track of the product development flow](https://handbook.gitlab.com/handbook/product-development/product-development-flow/#build-phase-3-launch).
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [this video](https://youtu.be/mhpY7ddjXqc).
+We employ feature flags to control access and gradually expand user exposure,
+starting with internal teams before broader incremental release.
+Monitoring tracks technical metrics (latency, error rates, resource usage)
+and AI-specific indicators (model performance, response quality, user satisfaction).
+Alerting systems can be used to detect performance degradation, unusual patterns, or safety concerns that require immediate attention.
 
-[View the ELI5 documentation](https://gitlab.com/gitlab-org/ai-powered/eli5/-/blob/main/doc/running_evaluation_locally/pairwise_evaluation.md).
+#### Key Activities
 
-#### When to use Langsmith and when ELI5
+- [Feature flag controlled rollout](../feature_flags/controls.md)
+- Production monitoring setup
+- Performance tracking and alerting
+- User feedback collection
+- Quality assurance in production
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [this video](https://youtu.be/-DK-XFFllwg).
+#### Resources
 
-##### Key Points on ELI5 (Eval like I'm 5) Project
+- [AI Gateway release process](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/release.md)
+- [AI Gateway infrastructure runbook](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/ai-gateway/README.md)
 
-1. Initial Development
-   - Start with pure Langsmith for prompt iteration
-   - Easier and quicker to set up
-   - More cost-effective for early stages
+### Improve
 
-1. When to Transition to ELI5
-   - When investing more in the feature
-   - For working with larger datasets
-   - For repeated, long-term use
+This phase focuses on iteratively improving the feature based on data, user feedback, and changing requirements.
+It supplements the [improve phase of the build track of the product development flow](https://handbook.gitlab.com/handbook/product-development/product-development-flow/#build-phase-4-improve).
 
-1. ELI5 Setup Considerations
-   - Requires upfront time investment
-   - Need to adjust evaluations for specific features
-   - Set up input data (for example, local GDK for chat features)
+We analyze real-world usage patterns and performance metrics to identify opportunities for improvement,
+whether in prompt engineering, model selection, system architecture, or feature design.
+User feedback should capture qualitative insights about user satisfaction.
+Teams can iteratively refine prompts based on user interactions and feedback.
 
-1. Challenges
-   - Ensuring consistent data across different users
-   - Exploring options like seats and imports for data sharing
+This phase includes model migrations as newer, more capable models become available.
 
-1. Current ELI5 Capabilities
-   - Supports chat questions about code
-   - Handles documentation-related queries
-   - Includes evaluations for code suggestions
+#### Key Activities
 
-1. Advantages of ELI5
-   - Allows running evaluations on local GDK
-   - Results viewable in Langsmith UI
-   - Enables use of larger datasets
+- Performance analysis and optimization
+- [Prompt iteration and refinement](prompt_engineering.md#prompt-tuning-for-llms-using-langsmith-and-anthropic-workbench-together--cef)
+- [Model migration and upgrades](model_migration.md)
+- Dataset enhancement and expansion
 
-1. Flexibility
-   - Requires customization for specific use cases
-   - Not a one-size-fits-all solution
+## Phase Interdependencies
 
-1. Documentation
-   - ELI5 has extensive documentation available
+Each phase can feed back into any or all earlier phases as development proceeds. The develop and test & evaluate phases are especially intertwined.
+Examples of interdependencies include:
 
-1. Adoption
-   - Already in use by some teams, including code suggestions and create teams
-
-## Evaluation & Monitoring
-
-### Building Datasets for Eval
-
-#### Why Do I Need A Dataset?
-
-A dataset in its most simple form as a bunch of inputs with roughly expected outputs. Now there are cases (such as chat applications) where having a defined expected output is impossible, in which case a dataset is still very useful but the evaluation technique would change. For now as we are all more or less comfortable with the idea of testing code, let's keep it simple and work with datasets that have expected outputs.
-
-Once we decide to start making an application, thinking about ways in which it could break and ways in which it should succeed is paramount. Having those potential input and their expected outputs collected in a dataset that we can run through our application is highly useful in both early and late development.
-
-Once we have developed our application being able to assure that it behaves as expected across a broad range of inputs is paramount. It is preferable to have as broad a range of prompts as we can achieve within reason. When we want to make a change to our prompt, tool selection, or choose a new model being able to compare how successful our changes are requires a dataset to evaluate against that possesses a large number of inputs paired with expected outputs.
-
-#### Key Considerations When Making a Dataset
-
-When first starting out building applications on top of LLMs we will want to do evaluation. A common first question to ask is how many records should we have in our dataset. This question is a little premature for reasons that should be clear soon.
-
-First things first, before thinking about how much data, lets think about how representative our data needs to be of the problem your app needs to solve and where we can get that.
-
-As an example where we are constantly iterating on this at GitLab, let's consider the evaluation of our code completion offering. What we use in practice for evaluation is a dataset made up of functions taken from GitLab codebase that have been split in half. The first half is the prompt (input) the second half is the part we will compare to what the model produces (expected output).
-
-As said we evaluate our code completion application with a dataset that was created from GitLab code, this means a lot of Ruby, Go, Python, and several other languages. Let's remember many of our customers write their code in Java. At this point a worthwhile question to ask is, would you characterise our dataset as representative? Honestly, in the beginning probably not. There are times where we must accept in the beginning that the best we can do is the best we can do, but keeping this in mind and trying to improve the alignment between what we evaluate against and what our application is the best thing to focus on when creating / improving a dataset. As part of this dataset creation / improvement effort we also want to keep a diverse spread of types of prompts. Following our code
-completion example, as mentioned before we probalby want to have more Java prompts but we don't just want leet-code style interview questions. We also want examples that would be in enterprise backend applications, android applications, gradle plugins, yes even some basic interview questions, and any more diverse places where Java would be used.
-
-Now that we have thought about having representative data, let's think about how many datapoints we need. In evaluation we are trying to make an assessment of how well our application is doing. If you could imagine flipping a coin that may be unfair, flipping it 10 times wouldn't give you a lot of confidence but flipping it 10,000 times probably would. That said similarly to how flipping a coin 10,000 times would take a while to do, running 10,000 prompts would take longer than running about a 100 or so. In the early stages of development we would want to balance iteration speed and accuracy, and to that end we recommend 70 to 120 prompts, but if you can add more without compromising your iteration time this is strongly encouraged. As you move toward an internal beta and definitely as you
-move toward general availability, we recommend running evaluation with several thousand prompts.
-
-#### What is an output, ground truth, or expected answer?
-
-**Output**: The result of sending a message to your chosen LLM. If I ask "In *The Hitchhiker's Guide to the Galaxy* what is the number that was the meaning of life?" the output could be something like "In *The Hitchhiker's Guide to the Galaxy*, the number that represents the meaning of life is **42**".
-
-**Ground Truth** or **Expected Result**: The examples from our real would situation that we know to be true. Let's imagine we are trying to predict housing prices and we have a bunch of validation data that we pulled from a realtor listing sight. This data contains information about the house, and how much the houses cost. That data could be called our ground truth.
-
-### Using CEF dashboard and troubleshooting
-
-### Using automated evaluation pipelines for CEF
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview of using promptlib in a Docker container, see [this video](https://www.youtube.com/watch?v=ZGKXQYZTBFg).
-
-### Continuous monitoring and applying as guidance for Prompt Tuning
-
-### A/B testing strategies for Gen AI features
-
-## Further resources
-
-For more comprehensive prompt engineering guides, see:
-
-- [Prompt Engineering Guide 1](https://www.promptingguide.ai/)
-- [Prompt Engineering Guide 2](https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/)
+- **Evaluation** insights might require new development iterations.
+- **Production monitoring** results may suggest architectural replanning.
+- **User feedback** could inform evaluation strategy changes.

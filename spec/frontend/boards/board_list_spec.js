@@ -2,7 +2,7 @@ import { GlIntersectionObserver } from '@gitlab/ui';
 import Draggable from 'vuedraggable';
 import { nextTick } from 'vue';
 import { DraggableItemTypes, ListType, WIP_ITEMS, WIP_WEIGHT } from 'ee_else_ce/boards/constants';
-import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
+import { DETAIL_VIEW_QUERY_PARAM_NAME, WORK_ITEM_TYPE_ENUM_ISSUE } from '~/work_items/constants';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import waitForPromises from 'helpers/wait_for_promises';
 import createComponent from 'jest/boards/board_list_helper';
@@ -38,6 +38,7 @@ describe('Board list component', () => {
       item: {
         dataset: {
           draggableItemType: DraggableItemTypes.card,
+          itemId: mockIssues[0].id,
         },
       },
     },
@@ -199,12 +200,16 @@ describe('Board list component', () => {
   });
   describe('drag & drop issue', () => {
     describe('when dragging is allowed', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         wrapper = createComponent({
+          apolloQueryHandlers: [
+            [listIssuesQuery, jest.fn().mockResolvedValue(mockGroupIssuesResponse())],
+          ],
           componentProps: {
             disabled: false,
           },
         });
+        await waitForPromises();
       });
 
       it('Draggable is used', () => {
@@ -239,6 +244,14 @@ describe('Board list component', () => {
           await nextTick();
 
           expect(document.addEventListener).toHaveBeenCalledWith('keyup', expect.any(Function));
+        });
+
+        it('emits the `dragStart` event with the item type to the parent', () => {
+          startDrag();
+
+          expect(wrapper.emitted('dragStart')[0]).toEqual([
+            { itemType: WORK_ITEM_TYPE_ENUM_ISSUE },
+          ]);
         });
       });
 
@@ -283,6 +296,12 @@ describe('Board list component', () => {
           await nextTick();
 
           expect(document.removeEventListener).toHaveBeenCalledWith('keyup', expect.any(Function));
+        });
+
+        it('emits the `dragStop` event with the item type to the parent', () => {
+          endDrag(getDragEndParam(DraggableItemTypes.card));
+
+          expect(wrapper.emitted('dragStop')).toEqual([[]]);
         });
       });
 

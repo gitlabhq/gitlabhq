@@ -92,6 +92,7 @@ export default {
       boardHeight: null,
       highlightedLists: [],
       columnsThatCannotFindActiveItem: 0,
+      draggedType: null,
     };
   },
   computed: {
@@ -257,6 +258,12 @@ export default {
         });
       }
     },
+    handleDragStart({ itemType }) {
+      this.draggedType = itemType;
+    },
+    handleDragStop() {
+      this.draggedType = null;
+    },
   },
 };
 </script>
@@ -289,6 +296,9 @@ export default {
         :list-query-variables="listQueryVariables"
         :lists="boardListsById"
         :can-admin-list="canAdminList"
+        :dragged-type="draggedType"
+        @dragStart="handleDragStart"
+        @dragStop="handleDragStop"
         @highlight-list="highlightList"
         @setActiveList="$emit('setActiveList', $event)"
         @setFilters="$emit('setFilters', $event)"

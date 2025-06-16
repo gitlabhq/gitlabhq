@@ -32,8 +32,8 @@
             = s_('UserProfile|Retry')
 
       .user-calendar-activities.gl-mb-5
-      .overview-content-list.user-activity-content.gl-mb-5{ data: { href: user_activity_path, testid: 'user-activity-content' } }
-        = gl_loading_icon(size: 'md', css_class: 'loading')
+      %ul.gl-list-none.gl-pl-0.overview-content-list.user-activity-content.gl-mb-5{ data: { href: user_activity_path, testid: 'user-activity-content' } }
+        %li= gl_loading_icon(size: 'md', css_class: 'loading')
 
 - if @user.personal_projects.any?
   .projects-block.gl-w-full
@@ -41,5 +41,5 @@
       %h2.gl-heading-3.gl-grow{ class: '!gl-mt-5 !gl-mb-3' }
         = s_('UserProfile|Personal projects')
       = link_to s_('UserProfile|View all'), user_projects_path, class: "hide js-view-all", aria: { label: _('View all personal projects') }
-    .overview-content-list{ data: { href: user_projects_path } }
-      = gl_loading_icon(size: 'md', css_class: 'loading')
+    %ul.gl-list-none.gl-pl-0.overview-content-list{ data: { href: user_projects_path } }
+      %li= gl_loading_icon(size: 'md', css_class: 'loading')

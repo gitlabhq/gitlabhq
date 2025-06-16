@@ -2552,6 +2552,25 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
       expect { perform_request(user) }.not_to exceed_query_limit(control).with_threshold(query_buffer)
     end
+
+    context 'merge-requests filtered by state' do
+      it 'returns the correct opened merge-request' do
+        get api("/projects/#{project.id}/repository/commits/#{commit.id}/merge_requests?state=opened", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_limited_pagination_headers
+        expect(json_response.length).to eq(1)
+        expect(json_response[0]['id']).to eq(merged_mr.id)
+      end
+
+      it 'does not found closed merge-request' do
+        get api("/projects/#{project.id}/repository/commits/#{commit.id}/merge_requests?state=closed", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_limited_pagination_headers
+        expect(json_response.length).to eq(0)
+      end
+    end
   end
 
   describe 'GET /projects/:id/repository/commits/:sha/signature' do

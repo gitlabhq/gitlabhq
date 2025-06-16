@@ -3,6 +3,6 @@
   .controls
     = render Pajamas::ButtonComponent.new(href: dashboard_projects_path(rss_url_options), icon: 'rss', button_options: { title: _('Subscribe'), aria: { label: _('Subscribe') }, class: 'gl-hidden sm:gl-inline-flex' })
 
-.content_list
+%ul.content_list.gl-list-none.gl-pl-0
 .loading
   = render Pajamas::SpinnerComponent.new(size: :md)

@@ -3,7 +3,7 @@
 - timezone = local_assigns[:timezone] || nil
 
 - if event_visible_to_user || @user&.include_private_contributions?
-  .event-item.gl-border-b-0.gl-pb-3{ class: current_controller?('users') ? 'user-profile-activity !gl-pl-7' : 'project-activity-item' }
+  %li.event-item.gl-border-b-0.gl-pb-3{ class: current_controller?('users') ? 'user-profile-activity !gl-pl-7' : 'project-activity-item' }
     .event-item-timestamp.gl-text-sm
       - if timezone
         %span.js-localtime{ data: { datetime: event.created_at.utc.strftime('%Y-%m-%dT%H:%M:%SZ'), toggle: 'tooltip', placement: 'top' } }

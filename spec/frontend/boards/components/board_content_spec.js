@@ -289,4 +289,15 @@ describe('BoardContent', () => {
       expect(removeParams).toHaveBeenCalledWith([DETAIL_VIEW_QUERY_PARAM_NAME]);
     });
   });
+
+  it('handles `draggedType` when dragging starts', async () => {
+    createComponent();
+    await waitForPromises();
+
+    findBoardColumns().wrappers[0].vm.$emit('dragStart', { itemType: 'ISSUE' });
+
+    await nextTick();
+
+    expect(findBoardColumns().at(0).props('draggedType')).toBe('ISSUE');
+  });
 });

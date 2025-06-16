@@ -41364,6 +41364,9 @@ msgstr ""
 msgid "Not available for protected branches"
 msgstr ""
 
+msgid "Not available for this item"
+msgstr ""
+
 msgid "Not confidential"
 msgstr ""
 
@@ -63507,6 +63510,9 @@ msgid "This setting is allowed for forked projects only"
 msgstr ""
 
 msgid "This stage has one or more manual jobs that require confirmation before retrying. Do you want to proceed?"
+msgstr ""
+
+msgid "This status cannot be applied to the selected item."
 msgstr ""
 
 msgid "This suggestion already matches its content."

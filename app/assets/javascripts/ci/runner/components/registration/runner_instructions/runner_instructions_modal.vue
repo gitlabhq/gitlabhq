@@ -121,10 +121,6 @@ export default {
       }
     },
   },
-  updated() {
-    // Refocus on dom changes, after loading data
-    this.refocusSelectedPlatformButton();
-  },
   methods: {
     // show() can be invoked by parent components to show the modal
     // eslint-disable-next-line vue/no-unused-properties
@@ -140,17 +136,6 @@ export default {
     },
     onShown() {
       this.shown = true;
-      this.refocusSelectedPlatformButton();
-    },
-    refocusSelectedPlatformButton() {
-      // On modal opening, the first focusable element is auto-focused by bootstrap-vue
-      // This can be confusing for users, because the wrong platform button can
-      // get focused when setting a `defaultPlatformName`.
-      // This method refocuses the expected button.
-      // See more about this auto-focus: https://bootstrap-vue.org/docs/components/modal#auto-focus-on-open
-      this.$nextTick(() => {
-        this.$refs[this.selectedPlatform?.name]?.[0]?.$el.focus();
-      });
     },
     selectPlatform(platform) {
       this.selectedPlatform = platform;
@@ -187,6 +172,7 @@ export default {
   <gl-modal
     ref="modal"
     :modal-id="modalId"
+    :no-focus-on-show="true"
     :title="$options.i18n.installARunner"
     v-bind="$attrs"
     hide-footer
