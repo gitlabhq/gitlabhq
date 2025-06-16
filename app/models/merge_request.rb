@@ -2318,6 +2318,8 @@ class MergeRequest < ApplicationRecord
 
   # Overridden in EE
   def use_merge_base_pipeline_for_comparison?(_)
+    return true if Feature.enabled?(:use_merge_base_for_all_report_comparisons, project)
+
     false
   end
 

@@ -297,7 +297,6 @@ export default {
         searchable
         multiple
         placement="bottom-end"
-        variant="confirm"
         size="small"
         @reset="deselectAll"
         @select="selectInputs"

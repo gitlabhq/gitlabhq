@@ -41,3 +41,7 @@ GitLab Metrics and KPI Dashboard and Solution
 ## GenAI and Data Science
 
 [Agentic Workflow: Apply Coding Style Guide](duo_workflow/duo_workflow_codestyle.md)
+
+## Compliance and Best Practice
+
+[Guild on Separation of Duties](guild_on_sod.md)

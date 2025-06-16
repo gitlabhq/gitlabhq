@@ -71796,6 +71796,9 @@ msgstr ""
 msgid "You must confirm your email within %{cut_off_days} days of signing up. If you do not confirm your email in this timeframe, your account will be deleted and you will need to sign up for GitLab again."
 msgstr ""
 
+msgid "You must enter a new group name."
+msgstr ""
+
 msgid "You must have developer or higher permissions in the associated project to view job logs when debug trace is enabled. To disable debug trace, set the 'CI_DEBUG_TRACE' and 'CI_DEBUG_SERVICES' variables to 'false' in your pipeline configuration or CI/CD settings. If you must view this job log, a project maintainer or owner must add you to the project with developer permissions or higher."
 msgstr ""
 

@@ -2646,7 +2646,6 @@ Layout/LineLength:
     - 'spec/features/security/project/snippet/internal_access_spec.rb'
     - 'spec/features/security/project/snippet/public_access_spec.rb'
     - 'spec/features/signed_commits_spec.rb'
-    - 'spec/features/snippets/embedded_snippet_spec.rb'
     - 'spec/features/task_lists_spec.rb'
     - 'spec/features/unsubscribe_links_spec.rb'
     - 'spec/features/user_settings/active_sessions_spec.rb'

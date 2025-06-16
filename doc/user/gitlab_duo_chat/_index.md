@@ -367,9 +367,9 @@ After Quick Chat opens:
 
 Prerequisites:
 
-- You've [installed and configured the GitLab Eclipse Plugin](../../editor_extensions/eclipse/setup.md).
+- You've [installed and configured the GitLab for Eclipse plugin](../../editor_extensions/eclipse/setup.md).
 
-To use GitLab Duo Chat in the GitLab Eclipse Plugin:
+To use GitLab Duo Chat in the GitLab for Eclipse plugin:
 
 1. Open a project in Eclipse.
 1. To open the chat window, select **GitLab Duo Chat** ({{< icon name="duo-chat" >}}), or use the keyboard shortcut:

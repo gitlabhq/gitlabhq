@@ -65,18 +65,37 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
     it_behaves_like 'merge request pipeline'
   end
 
-  context 'when MR labeled with `pipeline:run-as-if-foss` is changing app/models/user.rb' do
-    let(:mr_labels) { ['pipeline:run-as-if-foss'] }
+  context 'with as-if-foss pipeline' do
     let(:changed_files) { ['app/models/user.rb'] }
-    let(:expected_job_name) { 'start-as-if-foss' }
 
     let(:mr_pipeline_variables_attributes) do
       super() << { key: 'AS_IF_FOSS_TOKEN', value: 'foss token' }
     end
 
-    it_behaves_like 'merge request pipeline'
+    context 'when MR labeled with `pipeline::tier-3`' do
+      let(:mr_labels) { ['pipeline::tier-3'] }
+      let(:expected_job_name) { 'start-as-if-foss' }
 
-    it_behaves_like 'merge train pipeline'
+      it_behaves_like 'merge request pipeline'
+      it_behaves_like 'merge train pipeline'
+    end
+
+    context 'when MR labeled with `pipeline::tier-1`' do
+      let(:mr_labels) { ['pipeline::tier-1'] }
+
+      it "does not run as-if-foss pipeline" do
+        expect(jobs).not_to include('start-as-if-foss')
+      end
+    end
+
+    context 'when MR labeled with `pipeline:run-as-if-foss` and `pipeline::tier-1` labels' do
+      let(:mr_labels) { ['pipeline:run-as-if-foss', 'pipeline::tier-3'] }
+      let(:expected_job_name) { 'start-as-if-foss' }
+
+      it "runs tier-1 as-if-foss pipeline" do
+        expect(jobs).to include('start-as-if-foss')
+      end
+    end
   end
 
   context 'when MR labeled with `pipeline:force-run-as-if-jh` is changing app/models/user.rb' do

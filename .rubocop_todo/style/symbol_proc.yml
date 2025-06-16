@@ -173,4 +173,3 @@ Style/SymbolProc:
     - 'spec/support/shared_examples/lib/gitlab/search_language_filter_shared_examples.rb'
     - 'spec/support/shared_examples/models/label_note_shared_examples.rb'
     - 'spec/views/layouts/_published_experiments.html.haml_spec.rb'
-    - 'spec/workers/snippets/schedule_bulk_repository_shard_moves_worker_spec.rb'

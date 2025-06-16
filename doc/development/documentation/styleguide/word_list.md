@@ -1203,6 +1203,12 @@ When possible, spell out [**GitLab Flavored Markdown**](../../../user/markdown.m
 
 If you must abbreviate, do not use **GFM**. Use **GLFM** instead.
 
+## GitLab for Eclipse plugin, Eclipse
+
+Use **GitLab for Eclipse plugin** to refer to the editor extension.
+
+Use **Eclipse** to refer to the IDE.
+
 ## GitLab Helm chart, GitLab chart
 
 To deploy a cloud-native version of GitLab, use:

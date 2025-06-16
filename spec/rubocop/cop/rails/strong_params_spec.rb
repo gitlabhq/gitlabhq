@@ -9,6 +9,7 @@ RSpec.describe RuboCop::Cop::Rails::StrongParams, :aggregate_failures, feature_c
       MyService.execute(params)
                         ^^^^^^ Pass ActionController::StrongParameters [...]
     SOURCE
+
     expect_no_corrections
   end
 
@@ -17,18 +18,21 @@ RSpec.describe RuboCop::Cop::Rails::StrongParams, :aggregate_failures, feature_c
       MyService.execute(params, ignore)
                         ^^^^^^ Pass ActionController::StrongParameters [...]
     SOURCE
+
     expect_no_corrections
 
     expect_offense(<<~SOURCE)
       execute(ignore, params)
                       ^^^^^^ Pass ActionController::StrongParameters [...]
     SOURCE
+
     expect_no_corrections
 
     expect_offense(<<~SOURCE)
       user.where(foo: bar, bar: params, another: :argument)
                                 ^^^^^^ Pass ActionController::StrongParameters [...]
     SOURCE
+
     expect_no_corrections
   end
 
@@ -107,6 +111,7 @@ RSpec.describe RuboCop::Cop::Rails::StrongParams, :aggregate_failures, feature_c
       MyService(params[:a_value])
                 ^^^^^^ Pass ActionController::StrongParameters [...]
     SOURCE
+
     expect_correction(<<~SOURCE)
       MyService(params.permit(:a_value)[:a_value])
     SOURCE
@@ -115,6 +120,7 @@ RSpec.describe RuboCop::Cop::Rails::StrongParams, :aggregate_failures, feature_c
       puts params[:a_value][:another_value]
            ^^^^^^ Pass ActionController::StrongParameters [...]
     SOURCE
+
     expect_correction(<<~SOURCE)
       puts params.permit(:a_value)[:a_value][:another_value]
     SOURCE
@@ -123,6 +129,7 @@ RSpec.describe RuboCop::Cop::Rails::StrongParams, :aggregate_failures, feature_c
       convoluted_key = params[a_method(1, :two)]
                        ^^^^^^ Pass ActionController::StrongParameters [...]
     SOURCE
+
     expect_correction(<<~SOURCE)
       convoluted_key = params.permit(a_method(1, :two))[a_method(1, :two)]
     SOURCE

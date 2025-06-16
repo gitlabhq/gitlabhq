@@ -5068,7 +5068,15 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     subject { merge_request.use_merge_base_pipeline_for_comparison?(service_class) }
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to eq(true) }
+
+    context 'when use_merge_base_for_all_report_comparisons is disabled' do
+      before do
+        stub_feature_flags(use_merge_base_for_all_report_comparisons: false)
+      end
+
+      it { is_expected.to eq(false) }
+    end
   end
 
   describe '#comparison_base_pipeline' do

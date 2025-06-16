@@ -2,7 +2,13 @@
 
 RSpec.shared_examples 'cache counters invalidator' do
   it 'invalidates counter cache for assignees' do
-    expect_any_instance_of(User).to receive(:invalidate_merge_request_cache_counts)
+    expect(merge_request.assignees).to all(receive(:invalidate_merge_request_cache_counts))
+
+    described_class.new(project: project, current_user: user).execute(merge_request)
+  end
+
+  it 'invalidates counter cache for author' do
+    expect(merge_request.author).to receive(:invalidate_merge_request_cache_counts)
 
     described_class.new(project: project, current_user: user).execute(merge_request)
   end

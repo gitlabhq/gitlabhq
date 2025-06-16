@@ -19,12 +19,6 @@ is available in the Premium and Ultimate tier.
 
 ## Get job artifacts
 
-{{< history >}}
-
-- The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.5.
-
-{{< /history >}}
-
 Get a zipped archive of a job's artifacts from a project.
 
 If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
@@ -82,12 +76,6 @@ Possible response status codes:
 
 ## Download the artifacts archive
 
-{{< history >}}
-
-- The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.5.
-
-{{< /history >}}
-
 Download a zipped archive of a job's artifacts in the latest **successful**
 pipeline using the reference name. This endpoint is the same as
 [getting the job's artifacts](#get-job-artifacts), but uses the job's name instead of its ID.
@@ -115,12 +103,12 @@ GET /projects/:id/jobs/artifacts/:ref_name/download?job=name
 
 Parameters
 
-| Attribute                     | Type           | Required | Description |
-|-------------------------------|----------------|----------|-------------|
-| `id`                          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `job`                         | string         | Yes      | The name of the job. |
-| `ref_name`                    | string         | Yes      | Branch or tag name in repository. HEAD or SHA references are not supported. |
-| `job_token`                   | string         | No       | To be used with [triggers](../ci/jobs/job_artifacts.md#with-a-cicd-job-token) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. Premium and Ultimate only. |
+| Attribute   | Type           | Required | Description |
+| ----------- | -------------- | -------- | ----------- |
+| `id`        | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `job`       | string         | Yes      | The name of the job. |
+| `ref_name`  | string         | Yes      | Branch or tag name in repository. HEAD or SHA references are not supported. For merge request pipelines, use `ref/merge-requests/:iid/head` instead of the branch name. |
+| `job_token` | string         | No       | To be used with [triggers](../ci/jobs/job_artifacts.md#with-a-cicd-job-token) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. Premium and Ultimate only. |
 
 Example request using the `PRIVATE-TOKEN` header:
 
@@ -230,13 +218,13 @@ GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path?job=name
 
 Parameters:
 
-| Attribute                     | Type           | Required | Description |
-|-------------------------------|----------------|----------|-------------|
-| `artifact_path`               | string         | Yes      | Path to a file inside the artifacts archive. |
-| `id`                          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `job`                         | string         | Yes      | The name of the job. |
-| `ref_name`                    | string         | Yes      | Branch or tag name in repository. `HEAD` or `SHA` references are not supported. |
-| `job_token`                   | string         | No       | To be used with [triggers](../ci/jobs/job_artifacts.md#with-a-cicd-job-token) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. Premium and Ultimate only. |
+| Attribute       | Type           | Required | Description |
+| --------------- | -------------- | -------- | ----------- |
+| `artifact_path` | string         | Yes      | Path to a file inside the artifacts archive. |
+| `id`            | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `job`           | string         | Yes      | The name of the job. |
+| `ref_name`      | string         | Yes      | Branch or tag name in repository. `HEAD` or `SHA` references are not supported. For merge request pipelines, use `ref/merge-requests/:iid/head` instead of the branch name. |
+| `job_token`     | string         | No       | To be used with [triggers](../ci/jobs/job_artifacts.md#with-a-cicd-job-token) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. Premium and Ultimate only. |
 
 Example request:
 
@@ -375,6 +363,23 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 A response with status `202 Accepted` is returned.
 
 ## Troubleshooting
+
+### Using branch names with merge request pipelines
+
+You might get a `404 Not Found` error when trying to download job artifacts using a branch name as the `ref_name`.
+
+This issue occurs because merge request pipelines use a different reference format than branch pipelines.
+Merge request pipelines run on `refs/merge-requests/:iid/head`, not directly on the source branch.
+
+To download job artifacts for a merge request pipeline, use `ref/merge-requests/:iid/head`
+as the `ref_name` instead of the branch name, where `:iid` is the merge request ID.
+
+For example, for merge request `!123`:
+
+```shell
+curl --location --header "PRIVATE-TOKEN: <your_access_token>" \
+  "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/ref/merge-requests/123/head/raw/file.txt?job=test"
+```
 
 ### Downloading `artifacts:reports` files
 

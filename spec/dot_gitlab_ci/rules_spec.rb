@@ -143,41 +143,6 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
     end
   end
 
-  describe 'start-as-if-foss' do
-    let(:base_rules) { config.dig('.as-if-foss:rules:start-as-if-foss', 'rules') }
-
-    context 'with .as-if-foss:rules:start-as-if-foss:allow-failure:manual' do
-      let(:derived_rules) { config.dig('.as-if-foss:rules:start-as-if-foss:allow-failure:manual', 'rules') }
-
-      it 'has the same rules as the base and also allow-failure and manual' do
-        base_rules.zip(derived_rules).each do |(base, derived)|
-          # !references should be the same. Stop rules should be the same.
-          if base.is_a?(Array) || base['when'] == 'never'
-            expect(base).to eq(derived)
-          else
-            expect(derived).to eq(
-              base.merge('allow_failure' => true, 'when' => 'manual'))
-          end
-        end
-      end
-    end
-
-    context 'with .as-if-foss:rules:start-as-if-foss:allow-failure' do
-      let(:derived_rules) { config.dig('.as-if-foss:rules:start-as-if-foss:allow-failure', 'rules') }
-
-      it 'has the same rules as the base and also allow-failure' do
-        base_rules.zip(derived_rules).each do |(base, derived)|
-          # !references should be the same. Stop rules should be the same.
-          if base.is_a?(Array) || base['when'] == 'never'
-            expect(base).to eq(derived)
-          else
-            expect(derived).to eq(base.merge('allow_failure' => true))
-          end
-        end
-      end
-    end
-  end
-
   describe 'patterns' do
     foss_context = !Gitlab.ee?
     no_matching_needed_files = (
