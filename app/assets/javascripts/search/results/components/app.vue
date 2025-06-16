@@ -61,9 +61,6 @@ export default {
 
         return variables;
       },
-      skip() {
-        return !this.query.search;
-      },
       result({ data }) {
         this.hasError = false;
         this.loaded = true;

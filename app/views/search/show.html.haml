@@ -32,5 +32,5 @@
       project_initial_json: project_attributes.to_json,
       ref: @project.present? ? repository_ref(@project) : nil
     } }
-  - if @search_term
-    = render 'search/results'
+
+  = render 'search/results'

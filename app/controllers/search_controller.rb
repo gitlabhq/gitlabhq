@@ -62,6 +62,8 @@ class SearchController < ApplicationController
       current_user: current_user
     ).fabricate!
 
+    @scope = @search_service_presenter.scope
+    @search_type = search_type
     return unless search_term_valid? && search_type_valid?
 
     return if check_single_commit_result?
@@ -70,8 +72,6 @@ class SearchController < ApplicationController
     @sort = params[:sort] || default_sort
 
     @search_level = @search_service_presenter.level
-    @search_type = search_type
-    @scope = @search_service_presenter.scope
 
     # separate following lines to method that is conditionally triggered when not zoekt multi-result search
     haml_search_results unless multi_match?(scope: @scope, search_type: search_type)

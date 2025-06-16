@@ -1,6 +1,5 @@
 .advanced-search-promote
   = render_if_exists 'shared/promotions/promote_advanced_search'
-
 - if should_show_zoekt_results?(@scope, @search_type)
   %ul#js-search-zoekt-blob-results
 - elsif @timeout
