@@ -2297,7 +2297,6 @@ RSpec/ContextWording:
     - 'spec/services/ci/pipelines/add_job_service_spec.rb'
     - 'spec/services/ci/prepare_build_service_spec.rb'
     - 'spec/services/ci/prometheus_metrics/observe_histograms_service_spec.rb'
-    - 'spec/services/ci/register_job_service_spec.rb'
     - 'spec/services/ci/retry_job_service_spec.rb'
     - 'spec/services/ci/runners/reconcile_existing_runner_versions_service_spec.rb'
     - 'spec/services/ci/update_build_queue_service_spec.rb'

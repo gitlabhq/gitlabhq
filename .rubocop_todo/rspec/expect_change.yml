@@ -97,7 +97,6 @@ RSpec/ExpectChange:
     - 'ee/spec/services/ee/users/destroy_service_spec.rb'
     - 'ee/spec/services/epics/issue_promote_service_spec.rb'
     - 'ee/spec/services/epics/transfer_service_spec.rb'
-    - 'ee/spec/services/geo/container_repository_registry_removal_service_spec.rb'
     - 'ee/spec/services/geo/file_registry_removal_service_spec.rb'
     - 'ee/spec/services/geo/node_create_service_spec.rb'
     - 'ee/spec/services/gitlab_subscriptions/activate_service_spec.rb'

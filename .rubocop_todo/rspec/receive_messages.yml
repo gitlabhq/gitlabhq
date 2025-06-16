@@ -31,7 +31,6 @@ RSpec/ReceiveMessages:
     - 'ee/spec/helpers/license_helper_spec.rb'
     - 'ee/spec/helpers/license_monitoring_helper_spec.rb'
     - 'ee/spec/helpers/nav/new_dropdown_helper_spec.rb'
-    - 'ee/spec/helpers/projects/project_members_helper_spec.rb'
     - 'ee/spec/helpers/routing/pseudonymization_helper_spec.rb'
     - 'ee/spec/helpers/sidebars_helper_spec.rb'
     - 'ee/spec/helpers/subscriptions_helper_spec.rb'

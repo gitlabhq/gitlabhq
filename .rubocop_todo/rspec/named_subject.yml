@@ -3274,7 +3274,6 @@ RSpec/NamedSubject:
     - 'spec/workers/environments/canary_ingress/update_worker_spec.rb'
     - 'spec/workers/error_tracking_issue_link_worker_spec.rb'
     - 'spec/workers/file_hook_worker_spec.rb'
-    - 'spec/workers/flush_counter_increments_worker_spec.rb'
     - 'spec/workers/gitlab/github_gists_import/import_gist_worker_spec.rb'
     - 'spec/workers/gitlab/github_import/pull_requests/import_merged_by_worker_spec.rb'
     - 'spec/workers/gitlab/github_import/pull_requests/import_review_worker_spec.rb'

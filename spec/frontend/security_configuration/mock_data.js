@@ -162,6 +162,19 @@ export const secretPushProtectionMock = {
   available: true,
 };
 
+export const pipelineSecretDetectionMock = {
+  type: 'secret_detection',
+  name: 'Pipeline Secret Detection',
+  description: 'Analyze your source code and Git history for secrets by using CI/CD pipelines.',
+  available: true,
+  configured: false,
+  configurationHelpPath:
+    '/help/user/application_security/secret_detection/pipeline/_index.md#configuration',
+  helpPath: '/help/user/application_security/secret_detection/pipeline/_index.md',
+  canEnableByMergeRequest: false,
+  metaInfoPath: null,
+};
+
 export const provideMock = {
   upgradePath: '/upgrade',
   autoDevopsHelpPagePath: '/autoDevopsHelpPagePath',

@@ -303,7 +303,6 @@ RSpec/ExpectInHook:
     - 'spec/services/ci/delete_objects_service_spec.rb'
     - 'spec/services/ci/job_artifacts/destroy_all_expired_service_spec.rb'
     - 'spec/services/ci/job_artifacts/destroy_batch_service_spec.rb'
-    - 'spec/services/ci/register_job_service_spec.rb'
     - 'spec/services/container_expiration_policies/cleanup_service_spec.rb'
     - 'spec/services/dependency_proxy/find_cached_manifest_service_spec.rb'
     - 'spec/services/dependency_proxy/image_ttl_group_policies/update_service_spec.rb'

@@ -3,6 +3,7 @@ import { mount, shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import searchQuery from '~/pages/projects/forks/new/queries/search_forkable_namespaces.query.graphql';
 import ProjectNamespace from '~/pages/projects/forks/new/components/project_namespace.vue';
@@ -142,7 +143,7 @@ describe('ProjectNamespace component', () => {
     beforeEach(async () => {
       mountComponent({ queryHandler: mockQueryError });
       jest.runOnlyPendingTimers();
-      await nextTick();
+      await waitForPromises();
     });
 
     it('creates an alert and captures the error', () => {

@@ -5,7 +5,6 @@ RSpec/NoExpectationExample:
     - 'ee/spec/features/billings/billing_plans_spec.rb'
     - 'ee/spec/features/boards/swimlanes/epics_swimlanes_drag_drop_spec.rb'
     - 'ee/spec/features/boards/swimlanes/epics_swimlanes_filtering_spec.rb'
-    - 'ee/spec/features/epic_boards/epic_boards_sidebar_spec.rb'
     - 'ee/spec/features/groups/add_ons/discover_duo_pro_hand_raise_lead_spec.rb'
     - 'ee/spec/features/groups/discovers/hand_raise_lead_spec.rb'
     - 'ee/spec/features/groups/group_roadmap_spec.rb'

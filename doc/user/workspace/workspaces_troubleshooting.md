@@ -100,3 +100,19 @@ This error can occur for the following reasons:
       ```shell
       kubectl rollout restart deployment -n gitlab-workspaces gitlab-workspaces-proxy
       ```
+
+<!--- Other suggested topics:
+
+## DNS configuration
+
+## Workspace stops unexpectedly
+
+## Workspace creation fails due to quotas
+
+## Network connectivity
+
+## SSH connection failures
+
+### Network policy restrictions
+
+-->

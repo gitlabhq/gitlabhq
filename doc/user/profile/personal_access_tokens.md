@@ -107,6 +107,7 @@ for guidance on managing personal access tokens (for example, setting a short ex
 {{< history >}}
 
 - Ability to use the UI to rotate a personal access token [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241523) in GitLab 17.7.
+- [Updated UI](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194582) in GitLab 18.2.
 
 {{< /history >}}
 
@@ -115,7 +116,8 @@ At any time, you can use the UI to revoke or, in GitLab 17.7 and later, rotate a
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access tokens**.
-1. In the **Active personal access tokens** area, for the relevant token, select **Revoke** ({{< icon name="remove" >}}) or **Rotate** ({{< icon name="retry" >}}).
+1. Next to an active token, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
+1. Select **Revoke** ({{< icon name="remove" >}}) or **Rotate** ({{< icon name="retry" >}}).
 1. On the confirmation dialog, select **Revoke** or **Rotate**.
 
    {{< alert type="warning" >}}

@@ -761,7 +761,6 @@ Style/InlineDisableAnnotation:
     - 'app/workers/export_csv_worker.rb'
     - 'app/workers/external_service_reactive_caching_worker.rb'
     - 'app/workers/file_hook_worker.rb'
-    - 'app/workers/flush_counter_increments_worker.rb'
     - 'app/workers/gitlab/bitbucket_import/advance_stage_worker.rb'
     - 'app/workers/gitlab/bitbucket_import/import_issue_notes_worker.rb'
     - 'app/workers/gitlab/bitbucket_import/import_issue_worker.rb'

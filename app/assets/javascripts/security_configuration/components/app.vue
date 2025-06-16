@@ -14,10 +14,12 @@ import {
   TAB_VULNERABILITY_MANAGEMENT_INDEX,
   i18n,
   SECRET_PUSH_PROTECTION,
+  SECRET_DETECTION,
 } from '../constants';
 import AutoDevOpsAlert from './auto_dev_ops_alert.vue';
 import AutoDevOpsEnabledAlert from './auto_dev_ops_enabled_alert.vue';
 import FeatureCard from './feature_card.vue';
+import PipelineSecretDetectionFeatureCard from './pipeline_secret_detection_feature_card.vue';
 import SecretPushProtectionFeatureCard from './secret_push_protection_feature_card.vue';
 import TrainingProviderList from './training_provider_list.vue';
 
@@ -28,6 +30,7 @@ export default {
     AutoDevOpsEnabledAlert,
     FeatureCard,
     SecretPushProtectionFeatureCard,
+    PipelineSecretDetectionFeatureCard,
     GlAlert,
     GlLink,
     GlSprintf,
@@ -119,6 +122,10 @@ export default {
       if (feature.type === REPORT_TYPE_CONTAINER_SCANNING_FOR_REGISTRY) {
         return 'container-scanning-for-registry-feature-card';
       }
+      if (feature.type === SECRET_DETECTION) {
+        return 'pipeline-secret-detection-feature-card';
+      }
+
       return 'feature-card';
     },
     dismissAutoDevopsEnabledAlert() {

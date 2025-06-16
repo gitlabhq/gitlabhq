@@ -180,6 +180,18 @@ RSpec.describe Users::MigrateRecordsToGhostUserService, feature_category: :user_
       end
     end
 
+    context 'for pipelines' do
+      include_examples 'migrating records to the ghost user', Ci::Pipeline, [:user] do
+        let(:created_record) { create(:ci_pipeline, project: project, user: user) }
+      end
+    end
+
+    context 'for builds' do
+      include_examples 'migrating records to the ghost user', Ci::Build, [:user] do
+        let(:created_record) { create(:ci_build, project: project, user: user) }
+      end
+    end
+
     context 'when user is a bot user and has associated access tokens' do
       let_it_be(:user) { create(:user, :project_bot) }
       let_it_be(:token) { create(:personal_access_token, user: user) }

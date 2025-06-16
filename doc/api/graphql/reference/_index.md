@@ -3730,11 +3730,6 @@ Input type: `CiJobTokenScopeUpdatePoliciesInput`
 Linted and processed contents of a CI config.
 Should not be requested more than once per request.
 
-{{< details >}}
-**Introduced** in GitLab 18.1.
-**Status**: Experiment.
-{{< /details >}}
-
 Input type: `CiLintInput`
 
 #### Arguments
@@ -18773,6 +18768,29 @@ The edge type for [`ProjectComplianceRequirementStatus`](#projectcompliancerequi
 | <a id="projectcompliancerequirementstatusedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="projectcompliancerequirementstatusedgenode"></a>`node` | [`ProjectComplianceRequirementStatus`](#projectcompliancerequirementstatus) | The item at the end of the edge. |
 
+#### `ProjectComplianceViolationConnection`
+
+The connection type for [`ProjectComplianceViolation`](#projectcomplianceviolation).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectcomplianceviolationconnectionedges"></a>`edges` | [`[ProjectComplianceViolationEdge]`](#projectcomplianceviolationedge) | A list of edges. |
+| <a id="projectcomplianceviolationconnectionnodes"></a>`nodes` | [`[ProjectComplianceViolation]`](#projectcomplianceviolation) | A list of nodes. |
+| <a id="projectcomplianceviolationconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ProjectComplianceViolationEdge`
+
+The edge type for [`ProjectComplianceViolation`](#projectcomplianceviolation).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectcomplianceviolationedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="projectcomplianceviolationedgenode"></a>`node` | [`ProjectComplianceViolation`](#projectcomplianceviolation) | The item at the end of the edge. |
+
 #### `ProjectConnection`
 
 The connection type for [`Project`](#project).
@@ -28291,6 +28309,7 @@ GPG signature for a signed commit.
 | <a id="grouppendingmembers"></a>`pendingMembers` {{< icon name="warning-solid" >}} | [`PendingMemberInterfaceConnection`](#pendingmemberinterfaceconnection) | **Introduced** in GitLab 16.6. **Status**: Experiment. A pending membership of a user within this group. |
 | <a id="grouppermanentdeletiondate"></a>`permanentDeletionDate` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. For groups pending deletion, returns the group's scheduled deletion date. For groups not pending deletion, returns a theoretical date based on current settings if marked for deletion today. |
 | <a id="groupproductanalyticsstoredeventslimit"></a>`productAnalyticsStoredEventsLimit` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 16.9. **Status**: Experiment. Number of product analytics events namespace is permitted to store per cycle. |
+| <a id="groupprojectcomplianceviolations"></a>`projectComplianceViolations` {{< icon name="warning-solid" >}} | [`ProjectComplianceViolationConnection`](#projectcomplianceviolationconnection) | **Introduced** in GitLab 18.1. **Status**: Experiment. Compliance violations for the projects in a group and its subgroups. |
 | <a id="groupprojectcreationlevel"></a>`projectCreationLevel` | [`String`](#string) | Permission level required to create projects in the group. |
 | <a id="groupprojectscount"></a>`projectsCount` | [`Int!`](#int) | Count of direct projects in the group. |
 | <a id="grouprecentissueboards"></a>`recentIssueBoards` | [`BoardConnection`](#boardconnection) | List of recently visited boards of the group. Maximum size is 4. (see [Connections](#connections)) |
@@ -38430,6 +38449,20 @@ Compliance requirement status for a project.
 | <a id="projectcompliancerequirementstatusproject"></a>`project` | [`Project!`](#project) | Project of the compliance status. |
 | <a id="projectcompliancerequirementstatusupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp when the requirement status was last updated. |
 
+### `ProjectComplianceViolation`
+
+Compliance violation for a project.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectcomplianceviolationcompliancecontrol"></a>`complianceControl` | [`ComplianceRequirementsControl!`](#compliancerequirementscontrol) | Compliance control of the violation. |
+| <a id="projectcomplianceviolationcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp when the violation was detected. |
+| <a id="projectcomplianceviolationid"></a>`id` | [`ID!`](#id) | Compliance violation ID. |
+| <a id="projectcomplianceviolationproject"></a>`project` | [`Project!`](#project) | Project of the compliance violation. |
+| <a id="projectcomplianceviolationstatus"></a>`status` | [`ComplianceViolationStatus!`](#complianceviolationstatus) | Compliance violation status of the project. |
+
 ### `ProjectDataTransfer`
 
 #### Fields
@@ -44485,6 +44518,17 @@ Compliance violation sort values.
 | <a id="complianceviolationsortseverity_level_desc"></a>`SEVERITY_LEVEL_DESC` | Severity in descending order, further sorted by ID in descending order. |
 | <a id="complianceviolationsortviolation_reason_asc"></a>`VIOLATION_REASON_ASC` | Violation reason in ascending order, further sorted by ID in ascending order. |
 | <a id="complianceviolationsortviolation_reason_desc"></a>`VIOLATION_REASON_DESC` | Violation reason in descending order, further sorted by ID in descending order. |
+
+### `ComplianceViolationStatus`
+
+Compliance violation status of the project.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="complianceviolationstatusdetected"></a>`DETECTED` | Detected. |
+| <a id="complianceviolationstatusdismissed"></a>`DISMISSED` | Dismissed. |
+| <a id="complianceviolationstatusin_review"></a>`IN_REVIEW` | In review. |
+| <a id="complianceviolationstatusresolved"></a>`RESOLVED` | Resolved. |
 
 ### `ConanMetadatumFileTypeEnum`
 

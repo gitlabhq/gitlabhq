@@ -47,6 +47,7 @@ module Users
       migrate_reviews
       migrate_releases
       migrate_timelogs
+      migrate_pipelines
     end
 
     def post_migrate_records
@@ -120,6 +121,11 @@ module Users
 
     def migrate_timelogs
       batched_migrate(Timelog, :user_id)
+    end
+
+    def migrate_pipelines
+      batched_migrate(Ci::Pipeline, :user_id)
+      batched_migrate(Ci::Build, :user_id)
     end
 
     # rubocop:disable CodeReuse/ActiveRecord

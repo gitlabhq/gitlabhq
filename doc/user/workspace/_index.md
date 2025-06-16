@@ -31,6 +31,15 @@ A Workspace can exist for a maximum of approximately one calendar year, `8760` h
 
 For a click-through demo, see [GitLab workspaces](https://tech-marketing.gitlab.io/static-demos/workspaces/ws_html.html).
 
+{{< alert type="note" >}}
+
+A Workspace runs on any `linux/amd64` Kubernetes cluster. If you need to run sudo commands, or
+build and run containers in your workspace, there might be platform-specific requirements.
+
+For more information, see [Platform compatibility](configuration.md#platform-compatibility).
+
+{{< /alert >}}
+
 ## Workspaces and projects
 
 Workspaces are scoped to a project.

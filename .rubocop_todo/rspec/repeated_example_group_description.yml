@@ -10,7 +10,6 @@ RSpec/RepeatedExampleGroupDescription:
     - 'ee/spec/models/dast/profile_spec.rb'
     - 'ee/spec/models/ee/project_spec.rb'
     - 'ee/spec/models/geo/deleted_project_spec.rb'
-    - 'ee/spec/models/geo_node_spec.rb'
     - 'ee/spec/models/integrations/github_spec.rb'
     - 'ee/spec/models/merge_requests/external_status_check_spec.rb'
     - 'ee/spec/models/release_highlight_spec.rb'

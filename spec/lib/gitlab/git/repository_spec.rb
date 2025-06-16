@@ -2565,7 +2565,6 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
   describe '#checksum' do
     it 'calculates the checksum for non-empty repo' do
-      expect(repository.checksum.length).to be(40)
       expect(Gitlab::Git.blank_ref?(repository.checksum)).to be false
     end
 

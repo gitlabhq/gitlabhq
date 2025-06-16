@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 RSpec/AnyInstanceOf:
   Exclude:
-    - 'ee/spec/features/issues/form_spec.rb'
     - 'ee/spec/features/projects/new_project_spec.rb'
     - 'ee/spec/features/security/project/internal_access_spec.rb'
     - 'ee/spec/features/security/project/private_access_spec.rb'
@@ -219,7 +218,6 @@ RSpec/AnyInstanceOf:
     - 'spec/serializers/merge_request_poll_widget_entity_spec.rb'
     - 'spec/services/application_settings/update_service_spec.rb'
     - 'spec/services/ci/create_pipeline_service_spec.rb'
-    - 'spec/services/ci/register_job_service_spec.rb'
     - 'spec/services/ci/resource_groups/assign_resource_from_resource_group_service_spec.rb'
     - 'spec/services/ci/retry_pipeline_service_spec.rb'
     - 'spec/services/clusters/cleanup/project_namespace_service_spec.rb'

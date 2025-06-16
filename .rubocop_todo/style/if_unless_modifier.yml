@@ -81,7 +81,6 @@ Style/IfUnlessModifier:
     - 'app/services/ci/create_web_ide_terminal_service.rb'
     - 'app/services/ci/job_token_scope/remove_project_service.rb'
     - 'app/services/ci/parse_dotenv_artifact_service.rb'
-    - 'app/services/ci/register_job_service.rb'
     - 'app/services/ci/retry_job_service.rb'
     - 'app/services/ci/runners/reconcile_existing_runner_versions_service.rb'
     - 'app/services/ci/update_build_state_service.rb'
