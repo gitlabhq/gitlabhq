@@ -346,7 +346,7 @@ build:
   stage: build
   script:
     - mvn install
-    - mvn dependency:tree -DoutputType=json -DoutputFile=maven.graph.json
+    - mvn org.apache.maven.plugins:maven-dependency-plugin:3.8.1:tree -DoutputType=json -DoutputFile=maven.graph.json
   # Collect all maven.graph.json artifacts and pass them onto jobs
   # in sequential stages.
   artifacts:

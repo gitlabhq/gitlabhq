@@ -644,7 +644,7 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
         expect(kword_args[:metadata][:deadline_type]).to be_nil
       end
 
-      it 'includes only the deadline specified by the timeout when there was no deadline' do
+      it 'includes only the deadline specified by the timeout when there was no deadline', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/524657' do
         allow(Gitlab::RequestContext.instance).to receive(:request_deadline).and_return(nil)
         kword_args = described_class.request_kwargs('default', timeout: 6.hours.to_i)
 
