@@ -11,7 +11,7 @@ RSpec.describe Gitlab::GithubImport::PushPlaceholderReferences, feature_category
     create(
       :import_source_user,
       source_user_identifier: source_id,
-      source_hostname: project.import_url,
+      source_hostname: project.safe_import_url,
       namespace_id: project.root_ancestor.id,
       placeholder_user_id: author.id
     )

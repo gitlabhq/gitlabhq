@@ -36414,6 +36414,9 @@ msgstr ""
 msgid "LearnGitLab|Try all GitLab features for 60 days, no credit card required."
 msgstr ""
 
+msgid "LearnGitLab|Try the walkthrough in a new tab"
+msgstr ""
+
 msgid "LearnGitLab|Try walkthrough"
 msgstr ""
 

@@ -138,7 +138,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedReviewer, feature_
           placeholder_user_id: review_requester.id,
           source_user_identifier: review_requester.id,
           source_username: review_requester.username,
-          source_hostname: project.import_url,
+          source_hostname: project.safe_import_url,
           namespace_id: project.root_ancestor.id
         )
       end
@@ -149,7 +149,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedReviewer, feature_
           placeholder_user_id: requested_reviewer.id,
           source_user_identifier: requested_reviewer.id,
           source_username: requested_reviewer.username,
-          source_hostname: project.import_url,
+          source_hostname: project.safe_import_url,
           namespace_id: project.root_ancestor.id
         )
       end

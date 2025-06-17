@@ -929,6 +929,13 @@ Example response:
 
 {{< /history >}}
 
+{{< alert type="warning" >}}
+
+This endpoint is scheduled for removal in GitLab 18.5.
+Use [`GET /groups/:id/saml_users`](#list-all-saml-users) and [`GET /groups/:id/service_accounts`](group_service_accounts.md#list-all-service-account-users) instead.
+
+{{< /alert >}}
+
 Get a list of users for a group. This endpoint returns users that are related to a top-level group regardless
 of their current membership. For example, users that have a SAML identity connected to the group, or service accounts created
 by the group or subgroups.

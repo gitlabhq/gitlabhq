@@ -2175,6 +2175,35 @@ Input type: `AiAgentUpdateInput`
 | <a id="mutationaiagentupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaiagentupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.aiDuoWorkflowCreate`
+
+{{< details >}}
+**Introduced** in GitLab 18.1.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `AiDuoWorkflowCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaiduoworkflowcreateagentprivileges"></a>`agentPrivileges` | [`[Int!]`](#int) | Actions the agent is allowed to perform. |
+| <a id="mutationaiduoworkflowcreateallowagenttorequestuser"></a>`allowAgentToRequestUser` | [`Boolean`](#boolean) | When enabled, Duo Workflow may stop to ask the user questions before proceeding. |
+| <a id="mutationaiduoworkflowcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaiduoworkflowcreategoal"></a>`goal` | [`String`](#string) | Goal of the workflow. |
+| <a id="mutationaiduoworkflowcreatepreapprovedagentprivileges"></a>`preApprovedAgentPrivileges` | [`[Int!]`](#int) | Actions the agent can perform without asking for approval. |
+| <a id="mutationaiduoworkflowcreateprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project the user is acting on. |
+| <a id="mutationaiduoworkflowcreateworkflowdefinition"></a>`workflowDefinition` | [`String`](#string) | Workflow type based on its capability. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaiduoworkflowcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaiduoworkflowcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the creation process. |
+| <a id="mutationaiduoworkflowcreateworkflow"></a>`workflow` | [`DuoWorkflow`](#duoworkflow) | Created workflow. |
+
 ### `Mutation.aiFeatureSettingUpdate`
 
 Updates or creates settings for AI features.
@@ -25017,6 +25046,8 @@ Represents a vulnerability. The connection type is countable.
 | <a id="countablevulnerabilityhasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Indicates whether there is a remediation available for the vulnerability. |
 | <a id="countablevulnerabilityid"></a>`id` | [`ID!`](#id) | GraphQL ID of the vulnerability. |
 | <a id="countablevulnerabilityidentifiers"></a>`identifiers` | [`[VulnerabilityIdentifier!]!`](#vulnerabilityidentifier) | Identifiers of the vulnerability. |
+| <a id="countablevulnerabilityinitialdetectedpipeline"></a>`initialDetectedPipeline` {{< icon name="warning-solid" >}} | [`Pipeline`](#pipeline) | **Introduced** in GitLab 18.2. **Status**: Experiment. Pipeline where the vulnerability was first detected. |
+| <a id="countablevulnerabilitylatestdetectedpipeline"></a>`latestDetectedPipeline` {{< icon name="warning-solid" >}} | [`Pipeline`](#pipeline) | **Introduced** in GitLab 18.2. **Status**: Experiment. Pipeline where the vulnerability was last detected. |
 | <a id="countablevulnerabilitylinks"></a>`links` | [`[VulnerabilityLink!]!`](#vulnerabilitylink) | List of links associated with the vulnerability. |
 | <a id="countablevulnerabilitylocation"></a>`location` | [`VulnerabilityLocation`](#vulnerabilitylocation) | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
 | <a id="countablevulnerabilitymergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request that fixes the vulnerability. |
@@ -41727,6 +41758,8 @@ Represents a vulnerability.
 | <a id="vulnerabilityhasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Indicates whether there is a remediation available for the vulnerability. |
 | <a id="vulnerabilityid"></a>`id` | [`ID!`](#id) | GraphQL ID of the vulnerability. |
 | <a id="vulnerabilityidentifiers"></a>`identifiers` | [`[VulnerabilityIdentifier!]!`](#vulnerabilityidentifier) | Identifiers of the vulnerability. |
+| <a id="vulnerabilityinitialdetectedpipeline"></a>`initialDetectedPipeline` {{< icon name="warning-solid" >}} | [`Pipeline`](#pipeline) | **Introduced** in GitLab 18.2. **Status**: Experiment. Pipeline where the vulnerability was first detected. |
+| <a id="vulnerabilitylatestdetectedpipeline"></a>`latestDetectedPipeline` {{< icon name="warning-solid" >}} | [`Pipeline`](#pipeline) | **Introduced** in GitLab 18.2. **Status**: Experiment. Pipeline where the vulnerability was last detected. |
 | <a id="vulnerabilitylinks"></a>`links` | [`[VulnerabilityLink!]!`](#vulnerabilitylink) | List of links associated with the vulnerability. |
 | <a id="vulnerabilitylocation"></a>`location` | [`VulnerabilityLocation`](#vulnerabilitylocation) | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
 | <a id="vulnerabilitymergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request that fixes the vulnerability. |

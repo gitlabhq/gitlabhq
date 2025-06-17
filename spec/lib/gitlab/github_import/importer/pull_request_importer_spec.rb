@@ -16,7 +16,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
     create(
       :import_source_user,
       source_user_identifier: user_representation_1.id,
-      source_hostname: project.import_url,
+      source_hostname: project.safe_import_url,
       import_type: Import::SOURCE_GITHUB,
       namespace: project.root_ancestor
     )
@@ -26,7 +26,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
     create(
       :import_source_user,
       source_user_identifier: user_representation_2.id,
-      source_hostname: project.import_url,
+      source_hostname: project.safe_import_url,
       import_type: Import::SOURCE_GITHUB,
       namespace: project.root_ancestor
     )

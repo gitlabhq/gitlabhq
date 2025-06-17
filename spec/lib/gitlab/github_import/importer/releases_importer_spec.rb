@@ -39,7 +39,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
         placeholder_user_id: placeholder_user.id,
         source_user_identifier: 1,
         source_username: 'User A',
-        source_hostname: project.import_url,
+        source_hostname: project.safe_import_url,
         namespace_id: project.root_ancestor.id
       )
     end

@@ -17,7 +17,7 @@ RSpec.describe Import::GithubFailureSerializer, feature_category: :importers do
         Project,
         id: 123456,
         import_status: 'finished',
-        import_url: 'https://github.com/example/repo.git',
+        safe_import_url: 'https://github.com/example/repo.git',
         import_source: 'example/repo'
       )
     end

@@ -38,7 +38,7 @@ module Import
       create(
         :import_source_user,
         source_user_identifier: identifier,
-        source_hostname: project.import_url,
+        source_hostname: project.safe_import_url,
         import_type: project.import_type,
         namespace: project.root_ancestor
       )

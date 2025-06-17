@@ -1648,11 +1648,28 @@ class Project < ApplicationRecord
     notes.where(noteable_type: "Commit")
   end
 
+  # Returns sanitized import URL.
+  #
+  # @param `masked:` [Boolean] Toggles how URL will be sanitized. Defaults to `true`.
+  #  when `true` the userinfo credentials will be masked,
+  #  when `false` the userinfo credentials will be stripped.
+  #
+  # @example project.safe_import_url #=> "https://*****:*****@example.com"
+  # @example project.safe_import_url(masked: false) # => "https://example.com"
+  #
+  # @return [String] Sanitized import URL.
+  def safe_import_url(masked: true)
+    url = Gitlab::UrlSanitizer.new(import_url)
+    masked ? url.masked_url : url.sanitized_url
+  end
+
   def import_url=(value)
     if Gitlab::UrlSanitizer.valid?(value)
+      # Assign sanitized URL, stripped of userinfo credentials, to `Project#import_url` attribute.
       import_url = Gitlab::UrlSanitizer.new(value)
       super(import_url.sanitized_url)
 
+      # Assign any userinfo credentials to the `ProjectImportData#credentials` attribute.
       credentials = import_url.credentials.to_h.transform_values { |value| CGI.unescape(value.to_s) }
       build_or_assign_import_data(credentials: credentials)
     else
@@ -1660,6 +1677,17 @@ class Project < ApplicationRecord
     end
   end
 
+  # WARNING - This method returns sensitive userinfo credentials of the import URL.
+  # Use `#safe_import_url` instead unless it is necessary to include sensitive credentials.
+  #
+  # Builds an import URL including userinfo credentials from the `import_url` attribute
+  # and the encrypted `ProjectImportData#credentials`.
+  #
+  # @see #safe_import_url
+  #
+  # @example project.import_url #=> "https://user:secretpassword@example.com"
+  #
+  # @return [String] Unsanitized import URL.
   def import_url
     if import_data && super.present?
       import_url = Gitlab::UrlSanitizer.new(super, credentials: import_data.credentials)
@@ -1669,10 +1697,6 @@ class Project < ApplicationRecord
     end
   rescue StandardError
     super
-  end
-
-  def valid_import_url?
-    valid?(:import_url) || errors.messages[:import_url].nil?
   end
 
   def build_or_assign_import_data(data: nil, credentials: nil)
@@ -1696,11 +1720,6 @@ class Project < ApplicationRecord
     return false if import_type.nil? || mirror? || forked?
 
     gitea_import? || github_import? || bitbucket_import? || bitbucket_server_import?
-  end
-
-  def safe_import_url(masked: true)
-    url = Gitlab::UrlSanitizer.new(import_url)
-    masked ? url.masked_url : url.sanitized_url
   end
 
   def jira_import?
@@ -1733,7 +1752,7 @@ class Project < ApplicationRecord
 
   def github_enterprise_import?
     github_import? &&
-      URI.parse(import_url).host != URI.parse(Octokit::Default::API_ENDPOINT).host
+      URI.parse(safe_import_url).host != URI.parse(Octokit::Default::API_ENDPOINT).host
   end
 
   # Determine whether any kind of import is in progress.
