@@ -9,8 +9,6 @@ class CommitStatus < Ci::ApplicationRecord
   include BulkInsertableAssociations
   include TaggableQueries
 
-  ignore_column :trigger_request_id, remove_with: '18.2', remove_after: '2025-06-14'
-
   self.table_name = :p_ci_builds
   self.sequence_name = :ci_builds_id_seq
   self.primary_key = :id

@@ -92,7 +92,7 @@ export default {
 </script>
 
 <template>
-  <div class="mr-users-list gl-flex gl-justify-center">
+  <div class="mr-users-list gl-relative gl-flex gl-justify-center">
     <gl-avatars-inline
       v-if="sortedUsers.length"
       :avatars="sortedUsers"

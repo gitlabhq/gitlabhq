@@ -107,7 +107,7 @@ for guidance on managing personal access tokens (for example, setting a short ex
 {{< history >}}
 
 - Ability to use the UI to rotate a personal access token [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241523) in GitLab 17.7.
-- [Updated UI](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194582) in GitLab 18.2.
+- [Updated UI](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194582) in GitLab 18.1.
 
 {{< /history >}}
 

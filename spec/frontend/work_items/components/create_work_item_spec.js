@@ -1,8 +1,8 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlAlert, GlButton, GlFormSelect, GlLink, GlSprintf } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { setHTMLFixture } from 'helpers/fixtures';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -53,6 +53,7 @@ Vue.use(VueApollo);
 
 describe('Create work item component', () => {
   /** @type {import('@vue/test-utils').Wrapper} */
+  const originalFeatures = gon.features;
   let wrapper;
   let mockApollo;
 
@@ -79,16 +80,15 @@ describe('Create work item component', () => {
   const findGroupProjectSelector = () => wrapper.findComponent(WorkItemNamespaceListbox);
   const findSelect = () => wrapper.findComponent(GlFormSelect);
   const findTitleSuggestions = () => wrapper.findComponent(TitleSuggestions);
-  const findConfidentialCheckbox = () => wrapper.find('[data-testid="confidential-checkbox"]');
-  const findRelatesToCheckbox = () => wrapper.find('[data-testid="relates-to-checkbox"]');
-  const findCreateWorkItemView = () => wrapper.find('[data-testid="create-work-item-view"]');
-  const findFormButtons = () => wrapper.find('[data-testid="form-buttons"]');
-  const findCreateButton = () => wrapper.find('[data-testid="create-button"]');
-  const findCancelButton = () => wrapper.find('[data-testid="cancel-button"]');
-  const findResolveDiscussionSection = () =>
-    wrapper.find('[data-testid="work-item-resolve-discussion"]');
+  const findConfidentialCheckbox = () => wrapper.findByTestId('confidential-checkbox');
+  const findRelatesToCheckbox = () => wrapper.findByTestId('relates-to-checkbox');
+  const findCreateWorkItemView = () => wrapper.findByTestId('create-work-item-view');
+  const findFormButtons = () => wrapper.findByTestId('form-buttons');
+  const findCreateButton = () => wrapper.findByTestId('create-button');
+  const findCancelButton = () => wrapper.findByTestId('cancel-button');
+  const findResolveDiscussionSection = () => wrapper.findByTestId('work-item-resolve-discussion');
   const findResolveDiscussionLink = () =>
-    wrapper.find('[data-testid="work-item-resolve-discussion"]').findComponent(GlLink);
+    wrapper.findByTestId('work-item-resolve-discussion').findComponent(GlLink);
 
   const createComponent = ({
     props = {},
@@ -114,7 +114,7 @@ describe('Create work item component', () => {
       resolvers,
     );
 
-    wrapper = shallowMount(CreateWorkItem, {
+    wrapper = shallowMountExtended(CreateWorkItem, {
       apolloProvider: mockApollo,
       propsData: {
         fullPath: 'full-path',
@@ -158,6 +158,11 @@ describe('Create work item component', () => {
     gon.current_user_fullname = mockCurrentUser.name;
     gon.current_username = mockCurrentUser.username;
     gon.current_user_avatar_url = mockCurrentUser.avatar_url;
+    gon.features = {};
+  });
+
+  afterAll(() => {
+    gon.features = originalFeatures;
   });
 
   describe('Default', () => {
@@ -189,12 +194,18 @@ describe('Create work item component', () => {
     it('Default', async () => {
       createComponent();
       await waitForPromises();
-      const AUTO_SAVE_KEY = 'autosave/new-full-path-epic-draft';
+      const typeSpecificAutosaveKey = `autosave/new-full-path-epic-draft`;
+      const sharedWidgetsAutosaveKey = 'autosave/new-full-path-widgets-draft';
 
       findCancelButton().vm.$emit('click');
       await nextTick();
 
-      expect(localStorage.removeItem).toHaveBeenCalledWith(AUTO_SAVE_KEY);
+      // clearDraft internally calls localStorage.removeItem twice per key,
+      // first with actual keyname, and then with `keyname/lockVersion`.
+      // We're only interested in actual call to remove by keyname.
+      expect(localStorage.removeItem).toHaveBeenCalledTimes(4);
+      expect(localStorage.removeItem).toHaveBeenNthCalledWith(1, typeSpecificAutosaveKey);
+      expect(localStorage.removeItem).toHaveBeenNthCalledWith(3, sharedWidgetsAutosaveKey);
       expect(setNewWorkItemCache).toHaveBeenCalled();
     });
 
@@ -346,6 +357,25 @@ describe('Create work item component', () => {
       await nextTick();
 
       expect(findSelect().attributes('value')).toBe(mockId);
+    });
+
+    it('sets new work item cache and emits changeType on select', async () => {
+      createComponent({ props: { preselectedWorkItemType: null } });
+      await waitForPromises();
+      const mockId = 'Issue';
+
+      findSelect().vm.$emit('change', mockId);
+      await nextTick();
+
+      expect(setNewWorkItemCache).toHaveBeenCalledWith({
+        fullPath: 'full-path',
+        widgetDefinitions: expect.any(Array),
+        workItemType: mockId,
+        workItemTypeId: 'gid://gitlab/WorkItems::Type/1',
+        workItemTypeIconName: 'issue-type-issue',
+      });
+
+      expect(wrapper.emitted('changeType')).toBeDefined();
     });
 
     it('hides title if set', async () => {

@@ -36,7 +36,10 @@ RSpec.describe 'ClickHouse siphon tables', :click_house, feature_category: :data
       ch_field_type = ch_table_fields[field_name]
 
       unless ch_field_type.present?
-        raise "Postgres field '#{field_name}' of table '#{pg_table}' is not present in ClickHouse"
+        raise "This table is synchronised to ClickHouse and you've added a new column! " \
+          "Missing ClickHouse field '#{field_name}' for table '#{pg_table}'. " \
+          "Create a ClickHouse migration to add this field. " \
+          "See: https://docs.gitlab.com/development/database/clickhouse/clickhouse_within_gitlab/#handling-siphon-errors-in-tests"
       end
 
       next if ch_field_type.include?(pg_type_map[type_id])

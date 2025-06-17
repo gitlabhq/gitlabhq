@@ -105,6 +105,8 @@ export default {
   },
   methods: {
     onSelect(value) {
+      this.selectedValue = value;
+
       if (this.isCustomDateRangeSelected) {
         this.$emit('customDateRangeSelected');
       } else {
@@ -130,7 +132,7 @@ export default {
 <template>
   <div class="gl-flex gl-items-center gl-gap-3">
     <gl-collapsible-listbox
-      v-model="selectedValue"
+      :selected="selectedValue"
       :items="items"
       :header-text="$options.i18n.label"
       @select="onSelect"

@@ -8,7 +8,7 @@ import {
   updateCacheAfterCreatingNote,
   updateCountsForParent,
 } from '~/work_items/graphql/cache_utils';
-import { findHierarchyWidget, findNotesWidget } from '~/work_items/utils';
+import { findHierarchyWidget, findNotesWidget, getWorkItemWidgets } from '~/work_items/utils';
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
@@ -20,11 +20,14 @@ import {
   workItemResponseFactory,
   mockCreateWorkItemDraftData,
   mockNewWorkItemCache,
+  mockNewWorkItemIssueCache,
   restoredDraftDataWidgets,
+  restoredDraftDataWidgetsForIssue,
   restoredDraftDataWidgetsEmpty,
 } from '../mock_data';
 
 describe('work items graphql cache utils', () => {
+  const originalFeatures = window.gon.features;
   const id = 'gid://gitlab/WorkItem/10';
   const mockCacheData = {
     workItem: {
@@ -47,6 +50,18 @@ describe('work items graphql cache utils', () => {
       ],
     },
   };
+  // This looks like an odd pattern but is something we do already in several places
+  // across our codebase to run tests conditionally, often to quarantine tests.
+  // Here we're utilizing it skip test based on feature flag.
+  const itif = (condition) => (condition ? it : it.skip);
+
+  beforeEach(() => {
+    window.gon.features = {};
+  });
+
+  afterAll(() => {
+    window.gon.features = originalFeatures;
+  });
 
   describe('addHierarchyChild', () => {
     it('updates the work item with a new child', () => {
@@ -227,56 +242,47 @@ describe('work items graphql cache utils', () => {
     });
   });
 
-  describe('setNewWorkItemCache', () => {
-    let originalWindowLocation;
-    let mockWriteQuery;
+  describe.each`
+    workItemsAlpha
+    ${false}
+    ${true}
+  `(
+    'setNewWorkItemCache with feature-flag workItemsAlpha: $workItemsAlpha',
+    ({ workItemsAlpha }) => {
+      let originalWindowLocation;
+      let mockWriteQuery;
 
-    beforeEach(() => {
-      originalWindowLocation = window.location;
-      delete window.location;
-      window.location = new URL('https://gitlab.example.com');
-      window.gon.current_user_id = 1;
+      beforeEach(() => {
+        originalWindowLocation = window.location;
+        delete window.location;
+        window.location = new URL('https://gitlab.example.com');
+        window.gon.current_user_id = 1;
+        window.gon.features = {
+          workItemsAlpha,
+        };
 
-      mockWriteQuery = jest.fn();
-      apolloProvider.clients.defaultClient.cache.writeQuery = mockWriteQuery;
-      localStorage.setItem(
-        `autosave/new-gitlab-org-epic-draft`,
-        JSON.stringify(mockCreateWorkItemDraftData),
-      );
-    });
+        mockWriteQuery = jest.fn();
+        apolloProvider.clients.defaultClient.cache.writeQuery = mockWriteQuery;
 
-    afterEach(() => {
-      window.location = originalWindowLocation;
-    });
+        localStorage.setItem(
+          `autosave/new-gitlab-org-epic-draft`,
+          JSON.stringify(mockCreateWorkItemDraftData),
+        );
 
-    it('updates cache from localstorage to save cache data', async () => {
-      window.location.search = '';
-      await setNewWorkItemCache(mockNewWorkItemCache);
-      await waitForPromises();
+        if (window.gon.features.workItemsAlpha) {
+          localStorage.setItem(
+            `autosave/new-gitlab-org-widgets-draft`,
+            JSON.stringify(getWorkItemWidgets(mockCreateWorkItemDraftData)),
+          );
+        }
+      });
 
-      expect(mockWriteQuery).toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: expect.objectContaining({
-            workspace: expect.objectContaining({
-              workItem: expect.objectContaining({
-                title: mockCreateWorkItemDraftData.workspace.workItem.title,
-                widgets: expect.arrayContaining(restoredDraftDataWidgets),
-              }),
-            }),
-          }),
-        }),
-      );
-    });
+      afterEach(() => {
+        window.location = originalWindowLocation;
+      });
 
-    it.each`
-      description                         | locationSearchString          | expectedTitle                                           | expectedWidgets
-      ${'restores cache with empty form'} | ${'?vulnerability_id=1'}      | ${''}                                                   | ${restoredDraftDataWidgetsEmpty}
-      ${'restores cache with empty form'} | ${'?discussion_to_resolve=1'} | ${''}                                                   | ${restoredDraftDataWidgetsEmpty}
-      ${'restores cache with draft'}      | ${'?type=ISSUE'}              | ${mockCreateWorkItemDraftData.workspace.workItem.title} | ${restoredDraftDataWidgets}
-    `(
-      '$description when URL params include $locationSearchString',
-      async ({ locationSearchString, expectedTitle, expectedWidgets }) => {
-        window.location.search = locationSearchString;
+      it('updates cache from localstorage to save cache data', async () => {
+        window.location.search = '';
         await setNewWorkItemCache(mockNewWorkItemCache);
         await waitForPromises();
 
@@ -285,16 +291,64 @@ describe('work items graphql cache utils', () => {
             data: expect.objectContaining({
               workspace: expect.objectContaining({
                 workItem: expect.objectContaining({
-                  title: expectedTitle,
-                  widgets: expect.arrayContaining(expectedWidgets),
+                  title: mockCreateWorkItemDraftData.workspace.workItem.title,
+                  widgets: expect.arrayContaining(restoredDraftDataWidgets),
                 }),
               }),
             }),
           }),
         );
-      },
-    );
-  });
+      });
+
+      it.each`
+        description                         | locationSearchString          | expectedTitle                                           | expectedWidgets
+        ${'restores cache with empty form'} | ${'?vulnerability_id=1'}      | ${''}                                                   | ${restoredDraftDataWidgetsEmpty}
+        ${'restores cache with empty form'} | ${'?discussion_to_resolve=1'} | ${''}                                                   | ${restoredDraftDataWidgetsEmpty}
+        ${'restores cache with draft'}      | ${'?type=ISSUE'}              | ${mockCreateWorkItemDraftData.workspace.workItem.title} | ${restoredDraftDataWidgets}
+      `(
+        '$description when URL params include $locationSearchString',
+        async ({ locationSearchString, expectedTitle, expectedWidgets }) => {
+          window.location.search = locationSearchString;
+          await setNewWorkItemCache(mockNewWorkItemCache);
+          await waitForPromises();
+
+          expect(mockWriteQuery).toHaveBeenCalledWith(
+            expect.objectContaining({
+              data: expect.objectContaining({
+                workspace: expect.objectContaining({
+                  workItem: expect.objectContaining({
+                    title: expectedTitle,
+                    widgets: expect.arrayContaining(expectedWidgets),
+                  }),
+                }),
+              }),
+            }),
+          );
+        },
+      );
+
+      itif(workItemsAlpha)('shares widget data between work item types', async () => {
+        await setNewWorkItemCache(mockNewWorkItemIssueCache);
+
+        await waitForPromises();
+
+        expect(mockWriteQuery).toHaveBeenCalledWith(
+          expect.objectContaining({
+            data: expect.objectContaining({
+              workspace: expect.objectContaining({
+                workItem: expect.objectContaining({
+                  // The title was originally set for Epic type in beforeEach call above
+                  title: mockCreateWorkItemDraftData.workspace.workItem.title,
+                  // The widgets data is shared
+                  widgets: expect.arrayContaining(restoredDraftDataWidgetsForIssue),
+                }),
+              }),
+            }),
+          }),
+        );
+      });
+    },
+  );
 
   describe('updateCacheAfterCreatingNote', () => {
     const findDiscussions = ({ workspace }) =>

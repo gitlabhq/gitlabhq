@@ -210,7 +210,7 @@ export default {
     <template v-if="hasError">
       <gl-alert
         :variant="error.variant"
-        class="gl-mb-3"
+        class="gl-my-3"
         :primary-button-text="error.action"
         @dismiss="dismissAlert"
         @primaryAction="reloadGlqlBlock"

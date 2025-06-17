@@ -46,11 +46,13 @@ import {
   findHierarchyWidgetChildren,
   findNotesWidget,
   getNewWorkItemAutoSaveKey,
+  getNewWorkItemWidgetsAutoSaveKey,
   isNotesWidget,
   newWorkItemFullPath,
   newWorkItemId,
   findColorWidget,
   findStatusWidget,
+  getWorkItemWidgets,
 } from '../utils';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
 import workItemByIdQuery from './work_item_by_id.query.graphql';
@@ -316,6 +318,254 @@ export const updateWorkItemCurrentTodosWidget = ({ cache, fullPath, iid, todos }
   cache.writeQuery({ ...query, data: newData });
 };
 
+export const getNewWorkItemSharedCache = ({
+  workItemAttributesWrapperOrder,
+  widgetDefinitions,
+  fullPath,
+  workItemType,
+  isValidWorkItemDescription,
+  workItemDescription = '',
+}) => {
+  const widgetsAutosaveKey = getNewWorkItemWidgetsAutoSaveKey({ fullPath });
+  const fullDraftAutosaveKey = getNewWorkItemAutoSaveKey({ fullPath, workItemType });
+  const workItemTypeSpecificWidgets =
+    getWorkItemWidgets(JSON.parse(getDraft(fullDraftAutosaveKey))) || {};
+  const sharedCacheWidgets = JSON.parse(getDraft(widgetsAutosaveKey)) || {};
+
+  const availableWidgets = widgetDefinitions?.flatMap((i) => i.type) || [];
+  const draftTitle = sharedCacheWidgets.TITLE || '';
+  const draftDescription = sharedCacheWidgets[WIDGET_TYPE_DESCRIPTION]?.description || null;
+  const widgets = [];
+
+  widgets.push({
+    type: WIDGET_TYPE_DESCRIPTION,
+    description: isValidWorkItemDescription ? workItemDescription : draftDescription,
+    descriptionHtml: '',
+    lastEditedAt: null,
+    lastEditedBy: null,
+    taskCompletionStatus: null,
+    __typename: 'WorkItemWidgetDescription',
+  });
+
+  workItemAttributesWrapperOrder.forEach((widgetName) => {
+    if (availableWidgets.includes(widgetName)) {
+      if (widgetName === WIDGET_TYPE_ASSIGNEES) {
+        const assigneesWidgetData = widgetDefinitions.find(
+          (definition) => definition.type === WIDGET_TYPE_ASSIGNEES,
+        );
+        widgets.push({
+          type: 'ASSIGNEES',
+          allowsMultipleAssignees: assigneesWidgetData.allowsMultipleAssignees || false,
+          canInviteMembers: assigneesWidgetData.canInviteMembers || false,
+          assignees: {
+            nodes: sharedCacheWidgets[WIDGET_TYPE_ASSIGNEES]
+              ? sharedCacheWidgets[WIDGET_TYPE_ASSIGNEES]?.assignees.nodes || []
+              : [],
+            __typename: 'UserCoreConnection',
+          },
+          __typename: 'WorkItemWidgetAssignees',
+        });
+      }
+
+      if (widgetName === WIDGET_TYPE_LINKED_ITEMS) {
+        widgets.push({
+          type: WIDGET_TYPE_LINKED_ITEMS,
+          blockingCount: 0,
+          blockedByCount: 0,
+          linkedItems: {
+            nodes: [],
+          },
+          __typename: 'WorkItemWidgetLinkedItems',
+        });
+      }
+
+      if (widgetName === WIDGET_TYPE_CRM_CONTACTS) {
+        widgets.push({
+          type: 'CRM_CONTACTS',
+          contactsAvailable: false,
+          contacts: {
+            nodes: sharedCacheWidgets[WIDGET_TYPE_CRM_CONTACTS]
+              ? sharedCacheWidgets[WIDGET_TYPE_CRM_CONTACTS]?.contacts.nodes || []
+              : [],
+            __typename: 'CustomerRelationsContactConnection',
+          },
+          __typename: 'WorkItemWidgetCrmContacts',
+        });
+      }
+
+      if (widgetName === WIDGET_TYPE_LABELS) {
+        const labelsWidgetData = widgetDefinitions.find(
+          (definition) => definition.type === WIDGET_TYPE_LABELS,
+        );
+        widgets.push({
+          type: 'LABELS',
+          allowsScopedLabels: labelsWidgetData.allowsScopedLabels,
+          labels: {
+            nodes: sharedCacheWidgets[WIDGET_TYPE_LABELS]
+              ? sharedCacheWidgets[WIDGET_TYPE_LABELS]?.labels.nodes || []
+              : [],
+            __typename: 'LabelConnection',
+          },
+          __typename: 'WorkItemWidgetLabels',
+        });
+      }
+
+      if (widgetName === WIDGET_TYPE_WEIGHT) {
+        const weightWidgetData = widgetDefinitions.find(
+          (definition) => definition.type === WIDGET_TYPE_WEIGHT,
+        );
+
+        widgets.push({
+          type: 'WEIGHT',
+          weight: sharedCacheWidgets[WIDGET_TYPE_WEIGHT]
+            ? sharedCacheWidgets[WIDGET_TYPE_WEIGHT]?.weight || null
+            : null,
+          rolledUpWeight: 0,
+          rolledUpCompletedWeight: 0,
+          widgetDefinition: {
+            editable: weightWidgetData?.editable,
+            rollUp: weightWidgetData?.rollUp,
+          },
+          __typename: 'WorkItemWidgetWeight',
+        });
+      }
+
+      if (widgetName === WIDGET_TYPE_MILESTONE) {
+        widgets.push({
+          type: 'MILESTONE',
+          milestone: sharedCacheWidgets[WIDGET_TYPE_MILESTONE]
+            ? sharedCacheWidgets[WIDGET_TYPE_MILESTONE]?.milestone || null
+            : null,
+          projectMilestone: false,
+          __typename: 'WorkItemWidgetMilestone',
+        });
+      }
+
+      if (widgetName === WIDGET_TYPE_ITERATION) {
+        widgets.push({
+          iteration: sharedCacheWidgets[WIDGET_TYPE_ITERATION]
+            ? sharedCacheWidgets[WIDGET_TYPE_ITERATION]?.iteration || null
+            : null,
+          type: 'ITERATION',
+          __typename: 'WorkItemWidgetIteration',
+        });
+      }
+
+      if (widgetName === WIDGET_TYPE_START_AND_DUE_DATE) {
+        const startDueDateDraft = sharedCacheWidgets[WIDGET_TYPE_START_AND_DUE_DATE] || {};
+
+        widgets.push({
+          type: 'START_AND_DUE_DATE',
+          dueDate: startDueDateDraft?.dueDate || null,
+          startDate: startDueDateDraft?.startDate || null,
+          isFixed: startDueDateDraft?.isFixed || false,
+          rollUp: false,
+          __typename: 'WorkItemWidgetStartAndDueDate',
+        });
+      }
+
+      if (widgetName === WIDGET_TYPE_PROGRESS) {
+        widgets.push({
+          type: 'PROGRESS',
+          progress: null,
+          updatedAt: null,
+          __typename: 'WorkItemWidgetProgress',
+        });
+      }
+
+      if (widgetName === WIDGET_TYPE_HEALTH_STATUS) {
+        widgets.push({
+          type: 'HEALTH_STATUS',
+          healthStatus: sharedCacheWidgets[WIDGET_TYPE_HEALTH_STATUS]
+            ? sharedCacheWidgets[WIDGET_TYPE_HEALTH_STATUS]?.healthStatus || null
+            : null,
+          rolledUpHealthStatus: [],
+          __typename: 'WorkItemWidgetHealthStatus',
+        });
+      }
+
+      if (widgetName === WIDGET_TYPE_COLOR) {
+        widgets.push({
+          type: 'COLOR',
+          color: sharedCacheWidgets[WIDGET_TYPE_COLOR]
+            ? sharedCacheWidgets[WIDGET_TYPE_COLOR]?.color || '#1068bf'
+            : '#1068bf',
+          textColor: '#FFFFFF',
+          __typename: 'WorkItemWidgetColor',
+        });
+      }
+
+      if (widgetName === WIDGET_TYPE_STATUS) {
+        const { defaultOpenStatus } = widgetDefinitions.find(
+          (widget) => widget.type === WIDGET_TYPE_STATUS,
+        );
+        widgets.push({
+          type: 'STATUS',
+          status: sharedCacheWidgets[WIDGET_TYPE_STATUS]
+            ? sharedCacheWidgets[WIDGET_TYPE_STATUS]?.status || defaultOpenStatus
+            : defaultOpenStatus,
+          __typename: 'WorkItemWidgetStatus',
+        });
+      }
+
+      if (widgetName === WIDGET_TYPE_HIERARCHY) {
+        widgets.push({
+          type: 'HIERARCHY',
+          hasChildren: false,
+          hasParent: false,
+          // We're not using `sharedCacheWidgets` for hierarchy parent as
+          // each work item type can have its own allowed hierarchy parent types.
+          parent: workItemTypeSpecificWidgets[WIDGET_TYPE_HIERARCHY]
+            ? workItemTypeSpecificWidgets[WIDGET_TYPE_HIERARCHY]?.parent || null
+            : null,
+          depthLimitReachedByType: [],
+          rolledUpCountsByType: [],
+          children: {
+            nodes: [],
+            __typename: 'WorkItemConnection',
+          },
+          __typename: 'WorkItemWidgetHierarchy',
+        });
+      }
+
+      if (widgetName === WIDGET_TYPE_TIME_TRACKING) {
+        widgets.push({
+          type: 'TIME_TRACKING',
+          timeEstimate: 0,
+          timelogs: {
+            nodes: [],
+            __typename: 'WorkItemTimelogConnection',
+          },
+          totalTimeSpent: 0,
+          __typename: 'WorkItemWidgetTimeTracking',
+        });
+      }
+
+      if (widgetName === WIDGET_TYPE_CUSTOM_FIELDS) {
+        const customFieldsWidgetData = widgetDefinitions.find(
+          (definition) => definition.type === WIDGET_TYPE_CUSTOM_FIELDS,
+        );
+
+        widgets.push({
+          type: WIDGET_TYPE_CUSTOM_FIELDS,
+          // We're not using `sharedCacheWidgets` for custom fields as
+          // each work item type can have its own allowed custom fields.
+          customFieldValues: workItemTypeSpecificWidgets[WIDGET_TYPE_CUSTOM_FIELDS]
+            ? workItemTypeSpecificWidgets[WIDGET_TYPE_CUSTOM_FIELDS]?.customFieldValues || []
+            : customFieldsWidgetData?.customFieldValues ?? [],
+          __typename: 'WorkItemWidgetCustomFields',
+        });
+      }
+    }
+  });
+
+  return {
+    draftTitle,
+    draftDescription,
+    widgets,
+  };
+};
+
 export const setNewWorkItemCache = async ({
   fullPath,
   widgetDefinitions,
@@ -355,235 +605,253 @@ export const setNewWorkItemCache = async ({
   const isValidWorkItemTitle = workItemTitle.trim().length > 0;
   const isValidWorkItemDescription = workItemDescription.trim().length > 0;
 
-  const widgets = [];
-
   const autosaveKey = getNewWorkItemAutoSaveKey({ fullPath, workItemType });
   const getStorageDraftString = getDraft(autosaveKey);
+
   const draftData = JSON.parse(getDraft(autosaveKey));
+  const widgets = [];
+  let draftTitle = '';
+  let draftDescription = '';
 
-  const draftTitle = draftData?.workspace?.workItem?.title || '';
-  const draftDescriptionWidget = findDescriptionWidget(draftData?.workspace?.workItem) || {};
-  const draftDescription = draftDescriptionWidget?.description || null;
+  // Experimental support for shared widget data across work item types
+  if (gon.features.workItemsAlpha) {
+    const sharedCache = getNewWorkItemSharedCache({
+      workItemAttributesWrapperOrder,
+      widgetDefinitions,
+      fullPath,
+      workItemType,
+      isValidWorkItemDescription,
+      workItemDescription,
+    });
 
-  widgets.push({
-    type: WIDGET_TYPE_DESCRIPTION,
-    description: isValidWorkItemDescription ? workItemDescription : draftDescription,
-    descriptionHtml: '',
-    lastEditedAt: null,
-    lastEditedBy: null,
-    taskCompletionStatus: null,
-    __typename: 'WorkItemWidgetDescription',
-  });
+    draftTitle = sharedCache.draftTitle;
+    draftDescription = sharedCache.draftDescription;
+    widgets.push(...sharedCache.widgets);
+  } else {
+    const draftDescriptionWidget = findDescriptionWidget(draftData?.workspace?.workItem) || {};
+    draftTitle = draftData?.workspace?.workItem?.title || '';
+    draftDescription = draftDescriptionWidget?.description || null;
 
-  workItemAttributesWrapperOrder.forEach((widgetName) => {
-    if (availableWidgets.includes(widgetName)) {
-      if (widgetName === WIDGET_TYPE_ASSIGNEES) {
-        const assigneesWidgetData = widgetDefinitions.find(
-          (definition) => definition.type === WIDGET_TYPE_ASSIGNEES,
-        );
-        widgets.push({
-          type: 'ASSIGNEES',
-          allowsMultipleAssignees: assigneesWidgetData.allowsMultipleAssignees || false,
-          canInviteMembers: assigneesWidgetData.canInviteMembers || false,
-          assignees: {
-            nodes: draftData
-              ? findAssigneesWidget(draftData?.workspace?.workItem)?.assignees.nodes || []
-              : [],
-            __typename: 'UserCoreConnection',
-          },
-          __typename: 'WorkItemWidgetAssignees',
-        });
+    widgets.push({
+      type: WIDGET_TYPE_DESCRIPTION,
+      description: isValidWorkItemDescription ? workItemDescription : draftDescription,
+      descriptionHtml: '',
+      lastEditedAt: null,
+      lastEditedBy: null,
+      taskCompletionStatus: null,
+      __typename: 'WorkItemWidgetDescription',
+    });
+
+    workItemAttributesWrapperOrder.forEach((widgetName) => {
+      if (availableWidgets.includes(widgetName)) {
+        if (widgetName === WIDGET_TYPE_ASSIGNEES) {
+          const assigneesWidgetData = widgetDefinitions.find(
+            (definition) => definition.type === WIDGET_TYPE_ASSIGNEES,
+          );
+          widgets.push({
+            type: 'ASSIGNEES',
+            allowsMultipleAssignees: assigneesWidgetData.allowsMultipleAssignees || false,
+            canInviteMembers: assigneesWidgetData.canInviteMembers || false,
+            assignees: {
+              nodes: draftData
+                ? findAssigneesWidget(draftData?.workspace?.workItem)?.assignees.nodes || []
+                : [],
+              __typename: 'UserCoreConnection',
+            },
+            __typename: 'WorkItemWidgetAssignees',
+          });
+        }
+
+        if (widgetName === WIDGET_TYPE_LINKED_ITEMS) {
+          widgets.push({
+            type: WIDGET_TYPE_LINKED_ITEMS,
+            blockingCount: 0,
+            blockedByCount: 0,
+            linkedItems: {
+              nodes: [],
+            },
+            __typename: 'WorkItemWidgetLinkedItems',
+          });
+        }
+
+        if (widgetName === WIDGET_TYPE_CRM_CONTACTS) {
+          widgets.push({
+            type: 'CRM_CONTACTS',
+            contactsAvailable: false,
+            contacts: {
+              nodes: draftData
+                ? findCrmContactsWidget(draftData?.workspace?.workItem)?.contacts.nodes || []
+                : [],
+              __typename: 'CustomerRelationsContactConnection',
+            },
+            __typename: 'WorkItemWidgetCrmContacts',
+          });
+        }
+
+        if (widgetName === WIDGET_TYPE_LABELS) {
+          const labelsWidgetData = widgetDefinitions.find(
+            (definition) => definition.type === WIDGET_TYPE_LABELS,
+          );
+          widgets.push({
+            type: 'LABELS',
+            allowsScopedLabels: labelsWidgetData.allowsScopedLabels,
+            labels: {
+              nodes: draftData
+                ? findLabelsWidget(draftData?.workspace?.workItem)?.labels.nodes || []
+                : [],
+              __typename: 'LabelConnection',
+            },
+            __typename: 'WorkItemWidgetLabels',
+          });
+        }
+
+        if (widgetName === WIDGET_TYPE_WEIGHT) {
+          const weightWidgetData = widgetDefinitions.find(
+            (definition) => definition.type === WIDGET_TYPE_WEIGHT,
+          );
+
+          widgets.push({
+            type: 'WEIGHT',
+            weight: draftData
+              ? findWeightWidget(draftData?.workspace?.workItem)?.weight || null
+              : null,
+            rolledUpWeight: 0,
+            rolledUpCompletedWeight: 0,
+            widgetDefinition: {
+              editable: weightWidgetData?.editable,
+              rollUp: weightWidgetData?.rollUp,
+            },
+            __typename: 'WorkItemWidgetWeight',
+          });
+        }
+
+        if (widgetName === WIDGET_TYPE_MILESTONE) {
+          widgets.push({
+            type: 'MILESTONE',
+            milestone: draftData
+              ? findMilestoneWidget(draftData?.workspace?.workItem)?.milestone || null
+              : null,
+            projectMilestone: false,
+            __typename: 'WorkItemWidgetMilestone',
+          });
+        }
+
+        if (widgetName === WIDGET_TYPE_ITERATION) {
+          widgets.push({
+            iteration: draftData
+              ? findIterationWidget(draftData?.workspace?.workItem)?.iteration || null
+              : null,
+            type: 'ITERATION',
+            __typename: 'WorkItemWidgetIteration',
+          });
+        }
+
+        if (widgetName === WIDGET_TYPE_START_AND_DUE_DATE) {
+          const startDueDateDraft = draftData
+            ? findStartAndDueDateWidget(draftData?.workspace?.workItem)
+            : {};
+
+          widgets.push({
+            type: 'START_AND_DUE_DATE',
+            dueDate: startDueDateDraft?.dueDate || null,
+            startDate: startDueDateDraft?.startDate || null,
+            isFixed: startDueDateDraft?.isFixed || false,
+            rollUp: false,
+            __typename: 'WorkItemWidgetStartAndDueDate',
+          });
+        }
+
+        if (widgetName === WIDGET_TYPE_PROGRESS) {
+          widgets.push({
+            type: 'PROGRESS',
+            progress: null,
+            updatedAt: null,
+            __typename: 'WorkItemWidgetProgress',
+          });
+        }
+
+        if (widgetName === WIDGET_TYPE_HEALTH_STATUS) {
+          widgets.push({
+            type: 'HEALTH_STATUS',
+            healthStatus: draftData
+              ? findHealthStatusWidget(draftData?.workspace?.workItem)?.healthStatus || null
+              : null,
+            rolledUpHealthStatus: [],
+            __typename: 'WorkItemWidgetHealthStatus',
+          });
+        }
+
+        if (widgetName === WIDGET_TYPE_COLOR) {
+          widgets.push({
+            type: 'COLOR',
+            color: draftData
+              ? findColorWidget(draftData?.workspace?.workItem)?.color || '#1068bf'
+              : '#1068bf',
+            textColor: '#FFFFFF',
+            __typename: 'WorkItemWidgetColor',
+          });
+        }
+
+        if (widgetName === WIDGET_TYPE_STATUS) {
+          const { defaultOpenStatus } = widgetDefinitions.find(
+            (widget) => widget.type === WIDGET_TYPE_STATUS,
+          );
+          widgets.push({
+            type: 'STATUS',
+            status: draftData
+              ? findStatusWidget(draftData?.workspace?.workItem)?.status || defaultOpenStatus
+              : defaultOpenStatus,
+            __typename: 'WorkItemWidgetStatus',
+          });
+        }
+
+        if (widgetName === WIDGET_TYPE_HIERARCHY) {
+          widgets.push({
+            type: 'HIERARCHY',
+            hasChildren: false,
+            hasParent: false,
+            parent: draftData
+              ? findHierarchyWidget(draftData?.workspace?.workItem)?.parent || null
+              : null,
+            depthLimitReachedByType: [],
+            rolledUpCountsByType: [],
+            children: {
+              nodes: [],
+              __typename: 'WorkItemConnection',
+            },
+            __typename: 'WorkItemWidgetHierarchy',
+          });
+        }
+
+        if (widgetName === WIDGET_TYPE_TIME_TRACKING) {
+          widgets.push({
+            type: 'TIME_TRACKING',
+            timeEstimate: 0,
+            timelogs: {
+              nodes: [],
+              __typename: 'WorkItemTimelogConnection',
+            },
+            totalTimeSpent: 0,
+            __typename: 'WorkItemWidgetTimeTracking',
+          });
+        }
+
+        if (widgetName === WIDGET_TYPE_CUSTOM_FIELDS) {
+          const customFieldsWidgetData = widgetDefinitions.find(
+            (definition) => definition.type === WIDGET_TYPE_CUSTOM_FIELDS,
+          );
+
+          widgets.push({
+            type: WIDGET_TYPE_CUSTOM_FIELDS,
+            customFieldValues: draftData
+              ? findCustomFieldsWidget(draftData?.workspace?.workItem)?.customFieldValues || []
+              : customFieldsWidgetData?.customFieldValues ?? [],
+            __typename: 'WorkItemWidgetCustomFields',
+          });
+        }
       }
-
-      if (widgetName === WIDGET_TYPE_LINKED_ITEMS) {
-        widgets.push({
-          type: WIDGET_TYPE_LINKED_ITEMS,
-          blockingCount: 0,
-          blockedByCount: 0,
-          linkedItems: {
-            nodes: [],
-          },
-          __typename: 'WorkItemWidgetLinkedItems',
-        });
-      }
-
-      if (widgetName === WIDGET_TYPE_CRM_CONTACTS) {
-        widgets.push({
-          type: 'CRM_CONTACTS',
-          contactsAvailable: false,
-          contacts: {
-            nodes: draftData
-              ? findCrmContactsWidget(draftData?.workspace?.workItem)?.contacts.nodes || []
-              : [],
-            __typename: 'CustomerRelationsContactConnection',
-          },
-          __typename: 'WorkItemWidgetCrmContacts',
-        });
-      }
-
-      if (widgetName === WIDGET_TYPE_LABELS) {
-        const labelsWidgetData = widgetDefinitions.find(
-          (definition) => definition.type === WIDGET_TYPE_LABELS,
-        );
-        widgets.push({
-          type: 'LABELS',
-          allowsScopedLabels: labelsWidgetData.allowsScopedLabels,
-          labels: {
-            nodes: draftData
-              ? findLabelsWidget(draftData?.workspace?.workItem)?.labels.nodes || []
-              : [],
-            __typename: 'LabelConnection',
-          },
-          __typename: 'WorkItemWidgetLabels',
-        });
-      }
-
-      if (widgetName === WIDGET_TYPE_WEIGHT) {
-        const weightWidgetData = widgetDefinitions.find(
-          (definition) => definition.type === WIDGET_TYPE_WEIGHT,
-        );
-
-        widgets.push({
-          type: 'WEIGHT',
-          weight: draftData
-            ? findWeightWidget(draftData?.workspace?.workItem)?.weight || null
-            : null,
-          rolledUpWeight: 0,
-          rolledUpCompletedWeight: 0,
-          widgetDefinition: {
-            editable: weightWidgetData?.editable,
-            rollUp: weightWidgetData?.rollUp,
-          },
-          __typename: 'WorkItemWidgetWeight',
-        });
-      }
-
-      if (widgetName === WIDGET_TYPE_MILESTONE) {
-        widgets.push({
-          type: 'MILESTONE',
-          milestone: draftData
-            ? findMilestoneWidget(draftData?.workspace?.workItem)?.milestone || null
-            : null,
-          projectMilestone: false,
-          __typename: 'WorkItemWidgetMilestone',
-        });
-      }
-
-      if (widgetName === WIDGET_TYPE_ITERATION) {
-        widgets.push({
-          iteration: draftData
-            ? findIterationWidget(draftData?.workspace?.workItem)?.iteration || null
-            : null,
-          type: 'ITERATION',
-          __typename: 'WorkItemWidgetIteration',
-        });
-      }
-
-      if (widgetName === WIDGET_TYPE_START_AND_DUE_DATE) {
-        const startDueDateDraft = draftData
-          ? findStartAndDueDateWidget(draftData?.workspace?.workItem)
-          : {};
-
-        widgets.push({
-          type: 'START_AND_DUE_DATE',
-          dueDate: startDueDateDraft?.dueDate || null,
-          startDate: startDueDateDraft?.startDate || null,
-          isFixed: startDueDateDraft?.isFixed || false,
-          rollUp: false,
-          __typename: 'WorkItemWidgetStartAndDueDate',
-        });
-      }
-
-      if (widgetName === WIDGET_TYPE_PROGRESS) {
-        widgets.push({
-          type: 'PROGRESS',
-          progress: null,
-          updatedAt: null,
-          __typename: 'WorkItemWidgetProgress',
-        });
-      }
-
-      if (widgetName === WIDGET_TYPE_HEALTH_STATUS) {
-        widgets.push({
-          type: 'HEALTH_STATUS',
-          healthStatus: draftData
-            ? findHealthStatusWidget(draftData?.workspace?.workItem)?.healthStatus || null
-            : null,
-          rolledUpHealthStatus: [],
-          __typename: 'WorkItemWidgetHealthStatus',
-        });
-      }
-
-      if (widgetName === WIDGET_TYPE_COLOR) {
-        widgets.push({
-          type: 'COLOR',
-          color: draftData
-            ? findColorWidget(draftData?.workspace?.workItem)?.color || '#1068bf'
-            : '#1068bf',
-          textColor: '#FFFFFF',
-          __typename: 'WorkItemWidgetColor',
-        });
-      }
-
-      if (widgetName === WIDGET_TYPE_STATUS) {
-        const { defaultOpenStatus } = widgetDefinitions.find(
-          (widget) => widget.type === WIDGET_TYPE_STATUS,
-        );
-        widgets.push({
-          type: 'STATUS',
-          status: draftData
-            ? findStatusWidget(draftData?.workspace?.workItem)?.status || defaultOpenStatus
-            : defaultOpenStatus,
-          __typename: 'WorkItemWidgetStatus',
-        });
-      }
-
-      if (widgetName === WIDGET_TYPE_HIERARCHY) {
-        widgets.push({
-          type: 'HIERARCHY',
-          hasChildren: false,
-          hasParent: false,
-          parent: draftData
-            ? findHierarchyWidget(draftData?.workspace?.workItem)?.parent || null
-            : null,
-          depthLimitReachedByType: [],
-          rolledUpCountsByType: [],
-          children: {
-            nodes: [],
-            __typename: 'WorkItemConnection',
-          },
-          __typename: 'WorkItemWidgetHierarchy',
-        });
-      }
-
-      if (widgetName === WIDGET_TYPE_TIME_TRACKING) {
-        widgets.push({
-          type: 'TIME_TRACKING',
-          timeEstimate: 0,
-          timelogs: {
-            nodes: [],
-            __typename: 'WorkItemTimelogConnection',
-          },
-          totalTimeSpent: 0,
-          __typename: 'WorkItemWidgetTimeTracking',
-        });
-      }
-
-      if (widgetName === WIDGET_TYPE_CUSTOM_FIELDS) {
-        const customFieldsWidgetData = widgetDefinitions.find(
-          (definition) => definition.type === WIDGET_TYPE_CUSTOM_FIELDS,
-        );
-
-        widgets.push({
-          type: WIDGET_TYPE_CUSTOM_FIELDS,
-          customFieldValues: draftData
-            ? findCustomFieldsWidget(draftData?.workspace?.workItem)?.customFieldValues || []
-            : customFieldsWidgetData?.customFieldValues ?? [],
-          __typename: 'WorkItemWidgetCustomFields',
-        });
-      }
-    }
-  });
+    });
+  }
 
   const issuesListApolloProvider = new VueApollo({
     defaultClient: await issuesListClient(),

@@ -1,6 +1,8 @@
 import { glqlWorkItemsFeatureFlagEnabled } from '../../utils/feature_flags';
 
 const fieldAliases = {
+  // We don't want to expose the id (GID) field to the user, so we alias it to iid
+  id: 'iid',
   assignee: 'assignees',
   closed: 'closedAt',
   created: 'createdAt',

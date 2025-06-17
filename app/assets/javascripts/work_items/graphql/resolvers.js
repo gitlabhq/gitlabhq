@@ -8,7 +8,9 @@ import {
   findCustomFieldsWidget,
   findStartAndDueDateWidget,
   getNewWorkItemAutoSaveKey,
+  getNewWorkItemWidgetsAutoSaveKey,
   newWorkItemFullPath,
+  getWorkItemWidgets,
 } from '../utils';
 import {
   WIDGET_TYPE_ASSIGNEES,
@@ -202,6 +204,10 @@ export const updateNewWorkItemCache = (input, cache) => {
 
     if (isQueryDataValid && autosaveKey) {
       updateDraft(autosaveKey, JSON.stringify(newData));
+      updateDraft(
+        getNewWorkItemWidgetsAutoSaveKey({ fullPath }),
+        JSON.stringify(getWorkItemWidgets(newData)),
+      );
     }
   } catch (e) {
     Sentry.captureException(e);

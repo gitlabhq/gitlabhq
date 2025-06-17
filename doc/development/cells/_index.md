@@ -24,7 +24,7 @@ Below are available schemas related to Cells and Organizations:
 
 Most tables will require a [sharding key](../organization/_index.md#defining-a-sharding-key-for-all-organizational-tables) to be defined.
 
-To understand how existing tables are classified, you can use [this dashboard](https://manojmj.gitlab.io/tenant-scale-schema-progress/).
+To understand how existing tables are classified, you can use [this dashboard](https://cells-progress-tracker-gitlab-org-tenant-scale-g-f4ad96bf01d25f.gitlab.io/schema_migration).
 
 After a schema has been assigned, the merge request pipeline might fail due to one or more of the following reasons, which can be rectified by following the linked guidelines:
 
@@ -61,6 +61,23 @@ Here are some considerations to think about:
   Can you use globally unique identifiers ?
 - Does the data need to be consistent across different cells ?
 - Do not use database tables to store [static data](#static-data).
+
+## Creating a new schema
+
+Schemas should default to require a sharding key, as features should be scoped to an Organization by default.
+
+```yaml
+# db/gitlab_schemas/gitlab_ci.yaml
+require_sharding_key: true
+sharding_root_tables:
+  - projects
+  - namespaces
+  - organizations
+```
+
+Setting `require_sharding_key` to `true` means that tables assigned to that
+schema will require a `sharding_key` to be set.
+You will also need to configure the list of allowed `sharding_root_tables` that can be used as sharding keys for tables in this schema.
 
 ## Static data
 

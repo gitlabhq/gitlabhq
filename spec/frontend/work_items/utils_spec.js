@@ -2,6 +2,9 @@ import {
   NEW_WORK_ITEM_IID,
   STATE_CLOSED,
   STATE_OPEN,
+  WIDGET_TYPE_DESCRIPTION,
+  WIDGET_TYPE_ASSIGNEES,
+  WIDGET_TYPE_HIERARCHY,
   WORK_ITEM_TYPE_ENUM_EPIC,
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_ENUM_ISSUE,
@@ -41,9 +44,12 @@ import {
   getParentGroupName,
   createBranchMRApiPathHelper,
   getNewWorkItemAutoSaveKey,
+  getNewWorkItemWidgetsAutoSaveKey,
+  getWorkItemWidgets,
 } from '~/work_items/utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { TYPE_EPIC } from '~/issues/constants';
+import { workItemQueryResponse } from './mock_data';
 
 describe('formatLabelForListbox', () => {
   const label = {
@@ -446,6 +452,33 @@ describe('getNewWorkItemAutoSaveKey', () => {
       workItemType: 'issue',
     });
     expect(autosaveKey).toEqual('new-gitlab-org/gitlab-issue-discussion_to_resolve=2-draft');
+  });
+});
+
+describe('getNewWorkItemWidgetsAutoSaveKey', () => {
+  it('returns autosave key for a new work item', () => {
+    const autosaveKey = getNewWorkItemWidgetsAutoSaveKey({
+      fullPath: 'gitlab-org/gitlab',
+    });
+    expect(autosaveKey).toEqual('new-gitlab-org/gitlab-widgets-draft');
+  });
+});
+
+describe('getWorkItemWidgets', () => {
+  it('returns the correct widgets for a work item', () => {
+    const result = getWorkItemWidgets({
+      workspace: {
+        workItem: workItemQueryResponse.data.workItem,
+      },
+    });
+
+    const { widgets } = workItemQueryResponse.data.workItem;
+    expect(result).toEqual({
+      TITLE: workItemQueryResponse.data.workItem.title,
+      [WIDGET_TYPE_DESCRIPTION]: widgets.find((widget) => widget.type === WIDGET_TYPE_DESCRIPTION),
+      [WIDGET_TYPE_ASSIGNEES]: widgets.find((widget) => widget.type === WIDGET_TYPE_ASSIGNEES),
+      [WIDGET_TYPE_HIERARCHY]: widgets.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY),
+    });
   });
 });
 

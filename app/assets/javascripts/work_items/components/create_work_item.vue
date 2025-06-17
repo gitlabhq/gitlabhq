@@ -30,6 +30,7 @@ import PageHeading from '~/vue_shared/components/page_heading.vue';
 import {
   getDisplayReference,
   getNewWorkItemAutoSaveKey,
+  getNewWorkItemWidgetsAutoSaveKey,
   newWorkItemFullPath,
 } from '~/work_items/utils';
 import {
@@ -644,6 +645,28 @@ export default {
           this.discussionToResolve && this.mergeRequestToResolveDiscussionsOf ? '1' : 'all';
       }
     },
+    clearAutosaveDraft({ fullPath, workItemType }) {
+      const fullDraftAutosaveKey = getNewWorkItemAutoSaveKey({
+        fullPath,
+        workItemType,
+      });
+      clearDraft(fullDraftAutosaveKey);
+
+      const widgetsAutosaveKey = getNewWorkItemWidgetsAutoSaveKey({
+        fullPath,
+      });
+      clearDraft(widgetsAutosaveKey);
+    },
+    handleChangeType() {
+      setNewWorkItemCache({
+        fullPath: this.selectedProjectFullPath,
+        widgetDefinitions: this.selectedWorkItemType?.widgetDefinitions || [],
+        workItemType: this.selectedWorkItemTypeName,
+        workItemTypeId: this.selectedWorkItemTypeId,
+        workItemTypeIconName: this.selectedWorkItemTypeIconName,
+      });
+      this.$emit('changeType', this.selectedWorkItemTypeName);
+    },
     async updateDraftData(type, value) {
       if (type === 'title') {
         this.localTitle = value;
@@ -845,11 +868,10 @@ export default {
           numberOfDiscussionsResolved: this.numberOfDiscussionsResolved,
         });
 
-        const autosaveKey = getNewWorkItemAutoSaveKey({
+        this.clearAutosaveDraft({
           fullPath: this.selectedProjectFullPath,
           workItemType: this.selectedWorkItemTypeName,
         });
-        clearDraft(autosaveKey);
       } catch {
         this.error = this.createErrorText;
         this.loading = false;
@@ -868,17 +890,16 @@ export default {
       }
     },
     handleDiscardDraft() {
-      const autosaveKey = getNewWorkItemAutoSaveKey({
+      this.clearAutosaveDraft({
         fullPath: this.selectedProjectFullPath,
         workItemType: this.selectedWorkItemTypeName,
       });
-      clearDraft(autosaveKey);
 
       const selectedWorkItemWidgets = this.selectedWorkItemType?.widgetDefinitions || [];
 
       setNewWorkItemCache({
         fullPath: this.selectedProjectFullPath,
-        workItemWidgetDefinitions: selectedWorkItemWidgets,
+        widgetDefinitions: selectedWorkItemWidgets,
         workItemType: this.selectedWorkItemTypeName,
         workItemTypeId: this.selectedWorkItemTypeId,
         workItemTypeIconName: this.selectedWorkItemTypeIconName,
@@ -942,7 +963,7 @@ export default {
             v-model="selectedWorkItemTypeId"
             data-testid="work-item-types-select"
             :options="formOptions"
-            @change="$emit('changeType', selectedWorkItemTypeName)"
+            @change="handleChangeType"
           />
         </gl-form-group>
       </div>

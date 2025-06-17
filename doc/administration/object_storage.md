@@ -813,7 +813,7 @@ Connections to HCP may return an error stating `SignatureDoesNotMatch - The requ
 
 {{< /alert >}}
 
-[HCP](https://docs.hitachivantara.com/r/en-us/content-platform-for-cloud-scale/2.6.x/mk-hcpcs008/getting-started/introducing-hcp-for-cloud-scale/support-for-the-amazon-s3-api) provides an S3-compatible API. Use the following configuration example:
+[HCP](https://docs.hitachivantara.com/r/en-us/content-platform/9.7.x/mk-95hcph001/hcp-management-api-reference/introduction-to-the-hcp-management-api/support-for-the-amazon-s3-api) provides an S3-compatible API. Use the following configuration example:
 
 ```ruby
 gitlab_rails['object_store']['connection'] = {

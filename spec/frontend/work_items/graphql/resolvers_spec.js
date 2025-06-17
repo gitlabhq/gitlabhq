@@ -201,7 +201,8 @@ describe('work items graphql resolvers', () => {
     });
 
     it('updates the local storage with every mutation', async () => {
-      const AUTO_SAVE_KEY = `autosave/new-fullPath-issue-draft`;
+      const typeSpecificAutosaveKey = `autosave/new-fullPath-issue-draft`;
+      const sharedWidgetsAutosaveKey = 'autosave/new-fullPath-widgets-draft';
 
       await mutate({ title: 'Title' });
 
@@ -217,7 +218,25 @@ describe('work items graphql resolvers', () => {
         },
       };
 
-      expect(localStorage.setItem).toHaveBeenLastCalledWith(AUTO_SAVE_KEY, JSON.stringify(object));
+      const widgets = {};
+      for (const widget of queryResult.widgets || []) {
+        if (widget.type) {
+          widgets[widget.type] = widget;
+        }
+      }
+      widgets.TITLE = queryResult.title;
+
+      expect(localStorage.setItem).toHaveBeenCalledTimes(2);
+      expect(localStorage.setItem).toHaveBeenNthCalledWith(
+        1,
+        typeSpecificAutosaveKey,
+        JSON.stringify(object),
+      );
+      expect(localStorage.setItem).toHaveBeenNthCalledWith(
+        2,
+        sharedWidgetsAutosaveKey,
+        JSON.stringify(widgets),
+      );
     });
   });
 });

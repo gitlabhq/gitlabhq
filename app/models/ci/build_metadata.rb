@@ -14,8 +14,6 @@ module Ci
     self.table_name = 'p_ci_builds_metadata'
     self.primary_key = 'id'
 
-    ignore_column :runtime_runner_features, remove_with: '18.1', remove_after: '2025-05-22'
-
     query_constraints :id, :partition_id
     partitionable scope: :build, partitioned: true
 

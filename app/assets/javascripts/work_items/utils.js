@@ -399,9 +399,7 @@ export const makeDrawerUrlParam = (activeItem, fullPath, issuableType = TYPE_ISS
   );
 };
 
-export const getNewWorkItemAutoSaveKey = ({ fullPath, workItemType }) => {
-  if (!workItemType || !fullPath) return '';
-
+export const getAutosaveKeyQueryParamString = () => {
   const allowedKeysInQueryParamString = ['vulnerability_id', 'discussion_to_resolve'];
   const queryParams = new URLSearchParams(window.location.search);
   // Remove extra params from queryParams
@@ -411,12 +409,44 @@ export const getNewWorkItemAutoSaveKey = ({ fullPath, workItemType }) => {
       queryParams.delete(key);
     }
   }
-  const queryParamString = queryParams.toString();
+
+  return queryParams.toString();
+};
+
+export const getNewWorkItemAutoSaveKey = ({ fullPath, workItemType }) => {
+  if (!workItemType || !fullPath) return '';
+
+  const queryParamString = getAutosaveKeyQueryParamString();
 
   if (queryParamString) {
     return `new-${fullPath}-${workItemType.toLowerCase()}-${queryParamString}-draft`;
   }
   return `new-${fullPath}-${workItemType.toLowerCase()}-draft`;
+};
+
+export const getNewWorkItemWidgetsAutoSaveKey = ({ fullPath }) => {
+  if (!fullPath) return '';
+
+  const queryParamString = getAutosaveKeyQueryParamString();
+
+  if (queryParamString) {
+    return `new-${fullPath}-widgets-${queryParamString}-draft`;
+  }
+  return `new-${fullPath}-widgets-draft`;
+};
+
+export const getWorkItemWidgets = (draftData) => {
+  if (!draftData?.workspace?.workItem) return {};
+
+  const widgets = {};
+  for (const widget of draftData.workspace.workItem.widgets || []) {
+    if (widget.type) {
+      widgets[widget.type] = widget;
+    }
+  }
+  widgets.TITLE = draftData.workspace.workItem.title;
+
+  return widgets;
 };
 
 export const isItemDisplayable = (item, showClosed) => {
