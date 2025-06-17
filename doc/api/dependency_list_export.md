@@ -71,6 +71,7 @@ Exports can be requested in different file formats. Some formats are only availa
 | ----------- | ----------- | ------------- |
 | `dependency_list` | A standard JSON object that lists the dependencies as key-value pairs. | Projects |
 | `sbom` | A [CycloneDX](https://cyclonedx.org/) 1.4 bill of materials | Pipelines |
+| `cyclonedx_1_6_json` | A [CycloneDX](https://cyclonedx.org/) 1.6 bill of materials | Projects |
 | `json_array` | A flat JSON array that contains component objects. | Groups |
 | `csv` | A comma-separated values (CSV) document. | Projects, Groups |
 

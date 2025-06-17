@@ -2,7 +2,7 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Merge request pipeline troubleshooting
+title: Troubleshooting merge request pipelines
 ---
 
 {{< details >}}
