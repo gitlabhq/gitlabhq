@@ -1067,7 +1067,7 @@ The artifact provenance metadata is generated in the
 [in-toto v0.1 Statement](https://github.com/in-toto/attestation/tree/v0.1.0/spec#statement) format.
 It contains a provenance predicate generated in the [SLSA 1.0 Provenance](https://slsa.dev/spec/v1.0/provenance) format.
 
-The following fields are populated by default:
+These fields are populated by default:
 
 | Field                                                             | Value |
 |-------------------------------------------------------------------|-------|
@@ -1091,9 +1091,7 @@ The following fields are populated by default:
 | `predicate.runDetails.metadata.startedOn`                         | The time when the build was started. This field is `RFC3339` formatted. |
 | `predicate.runDetails.metadata.finishedOn`                        | The time when the build ended. Because metadata generation happens during the build, this time is slightly earlier than the one reported in GitLab. This field is `RFC3339` formatted. |
 
-### Example provenance statement
-
-The following code contains an example provenance statement:
+A provenance statement should look similar to this example:
 
 ```json
 {
@@ -1127,7 +1125,7 @@ The following code contains an example provenance statement:
     "CI_COMMIT_MESSAGE": "",
     [... additional environmental variables ...]
     "entryPoint": "build-job",
-    "source": "https://gitlab.com/gitlab-org/secure/tests/fcatteau/test-runner-generated-slsa-statement"
+    "source": "https://gitlab.com/my-group/my-project/test-runner-generated-slsa-statement"
    },
    "internalParameters": {
     "architecture": "amd64",
@@ -1137,7 +1135,7 @@ The following code contains an example provenance statement:
    },
    "resolvedDependencies": [
     {
-     "uri": "https://gitlab.com/gitlab-org/secure/tests/fcatteau/test-runner-generated-slsa-statement",
+     "uri": "https://gitlab.com/my-group/my-project/test-runner-generated-slsa-statement",
      "digest": {
       "sha256": "bdd2ecda9ef57b129c88617a0215afc9fb223521"
      }
@@ -1146,7 +1144,7 @@ The following code contains an example provenance statement:
   },
   "runDetails": {
    "builder": {
-    "id": "https://gitlab.com/gitlab-org/secure/tests/fcatteau/test-runner-generated-slsa-statement/-/runners/12270857",
+    "id": "https://gitlab.com/my-group/my-project/test-runner-generated-slsa-statement/-/runners/12270857",
     "version": {
      "gitlab-runner": "2147fb44"
     }

@@ -25,13 +25,14 @@ Use unit test reports when you want to:
 Unit test reports require the JUnit XML format and do not affect job status.
 To make a job fail when tests fail, your job's [script](../yaml/_index.md#script) must exit with a non-zero status.
 
-GitLab Runner uploads your test results in [JUnit XML format](https://www.ibm.com/docs/en/developer-for-zos/16.0?topic=formats-junit-xml-format)
-as [artifacts](../yaml/artifacts_reports.md#artifactsreportsjunit).
+GitLab Runner uploads your test results in JUnit XML format as [artifacts](../yaml/artifacts_reports.md#artifactsreportsjunit).
 When you go to a merge request, your test results are compared between the source branch (head) and target branch (base) to show what changed.
 
 ## File format and size limits
 
 Unit test reports must use JUnit XML format with specific requirements to ensure proper parsing and display.
+
+### File requirements
 
 Your test report files must:
 
@@ -42,6 +43,51 @@ Your test report files must:
 If you have duplicate test names, only the first test is used and others with the same name are ignored.
 
 For test case limits, see [Maximum test cases per unit test report](../../user/gitlab_com/_index.md#cicd).
+
+### JUnit XML format specification
+
+GitLab parses the following elements and attributes from your JUnit XML files:
+
+| XML Element  | XML Attribute   | Description |
+| ------------ | --------------- | ----------- |
+| `testsuite`  | `name`          | Test suite name (parsed but not displayed in UI) |
+| `testcase`   | `classname`     | Test class or category name (used as the suite name) |
+| `testcase`   | `name`          | Individual test name |
+| `testcase`   | `file`          | File path where the test is defined |
+| `testcase`   | `time`          | Test execution time in seconds |
+| `failure`    | Element content | Failure message and stack trace |
+| `error`      | Element content | Error message and stack trace |
+| `skipped`    | Element content | Reason for skipping the test |
+| `system-out` | Element content | System output and attachment tags (only parsed from `testcase` elements) |
+| `system-err` | Element content | System error output (only parsed from `testcase` elements) |
+
+{{< alert type="note" >}}
+
+The `testcase classname` attribute is used as the suite name, not the `testsuite name` attribute.
+
+{{< /alert >}}
+
+#### XML structure example
+
+```xml
+<testsuites>
+  <testsuite name="Authentication Tests" tests="1" failures="1">
+    <testcase classname="LoginTest" name="test_invalid_password" file="spec/auth_spec.rb" time="0.23">
+      <failure>Expected authentication to fail</failure>
+      <system-out>[[ATTACHMENT|screenshots/failure.png]]</system-out>
+    </testcase>
+  </testsuite>
+</testsuites>
+```
+
+This XML displays in GitLab as:
+
+- Suite: `LoginTest` (from `testcase classname`)
+- Name: `test_invalid_password` (from `testcase name`)
+- File: `spec/auth_spec.rb` (from `testcase file`)
+- Time: `0.23s` (from `testcase time`)
+- Screenshot: Available in test details dialog (from `testcase system-out`)
+- Not displayed: "Authentication Tests" (from `testsuite name`)
 
 ## Test result types
 
