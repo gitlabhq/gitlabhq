@@ -9,14 +9,14 @@ RSpec.describe RuboCop::Cop::CodeReuse::ServiceClass do
       .to receive(:in_finder?)
       .and_return(true)
 
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       class FooFinder
         def execute
           FooService.new.execute
           ^^^^^^^^^^^^^^ Service classes can not be used in a Finder.
         end
       end
-    SOURCE
+    RUBY
   end
 
   it 'flags the use of a Service class in a Presenter' do
@@ -24,14 +24,14 @@ RSpec.describe RuboCop::Cop::CodeReuse::ServiceClass do
       .to receive(:in_presenter?)
       .and_return(true)
 
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       class FooPresenter
         def execute
           FooService.new.execute
           ^^^^^^^^^^^^^^ Service classes can not be used in a Presenter.
         end
       end
-    SOURCE
+    RUBY
   end
 
   it 'flags the use of a Service class in a Serializer' do
@@ -39,14 +39,14 @@ RSpec.describe RuboCop::Cop::CodeReuse::ServiceClass do
       .to receive(:in_serializer?)
       .and_return(true)
 
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       class FooSerializer
         def execute
           FooService.new.execute
           ^^^^^^^^^^^^^^ Service classes can not be used in a Serializer.
         end
       end
-    SOURCE
+    RUBY
   end
 
   it 'flags the use of a Service class in a model' do
@@ -54,7 +54,7 @@ RSpec.describe RuboCop::Cop::CodeReuse::ServiceClass do
       .to receive(:in_model?)
       .and_return(true)
 
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       class User < ActiveRecord::Model
         class << self
           def first
@@ -68,16 +68,16 @@ RSpec.describe RuboCop::Cop::CodeReuse::ServiceClass do
           ^^^^^^^^^^^^^^ Service classes can not be used in a model.
         end
       end
-    SOURCE
+    RUBY
   end
 
   it 'does not flag the use of a Service class in a regular class' do
-    expect_no_offenses(<<~SOURCE)
+    expect_no_offenses(<<~RUBY)
       class Foo
         def execute
           FooService.new.execute
         end
       end
-    SOURCE
+    RUBY
   end
 end

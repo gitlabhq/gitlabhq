@@ -8,20 +8,20 @@ RSpec.describe RuboCop::Cop::API::ClassLevelAllowAccessWithScope, feature_catego
 
   context "when there is no `allow_access_with_scope`" do
     it "does not add an offense" do
-      expect_no_offenses(<<~CODE)
+      expect_no_offenses(<<~RUBY)
         class MyClass < ::API::Base
           include APIGuard
           namespace 'my_namespace' do
 
           end
         end
-      CODE
+      RUBY
     end
   end
 
   context "when there is class level `allow_access_with_scope`" do
     it "does not add an offense" do
-      expect_no_offenses(<<~CODE)
+      expect_no_offenses(<<~RUBY)
         class MyClass < ::API::Base
           include APIGuard
           allow_access_with_scope :my_scope
@@ -29,13 +29,13 @@ RSpec.describe RuboCop::Cop::API::ClassLevelAllowAccessWithScope, feature_catego
 
           end
         end
-      CODE
+      RUBY
     end
   end
 
   context "when there is `allow_access_with_scope` under namespace" do
     it "adds an offense" do
-      expect_offense(<<~CODE)
+      expect_offense(<<~RUBY)
         class MyClass < ::API::Base
           include APIGuard
           namespace 'my_namespace' do
@@ -43,13 +43,13 @@ RSpec.describe RuboCop::Cop::API::ClassLevelAllowAccessWithScope, feature_catego
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg}
           end
         end
-      CODE
+      RUBY
     end
   end
 
   context "when there is `allow_access_with_scope` under group" do
     it "adds an offense" do
-      expect_offense(<<~CODE)
+      expect_offense(<<~RUBY)
         class MyClass < ::API::Base
           include APIGuard
           group 'my_namespace' do
@@ -57,13 +57,13 @@ RSpec.describe RuboCop::Cop::API::ClassLevelAllowAccessWithScope, feature_catego
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg}
           end
         end
-      CODE
+      RUBY
     end
   end
 
   context "when there is `allow_access_with_scope` under resource" do
     it "adds an offense" do
-      expect_offense(<<~CODE)
+      expect_offense(<<~RUBY)
         class MyClass < ::API::Base
           include APIGuard
           resource 'my_namespace' do
@@ -71,13 +71,13 @@ RSpec.describe RuboCop::Cop::API::ClassLevelAllowAccessWithScope, feature_catego
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg}
           end
         end
-      CODE
+      RUBY
     end
   end
 
   context "when there is `allow_access_with_scope` under resources" do
     it "adds an offense" do
-      expect_offense(<<~CODE)
+      expect_offense(<<~RUBY)
         class MyClass < ::API::Base
           include APIGuard
           resources 'my_namespace' do
@@ -85,13 +85,13 @@ RSpec.describe RuboCop::Cop::API::ClassLevelAllowAccessWithScope, feature_catego
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg}
           end
         end
-      CODE
+      RUBY
     end
   end
 
   context "when there is `allow_access_with_scope` under segment" do
     it "adds an offense" do
-      expect_offense(<<~CODE)
+      expect_offense(<<~RUBY)
         class MyClass < ::API::Base
           include APIGuard
           segment 'my_namespace' do
@@ -99,13 +99,13 @@ RSpec.describe RuboCop::Cop::API::ClassLevelAllowAccessWithScope, feature_catego
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg}
           end
         end
-      CODE
+      RUBY
     end
   end
 
   context "when there are `allow_access_with_scope`s both class level and under namespace" do
     it "adds an offense" do
-      expect_offense(<<~CODE)
+      expect_offense(<<~RUBY)
         class MyClass < ::API::Base
           include APIGuard
           allow_access_with_scope :my_scope
@@ -114,7 +114,7 @@ RSpec.describe RuboCop::Cop::API::ClassLevelAllowAccessWithScope, feature_catego
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg}
           end
         end
-      CODE
+      RUBY
     end
   end
 end

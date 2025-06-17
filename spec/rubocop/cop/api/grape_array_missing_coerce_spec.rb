@@ -11,29 +11,29 @@ RSpec.describe RuboCop::Cop::API::GrapeArrayMissingCoerce do
   end
 
   it 'adds an offense with a required parameter' do
-    expect_offense(<<~TYPE)
+    expect_offense(<<~RUBY)
       class SomeAPI < Grape::API::Instance
         params do
           requires :values, type: Array[String]
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg}
         end
       end
-    TYPE
+    RUBY
   end
 
   it 'adds an offense with an optional parameter' do
-    expect_offense(<<~TYPE)
+    expect_offense(<<~RUBY)
       class SomeAPI < Grape::API::Instance
         params do
           optional :values, type: Array[String]
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg}
         end
       end
-    TYPE
+    RUBY
   end
 
   it 'does not add an offense' do
-    expect_no_offenses(<<~CODE)
+    expect_no_offenses(<<~RUBY)
       class SomeAPI < Grape::API::Instance
         params do
           requires :values, type: Array[String], coerce_with: ->(val) { val.split(',').map(&:strip) }
@@ -42,16 +42,16 @@ RSpec.describe RuboCop::Cop::API::GrapeArrayMissingCoerce do
             desc: 'Return issues which are assigned to the user with the given ID'
         end
       end
-    CODE
+    RUBY
   end
 
   it 'does not add an offense for unrelated classes' do
-    expect_no_offenses(<<~CODE)
+    expect_no_offenses(<<~RUBY)
       class SomeClass
         params do
           requires :values, type: Array[String]
         end
       end
-    CODE
+    RUBY
   end
 end

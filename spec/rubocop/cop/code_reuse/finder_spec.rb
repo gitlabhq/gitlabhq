@@ -9,14 +9,14 @@ RSpec.describe RuboCop::Cop::CodeReuse::Finder do
       .to receive(:in_finder?)
       .and_return(true)
 
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       class FooFinder
         def execute
           BarFinder.new.execute
           ^^^^^^^^^^^^^ Finders can not be used inside a Finder.
         end
       end
-    SOURCE
+    RUBY
   end
 
   it 'flags the use of a Finder inside a model class method' do
@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::CodeReuse::Finder do
       .to receive(:in_model?)
       .and_return(true)
 
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       class User
         class << self
           def second_method
@@ -38,21 +38,21 @@ RSpec.describe RuboCop::Cop::CodeReuse::Finder do
           ^^^^^^^^^^^^^ Finders can not be used inside model class methods.
         end
       end
-    SOURCE
+    RUBY
   end
 
   it 'does not flag the use of a Finder in a non Finder file' do
-    expect_no_offenses(<<~SOURCE)
+    expect_no_offenses(<<~RUBY)
       class FooFinder
         def execute
           BarFinder.new.execute
         end
       end
-    SOURCE
+    RUBY
   end
 
   it 'does not flag the use of a Finder in a regular class method' do
-    expect_no_offenses(<<~SOURCE)
+    expect_no_offenses(<<~RUBY)
       class User
         class << self
           def second_method
@@ -64,6 +64,6 @@ RSpec.describe RuboCop::Cop::CodeReuse::Finder do
           FooFinder.new
         end
       end
-    SOURCE
+    RUBY
   end
 end

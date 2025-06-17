@@ -22,7 +22,7 @@ module RuboCop
         private
 
         def violates?(node)
-          table_name = node.arguments.first.try(:value)
+          table_name = node.first_argument.try(:value)
 
           return unless table_name
 

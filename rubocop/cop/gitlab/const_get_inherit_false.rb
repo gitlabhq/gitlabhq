@@ -23,7 +23,7 @@ module RuboCop
             if arg = second_argument(node)
               corrector.replace(arg.source_range, 'false')
             else
-              first_argument = node.arguments[0]
+              first_argument = node.first_argument
               corrector.insert_after(first_argument.source_range, ', false')
             end
           end

@@ -13,7 +13,7 @@ module RuboCop
       def on_send(node)
         return unless sidekiq_options?(node)
 
-        node.arguments.first.each_node(:pair) do |pair|
+        node.first_argument.each_node(:pair) do |pair|
           key_name = pair.key.children[0]
 
           add_offense(pair) if key_name == :queue

@@ -9,14 +9,14 @@ RSpec.describe RuboCop::Cop::CodeReuse::Presenter do
       .to receive(:in_service_class?)
       .and_return(true)
 
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       class FooService
         def execute
           FooPresenter.new.execute
           ^^^^^^^^^^^^^^^^ Presenters can not be used in a Service class.
         end
       end
-    SOURCE
+    RUBY
   end
 
   it 'flags the use of a Presenter in a Finder' do
@@ -24,14 +24,14 @@ RSpec.describe RuboCop::Cop::CodeReuse::Presenter do
       .to receive(:in_finder?)
       .and_return(true)
 
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       class FooFinder
         def execute
           FooPresenter.new.execute
           ^^^^^^^^^^^^^^^^ Presenters can not be used in a Finder.
         end
       end
-    SOURCE
+    RUBY
   end
 
   it 'flags the use of a Service class in a Presenter' do
@@ -39,14 +39,14 @@ RSpec.describe RuboCop::Cop::CodeReuse::Presenter do
       .to receive(:in_presenter?)
       .and_return(true)
 
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       class FooPresenter
         def execute
           FooPresenter.new.execute
           ^^^^^^^^^^^^^^^^ Presenters can not be used in a Presenter.
         end
       end
-    SOURCE
+    RUBY
   end
 
   it 'flags the use of a Presenter in a Serializer' do
@@ -54,14 +54,14 @@ RSpec.describe RuboCop::Cop::CodeReuse::Presenter do
       .to receive(:in_serializer?)
       .and_return(true)
 
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       class FooSerializer
         def execute
           FooPresenter.new.execute
           ^^^^^^^^^^^^^^^^ Presenters can not be used in a Serializer.
         end
       end
-    SOURCE
+    RUBY
   end
 
   it 'flags the use of a Presenter in a model instance method' do
@@ -69,14 +69,14 @@ RSpec.describe RuboCop::Cop::CodeReuse::Presenter do
       .to receive(:in_model?)
       .and_return(true)
 
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       class User < ActiveRecord::Base
         def execute
           FooPresenter.new.execute
           ^^^^^^^^^^^^^^^^ Presenters can not be used in a model.
         end
       end
-    SOURCE
+    RUBY
   end
 
   it 'flags the use of a Presenter in a model class method' do
@@ -84,14 +84,14 @@ RSpec.describe RuboCop::Cop::CodeReuse::Presenter do
       .to receive(:in_model?)
       .and_return(true)
 
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       class User < ActiveRecord::Base
         def self.execute
           FooPresenter.new.execute
           ^^^^^^^^^^^^^^^^ Presenters can not be used in a model.
         end
       end
-    SOURCE
+    RUBY
   end
 
   it 'flags the use of a Presenter in a worker' do
@@ -99,13 +99,13 @@ RSpec.describe RuboCop::Cop::CodeReuse::Presenter do
       .to receive(:in_worker?)
       .and_return(true)
 
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       class FooWorker
         def perform
           FooPresenter.new.execute
           ^^^^^^^^^^^^^^^^ Presenters can not be used in a worker.
         end
       end
-    SOURCE
+    RUBY
   end
 end

@@ -62,7 +62,7 @@ describe('BoardTopBar', () => {
         healthStatusFeatureAvailable: false,
         hasCustomFieldsFeature: false,
         statusListsAvailable: false,
-        workItemStatusAvailable: false,
+        hasStatusFeature: false,
         ...provide,
       },
       stubs: { IssueBoardFilteredSearch },

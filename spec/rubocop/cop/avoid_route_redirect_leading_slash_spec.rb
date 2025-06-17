@@ -9,19 +9,19 @@ RSpec.describe RuboCop::Cop::AvoidRouteRedirectLeadingSlash do
   end
 
   it 'registers an offense when redirect has a leading slash and corrects', :aggregate_failures do
-    expect_offense(<<~PATTERN)
+    expect_offense(<<~RUBY)
       root to: redirect("/-/route")
                ^^^^^^^^^^^^^^^^^^^^ Do not use a leading "/" in route redirects
-    PATTERN
+    RUBY
 
-    expect_correction(<<~PATTERN)
+    expect_correction(<<~RUBY)
       root to: redirect("-/route")
-    PATTERN
+    RUBY
   end
 
   it 'does not register an offense when redirect does not have a leading slash' do
-    expect_no_offenses(<<~PATTERN)
+    expect_no_offenses(<<~RUBY)
       root to: redirect("-/route")
-    PATTERN
+    RUBY
   end
 end

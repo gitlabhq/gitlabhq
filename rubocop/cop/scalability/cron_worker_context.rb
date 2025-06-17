@@ -31,7 +31,7 @@ module RuboCop
           return if defines_contexts?(node.parent)
           return if schedules_with_batch_context?(node.parent)
 
-          add_offense(node.arguments.first)
+          add_offense(node.first_argument)
         end
       end
     end

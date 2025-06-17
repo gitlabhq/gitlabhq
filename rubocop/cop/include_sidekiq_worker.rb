@@ -15,8 +15,8 @@ module RuboCop
       def on_send(node)
         return unless includes_sidekiq_worker?(node)
 
-        add_offense(node.arguments.first) do |corrector|
-          corrector.replace(node.arguments.first, 'ApplicationWorker')
+        add_offense(node.first_argument) do |corrector|
+          corrector.replace(node.first_argument, 'ApplicationWorker')
         end
       end
     end

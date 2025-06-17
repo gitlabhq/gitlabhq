@@ -96,7 +96,7 @@ module RuboCop
               return
             end
 
-            node.arguments.first.value
+            node.first_argument.value
           end
 
           def check_md_extension(node, path)
@@ -108,7 +108,7 @@ module RuboCop
                 path_without_extension = path_without_anchor.gsub(/#{extension_pattern}$/, '')
                 arg_with_md_extension = path.gsub(/#{path_without_extension}#{extension_pattern}(\#.+)?$/,
                   "#{path_without_extension}.md\\2")
-                corrector.replace(node.arguments.first.source_range, "'#{arg_with_md_extension}'")
+                corrector.replace(node.first_argument.source_range, "'#{arg_with_md_extension}'")
               end
               path_without_anchor += ".md"
             end
@@ -118,7 +118,7 @@ module RuboCop
 
           def check_file_exists(node, docs_file_path)
             unless docs_file_exists?(docs_file_path)
-              add_offense(node.arguments.first.loc.expression,
+              add_offense(node.first_argument.loc.expression,
                 message: format(MSG_FILE_NOT_FOUND, file_path: docs_file_path))
               return false
             end
@@ -128,7 +128,7 @@ module RuboCop
 
           def check_anchor_type(node, anchor)
             unless anchor.instance_of? String
-              loc = anchor_param(node)&.loc&.expression || node.arguments.first.loc.expression
+              loc = anchor_param(node)&.loc&.expression || node.first_argument.loc.expression
               add_offense(loc, message: MSG_ANCHOR_NOT_A_STRING)
               return false
             end
@@ -139,7 +139,7 @@ module RuboCop
           def check_anchor_exists(node, anchor, docs_file_path)
             return true if anchor_exists_in_markdown?(anchor, docs_file_path)
 
-            loc = anchor_param(node)&.loc&.expression || node.arguments.first.loc.expression
+            loc = anchor_param(node)&.loc&.expression || node.first_argument.loc.expression
 
             add_offense(loc, message: format(MSG_ANCHOR_NOT_FOUND, anchor: anchor, file_path: docs_file_path))
 
@@ -151,7 +151,7 @@ module RuboCop
           end
 
           def first_argument_is_string?(node)
-            return true if node.arguments.first.str_type?
+            return true if node.first_argument.str_type?
 
             false
           end
@@ -179,13 +179,13 @@ module RuboCop
           end
 
           def has_anchor?(node)
-            return !node.arguments.first.value[/#(.+)$/, 1].nil? if node.arguments.length == 1
+            return !node.first_argument.value[/#(.+)$/, 1].nil? if node.arguments.length == 1
 
             anchor_param(node) != nil
           end
 
           def get_anchor(node)
-            return node.arguments.first.value[/#(.+)$/, 1] if node.arguments.length == 1
+            return node.first_argument.value[/#(.+)$/, 1] if node.arguments.length == 1
 
             anchor_node = anchor_param(node)
             return unless anchor_node
