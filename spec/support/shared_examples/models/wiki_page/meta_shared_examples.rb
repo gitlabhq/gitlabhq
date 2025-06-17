@@ -44,30 +44,47 @@ RSpec.shared_examples 'creating wiki page meta record examples' do
       end
     end
 
-    context 'when a conflicting meta record exists' do
-      let!(:older_meta) do
-        create(:wiki_page_meta, container: container, canonical_slug: current_slug, created_at: 1.day.ago)
+    context 'when a conflicting meta record exists with the same slug' do
+      let!(:wiki_page_meta) do
+        create(:wiki_page_meta, container: container, canonical_slug: last_known_slug)
       end
 
-      let!(:newer_meta) { create(:wiki_page_meta, container: container, canonical_slug: 'foobar') }
-      let!(:todo) { create(:todo, target: newer_meta) }
+      let!(:conflicting_record) { create(:wiki_page_meta, container: container, canonical_slug: 'foobar') }
+      let!(:todo) { create(:todo, target: conflicting_record) }
 
       before do
-        slug = newer_meta.slugs.first
+        slug = conflicting_record.slugs.first
         slug[:slug] = current_slug
         slug.save!
       end
 
-      it 'finds the older record' do
-        expect(find_record).to eq(older_meta)
+      it 'finds the record' do
+        expect(find_record).to eq(wiki_page_meta).or eq(conflicting_record)
       end
 
-      it 'destroys the newer record' do
+      it 'destroys one of the records' do
+        expect { find_record }.to change { WikiPage::Meta.count }.by(-1)
+      end
+    end
+
+    context 'when a conflicting meta record exists with old slug' do
+      let!(:wiki_page_meta) do
+        create(:wiki_page_meta, container: container, canonical_slug: last_known_slug)
+      end
+
+      let!(:conflicting_record) { create(:wiki_page_meta, container: container, canonical_slug: current_slug) }
+      let!(:todo) { create(:todo, target: conflicting_record) }
+
+      it 'finds the record' do
+        expect(find_record).to eq(wiki_page_meta)
+      end
+
+      it 'destroys one of the records' do
         expect { find_record }.to change { WikiPage::Meta.count }.by(-1)
       end
 
-      it 'moves associated todos to the older record' do
-        expect { find_record }.to change { todo.reload.target }.from(newer_meta).to(older_meta)
+      it 'moves associated todos from the destroyed record' do
+        expect { find_record }.to change { todo.reload.target }.from(conflicting_record).to(wiki_page_meta)
       end
     end
 
