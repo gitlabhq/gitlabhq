@@ -67,7 +67,7 @@ Check visual design properties using your browser's elements inspector ([Chrome]
 - Follow [layout guidelines](https://design.gitlab.com/product-foundations/layout#grid).
 - Use existing [icons](https://gitlab-org.gitlab.io/gitlab-svgs/) and [illustrations](https://gitlab-org.gitlab.io/gitlab-svgs/illustrations/)
   or propose new ones according to [iconography](https://design.gitlab.com/product-foundations/iconography/)
-  and [illustration](https://design.gitlab.com/product-foundations/illustration/)
+  and [illustration](https://design.gitlab.com/product-foundations/illustration-creation-guide/)
   guidelines.
 - Optional: Consider dark mode. For more information, see [Change the mode](../../user/profile/preferences.md#change-the-mode).
 

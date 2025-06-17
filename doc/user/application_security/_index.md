@@ -2,125 +2,73 @@
 stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Application security
+title: 'Application security testing'
 description: Scanning, vulnerabilities, compliance, customization, and reporting.
 ---
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
-Build security into your development process with GitLab security scanning capabilities. Identify
-and address vulnerabilities early in your development lifecycle, before they reach production
-environments.
+Build security into your development process with GitLab application security testing capabilities.
+These features help you identify and address vulnerabilities early in your development lifecycle,
+before they reach production environments.
 
-GitLab detects security vulnerabilities throughout your code, dependencies, containers, and deployed
-applications, including:
+GitLab application security testing provides comprehensive coverage of both repository content and
+deployed applications, enabling you to detect potential security issues throughout your software
+development lifecycle.
 
-- Unauthorized access points
-- Potential data leaks
-- Denial of Service (DoS) vulnerabilities
-- Supply chain weaknesses
+GitLab also helps reduce the risk of vulnerabilities being introduced through several protective
+mechanisms:
+
+Secret push protection
+: Blocks secrets such as keys and API tokens from being pushed to GitLab.
+
+Merge request approval policies
+: Enforce an additional approval on merge requests that would introduce vulnerabilities.
+
+## How application security testing works
+
+GitLab detects security vulnerabilities throughout your code, dependencies, containers, and
+deployed applications. Your project's repository and your application's behavior are scanned for
+vulnerabilities.
 
 Security findings appear directly in merge requests, providing actionable information before code is
 merged. This proactive approach reduces the cost and effort of fixing issues later in development.
 
-For security teams, GitLab security dashboard centralizes vulnerability findings, making
-prioritization and remediation tracking more straightforward. For developers, the merge request
-integration means fewer context switches and more efficient workflows.
+Application security testing can run in several contexts:
 
-For a click-through demo, see [Integrating security to the pipeline](https://gitlab.navattic.com/gitlab-scans).
-<!-- Demo published on 2024-01-15 -->
+During development
+: Automated scans run as part of CI/CD pipelines when code is committed or merge requests are
+  created.
 
-## Data privacy
+Outside development
+: Security testing can be run manually on-demand or scheduled to run at regular intervals.
 
-Concerning data privacy in the domain of security scanners, GitLab processes the source code and performs analysis locally on the GitLab Runner. No data is transmitted outside GitLab infrastructure (server and runners).
+## Vulnerability management lifecycle
 
-Our scanners access the internet only to download the latest sets of signatures, rules, and patches. If you prefer the scanners do not access the internet, consider using an [offline environment](offline_deployments/_index.md).
+GitLab assists in the complete vulnerability management lifecycle through key phases:
 
-## Security scanning
+[Detect](detect/_index.md)
+: Identify vulnerabilities through automated scanning and security testing.
 
-For security scans that run in a CI/CD pipeline, the results are determined by:
+[Triage](triage/_index.md)
+: Evaluate and prioritize vulnerabilities to determine which need immediate attention and which
+  can be addressed later.
 
-- Which security scanning jobs run in the pipeline.
-- Each job's status.
-- Each job's output.
+[Analyze](analyze/_index.md)
+: Conduct detailed analysis of confirmed vulnerabilities to understand their impact and determine
+  appropriate remediation strategies.
 
-### Security jobs in your pipeline
+[Remediate](remediate/_index.md)
+: Fix the root cause of vulnerabilities or implement appropriate risk mitigation measures.
 
-The security scanning jobs that run in a CI/CD pipeline are determined by the following criteria:
+Vulnerabilities are centralized in the vulnerability report and security dashboard, making
+prioritization and remediation tracking more straightforward for security teams.
 
-1. Inclusion of security scanning templates
+## Get started
 
-   The selection of security scanning jobs is first determined by which templates are included.
-   Templates can be included by using AutoDevOps, a scan execution policy, or the
-   `.gitlab-ci.yml` configuration file.
-
-1. Evaluation of rules
-
-   Each template has defined [rules](../../ci/yaml/_index.md#rules) which determine if the analyzer
-   is run.
-
-   For example, the Secret Detection template includes the following rule. This rule states that
-   secret detection should be run in branch pipelines. In the case of a merge request pipeline,
-   secret detection is not run.
-
-   ```yaml
-   rules:
-     - if: $CI_COMMIT_BRANCH
-   ```
-
-1. Analyzer logic
-
-   If the template's rules dictate that the job is to be run, a job is created in the pipeline stage
-   specified in the template. However, each analyzer has its own logic which determines if the
-   analyzer itself is to be run.
-
-   For example, if dependency scanning doesn't detect supported files at the default depth, the
-   analyzer is not run and no artifacts are output.
-
-After completing successfully, each job outputs artifacts. These artifacts are processed and the
-results are available in GitLab. Results are shown only if all jobs are finished, including manual
-ones. Additionally for some features, results are shown only if the pipeline runs on the default branch.
-
-#### Job status
-
-Jobs pass if they are able to complete a scan. A pass result does not indicate if they did, or did not, identify findings. The only exception is coverage fuzzing, which fails if it identifies findings.
-
-Jobs fail if they are unable to complete a scan. You can view the pipeline logs for more information.
-
-All jobs are permitted to fail by default. This means that if they fail, it does not fail the pipeline.
-
-If you want to prevent vulnerabilities from being merged, you should do this by adding [Security Approvals in Merge Requests](#security-approvals-in-merge-requests) which prevents unknown, high or critical findings from being merged without an approval from a specific group of people that you choose.
-
-We do not recommend changing the job [`allow_failure` setting](../../ci/yaml/_index.md#allow_failure) as that fails the entire pipeline.
-
-#### Job artifacts
-
-A security scan job may generate one or more artifacts. From GitLab 17.0, these artifacts are
-restricted to the [`developer` role](../permissions.md#roles).
-
-The security report artifact generated by the secure analyzer contains all findings it discovers on the target branch, regardless of whether they were previously found, dismissed, or completely new (it puts in everything that it finds).
-
-## Security approvals in merge requests
-
-{{< history >}}
-
-- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357300) the Vulnerability-Check feature in GitLab 15.0.
-- [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/397067) the License-Check feature in GitLab 16.0.
-
-{{< /history >}}
-
-You can enforce an additional approval for merge requests that would introduce one of the following
-security issues:
-
-- A security vulnerability. For more details, read [Merge request approval policies](policies/merge_request_approval_policies.md).
-
-## Self managed installation options
-
-For GitLab Self-Managed instances, you can choose to run most of the GitLab security scanners even when [not connected to the internet](offline_deployments/_index.md).
-
-GitLab Self-Managed instances can also run the security scanners on a GitLab Runner [running inside OpenShift](../../install/openshift_and_gitlab/_index.md).
+To get started, see [Get started securing your application](get-started-security.md).

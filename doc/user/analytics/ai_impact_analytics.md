@@ -54,6 +54,13 @@ It is calculated as the number of accepted code suggestions divided by the total
 - **Duo Chat: Unique users**: Percentage of users that engage with GitLab Duo Chat every month.
 It is calculated as the number of monthly unique GitLab Duo Chat users divided by the total GitLab Duo assigned users.
 
+{{< alert type="note" >}}
+
+For tracking Code Suggestions events, GitLab collects data only from code editor extensions.
+[Epic 14203](https://gitlab.com/groups/gitlab-org/-/epics/14203) proposes support for the Web IDE as well.
+
+{{< /alert >}}
+
 ## Metric trends
 
 The **Metric trends** table displays metrics for the last six months, with monthly values, percentage changes in the past six months, and trend sparklines.
@@ -70,10 +77,13 @@ The **Metric trends** table displays metrics for the last six months, with month
 
 **Code Suggestions usage**: Monthly user engagement with AI Code Suggestions.
 
-The month-over-month comparison of the AI Usage unique users rate gives a more accurate indication of this metric,
+On GitLab.com, data updates every fives minutes.
+GitLab counts Code Suggestions usage only if the user has pushed code to the project in the current month.
+
+The month-over-month comparison of the AI Usage unique users rate gives a more accurate indication Code Suggestion usage,
 because it eliminates factors such as developer experience level and project type or complexity.
 
-The baseline for the AI Usage trend is the total number of code contributors, not just users with GitLab Duo seats.
+The baseline for the AI Usage trend is the total number of code contributors, not only users with GitLab Duo seats.
 This baseline gives a more accurate representation of AI usage by team members.
 
 To analyze the performance of teams that use AI versus teams that don't, you can create a custom
@@ -92,7 +102,7 @@ For more information, see [epic 12978](https://gitlab.com/groups/gitlab-org/-/ep
 Prerequisites:
 
 - [Code Suggestions](../project/repository/code_suggestions/_index.md) must be enabled.
-- [ClickHouse for contribution analytics](../group/contribution_analytics/_index.md#contribution-analytics-with-clickhouse) must be configured.
+- For GitLab Self-Managed, [ClickHouse for contribution analytics](../group/contribution_analytics/_index.md#contribution-analytics-with-clickhouse) must be configured.
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Analyze > Analytics Dashboards**.
